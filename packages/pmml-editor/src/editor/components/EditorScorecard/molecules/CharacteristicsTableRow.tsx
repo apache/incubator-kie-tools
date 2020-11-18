@@ -19,15 +19,18 @@ import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
 import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
+import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
+  dataFields: DataField[];
+  viewAttributes: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
-  const { characteristic, onEdit, onDelete } = props;
+  const { characteristic, dataFields, viewAttributes, onEdit, onDelete } = props;
 
   const index = characteristic.index;
 
@@ -47,7 +50,11 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
           <strong>{characteristic.characteristic.name}</strong>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <CharacteristicLabels activeCharacteristic={characteristic.characteristic} />
+          <CharacteristicLabels
+            viewAttributes={viewAttributes}
+            activeCharacteristic={characteristic.characteristic}
+            dataFields={dataFields}
+          />
         </SplitItem>
         <SplitItem>
           <CharacteristicsTableAction onDelete={onDelete} />

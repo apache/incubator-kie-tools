@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { DataListAction, DataListCell, DataListItem, DataListItemCells, DataListItemRow } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core";
 import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
-import "../organisms/AttributesTable.scss";
-import { AttributesTableAction } from "../atoms";
+import "./AttributesTableRow.scss";
+import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { toText } from "../../../reducers";
 
 interface AttributesTableRowProps {
@@ -26,43 +26,32 @@ interface AttributesTableRowProps {
   dataFields: DataField[];
   onEdit: () => void;
   onDelete: () => void;
-  isDisabled: boolean;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
-  const { index, attribute, dataFields, onEdit, onDelete, isDisabled } = props;
+  const { index, attribute, dataFields, onEdit, onDelete } = props;
 
   return (
-    <DataListItem
-      key={index}
-      id={index.toString()}
-      className="attributes__list-item"
-      aria-labelledby={"attribute-" + index}
+    <article
+      className={`attribute-item attribute-item-n${index} editable`}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === "Enter") {
+          onEdit();
+        }
+      }}
     >
-      <DataListItemRow>
-        <DataListItemCells
-          dataListCells={[
-            <DataListCell key="0" width={5}>
-              <pre>{toText(attribute.predicate, dataFields)}</pre>
-            </DataListCell>,
-            <DataListCell key="1" width={2}>
-              <div>{attribute.partialScore}</div>
-            </DataListCell>,
-            <DataListCell key="2" width={2}>
-              <div>{attribute.reasonCode}</div>
-            </DataListCell>,
-            <DataListAction
-              id="delete-attribute"
-              aria-label="delete"
-              aria-labelledby="delete-attribute"
-              key="4"
-              width={1}
-            >
-              <AttributesTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
-            </DataListAction>
-          ]}
-        />
-      </DataListItemRow>
-    </DataListItem>
+      <Split hasGutter={true} style={{ height: "100%" }}>
+        <SplitItem>
+          <pre>{toText(attribute.predicate, dataFields)}</pre>
+        </SplitItem>
+        <SplitItem isFilled={true}>
+          <AttributeLabels activeAttribute={attribute} viewAttribute={onEdit} />
+        </SplitItem>
+        <SplitItem>
+          <AttributesTableAction onDelete={onDelete} />
+        </SplitItem>
+      </Split>
+    </article>
   );
 };

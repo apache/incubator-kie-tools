@@ -23,7 +23,7 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { AttributesTable } from "./AttributesTable";
 import { Actions } from "../../../reducers";
 import { useDispatch } from "react-redux";
-import { AttributesToolbar, CharacteristicsToolbar } from "../molecules";
+import { AttributeEditor, AttributesToolbar, AttributeToolbar, CharacteristicsToolbar } from "../molecules";
 
 interface CharacteristicsContainerProps {
   modelIndex: number;
@@ -42,7 +42,7 @@ interface CharacteristicsContainerProps {
   ) => void;
 }
 
-type CharacteristicsViewSection = "overview" | "attributes";
+type CharacteristicsViewSection = "overview" | "attributes" | "attribute";
 
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
   const {
@@ -59,7 +59,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const dispatch = useDispatch();
 
-  const [selectedCharacteristic, setSelectedCharacteristic] = useState<IndexedCharacteristic | undefined>(undefined);
+  const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
+  const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -72,26 +73,43 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   const getTransition = (_viewSection: CharacteristicsViewSection) => {
     if (_viewSection === "overview") {
       return "characteristics-container__overview";
-    } else {
+    } else if (_viewSection === "attributes") {
       return "characteristics-container__attributes";
+    } else {
+      return "characteristics-container__attribute";
     }
   };
 
   const onAddAttribute = useCallback(() => {
     setActiveOperation(Operation.CREATE_ATTRIBUTE);
+    setSelectedAttributeIndex(undefined);
+    setViewSection("attribute");
   }, [characteristics]);
 
-  const onViewOverview = () => {
-    setViewSection("overview");
+  const onViewOverviewView = () => {
     setActiveOperation(Operation.NONE);
+    setViewSection("overview");
+  };
+
+  const onViewAttributesView = () => {
+    setActiveOperation(Operation.NONE);
+    setViewSection("attributes");
   };
 
   const onViewAttributes = (index: number | undefined) => {
     if (index === undefined) {
       return;
     }
-    setSelectedCharacteristic(characteristics[index]);
+    setSelectedCharacteristicIndex(index);
     setViewSection("attributes");
+  };
+
+  const onViewAttribute = (index: number | undefined) => {
+    if (index === undefined) {
+      return;
+    }
+    setSelectedAttributeIndex(index);
+    setViewSection("attribute");
   };
 
   const validateCharacteristicName = useCallback(
@@ -140,37 +158,49 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
               {viewSection === "attributes" && (
                 <Stack hasGutter={true}>
                   <StackItem>
-                    <AttributesToolbar
-                      activeOperation={activeOperation}
-                      onViewOverview={onViewOverview}
-                      onAddAttribute={onAddAttribute}
-                    />
+                    <AttributesToolbar viewOverview={onViewOverviewView} onAddAttribute={onAddAttribute} />
                   </StackItem>
-                  <StackItem>
+                  <StackItem className="characteristics-container__attributes">
                     <AttributesTable
                       modelIndex={modelIndex}
-                      characteristic={selectedCharacteristic}
-                      activeOperation={activeOperation}
+                      characteristicIndex={selectedCharacteristicIndex}
                       setActiveOperation={setActiveOperation}
+                      viewAttribute={onViewAttribute}
                       deleteAttribute={index => {
                         if (window.confirm(`Delete Attribute "${index}"?`)) {
                           dispatch({
                             type: Actions.Scorecard_DeleteAttribute,
                             payload: {
                               modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristic?.index,
+                              characteristicIndex: selectedCharacteristicIndex,
                               attributeIndex: index
                             }
                           });
                         }
                       }}
-                      commit={(_index, _text, _partialScore, _reasonCode) => {
+                    />
+                  </StackItem>
+                </Stack>
+              )}
+              {viewSection === "attribute" && (
+                <Stack hasGutter={true}>
+                  <StackItem>
+                    <AttributeToolbar viewOverview={onViewOverviewView} viewAttributes={onViewAttributesView} />
+                  </StackItem>
+                  <StackItem className="characteristics-container__attribute">
+                    <AttributeEditor
+                      activeOperation={activeOperation}
+                      setActiveOperation={setActiveOperation}
+                      modelIndex={modelIndex}
+                      characteristicIndex={selectedCharacteristicIndex}
+                      attributeIndex={selectedAttributeIndex}
+                      onCommit={(_index, _text, _partialScore, _reasonCode) => {
                         if (_index === undefined) {
                           dispatch({
                             type: Actions.Scorecard_AddAttribute,
                             payload: {
                               modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristic?.index,
+                              characteristicIndex: selectedCharacteristicIndex,
                               text: _text,
                               partialScore: _partialScore,
                               reasonCode: _reasonCode
@@ -181,8 +211,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                             type: Actions.Scorecard_UpdateAttribute,
                             payload: {
                               modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristic?.index,
-                              attributeIndex: _index,
+                              characteristicIndex: selectedCharacteristicIndex,
+                              attributeIndex: selectedAttributeIndex,
                               text: _text,
                               partialScore: _partialScore,
                               reasonCode: _reasonCode
@@ -190,6 +220,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                           });
                         }
                       }}
+                      onCancel={() => null}
                     />
                   </StackItem>
                 </Stack>

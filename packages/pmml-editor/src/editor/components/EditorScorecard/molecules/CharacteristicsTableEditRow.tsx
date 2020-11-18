@@ -17,7 +17,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { FormGroup, Split, SplitItem, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import { CharacteristicLabelsEditMode, CharacteristicsTableAction } from "../atoms";
+import { CharacteristicsTableAction } from "../atoms";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
 import { ValidatedType } from "../../../types";
@@ -30,23 +30,13 @@ interface CharacteristicsTableEditRowProps {
   setActiveOperation: (operation: Operation) => void;
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
-  viewAttributes: () => void;
   onCommit: (name: string | undefined, reasonCode: string | undefined, baselineScore: number | undefined) => void;
   onCancel: () => void;
   onDelete?: () => void;
 }
 
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
-  const {
-    activeOperation,
-    setActiveOperation,
-    characteristic,
-    viewAttributes,
-    validateCharacteristicName,
-    onCommit,
-    onCancel,
-    onDelete
-  } = props;
+  const { activeOperation, characteristic, validateCharacteristicName, onCommit, onCancel, onDelete } = props;
 
   const index = characteristic.index;
 
@@ -142,7 +132,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             />
           </FormGroup>
         </SplitItem>
-        <SplitItem>
+        <SplitItem isFilled={true}>
           <FormGroup label="Baseline score" fieldId="characteristic-baseline-score-helper" style={{ width: "12em" }}>
             <TextInput
               type="number"
@@ -153,15 +143,6 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
               onChange={e => setBaselineScore(toNumber(e))}
             />
           </FormGroup>
-        </SplitItem>
-        <SplitItem isFilled={true}>
-          <CharacteristicLabelsEditMode
-            viewAttributes={() => {
-              onCommit(name.value, reasonCode, baselineScore);
-              setActiveOperation(Operation.NONE);
-              viewAttributes();
-            }}
-          />
         </SplitItem>
         {onDelete && (
           <SplitItem>

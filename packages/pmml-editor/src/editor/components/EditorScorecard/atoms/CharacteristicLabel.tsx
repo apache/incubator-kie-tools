@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Label } from "@patternfly/react-core";
+import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
 
 import "./CharacteristicLabel.scss";
 
-export const CharacteristicLabel = (name: string, value: any, onClose?: () => void) => {
+export const CharacteristicLabel = (name: string, value: any, tooltip?: string) => {
   return (
     <>
-      {!onClose && (
+      {!tooltip && (
         <Label color="orange" className="characteristic-list__item__label">
           <strong>{name}:</strong>
           &nbsp;
           <span>{value}</span>
         </Label>
       )}
-      {onClose && (
-        <Label color="orange" className="characteristic-list__item__label" onClose={e => onClose()}>
-          <strong>{name}:</strong>
-          &nbsp;
-          <span>{value}</span>
-        </Label>
+      {tooltip && (
+        <Tooltip
+          position={TooltipPosition.top}
+          isContentLeftAligned={true}
+          maxWidth={"100em"}
+          content={<pre>{tooltip}</pre>}
+        >
+          <Label tabIndex={0} color="orange" className="characteristic-list__item__label">
+            <strong>{name}:</strong>
+            &nbsp;
+            <span>{value}</span>
+          </Label>
+        </Tooltip>
       )}
     </>
   );

@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, Split, SplitItem, TextContent, Title, Toolbar, ToolbarContent } from "@patternfly/react-core";
+import { Split, SplitItem, TextContent, Title, Toolbar, ToolbarContent } from "@patternfly/react-core";
 
-interface AttributesToolbarProps {
+interface AttributeToolbarProps {
   viewOverview: () => void;
-  onAddAttribute: () => void;
+  viewAttributes: () => void;
 }
 
-export const AttributesToolbar = (props: AttributesToolbarProps) => {
-  const { viewOverview, onAddAttribute } = props;
+export const AttributeToolbar = (props: AttributeToolbarProps) => {
+  const { viewOverview, viewAttributes } = props;
 
   const onViewOverview = (e: React.MouseEvent) => {
     e.preventDefault();
     viewOverview();
   };
 
+  const onViewAttributes = (e: React.MouseEvent) => {
+    e.preventDefault();
+    viewAttributes();
+  };
+
   return (
-    <Toolbar id="attributes-toolbar" data-testid="attributes-toolbar">
+    <Toolbar id="attribute-toolbar" data-testid="attribute-toolbar">
       <ToolbarContent>
         <Split hasGutter={true} style={{ width: "100%" }}>
           <SplitItem>
             <TextContent>
               <Title size="lg" headingLevel="h1">
-                <a onClick={e => onViewOverview(e)}>Characteristics</a>&nbsp;/&nbsp;Attributes
+                <a onClick={e => onViewOverview(e)}>Characteristics</a>&nbsp;/&nbsp;
+                <a onClick={e => onViewAttributes(e)}>Attributes</a>&nbsp;/&nbsp;Attribute
               </Title>
             </TextContent>
-          </SplitItem>
-          <SplitItem isFilled={true} />
-          <SplitItem>
-            <Button onClick={e => onAddAttribute()}>Add attribute</Button>
           </SplitItem>
         </Split>
       </ToolbarContent>

@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
+import { Label } from "@patternfly/react-core";
 
-export * from "./AttributeEditor";
-export * from "./AttributeToolbar";
-export * from "./AttributesToolbar";
-export * from "./AttributesTableRow";
-export * from "./CharacteristicsToolbar";
-export * from "./CharacteristicsTableRow";
-export * from "./CharacteristicsTableEditRow";
-export * from "./EmptyStateNoAttributes";
-export * from "./EmptyStateNoCharacteristics";
-export * from "./EmptyStateNoMatchingCharacteristics";
-export * from "./PredicateEditor";
+import "./AttributeLabel.scss";
+
+export const AttributeLabel = (name: string, value: any) => {
+  return (
+    <Label color="orange" className="attribute-list__item__label">
+      <strong>{name}:</strong>
+      &nbsp;
+      <span>{value}</span>
+    </Label>
+  );
+};

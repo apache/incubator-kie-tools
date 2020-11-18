@@ -15,10 +15,11 @@
  */
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Form } from "@patternfly/react-core";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
 import { Operation } from "../Operation";
+import { useSelector } from "react-redux";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -54,6 +55,10 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
+  const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
+    return state.DataDictionary.DataField;
+  });
+
   useEffect(() => {
     if (activeOperation === Operation.CREATE_CHARACTERISTIC && addCharacteristicRowRef.current) {
       addCharacteristicRowRef.current.scrollIntoView({ behavior: "smooth" });
@@ -67,6 +72,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const onDelete = (index: number | undefined) => {
     if (index !== undefined) {
+      setActiveOperation(Operation.NONE);
       deleteCharacteristic(index);
     }
   };
@@ -119,7 +125,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 activeOperation={activeOperation}
                 setActiveOperation={setActiveOperation}
                 characteristic={ic}
-                viewAttributes={() => onViewAttributes(ic.index)}
                 validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
                 onCommit={(_name, _reasonCode, _baselineScore) =>
                   onCommit(ic.index, _name, _reasonCode, _baselineScore)
@@ -133,6 +138,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               <CharacteristicsTableRow
                 key={ic.index}
                 characteristic={ic}
+                dataFields={dataFields}
+                viewAttributes={() => onViewAttributes(ic.index)}
                 onEdit={() => onEdit(ic.index)}
                 onDelete={() => onDelete(ic.index)}
               />
@@ -146,7 +153,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}
               characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
-              viewAttributes={() => onViewAttributes(undefined)}
               validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
               onCommit={(_name, _reasonCode, _baselineScore) => onCommit(undefined, _name, _reasonCode, _baselineScore)}
               onCancel={onCancel}

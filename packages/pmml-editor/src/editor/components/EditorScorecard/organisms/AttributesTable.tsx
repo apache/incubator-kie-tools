@@ -14,59 +14,35 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
-import {
-  DataList,
-  DataListAction,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-  Form,
-  FormGroup,
-  Tooltip,
-  TooltipPosition
-} from "@patternfly/react-core";
+import { Form } from "@patternfly/react-core";
 import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { AttributesTableEditRow, AttributesTableRow, EmptyStateNoAttributes } from "../molecules";
+import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
-
-import { InfoCircleIcon } from "@patternfly/react-icons";
 import { Operation } from "../Operation";
-import { ActionSpacer } from "../../EditorCore/atoms";
 import { useSelector } from "react-redux";
-import { IndexedCharacteristic } from "./CharacteristicsTable";
 
 interface AttributesTableProps {
   modelIndex: number;
-  characteristic: IndexedCharacteristic | undefined;
-  activeOperation: Operation;
+  characteristicIndex: number | undefined;
   setActiveOperation: (operation: Operation) => void;
+  viewAttribute: (index: number | undefined) => void;
   deleteAttribute: (index: number) => void;
-  commit: (
-    index: number | undefined,
-    text: string | undefined,
-    partialScore: number | undefined,
-    reasonCode: string | undefined
-  ) => void;
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { modelIndex, characteristic, activeOperation, setActiveOperation, deleteAttribute, commit } = props;
-
-  const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
-  const addAttributeRowRef = useRef<HTMLDivElement | null>(null);
+  const { modelIndex, characteristicIndex, setActiveOperation, viewAttribute, deleteAttribute } = props;
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
   });
 
+  const a = 5;
+
   const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
-    if (model !== undefined && characteristic?.index !== undefined && model instanceof Scorecard) {
+    if (model instanceof Scorecard && characteristicIndex !== undefined) {
       const scorecard: Scorecard = model as Scorecard;
-      const _characteristic: Characteristic | undefined =
-        scorecard.Characteristics.Characteristic[characteristic.index];
+      const _characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
       if (_characteristic) {
         return _characteristic.Attribute;
       }
@@ -74,170 +50,34 @@ export const AttributesTable = (props: AttributesTableProps) => {
     return [];
   });
 
-  useEffect(() => {
-    if (activeOperation === Operation.CREATE_ATTRIBUTE && addAttributeRowRef.current) {
-      addAttributeRowRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [activeOperation]);
-
   const onEdit = (index: number | undefined) => {
-    setEditItemIndex(index);
     setActiveOperation(Operation.UPDATE_ATTRIBUTE);
+    viewAttribute(index);
   };
 
   const onDelete = (index: number | undefined) => {
     if (index !== undefined) {
+      setActiveOperation(Operation.NONE);
       deleteAttribute(index);
     }
   };
 
-  const onCommit = (
-    index: number | undefined,
-    text: string | undefined,
-    partialScore: number | undefined,
-    reasonCode: string | undefined
-  ) => {
-    //Avoid commits with no change
-    if (index === undefined) {
-      commit(index, text, partialScore, reasonCode);
-    } else {
-      const attribute = attributes[index];
-      if (attribute.partialScore !== partialScore || attribute.reasonCode !== reasonCode) {
-        commit(index, text, partialScore, reasonCode);
-      }
-    }
-
-    onCancel();
-  };
-
-  const onCancel = () => {
-    setEditItemIndex(undefined);
-    setActiveOperation(Operation.NONE);
-  };
-
-  const validateText = (text: string | undefined) => {
-    return text !== undefined && text.trim() !== "";
-  };
-
   return (
-    <div style={{ height: "100%", overflowY: "auto" }}>
-      {(attributes.length > 0 || activeOperation === Operation.CREATE_ATTRIBUTE) && (
-        <>
-          <div style={{ paddingRight: "16px" }}>
-            <Form>
-              <DataList className="attributes__header" aria-label="attributes header">
-                <DataListItem className="attributes__header__row" key={"none"} aria-labelledby="attributes-header">
-                  <DataListItemRow>
-                    <DataListItemCells
-                      dataListCells={[
-                        <DataListCell key="0" width={5}>
-                          <FormGroup fieldId="Predicate" label="Predicate" isRequired={true} />
-                        </DataListCell>,
-                        <DataListCell key="1" width={2}>
-                          <FormGroup
-                            fieldId="PartialScore"
-                            label="Partial Score"
-                            labelIcon={
-                              <Tooltip
-                                position={TooltipPosition.top}
-                                content={<div>Score points awarded to the Attribute</div>}
-                              >
-                                <InfoCircleIcon className={"attributes__header__icon"} />
-                              </Tooltip>
-                            }
-                          />
-                        </DataListCell>,
-                        <DataListCell key="2" width={2}>
-                          <FormGroup
-                            fieldId="ReasonCode"
-                            label="Reason Code"
-                            labelIcon={
-                              <Tooltip
-                                position={TooltipPosition.top}
-                                content={
-                                  <div>
-                                    Attribute's reason code. If the reason code is used at this level, it takes
-                                    precedence over the reason code attribute associated with the Characteristic
-                                  </div>
-                                }
-                              >
-                                <InfoCircleIcon className={"attributes__header__icon"} />
-                              </Tooltip>
-                            }
-                          />
-                        </DataListCell>,
-                        <DataListAction
-                          id="delete-attribute-header"
-                          aria-label="delete header"
-                          aria-labelledby="delete-attribute-header"
-                          key="3"
-                          width={1}
-                        >
-                          <ActionSpacer />
-                        </DataListAction>
-                      ]}
-                    />
-                  </DataListItemRow>
-                </DataListItem>
-              </DataList>
-            </Form>
-          </div>
-          <div className="attributes__body">
-            <Form>
-              <DataList aria-label="attributes list">
-                {attributes.map((attribute, index) => {
-                  if (editItemIndex === index) {
-                    return (
-                      <AttributesTableEditRow
-                        key={index}
-                        index={index}
-                        attribute={attribute}
-                        dataFields={dataFields}
-                        validateText={validateText}
-                        onCommit={(_text, _partialScore, _reasonCode) =>
-                          onCommit(index, _text, _partialScore, _reasonCode)
-                        }
-                        onCancel={() => onCancel()}
-                      />
-                    );
-                  } else {
-                    return (
-                      <AttributesTableRow
-                        key={index}
-                        index={index}
-                        attribute={attribute}
-                        dataFields={dataFields}
-                        onEdit={() => onEdit(index)}
-                        onDelete={() => onDelete(index)}
-                        isDisabled={
-                          !(editItemIndex === undefined || editItemIndex === index) ||
-                          activeOperation !== Operation.NONE
-                        }
-                      />
-                    );
-                  }
-                })}
-                {activeOperation === Operation.CREATE_ATTRIBUTE && (
-                  <div key={undefined} ref={addAttributeRowRef}>
-                    <AttributesTableEditRow
-                      key={"add"}
-                      index={undefined}
-                      attribute={{}}
-                      dataFields={dataFields}
-                      validateText={validateText}
-                      onCommit={(_text, _partialScore, _reasonCode) =>
-                        onCommit(undefined, _text, _partialScore, _reasonCode)
-                      }
-                      onCancel={() => onCancel()}
-                    />
-                  </div>
-                )}
-              </DataList>
-            </Form>
-          </div>
-        </>
-      )}
-      {attributes.length === 0 && activeOperation !== Operation.CREATE_ATTRIBUTE && <EmptyStateNoAttributes />}
-    </div>
+    <Form>
+      <section>
+        {attributes.map((attribute, index) => {
+          return (
+            <AttributesTableRow
+              key={index}
+              index={index}
+              attribute={attribute}
+              dataFields={dataFields}
+              onEdit={() => onEdit(index)}
+              onDelete={() => onDelete(index)}
+            />
+          );
+        })}
+      </section>
+    </Form>
   );
 };

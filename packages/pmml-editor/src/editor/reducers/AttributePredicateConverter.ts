@@ -39,10 +39,14 @@ const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map
 
 export const toText = (predicate: Predicate | undefined, fields: DataField[]): string => {
   const fieldToDataType: Map<FieldName, DataType> = new Map(fields.map(field => [field.name, field.dataType]));
-  return predicate ? _toText(predicate, fieldToDataType, 0) : "";
+  return _toText(predicate, fieldToDataType, 0);
 };
 
-const _toText = (predicate: Predicate, fieldToDataType: Map<FieldName, DataType>, nesting: number): string => {
+const _toText = (
+  predicate: Predicate | undefined,
+  fieldToDataType: Map<FieldName, DataType>,
+  nesting: number
+): string => {
   if (predicate instanceof True) {
     return "True";
   } else if (predicate instanceof False) {

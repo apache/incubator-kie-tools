@@ -14,22 +14,52 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
+import { CharacteristicLabelsEditMode } from "./CharacteristicLabelsEditMode";
+import { toText } from "../../../reducers";
 
 interface CharacteristicLabelsProps {
   activeCharacteristic: Characteristic;
+  dataFields: DataField[];
+  viewAttributes: () => void;
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic } = props;
+  const { activeCharacteristic, dataFields, viewAttributes } = props;
 
   return (
     <>
       {activeCharacteristic.reasonCode && CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
       {activeCharacteristic.baselineScore && CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
       {activeCharacteristic.Attribute.length > 0 &&
-        CharacteristicLabel("Attribute count", activeCharacteristic.Attribute.length)}
+        CharacteristicLabel(
+          "Attributes",
+          attributesToTruncatedText(activeCharacteristic.Attribute, dataFields),
+          attributesToFullText(activeCharacteristic.Attribute, dataFields)
+        )}
+      <CharacteristicLabelsEditMode viewAttributes={viewAttributes} />
     </>
   );
+};
+
+const attributesToTruncatedText = (attributes: Attribute[], fields: DataField[]): string => {
+  let text: string[] = [];
+  attributes.forEach(attribute => {
+    let line: string = toText(attribute.predicate, fields);
+    if (line.length > 32) {
+      line = line.slice(0, 29) + "...";
+    }
+    text.push(line);
+  });
+  return text.join(" ");
+};
+
+const attributesToFullText = (attributes: Attribute[], fields: DataField[]): string => {
+  let text: string[] = [];
+  attributes.forEach(attribute => {
+    let line: string = toText(attribute.predicate, fields);
+    text.push(line);
+  });
+  return text.join("\n");
 };

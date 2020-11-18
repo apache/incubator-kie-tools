@@ -128,7 +128,7 @@ export const PredicateEditor = (props: PredicateEditorProps) => {
   return (
     <MonacoEditor
       ref={monaco}
-      height="150px"
+      height="300px"
       language="scorecards"
       theme="scorecards"
       options={{
