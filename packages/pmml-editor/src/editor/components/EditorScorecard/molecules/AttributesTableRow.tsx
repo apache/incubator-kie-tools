@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { DataListAction, DataListCell, DataListItem, DataListItemCells, DataListItemRow } from "@patternfly/react-core";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import "../organisms/AttributesTable.scss";
 import { AttributesTableAction } from "../atoms";
 import { toText } from "../../../reducers";
@@ -23,13 +23,14 @@ import { toText } from "../../../reducers";
 interface AttributesTableRowProps {
   index: number;
   attribute: Attribute;
+  dataFields: DataField[];
   onEdit: () => void;
   onDelete: () => void;
   isDisabled: boolean;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
-  const { index, attribute, onEdit, onDelete, isDisabled } = props;
+  const { index, attribute, dataFields, onEdit, onDelete, isDisabled } = props;
 
   return (
     <DataListItem
@@ -42,7 +43,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
         <DataListItemCells
           dataListCells={[
             <DataListCell key="0" width={5}>
-              <pre>{toText(attribute.predicate)}</pre>
+              <pre>{toText(attribute.predicate, dataFields)}</pre>
             </DataListCell>,
             <DataListCell key="1" width={2}>
               <div>{attribute.partialScore}</div>

@@ -24,7 +24,7 @@ import {
   FormGroup,
   TextInput
 } from "@patternfly/react-core";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
@@ -34,13 +34,14 @@ import { PredicateEditor } from "./PredicateEditor";
 interface AttributesTableEditRowProps {
   index: number | undefined;
   attribute: Attribute;
+  dataFields: DataField[];
   validateText: (text: string | undefined) => boolean;
   onCommit: (text: string | undefined, partialScore: number | undefined, reasonCode: string | undefined) => void;
   onCancel: () => void;
 }
 
 export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
-  const { index, attribute, validateText, onCommit, onCancel } = props;
+  const { index, attribute, dataFields, validateText, onCommit, onCancel } = props;
 
   const [text, setText] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -50,7 +51,7 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
   const [reasonCode, setReasonCode] = useState<string | undefined>();
 
   useEffect(() => {
-    const _text = toText(attribute.predicate);
+    const _text = toText(attribute.predicate, dataFields);
     setText({
       value: _text,
       valid: true

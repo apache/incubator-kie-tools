@@ -163,7 +163,10 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     _selection => setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm)
   );
 
-  const ref = useOnclickOutside(event => commitEdit(), { disabled: activeOperation !== Operation.UPDATE_CORE });
+  const ref = useOnclickOutside(event => commitEdit(), {
+    disabled: activeOperation !== Operation.UPDATE_CORE,
+    eventTypes: ["click"]
+  });
 
   const onEdit = () => {
     setEditing(true);

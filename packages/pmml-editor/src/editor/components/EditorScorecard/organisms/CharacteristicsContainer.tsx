@@ -152,7 +152,6 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       characteristic={selectedCharacteristic}
                       activeOperation={activeOperation}
                       setActiveOperation={setActiveOperation}
-                      addAttribute={onAddAttribute}
                       deleteAttribute={index => {
                         if (window.confirm(`Delete Attribute "${index}"?`)) {
                           dispatch({

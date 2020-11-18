@@ -13,10 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FieldName, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  CompoundPredicate,
+  DataField,
+  DataType,
+  False,
+  FieldName,
+  Predicate,
+  SimplePredicate,
+  SimplePredicateOperator,
+  SimpleSetPredicate,
+  True
+} from "@kogito-tooling/pmml-editor-marshaller";
 
-export const toText = (predicate: Predicate | undefined): string => {
-  return JSON.stringify(predicate, undefined, 2);
+const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map<SimplePredicateOperator, string>([
+  ["equal", "="],
+  ["notEqual", "<>"],
+  ["lessThan", "<"],
+  ["lessOrEqual", "<="],
+  ["greaterThan", ">"],
+  ["greaterOrEqual", ">="],
+  ["isMissing", "isMissing"],
+  ["isNotMissing", "isNotMissing"]
+]);
+
+export const toText = (predicate: Predicate | undefined, fields: DataField[]): string => {
+  const fieldToDataType: Map<FieldName, DataType> = new Map(fields.map(field => [field.name, field.dataType]));
+  return predicate ? _toText(predicate, fieldToDataType, 0) : "";
+};
+
+const _toText = (predicate: Predicate, fieldToDataType: Map<FieldName, DataType>, nesting: number): string => {
+  if (predicate instanceof True) {
+    return "True";
+  } else if (predicate instanceof False) {
+    return "False";
+  } else if (predicate instanceof SimpleSetPredicate) {
+    const ssp: SimpleSetPredicate = predicate as SimpleSetPredicate;
+    return `${ssp.field.toString()} ${ssp.booleanOperator} ${ssp.Array.toString()} `;
+  } else if (predicate instanceof SimplePredicate) {
+    const sp: SimplePredicate = predicate as SimplePredicate;
+    return `${sp.field.toString()} ${SimplePredicateOperatorMap.get(sp.operator)} ${_value(
+      sp.field,
+      sp.value,
+      fieldToDataType
+    )}`;
+  } else if (predicate instanceof CompoundPredicate) {
+    const cp: CompoundPredicate = predicate as CompoundPredicate;
+    let text: string = "";
+    let children: string[] = [];
+    text = text + (nesting > 0 ? "( " : "");
+    cp.predicates?.forEach(p => children.push(_toText(p, fieldToDataType, nesting + 1)));
+    text = text + children.join(" " + cp.booleanOperator + " ");
+    text = text + (nesting > 0 ? ")" : "");
+    return text;
+  }
+  return "";
+};
+
+const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, DataType>): string => {
+  const dataType = fieldToDataType.get(field);
+  if (dataType === "string") {
+    return `"${value}"`;
+  }
+  return value.toString();
 };
 
 export const fromText = (text: string): Predicate => {

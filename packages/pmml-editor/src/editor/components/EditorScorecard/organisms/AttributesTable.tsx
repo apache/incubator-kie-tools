@@ -27,7 +27,7 @@ import {
   Tooltip,
   TooltipPosition
 } from "@patternfly/react-core";
-import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableEditRow, AttributesTableRow, EmptyStateNoAttributes } from "../molecules";
 import "./AttributesTable.scss";
 
@@ -42,7 +42,6 @@ interface AttributesTableProps {
   characteristic: IndexedCharacteristic | undefined;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
-  addAttribute: () => void;
   deleteAttribute: (index: number) => void;
   commit: (
     index: number | undefined,
@@ -53,18 +52,14 @@ interface AttributesTableProps {
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const {
-    modelIndex,
-    characteristic,
-    activeOperation,
-    setActiveOperation,
-    addAttribute,
-    deleteAttribute,
-    commit
-  } = props;
+  const { modelIndex, characteristic, activeOperation, setActiveOperation, deleteAttribute, commit } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addAttributeRowRef = useRef<HTMLDivElement | null>(null);
+
+  const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
+    return state.DataDictionary.DataField;
+  });
 
   const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
@@ -197,6 +192,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
                         key={index}
                         index={index}
                         attribute={attribute}
+                        dataFields={dataFields}
                         validateText={validateText}
                         onCommit={(_text, _partialScore, _reasonCode) =>
                           onCommit(index, _text, _partialScore, _reasonCode)
@@ -210,6 +206,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
                         key={index}
                         index={index}
                         attribute={attribute}
+                        dataFields={dataFields}
                         onEdit={() => onEdit(index)}
                         onDelete={() => onDelete(index)}
                         isDisabled={
@@ -226,6 +223,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
                       key={"add"}
                       index={undefined}
                       attribute={{}}
+                      dataFields={dataFields}
                       validateText={validateText}
                       onCommit={(_text, _partialScore, _reasonCode) =>
                         onCommit(undefined, _text, _partialScore, _reasonCode)

@@ -67,7 +67,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     },
     {
       disabled:
-        activeOperation !== Operation.UPDATE_CHARACTERISTIC && activeOperation !== Operation.CREATE_CHARACTERISTIC
+        activeOperation !== Operation.UPDATE_CHARACTERISTIC && activeOperation !== Operation.CREATE_CHARACTERISTIC,
+      eventTypes: ["click"]
     }
   );
 
