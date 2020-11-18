@@ -55,10 +55,13 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
 
-  const ref = useOnclickOutside(event => {
-    onCommit(name.value, reasonCode, baselineScore);
-    setActiveOperation(Operation.NONE);
-  });
+  const ref = useOnclickOutside(
+    event => {
+      onCommit(name.value, reasonCode, baselineScore);
+      setActiveOperation(Operation.NONE);
+    },
+    { disabled: !name.valid }
+  );
 
   useEffect(() => {
     setName({
