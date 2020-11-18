@@ -62,7 +62,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const onEdit = (index: number | undefined) => {
     setEditItemIndex(index);
-    setActiveOperation(Operation.UPDATE);
+    setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
   };
 
   const onDelete = (index: number | undefined) => {
@@ -112,10 +112,11 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     <Form>
       <section>
         {characteristics.map(ic => {
-          if (editItemIndex === ic.index) {
+          if (editItemIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC) {
             return (
               <CharacteristicsTableEditRow
                 key={ic.index}
+                activeOperation={activeOperation}
                 setActiveOperation={setActiveOperation}
                 characteristic={ic}
                 viewAttributes={() => onViewAttributes(ic.index)}
@@ -142,6 +143,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           <div key={undefined} ref={addCharacteristicRowRef}>
             <CharacteristicsTableEditRow
               key={"add"}
+              activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}
               characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
               viewAttributes={() => onViewAttributes(undefined)}

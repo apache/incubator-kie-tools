@@ -87,7 +87,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
 
   const onEdit = (index: number | undefined) => {
     setEditItemIndex(index);
-    setActiveOperation(Operation.UPDATE);
+    setActiveOperation(Operation.UPDATE_ATTRIBUTE);
   };
 
   const onDelete = (index: number | undefined) => {

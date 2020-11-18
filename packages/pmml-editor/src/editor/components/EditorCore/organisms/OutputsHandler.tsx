@@ -87,7 +87,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
 
   return (
     <>
-      <Button variant="secondary" isDisabled={activeOperation !== Operation.NONE} onClick={toggleModal}>
+      <Button variant="secondary" onClick={toggleModal}>
         Set Outputs
       </Button>
       <Modal

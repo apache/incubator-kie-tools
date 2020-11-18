@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GenericNumericInput, GenericSelector, GenericTextInput } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import {
-  Button,
-  Flex,
-  FlexItem,
   Form,
   FormGroup,
   PageSection,
@@ -31,10 +28,11 @@ import {
   TextContent,
   Title
 } from "@patternfly/react-core";
-import { ExclamationCircleIcon, PencilAltIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import "./CorePropertiesTable.scss";
 import { ValidatedType } from "../../../types";
 import { Operation } from "../Operation";
+import useOnclickOutside from "react-cool-onclickoutside";
 
 interface CoreProperties {
   isScorable: boolean;
@@ -165,9 +163,11 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     _selection => setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm)
   );
 
+  const ref = useOnclickOutside(event => commitEdit(), { disabled: activeOperation !== Operation.UPDATE_CORE });
+
   const onEdit = () => {
     setEditing(true);
-    setActiveOperation(Operation.UPDATE);
+    setActiveOperation(Operation.UPDATE_CORE);
   };
 
   const commitEdit = () => {
@@ -189,151 +189,134 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setActiveOperation(Operation.NONE);
   };
 
+  const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_CORE, [
+    isEditing,
+    activeOperation
+  ]);
+
   return (
-    <PageSection variant={PageSectionVariants.light}>
-      <Stack>
-        <StackItem>
-          <Flex>
-            <FlexItem>
-              <TextContent>
-                <Title size="lg" headingLevel="h1">
-                  Model setup
-                </Title>
-              </TextContent>
-            </FlexItem>
-            <FlexItem>
-              {!isEditing && (
-                <Button
-                  isDisabled={activeOperation !== Operation.NONE}
-                  variant="link"
-                  icon={<PencilAltIcon />}
-                  onClick={onEdit}
-                >
-                  Edit
-                </Button>
-              )}
-              {/*This is a hack to ensure the layout remains unchanged when the Edit button is hidden*/}
-              {isEditing && (
-                <Button variant="tertiary" isDisabled={true} style={{ visibility: "hidden" }}>
-                  Temp
-                </Button>
-              )}
-            </FlexItem>
-          </Flex>
-        </StackItem>
-        <StackItem>
-          <Form>
-            <table className="core-properties__table">
-              <thead>
-                <tr>
-                  <th>
-                    <FormGroup fieldId="IsScorable" label="Is Scorable" />
-                  </th>
-                  <th>
-                    <FormGroup fieldId="FunctionName" label="Function Name" />
-                  </th>
-                  <th>
-                    <FormGroup fieldId="AlgorithmName" label="Algorithm Name" />
-                  </th>
-                  <th>
-                    <FormGroup fieldId="BaselineScore" label="Baseline Score" />
-                  </th>
-                  <th>
-                    <FormGroup fieldId="BaselineMethod" label="Baseline Method" />
-                  </th>
-                  <th>
-                    <FormGroup fieldId="InitialScore" label="Initial Score" />
-                  </th>
-                  <th>
-                    <FormGroup fieldId="UseReasonCodes" label="Use Reason Codes" />
-                  </th>
-                  <th>
-                    <FormGroup fieldId="ReasonCodeAlgorithm" label="Reason Code Algorithm" />
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    {!isEditing && props.isScorable.toString()}
-                    {isEditing && isScorableEditor}
-                  </td>
-                  <td>
-                    {!isEditing && props.functionName}
-                    {isEditing && functionNameEditor}
-                  </td>
-                  <td>
-                    {!isEditing && props.algorithmName}
-                    {isEditing && algorithmNameEditor}
-                  </td>
-                  <td>
-                    {!isEditing && props.baselineScore.toString()}
-                    {isEditing && baselineScoreEditor}
-                  </td>
-                  <td>
-                    {!isEditing && props.baselineMethod}
-                    {isEditing && baselineMethodEditor}
-                  </td>
-                  <td>
-                    {!isEditing && props.initialScore.toString()}
-                    {isEditing && initialScoreEditor}
-                  </td>
-                  <td>
-                    {!isEditing && props.useReasonCodes.toString()}
-                    {isEditing && useReasonCodesEditor}
-                  </td>
-                  <td>
-                    {!isEditing && props.reasonCodeAlgorithm.toString()}
-                    {isEditing && reasonCodeAlgorithmEditor}
-                  </td>
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                  <td>
-                    {isEditing && !baselineScore.valid && (
-                      <FormGroup
-                        helperTextInvalid="Must be greater than zero"
-                        helperTextInvalidIcon={<ExclamationCircleIcon />}
-                        fieldId="characteristic-baselineScore-validation"
-                        validated="error"
-                      />
-                    )}
-                  </td>
-                  <td>&nbsp;</td>
-                  <td>
-                    {isEditing && !initialScore.valid && (
-                      <FormGroup
-                        helperTextInvalid="Must be greater than zero"
-                        helperTextInvalidIcon={<ExclamationCircleIcon />}
-                        fieldId="characteristic-initialScore-validation"
-                        validated="error"
-                      />
-                    )}
-                  </td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                </tr>
-              </tbody>
-            </table>
-          </Form>
-          {isEditing && (
-            <Flex className="core-properties__edit_buttons">
-              <FlexItem>
-                <Button variant="primary" onClick={commitEdit}>
-                  Done
-                </Button>
-              </FlexItem>
-              <FlexItem>
-                <Button variant="secondary" onClick={cancelEdit}>
-                  Cancel
-                </Button>
-              </FlexItem>
-            </Flex>
-          )}
-        </StackItem>
-      </Stack>
-    </PageSection>
+    <div
+      ref={ref}
+      className={`editable${isEditModeEnabled ? " editing" : ""}`}
+      onClick={onEdit}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === "Enter") {
+          onEdit();
+        } else if (e.key === "Escape") {
+          cancelEdit();
+        }
+      }}
+    >
+      <PageSection variant={PageSectionVariants.light}>
+        <Stack>
+          <StackItem>
+            <TextContent>
+              <Title size="lg" headingLevel="h1">
+                Model setup
+              </Title>
+            </TextContent>
+          </StackItem>
+          <StackItem>
+            <Form>
+              <table className="core-properties__table">
+                <thead>
+                  <tr>
+                    <th>
+                      <FormGroup fieldId="IsScorable" label="Is Scorable" />
+                    </th>
+                    <th>
+                      <FormGroup fieldId="FunctionName" label="Function Name" />
+                    </th>
+                    <th>
+                      <FormGroup fieldId="AlgorithmName" label="Algorithm Name" />
+                    </th>
+                    <th>
+                      <FormGroup fieldId="BaselineScore" label="Baseline Score" />
+                    </th>
+                    <th>
+                      <FormGroup fieldId="BaselineMethod" label="Baseline Method" />
+                    </th>
+                    <th>
+                      <FormGroup fieldId="InitialScore" label="Initial Score" />
+                    </th>
+                    <th>
+                      <FormGroup fieldId="UseReasonCodes" label="Use Reason Codes" />
+                    </th>
+                    <th>
+                      <FormGroup fieldId="ReasonCodeAlgorithm" label="Reason Code Algorithm" />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {!isEditModeEnabled && props.isScorable.toString()}
+                      {isEditModeEnabled && isScorableEditor}
+                    </td>
+                    <td>
+                      {!isEditModeEnabled && props.functionName}
+                      {isEditModeEnabled && functionNameEditor}
+                    </td>
+                    <td>
+                      {!isEditModeEnabled && props.algorithmName}
+                      {isEditModeEnabled && algorithmNameEditor}
+                    </td>
+                    <td>
+                      {!isEditModeEnabled && props.baselineScore.toString()}
+                      {isEditModeEnabled && baselineScoreEditor}
+                    </td>
+                    <td>
+                      {!isEditModeEnabled && props.baselineMethod}
+                      {isEditModeEnabled && baselineMethodEditor}
+                    </td>
+                    <td>
+                      {!isEditModeEnabled && props.initialScore.toString()}
+                      {isEditModeEnabled && initialScoreEditor}
+                    </td>
+                    <td>
+                      {!isEditModeEnabled && props.useReasonCodes.toString()}
+                      {isEditModeEnabled && useReasonCodesEditor}
+                    </td>
+                    <td>
+                      {!isEditModeEnabled && props.reasonCodeAlgorithm.toString()}
+                      {isEditModeEnabled && reasonCodeAlgorithmEditor}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>
+                      {isEditModeEnabled && !baselineScore.valid && (
+                        <FormGroup
+                          helperTextInvalid="Must be greater than zero"
+                          helperTextInvalidIcon={<ExclamationCircleIcon />}
+                          fieldId="characteristic-baselineScore-validation"
+                          validated="error"
+                        />
+                      )}
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>
+                      {isEditModeEnabled && !initialScore.valid && (
+                        <FormGroup
+                          helperTextInvalid="Must be greater than zero"
+                          helperTextInvalidIcon={<ExclamationCircleIcon />}
+                          fieldId="characteristic-initialScore-validation"
+                          validated="error"
+                        />
+                      )}
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </Form>
+          </StackItem>
+        </Stack>
+      </PageSection>
+    </div>
   );
 };

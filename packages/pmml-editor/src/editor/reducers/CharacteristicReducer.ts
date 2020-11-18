@@ -41,17 +41,22 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], Charac
   const attributesReducer = AttributesReducer(service);
 
   const delegateToAttributes = (state: Characteristic[], action: AttributesActions) => {
-    const characteristicIndex = action.payload.characteristicIndex;
-    const attributes: Attribute[] = state[characteristicIndex].Attribute;
-    const newAttributes = attributesReducer(attributes, action);
-    if (newAttributes !== attributes) {
-      const newCharacteristics: Characteristic[] = [];
-      state.forEach(c => newCharacteristics.push(c));
-      newCharacteristics[characteristicIndex] = {
-        ...state[characteristicIndex],
-        Attribute: newAttributes
-      };
-      return newCharacteristics;
+    switch (action.type) {
+      case Actions.Scorecard_AddAttribute:
+      case Actions.Scorecard_UpdateAttribute:
+      case Actions.Scorecard_DeleteAttribute:
+        const characteristicIndex = action.payload.characteristicIndex;
+        const attributes: Attribute[] = state[characteristicIndex].Attribute;
+        const newAttributes = attributesReducer(attributes, action);
+        if (newAttributes !== attributes) {
+          const newCharacteristics: Characteristic[] = [];
+          state.forEach(c => newCharacteristics.push(c));
+          newCharacteristics[characteristicIndex] = {
+            ...state[characteristicIndex],
+            Attribute: newAttributes
+          };
+          return newCharacteristics;
+        }
     }
 
     return state;

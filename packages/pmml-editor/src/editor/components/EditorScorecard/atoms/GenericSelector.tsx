@@ -38,7 +38,7 @@ export const GenericSelector = (props: GenericSelectorProps) => {
   return (
     <Select
       id={props.id}
-      className="generic-selector"
+      className="generic-selector ignore-onclickoutside"
       variant={SelectVariant.single}
       aria-label="Select"
       onToggle={onToggle}

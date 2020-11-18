@@ -82,7 +82,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const onEditOutputField = (index: number) => {
     setEditItemIndex(index);
     setOutputField({ value: (output?.OutputField as OutputField[])[index], valid: true });
-    setActiveOperation(Operation.UPDATE);
+    setActiveOperation(Operation.UPDATE_OUTPUT);
   };
 
   const addOutputField = () => {

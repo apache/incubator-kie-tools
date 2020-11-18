@@ -72,7 +72,7 @@ const DataDictionaryHandler = (props: DataDictionaryHandlerProps) => {
 
   return (
     <>
-      <Button variant="secondary" isDisabled={activeOperation !== Operation.NONE} onClick={handleDataDictionaryToggle}>
+      <Button variant="secondary" onClick={handleDataDictionaryToggle}>
         Set Data Dictionary
       </Button>
       <Modal

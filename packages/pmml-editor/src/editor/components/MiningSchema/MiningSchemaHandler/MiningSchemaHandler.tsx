@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -12,7 +13,6 @@ import {
 import { CloseIcon } from "@patternfly/react-icons";
 import { Operation } from "../../EditorScorecard";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
-import { useState } from "react";
 import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
@@ -82,7 +82,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
 
   return (
     <>
-      <Button variant="secondary" isDisabled={activeOperation !== Operation.NONE} onClick={handleMiningSchemaToggle}>
+      <Button variant="secondary" onClick={handleMiningSchemaToggle}>
         Set Mining Schema
       </Button>
       <Modal

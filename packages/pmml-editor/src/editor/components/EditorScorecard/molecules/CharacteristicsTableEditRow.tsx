@@ -26,6 +26,7 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 
 interface CharacteristicsTableEditRowProps {
+  activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
@@ -37,6 +38,7 @@ interface CharacteristicsTableEditRowProps {
 
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
   const {
+    activeOperation,
     setActiveOperation,
     characteristic,
     viewAttributes,
@@ -57,10 +59,13 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const ref = useOnclickOutside(
     event => {
-      onCommit(name.value, reasonCode, baselineScore);
-      setActiveOperation(Operation.NONE);
+      if (name.valid) {
+        onCommit(name.value, reasonCode, baselineScore);
+      } else {
+        onCancel();
+      }
     },
-    { disabled: !name.valid }
+    { disabled: activeOperation !== Operation.UPDATE_CHARACTERISTIC }
   );
 
   useEffect(() => {
