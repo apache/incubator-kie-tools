@@ -1,0 +1,255 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1100-feel-decimal-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i6ACwPUUEeesLuP4RHs4vA" name="1100-feel-decimal-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1100-feel-decimal-function">
+  <dmn:description>FEEL built-in function 'decimal(n, scale)' in category numeric functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_i7fQgfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_001_af177e63fc_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQhfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_002_f4ed9cd487_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQifUUEeesLuP4RHs4vA" name="tfeel-decimal-function_003_2d50ec7ffc_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQjfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_004_bb6f445d2c_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQkfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_005_55d33eadf6_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQlfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_006_d9661e1d45_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQmfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_007_49f7a22058_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQnfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_008_73e4f1c8b9_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQofUUEeesLuP4RHs4vA" name="tfeel-decimal-function_009_398b94286e_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i7fQpfUUEeesLuP4RHs4vA" name="tfeel-decimal-function_010_4b46e59c8b_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_i7fQk_UUEeesLuP4RHs4vA" name="feel-decimal-function_005_55d33eadf6">
+    <dmn:description>Tests FEEL expression: 'decimal(0, 0)' and expects result: '0 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(0, 0)'?</dmn:question>
+    <dmn:allowedAnswers>0 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQlPUUEeesLuP4RHs4vA" name="feel-decimal-function_005_55d33eadf6" typeRef="tfeel-decimal-function_005_55d33eadf6_Result"/>
+    <dmn:literalExpression id="_i7fQkvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(0, 0)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQl_UUEeesLuP4RHs4vA" name="feel-decimal-function_006_d9661e1d45">
+    <dmn:description>Tests FEEL expression: 'decimal(0.0, 1)' and expects result: '0.0 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(0.0, 1)'?</dmn:question>
+    <dmn:allowedAnswers>0.0 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQmPUUEeesLuP4RHs4vA" name="feel-decimal-function_006_d9661e1d45" typeRef="tfeel-decimal-function_006_d9661e1d45_Result"/>
+    <dmn:literalExpression id="_i7fQlvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(0.0, 1)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_i7fQgPUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.5 Table 62">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_i7fQo_UUEeesLuP4RHs4vA" name="feel-decimal-function_009_398b94286e">
+    <dmn:description>Tests FEEL expression: 'decimal(n:15/7,scale:3)' and expects result: '2.143 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(n:15/7,scale:3)'?</dmn:question>
+    <dmn:allowedAnswers>2.143 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQpPUUEeesLuP4RHs4vA" name="feel-decimal-function_009_398b94286e" typeRef="tfeel-decimal-function_009_398b94286e_Result"/>
+    <dmn:literalExpression id="_i7fQovUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(n:15/7,scale:3)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQp_UUEeesLuP4RHs4vA" name="feel-decimal-function_010_4b46e59c8b">
+    <dmn:description>Tests FEEL expression: 'decimal(n:15/78*2,scale:3)' and expects result: '0.385 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(n:15/78*2,scale:3)'?</dmn:question>
+    <dmn:allowedAnswers>0.385 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQqPUUEeesLuP4RHs4vA" name="feel-decimal-function_010_4b46e59c8b" typeRef="tfeel-decimal-function_010_4b46e59c8b_Result"/>
+    <dmn:literalExpression id="_i7fQpvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(n:15/78*2,scale:3)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQn_UUEeesLuP4RHs4vA" name="feel-decimal-function_008_73e4f1c8b9">
+    <dmn:description>Tests FEEL expression: 'decimal(65.123456, 6)' and expects result: '65.123456 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(65.123456, 6)'?</dmn:question>
+    <dmn:allowedAnswers>65.123456 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQoPUUEeesLuP4RHs4vA" name="feel-decimal-function_008_73e4f1c8b9" typeRef="tfeel-decimal-function_008_73e4f1c8b9_Result"/>
+    <dmn:literalExpression id="_i7fQnvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(65.123456, 6)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQm_UUEeesLuP4RHs4vA" name="feel-decimal-function_007_49f7a22058">
+    <dmn:description>Tests FEEL expression: 'decimal(0.515, 2)' and expects result: '0.52 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(0.515, 2)'?</dmn:question>
+    <dmn:allowedAnswers>0.52 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQnPUUEeesLuP4RHs4vA" name="feel-decimal-function_007_49f7a22058" typeRef="tfeel-decimal-function_007_49f7a22058_Result"/>
+    <dmn:literalExpression id="_i7fQmvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(0.515, 2)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQg_UUEeesLuP4RHs4vA" name="feel-decimal-function_001_af177e63fc">
+    <dmn:description>Tests FEEL expression: 'decimal(1/3, 2)' and expects result: '0.33 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(1/3, 2)'?</dmn:question>
+    <dmn:allowedAnswers>0.33 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQhPUUEeesLuP4RHs4vA" name="feel-decimal-function_001_af177e63fc" typeRef="tfeel-decimal-function_001_af177e63fc_Result"/>
+    <dmn:literalExpression id="_i7fQgvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(1/3, 2)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQj_UUEeesLuP4RHs4vA" name="feel-decimal-function_004_bb6f445d2c">
+    <dmn:description>Tests FEEL expression: 'decimal(2.5, 0)' and expects result: '2 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(2.5, 0)'?</dmn:question>
+    <dmn:allowedAnswers>2 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQkPUUEeesLuP4RHs4vA" name="feel-decimal-function_004_bb6f445d2c" typeRef="tfeel-decimal-function_004_bb6f445d2c_Result"/>
+    <dmn:literalExpression id="_i7fQjvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(2.5, 0)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQi_UUEeesLuP4RHs4vA" name="feel-decimal-function_003_2d50ec7ffc">
+    <dmn:description>Tests FEEL expression: 'decimal(1.5, 0)' and expects result: '2 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(1.5, 0)'?</dmn:question>
+    <dmn:allowedAnswers>2 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQjPUUEeesLuP4RHs4vA" name="feel-decimal-function_003_2d50ec7ffc" typeRef="tfeel-decimal-function_003_2d50ec7ffc_Result"/>
+    <dmn:literalExpression id="_i7fQivUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(1.5, 0)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i7fQh_UUEeesLuP4RHs4vA" name="feel-decimal-function_002_f4ed9cd487">
+    <dmn:description>Tests FEEL expression: 'decimal(1/3, 2.5)' and expects result: '0.33 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'decimal(1/3, 2.5)'?</dmn:question>
+    <dmn:allowedAnswers>0.33 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i7fQiPUUEeesLuP4RHs4vA" name="feel-decimal-function_002_f4ed9cd487" typeRef="tfeel-decimal-function_002_f4ed9cd487_Result"/>
+    <dmn:literalExpression id="_i7fQhvUUEeesLuP4RHs4vA">
+      <dmn:text>decimal(1/3, 2.5)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_i6ACwPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_i7fQkvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQlvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQovUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQpvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQnvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQmvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQgvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQjvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQivUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i7fQhvUUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQk_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQk_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQl_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQl_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQgPUUEeesLuP4RHs4vA" dmnElementRef="_i7fQgPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="133" y="292" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQo_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQo_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQp_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQp_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQn_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQn_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQm_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQm_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQg_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQg_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQj_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQj_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQi_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQi_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i7fQh_UUEeesLuP4RHs4vA" dmnElementRef="_i7fQh_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

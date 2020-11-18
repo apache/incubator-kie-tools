@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:tns="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" name="literal invocation1" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_f909c1d5-36e4-4f71-8392-fe3b14ddb6f7" name="tLoan" isCollection="false">
+    <dmn:itemComponent id="_579041dc-2bad-42b4-9650-b2cf39175ecc" name="amount" isCollection="false">
+      <dmn:typeRef>feel:number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_353c0e6f-b344-451e-944e-bec76817b29a" name="rate" isCollection="false">
+      <dmn:typeRef>feel:number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_c7b4a252-df93-4407-8bef-9d30d94125b6" name="term" isCollection="false">
+      <dmn:typeRef>feel:number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:decision id="d_MonthlyPayment" name="MonthlyPayment">
+    <dmn:extensionElements/>
+    <dmn:variable id="_B3BDAF71-BAD5-437B-B581-0125F9507CC2" name="MonthlyPayment" typeRef="feel:number"/>
+    <dmn:informationRequirement id="i_Loan">
+      <dmn:requiredInput href="#i_Loan"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="i_fee">
+      <dmn:requiredInput href="#i_fee"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="b_PMT">
+      <dmn:requiredKnowledge href="#b_PMT"/>
+    </dmn:knowledgeRequirement>
+    <dmn:literalExpression id="_A8F27F57-3F2B-4264-B91B-458C8C2F7614">
+      <dmn:text>PMT(Loan.amount, Loan.rate, Loan.term)+fee</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="b_PMT" name="PMT">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7B96D811-4DD9-4968-9F2A-59803AB5C4E5" name="PMT" typeRef="feel:number"/>
+    <dmn:encapsulatedLogic id="_562B1D42-7AC4-4244-BDBC-5835AC71F1F5" kind="FEEL">
+      <dmn:formalParameter id="_E6FC0C55-21F8-4958-99E0-036CB692BB81" name="p" typeRef="feel:number"/>
+      <dmn:formalParameter id="_038D1871-1672-4354-923C-1E2726596F76" name="r" typeRef="feel:number"/>
+      <dmn:formalParameter id="_BE13F8DB-34F8-470A-838C-79D24C2CD0D4" name="n" typeRef="feel:number"/>
+      <dmn:literalExpression id="_07E60D98-4790-4FBA-91BD-2663E7FB0B37" expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+        <dmn:text>(p*r/12)/(1-(1+r/12)**-n)</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:inputData id="i_Loan" name="Loan">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1F0AF0E0-F6EA-4F1B-9D8D-BEF02F1DFB0E" name="Loan" typeRef="tns:tLoan"/>
+  </dmn:inputData>
+  <dmn:inputData id="i_fee" name="fee">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D27F1A1F-9E8D-4234-A353-4ED1AF3F894E" name="fee" typeRef="feel:number"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_4868299F-B5A8-4361-88BF-04D9CA4A0720" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_A8F27F57-3F2B-4264-B91B-458C8C2F7614"/>
+          <kie:ComponentWidths dmnElementRef="_07E60D98-4790-4FBA-91BD-2663E7FB0B37"/>
+          <kie:ComponentWidths dmnElementRef="_562B1D42-7AC4-4244-BDBC-5835AC71F1F5"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-d_MonthlyPayment" dmnElementRef="tns:d_MonthlyPayment" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-b_PMT" dmnElementRef="tns:b_PMT" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-i_Loan" dmnElementRef="tns:i_Loan" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-i_fee" dmnElementRef="tns:i_fee" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-i_Loan" dmnElementRef="tns:i_Loan">
+        <di:waypoint x="225" y="225"/>
+        <di:waypoint x="225" y="50"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-i_fee" dmnElementRef="tns:i_fee">
+        <di:waypoint x="400" y="225"/>
+        <di:waypoint x="225" y="50"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-b_PMT" dmnElementRef="tns:b_PMT">
+        <di:waypoint x="50" y="225"/>
+        <di:waypoint x="225" y="50"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

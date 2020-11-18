@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition.Kind;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -87,7 +88,7 @@ public class FunctionDefinitionTest {
         source.setId(new Id(FUNCTION_ID));
         source.setDescription(new Description(DESCRIPTION));
         source.setTypeRef(BuiltInType.BOOLEAN.asQName());
-        source.setKind(FunctionDefinition.Kind.JAVA);
+        source.setKind(Kind.JAVA);
 
         final FunctionDefinition target = source.copy();
 
@@ -95,6 +96,26 @@ public class FunctionDefinitionTest {
         assertNotEquals(FUNCTION_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
-        assertEquals(FunctionDefinition.Kind.JAVA, target.getKind());
+        assertEquals(Kind.JAVA, target.getKind());
+    }
+
+    @Test
+    public void testKindFromValueWithFEEL() {
+        assertEquals(Kind.FEEL, Kind.fromValue("FEEL"));
+    }
+
+    @Test
+    public void testKindFromValueWithJava() {
+        assertEquals(Kind.JAVA, Kind.fromValue("Java"));
+    }
+
+    @Test
+    public void testKindFromValueWithPMML() {
+        assertEquals(Kind.PMML, Kind.fromValue("PMML"));
+    }
+
+    @Test
+    public void testKindFromValueWithDefault() {
+        assertEquals(Kind.FEEL, Kind.fromValue("Something"));
     }
 }

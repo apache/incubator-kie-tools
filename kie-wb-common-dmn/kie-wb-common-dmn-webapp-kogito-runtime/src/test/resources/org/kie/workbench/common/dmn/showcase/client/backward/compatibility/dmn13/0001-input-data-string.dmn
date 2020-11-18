@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/agilepro/dmn-tck" name="0001-input-data-string" id="_0001-input-data-string" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <decision name="Greeting Message" id="d_GreetingMessage">
+        <variable typeRef="string" name="Greeting Message"/>
+        <informationRequirement id="_8c935b50-10b7-426b-80a9-dddb4264b4a9">
+            <requiredInput href="#i_FullName"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"Hello " + Full Name</text>
+        </literalExpression>
+    </decision>
+    <inputData name="Full Name" id="i_FullName">
+        <variable typeRef="string" name="Full Name"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_0001-input-data-string_D1">
+            <dmndi:Size height="650.0" width="650.0"/>
+            <dmndi:DMNShape dmnElementRef="d_GreetingMessage" id="_0001-input-data-string_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="i_FullName" id="_0001-input-data-string_s2">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_8c935b50-10b7-426b-80a9-dddb4264b4a9" id="_0001-input-data-string_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

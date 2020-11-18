@@ -5,14 +5,77 @@
  *
  * @type {{marshall: MainJs.marshall, unmarshall: MainJs.unmarshall}}
  */
-MainJs = {
 
-    mappings: [DC, DI, DMNDI12, DMN12, KIE],
+MainJs = {
+    initializeMappings: function () {
+        function remapDMN12(version, namespace, namespaceDmnDi, namespaceDi) {
+            var dmnMock = JSON.parse(JSON.stringify(DMN12));
+            var dmnDiMock = JSON.parse(JSON.stringify(DMNDI12));
+
+            dmnMock.name = "DMN" + version;
+            dmnMock.defaultElementNamespaceURI = namespace;
+            dmnMock.dependencies = ["DMNDI" + version];
+
+            (dmnMock.typeInfos || []).map(function (typeInfo) {
+                (typeInfo.propertyInfos || []).map(function (propertyInfo) {
+                    if (propertyInfo.name === "dmndi") {
+                        propertyInfo.elementName.namespaceURI = namespaceDmnDi;
+                        propertyInfo.typeInfo = "DMNDI" + version + ".DMNDI";
+                    }
+                });
+            });
+
+            dmnDiMock.name = "DMNDI" + version;
+            dmnDiMock.defaultElementNamespaceURI = namespaceDmnDi;
+
+            (dmnDiMock.elementInfos || []).map(function (elementInfo) {
+                if (elementInfo.elementName === "DMNStyle") {
+                    elementInfo.substitutionHead.namespaceURI = namespaceDi;
+                }
+            });
+
+            return [dmnMock, dmnDiMock];
+        }
+
+        var DMN10 = remapDMN12(
+                "10",
+                "http://www.omg.org/spec/DMN/20130901",
+                "http://www.omg.org/spec/DMN/20130901/DMNDI/",
+                "http://www.omg.org/spec/DMN/20130901/DI/"
+        );
+
+        var DMN11 = remapDMN12(
+                "11",
+                "http://www.omg.org/spec/DMN/20151101/dmn.xsd",
+                "http://www.omg.org/spec/DMN/20151101/DMNDI/",
+                "http://www.omg.org/spec/DMN/20151101/DI/"
+        );
+
+        var DMN13 = remapDMN12(
+                "13",
+                "https://www.omg.org/spec/DMN/20191111/MODEL/",
+                "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+                "https://www.omg.org/spec/DMN/20191111/DI/"
+        );
+
+        return [].concat.apply(
+                [DC, DI, DMNDI12, DMN12, KIE],
+                [DMN10, DMN11, DMN13]
+        );
+    },
+
+    _mappings: [],
+
+    mappings: function initializeMappings() {
+        if (this._mappings.length === 0) {
+            this._mappings = this.initializeMappings();
+        }
+        return this._mappings;
+    },
 
     isJsInteropConstructorsInitialized: false,
 
     initializeJsInteropConstructors: function (constructorsMap) {
-
         if (this.isJsInteropConstructorsInitialized) {
             return;
         }
@@ -24,11 +87,10 @@ MainJs = {
         }
 
         function createNoTypedFunction() {
-            return new Function('return { }');
+            return new Function("return { }");
         }
 
         function createConstructor(value) {
-
             var parsedJson = JSON.parse(value);
             var name = parsedJson["name"];
             var nameSpace = parsedJson["nameSpace"];
@@ -74,22 +136,66 @@ MainJs = {
             }
         }
 
-        console.log('JsInterop constructors successfully generated.');
+        console.log("JsInterop constructors successfully generated.");
     },
 
     unmarshall: function (text, dynamicNamespace, callback) {
+        function patchObjectTypesToDMN12(obj, property) {
+            if (property === "TYPE_NAME") {
+                obj[property] = obj[property]
+                        .replace(/DMN(10|11|13)/, "DMN12")
+                        .replace(/DMNDI(10|11|13)/, "DMNDI12");
+            }
+        }
+
+        function patchObjectNamespaceValuesToDMN12(obj, property) {
+            if (typeof obj[property] === "string") {
+                obj[property] = obj[property]
+                        .replace(
+                                "http://www.omg.org/spec/DMN/20151101/dmn.xsd",
+                                "http://www.omg.org/spec/DMN/20180521/MODEL/"
+                        )
+                        .replace(
+                                /(http|https):\/\/www\.omg\.org\/spec\/DMN\/(20130901|20151101|20191111)/,
+                                "http://www.omg.org/spec/DMN/20180521"
+                        );
+            }
+        }
+
+        function patchParsedModel(obj) {
+            for (var property in obj) {
+                if (obj.hasOwnProperty(property)) {
+                    if (obj[property] !== null && typeof obj[property] === "object") {
+                        patchParsedModel(obj[property]);
+                    } else {
+                        patchObjectTypesToDMN12(obj, property);
+                        patchObjectNamespaceValuesToDMN12(obj, property);
+                    }
+                }
+            }
+        }
+
         // Create Jsonix context
-        var context = new Jsonix.Context(this.mappings);
+        var context = new Jsonix.Context(this.mappings());
 
         // Create unmarshaller
         var unmarshaller = context.createUnmarshaller();
         var toReturn = unmarshaller.unmarshalString(text);
+        var modelURI = toReturn.name.namespaceURI;
+        var isDMN12 = modelURI.match(
+                new RegExp("http://www.omg.org/spec/DMN/20180521/MODEL/", "g")
+        );
+
+        if (!isDMN12) {
+            patchParsedModel(toReturn);
+        }
+
         callback(toReturn);
     },
 
     marshall: function (value, namespacesValues, callback) {
         // Create Jsonix context
-        var context = new Jsonix.Context(this.mappings, {
+        var context = new Jsonix.Context(this.mappings(), {
             namespacePrefixes: namespacesValues
         });
 
@@ -105,4 +211,4 @@ MainJs = {
             callback(toReturn);
         }
     }
-}
+};
