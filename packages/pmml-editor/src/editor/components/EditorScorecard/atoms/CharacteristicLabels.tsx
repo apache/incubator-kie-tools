@@ -16,17 +16,15 @@
 import * as React from "react";
 import { Attribute, Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
-import { CharacteristicLabelsEditMode } from "./CharacteristicLabelsEditMode";
 import { toText } from "../../../reducers";
 
 interface CharacteristicLabelsProps {
   activeCharacteristic: Characteristic;
   dataFields: DataField[];
-  viewAttributes: () => void;
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic, dataFields, viewAttributes } = props;
+  const { activeCharacteristic, dataFields } = props;
 
   return (
     <>
@@ -38,7 +36,6 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
           attributesToTruncatedText(activeCharacteristic.Attribute, dataFields),
           attributesToFullText(activeCharacteristic.Attribute, dataFields)
         )}
-      <CharacteristicLabelsEditMode viewAttributes={viewAttributes} />
     </>
   );
 };

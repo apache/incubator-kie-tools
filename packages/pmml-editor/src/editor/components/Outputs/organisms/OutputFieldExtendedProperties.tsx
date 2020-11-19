@@ -19,11 +19,25 @@ import { Form, FormGroup, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector } from "../../EditorScorecard/atoms";
-import { ValidatedType } from "../../../types";
 
 interface OutputFieldExtendedPropertiesProps {
-  activeOutputField: ValidatedType<OutputField>;
-  setActiveOutputField: (_output: ValidatedType<OutputField>) => void;
+  optype: OpType | undefined;
+  setOptype: (optype: OpType | undefined) => void;
+  targetField: FieldName | undefined;
+  setTargetField: (targetField: FieldName | undefined) => void;
+  feature: ResultFeature | undefined;
+  setFeature: (feature: ResultFeature | undefined) => void;
+  value: any | undefined;
+  setValue: (value: any | undefined) => void;
+  rank: number | undefined;
+  setRank: (rank: number | undefined) => void;
+  rankOrder: RankOrder | undefined;
+  setRankOrder: (rankOrder: RankOrder | undefined) => void;
+  segmentId: string | undefined;
+  setSegmentId: (segmentId: string | undefined) => void;
+  isFinalResult: boolean | undefined;
+  setIsFinalResult: (isFinalResult: boolean | undefined) => void;
+  commit: (outputField: Partial<OutputField>) => void;
 }
 
 const GenericSelectorEditor = (
@@ -36,7 +50,25 @@ const GenericSelectorEditor = (
 };
 
 export const OutputFieldExtendedProperties = (props: OutputFieldExtendedPropertiesProps) => {
-  const { activeOutputField, setActiveOutputField } = props;
+  const {
+    optype,
+    setOptype,
+    targetField,
+    setTargetField,
+    feature,
+    setFeature,
+    value,
+    setValue,
+    rank,
+    setRank,
+    rankOrder,
+    setRankOrder,
+    segmentId,
+    setSegmentId,
+    isFinalResult,
+    setIsFinalResult,
+    commit
+  } = props;
 
   const toNumber = (value: string): number | undefined => {
     if (value === "") {
@@ -52,15 +84,13 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
   const optypeEditor = GenericSelectorEditor(
     "output-optype",
     ["", "categorical", "continuous", "ordinal"],
-    (activeOutputField.value.optype ?? "").toString(),
-    _selection =>
-      setActiveOutputField({
-        ...activeOutputField,
-        value: {
-          ...activeOutputField.value,
-          optype: _selection === "" ? undefined : (_selection as OpType)
-        }
-      })
+    (optype ?? "").toString(),
+    _selection => {
+      setOptype(_selection === "" ? undefined : (_selection as OpType));
+      commit({
+        optype: _selection === "" ? undefined : (_selection as OpType)
+      });
+    }
   );
 
   const featureEditor = GenericSelectorEditor(
@@ -92,43 +122,37 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       "transformedValue",
       "warning"
     ],
-    (activeOutputField.value.feature ?? "").toString(),
-    _selection =>
-      setActiveOutputField({
-        ...activeOutputField,
-        value: {
-          ...activeOutputField.value,
-          feature: _selection === "" ? undefined : (_selection as ResultFeature)
-        }
-      })
+    (feature ?? "").toString(),
+    _selection => {
+      setFeature(_selection === "" ? undefined : (_selection as ResultFeature));
+      commit({
+        feature: _selection === "" ? undefined : (_selection as ResultFeature)
+      });
+    }
   );
 
   const rankOrderEditor = GenericSelectorEditor(
     "output-rankOrder",
     ["", "ascending", "descending"],
-    (activeOutputField.value.rankOrder ?? "").toString(),
-    _selection =>
-      setActiveOutputField({
-        ...activeOutputField,
-        value: {
-          ...activeOutputField.value,
-          rankOrder: _selection === "" ? undefined : (_selection as RankOrder)
-        }
-      })
+    (rankOrder ?? "").toString(),
+    _selection => {
+      setRankOrder(_selection === "" ? undefined : (_selection as RankOrder));
+      commit({
+        rankOrder: _selection === "" ? undefined : (_selection as RankOrder)
+      });
+    }
   );
 
   const isFinalResultEditor = GenericSelectorEditor(
     "output-isFinalResult",
     ["", "true", "false"],
-    (activeOutputField.value.isFinalResult ?? "").toString(),
-    _selection =>
-      setActiveOutputField({
-        ...activeOutputField,
-        value: {
-          ...activeOutputField.value,
-          isFinalResult: _selection === "" ? undefined : Boolean(_selection)
-        }
-      })
+    (isFinalResult ?? "").toString(),
+    _selection => {
+      setIsFinalResult(_selection === "" ? undefined : Boolean(_selection));
+      commit({
+        isFinalResult: _selection === "" ? undefined : Boolean(_selection)
+      });
+    }
   );
 
   return (
@@ -150,14 +174,11 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-targetField"
           name="output-targetField"
           aria-describedby="output-targetField-helper"
-          value={(activeOutputField.value.targetField ?? "").toString()}
-          onChange={e =>
-            setActiveOutputField({
-              ...activeOutputField,
-              value: {
-                ...activeOutputField.value,
-                targetField: e as FieldName
-              }
+          value={(targetField ?? "").toString()}
+          onChange={e => setTargetField(e as FieldName)}
+          onBlur={e =>
+            commit({
+              targetField: targetField
             })
           }
         />
@@ -179,14 +200,11 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-value"
           name="output-value"
           aria-describedby="output-value-helper"
-          value={(activeOutputField.value.value ?? "").toString()}
-          onChange={e =>
-            setActiveOutputField({
-              ...activeOutputField,
-              value: {
-                ...activeOutputField.value,
-                value: e
-              }
+          value={(value ?? "").toString()}
+          onChange={e => setValue(e)}
+          onBlur={e =>
+            commit({
+              value: value
             })
           }
         />
@@ -201,14 +219,11 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-rank"
           name="output-rank"
           aria-describedby="output-rank-helper"
-          value={activeOutputField.value.rank}
-          onChange={e =>
-            setActiveOutputField({
-              ...activeOutputField,
-              value: {
-                ...activeOutputField.value,
-                rank: toNumber(e)
-              }
+          value={rank}
+          onChange={e => setRank(toNumber(e))}
+          onBlur={e =>
+            commit({
+              rank: rank
             })
           }
         />
@@ -230,14 +245,11 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-segmentId"
           name="output-segmentId"
           aria-describedby="output-segmentId-helper"
-          value={activeOutputField.value.segmentId}
-          onChange={e =>
-            setActiveOutputField({
-              ...activeOutputField,
-              value: {
-                ...activeOutputField.value,
-                segmentId: e
-              }
+          value={segmentId}
+          onChange={e => setSegmentId(e)}
+          onBlur={e =>
+            commit({
+              segmentId: segmentId
             })
           }
         />

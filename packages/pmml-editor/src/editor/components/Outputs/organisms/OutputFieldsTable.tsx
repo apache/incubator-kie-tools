@@ -16,7 +16,14 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  DataType,
+  FieldName,
+  OpType,
+  OutputField,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldEditRow, OutputFieldRow } from "../molecules";
 import "./OutputFieldsTable.scss";
 import { Operation } from "../../EditorScorecard";
@@ -29,12 +36,31 @@ interface OutputFieldsTableProps {
   onEditOutputField: (index: number) => void;
   onDeleteOutputField: (index: number) => void;
   activeOutputFieldIndex: number | undefined;
-  activeOutputField: ValidatedType<OutputField>;
-  setActiveOutputField: (_output: ValidatedType<OutputField>) => void;
+  name: ValidatedType<FieldName> | undefined;
+  setName: (name: ValidatedType<FieldName>) => void;
+  dataType: DataType;
+  setDataType: (dataType: DataType) => void;
+  optype: OpType | undefined;
+  setOptype: (optype: OpType | undefined) => void;
+  targetField: FieldName | undefined;
+  setTargetField: (targetField: FieldName | undefined) => void;
+  feature: ResultFeature | undefined;
+  setFeature: (feature: ResultFeature | undefined) => void;
+  value: any | undefined;
+  setValue: (value: any | undefined) => void;
+  rank: number | undefined;
+  setRank: (rank: number | undefined) => void;
+  rankOrder: RankOrder | undefined;
+  setRankOrder: (rankOrder: RankOrder | undefined) => void;
+  segmentId: string | undefined;
+  setSegmentId: (segmentId: string | undefined) => void;
+  isFinalResult: boolean | undefined;
+  setIsFinalResult: (isFinalResult: boolean | undefined) => void;
   outputs: OutputField[];
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
-  onCommit: () => void;
+  onCommitAndClose: () => void;
+  onCommit: (outputField: Partial<OutputField>) => void;
   onCancel: () => void;
 }
 
@@ -45,11 +71,30 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     onEditOutputField,
     onDeleteOutputField,
     activeOutputFieldIndex,
-    activeOutputField,
-    setActiveOutputField,
+    name,
+    setName,
+    dataType,
+    setDataType,
+    optype,
+    setOptype,
+    targetField,
+    setTargetField,
+    feature,
+    setFeature,
+    value,
+    setValue,
+    rank,
+    setRank,
+    rankOrder,
+    setRankOrder,
+    segmentId,
+    setSegmentId,
+    isFinalResult,
+    setIsFinalResult,
     outputs,
     validateOutputFieldName,
     viewExtendedProperties,
+    onCommitAndClose,
     onCommit,
     onCancel
   } = props;
@@ -73,18 +118,43 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   };
 
   return (
-    <Form>
+    <Form
+      onSubmit={e => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
       <section>
         {outputs.map((o, index) => {
           if (activeOutputFieldIndex === index) {
             return (
               <OutputFieldEditRow
                 key={index}
+                activeOperation={activeOperation}
                 activeOutputFieldIndex={index}
-                activeOutputField={activeOutputField}
-                setActiveOutputField={setActiveOutputField}
+                name={name}
+                setName={setName}
+                dataType={dataType}
+                setDataType={setDataType}
+                optype={optype}
+                setOptype={setOptype}
+                targetField={targetField}
+                setTargetField={setTargetField}
+                feature={feature}
+                setFeature={setFeature}
+                value={value}
+                setValue={setValue}
+                rank={rank}
+                setRank={setRank}
+                rankOrder={rankOrder}
+                setRankOrder={setRankOrder}
+                segmentId={segmentId}
+                setSegmentId={setSegmentId}
+                isFinalResult={isFinalResult}
+                setIsFinalResult={setIsFinalResult}
                 validateOutputName={_name => onValidateOutputFieldName(index, _name)}
                 viewExtendedProperties={viewExtendedProperties}
+                onCommitAndClose={onCommitAndClose}
                 onCommit={onCommit}
                 onCancel={onCancel}
               />
@@ -94,13 +164,18 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
               <OutputFieldRow
                 key={index}
                 activeOutputFieldIndex={index}
-                activeOutputField={o}
+                name={o.name}
+                dataType={o.dataType}
+                optype={o.optype}
+                targetField={o.targetField}
+                feature={o.feature}
+                value={o.value}
+                rank={o.rank}
+                rankOrder={o.rankOrder}
+                segmentId={o.segmentId}
+                isFinalResult={o.isFinalResult}
                 onEditOutputField={() => onEditOutputField(index)}
                 onDeleteOutputField={() => onDelete(index)}
-                isDisabled={
-                  !(activeOutputFieldIndex === undefined || activeOutputFieldIndex === index) ||
-                  activeOperation !== Operation.NONE
-                }
               />
             );
           }
@@ -109,11 +184,31 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
           <div key={undefined} ref={addOutputRowRef}>
             <OutputFieldEditRow
               key={"add"}
+              activeOperation={activeOperation}
               activeOutputFieldIndex={undefined}
-              activeOutputField={activeOutputField}
-              setActiveOutputField={setActiveOutputField}
+              name={name}
+              setName={setName}
+              dataType={dataType}
+              setDataType={setDataType}
+              optype={optype}
+              setOptype={setOptype}
+              targetField={targetField}
+              setTargetField={setTargetField}
+              feature={feature}
+              setFeature={setFeature}
+              value={value}
+              setValue={setValue}
+              rank={rank}
+              setRank={setRank}
+              rankOrder={rankOrder}
+              setRankOrder={setRankOrder}
+              segmentId={segmentId}
+              setSegmentId={setSegmentId}
+              isFinalResult={isFinalResult}
+              setIsFinalResult={setIsFinalResult}
               validateOutputName={_name => onValidateOutputFieldName(undefined, _name)}
               viewExtendedProperties={viewExtendedProperties}
+              onCommitAndClose={onCommitAndClose}
               onCommit={onCommit}
               onCancel={onCancel}
             />

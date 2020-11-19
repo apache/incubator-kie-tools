@@ -21,11 +21,16 @@
 
 }
 
+.editable {
+  cursor: pointer;
+}
+
 .editable:hover {
   box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
 }
 
 .editing {
+  cursor: auto;
   box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
   border-left-color: var(--pf-global--active-color--100);
   border-left-width: var(--pf-global--BorderWidth--l);

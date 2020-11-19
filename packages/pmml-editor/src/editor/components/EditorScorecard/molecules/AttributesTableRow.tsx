@@ -35,8 +35,11 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     <article
       className={`attribute-item attribute-item-n${index} editable`}
       tabIndex={0}
+      onClick={e => onEdit()}
       onKeyDown={e => {
         if (e.key === "Enter") {
+          e.preventDefault();
+          e.stopPropagation();
           onEdit();
         }
       }}
@@ -46,7 +49,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           <pre>{toText(attribute.predicate, dataFields)}</pre>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <AttributeLabels activeAttribute={attribute} viewAttribute={onEdit} />
+          <AttributeLabels activeAttribute={attribute} />
         </SplitItem>
         <SplitItem>
           <AttributesTableAction onDelete={onDelete} />

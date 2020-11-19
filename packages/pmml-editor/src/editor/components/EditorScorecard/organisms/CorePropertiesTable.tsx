@@ -205,6 +205,8 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === "Enter") {
+          e.preventDefault();
+          e.stopPropagation();
           onEdit();
         } else if (e.key === "Escape") {
           cancelEdit();
@@ -221,7 +223,12 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
             </TextContent>
           </StackItem>
           <StackItem>
-            <Form>
+            <Form
+              onSubmit={e => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+            >
               <table className="core-properties__table">
                 <thead>
                   <tr>

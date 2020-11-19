@@ -17,17 +17,9 @@ import { HeaderTitle } from "../../Header/atoms";
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
-import { OutputsHandler } from "../organisms";
+import { OutputsHandler } from "../../Outputs/organisms";
 import { Operation } from "../../EditorScorecard";
-import {
-  DataType,
-  FieldName,
-  MiningSchema,
-  OpType,
-  Output,
-  RankOrder,
-  ResultFeature
-} from "@kogito-tooling/pmml-editor-marshaller";
+import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 
 interface EditorHeaderProps {
@@ -39,19 +31,7 @@ interface EditorHeaderProps {
   miningSchema?: MiningSchema;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
-  commit: (
-    index: number | undefined,
-    name: FieldName | undefined,
-    dataType: DataType | undefined,
-    optype: OpType | undefined,
-    targetField: FieldName | undefined,
-    feature: ResultFeature | undefined,
-    value: any | undefined,
-    rank: number | undefined,
-    rankOrder: RankOrder | undefined,
-    segmentId: string | undefined,
-    isFinalResult: boolean | undefined
-  ) => void;
+  commit: (index: number | undefined, outputField: OutputField) => void;
 }
 
 export const EditorHeader = (props: EditorHeaderProps) => {

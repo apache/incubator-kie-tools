@@ -15,6 +15,7 @@
  */
 import * as React from "react";
 import { Button, Split, SplitItem, TextContent, Title, Toolbar, ToolbarContent } from "@patternfly/react-core";
+import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 
 interface AttributesToolbarProps {
   viewOverview: () => void;
@@ -43,6 +44,16 @@ export const AttributesToolbar = (props: AttributesToolbarProps) => {
           <SplitItem isFilled={true} />
           <SplitItem>
             <Button onClick={e => onAddAttribute()}>Add attribute</Button>
+          </SplitItem>
+          <SplitItem>
+            <Button
+              variant="primary"
+              onClick={e => onViewOverview(e)}
+              icon={<ArrowAltCircleLeftIcon />}
+              iconPosition="left"
+            >
+              Done
+            </Button>
           </SplitItem>
         </Split>
       </ToolbarContent>

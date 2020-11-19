@@ -27,18 +27,47 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import "./OutputFieldRow.scss";
-import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputFieldRowEditModeAction, OutputLabelsEditMode } from "../atoms";
+import {
+  DataType,
+  FieldName,
+  OpType,
+  OutputField,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
+import { OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
+import useOnclickOutside from "react-cool-onclickoutside";
+import { Operation } from "../../EditorScorecard";
 
 interface OutputFieldEditRowProps {
+  activeOperation: Operation;
   activeOutputFieldIndex: number | undefined;
-  activeOutputField: ValidatedType<OutputField>;
-  setActiveOutputField: (_output: ValidatedType<OutputField>) => void;
+  name: ValidatedType<FieldName> | undefined;
+  setName: (name: ValidatedType<FieldName>) => void;
+  dataType: DataType;
+  setDataType: (dataType: DataType) => void;
+  optype: OpType | undefined;
+  setOptype: (optype: OpType | undefined) => void;
+  targetField: FieldName | undefined;
+  setTargetField: (targetField: FieldName | undefined) => void;
+  feature: ResultFeature | undefined;
+  setFeature: (feature: ResultFeature | undefined) => void;
+  value: any | undefined;
+  setValue: (value: any | undefined) => void;
+  rank: number | undefined;
+  setRank: (rank: number | undefined) => void;
+  rankOrder: RankOrder | undefined;
+  setRankOrder: (rankOrder: RankOrder | undefined) => void;
+  segmentId: string | undefined;
+  setSegmentId: (segmentId: string | undefined) => void;
+  isFinalResult: boolean | undefined;
+  setIsFinalResult: (isFinalResult: boolean | undefined) => void;
   validateOutputName: (name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
-  onCommit: () => void;
+  onCommitAndClose: () => void;
+  onCommit: (outputField: Partial<OutputField>) => void;
   onCancel: () => void;
 }
 
@@ -64,11 +93,31 @@ const dataTypes = [
 
 export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   const {
+    activeOperation,
     activeOutputFieldIndex,
-    activeOutputField,
-    setActiveOutputField,
+    name,
+    setName,
+    dataType,
+    setDataType,
+    optype,
+    setOptype,
+    targetField,
+    setTargetField,
+    feature,
+    setFeature,
+    value,
+    setValue,
+    rank,
+    setRank,
+    rankOrder,
+    setRankOrder,
+    segmentId,
+    setSegmentId,
+    isFinalResult,
+    setIsFinalResult,
     validateOutputName,
     viewExtendedProperties,
+    onCommitAndClose,
     onCommit,
     onCancel
   } = props;
@@ -78,16 +127,31 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
     setIsTypeSelectOpen(isOpen);
   };
 
-  const onSelectType = (event: any, selection: any, isPlaceholder: boolean) => {
-    setActiveOutputField({
-      ...activeOutputField,
-      value: { ...activeOutputField.value, dataType: isPlaceholder ? undefined : selection }
-    });
-    setIsTypeSelectOpen(false);
-  };
+  const ref = useOnclickOutside(
+    event => {
+      if (name?.valid) {
+        onCommitAndClose();
+      } else {
+        onCancel();
+      }
+    },
+    {
+      disabled: activeOperation !== Operation.UPDATE_OUTPUT && activeOperation !== Operation.CREATE_OUTPUT,
+      eventTypes: ["click"]
+    }
+  );
 
   return (
-    <article className={`output-item output-item-n${activeOutputFieldIndex}`}>
+    <article
+      ref={ref}
+      className={`output-item output-item-n${activeOutputFieldIndex} editable editing`}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === "Escape") {
+          onCancel();
+        }
+      }}
+    >
       <Stack hasGutter={true}>
         <StackItem>
           <Split hasGutter={true}>
@@ -98,21 +162,28 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                 isRequired={true}
                 helperTextInvalid="Name must be unique and present."
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
-                validated={activeOutputField.valid ? "default" : "error"}
+                validated={name?.valid ? "default" : "error"}
               >
                 <TextInput
                   type="text"
                   id="output-name"
                   name="output-name"
                   aria-describedby="output-name-helper"
-                  value={activeOutputField.value.name.toString()}
-                  validated={activeOutputField.valid ? "default" : "error"}
+                  value={name?.value?.toString() ?? ""}
+                  validated={name?.valid ? "default" : "error"}
                   autoFocus={true}
                   onChange={e => {
-                    setActiveOutputField({
-                      value: { ...activeOutputField.value, name: e as FieldName },
+                    setName({
+                      value: e as FieldName,
                       valid: validateOutputName(e)
                     });
+                  }}
+                  onBlur={e => {
+                    if (name?.valid) {
+                      onCommit({
+                        name: name?.value as FieldName
+                      });
+                    }
                   }}
                 />
               </FormGroup>
@@ -124,10 +195,17 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   name="output-dataType"
                   aria-label="Select Input"
                   aria-describedby="output-dataType-helper"
+                  className="ignore-onclickoutside"
                   variant={SelectVariant.single}
                   onToggle={typeToggle}
-                  onSelect={onSelectType}
-                  selections={activeOutputField.value.dataType}
+                  onSelect={(event: any, selection: any, isPlaceholder: boolean) => {
+                    setIsTypeSelectOpen(false);
+                    setDataType(isPlaceholder ? undefined : selection);
+                    onCommit({
+                      dataType: isPlaceholder ? undefined : selection
+                    });
+                  }}
+                  selections={dataType}
                   isOpen={isTypeSelectOpen}
                   placeholder="Type"
                   menuAppendTo={"parent"}
@@ -138,13 +216,6 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                 </Select>
               </FormGroup>
             </SplitItem>
-            <SplitItem>
-              <OutputFieldRowEditModeAction
-                onCommit={onCommit}
-                onCancel={onCancel}
-                disableCommit={!validateOutputName(activeOutputField.value.name.toString())}
-              />
-            </SplitItem>
           </Split>
         </StackItem>
         <StackItem>
@@ -152,9 +223,24 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
             <SplitItem>
               <FormGroup label="Properties" fieldId="output-labels-helper">
                 <OutputLabelsEditMode
-                  activeOutputField={activeOutputField}
-                  setActiveOutputField={setActiveOutputField}
+                  optype={optype}
+                  setOptype={setOptype}
+                  targetField={targetField}
+                  setTargetField={setTargetField}
+                  feature={feature}
+                  setFeature={setFeature}
+                  value={value}
+                  setValue={setValue}
+                  rank={rank}
+                  setRank={setRank}
+                  rankOrder={rankOrder}
+                  setRankOrder={setRankOrder}
+                  segmentId={segmentId}
+                  setSegmentId={setSegmentId}
+                  isFinalResult={isFinalResult}
+                  setIsFinalResult={setIsFinalResult}
                   viewExtendedProperties={viewExtendedProperties}
+                  commit={onCommit}
                 />
               </FormGroup>
             </SplitItem>

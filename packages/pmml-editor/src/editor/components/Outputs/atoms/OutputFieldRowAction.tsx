@@ -15,24 +15,31 @@
  */
 import * as React from "react";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { EditAltIcon, TrashIcon } from "@patternfly/react-icons";
+import { TrashIcon } from "@patternfly/react-icons";
 
 interface OutputsTableActionProps {
-  disabled: boolean;
-  onEditDataField: () => void;
-  onDeleteDataField: () => void;
+  onDeleteOutputField: () => void;
 }
 
 export const OutputFieldRowAction = (props: OutputsTableActionProps) => {
-  const { disabled, onEditDataField, onDeleteDataField } = props;
+  const onDelete = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    props.onDeleteOutputField();
+  };
 
   return (
     <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
       <FlexItem>
-        <Button variant="plain" onClick={onEditDataField} isDisabled={disabled}>
-          <EditAltIcon />
-        </Button>
-        <Button variant="plain" onClick={onDeleteDataField} isDisabled={disabled}>
+        <Button
+          variant="plain"
+          onClick={onDelete}
+          onKeyDown={e => {
+            if (e.key === "Enter") {
+              onDelete(e);
+            }
+          }}
+        >
           <TrashIcon />
         </Button>
       </FlexItem>

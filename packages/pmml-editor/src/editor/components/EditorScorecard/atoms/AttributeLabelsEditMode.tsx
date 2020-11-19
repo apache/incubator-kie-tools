@@ -36,7 +36,7 @@ export const AttributeLabelsEditMode = (props: AttributeLabelsEditModeProps) => 
         href="#outline"
         icon={<ArrowAltCircleRightIcon />}
         onClick={e => {
-          e.preventDefault();
+          e.nativeEvent.stopImmediatePropagation();
           viewAttribute();
         }}
       >

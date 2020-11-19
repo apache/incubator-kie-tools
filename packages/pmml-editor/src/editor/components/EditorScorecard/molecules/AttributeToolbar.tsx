@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Split, SplitItem, TextContent, Title, Toolbar, ToolbarContent } from "@patternfly/react-core";
+import { Button, Split, SplitItem, TextContent, Title, Toolbar, ToolbarContent } from "@patternfly/react-core";
+import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 
 interface AttributeToolbarProps {
   viewOverview: () => void;
@@ -38,13 +39,23 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
     <Toolbar id="attribute-toolbar" data-testid="attribute-toolbar">
       <ToolbarContent>
         <Split hasGutter={true} style={{ width: "100%" }}>
-          <SplitItem>
+          <SplitItem isFilled={true}>
             <TextContent>
               <Title size="lg" headingLevel="h1">
                 <a onClick={e => onViewOverview(e)}>Characteristics</a>&nbsp;/&nbsp;
                 <a onClick={e => onViewAttributes(e)}>Attributes</a>&nbsp;/&nbsp;Attribute
               </Title>
             </TextContent>
+          </SplitItem>
+          <SplitItem>
+            <Button
+              variant="primary"
+              onClick={e => onViewAttributes(e)}
+              icon={<ArrowAltCircleLeftIcon />}
+              iconPosition="left"
+            >
+              Done
+            </Button>
           </SplitItem>
         </Split>
       </ToolbarContent>

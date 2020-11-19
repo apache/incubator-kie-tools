@@ -13,21 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from "react";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicLabel } from "./CharacteristicLabel";
 
-interface AttributeLabelsProps {
-  activeAttribute: Attribute;
-}
-
-export const AttributeLabels = (props: AttributeLabelsProps) => {
-  const { activeAttribute } = props;
-
-  return (
-    <>
-      {activeAttribute.reasonCode && CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
-      {activeAttribute.partialScore && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
-    </>
-  );
-};
+export * from "./OutputFieldRow";
+export * from "./OutputFieldEditRow";

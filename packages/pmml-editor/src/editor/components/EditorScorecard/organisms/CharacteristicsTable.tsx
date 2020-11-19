@@ -115,7 +115,12 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   };
 
   return (
-    <Form>
+    <Form
+      onSubmit={e => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
       <section>
         {characteristics.map(ic => {
           if (editItemIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC) {
@@ -126,6 +131,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 setActiveOperation={setActiveOperation}
                 characteristic={ic}
                 validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                viewAttributes={() => onViewAttributes(ic.index)}
                 onCommit={(_name, _reasonCode, _baselineScore) =>
                   onCommit(ic.index, _name, _reasonCode, _baselineScore)
                 }
@@ -139,7 +145,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 key={ic.index}
                 characteristic={ic}
                 dataFields={dataFields}
-                viewAttributes={() => onViewAttributes(ic.index)}
                 onEdit={() => onEdit(ic.index)}
                 onDelete={() => onDelete(ic.index)}
               />
@@ -154,6 +159,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               setActiveOperation={setActiveOperation}
               characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
               validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
+              viewAttributes={() => onViewAttributes(undefined)}
               onCommit={(_name, _reasonCode, _baselineScore) => onCommit(undefined, _name, _reasonCode, _baselineScore)}
               onCancel={onCancel}
             />

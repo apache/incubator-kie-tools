@@ -63,7 +63,12 @@ export const AttributesTable = (props: AttributesTableProps) => {
   };
 
   return (
-    <Form>
+    <Form
+      onSubmit={e => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
       <section>
         {attributes.map((attribute, index) => {
           return (

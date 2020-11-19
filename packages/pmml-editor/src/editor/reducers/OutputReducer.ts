@@ -15,22 +15,13 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { DataType, FieldName, OpType, Output, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface OutputPayload {
   [Actions.AddOutput]: {
     readonly modelIndex: number;
-    readonly name: FieldName;
-    readonly dataType: DataType;
-    readonly optype: OpType | undefined;
-    readonly targetField: FieldName | undefined;
-    readonly feature: ResultFeature | undefined;
-    readonly value: any | undefined;
-    readonly rank: number | undefined;
-    readonly rankOrder: RankOrder | undefined;
-    readonly segmentId: string | undefined;
-    readonly isFinalResult: boolean | undefined;
+    readonly outputField: OutputField;
   };
   [Actions.DeleteOutput]: {
     readonly modelIndex: number;
@@ -48,16 +39,16 @@ export const OutputReducer: HistoryAwareReducer<Output, OutputActions> = (
       case Actions.AddOutput:
         return service.mutate(state, `models[${action.payload.modelIndex}].Output`, draft => {
           draft.OutputField.push({
-            name: action.payload.name,
-            dataType: action.payload.dataType,
-            optype: action.payload.optype,
-            targetField: action.payload.targetField,
-            feature: action.payload.feature,
-            value: action.payload.value,
-            rank: action.payload.rank,
-            rankOrder: action.payload.rankOrder,
-            segmentId: action.payload.segmentId,
-            isFinalResult: action.payload.isFinalResult
+            name: action.payload.outputField.name,
+            dataType: action.payload.outputField.dataType,
+            optype: action.payload.outputField.optype,
+            targetField: action.payload.outputField.targetField,
+            feature: action.payload.outputField.feature,
+            value: action.payload.outputField.value,
+            rank: action.payload.outputField.rank,
+            rankOrder: action.payload.outputField.rankOrder,
+            segmentId: action.payload.outputField.segmentId,
+            isFinalResult: action.payload.outputField.isFinalResult
           });
         });
       case Actions.DeleteOutput:

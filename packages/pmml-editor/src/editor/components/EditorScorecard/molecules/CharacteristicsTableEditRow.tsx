@@ -15,9 +15,9 @@
  */
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { FormGroup, Split, SplitItem, TextInput } from "@patternfly/react-core";
+import { FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import { CharacteristicsTableAction } from "../atoms";
+import { CharacteristicLabelsEditMode, CharacteristicsTableAction } from "../atoms";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
 import { ValidatedType } from "../../../types";
@@ -30,13 +30,22 @@ interface CharacteristicsTableEditRowProps {
   setActiveOperation: (operation: Operation) => void;
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
+  viewAttributes: () => void;
   onCommit: (name: string | undefined, reasonCode: string | undefined, baselineScore: number | undefined) => void;
   onCancel: () => void;
   onDelete?: () => void;
 }
 
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
-  const { activeOperation, characteristic, validateCharacteristicName, onCommit, onCancel, onDelete } = props;
+  const {
+    activeOperation,
+    characteristic,
+    validateCharacteristicName,
+    viewAttributes,
+    onCommit,
+    onCancel,
+    onDelete
+  } = props;
 
   const index = characteristic.index;
 
@@ -93,63 +102,76 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
         }
       }}
     >
-      <Split hasGutter={true}>
-        <SplitItem>
-          <FormGroup
-            label="Name"
-            isRequired={true}
-            fieldId="characteristic-form-name-helper"
-            helperTextInvalid="Name must be unique and present"
-            helperTextInvalidIcon={<ExclamationCircleIcon />}
-            validated={name.valid ? "default" : "error"}
-          >
-            <TextInput
-              type="text"
-              id="characteristic-name"
-              name="characteristic-name"
-              aria-describedby="characteristic-name-helper"
-              value={name.value ?? ""}
-              validated={name.valid ? "default" : "error"}
-              autoFocus={true}
-              onChange={e =>
-                setName({
-                  value: e,
-                  valid: validateCharacteristicName(e)
-                })
-              }
-            />
+      <Stack hasGutter={true}>
+        <StackItem>
+          <Split hasGutter={true}>
+            <SplitItem>
+              <FormGroup
+                label="Name"
+                isRequired={true}
+                fieldId="characteristic-form-name-helper"
+                helperTextInvalid="Name must be unique and present"
+                helperTextInvalidIcon={<ExclamationCircleIcon />}
+                validated={name.valid ? "default" : "error"}
+              >
+                <TextInput
+                  type="text"
+                  id="characteristic-name"
+                  name="characteristic-name"
+                  aria-describedby="characteristic-name-helper"
+                  value={name.value ?? ""}
+                  validated={name.valid ? "default" : "error"}
+                  autoFocus={true}
+                  onChange={e =>
+                    setName({
+                      value: e,
+                      valid: validateCharacteristicName(e)
+                    })
+                  }
+                />
+              </FormGroup>
+            </SplitItem>
+            <SplitItem>
+              <FormGroup label="Reason code" fieldId="characteristic-reason-code-helper">
+                <TextInput
+                  type="text"
+                  id="characteristic-reason-code"
+                  name="characteristic-reason-code"
+                  aria-describedby="characteristic-reason-code-helper"
+                  value={reasonCode ?? ""}
+                  onChange={e => setReasonCode(e)}
+                />
+              </FormGroup>
+            </SplitItem>
+            <SplitItem isFilled={true}>
+              <FormGroup
+                label="Baseline score"
+                fieldId="characteristic-baseline-score-helper"
+                style={{ width: "12em" }}
+              >
+                <TextInput
+                  type="number"
+                  id="characteristic-baseline-score"
+                  name="characteristic-baseline-score"
+                  aria-describedby="characteristic-baseline-score-helper"
+                  value={baselineScore ?? ""}
+                  onChange={e => setBaselineScore(toNumber(e))}
+                />
+              </FormGroup>
+            </SplitItem>
+            {onDelete && (
+              <SplitItem>
+                <CharacteristicsTableAction onDelete={onDelete} />
+              </SplitItem>
+            )}
+          </Split>
+        </StackItem>
+        <StackItem>
+          <FormGroup label="Attributes" fieldId="output-labels-helper">
+            <CharacteristicLabelsEditMode viewAttributes={viewAttributes} />
           </FormGroup>
-        </SplitItem>
-        <SplitItem>
-          <FormGroup label="Reason code" fieldId="characteristic-reason-code-helper">
-            <TextInput
-              type="text"
-              id="characteristic-reason-code"
-              name="characteristic-reason-code"
-              aria-describedby="characteristic-reason-code-helper"
-              value={reasonCode ?? ""}
-              onChange={e => setReasonCode(e)}
-            />
-          </FormGroup>
-        </SplitItem>
-        <SplitItem isFilled={true}>
-          <FormGroup label="Baseline score" fieldId="characteristic-baseline-score-helper" style={{ width: "12em" }}>
-            <TextInput
-              type="number"
-              id="characteristic-baseline-score"
-              name="characteristic-baseline-score"
-              aria-describedby="characteristic-baseline-score-helper"
-              value={baselineScore ?? ""}
-              onChange={e => setBaselineScore(toNumber(e))}
-            />
-          </FormGroup>
-        </SplitItem>
-        {onDelete && (
-          <SplitItem>
-            <CharacteristicsTableAction onDelete={onDelete} />
-          </SplitItem>
-        )}
-      </Split>
+        </StackItem>
+      </Stack>
     </article>
   );
 };
