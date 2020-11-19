@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+
 import {
+  EditorFactory,
   EditorContext,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType
 } from "../api";
-import { EditorFactory } from "../api";
 import { KogitoEditorEnvelope } from "./KogitoEditorEnvelope";
 import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
@@ -30,6 +31,7 @@ import { Envelope } from "@kogito-tooling/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
+import "./styles.scss"
 
 /**
  * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.

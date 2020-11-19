@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { Bullseye, Page, Spinner, Title } from "@patternfly/react-core";
-import "./styles.scss";
 import { useEditorEnvelopeI18nContext } from "../i18n";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 
