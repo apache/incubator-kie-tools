@@ -58,8 +58,10 @@ declare global {
   }
 }
 
+
 export class GwtEditorWrapperFactory implements EditorFactory {
   constructor(
+    private readonly args = { shouldLoadResourcesDynamically: true },
     private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
     private readonly gwtStateControlService = new GwtStateControlService(),
@@ -101,6 +103,10 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         return Promise.resolve();
       });
     });
+
+    if (!this.args.shouldLoadResourcesDynamically) {
+      return gwtFinishedLoading;
+    }
 
     return Promise.all(languageData.resources.map(resource => this.loadResource(resource))).then(() => {
       return gwtFinishedLoading;

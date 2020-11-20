@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-import { Rect } from "../api";
+import { Rect } from "./Rect";
 
 export interface GuidedTourEnvelopeApi {
   receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;

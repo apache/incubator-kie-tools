@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File as UploadFile, newFile } from "@kogito-tooling/editor/dist/embedded";
+import { File as UploadFile, newFile } from "@kogito-tooling/editor/dist/channel";
 import {
   Brand,
   Bullseye,

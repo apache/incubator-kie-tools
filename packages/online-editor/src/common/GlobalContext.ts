@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kogito-tooling/editor/dist/embedded";
+import { File } from "@kogito-tooling/editor/dist/channel";
 import * as React from "react";
 import { GithubService } from "./GithubService";
 import { Routes } from "./Routes";
