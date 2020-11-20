@@ -200,12 +200,12 @@ public class FunctionDefinition extends Expression implements HasExpression {
         }
 
         public static Kind fromValue(final String value) {
-            for (Kind kind : Kind.values()) {
+            for (final Kind kind : Kind.values()) {
                 if (Objects.equals(kind.value, value)) {
                     return kind;
                 }
             }
-            throw new IllegalArgumentException("FunctionKind [" + value + "] is not supported.");
+            return FEEL;
         }
 
         public static FunctionDefinition.Kind determineFromString(final String code) {

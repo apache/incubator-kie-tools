@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_0b25a236-f7a2-4845-b41e-73ab3e5ebd41" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.34; 1.0" id="_0b25a236-f7a2-4845-b41e-73ab3e5ebd41" name="and-or" namespace="http://www.trisotech.com/definitions/_0b25a236-f7a2-4845-b41e-73ab3e5ebd41" triso:logoChoice="Default">
+	<itemDefinition id="tBoolList" isCollection="true" name="tBoolList">
+		<typeRef>feel:boolean</typeRef>
+	</itemDefinition>
+	<decision id="_a1f1c9c1-11b3-4fee-b26a-fbbd69014e78" name="and1">
+		<variable name="and1" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_efe62f90-4da2-45ff-9298-741d39b24e3b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_c780afbe-9905-419c-aed4-04b6158e0074"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_457ae2e3-529f-4b75-9d0d-f01c9cb23796"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>all([a&gt;b,a&gt;c])</text>
+		</literalExpression>
+	</decision>
+	<decision id="_734e64a3-2733-453a-af1b-dce9f6995edb" name="and2">
+		<variable name="and2" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredDecision href="#_065cfe42-f9c4-4218-801d-09a111945833"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>all(literalList)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_7b646a38-8b7a-441a-a807-17f7700087b8" name="or1">
+		<variable name="or1" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_efe62f90-4da2-45ff-9298-741d39b24e3b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_c780afbe-9905-419c-aed4-04b6158e0074"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_457ae2e3-529f-4b75-9d0d-f01c9cb23796"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>any([a&gt;b,a&gt;c])</text>
+		</literalExpression>
+	</decision>
+	<decision id="_30439de7-21fd-4e54-800c-b94e1f714f0d" name="or2">
+		<variable name="or2" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredDecision href="#_065cfe42-f9c4-4218-801d-09a111945833"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>any(literalList)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_065cfe42-f9c4-4218-801d-09a111945833" name="literalList">
+		<variable name="literalList" typeRef="tns:tBoolList"/>
+		<informationRequirement>
+			<requiredInput href="#_efe62f90-4da2-45ff-9298-741d39b24e3b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_c780afbe-9905-419c-aed4-04b6158e0074"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_457ae2e3-529f-4b75-9d0d-f01c9cb23796"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>[a&gt;b,a&gt;c]</text>
+		</literalExpression>
+	</decision>
+	<inputData id="_efe62f90-4da2-45ff-9298-741d39b24e3b" name="a">
+		<variable name="a" typeRef="feel:number"/>
+	</inputData>
+	<inputData id="_c780afbe-9905-419c-aed4-04b6158e0074" name="b">
+		<variable name="b" typeRef="feel:number"/>
+	</inputData>
+	<inputData id="_457ae2e3-529f-4b75-9d0d-f01c9cb23796" name="c">
+		<variable name="c" typeRef="feel:number"/>
+	</inputData>
+</definitions>

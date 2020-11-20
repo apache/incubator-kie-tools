@@ -17,6 +17,7 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
 
         try {
             String url = repository.getUrl();
-            final String alias = getRepositoryAlias(url);
+            final String alias = getRepositoryAlias(url) + "_" + LocalTime.now().toString();
             Credentials credentials = repository.getCredentials();
             String username = null;
             String password = null;

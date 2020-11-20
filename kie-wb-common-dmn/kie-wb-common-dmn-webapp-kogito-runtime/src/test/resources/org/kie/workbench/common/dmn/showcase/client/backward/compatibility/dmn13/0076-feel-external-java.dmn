@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0076-feel-external-java" name="0076-feel-external-java" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL external Java functions</description>
+
+    <decision name="boxed_001" id="_boxed_001">
+        <variable name="boxed_001"/>
+        <context>
+            <contextEntry>
+                <variable name="maxDouble"/>
+                <functionDefinition kind="Java">
+                    <formalParameter typeRef="number" name="d1"/>
+                    <formalParameter typeRef="number" name="d2"/>
+                    <context>
+                        <contextEntry>
+                            <variable name="class"/>
+                            <literalExpression>
+                                <text>"java.lang.Math"</text>
+                            </literalExpression>
+                        </contextEntry>
+                        <contextEntry>
+                            <variable name="method signature"/>
+                            <literalExpression>
+                                <text>"max(double, double)"</text>
+                            </literalExpression>
+                        </contextEntry>
+                    </context>
+                </functionDefinition>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>maxDouble(123,456)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_001" id="_literal_001">
+        <variable name="literal_001"/>
+        <context>
+            <contextEntry>
+                <variable name="cos"/>
+                <literalExpression>
+                    <text>function(n1) external {java:{class:"java.lang.Math",method signature:"cos(double)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>cos(123)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="incorrect_001" id="_incorrect_001">
+        <variable name="incorrect_001"/>
+        <context>
+            <contextEntry>
+                <variable name="mathFoo"/>
+                <literalExpression>
+                    <text>function(n1) external {java:{class:"java.lang.Math",method signature:"foo(double)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>mathFoo(123)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="incorrect_002" id="_incorrect_002">
+        <variable name="incorrect_002"/>
+        <context>
+            <contextEntry>
+                <variable name="fooValueOf"/>
+                <literalExpression>
+                    <text>function(n1) external {java:{class:"java.lang.Foo",method signature:"valueOf(double)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>fooValueOf(123)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="incorrect_003" id="_incorrect_003">
+        <variable name="incorrect_003"/>
+        <context>
+            <contextEntry>
+                <variable name="mathMaxString"/>
+                <literalExpression>
+                    <text>function(s1, s2) external {java:{class:"java.lang.Math",method signature:"max(java.lang.String, java.lang.String)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>mathMaxString("123", "456")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_002" id="_literal_002">
+        <variable name="literal_002"/>
+        <context>
+            <contextEntry>
+                <variable name="maxDouble"/>
+                <literalExpression>
+                    <text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(double,double)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>maxDouble(123.45,456.78)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_003" id="_literal_003">
+        <variable name="literal_003"/>
+        <context>
+            <contextEntry>
+                <variable name="max"/>
+                <literalExpression>
+                    <text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(double,double)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>max(123,456)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_004" id="_literal_004">
+        <variable name="literal_004"/>
+        <context>
+            <contextEntry>
+                <variable name="max"/>
+                <literalExpression>
+                    <text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(int,int)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>max(123,456)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_005" id="_literal_005">
+        <variable name="literal_005"/>
+        <context>
+            <contextEntry>
+                <variable name="valueOf"/>
+                <literalExpression>
+                    <text>function(s1) external {java:{class:"java.lang.Short",method signature:"valueOf(short)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>valueOf(123)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_006" id="_literal_006">
+        <variable name="literal_006"/>
+        <context>
+            <contextEntry>
+                <variable name="valueOf"/>
+                <literalExpression>
+                    <text>function(b1) external {java:{class:"java.lang.Byte",method signature:"valueOf(byte)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>valueOf(3)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_007" id="_literal_007">
+        <variable name="literal_007"/>
+        <context>
+            <contextEntry>
+                <variable name="valueOf"/>
+                <literalExpression>
+                    <text>function(c1) external {java:{class:"java.lang.String",method signature:"valueOf(char)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>valueOf("a")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_007_a" id="_literal_007_a">
+        <variable name="literal_007_a"/>
+        <context>
+            <contextEntry>
+                <variable name="valueOf"/>
+                <literalExpression>
+                    <text>function(c1) external {java:{class:"java.lang.String",method signature:"valueOf(char)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>valueOf("abc")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_008" id="_literal_008">
+        <variable name="literal_008"/>
+        <context>
+            <contextEntry>
+                <variable name="max"/>
+                <literalExpression>
+                    <text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(long,long)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>max(123,456)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_009" id="_literal_009">
+        <variable name="literal_009"/>
+        <context>
+            <contextEntry>
+                <variable name="max"/>
+                <literalExpression>
+                    <text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(float,float)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>max(123.46,456.78)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_010" id="_literal_010">
+        <variable name="literal_010"/>
+        <context>
+            <contextEntry>
+                <variable name="valueOf"/>
+                <literalExpression>
+                    <text>function(n1) external {java:{class:"java.lang.Integer",method signature:"valueOf(java.lang.String)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>valueOf("123")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_011" id="_literal_011">
+        <variable name="literal_011"/>
+        <context>
+            <contextEntry>
+                <variable name="valueOf"/>
+                <literalExpression>
+                    <text>function(n1) external {java:{class:"java.lang.Float",method signature:"valueOf(java.lang.String)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>valueOf("1234.56")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="literal_012" id="_literal_012">
+        <variable name="literal_012"/>
+        <context>
+            <contextEntry>
+                <variable name="valueOf"/>
+                <literalExpression>
+                    <text>function(n1) external {java:{class:"java.lang.Double",method signature:"valueOf(java.lang.String)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>valueOf("1234.56")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="varargs_001" id="_varargs_001">
+        <variable name="varargs_001"/>
+        <context>
+            <contextEntry>
+                <variable name="format"/>
+                <literalExpression>
+                    <text>function(s1, n1) external {java:{class:"java.lang.String",method signature:"format(java.lang.String, [Ljava.lang.Object;)"}}</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>format("foo %s", "bar")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+</definitions>

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/dmn-tck/tck" name="feel-math" id="_feel-math" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <decision name="Decision1" id="d_1">
+        <variable typeRef="number" name="Decision1"/>
+        <literalExpression>
+            <text>10+5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision2" id="d_2">
+        <variable typeRef="number" name="Decision2"/>
+        <literalExpression>
+            <text>-10+-5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision3" id="d_3">
+        <variable typeRef="number" name="Decision3"/>
+        <literalExpression>
+            <text>(-10)+(-5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision4" id="d_4">
+        <variable typeRef="number" name="Decision4"/>
+        <literalExpression>
+            <text>10-5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision5" id="d_5">
+        <variable typeRef="number" name="Decision5"/>
+        <literalExpression>
+            <text>-10--5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision6" id="d_6">
+        <variable typeRef="number" name="Decision6"/>
+        <literalExpression>
+            <text>(-10)-(-5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision7" id="d_7">
+        <variable typeRef="number" name="Decision7"/>
+        <literalExpression>
+            <text>(10+20)-(-5+3)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision8" id="d_8">
+        <variable typeRef="number" name="Decision8"/>
+        <literalExpression>
+            <text>10*5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision9" id="d_9">
+        <variable typeRef="number" name="Decision9"/>
+        <literalExpression>
+            <text>-10*-5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision10" id="d_10">
+        <variable typeRef="number" name="Decision10"/>
+        <literalExpression>
+            <text>(-10)*(-5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision11" id="d_11">
+        <variable typeRef="number" name="Decision11"/>
+        <literalExpression>
+            <text>(10+5)*(-5*3)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision12" id="d_12">
+        <variable typeRef="number" name="Decision12"/>
+        <literalExpression>
+            <text>10/5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision13" id="d_13">
+        <variable typeRef="number" name="Decision13"/>
+        <literalExpression>
+            <text>-10/-5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision14" id="d_14">
+        <variable typeRef="number" name="Decision14"/>
+        <literalExpression>
+            <text>(-10)/(-5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision15" id="d_15">
+        <variable typeRef="number" name="Decision15"/>
+        <literalExpression>
+            <text>(10+20)/(-5*3)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision16" id="d_16">
+        <variable typeRef="number" name="Decision16"/>
+        <literalExpression>
+            <text>(10+20)/0</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision17" id="d_17">
+        <variable typeRef="number" name="Decision17"/>
+        <literalExpression>
+            <text>10**5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision18" id="d_18">
+        <variable typeRef="number" name="Decision18"/>
+        <literalExpression>
+            <text>10**-5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision19" id="d_19">
+        <variable typeRef="number" name="Decision19"/>
+        <literalExpression>
+            <text>(5+2)**5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision20" id="d_20">
+        <variable typeRef="number" name="Decision20"/>
+        <literalExpression>
+            <text>5+2**5</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision21" id="d_21">
+        <variable typeRef="number" name="Decision21"/>
+        <literalExpression>
+            <text>5+2**5+3</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision22" id="d_22">
+        <variable typeRef="number" name="Decision22"/>
+        <literalExpression>
+            <text>5+2**(5+3)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision23" id="d_23">
+        <variable typeRef="number" name="Decision23"/>
+        <literalExpression>
+            <text>10+null</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision24" id="d_24">
+        <variable typeRef="number" name="Decision24"/>
+        <literalExpression>
+            <text>null + 10</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision25" id="d_25">
+        <variable typeRef="number" name="Decision25"/>
+        <literalExpression>
+            <text>10 - null</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision26" id="d_26">
+        <variable typeRef="number" name="Decision26"/>
+        <literalExpression>
+            <text>null - 10</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision27" id="d_27">
+        <variable typeRef="number" name="Decision27"/>
+        <literalExpression>
+            <text>10 * null</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision28" id="d_28">
+        <variable typeRef="number" name="Decision28"/>
+        <literalExpression>
+            <text>null * 10</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision29" id="d_29">
+        <variable typeRef="number" name="Decision29"/>
+        <literalExpression>
+            <text>10 / null</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision30" id="d_30">
+        <variable typeRef="number" name="Decision30"/>
+        <literalExpression>
+            <text>null / 10</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision31" id="d_31">
+        <variable typeRef="number" name="Decision31"/>
+        <literalExpression>
+            <text>10 + 20 / -5 - 3</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision32" id="d_32">
+        <variable typeRef="number" name="Decision32"/>
+        <literalExpression>
+            <text>10 + 20 / (-5 - 3)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision33" id="d_33">
+        <variable typeRef="number" name="Decision33"/>
+        <literalExpression>
+            <text>1.2*10**3</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_feel-math_D2">
+            <dmndi:DMNShape dmnElementRef="d_18" id="_feel-math_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_19" id="_feel-math_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_16" id="_feel-math_s3">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_17" id="_feel-math_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_25" id="_feel-math_s5">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="478.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_26" id="_feel-math_s6">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="571.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_23" id="_feel-math_s7">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="664.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_24" id="_feel-math_s8">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="757.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_21" id="_feel-math_s9">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_22" id="_feel-math_s10">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_2" id="_feel-math_s11">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_1" id="_feel-math_s12">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_20" id="_feel-math_s13">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="478.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_4" id="_feel-math_s14">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="571.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_3" id="_feel-math_s15">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="664.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_6" id="_feel-math_s16">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="757.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_5" id="_feel-math_s17">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_8" id="_feel-math_s18">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_7" id="_feel-math_s19">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_9" id="_feel-math_s20">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_29" id="_feel-math_s21">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="478.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_27" id="_feel-math_s22">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="571.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_28" id="_feel-math_s23">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="664.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_14" id="_feel-math_s24">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="757.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_15" id="_feel-math_s25">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_12" id="_feel-math_s26">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_13" id="_feel-math_s27">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_10" id="_feel-math_s28">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_32" id="_feel-math_s29">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="478.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_11" id="_feel-math_s30">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="571.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_33" id="_feel-math_s31">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="664.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_30" id="_feel-math_s32">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="757.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_31" id="_feel-math_s33">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="106.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

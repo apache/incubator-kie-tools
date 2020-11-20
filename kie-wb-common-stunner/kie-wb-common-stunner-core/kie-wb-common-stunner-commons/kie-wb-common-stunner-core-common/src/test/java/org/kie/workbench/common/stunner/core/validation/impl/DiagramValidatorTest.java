@@ -189,14 +189,14 @@ public class DiagramValidatorTest {
             validationsConsumer.accept(Collections.singleton(beanViolation));
             return null;
         }).when(modelValidator).validate(eq(graph1.intermNode),
-                                         any());
+                                         any(Consumer.class));
 
         //graph violation
         RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
-        when(graphTestHandler.getRuleManager().evaluate(any(),
-                                                        any())).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+        when(graphTestHandler.getRuleManager().evaluate(any(RuleSet.class),
+                                                        any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
 
         tested.validate(diagram,
                         violations -> assertElementError(violations,

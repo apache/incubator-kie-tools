@@ -57,7 +57,7 @@ public class DMNMarshallerImportsService {
         final DMN12UnmarshallCallback jsCallback = dmn12 -> {
             final JSITDefinitions dmnDefinitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
             callback.onSuccess(modelToStunnerConverter
-                                       .makeNodes(dmnDefinitions, new HashMap<>(), (a, b) -> {/* Nothing. */})
+                                       .makeNodes(dmnDefinitions, new HashMap<>(), false, (a, b) -> {/* Nothing. */})
                                        .stream()
                                        .map(e -> getDRGElement(e.getNode()))
                                        .filter(Optional::isPresent)

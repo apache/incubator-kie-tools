@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -42,7 +41,6 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
-import org.uberfire.client.mvp.LockRequiredEvent;
 
 import static java.util.Optional.ofNullable;
 
@@ -184,8 +182,6 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
 
         private DecisionNavigatorItem item;
 
-        private final Event<LockRequiredEvent> locker;
-
         @Inject
         public TreeItem(final @Named("span") HTMLElement textContent,
                         final HTMLInputElement inputText,
@@ -193,8 +189,7 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
                         final HTMLUListElement subItems,
                         final @Named("i") HTMLElement save,
                         final @Named("i") HTMLElement edit,
-                        final @Named("i") HTMLElement remove,
-                        final Event<LockRequiredEvent> locker) {
+                        final @Named("i") HTMLElement remove) {
             this.textContent = textContent;
             this.inputText = inputText;
             this.icon = icon;
@@ -202,7 +197,6 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
             this.save = save;
             this.edit = edit;
             this.remove = remove;
-            this.locker = locker;
         }
 
         @EventHandler("icon")
@@ -240,12 +234,10 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
 
         @EventHandler("remove")
         public void onRemoveClick(final ClickEvent event) {
-            locker.fire(new LockRequiredEvent());
             getItem().onRemove();
         }
 
         void save() {
-            locker.fire(new LockRequiredEvent());
             getItem().setLabel(inputText.value);
             getElement().getClassList().remove("editing");
             updateLabel();

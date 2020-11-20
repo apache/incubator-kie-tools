@@ -63,6 +63,7 @@ public class NodeEntriesFactory {
 
     public List<NodeEntry> makeNodes(final JSITDefinitions definitions,
                                      final Map<JSITImport, JSITDefinitions> importDefinitions,
+                                     final boolean isDMNDIPresent,
                                      final BiConsumer<String, HasComponentWidths> componentWidthsConsumer) {
 
         final List<JSIDMNDiagram> dmnDiagrams = definitions.getDMNDI().getDMNDiagram();
@@ -85,7 +86,7 @@ public class NodeEntriesFactory {
                     .filter(n -> Objects.equals(n.getDiagramId(), diagramId))
                     .collect(Collectors.toList());
 
-            nodeConnector.connect(dmnDiagram, edges, associations, nodes);
+            nodeConnector.connect(dmnDiagram, edges, associations, nodes, isDMNDIPresent);
         });
 
         return nodeEntries;

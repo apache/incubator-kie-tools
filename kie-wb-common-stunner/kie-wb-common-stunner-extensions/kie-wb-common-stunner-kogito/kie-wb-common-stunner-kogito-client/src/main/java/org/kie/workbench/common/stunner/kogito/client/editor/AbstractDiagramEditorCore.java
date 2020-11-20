@@ -124,38 +124,31 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
     public P makeStunnerEditorProxy() {
         final P proxy = makeEditorProxy();
         proxy.setContentSupplier(() -> makeDiagramResourceImpl(getDiagram()));
-        proxy.setHashCodeSupplier(() -> getHashCodeSupplier());
+        proxy.setHashCodeSupplier(() -> {
+            if (null == getDiagram()) {
+                return 0;
+            }
+            int hash = getDiagram().hashCode();
+            if (null == getCanvasHandler() ||
+                    null == getCanvasHandler().getCanvas() ||
+                    null == getCanvasHandler().getCanvas().getShapes()) {
+                return hash;
+            }
+            Collection<Shape> collectionOfShapes = getCanvasHandler().getCanvas().getShapes();
+            ArrayList<Shape> shapes = new ArrayList<>();
+            shapes.addAll(collectionOfShapes);
+            shapes.sort((a, b) -> (a.getShapeView().getShapeX() == b.getShapeView().getShapeX()) ?
+                    (int) Math.round(a.getShapeView().getShapeY() - b.getShapeView().getShapeY()) :
+                    (int) Math.round(a.getShapeView().getShapeX() - b.getShapeView().getShapeX()));
+            for (Shape shape : shapes) {
+                hash = HashUtil.combineHashCodes(hash,
+                                                 Double.hashCode(shape.getShapeView().getShapeX()),
+                                                 Double.hashCode(shape.getShapeView().getShapeY()));
+            }
+            return hash;
+        });
 
         return proxy;
-    }
-
-    protected int getHashCodeSupplier(){
-        return HashUtil.combineHashCodes(getDiagramHashCode(), getShapesHashCode());
-    }
-
-    protected int getDiagramHashCode() {
-        return getDiagram().hashCode();
-    }
-
-    protected int getShapesHashCode() {
-        int hash = 0;
-        if (null == getCanvasHandler() ||
-                null == getCanvasHandler().getCanvas() ||
-                null == getCanvasHandler().getCanvas().getShapes()) {
-            return hash;
-        }
-        Collection<Shape> collectionOfShapes = getCanvasHandler().getCanvas().getShapes();
-        ArrayList<Shape> shapes = new ArrayList<>();
-        shapes.addAll(collectionOfShapes);
-        shapes.sort((a, b) -> (a.getShapeView().getShapeX() == b.getShapeView().getShapeX()) ?
-                (int) Math.round(a.getShapeView().getShapeY() - b.getShapeView().getShapeY()) :
-                (int) Math.round(a.getShapeView().getShapeX() - b.getShapeView().getShapeX()));
-        for (Shape shape : shapes) {
-            hash = HashUtil.combineHashCodes(hash,
-                                             Double.hashCode(shape.getShapeView().getShapeX()),
-                                             Double.hashCode(shape.getShapeView().getShapeY()));
-        }
-        return hash;
     }
 
     public P makeXmlEditorProxy() {

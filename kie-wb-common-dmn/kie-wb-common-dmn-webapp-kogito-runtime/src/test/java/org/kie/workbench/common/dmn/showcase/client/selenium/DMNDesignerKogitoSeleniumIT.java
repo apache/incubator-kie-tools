@@ -16,31 +16,19 @@
 
 package org.kie.workbench.common.dmn.showcase.client.selenium;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.showcase.client.common.DMNDesignerBaseIT;
 import org.kie.workbench.common.dmn.showcase.client.model.DecisionTableSeleniumModel;
 import org.kie.workbench.common.dmn.showcase.client.model.ListSeleniumModel;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.ContextMenuXPathLocator;
@@ -48,18 +36,9 @@ import org.kie.workbench.common.dmn.showcase.client.selenium.locator.DecisionNav
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.EditorXPathLocator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.PropertiesPanelXPathLocator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.XPathLocator;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -71,7 +50,7 @@ import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.util.Predicate;
 
 import static java.lang.String.format;
-import static org.apache.commons.io.FileUtils.copyFile;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DC;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMN;
@@ -87,29 +66,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
  * Selenium test for DMN Designer - client site marshalling version
  * The Designer is represented by single webpage - index.html
  */
-public class DMNDesignerKogitoSeleniumIT {
+public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DMNDesignerKogitoSeleniumIT.class);
+    private static final String DECISION_NAVIGATOR_EXPANDED = "qe-docks-bar-expanded-W";
 
-    private static final String SET_CONTENT_TEMPLATE =
-            "gwtEditorBeans.get(\"DMNDiagramEditor\").get().setContent(\"\",\"%s\")";
-
-    private static final String GET_CONTENT_TEMPLATE =
-            "return gwtEditorBeans.get(\"DMNDiagramEditor\").get().getContent()";
-
-    private static final String INDEX_HTML = "target/kie-wb-common-dmn-webapp-kogito-runtime/index.html";
-    private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
-
-    // panels
-    private static final String DECISON_NAVIGATOR_EXPAND = "qe-docks-item-W-org.kie.dmn.decision.navigator";
-    private static final String DECISON_NAVIGATOR_EXPANDED = "qe-docks-bar-expanded-W";
-    private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
-
-    // decision navigator
     private static final String NOT_PRESENT_IN_NAVIGATOR = "'%s' was not present in the decision navigator";
-
-    private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
-    private static final String SCREENSHOTS_DIR = System.getProperty("org.kie.dmn.kogito.screenshots.dir");
 
     private static final Map<String, String> NAMESPACES = new Maps.Builder<String, String>()
             .put(DMN.getPrefix(), DMN.getUri())
@@ -117,61 +78,6 @@ public class DMNDesignerKogitoSeleniumIT {
             .put(DC.getPrefix(), DC.getUri())
             .put(KIE.getPrefix(), KIE.getUri())
             .build();
-
-    private WebDriver driver;
-
-    private WebElement decisionNavigatorExpandButton;
-
-    private WebElement propertiesPanel;
-
-    @BeforeClass
-    public static void setupClass() {
-        WebDriverManager.firefoxdriver().setup();
-    }
-
-    @Before
-    public void openDMNDesigner() {
-
-        final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
-        driver = new FirefoxDriver(firefoxOptions);
-        driver.manage().window().maximize();
-
-        driver.get(INDEX_HTML_PATH);
-
-        decisionNavigatorExpandButton = waitOperation()
-                .withMessage("Presence of decision navigator expand button is prerequisite for all tests")
-                .until(visibilityOfElementLocated(className(DECISON_NAVIGATOR_EXPAND)));
-
-        propertiesPanel = waitOperation()
-                .withMessage("Presence of properties panel expand button is prerequisite for all tests")
-                .until(visibilityOfElementLocated(className(PROPERTIES_PANEL)));
-    }
-
-    private final File screenshotDirectory = initScreenshotDirectory();
-
-    @Rule
-    public TestWatcher takeScreenShotAndCleanUp = new TestWatcher() {
-        @Override
-        protected void failed(Throwable e, Description description) {
-            final File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            final String testClassName = description.getTestClass().getSimpleName();
-            final String testMethodName = description.getMethodName();
-            final String filename = testClassName + "_" + testMethodName;
-            try {
-                copyFile(screenshotFile, new File(screenshotDirectory, filename + ".png"));
-            } catch (IOException ioe) {
-                LOG.error("Unable to take screenshot", ioe);
-            }
-        }
-
-        @Override
-        protected void finished(Description description) {
-            if (driver != null) {
-                driver.quit();
-            }
-        }
-    };
 
     @Test
     public void testNewDiagram() throws Exception {
@@ -1821,6 +1727,25 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    public void testDMNModelWithoutDMNDI_KOGITO3696() throws Exception {
+        final String expected = loadResource("KOGITO-3696 (DMN model without DMNDI - expected).xml");
+        final String fixture = loadResource("KOGITO-3696 (DMN model without DMNDI - fixture).xml");
+        final List<String> ignoredAttributes = asList("id", "dmnElementRef");
+
+        setContent(fixture);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .and(expected)
+                .ignoreComments()
+                .ignoreWhitespace()
+                .withAttributeFilter(attr -> !ignoredAttributes.contains(attr.getName()))
+                .areIdentical();
+    }
+
+    @Test
     public void testDecisionTableInputClauseConstraints_KOGITO369() throws Exception {
         final String expected = loadResource("KOGITO-369 (Decision Table Input Clause constraints).xml");
         setContent(expected);
@@ -1961,7 +1886,7 @@ public class DMNDesignerKogitoSeleniumIT {
 
         final ListSeleniumModel listModel = new ListSeleniumModel();
         listModel.setName("Decision-1");
-        listModel.setItems(Arrays.asList("1", "2"));
+        listModel.setItems(asList("1", "2"));
         appendBoxedListExpressionItem(listModel, "3");
 
         final String actual = getContent();
@@ -2487,34 +2412,9 @@ public class DMNDesignerKogitoSeleniumIT {
         collapseDecisionNavigatorDock();
     }
 
-    private void setContent(final String xml) {
-        ((JavascriptExecutor) driver).executeScript(String.format(SET_CONTENT_TEMPLATE, xml));
-        waitOperation()
-                .withMessage("Designer was not loaded")
-                .until(visibilityOfElementLocated(className("uf-multi-page-editor")));
-    }
-
     private <T> T twice(final Supplier<T> supplier) {
         supplier.get();
         return supplier.get();
-    }
-
-    private String getContent() {
-        final Object result = ((JavascriptExecutor) driver).executeScript(String.format(GET_CONTENT_TEMPLATE));
-        assertThat(result).isInstanceOf(String.class);
-        return (String) result;
-    }
-
-    /**
-     * Use this for loading DMN model placed in src/test/resources
-     * @param filename
-     * @return Text content of the file
-     * @throws IOException
-     */
-    private String loadResource(final String filename) throws IOException {
-        return IOUtils.readLines(this.getClass().getResourceAsStream(filename), StandardCharsets.UTF_8)
-                .stream()
-                .collect(Collectors.joining(""));
     }
 
     private void expandDecisionNavigatorDock() {
@@ -2540,13 +2440,9 @@ public class DMNDesignerKogitoSeleniumIT {
     private void collapseDecisionNavigatorDock() {
         final WebElement expandedDecisionNavigator = waitOperation()
                 .withMessage("Unable to locate expanded decision navigator dock")
-                .until(visibilityOfElementLocated(className(DECISON_NAVIGATOR_EXPANDED)));
+                .until(visibilityOfElementLocated(className(DECISION_NAVIGATOR_EXPANDED)));
 
         expandedDecisionNavigator.findElement(className("fa-chevron-left")).click();
-    }
-
-    private WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
     }
 
     private WebElement getEditor() {
@@ -2566,23 +2462,5 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private ExpectedCondition<WebElement> element(final XPathLocator xpathLocator) {
         return visibilityOfElementLocated(xpath(xpathLocator.getXPathLocator()));
-    }
-
-    private File initScreenshotDirectory() {
-        if (SCREENSHOTS_DIR == null) {
-            throw new IllegalStateException(
-                    "Property org.kie.dmn.kogito.screenshots.dir (where screenshot taken by WebDriver will be put) was null");
-        }
-        File scd = new File(SCREENSHOTS_DIR);
-        if (!scd.exists()) {
-            boolean mkdirSuccess = scd.mkdir();
-            if (!mkdirSuccess) {
-                throw new IllegalStateException("Creation of screenshots dir failed " + scd);
-            }
-        }
-        if (!scd.canWrite()) {
-            throw new IllegalStateException("The screenshotDir must be writable" + scd);
-        }
-        return scd;
     }
 }

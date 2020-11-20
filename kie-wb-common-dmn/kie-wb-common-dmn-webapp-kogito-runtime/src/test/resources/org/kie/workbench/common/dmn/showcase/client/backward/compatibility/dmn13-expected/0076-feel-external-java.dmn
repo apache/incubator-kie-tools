@@ -1,0 +1,553 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.montera.com.au/spec/DMN/0076-feel-external-java" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i9fboPUUEeesLuP4RHs4vA" name="0076-feel-external-java" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.montera.com.au/spec/DMN/0076-feel-external-java">
+  <dmn:description>FEEL external Java functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:decision id="_boxed_001" name="boxed_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_8AF8F4E0-74B2-47F9-B73E-7EC89E41D1F9" name="boxed_001"/>
+    <dmn:context id="_2BB16D15-8C56-4FA5-A93F-632BCBBA9311">
+      <dmn:contextEntry>
+        <dmn:variable id="_6C2E31A8-128E-47DB-B4AE-6481A59C1871" name="maxDouble"/>
+        <dmn:functionDefinition id="_866F54A0-44F2-4C55-B7CB-390BD1C90E32" kind="Java">
+          <dmn:formalParameter id="_E0A85320-809A-4B32-A2E5-510FA4E67BCC" name="d1" typeRef="number"/>
+          <dmn:formalParameter id="_0BA6C07D-382E-4620-A119-939C78BC169E" name="d2" typeRef="number"/>
+          <dmn:context id="_F659BF2A-C541-4ACB-9356-5F2336176B83">
+            <dmn:contextEntry>
+              <dmn:variable id="_3203A7DD-4CA5-4A31-B44A-D66EEE9FFC59" name="class"/>
+              <dmn:literalExpression id="_14956DD8-7275-4942-945F-0D2CF730208A">
+                <dmn:text>"java.lang.Math"</dmn:text>
+              </dmn:literalExpression>
+            </dmn:contextEntry>
+            <dmn:contextEntry>
+              <dmn:variable id="_50397A4C-63B5-446C-8B4D-4C3EA1EDB755" name="method signature"/>
+              <dmn:literalExpression id="_578D07DF-D0B7-4154-8083-8B3A90F77F63">
+                <dmn:text>"max(double, double)"</dmn:text>
+              </dmn:literalExpression>
+            </dmn:contextEntry>
+          </dmn:context>
+        </dmn:functionDefinition>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_BE400998-313F-4641-8B84-B4AB01014FFE">
+          <dmn:text>maxDouble(123,456)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_001" name="literal_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2E346304-F910-45AA-B59C-5A797E0D6D28" name="literal_001"/>
+    <dmn:context id="_39022ECD-8860-43A8-A670-658D43916164">
+      <dmn:contextEntry>
+        <dmn:variable id="_06F07A21-2591-46CF-9894-26C09C50D798" name="cos"/>
+        <dmn:literalExpression id="_51DF53C8-4690-4AB3-AAB3-B86273EC1D19">
+          <dmn:text>function(n1) external {java:{class:"java.lang.Math",method signature:"cos(double)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_6B1C7553-A650-4050-9825-07BBCE7C4E07">
+          <dmn:text>cos(123)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_incorrect_001" name="incorrect_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D825490E-D102-4363-9751-984D603C4758" name="incorrect_001"/>
+    <dmn:context id="_8D550C99-D67A-453C-A015-641BB6B767D6">
+      <dmn:contextEntry>
+        <dmn:variable id="_7A4108CB-E5E0-44C6-AB93-BFC4F5655824" name="mathFoo"/>
+        <dmn:literalExpression id="_88C53DC1-C46F-49BC-B13C-E6674AB1C0DC">
+          <dmn:text>function(n1) external {java:{class:"java.lang.Math",method signature:"foo(double)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_D7D5DAE9-22C5-4D43-9883-8478EEABF938">
+          <dmn:text>mathFoo(123)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_incorrect_002" name="incorrect_002">
+    <dmn:extensionElements/>
+    <dmn:variable id="_52896242-6C46-42A9-946B-5BAF62BA35E1" name="incorrect_002"/>
+    <dmn:context id="_965C2E57-C088-4CD1-8C29-C50678262134">
+      <dmn:contextEntry>
+        <dmn:variable id="_09C36EE5-39BC-4F0D-923D-641DEDC3FD17" name="fooValueOf"/>
+        <dmn:literalExpression id="_7BC785A6-7931-4ABA-B0F0-0246CE449134">
+          <dmn:text>function(n1) external {java:{class:"java.lang.Foo",method signature:"valueOf(double)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_608D05B2-E252-4D79-8D01-5BFAB216A813">
+          <dmn:text>fooValueOf(123)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_incorrect_003" name="incorrect_003">
+    <dmn:extensionElements/>
+    <dmn:variable id="_784269AC-9F84-48D6-B6A9-2A6C0A2FA250" name="incorrect_003"/>
+    <dmn:context id="_278A8BB9-67C4-4A42-9B20-2F8100870E45">
+      <dmn:contextEntry>
+        <dmn:variable id="_C19A1FC1-2DA3-444D-AB29-FC5019447FC8" name="mathMaxString"/>
+        <dmn:literalExpression id="_2B7C76D4-7B10-466D-9EF9-E4EE33052A51">
+          <dmn:text>function(s1, s2) external {java:{class:"java.lang.Math",method signature:"max(java.lang.String, java.lang.String)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_53BF3944-78C5-4195-9F02-DB605525E95C">
+          <dmn:text>mathMaxString("123", "456")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_002" name="literal_002">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6210812C-2C27-4B1E-95B9-0D447638C9E9" name="literal_002"/>
+    <dmn:context id="_40AF2EB0-99F6-4F58-BB15-3E69B84F85B9">
+      <dmn:contextEntry>
+        <dmn:variable id="_C2E4891A-BB66-41B2-84D5-058412BF9A30" name="maxDouble"/>
+        <dmn:literalExpression id="_DC8B432D-F91F-46A4-BCC6-9C6D85101073">
+          <dmn:text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(double,double)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_5561210D-89E7-4DDC-97C0-783E0DE8B092">
+          <dmn:text>maxDouble(123.45,456.78)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_003" name="literal_003">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0B11D4D9-F28E-434D-A9E3-4E7248CE1DF6" name="literal_003"/>
+    <dmn:context id="_FEB5C14D-3100-46C3-BB41-674BE65E01C4">
+      <dmn:contextEntry>
+        <dmn:variable id="_E619D3CA-0CF8-4E4A-997C-25646910F6BB" name="max"/>
+        <dmn:literalExpression id="_2679DDC7-1F2C-4753-B729-DEED54A64A1B">
+          <dmn:text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(double,double)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_D9B65FB4-6676-4494-9183-127012B14B07">
+          <dmn:text>max(123,456)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_004" name="literal_004">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0A74594C-3FF9-4524-8896-D7614CCE46F0" name="literal_004"/>
+    <dmn:context id="_93616FC0-573B-41A4-8A7C-606DEEF4BBEE">
+      <dmn:contextEntry>
+        <dmn:variable id="_48990CE1-F824-4F7A-8FE1-AA63FB2D0C64" name="max"/>
+        <dmn:literalExpression id="_36628616-BBCC-4E8C-A71D-AC2753AED652">
+          <dmn:text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(int,int)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_1460EAB8-53D2-4C8A-A0C8-A841F0F447D1">
+          <dmn:text>max(123,456)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_005" name="literal_005">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5975628C-A674-466E-95C8-B66BC3CDF21D" name="literal_005"/>
+    <dmn:context id="_9E681893-2A19-41C9-83BB-6C2C8A23F4CF">
+      <dmn:contextEntry>
+        <dmn:variable id="_ED7033DE-3F48-41D6-91C7-0F979F1FD91E" name="valueOf"/>
+        <dmn:literalExpression id="_6CCABBB1-1CBE-4BDB-A9A9-8CFC90A56FA0">
+          <dmn:text>function(s1) external {java:{class:"java.lang.Short",method signature:"valueOf(short)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_4AFA880C-21A5-4CFD-84E3-F109D477E0A6">
+          <dmn:text>valueOf(123)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_006" name="literal_006">
+    <dmn:extensionElements/>
+    <dmn:variable id="_31E0AE22-CA0F-486A-B6EC-258812D11405" name="literal_006"/>
+    <dmn:context id="_59989E37-9357-4D83-ACF7-723185672398">
+      <dmn:contextEntry>
+        <dmn:variable id="_21469D25-1824-4041-8079-592A9506F5C5" name="valueOf"/>
+        <dmn:literalExpression id="_7BE44013-4F64-4196-B288-420E95B370F0">
+          <dmn:text>function(b1) external {java:{class:"java.lang.Byte",method signature:"valueOf(byte)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_864AE3DC-3DC8-4FF4-A9B9-0CFF4F9E847D">
+          <dmn:text>valueOf(3)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_007" name="literal_007">
+    <dmn:extensionElements/>
+    <dmn:variable id="_76D8A9C7-45BA-4C99-A4DC-D01301DD7CF3" name="literal_007"/>
+    <dmn:context id="_C8821AB7-C48C-47AC-B7F6-F2AFD6EDCE56">
+      <dmn:contextEntry>
+        <dmn:variable id="_E860BCDA-8C1C-4E65-8C52-DFFBD1008A7F" name="valueOf"/>
+        <dmn:literalExpression id="_C168AE6F-7019-4F4D-918F-B0D4B9FD2F2C">
+          <dmn:text>function(c1) external {java:{class:"java.lang.String",method signature:"valueOf(char)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_60BF9AFB-6EE2-486F-B9FE-3ECFC776BB1D">
+          <dmn:text>valueOf("a")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_007_a" name="literal_007_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_34A8067D-6BF5-42B6-BCC3-1B36A0A3FD6B" name="literal_007_a"/>
+    <dmn:context id="_17F17880-F58C-4393-BEB5-E9F8D2B6CDFE">
+      <dmn:contextEntry>
+        <dmn:variable id="_FF933D9C-A3AB-456F-9CF1-92BA0AAF0BAF" name="valueOf"/>
+        <dmn:literalExpression id="_094D0C1F-67F3-45B5-A2D7-FF1F2D7AB33F">
+          <dmn:text>function(c1) external {java:{class:"java.lang.String",method signature:"valueOf(char)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_9B756542-E0EE-4067-9156-C931D88553E7">
+          <dmn:text>valueOf("abc")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_008" name="literal_008">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6C64350B-53AA-49D5-AE25-B33339F85144" name="literal_008"/>
+    <dmn:context id="_66D986FB-FAE3-4DA6-8540-0ACFDD71A36A">
+      <dmn:contextEntry>
+        <dmn:variable id="_29D66F09-F743-4626-A837-486DF23A7526" name="max"/>
+        <dmn:literalExpression id="_FFBE3B65-BC79-4CE8-A76A-6B5F3752FF69">
+          <dmn:text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(long,long)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_9603241C-465B-4D9D-99C4-3CA34010408A">
+          <dmn:text>max(123,456)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_009" name="literal_009">
+    <dmn:extensionElements/>
+    <dmn:variable id="_AB319707-25B7-4EEA-9EA6-F9CD3DF381DA" name="literal_009"/>
+    <dmn:context id="_E7960AE2-2FB9-49C4-86A3-3137EE184630">
+      <dmn:contextEntry>
+        <dmn:variable id="_77319D8B-34CF-43CA-AE1D-2E8B7BF075E9" name="max"/>
+        <dmn:literalExpression id="_FC647418-EAF5-4867-BFD5-872A550B6E64">
+          <dmn:text>function(n1,n2) external {java:{class:"java.lang.Math",method signature:"max(float,float)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_5E07A9C5-60FA-4098-B4FC-738F4F6EEB74">
+          <dmn:text>max(123.46,456.78)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_010" name="literal_010">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5F0A1847-EBBB-4855-8C6F-D87EAE916358" name="literal_010"/>
+    <dmn:context id="_EEDAB4B1-D3BC-4482-B095-C6FBC6774995">
+      <dmn:contextEntry>
+        <dmn:variable id="_3ADC2C31-F289-4FE6-91E0-38750EBFE043" name="valueOf"/>
+        <dmn:literalExpression id="_ACE62B71-C5D9-4FFC-B540-4E17395FC08E">
+          <dmn:text>function(n1) external {java:{class:"java.lang.Integer",method signature:"valueOf(java.lang.String)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_96D0793F-FEC6-4F0B-8C62-0FE34DB3EDB6">
+          <dmn:text>valueOf("123")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_011" name="literal_011">
+    <dmn:extensionElements/>
+    <dmn:variable id="_644A4D58-34C8-40C4-994D-D0A418338C4A" name="literal_011"/>
+    <dmn:context id="_43624D31-6158-4E57-83E0-9CFBBEC6C347">
+      <dmn:contextEntry>
+        <dmn:variable id="_46470FD3-8BA9-4419-97FB-82E43BEEE57A" name="valueOf"/>
+        <dmn:literalExpression id="_266A9388-20EA-4923-87DF-42CFB3BD9B0D">
+          <dmn:text>function(n1) external {java:{class:"java.lang.Float",method signature:"valueOf(java.lang.String)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_9FEFEA33-8F47-41D3-805A-B7C93F95C3BC">
+          <dmn:text>valueOf("1234.56")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_literal_012" name="literal_012">
+    <dmn:extensionElements/>
+    <dmn:variable id="_E46B0F61-A9B9-4D61-ADF4-6F2733971AB7" name="literal_012"/>
+    <dmn:context id="_793D2BF2-F386-4710-8391-A84058667D3A">
+      <dmn:contextEntry>
+        <dmn:variable id="_CF91E135-A616-4EEF-A354-15AF78C37C03" name="valueOf"/>
+        <dmn:literalExpression id="_64CC53CD-D0AC-4B99-B1C8-A38C3AF325C0">
+          <dmn:text>function(n1) external {java:{class:"java.lang.Double",method signature:"valueOf(java.lang.String)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_1328F987-49C2-4DAB-866F-85C86F2366D6">
+          <dmn:text>valueOf("1234.56")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_varargs_001" name="varargs_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_9647D2C4-81BA-492F-B53A-8F492FF6C9D9" name="varargs_001"/>
+    <dmn:context id="_34F8BA48-0474-46C0-8725-E0444943B252">
+      <dmn:contextEntry>
+        <dmn:variable id="_DE44A6F8-0415-4413-8C68-FF486E4B92A2" name="format"/>
+        <dmn:literalExpression id="_B68742BB-5E23-4030-AAB9-6283B547A402">
+          <dmn:text>function(s1, n1) external {java:{class:"java.lang.String",method signature:"format(java.lang.String, [Ljava.lang.Object;)"}}</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_24D444BA-2606-4D83-85EC-1C56677FF98A">
+          <dmn:text>format("foo %s", "bar")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_23EF0F22-9149-48C3-B7D8-D0EA3735A90A" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_2BB16D15-8C56-4FA5-A93F-632BCBBA9311"/>
+          <kie:ComponentWidths dmnElementRef="_866F54A0-44F2-4C55-B7CB-390BD1C90E32"/>
+          <kie:ComponentWidths dmnElementRef="_F659BF2A-C541-4ACB-9356-5F2336176B83"/>
+          <kie:ComponentWidths dmnElementRef="_14956DD8-7275-4942-945F-0D2CF730208A"/>
+          <kie:ComponentWidths dmnElementRef="_578D07DF-D0B7-4154-8083-8B3A90F77F63"/>
+          <kie:ComponentWidths dmnElementRef="_BE400998-313F-4641-8B84-B4AB01014FFE"/>
+          <kie:ComponentWidths dmnElementRef="_39022ECD-8860-43A8-A670-658D43916164"/>
+          <kie:ComponentWidths dmnElementRef="_51DF53C8-4690-4AB3-AAB3-B86273EC1D19"/>
+          <kie:ComponentWidths dmnElementRef="_6B1C7553-A650-4050-9825-07BBCE7C4E07"/>
+          <kie:ComponentWidths dmnElementRef="_8D550C99-D67A-453C-A015-641BB6B767D6"/>
+          <kie:ComponentWidths dmnElementRef="_88C53DC1-C46F-49BC-B13C-E6674AB1C0DC"/>
+          <kie:ComponentWidths dmnElementRef="_D7D5DAE9-22C5-4D43-9883-8478EEABF938"/>
+          <kie:ComponentWidths dmnElementRef="_965C2E57-C088-4CD1-8C29-C50678262134"/>
+          <kie:ComponentWidths dmnElementRef="_7BC785A6-7931-4ABA-B0F0-0246CE449134"/>
+          <kie:ComponentWidths dmnElementRef="_608D05B2-E252-4D79-8D01-5BFAB216A813"/>
+          <kie:ComponentWidths dmnElementRef="_278A8BB9-67C4-4A42-9B20-2F8100870E45"/>
+          <kie:ComponentWidths dmnElementRef="_2B7C76D4-7B10-466D-9EF9-E4EE33052A51"/>
+          <kie:ComponentWidths dmnElementRef="_53BF3944-78C5-4195-9F02-DB605525E95C"/>
+          <kie:ComponentWidths dmnElementRef="_40AF2EB0-99F6-4F58-BB15-3E69B84F85B9"/>
+          <kie:ComponentWidths dmnElementRef="_DC8B432D-F91F-46A4-BCC6-9C6D85101073"/>
+          <kie:ComponentWidths dmnElementRef="_5561210D-89E7-4DDC-97C0-783E0DE8B092"/>
+          <kie:ComponentWidths dmnElementRef="_FEB5C14D-3100-46C3-BB41-674BE65E01C4"/>
+          <kie:ComponentWidths dmnElementRef="_2679DDC7-1F2C-4753-B729-DEED54A64A1B"/>
+          <kie:ComponentWidths dmnElementRef="_D9B65FB4-6676-4494-9183-127012B14B07"/>
+          <kie:ComponentWidths dmnElementRef="_93616FC0-573B-41A4-8A7C-606DEEF4BBEE"/>
+          <kie:ComponentWidths dmnElementRef="_36628616-BBCC-4E8C-A71D-AC2753AED652"/>
+          <kie:ComponentWidths dmnElementRef="_1460EAB8-53D2-4C8A-A0C8-A841F0F447D1"/>
+          <kie:ComponentWidths dmnElementRef="_9E681893-2A19-41C9-83BB-6C2C8A23F4CF"/>
+          <kie:ComponentWidths dmnElementRef="_6CCABBB1-1CBE-4BDB-A9A9-8CFC90A56FA0"/>
+          <kie:ComponentWidths dmnElementRef="_4AFA880C-21A5-4CFD-84E3-F109D477E0A6"/>
+          <kie:ComponentWidths dmnElementRef="_59989E37-9357-4D83-ACF7-723185672398"/>
+          <kie:ComponentWidths dmnElementRef="_7BE44013-4F64-4196-B288-420E95B370F0"/>
+          <kie:ComponentWidths dmnElementRef="_864AE3DC-3DC8-4FF4-A9B9-0CFF4F9E847D"/>
+          <kie:ComponentWidths dmnElementRef="_C8821AB7-C48C-47AC-B7F6-F2AFD6EDCE56"/>
+          <kie:ComponentWidths dmnElementRef="_C168AE6F-7019-4F4D-918F-B0D4B9FD2F2C"/>
+          <kie:ComponentWidths dmnElementRef="_60BF9AFB-6EE2-486F-B9FE-3ECFC776BB1D"/>
+          <kie:ComponentWidths dmnElementRef="_17F17880-F58C-4393-BEB5-E9F8D2B6CDFE"/>
+          <kie:ComponentWidths dmnElementRef="_094D0C1F-67F3-45B5-A2D7-FF1F2D7AB33F"/>
+          <kie:ComponentWidths dmnElementRef="_9B756542-E0EE-4067-9156-C931D88553E7"/>
+          <kie:ComponentWidths dmnElementRef="_66D986FB-FAE3-4DA6-8540-0ACFDD71A36A"/>
+          <kie:ComponentWidths dmnElementRef="_FFBE3B65-BC79-4CE8-A76A-6B5F3752FF69"/>
+          <kie:ComponentWidths dmnElementRef="_9603241C-465B-4D9D-99C4-3CA34010408A"/>
+          <kie:ComponentWidths dmnElementRef="_E7960AE2-2FB9-49C4-86A3-3137EE184630"/>
+          <kie:ComponentWidths dmnElementRef="_FC647418-EAF5-4867-BFD5-872A550B6E64"/>
+          <kie:ComponentWidths dmnElementRef="_5E07A9C5-60FA-4098-B4FC-738F4F6EEB74"/>
+          <kie:ComponentWidths dmnElementRef="_EEDAB4B1-D3BC-4482-B095-C6FBC6774995"/>
+          <kie:ComponentWidths dmnElementRef="_ACE62B71-C5D9-4FFC-B540-4E17395FC08E"/>
+          <kie:ComponentWidths dmnElementRef="_96D0793F-FEC6-4F0B-8C62-0FE34DB3EDB6"/>
+          <kie:ComponentWidths dmnElementRef="_43624D31-6158-4E57-83E0-9CFBBEC6C347"/>
+          <kie:ComponentWidths dmnElementRef="_266A9388-20EA-4923-87DF-42CFB3BD9B0D"/>
+          <kie:ComponentWidths dmnElementRef="_9FEFEA33-8F47-41D3-805A-B7C93F95C3BC"/>
+          <kie:ComponentWidths dmnElementRef="_793D2BF2-F386-4710-8391-A84058667D3A"/>
+          <kie:ComponentWidths dmnElementRef="_64CC53CD-D0AC-4B99-B1C8-A38C3AF325C0"/>
+          <kie:ComponentWidths dmnElementRef="_1328F987-49C2-4DAB-866F-85C86F2366D6"/>
+          <kie:ComponentWidths dmnElementRef="_34F8BA48-0474-46C0-8725-E0444943B252"/>
+          <kie:ComponentWidths dmnElementRef="_B68742BB-5E23-4030-AAB9-6283B547A402"/>
+          <kie:ComponentWidths dmnElementRef="_24D444BA-2606-4D83-85EC-1C56677FF98A"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_boxed_001" dmnElementRef="_boxed_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_001" dmnElementRef="_literal_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_incorrect_001" dmnElementRef="_incorrect_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_incorrect_002" dmnElementRef="_incorrect_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="575" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_incorrect_003" dmnElementRef="_incorrect_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="750" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_002" dmnElementRef="_literal_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="925" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_003" dmnElementRef="_literal_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1100" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_004" dmnElementRef="_literal_004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1275" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_005" dmnElementRef="_literal_005" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1450" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_006" dmnElementRef="_literal_006" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1625" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_007" dmnElementRef="_literal_007" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1800" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_007_a" dmnElementRef="_literal_007_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1975" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_008" dmnElementRef="_literal_008" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2150" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_009" dmnElementRef="_literal_009" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2325" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_010" dmnElementRef="_literal_010" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2500" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_011" dmnElementRef="_literal_011" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2675" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_literal_012" dmnElementRef="_literal_012" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2850" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_varargs_001" dmnElementRef="_varargs_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="3025" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler" exporterVersion="5.2.4.2" namespace="http://www.trisotech.com/definitions/_d458efc5-4a93-43f6-96d6-4e7d8c955259" name="for loops" triso:logoChoice="Default" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <extensionElements/>
+    <itemDefinition isCollection="true" name="ListOfNumbers" label="ListOfNumbers">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="ListOfBooleans" label="ListOfBooleans">
+        <typeRef>boolean</typeRef>
+    </itemDefinition>
+    <decision name="areas" triso:displayName="areas" id="d_loop1">
+        <variable typeRef="ListOfNumbers" name="areas" id="_64701e47-39c0-409e-aae4-21bd09a90f5d"/>
+        <informationRequirement id="_978a3358-ea34-4243-9b83-e887b1aaad47">
+            <requiredInput href="#_42037ab2-6e42-4b75-bf93-27be458ce561"/>
+        </informationRequirement>
+        <informationRequirement id="e87604f5-3df8-4312-b72c-fd760c020096">
+            <requiredInput href="#_a98fbf74-c0d9-4edd-97ce-dee8b0357620"/>
+        </informationRequirement>
+        <literalExpression id="_d9800430-e5da-4612-8dce-fc53264fa805">
+            <text>for h in heights, w in widths return h * w</text>
+        </literalExpression>
+    </decision>
+    <inputData name="heights" triso:displayName="heights" id="_42037ab2-6e42-4b75-bf93-27be458ce561">
+        <variable typeRef="ListOfNumbers" name="heights" id="_90f4fca4-cf9d-4518-bdd4-d1881a071eaa"/>
+    </inputData>
+    <inputData name="widths" triso:displayName="widths" id="_a98fbf74-c0d9-4edd-97ce-dee8b0357620">
+        <variable typeRef="ListOfNumbers" name="widths" id="_0bc23d35-dd1d-4a7f-81e5-bf51cd1caa9c"/>
+    </inputData>
+    <decision name="increase1" triso:displayName="increase1" id="_374e6945-f32c-46b2-8f14-7ca89da32275">
+        <variable typeRef="ListOfNumbers" name="increase1" id="_2fca42fe-8bfd-4a28-996d-f7cda56091cc"/>
+        <informationRequirement id="ee6a1bc3-181b-4a26-aad2-b8d118e25f88">
+            <requiredInput href="#_42037ab2-6e42-4b75-bf93-27be458ce561"/>
+        </informationRequirement>
+        <literalExpression id="_452a3e4b-f414-4b99-be85-b3256cd6492c">
+            <text>for h in heights return h + 1</text>
+        </literalExpression>
+    </decision>
+    <inputData name="value" triso:displayName="value" id="_bb8f8539-4837-49e6-87a9-0304bdcdc1d6">
+        <variable typeRef="number" name="value" id="_b0214126-8b39-4875-8760-b8c0868bad06"/>
+    </inputData>
+    <decision name="check factors" triso:displayName="check factors" id="_133307f9-7ed4-429b-9f78-bf1a2022a384">
+        <variable typeRef="ListOfBooleans" name="check factors" id="_d1bd762b-94fb-483b-ae8f-6bd780de073d"/>
+        <informationRequirement id="_83b27e56-f597-46e0-ad7a-12b6f7882454">
+            <requiredInput href="#_bb8f8539-4837-49e6-87a9-0304bdcdc1d6"/>
+        </informationRequirement>
+        <informationRequirement id="de5adaf3-6c48-4c6a-95d0-2aeab3428653">
+            <requiredInput href="#_ab75f366-280d-45df-a68d-087b274a5100"/>
+        </informationRequirement>
+        <knowledgeRequirement id="_6ec8824b-e5a4-48c8-bc44-95546c6b9a3e">
+            <requiredKnowledge href="#_535d64c3-0da4-4641-8d7b-42ca46ab8999"/>
+        </knowledgeRequirement>
+        <literalExpression id="_3b6664ac-63e5-43f7-b787-5f80da5d8767">
+            <text>for f in factors return is factor( value, f )</text>
+        </literalExpression>
+    </decision>
+    <inputData name="factors" triso:displayName="factors" id="_ab75f366-280d-45df-a68d-087b274a5100">
+        <variable typeRef="ListOfNumbers" name="factors" id="_45b58215-01cf-4ad8-ab03-4c67276c24fc"/>
+    </inputData>
+    <businessKnowledgeModel name="is factor" triso:displayName="is factor" id="_535d64c3-0da4-4641-8d7b-42ca46ab8999">
+        <variable name="is factor" id="_c6bd1e76-8294-4dca-93be-73f82bbb0a49"/>
+        <encapsulatedLogic kind="FEEL" id="_464a8b80-14ac-4497-a08a-5cab91462042">
+            <formalParameter typeRef="number" name="value" id="_5a030771-2848-487f-a8f8-69772120267b"/>
+            <formalParameter typeRef="number" name="factor" id="_d2e427a9-5a80-4d8f-a876-590bdf8d060d"/>
+            <literalExpression typeRef="boolean" id="_13e4291c-5ce7-4c08-bc12-5ab31d78a40a">
+                <text>value / factor = decimal( value / factor, 0 )</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <decision name="multiples" triso:displayName="multiples" id="_4453511f-6eff-43ab-bed6-1424af36a10c">
+        <variable typeRef="ListOfNumbers" name="multiples" id="_9efb708a-a7ba-4746-b6d2-58f96c03385e"/>
+        <informationRequirement id="_81d2082d-afa6-41fa-aede-32c1055e911f">
+            <requiredInput href="#_bb8f8539-4837-49e6-87a9-0304bdcdc1d6"/>
+        </informationRequirement>
+        <literalExpression id="_2a9c8faa-7900-4997-bde6-52e02a1df47b">
+            <text>for x in [2, 3, 4, 5] return x * value</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_D1">
+            <dmndi:Size height="650.0" width="1307.0"/>
+            <dmndi:DMNShape dmnElementRef="d_loop1" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_42037ab2-6e42-4b75-bf93-27be458ce561" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s2">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_a98fbf74-c0d9-4edd-97ce-dee8b0357620" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s3">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_374e6945-f32c-46b2-8f14-7ca89da32275" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s4">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_bb8f8539-4837-49e6-87a9-0304bdcdc1d6" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s5">
+                <dc:Bounds height="60.0" width="153.0" x="1004.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_133307f9-7ed4-429b-9f78-bf1a2022a384" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s6">
+                <dc:Bounds height="61.0" width="154.0" x="789.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_ab75f366-280d-45df-a68d-087b274a5100" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s7">
+                <dc:Bounds height="60.0" width="153.0" x="577.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_535d64c3-0da4-4641-8d7b-42ca46ab8999" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s8">
+                <dc:Bounds height="61.0" width="154.0" x="790.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_4453511f-6eff-43ab-bed6-1424af36a10c" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_s9">
+                <dc:Bounds height="61.0" width="154.0" x="1003.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_978a3358-ea34-4243-9b83-e887b1aaad47" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_e1">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="e87604f5-3df8-4312-b72c-fd760c020096" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_e2">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="ee6a1bc3-181b-4a26-aad2-b8d118e25f88" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_e3">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_6ec8824b-e5a4-48c8-bc44-95546c6b9a3e" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_e4">
+                <di:waypoint x="867.0" y="331.0"/>
+                <di:waypoint x="866.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_83b27e56-f597-46e0-ad7a-12b6f7882454" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_e5">
+                <di:waypoint x="1080.0" y="331.0"/>
+                <di:waypoint x="866.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="de5adaf3-6c48-4c6a-95d0-2aeab3428653" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_e6">
+                <di:waypoint x="653.0" y="331.0"/>
+                <di:waypoint x="866.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_81d2082d-afa6-41fa-aede-32c1055e911f" id="_d458efc5-4a93-43f6-96d6-4e7d8c955259_e7">
+                <di:waypoint x="1080.0" y="331.0"/>
+                <di:waypoint x="1080.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

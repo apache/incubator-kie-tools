@@ -92,11 +92,11 @@ public class NodeConnector {
     void connect(final JSIDMNDiagram dmnDiagram,
                  final List<JSIDMNEdge> edges,
                  final List<JSITAssociation> associations,
-                 final List<NodeEntry> nodeEntries) {
+                 final List<NodeEntry> nodeEntries,
+                 final boolean isDMNDIPresent) {
 
         final Map<String, List<NodeEntry>> entriesById = makeNodeIndex(nodeEntries);
         final String diagramId = dmnDiagram.getId();
-        final List<JSIDMNEdge> pendingEdges = new ArrayList<>(edges);
 
         for (final NodeEntry nodeEntry : nodeEntries) {
 
@@ -119,7 +119,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                     connectEdgeToNodes(INFO_REQ_ID,
                                        ir,
@@ -127,7 +127,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                 }
                 final List<JSITKnowledgeRequirement> jsiKnowledgeRequirements = decision.getKnowledgeRequirement();
@@ -139,7 +139,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                 }
                 final List<JSITAuthorityRequirement> jsiAuthorityRequirements = decision.getAuthorityRequirement();
@@ -151,7 +151,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                 }
                 continue;
@@ -168,7 +168,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                 }
                 final List<JSITAuthorityRequirement> jsiAuthorityRequirements = bkm.getAuthorityRequirement();
@@ -180,7 +180,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                 }
                 continue;
@@ -197,7 +197,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                     connectEdgeToNodes(AUTH_REQ_ID,
                                        ar,
@@ -205,7 +205,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                     connectEdgeToNodes(AUTH_REQ_ID,
                                        ar,
@@ -213,7 +213,7 @@ public class NodeConnector {
                                        entriesById,
                                        diagramId,
                                        edges,
-                                       pendingEdges,
+                                       isDMNDIPresent,
                                        node);
                 }
                 continue;
@@ -338,80 +338,105 @@ public class NodeConnector {
                     requiredNode);
     }
 
-    private String getId(final JSITDMNElementReference er) {
-        final String href = er.getHref();
-        return href.contains("#") ? href.substring(href.indexOf('#') + 1) : href;
+    private String getId(final JSITDMNElementReference elementReference) {
+        return Optional
+                .ofNullable(elementReference)
+                .map(ref -> {
+                    final String href = elementReference.getHref();
+                    return href.contains("#") ? href.substring(href.indexOf('#') + 1) : href;
+                })
+                .orElse("");
     }
 
-    private void connectEdgeToNodes(final String connectorTypeId,
-                                    final JSITDMNElement jsiDMNElement,
-                                    final JSITDMNElementReference jsiDMNElementReference,
-                                    final Map<String, List<NodeEntry>> entriesById,
-                                    final String diagramId,
-                                    final List<JSIDMNEdge> edges,
-                                    final List<JSIDMNEdge> pendingEdges,
-                                    final Node currentNode) {
+    void connectEdgeToNodes(final String connectorTypeId,
+                            final JSITDMNElement jsiDMNElement,
+                            final JSITDMNElementReference jsiDMNElementReference,
+                            final Map<String, List<NodeEntry>> entriesById,
+                            final String diagramId,
+                            final List<JSIDMNEdge> edges,
+                            final boolean isDMNDIPresent,
+                            final Node currentNode) {
 
-        if (Objects.nonNull(jsiDMNElementReference) && !edges.isEmpty()) {
-            final String reqInputID = getId(jsiDMNElementReference);
-            final List<NodeEntry> nodeEntries = entriesById.get(reqInputID);
-            final Optional<JSIDMNEdge> dmnEdgeOpt = edges.stream()
-                    .filter(e -> {
-                        final String localPart = e.getDmnElementRef().getLocalPart();
-                        final String id = jsiDMNElement.getId();
-                        return Objects.equals(localPart, id);
-                    }).findFirst();
+        final String reqInputID = getId(jsiDMNElementReference);
+        final List<NodeEntry> nodeEntries = entriesById.get(reqInputID);
 
-            if (nodeEntries != null && nodeEntries.size() > 0) {
+        if (nodeEntries == null || nodeEntries.size() == 0) {
+            return;
+        }
 
-                final Node requiredNode;
-                final JSIDMNEdge dmnEdge;
-                final String id;
+        final Optional<JSIDMNEdge> existingEdge = findExistingEdge(jsiDMNElement, edges);
 
-                if (dmnEdgeOpt.isPresent()) {
-                    dmnEdge = Js.uncheckedCast(dmnEdgeOpt.get());
-                    requiredNode = getNode(dmnEdge, nodeEntries);
-                    id = dmnEdge.getDmnElementRef().getLocalPart();
-                    pendingEdges.remove(dmnEdge);
-                } else if (edges.isEmpty()) {
-                    dmnEdge = new JSIDMNEdge();
-                    final JSIPoint point = new JSIPoint();
-                    point.setX(0);
-                    point.setY(0);
-                    dmnEdge.addAllWaypoint(point, point);
-                    final NodeEntry nodeEntry = nodeEntries.get(0);
-                    requiredNode = nodeEntry.getNode();
-                    id = nodeEntry.getDmnElement().getId();
-                } else {
-                    return;
-                }
+        if (!isDMNDIPresent) {
+            // Generate new a edge and connect it
+            final NodeEntry nodeEntry = nodeEntries.get(0);
+            final Node requiredNode = nodeEntry.getNode();
+            final String id = nodeEntry.getDmnElement().getId();
 
-                final Edge myEdge = factoryManager.newElement(IdUtils.getPrefixedId(diagramId, id),
-                                                              connectorTypeId).asEdge();
-                final ViewConnector connectionContent = (ViewConnector) myEdge.getContent();
+            connectWbEdge(connectorTypeId,
+                          diagramId,
+                          currentNode,
+                          requiredNode,
+                          newEdge(),
+                          id);
+        } else if (existingEdge.isPresent()) {
+            // Connect existing edge
+            final JSIDMNEdge edge = Js.uncheckedCast(existingEdge.get());
+            final Node requiredNode = getNode(edge, nodeEntries);
+            final String id = edge.getDmnElementRef().getLocalPart();
 
-                connectEdge(myEdge,
-                            requiredNode,
-                            currentNode);
-
-                setConnectionMagnets(myEdge, connectionContent, dmnEdge);
-            }
+            connectWbEdge(connectorTypeId,
+                          diagramId,
+                          currentNode,
+                          requiredNode,
+                          edge,
+                          id);
         }
     }
 
+    private Optional<JSIDMNEdge> findExistingEdge(final JSITDMNElement dmnElement,
+                                                  final List<JSIDMNEdge> edges) {
+        return edges.stream()
+                .filter(e -> Objects.equals(e.getDmnElementRef().getLocalPart(), dmnElement.getId()))
+                .findFirst();
+    }
+
+    void connectWbEdge(final String connectorTypeId,
+                       final String diagramId,
+                       final Node currentNode,
+                       final Node requiredNode,
+                       final JSIDMNEdge dmnEdge,
+                       final String id) {
+
+        final String prefixedId = IdUtils.getPrefixedId(diagramId, id);
+        final Edge wbEdge = factoryManager.newElement(prefixedId, connectorTypeId).asEdge();
+        final ViewConnector connectionContent = (ViewConnector) wbEdge.getContent();
+
+        connectEdge(wbEdge, requiredNode, currentNode);
+        setConnectionMagnets(wbEdge, connectionContent, dmnEdge);
+    }
+
+    JSIDMNEdge newEdge() {
+        final JSIDMNEdge dmnEdge = new JSIDMNEdge();
+        final JSIPoint point = new JSIPoint();
+        point.setX(0);
+        point.setY(0);
+        dmnEdge.addAllWaypoint(point, point);
+        return dmnEdge;
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void connectEdge(final Edge edge,
-                             final Node source,
-                             final Node target) {
+    void connectEdge(final Edge edge,
+                     final Node source,
+                     final Node target) {
         edge.setSourceNode(source);
         edge.setTargetNode(target);
         source.getOutEdges().add(edge);
         target.getInEdges().add(edge);
     }
 
-    private void setConnectionMagnets(final Edge edge,
-                                      final ViewConnector connectionContent,
-                                      final JSIDMNEdge jsidmnEdge) {
+    void setConnectionMagnets(final Edge edge,
+                              final ViewConnector connectionContent,
+                              final JSIDMNEdge jsidmnEdge) {
 
         final JSIDMNEdge e = Js.uncheckedCast(jsidmnEdge);
         final JSIPoint source = Js.uncheckedCast(e.getWaypoint().get(0));
@@ -465,8 +490,8 @@ public class NodeConnector {
                 Math.abs((viewHeight / 2) - magnetRelativeY) < CENTRE_TOLERANCE;
     }
 
-    private Node getNode(final JSIDMNEdge jsidmnEdge,
-                         final List<NodeEntry> entries) {
+    Node getNode(final JSIDMNEdge jsidmnEdge,
+                 final List<NodeEntry> entries) {
 
         if (entries.size() == 1) {
             return entries.get(0).getNode();
