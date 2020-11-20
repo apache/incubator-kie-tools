@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 
 import java.util.Optional;
 
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.dom.client.Document;
 import org.gwtbootstrap3.client.ui.base.TextBoxBase;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoStandaloneCodeEditor;
 
@@ -27,7 +27,7 @@ public class MonacoEditorWidget extends TextBoxBase {
     private MonacoStandaloneCodeEditor codeEditor;
 
     public MonacoEditorWidget() {
-        super(DOM.createDiv());
+        super(Document.get().createDivElement());
     }
 
     public void setCodeEditor(final MonacoStandaloneCodeEditor codeEditor) {
