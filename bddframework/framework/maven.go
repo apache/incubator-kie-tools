@@ -137,10 +137,13 @@ func (mvnCmd *mavenCommandStruct) setSettingsXML() error {
 	// Setup Maven mirror if defined
 	if mavenMirrorURL := config.GetMavenMirrorURL(); len(mavenMirrorURL) > 0 {
 		settings.SetMirrorURL(mavenMirrorURL)
+		mvnCmd.otherOptions = append(mvnCmd.otherOptions, "-Denforcer.skip")
 	}
 
 	// Setup custom Maven repository if defined
 	if customMavenRepoURL := config.GetCustomMavenRepoURL(); len(customMavenRepoURL) > 0 {
+		mvnCmd.otherOptions = append(mvnCmd.otherOptions, "-Denforcer.skip")
+
 		if !config.IsCustomMavenRepoReplaceDefault() {
 			settings.AddRepository(mainRepositoryID, defaultJBossRepository, false)
 		}
