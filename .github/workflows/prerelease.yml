@@ -235,8 +235,8 @@ jobs:
           ln -s ../$KOGITO_ONLINE_CHROME_EXT_DIR $KOGITO_ONLINE_EDITOR_STAGING_DIR/gwt-editors
           mkdir -p $KOGITO_ONLINE_EDITOR_STAGING_DIR/standalone/${{ steps.release_json.outputs.tag }}/bpmn
           mkdir -p $KOGITO_ONLINE_EDITOR_STAGING_DIR/standalone/${{ steps.release_json.outputs.tag }}/dmn
-          cp -r ../kogito-tooling/packages/kie-editors-standalone/dist/bpmn/index.js $KOGITO_ONLINE_EDITOR_STAGING_DIR/standalone/${{ steps.release_json.outputs.tag }}/bpmn
-          cp -r ../kogito-tooling/packages/kie-editors-standalone/dist/dmn/index.js $KOGITO_ONLINE_EDITOR_STAGING_DIR/standalone/${{ steps.release_json.outputs.tag }}/dmn
+          cp ../kogito-tooling/packages/kie-editors-standalone/dist/bpmn/index.js $KOGITO_ONLINE_EDITOR_STAGING_DIR/standalone/${{ steps.release_json.outputs.tag }}/bpmn
+          cp ../kogito-tooling/packages/kie-editors-standalone/dist/dmn/index.js $KOGITO_ONLINE_EDITOR_STAGING_DIR/standalone/${{ steps.release_json.outputs.tag }}/dmn
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
           git add . && git commit -m "${{ steps.release_json.outputs.tag }} resources" || echo "No changes."
