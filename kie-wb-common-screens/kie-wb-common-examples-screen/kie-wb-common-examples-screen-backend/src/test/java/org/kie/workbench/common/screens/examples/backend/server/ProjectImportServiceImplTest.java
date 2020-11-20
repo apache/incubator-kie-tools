@@ -68,6 +68,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
@@ -86,6 +87,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.same;
 import static org.mockito.Mockito.spy;
@@ -417,6 +419,7 @@ public class ProjectImportServiceImplTest {
         when(importProject.getSelectedBranches()).thenReturn(branches);
 
         org.uberfire.java.nio.file.Path p = mock(org.uberfire.java.nio.file.Path.class);
+        when(p.getFileSystem()).thenReturn(mock(FileSystem.class));
         doReturn(p).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
         when(service.getProjectRoot(any(ImportProject.class))).thenReturn(p);
 
@@ -462,8 +465,12 @@ public class ProjectImportServiceImplTest {
 
         final ImportProject importProject = mock(ImportProject.class);
         final Path rootPath = mock(Path.class);
+
         final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
-        when(pathUtil.convert(any(Path.class))).thenReturn(convertedRootPath);
+        when(convertedRootPath.getFileSystem()).thenReturn(mock(FileSystem.class));
+
+        when(service.getProjectRoot(rootPath)).thenReturn(convertedRootPath);
+
         when(importProject.getCredentials()).thenReturn(new Credentials(username,
                                                                         password));
         when(importProject.getRoot()).thenReturn(rootPath);
@@ -472,6 +479,7 @@ public class ProjectImportServiceImplTest {
 
         when(importProject.getSelectedBranches()).thenReturn(branches);
 
+        when(service.getProjectRoot(importProject)).thenReturn(convertedRootPath);
         service.importProject(organizationalUnit,
                               importProject);
 
@@ -496,7 +504,9 @@ public class ProjectImportServiceImplTest {
         final ImportProject importProject = mock(ImportProject.class);
         final Path rootPath = mock(Path.class);
         final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
-        when(pathUtil.convert(any(Path.class))).thenReturn(convertedRootPath);
+        when(convertedRootPath.getFileSystem()).thenReturn(mock(FileSystem.class));
+
+        when(service.getProjectRoot(rootPath)).thenReturn(convertedRootPath);
         when(importProject.getCredentials()).thenReturn(new Credentials(username,
                                                                         password));
         when(importProject.getRoot()).thenReturn(rootPath);
@@ -504,7 +514,7 @@ public class ProjectImportServiceImplTest {
         when(importProject.getOrigin()).thenReturn(origin);
 
         when(importProject.getSelectedBranches()).thenReturn(branches);
-
+        when(service.getProjectRoot(importProject)).thenReturn(convertedRootPath);
         service.importProject(organizationalUnit,
                               importProject);
 
@@ -536,6 +546,7 @@ public class ProjectImportServiceImplTest {
         when(importProject.getSelectedBranches()).thenReturn(branches);
 
         org.uberfire.java.nio.file.Path p = mock(org.uberfire.java.nio.file.Path.class);
+        when(p.getFileSystem()).thenReturn(mock(FileSystem.class));
         doReturn(p).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
         when(service.getProjectRoot(any(ImportProject.class))).thenReturn(p);
 
@@ -575,8 +586,10 @@ public class ProjectImportServiceImplTest {
         organizationalUnit.getRepositories();
 
         final Path exampleRoot = mock(Path.class);
-        final org.uberfire.java.nio.file.Path exampleRootNioPath = mock(org.uberfire.java.nio.file.Path.class);
-        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
+        org.uberfire.java.nio.file.Path fspath = mock(org.uberfire.java.nio.file.Path.class);
+        final JGitFileSystem fileSystem = mock(JGitFileSystem.class);
+        doReturn(fileSystem).when(fspath).getFileSystem();
+        final org.uberfire.java.nio.file.Path exampleRootNioPath = fspath;
         String repoURL = "file:///some/repo/url";
         final ImportProject importProject = new ImportProject(exampleRoot,
                                                               "example",
@@ -598,6 +611,7 @@ public class ProjectImportServiceImplTest {
                                           eq(GitRepository.SCHEME.toString()),
                                           any(),
                                           any())).thenReturn(repository);
+        when(service.getProjectRoot(importProject)).thenReturn(exampleRootNioPath);
 
         final WorkspaceProject importedProject = service.importProject(organizationalUnit,
                                                                        importProject);
@@ -623,8 +637,10 @@ public class ProjectImportServiceImplTest {
         organizationalUnit.getRepositories();
 
         final Path exampleRoot = mock(Path.class);
-        final org.uberfire.java.nio.file.Path exampleRootNioPath = mock(org.uberfire.java.nio.file.Path.class);
-        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
+        org.uberfire.java.nio.file.Path fspath = mock(org.uberfire.java.nio.file.Path.class);
+        final JGitFileSystem fileSystem = mock(JGitFileSystem.class);
+        doReturn(fileSystem).when(fspath).getFileSystem();
+        final org.uberfire.java.nio.file.Path exampleRootNioPath = fspath;
         String repoURL = "file:///C:/some/repo/url";
         final ImportProject importProject = new ImportProject(exampleRoot,
                                                               "example",
@@ -646,7 +662,7 @@ public class ProjectImportServiceImplTest {
                                           eq(GitRepository.SCHEME.toString()),
                                           any(),
                                           any())).thenReturn(repository);
-
+        when(service.getProjectRoot(importProject)).thenReturn(exampleRootNioPath);
         final WorkspaceProject importedProject = service.importProject(organizationalUnit,
                                                                        importProject);
 
@@ -682,7 +698,7 @@ public class ProjectImportServiceImplTest {
                                                                                        true);
         final org.uberfire.java.nio.file.Path repoRoot = exampleRootNioPath.getParent();
         when(fs.getRootDirectories()).thenReturn(() -> Stream.of(repoRoot).iterator());
-        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
+
         when(pathUtil.stripProtocolAndBranch(any())).then(inv -> realPathUtil.stripProtocolAndBranch(inv.getArgumentAt(0,
                                                                                                                        String.class)));
         when(pathUtil.stripRepoNameAndSpace(any())).then(inv -> realPathUtil.stripRepoNameAndSpace(inv.getArgumentAt(0,
@@ -698,7 +714,7 @@ public class ProjectImportServiceImplTest {
                                                               "description",
                                                               repoURL,
                                                               emptyList());
-
+        when(service.getProjectRoot(importProject)).thenReturn(exampleRootNioPath);
         when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
 
         final Repository repository = new GitRepository("example",
