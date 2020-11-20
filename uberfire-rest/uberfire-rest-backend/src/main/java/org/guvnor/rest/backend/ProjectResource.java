@@ -17,7 +17,10 @@ package org.guvnor.rest.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,7 @@ import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -35,6 +39,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -86,6 +91,7 @@ import static org.guvnor.rest.backend.PermissionConstants.REST_ROLE;
 public class ProjectResource {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectResource.class);
+    private static final String ACCEPT_LANGUAGE = "acceptLanguage";
     private Variant defaultVariant = getDefaultVariant();
 
     protected Variant getDefaultVariant() {
@@ -194,6 +200,7 @@ public class ProjectResource {
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response createProject(
             @PathParam("spaceName") String spaceName,
+            @HeaderParam(HttpHeaders.ACCEPT_LANGUAGE) Locale locales,
             CreateProjectRequest createProjectRequest) {
         logger.debug("-----createProject--- , spaceName: {} , project name: {}",
                      spaceName,
@@ -202,7 +209,9 @@ public class ProjectResource {
         assertObjectExists(organizationalUnitService.getOrganizationalUnit(spaceName),
                            "space",
                            spaceName);
-
+        
+        final Map<String, Object> headers = new HashMap<>();
+        headers.put(ACCEPT_LANGUAGE, locales);
         final String id = newId();
         final CreateProjectJobRequest jobRequest = new CreateProjectJobRequest();
         jobRequest.setStatus(JobStatus.ACCEPTED);
@@ -214,7 +223,8 @@ public class ProjectResource {
         jobRequest.setDescription(createProjectRequest.getDescription());
         addAcceptedJobResult(id);
 
-        jobRequestObserver.createProjectRequest(jobRequest);
+        jobRequestObserver.createProjectRequest(jobRequest,
+                                                headers);
 
         return createAcceptedStatusResponse(jobRequest);
     }

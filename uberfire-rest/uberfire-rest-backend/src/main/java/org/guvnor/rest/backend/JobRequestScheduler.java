@@ -63,6 +63,7 @@ import static org.guvnor.rest.backend.cmd.AbstractJobCommand.JOB_REQUEST_KEY;
 public class JobRequestScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(JobRequestScheduler.class);
+    private static final String ACCEPT_LANGUAGE = "acceptLanguage";
 
     private ExecutorService executorService;
 
@@ -104,7 +105,8 @@ public class JobRequestScheduler {
                                            params));
     }
 
-    public void createProjectRequest(final CreateProjectJobRequest jobRequest) {
+    public void createProjectRequest(final CreateProjectJobRequest jobRequest,
+                                     final Map<String, Object> headers) {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Space",
                    jobRequest.getSpaceName());
@@ -112,6 +114,8 @@ public class JobRequestScheduler {
                    jobRequest.getProjectName());
         params.put("Operation",
                    "createProject");
+        params.put(ACCEPT_LANGUAGE,
+                   headers.get(ACCEPT_LANGUAGE));
 
         scheduleJob(jobRequest,
                     new CreateProjectCmd(jobRequestHelper,

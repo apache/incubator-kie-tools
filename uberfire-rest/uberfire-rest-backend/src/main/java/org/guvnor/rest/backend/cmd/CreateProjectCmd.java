@@ -15,6 +15,7 @@
 
 package org.guvnor.rest.backend.cmd;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.guvnor.rest.backend.JobRequestHelper;
@@ -23,6 +24,7 @@ import org.guvnor.rest.client.CreateProjectJobRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
+import org.guvnor.structure.backend.LocaleContext;
 
 public class CreateProjectCmd extends AbstractJobCommand {
 
@@ -38,6 +40,7 @@ public class CreateProjectCmd extends AbstractJobCommand {
     public JobResult internalExecute(final JobRequest request) throws Exception {
         JobRequestHelper helper = getHelper();
         CreateProjectJobRequest jobRequest = (CreateProjectJobRequest) request;
+        LocaleContext.set((Locale) context.get("acceptLanguage"));
 
         JobResult result = null;
         try {
