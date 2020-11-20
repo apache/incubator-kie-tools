@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.gwt.dom.client.Document;
@@ -38,8 +37,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
-import org.uberfire.client.views.pfly.monaco.MonacoEditorInitializer;
-import org.uberfire.client.views.pfly.monaco.jsinterop.Monaco;
+import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoEditor;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoStandaloneCodeEditor;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -86,7 +84,8 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
         final SimplePanel container = getContainer();
         final Style style = container.getElement().getStyle();
 
-        style.setPadding(5, PX);
+        style.setPadding(5,
+                         PX);
 
         container.setWidget(widget);
     }
@@ -95,23 +94,24 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
 
         final Style style = widget.getElement().getStyle();
 
-        style.setWidth(100, PCT);
-        style.setHeight(100, PCT);
+        style.setWidth(100,
+                       PCT);
+        style.setHeight(100,
+                        PCT);
 
-        makeMonacoEditorInitializer().require(onMonacoLoaded());
+        final MonacoPropertiesFactory properties = makeMonacoPropertiesFactory();
+        final MonacoStandaloneCodeEditor codeEditor = getMonacoEditor().create(uncheckedCast(widget.getElement()),
+                                                                               properties.getConstructionOptions());
+
+        codeEditor.onKeyDown(getOnKeyDown(codeEditor));
+        codeEditor.onDidBlurEditorWidget(getWidgetTrigger(getBlurEvent()));
+
+        widget.setCodeEditor(codeEditor);
+        widget.setFocus(true);
     }
 
-    Consumer<Monaco> onMonacoLoaded() {
-        final MonacoPropertiesFactory properties = makeMonacoPropertiesFactory();
-        return monaco -> {
-            final MonacoStandaloneCodeEditor codeEditor = monaco.editor.create(uncheckedCast(widget.getElement()), properties.getConstructionOptions());
-
-            codeEditor.onKeyDown(getOnKeyDown(codeEditor));
-            codeEditor.onDidBlurEditorWidget(getWidgetTrigger(getBlurEvent()));
-
-            widget.setCodeEditor(codeEditor);
-            widget.setFocus(true);
-        };
+    MonacoEditor getMonacoEditor() {
+        return MonacoEditor.get();
     }
 
     MonacoStandaloneCodeEditor.CallbackFunction getOnKeyDown(final MonacoStandaloneCodeEditor codeEditor) {
@@ -119,8 +119,10 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
             boolean isSuggestWidgetVisible = codeEditor.isSuggestWidgetVisible();
             final boolean isEsc = event.getKeyCode() == 9;
             if (isSuggestWidgetVisible && isEsc) {
-                codeEditor.trigger("keyboard", "cursorHome");
-                codeEditor.trigger("keyboard", "cursorEnd");
+                codeEditor.trigger("keyboard",
+                                   "cursorHome");
+                codeEditor.trigger("keyboard",
+                                   "cursorEnd");
 
                 event.stopPropagation();
                 event.preventDefault();
@@ -170,7 +172,8 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
 
         widget.getCodeEditor().ifPresent(c -> c.dispose());
 
-        if (Objects.equals(value, originalValue)) {
+        if (Objects.equals(value,
+                           originalValue)) {
             return;
         }
 
@@ -192,12 +195,14 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
     }
 
     MonacoStandaloneCodeEditor.CallbackFunction getWidgetTrigger(final NativeEvent nativeEvent) {
-        return (e) -> fireNativeEvent(nativeEvent, widget);
+        return (e) -> fireNativeEvent(nativeEvent,
+                                      widget);
     }
 
     void fireNativeEvent(final NativeEvent nativeEvent,
                          final HasHandlers handlerSource) {
-        DomEvent.fireNativeEvent(nativeEvent, handlerSource);
+        DomEvent.fireNativeEvent(nativeEvent,
+                                 handlerSource);
     }
 
     NativeEvent getBlurEvent() {
@@ -210,9 +215,5 @@ public class MonacoEditorDOMElement extends BaseDOMElement<String, MonacoEditorW
 
     MonacoPropertiesFactory makeMonacoPropertiesFactory() {
         return new MonacoPropertiesFactory();
-    }
-
-    MonacoEditorInitializer makeMonacoEditorInitializer() {
-        return new MonacoEditorInitializer();
     }
 }
