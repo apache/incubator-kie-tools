@@ -50,5 +50,14 @@ module.exports = [
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     module: { rules: [...pfWebpackOptions.patternflyRules] }
+  }),
+  merge(common, {
+    entry: {
+      "channel/index": "./src/channel/index.ts"
+    },
+    output: {
+      libraryTarget: "commonjs2"
+    },
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   })
 ];

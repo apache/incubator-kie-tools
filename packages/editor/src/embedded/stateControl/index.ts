@@ -15,4 +15,3 @@
  */
 
 export { useDirtyState } from "./Hooks";
-export { StateControl } from "./StateControl";

@@ -91,6 +91,7 @@ export function KeyBindingsHelpOverlay() {
       </div>
 
       <Modal
+        appendTo={document.body}
         title={i18n.keyBindingsHelpOverlay.title}
         isOpen={showing}
         width={"60%"}

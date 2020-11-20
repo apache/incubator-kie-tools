@@ -21,8 +21,8 @@ import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/
 import * as CSS from "csstype";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
-import { File, useEffectAfterFirstRender } from "../common";
-import { StateControl } from "../stateControl";
+import { File, StateControl } from "../../channel";
+import { useEffectAfterFirstRender } from "../common";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";

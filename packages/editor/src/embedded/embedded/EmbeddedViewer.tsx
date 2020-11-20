@@ -17,7 +17,7 @@
 import { EditorEnvelopeLocator } from "../../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import * as React from "react";
-import { File } from "../common";
+import { File } from "../../channel";
 import { EmbeddedEditor, Props as EmbeddedEditorProps } from "./EmbeddedEditor";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

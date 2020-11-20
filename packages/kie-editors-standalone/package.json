@@ -1,0 +1,39 @@
+{
+  "name": "@kogito-tooling/kie-editors-standalone",
+  "version": "0.8.1",
+  "description": "",
+  "license": "Apache-2.0",
+  "files": [
+    "dist/common",
+    "dist/bpmn",
+    "dist/dmn"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "@kogito-tooling/editor": "0.8.1",
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/kie-bc-editors": "0.8.1",
+    "@kogito-tooling/kie-bc-editors-unpacked": "0.8.1"
+  },
+  "scripts": {
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "test": "jest --silent --verbose --passWithNoTests",
+    "build:preprocessor": "node dist/preprocessor/preprocessor.js",
+    "build:fast": "rm -rf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js",
+    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:prod": "yarn run lint && yarn test && rm -rf dist && webpack --config webpack.build-resources.config.js --mode production --devtool none && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js --mode production --devtool none",
+    "start": "webpack-dev-server -d --host 0.0.0.0 --config webpack.package-resources.config.js"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
+  },
+  "jest-junit": {
+    "outputDirectory": "./target"
+  }
+}

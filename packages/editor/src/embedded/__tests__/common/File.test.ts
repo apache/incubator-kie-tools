@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EMPTY_FILE_DMN, EMPTY_FILE_BPMN, EMPTY_FILE_SCESIM, File, newFile } from "../../common/File";
+import { EMPTY_FILE_DMN, EMPTY_FILE_BPMN, EMPTY_FILE_SCESIM, File, newFile } from "../../../channel/File";
 
 describe("File::Empty defaults", () => {
   test("dmn", async () => {

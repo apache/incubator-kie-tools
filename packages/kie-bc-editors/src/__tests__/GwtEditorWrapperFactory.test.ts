@@ -79,6 +79,7 @@ describe("GwtEditorWrapperFactory", () => {
     };
 
     const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(
+      { shouldLoadResourcesDynamically: true },
       xmlFormatter,
       gwtAppFormerApi,
       new GwtStateControlService(),
@@ -95,7 +96,7 @@ describe("GwtEditorWrapperFactory", () => {
           i18n: new I18nService()
         }
       },
-      { resourcesPathPrefix: "", fileExtension: "txt", initialLocale: "en", isReadOnly: false}
+      { resourcesPathPrefix: "", fileExtension: "txt", initialLocale: "en", isReadOnly: false }
     );
 
     await waitForNScriptsToLoad(jsResource.paths.length);
@@ -117,6 +118,7 @@ describe("GwtEditorWrapperFactory", () => {
 
   test("Supported/Unsupported LanguageData type", () => {
     const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(
+      { shouldLoadResourcesDynamically: true },
       xmlFormatter,
       gwtAppFormerApi,
       new GwtStateControlService(),

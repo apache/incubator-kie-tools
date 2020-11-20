@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { StateControl } from "../../stateControl";
+import { StateControl } from "../../../channel";
 
 describe("StateControl", () => {
   let stateControl: StateControl;

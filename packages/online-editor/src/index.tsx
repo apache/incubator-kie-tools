@@ -17,7 +17,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
-import { newFile } from "@kogito-tooling/editor/dist/embedded";
+import { newFile } from "@kogito-tooling/editor/dist/channel";
 import {
   extractEditorFileExtensionFromUrl,
   extractFileExtension,
