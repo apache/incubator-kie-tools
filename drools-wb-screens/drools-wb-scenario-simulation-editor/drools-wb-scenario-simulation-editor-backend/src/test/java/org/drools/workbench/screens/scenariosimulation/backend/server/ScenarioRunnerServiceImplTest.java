@@ -38,8 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
-import org.kie.workbench.common.services.backend.builder.core.Builder;
-import org.kie.workbench.common.services.backend.builder.service.BuildInfoImpl;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -55,7 +54,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,13 +68,11 @@ public class ScenarioRunnerServiceImplTest {
     @Mock
     private BuildInfoService buildInfoServiceMock;
     @Mock
-    private BuildInfoImpl buildInfoMock;
+    private BuildInfo buildInfoMock;
     @Mock
     private KieContainer kieContainerMock;
     @Mock
     private ModuleClassLoaderHelper classLoaderHelperMock;
-    @Mock
-    private Builder builder;
 
     @InjectMocks
     private ScenarioRunnerServiceImpl scenarioRunnerService = new ScenarioRunnerServiceImpl();
@@ -93,10 +89,7 @@ public class ScenarioRunnerServiceImplTest {
         settingsLocal.setType(Type.RULE);
         when(classLoaderHelperMock.getModuleClassLoader(any())).thenReturn(ClassLoader.getSystemClassLoader());
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
-        Builder oldBuilder = mock(Builder.class);
-        when(buildInfoMock.getBuilder()).thenReturn(oldBuilder);
-        when(oldBuilder.clone()).thenReturn(builder);
-        when(builder.getKieContainer()).thenReturn(kieContainerMock);
+        when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
     }
 
     @Test
@@ -141,6 +134,8 @@ public class ScenarioRunnerServiceImplTest {
 
     @Test
     public void runTestWithScenarios() throws Exception {
+        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
+        when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
         ScesimModelDescriptor simulationDescriptor = new ScesimModelDescriptor();
         List<ScenarioWithIndex> scenarios = new ArrayList<>();
 
@@ -151,9 +146,6 @@ public class ScenarioRunnerServiceImplTest {
                                                                  settingsLocal,
                                                                  backgroundLocal);
 
-        // The builder needs to be built for scesim tests.
-        verify(builder).build();
-
         assertNotNull(test.getTestResultMessage());
         assertNotNull(test.getScenarioWithIndex());
         assertNotNull(test.getSimulationRunMetadata());
@@ -161,6 +153,8 @@ public class ScenarioRunnerServiceImplTest {
 
     @Test
     public void runFailed() throws Exception {
+        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
+        when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
         simulationLocal.addData();
         Scenario scenario = simulationLocal.getDataByIndex(0);
         scenario.setDescription("Test Scenario");
@@ -194,17 +188,10 @@ public class ScenarioRunnerServiceImplTest {
     }
 
     @Test
-    public void manageFailureToLoadABuilder() {
-        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(null);
-        assertThatThrownBy(() -> scenarioRunnerService.getKieContainerClone(mock(Path.class)))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Failed to clone Builder.");
-    }
-
-    @Test
     public void kieContainerTest() {
-        when(builder.getKieContainer()).thenReturn(null);
-        assertThatThrownBy(() -> scenarioRunnerService.getKieContainerClone(mock(Path.class)))
+        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
+        when(buildInfoMock.getKieContainer()).thenReturn(null);
+        assertThatThrownBy(() -> scenarioRunnerService.getKieContainer(mock(Path.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Retrieving KieContainer has failed. Fix all compilation errors within the " +
                                     "project and build the project again.");
