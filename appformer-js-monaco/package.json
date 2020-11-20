@@ -1,0 +1,22 @@
+{
+  "name": "appformer-js-monaco",
+  "version": "0.0.0",
+  "description": "Single-file build of monaco-editor.",
+  "main": "dist/monaco.min.js",
+  "files": ["dist"],
+  "scripts": {
+    "init": "yarn install --force",
+    "clean": "rimraf dist",
+    "build": "yarn clean && webpack",
+    "locktt": "locktt"
+  },
+  "devDependencies": {
+    "@kiegroup/monaco-editor": "1.0.0",
+    "babel-loader": "7.1.4",
+    "webpack": "4.25.1",
+    "webpack-cli": "3.1.2",
+    "copy-webpack-plugin": "5.1.0"
+  },
+  "dependencies": {},
+  "keywords": ["monaco"]
+}

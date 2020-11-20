@@ -18,9 +18,10 @@ package org.uberfire.client.views.pfly.monaco.jsinterop;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = "window", name = "monaco")
 public class MonacoLanguages {
 
     public native void register(final JavaScriptObject language);
@@ -30,6 +31,9 @@ public class MonacoLanguages {
 
     public native void registerCompletionItemProvider(final String languageId,
                                                       final JavaScriptObject completionItemProvider);
+
+    @JsProperty(name = "languages")
+    public static native MonacoLanguages get();
 
     @JsFunction
     public interface ProvideCompletionItemsFunction {

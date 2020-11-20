@@ -23,6 +23,6 @@ package org.uberfire.client.views.pfly.monaco.jsinterop;
 public class MonacoStandaloneCodeEditorHelper {
 
     public static native boolean isSuggestWidgetVisible(final MonacoStandaloneCodeEditor codeEditor) /*-{
-        return codeEditor._contentWidgets['editor.widget.suggestWidget'].widget.state === 3;
+        return codeEditor._contentWidgets['editor.widget.suggestWidget'] && codeEditor._contentWidgets['editor.widget.suggestWidget'].widget.state === 3;
     }-*/;
 }

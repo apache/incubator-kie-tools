@@ -857,6 +857,7 @@
     <module>appformer-js</module>
     <module>appformer-client-api</module>
     <module>appformer-kogito-bridge</module>
+    <module>appformer-js-monaco</module>
   </modules>
 
   <dependencyManagement>
