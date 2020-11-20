@@ -100,8 +100,7 @@ public class MonacoEditorPresenterTest {
         ArgumentCaptor<Runnable> callbackCaptor = ArgumentCaptor.forClass(Runnable.class);
         verify(view, times(1)).loadingStarts();
         verify(view, times(1)).setLanguage(eq(MonacoEditorLanguage.LANG_JAVA));
-        verify(view, times(1)).load(eq(MonacoEditorLanguage.JAVA.getModules()),
-                                    optionsCaptor.capture(),
+        verify(view, times(1)).load(optionsCaptor.capture(),
                                     callbackCaptor.capture());
         MonacoEditorOptions options = optionsCaptor.getValue();
         assertEquals(300, options.getWidthPx());
@@ -134,7 +133,7 @@ public class MonacoEditorPresenterTest {
         verify(view, times(1)).dispose();
         verify(view, times(1)).loadingStarts();
         verify(view, times(1)).setLanguage(eq(MonacoEditorLanguage.LANG_JAVA));
-        verify(view, times(1)).load(any(), any(), any());
+        verify(view, times(1)).load(any(), any());
         verify(view, never()).setValue(eq("anotherValue"));
     }
 

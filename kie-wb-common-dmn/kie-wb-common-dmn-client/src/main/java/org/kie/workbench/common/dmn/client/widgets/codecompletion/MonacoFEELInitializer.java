@@ -16,14 +16,12 @@
 
 package org.kie.workbench.common.dmn.client.widgets.codecompletion;
 
-import java.util.function.Consumer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.common.collect.ImmutableList;
-import org.uberfire.client.views.pfly.monaco.MonacoEditorInitializer;
-import org.uberfire.client.views.pfly.monaco.jsinterop.Monaco;
+import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoEditor;
+import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoLanguages;
 
 import static org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer.MonacoFEELInitializationStatus.INITIALIZED;
 import static org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer.MonacoFEELInitializationStatus.INITIALIZING;
@@ -35,8 +33,26 @@ import static org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoP
 public class MonacoFEELInitializer {
 
     public static final ImmutableList<String> FEEL_RESERVED_KEYWORDS = ImmutableList.of(
-            "for", "return", "if", "then", "else", "some", "every", "satisfies", "instance", "of",
-            "in", "function", "external", "or", "and", "between", "not", "null", "true", "false"
+            "for",
+            "return",
+            "if",
+            "then",
+            "else",
+            "some",
+            "every",
+            "satisfies",
+            "instance",
+            "of",
+            "in",
+            "function",
+            "external",
+            "or",
+            "and",
+            "between",
+            "not",
+            "null",
+            "true",
+            "false"
     );
     private final MonacoFEELVariableSuggestions variableSuggestions;
     private MonacoFEELInitializationStatus initializationStatus = NOT_INITIALIZED;
@@ -53,22 +69,16 @@ public class MonacoFEELInitializer {
         }
 
         setFEELAsInitializing();
-        makeMonacoEditorInitializer().require(onMonacoLoaded());
-    }
 
-    Consumer<Monaco> onMonacoLoaded() {
         final MonacoPropertiesFactory properties = makeMonacoPropertiesFactory();
-        return monaco -> {
-            monaco.languages.register(properties.getLanguage());
-            monaco.languages.setMonarchTokensProvider(FEEL_LANGUAGE_ID, properties.getLanguageDefinition());
-            monaco.languages.registerCompletionItemProvider(FEEL_LANGUAGE_ID, properties.getCompletionItemProvider(variableSuggestions));
-            monaco.editor.defineTheme(FEEL_THEME_ID, properties.getThemeData());
-            setFEELAsInitialized();
-        };
-    }
-
-    MonacoEditorInitializer makeMonacoEditorInitializer() {
-        return new MonacoEditorInitializer();
+        MonacoLanguages.get().register(properties.getLanguage());
+        MonacoLanguages.get().setMonarchTokensProvider(FEEL_LANGUAGE_ID,
+                                                       properties.getLanguageDefinition());
+        MonacoLanguages.get().registerCompletionItemProvider(FEEL_LANGUAGE_ID,
+                                                             properties.getCompletionItemProvider(variableSuggestions));
+        MonacoEditor.get().defineTheme(FEEL_THEME_ID,
+                                       properties.getThemeData());
+        setFEELAsInitialized();
     }
 
     MonacoPropertiesFactory makeMonacoPropertiesFactory() {

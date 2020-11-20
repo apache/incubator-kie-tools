@@ -98,8 +98,7 @@ public class MonacoEditorPresenter {
         current = language.getId();
         view.loadingStarts();
         view.setLanguage(language.getId());
-        view.load(language.getModules(),
-                  language.buildOptions()
+        view.load(language.buildOptions()
                           .setLanguage(language.getLanguageCode())
                           .setWidthPx(widthPx)
                           .setHeightPx(heightPx)

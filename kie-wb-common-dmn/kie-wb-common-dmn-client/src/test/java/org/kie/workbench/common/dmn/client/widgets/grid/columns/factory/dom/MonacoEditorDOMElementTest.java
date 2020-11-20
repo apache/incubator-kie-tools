@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -38,17 +37,15 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.mockito.Mock;
-import org.uberfire.client.views.pfly.monaco.MonacoEditorInitializer;
-import org.uberfire.client.views.pfly.monaco.jsinterop.Monaco;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoEditor;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoStandaloneCodeEditor;
-import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoStandaloneCodeEditor.CallbackFunction;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static com.google.gwt.dom.client.Style.Unit.PCT;
 import static com.google.gwt.dom.client.Style.Unit.PX;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -128,50 +125,33 @@ public class MonacoEditorDOMElementTest extends BaseDOMElementTest<MonacoEditorW
     @Test
     public void testSetupInternalComponent() {
 
-        final MonacoEditorInitializer editorInitializer = mock(MonacoEditorInitializer.class);
         final Element element = mock(Element.class);
         final Style style = mock(Style.class);
-        final Consumer<Monaco> onMonacoLoaded = m -> {/* Nothing. */};
-
-        doReturn(editorInitializer).when(domElement).makeMonacoEditorInitializer();
-        doReturn(onMonacoLoaded).when(domElement).onMonacoLoaded();
-        when(widget.getElement()).thenReturn(element);
-        when(element.getStyle()).thenReturn(style);
-
-        domElement.setupInternalComponent();
-
-        verify(style).setWidth(100, PCT);
-        verify(style).setHeight(100, PCT);
-        verify(editorInitializer).require(onMonacoLoaded);
-    }
-
-    @Test
-    public void testOnMonacoLoaded() {
-
+        final elemental2.dom.Element mockedElement = mock(elemental2.dom.Element.class);
         final MonacoPropertiesFactory properties = mock(MonacoPropertiesFactory.class);
         final JavaScriptObject constructionOptions = mock(JavaScriptObject.class);
-        final Monaco monaco = mock(Monaco.class);
         final MonacoEditor editor = mock(MonacoEditor.class);
         final MonacoStandaloneCodeEditor standaloneCodeEditor = mock(MonacoStandaloneCodeEditor.class);
-        final com.google.gwt.user.client.Element element = mock(com.google.gwt.user.client.Element.class);
-        final elemental2.dom.Element elemental2Element = mock(elemental2.dom.Element.class);
-        final CallbackFunction onKeyDown = mock(CallbackFunction.class);
-        final CallbackFunction widgetTrigger = mock(CallbackFunction.class);
+        final com.google.gwt.user.client.Element gwtElement = mock(com.google.gwt.user.client.Element.class);
+        final MonacoStandaloneCodeEditor.CallbackFunction onKeyDown = mock(MonacoStandaloneCodeEditor.CallbackFunction.class);
+        final MonacoStandaloneCodeEditor.CallbackFunction widgetTrigger = mock(MonacoStandaloneCodeEditor.CallbackFunction.class);
         final NativeEvent blurEvent = mock(NativeEvent.class);
 
-        monaco.editor = editor;
-
         when(widget.getElement()).thenReturn(element);
+        when(element.getStyle()).thenReturn(style);
+        when(domElement.uncheckedCast(any())).thenReturn(mockedElement);
         when(properties.getConstructionOptions()).thenReturn(constructionOptions);
         doReturn(onKeyDown).when(domElement).getOnKeyDown(standaloneCodeEditor);
         doReturn(widgetTrigger).when(domElement).getWidgetTrigger(blurEvent);
         doReturn(blurEvent).when(domElement).getBlurEvent();
         doReturn(properties).when(domElement).makeMonacoPropertiesFactory();
-        doReturn(elemental2Element).when(domElement).uncheckedCast(element);
-        doReturn(standaloneCodeEditor).when(editor).create(elemental2Element, constructionOptions);
+        doReturn(editor).when(domElement).getMonacoEditor();
+        doReturn(standaloneCodeEditor).when(editor).create(mockedElement, constructionOptions);
 
-        domElement.onMonacoLoaded().accept(monaco);
+        domElement.setupInternalComponent();
 
+        verify(style).setWidth(100, PCT);
+        verify(style).setHeight(100, PCT);
         verify(standaloneCodeEditor).onKeyDown(onKeyDown);
         verify(standaloneCodeEditor).onDidBlurEditorWidget(widgetTrigger);
         verify(widget).setCodeEditor(standaloneCodeEditor);
