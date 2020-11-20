@@ -18,9 +18,10 @@ package org.uberfire.client.views.pfly.monaco.jsinterop;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.dom.Element;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = "window", name = "monaco")
 public class MonacoEditor {
 
     public native void defineTheme(final String themeId,
@@ -30,4 +31,7 @@ public class MonacoEditor {
                                                     final JavaScriptObject options);
 
     public native void setTheme(final String feelThemeId);
+
+    @JsProperty(name = "editor")
+    public static native MonacoEditor get();
 }
