@@ -19,9 +19,6 @@ package org.drools.workbench.screens.scenariosimulation.backend.server;
 import javax.inject.Inject;
 
 import org.kie.api.runtime.KieContainer;
-import org.kie.workbench.common.services.backend.builder.core.Builder;
-import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
-import org.kie.workbench.common.services.backend.builder.service.BuildInfoImpl;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -35,26 +32,8 @@ public abstract class AbstractKieContainerService {
     private BuildInfoService buildInfoService;
 
     protected KieContainer getKieContainer(Path path) {
-        final KieModule kieModule = moduleService.resolveModule(path);
-        return assertKieContainerIsValid(buildInfoService.getBuildInfo(kieModule).getKieContainer());
-    }
-
-    protected KieContainer getKieContainerClone(Path path) {
-        final KieModule kieModule = moduleService.resolveModule(path);
-        final BuildInfo buildInfo = buildInfoService.getBuildInfo(kieModule);
-
-        if (buildInfo instanceof BuildInfoImpl) {
-            // The kie builder needs to be cloned so that the original does not get altered.
-            final Builder clone = ((BuildInfoImpl) buildInfo).getBuilder().clone();
-            clone.build();
-
-            return assertKieContainerIsValid(clone.getKieContainer());
-        }
-
-        throw new IllegalStateException("Failed to clone Builder.");
-    }
-
-    private KieContainer assertKieContainerIsValid(final KieContainer kieContainer) {
+        KieModule kieModule = moduleService.resolveModule(path);
+        KieContainer kieContainer = buildInfoService.getBuildInfo(kieModule).getKieContainer();
         if (kieContainer == null) {
             throw new IllegalArgumentException("Retrieving KieContainer has failed. Fix all compilation errors within the " +
                                                        "project and build the project again.");
