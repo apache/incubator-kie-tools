@@ -27,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(GwtMockitoTestRunner.class)
 public class HitPolicyInternationalizerTest {
 
-    @GwtMock
     GuidedDecisionTableConstants constants;
 
     @Test
