@@ -32,21 +32,10 @@ interface DataTypeItemProps {
   onConstraintsEdit: (dataType: DataField) => void;
   onValidate: (dataTypeName: string) => boolean;
   onOutsideClick: () => void;
-  onNewItemChange?: (dataType: DataField) => void;
 }
 
 const DataTypeItem = (props: DataTypeItemProps) => {
-  const {
-    dataType,
-    index,
-    onSave,
-    onEdit,
-    onDelete,
-    onConstraintsEdit,
-    onValidate,
-    onOutsideClick,
-    onNewItemChange
-  } = props;
+  const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit, onValidate, onOutsideClick } = props;
   const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<DataField["type"]>(dataType.type);
@@ -88,11 +77,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     } else {
       setTypeSelection(selection);
       setIsTypeSelectOpen(false);
-      if (onNewItemChange) {
-        onNewItemChange({ name, type: selection });
-      } else {
-        onSave({ name: name.trim(), type: selection }, index);
-      }
+      onSave({ name: name.trim(), type: selection }, index);
     }
   };
 
@@ -104,20 +89,14 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleSave = () => {
-    if (validation !== "error") {
-      onSave({ name: name.trim(), type: typeSelection }, index);
-    }
+    onSave({ name: name.trim(), type: typeSelection }, index);
   };
 
   const handleNameSave = () => {
     if (name.trim().length === 0) {
       setName(dataType.name);
     } else {
-      if (onNewItemChange) {
-        onNewItemChange({ name, type: typeSelection });
-      } else {
-        handleSave();
-      }
+      handleSave();
     }
   };
 
@@ -164,6 +143,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           placeholder="Name"
                           validated={validation}
                           onBlur={handleNameSave}
+                          autoComplete="off"
                         />
                       </FormGroup>
                     </SplitItem>
