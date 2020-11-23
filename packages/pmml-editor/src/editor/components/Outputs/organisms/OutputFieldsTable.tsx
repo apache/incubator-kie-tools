@@ -102,7 +102,7 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (activeOperation === Operation.CREATE_OUTPUT && addOutputRowRef.current) {
+    if (activeOperation === Operation.UPDATE_OUTPUT && addOutputRowRef.current) {
       addOutputRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
@@ -180,42 +180,8 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
             );
           }
         })}
-        {activeOperation === Operation.CREATE_OUTPUT && (
-          <div key={undefined} ref={addOutputRowRef}>
-            <OutputFieldEditRow
-              key={"add"}
-              activeOperation={activeOperation}
-              activeOutputFieldIndex={undefined}
-              name={name}
-              setName={setName}
-              dataType={dataType}
-              setDataType={setDataType}
-              optype={optype}
-              setOptype={setOptype}
-              targetField={targetField}
-              setTargetField={setTargetField}
-              feature={feature}
-              setFeature={setFeature}
-              value={value}
-              setValue={setValue}
-              rank={rank}
-              setRank={setRank}
-              rankOrder={rankOrder}
-              setRankOrder={setRankOrder}
-              segmentId={segmentId}
-              setSegmentId={setSegmentId}
-              isFinalResult={isFinalResult}
-              setIsFinalResult={setIsFinalResult}
-              validateOutputName={_name => onValidateOutputFieldName(undefined, _name)}
-              viewExtendedProperties={viewExtendedProperties}
-              onCommitAndClose={onCommitAndClose}
-              onCommit={onCommit}
-              onCancel={onCancel}
-            />
-          </div>
-        )}
       </section>
-      {outputs.length === 0 && activeOperation !== Operation.CREATE_OUTPUT && (
+      {outputs.length === 0 && (
         <Bullseye>
           <EmptyStateNoOutput onAddOutputField={onAddOutputField} />
         </Bullseye>

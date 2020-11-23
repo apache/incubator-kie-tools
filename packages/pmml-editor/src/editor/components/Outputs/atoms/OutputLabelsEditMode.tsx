@@ -39,6 +39,7 @@ interface OutputLabelsEditModeProps {
   setIsFinalResult: (isFinalResult: boolean | undefined) => void;
   commit: (outputField: Partial<OutputField>) => void;
   viewExtendedProperties: () => void;
+  isDisabled: boolean;
 }
 
 const PADDING: CSSProperties = { marginRight: "4px" };
@@ -62,7 +63,8 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
     isFinalResult,
     setIsFinalResult,
     commit,
-    viewExtendedProperties
+    viewExtendedProperties,
+    isDisabled
   } = props;
 
   return (
@@ -123,19 +125,26 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             isFinalResult: undefined
           });
         })}
-      <Label
-        style={PADDING}
-        variant="outline"
-        color="orange"
-        href="#outline"
-        icon={<ArrowAltCircleRightIcon />}
-        onClick={e => {
-          e.preventDefault();
-          viewExtendedProperties();
-        }}
-      >
-        Edit properties...
-      </Label>
+      {isDisabled && (
+        <Label style={PADDING} variant="outline" icon={<ArrowAltCircleRightIcon />}>
+          Edit properties...
+        </Label>
+      )}
+      {!isDisabled && (
+        <Label
+          style={PADDING}
+          variant="outline"
+          color="orange"
+          href="#outline"
+          icon={<ArrowAltCircleRightIcon />}
+          onClick={e => {
+            e.preventDefault();
+            viewExtendedProperties();
+          }}
+        >
+          Edit properties...
+        </Label>
+      )}
     </>
   );
 };

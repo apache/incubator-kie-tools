@@ -136,7 +136,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
       }
     },
     {
-      disabled: activeOperation !== Operation.UPDATE_OUTPUT && activeOperation !== Operation.CREATE_OUTPUT,
+      disabled: activeOperation !== Operation.UPDATE_OUTPUT,
       eventTypes: ["click"]
     }
   );
@@ -241,6 +241,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   setIsFinalResult={setIsFinalResult}
                   viewExtendedProperties={viewExtendedProperties}
                   commit={onCommit}
+                  isDisabled={!name?.valid ?? true}
                 />
               </FormGroup>
             </SplitItem>

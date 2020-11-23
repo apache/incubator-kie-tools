@@ -74,18 +74,36 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const addOutputField = () => {
-    setEditItemIndex(undefined);
-    setName({ value: "" as FieldName, valid: true });
-    setDataType("boolean");
-    setOptype(undefined);
-    setTargetField(undefined);
-    setFeature(undefined);
-    setValue(undefined);
-    setRank(undefined);
-    setRankOrder(undefined);
-    setSegmentId(undefined);
-    setIsFinalResult(undefined);
-    setActiveOperation(Operation.CREATE_OUTPUT);
+    let numberOfOutputFields = output?.OutputField.length;
+    if (numberOfOutputFields !== undefined) {
+      //Index of the new row is equal to the number of existing rows
+      setEditItemIndex(numberOfOutputFields);
+      //TODO {manstis} This will need some more magic to ensure the new default does not already exist
+      const newOutputFieldName: FieldName = "New output" as FieldName;
+      commit(undefined, {
+        name: newOutputFieldName,
+        dataType: "string",
+        optype: undefined,
+        targetField: undefined,
+        feature: undefined,
+        value: undefined,
+        rank: undefined,
+        rankOrder: undefined,
+        segmentId: undefined,
+        isFinalResult: undefined
+      });
+      setName({ value: newOutputFieldName, valid: true });
+      setDataType("boolean");
+      setOptype(undefined);
+      setTargetField(undefined);
+      setFeature(undefined);
+      setValue(undefined);
+      setRank(undefined);
+      setRankOrder(undefined);
+      setSegmentId(undefined);
+      setIsFinalResult(undefined);
+      setActiveOperation(Operation.UPDATE_OUTPUT);
+    }
   };
 
   const onEditOutputField = (index: number) => {
@@ -110,20 +128,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const onCommit = (partial: Partial<OutputField>) => {
-    if (editItemIndex === undefined) {
-      commit(undefined, {
-        name: name?.value ?? { value: "" },
-        dataType,
-        optype,
-        targetField,
-        feature,
-        value,
-        rank,
-        rankOrder,
-        segmentId,
-        isFinalResult
-      });
-    } else if (output !== undefined) {
+    if (output !== undefined && editItemIndex !== undefined) {
       const outputField = output.OutputField[editItemIndex];
       const existingPartial: Partial<OutputField> = {};
       Object.keys(partial).forEach(key => set(existingPartial, key, get(outputField, key)));
