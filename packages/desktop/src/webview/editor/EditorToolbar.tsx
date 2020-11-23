@@ -42,16 +42,18 @@ export function EditorToolbar(props: Props) {
   const { i18n } = useDesktopI18n();
 
   const fileExtension = useMemo(() => {
-    return context.file!.fileType;
-  }, [location]);
+    return context.file.fileExtension;
+  }, [context]);
 
-  const tooltipContent = <div>{context.file?.filePath!}</div>;
+  const fileName = useMemo(() => {
+    return context.file.fileName;
+  }, [context]);
 
   const fileNameTitle = (
     <div data-testid="toolbar-title" className={"kogito--editor__toolbar-title"}>
-      <Tooltip content={tooltipContent} position={TooltipPosition.bottom} maxWidth={"50em"}>
+      <Tooltip content={<div>{fileName}</div>} position={TooltipPosition.bottom} maxWidth={"50em"}>
         <Title headingLevel={"h3"} size={"xl"}>
-          {removeDirectories(context.file!.filePath)}
+          {removeDirectories(fileName)}
         </Title>
       </Tooltip>
       {props.isEdited && (
@@ -93,7 +95,11 @@ export function EditorToolbar(props: Props) {
   return (
     <PageHeader
       logo={
-        <Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} onClick={props.onClose} />
+        <Brand
+          src={`images/${fileExtension}_kogito_logo.svg`}
+          alt={`${fileExtension} kogito logo`}
+          onClick={props.onClose}
+        />
       }
       headerTools={headerToolbar}
       topNav={fileNameTitle}

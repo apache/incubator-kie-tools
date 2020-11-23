@@ -15,11 +15,11 @@
  */
 
 import * as React from "react";
-import { File } from "../../common/File";
+import { File } from "@kogito-tooling/editor/dist/embedded";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 export interface GlobalContextType {
-  file?: File;
+  file: File;
   editorEnvelopeLocator: EditorEnvelopeLocator;
 }
 

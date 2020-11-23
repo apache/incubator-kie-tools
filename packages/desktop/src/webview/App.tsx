@@ -22,7 +22,7 @@ import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
-import { File } from "../common/File";
+import { File as ElectronFile } from "../common/File";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
@@ -30,6 +30,7 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
+import { File } from "@kogito-tooling/editor/dist/embedded";
 
 enum Pages {
   HOME,
@@ -40,9 +41,37 @@ const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
 export function App() {
   const [page, setPage] = useState(Pages.HOME);
-  const [file, setFile] = useState<File>();
-
+  const [file, setFile] = useState<File>({
+    fileName: "",
+    fileExtension: "",
+    getFileContents: () => Promise.resolve(""),
+    isReadOnly: false
+  });
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
+
+  const onFilenameChange = useCallback(
+    (filePath: string) => {
+      setFile({
+        fileName: filePath,
+        fileExtension: file.fileExtension,
+        getFileContents: file.getFileContents,
+        isReadOnly: false
+      });
+    },
+    [file]
+  );
+
+  const onFileChange = useCallback(
+    (newFile: ElectronFile) => {
+      setFile({
+        fileName: newFile.filePath,
+        fileExtension: newFile.fileType,
+        getFileContents: () => Promise.resolve(newFile.fileContent),
+        isReadOnly: false
+      });
+    },
+    [file]
+  );
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
@@ -63,12 +92,12 @@ export function App() {
   }, [page]);
 
   const openFile = useCallback(
-    (fileToOpen: File) => {
+    (fileToOpen: ElectronFile) => {
       closeInvalidFileTypeErrorAlert();
-      setFile(fileToOpen);
+      onFileChange(fileToOpen);
       setPage(Pages.EDITOR);
     },
-    [page, closeInvalidFileTypeErrorAlert]
+    [closeInvalidFileTypeErrorAlert, onFileChange]
   );
 
   const openFileByPath = useCallback((filePath: string) => {
@@ -78,8 +107,7 @@ export function App() {
   const goToHomePage = useCallback(() => {
     electron.ipcRenderer.send("setFileMenusEnabled", { enabled: false });
     setPage(Pages.HOME);
-    setFile(undefined);
-  }, [page]);
+  }, []);
 
   const dragAndDropFileEvent = useCallback(
     ev => {
@@ -90,17 +118,6 @@ export function App() {
     },
     [openFileByPath]
   );
-
-  const Router = () => {
-    switch (page) {
-      case Pages.HOME:
-        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
-      case Pages.EDITOR:
-        return <EditorPage onClose={goToHomePage} />;
-      default:
-        return <></>;
-    }
-  };
 
   useEffect(() => {
     if (invalidFileTypeErrorVisible) {
@@ -114,7 +131,7 @@ export function App() {
   }, [invalidFileTypeErrorVisible, closeInvalidFileTypeErrorAlert]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: File }) => {
+    electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: ElectronFile }) => {
       if (editorEnvelopeLocator.mapping.has(data.file.fileType)) {
         if (page === Pages.EDITOR) {
           setPage(Pages.HOME);
@@ -128,18 +145,7 @@ export function App() {
     return () => {
       electron.ipcRenderer.removeAllListeners("openFile");
     };
-  }, [page]);
-
-  // TODO: REMOVE
-  useEffect(() => {
-    electron.ipcRenderer.on("saveFileSuccessApp", (event: IpcRendererEvent, data: { filePath: string }) => {
-      file!.filePath = data.filePath;
-    });
-
-    return () => {
-      electron.ipcRenderer.removeAllListeners("saveFileSuccessApp");
-    };
-  }, [file]);
+  }, [page, editorEnvelopeLocator]);
 
   useEffect(() => {
     document.addEventListener("dragover", e => e.preventDefault());
@@ -152,6 +158,16 @@ export function App() {
       document.body.removeEventListener("drop", dragAndDropFileEvent);
     };
   }, [dragAndDropFileEvent]);
+
+  const HomePageComponent = useMemo(() => <HomePage openFile={openFile} openFileByPath={openFileByPath} />, [
+    openFile,
+    openFileByPath
+  ]);
+
+  const EditorPageComponent = useMemo(() => <EditorPage onFilenameChange={onFilenameChange} onClose={goToHomePage} />, [
+    onFilenameChange,
+    goToHomePage
+  ]);
 
   return (
     <I18nDictionariesProvider
@@ -177,7 +193,8 @@ export function App() {
                 />
               </div>
             )}
-            <Router />
+            {page === Pages.HOME && HomePageComponent}
+            {page === Pages.EDITOR && EditorPageComponent}
           </GlobalContext.Provider>
         )}
       </DesktopI18nContext.Consumer>
