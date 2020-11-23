@@ -1,6 +1,6 @@
 {
   "name": "todo-list-view",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "license": "Apache-2.0",
   "private": false,
   "files": [
@@ -16,7 +16,7 @@
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "dependencies": {
-    "@kogito-tooling/envelope": "0.7.1",
-    "@kogito-tooling/envelope-bus": "0.7.1"
+    "@kogito-tooling/envelope": "0.8.0",
+    "@kogito-tooling/envelope-bus": "0.8.0"
   }
 }
