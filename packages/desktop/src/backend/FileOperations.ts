@@ -40,7 +40,7 @@ export class FileOperations {
         data.file.filePath !== UNSAVED_FILE_NAME &&
         data.file.filePath !== SAMPLE
       ) {
-        this.writeFile(event, data.file.filePath, data.file.fileContent);
+        this.writeFile(data.file.filePath, data.file.fileContent);
         return;
       }
 
@@ -52,7 +52,7 @@ export class FileOperations {
         })
         .then(result => {
           if (!result.canceled) {
-            this.writeFile(event, result.filePath!, data.file.fileContent);
+            this.writeFile(result.filePath!, data.file.fileContent);
           }
         });
     });
@@ -174,13 +174,12 @@ export class FileOperations {
     });
   }
 
-  private writeFile(event: IpcMainEvent, filePath: string, fileContent: string) {
+  private writeFile(filePath: string, fileContent: string) {
     Files.write(FS.newFile(filePath), fileContent)
       .then(() => {
         this.userData.registerFile(filePath);
         console.info("File " + filePath + " saved.");
-
-        event.reply("saveFileSuccess", { filePath })
+        this.window.webContents.send("saveFileSuccess", { filePath })
       })
       .catch(error => {
         console.info("Failed to save file" + filePath + ":" + error);

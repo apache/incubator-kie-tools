@@ -177,8 +177,6 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     electron.ipcRenderer.on("saveFileSuccess", (event: IpcRendererEvent, data: { filePath: string }): void => {
-      setSaveFileSuccessAlertVisible(true);
-      editor?.getStateControl().setSavedCommand();
       editor
         ?.getPreview()
         .then(previewSvg => {
@@ -190,6 +188,8 @@ export function EditorPage(props: Props) {
         })
         .catch(err => console.log(err))
         .finally(() => {
+          editor?.getStateControl().setSavedCommand();
+          setSaveFileSuccessAlertVisible(true);
           props.onFilenameChange(data.filePath);
         });
     });
