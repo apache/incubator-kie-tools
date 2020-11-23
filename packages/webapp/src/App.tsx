@@ -28,6 +28,7 @@ import { TodoListViewPage } from "./Pages/TodoList/TodoListViewPage";
 import { PingPongViewsPage } from "./Pages/PingPong/PingPongViewsPage";
 import { Home } from "./Home";
 import "../static/resources/styles.css";
+import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandaloneEditorPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
@@ -35,6 +36,7 @@ enum Location {
   BASE46PNG = "/editor/base64png",
   TODO_LIST = "/page/todo-list",
   PING_PONG_PAGES = "/page/my-custom-page-impls",
+  STANDALONE_EDITORS = "/page/standalone-editors",
   HOME = "/",
 }
 
@@ -78,6 +80,9 @@ export function App() {
                   <NavItem itemId={Location.PING_PONG_PAGES} isActive={location === Location.PING_PONG_PAGES}>
                     <Link to={Location.PING_PONG_PAGES}>Ping-Pong Views</Link>
                   </NavItem>
+                  <NavItem itemId={Location.STANDALONE_EDITORS} isActive={location === Location.STANDALONE_EDITORS}>
+                    <Link to={Location.STANDALONE_EDITORS}>DMN Standalone Editor</Link>
+                  </NavItem>
                 </NavList>
               </Nav>
             }
@@ -102,6 +107,9 @@ export function App() {
           </Route>
           <Route path={Location.PING_PONG_PAGES}>
             <PingPongViewsPage />
+          </Route>
+          <Route path={Location.STANDALONE_EDITORS}>
+            <DmnStandaloneEditorPage />
           </Route>
         </Switch>
       </Page>

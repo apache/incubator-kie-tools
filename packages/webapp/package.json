@@ -14,6 +14,7 @@
     "@kogito-tooling/envelope-bus": "0.7.1",
     "@kogito-tooling/kie-bc-editors": "0.7.1",
     "@kogito-tooling/patternfly-base": "0.7.1",
+    "@kogito-tooling/kie-editors-standalone": "0.7.2-alpha3",
     "base64png-editor": "0.7.1",
     "ping-pong-view": "0.7.1",
     "ping-pong-view-react": "0.7.1",
