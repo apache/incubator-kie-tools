@@ -1,6 +1,7 @@
 package org.uberfire.ext.widgets.common.client.dropdown;
 
 import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeast;
@@ -32,13 +34,19 @@ public class MultipleLiveSearchSelectionHandlerTest {
     @Spy
     private MultipleLiveSearchSelectionHandler<String> handler;
 
-    @GwtMock
+//    @GwtMock
     private CommonConstants constants;
 
     @Before
     public void init() {
+        GwtMockito.initMocks(this);
         System.out.println(CommonConstants.INSTANCE.liveSearchElementsSelected(2));
         handler.setLiveSearchSelectionCallback(callback);
+    }
+
+    @Test
+    public void tiago() {
+        assertNotEquals(null, CommonConstants.INSTANCE.liveSearchElementsSelected(1));
     }
 
     @Test
