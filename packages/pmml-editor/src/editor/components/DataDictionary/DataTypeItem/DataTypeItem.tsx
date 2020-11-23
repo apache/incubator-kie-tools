@@ -17,7 +17,7 @@ import {
   StackItem,
   TextInput
 } from "@patternfly/react-core";
-import { AngleRightIcon, CheckIcon, EditAltIcon, TrashIcon } from "@patternfly/react-icons";
+import { AngleRightIcon, TrashIcon } from "@patternfly/react-icons";
 import { DataField, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
@@ -31,10 +31,22 @@ interface DataTypeItemProps {
   onDelete?: (index: number) => void;
   onConstraintsEdit: (dataType: DataField) => void;
   onValidate: (dataTypeName: string) => boolean;
+  onOutsideClick: () => void;
+  onNewItemChange?: (dataType: DataField) => void;
 }
 
 const DataTypeItem = (props: DataTypeItemProps) => {
-  const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit, onValidate } = props;
+  const {
+    dataType,
+    index,
+    onSave,
+    onEdit,
+    onDelete,
+    onConstraintsEdit,
+    onValidate,
+    onOutsideClick,
+    onNewItemChange
+  } = props;
   const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<DataField["type"]>(dataType.type);
@@ -48,17 +60,19 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   ];
   const [validation, setValidation] = useState<Validated>("default");
 
-  const ref = useOnclickOutside(() => {
-    // this should be split with some kind of validation
-    if (editing === index && (index === -1 || name.trim().length > 0)) {
-      handleSave();
-    }
-  });
+  const ref = useOnclickOutside(
+    () => {
+      console.log("click outside");
+      onOutsideClick();
+    },
+    { eventTypes: ["click"], ignoreClass: "data-type-item__type-select__option" }
+  );
 
   const handleNameChange = (value: string) => {
     setName(value);
     setValidation(onValidate(value) ? "default" : "error");
   };
+
   const typeToggle = (isOpen: boolean) => {
     setIsTypeSelectOpen(isOpen);
   };
@@ -74,10 +88,16 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     } else {
       setTypeSelection(selection);
       setIsTypeSelectOpen(false);
+      if (onNewItemChange) {
+        onNewItemChange({ name, type: selection });
+      } else {
+        onSave({ name: name.trim(), type: selection }, index);
+      }
     }
   };
 
   const handleEditStatus = () => {
+    console.log("set edit status");
     if (onEdit) {
       onEdit(index);
     }
@@ -89,7 +109,21 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     }
   };
 
-  const handleDelete = () => {
+  const handleNameSave = () => {
+    if (name.trim().length === 0) {
+      setName(dataType.name);
+    } else {
+      if (onNewItemChange) {
+        onNewItemChange({ name, type: typeSelection });
+      } else {
+        handleSave();
+      }
+    }
+  };
+
+  const handleDelete = (event: React.MouseEvent | React.KeyboardEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
     if (onDelete) {
       onDelete(index);
     }
@@ -108,95 +142,91 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   return (
     <>
       {editing === index && (
-        <article className={`data-type-item data-type-item-n${index}`} ref={ref}>
-          <Form onSubmit={handleSave}>
-            <Stack hasGutter={true}>
-              <StackItem>
-                {/* Change Split to Flexbox */}
-                <Split hasGutter={true}>
-                  <SplitItem>
-                    <FormGroup
-                      fieldId="name"
-                      helperTextInvalid="Name already used by another Data Type"
-                      validated={validation}
-                      style={{ width: 280 }}
-                    >
-                      <TextInput
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={name}
-                        onChange={handleNameChange}
-                        placeholder="Name"
+        <article className={`data-type-item editing data-type-item-n${index}`}>
+          <section ref={ref}>
+            <Form onSubmit={handleSave}>
+              <Stack hasGutter={true}>
+                <StackItem>
+                  <Split hasGutter={true}>
+                    <SplitItem>
+                      <FormGroup
+                        fieldId="name"
+                        helperTextInvalid="Name already used by another Data Type"
                         validated={validation}
-                      />
-                    </FormGroup>
-                  </SplitItem>
-                  <SplitItem>
-                    <Select
-                      variant={SelectVariant.single}
-                      aria-label="Select Input"
-                      onToggle={typeToggle}
-                      onSelect={typeSelect}
-                      selections={typeSelection}
-                      isOpen={isTypeSelectOpen}
-                      placeholder="Type"
-                      menuAppendTo={"parent"}
-                      className="data-type-item__type-select"
-                    >
-                      {typeOptions.map((option, optionIndex) => (
-                        <SelectOption
-                          key={optionIndex}
-                          value={option.value}
-                          className="data-type-item__type-select__option"
-                        />
-                      ))}
-                    </Select>
-                  </SplitItem>
-                  <SplitItem isFilled={true}>&nbsp;</SplitItem>
-                  <SplitItem>
-                    <Button variant="plain" onClick={handleSave} isDisabled={name.trim().length === 0}>
-                      <CheckIcon />
-                    </Button>
-                  </SplitItem>
-                </Split>
-              </StackItem>
-              <StackItem>
-                <Split hasGutter={true}>
-                  <SplitItem>
-                    {dataType.constraints === undefined && (
-                      <Button
-                        variant="link"
-                        icon={<AngleRightIcon />}
-                        isInline={true}
-                        iconPosition="right"
-                        onClick={handleConstraints}
-                        isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
+                        style={{ width: 280 }}
                       >
-                        <span>Add Constraints</span>
-                      </Button>
-                    )}
-                    {dataType.constraints !== undefined && (
-                      <>
-                        <span>Constraints</span>
+                        <TextInput
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={name}
+                          onChange={handleNameChange}
+                          placeholder="Name"
+                          validated={validation}
+                          onBlur={handleNameSave}
+                        />
+                      </FormGroup>
+                    </SplitItem>
+                    <SplitItem>
+                      <Select
+                        variant={SelectVariant.single}
+                        aria-label="Select Input"
+                        onToggle={typeToggle}
+                        onSelect={typeSelect}
+                        selections={typeSelection}
+                        isOpen={isTypeSelectOpen}
+                        placeholder="Type"
+                        className="data-type-item__type-select"
+                      >
+                        {typeOptions.map((option, optionIndex) => (
+                          <SelectOption
+                            key={optionIndex}
+                            value={option.value}
+                            className="data-type-item__type-select__option"
+                          />
+                        ))}
+                      </Select>
+                    </SplitItem>
+                    <SplitItem isFilled={true}>&nbsp;</SplitItem>
+                  </Split>
+                </StackItem>
+                <StackItem>
+                  <Split hasGutter={true}>
+                    <SplitItem>
+                      {dataType.constraints === undefined && (
                         <Button
                           variant="link"
+                          icon={<AngleRightIcon />}
+                          isInline={true}
+                          iconPosition="right"
                           onClick={handleConstraints}
                           isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
                         >
-                          <ConstraintsLabel constraints={dataType.constraints} />
+                          <span>Add Constraints</span>
                         </Button>
-                      </>
-                    )}
-                  </SplitItem>
-                </Split>
-              </StackItem>
-            </Stack>
-          </Form>
+                      )}
+                      {dataType.constraints !== undefined && (
+                        <>
+                          <span>Constraints</span>
+                          <Button
+                            variant="link"
+                            onClick={handleConstraints}
+                            isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
+                          >
+                            <ConstraintsLabel constraints={dataType.constraints} />
+                          </Button>
+                        </>
+                      )}
+                    </SplitItem>
+                  </Split>
+                </StackItem>
+              </Stack>
+            </Form>
+          </section>
         </article>
       )}
       {editing !== index && (
-        <article className={`data-type-item data-type-item-n${index}`} onDoubleClick={handleEditStatus}>
+        <article className={`data-type-item data-type-item-n${index}`} onClick={handleEditStatus}>
           <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
             <FlexItem>
               <strong>{name}</strong>
@@ -213,10 +243,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               )}
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
-              <Button variant="plain" onClick={handleEditStatus} isDisabled={editing !== false}>
-                <EditAltIcon />
-              </Button>
-              <Button variant="plain" onClick={handleDelete} isDisabled={editing !== false}>
+              <Button variant="plain" onClick={handleDelete}>
                 <TrashIcon />
               </Button>
             </FlexItem>

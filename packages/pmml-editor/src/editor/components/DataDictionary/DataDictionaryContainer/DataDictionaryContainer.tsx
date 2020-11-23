@@ -24,10 +24,17 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
   const [constrainsEdit, setConstraintsEdit] = useState<DataField>();
   const [sorting, setSorting] = useState(false);
+  let newItemDraft: DataField = { name: "", type: "string" };
 
   useEffect(() => {
     onUpdate(dataTypes);
   }, [dataTypes]);
+
+  const handleOutsideClick = () => {
+    saveDraftNewItem();
+    setNewType(false);
+    setEditing(false);
+  };
 
   const addDataType = () => {
     setNewType(true);
@@ -37,21 +44,38 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   const saveDataType = (dataType: DataField, index: number) => {
     if (index === -1) {
       if (dataType.name.length > 0) {
-        setDataTypes([...dataTypes, dataType]);
+        const newTypes = dataTypes;
+        newTypes.push(dataType);
+        setDataTypes(newTypes);
+        setNewType(false);
+        // setEditing(newTypes.length - 1);
       } else {
         setNewType(false);
+        setEditing(false);
       }
     } else {
-      const newTypes = [...dataTypes];
+      const newTypes = dataTypes;
       newTypes[index] = { ...newTypes[index], ...dataType };
+      console.log("updating data type");
       setDataTypes(newTypes);
+    }
+  };
+
+  const saveDraftNewItem = () => {
+    if (newItemDraft && newItemDraft.name.length > 0) {
+      if (dataTypeNameValidation(newItemDraft.name)) {
+        saveDataType({ ...newItemDraft }, -1);
+      }
+      newItemDraft.name = "";
     }
   };
 
   const handleSave = (dataType: DataField, index: number) => {
     saveDataType(dataType, index);
-    setNewType(false);
-    setEditing(false);
+  };
+
+  const handleNewItem = (dataType: DataField) => {
+    newItemDraft = dataType;
   };
 
   const handleDelete = (index: number) => {
@@ -61,6 +85,10 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   };
 
   const handleEdit = (index: number) => {
+    console.log("setting editing to " + index);
+    if (index > -1) {
+      saveDraftNewItem();
+    }
     setEditing(index);
     if (newType) {
       setNewType(false);
@@ -108,6 +136,9 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   };
 
   const toggleSorting = () => {
+    saveDraftNewItem();
+    setNewType(false);
+    setEditing(false);
     setSorting(!sorting);
   };
 
@@ -139,13 +170,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
       <StatusContext.Provider value={editing}>
         <Flex style={{ margin: "1em 0 2em 0" }}>
           <FlexItem>
-            <Button
-              variant="primary"
-              onClick={addDataType}
-              isDisabled={editing !== false || sorting || viewSection !== "main"}
-              icon={<PlusIcon />}
-              iconPosition="left"
-            >
+            <Button variant="primary" onClick={addDataType} icon={<PlusIcon />} iconPosition="left">
               Add Data Type
             </Button>
           </FlexItem>
@@ -153,7 +178,6 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
             <Button
               variant="secondary"
               onClick={() => setViewSection("batch-add")}
-              isDisabled={editing !== false || sorting || viewSection !== "main"}
               icon={<BoltIcon />}
               iconPosition="left"
             >
@@ -164,7 +188,6 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
             <Button
               variant={sorting ? "primary" : "secondary"}
               onClick={toggleSorting}
-              isDisabled={editing !== false || dataTypes.length < 2 || viewSection !== "main"}
               icon={<SortIcon />}
               iconPosition="left"
             >
@@ -201,6 +224,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                           onDelete={handleDelete}
                           onConstraintsEdit={handleConstraintsEdit}
                           onValidate={dataTypeNameValidation}
+                          onOutsideClick={handleOutsideClick}
                         />
                       ))}
                       {newType && (
@@ -211,6 +235,8 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                           onSave={handleSave}
                           onConstraintsEdit={handleConstraintsEdit}
                           onValidate={dataTypeNameValidation}
+                          onOutsideClick={handleOutsideClick}
+                          onNewItemChange={handleNewItem}
                         />
                       )}
                     </section>
