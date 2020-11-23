@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 /**
  * This class is a proxy for a GWT static class {@link com.google.gwt.http.client.URL()} with native method to make it
- * testable without PowerMock dependency.
+ * testable without static mocking dependency.
  */
 public class URL {
 

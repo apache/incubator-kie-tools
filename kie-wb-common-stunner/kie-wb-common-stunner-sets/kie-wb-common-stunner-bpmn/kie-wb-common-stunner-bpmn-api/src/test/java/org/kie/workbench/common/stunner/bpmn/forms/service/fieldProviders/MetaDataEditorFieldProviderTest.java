@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.MetaDataEditorFieldType
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.mockito.Mockito.spy;
 
 public class MetaDataEditorFieldProviderTest {
 

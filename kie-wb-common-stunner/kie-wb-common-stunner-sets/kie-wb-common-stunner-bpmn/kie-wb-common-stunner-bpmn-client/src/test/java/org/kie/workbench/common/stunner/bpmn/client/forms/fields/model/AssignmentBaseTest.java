@@ -58,7 +58,7 @@ public class AssignmentBaseTest {
     }
 
     /**
-     * Implementation of urlEncode for PowerMocked StringUtils
+     * Implementation of urlEncode for client side StringUtils
      * @param s
      * @return
      */
@@ -75,7 +75,7 @@ public class AssignmentBaseTest {
     }
 
     /**
-     * Implementation of urlDecode for PowerMocked StringUtils
+     * Implementation of urlDecode for client side StringUtils
      * @param s
      * @return
      */

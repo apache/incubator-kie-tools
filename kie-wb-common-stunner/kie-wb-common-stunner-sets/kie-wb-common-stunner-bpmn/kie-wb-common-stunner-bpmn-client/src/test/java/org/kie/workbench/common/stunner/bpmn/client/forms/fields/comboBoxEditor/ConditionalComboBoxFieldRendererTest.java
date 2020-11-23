@@ -94,7 +94,7 @@ public class ConditionalComboBoxFieldRendererTest {
     }
 
     @Test
-    public void init() throws Exception {
+    public void init() {
         resetMocks();
 
         EmbeddedSubprocess embeddedSubprocess = new EmbeddedSubprocess();

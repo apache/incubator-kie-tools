@@ -18,21 +18,16 @@ package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.stunner.bpmn.forms.model.DataObjectTypeFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.DataObjectTypeFieldType;
-import org.mockito.Mock;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.mockito.Mockito.spy;
 
 public class DataObjectTypeEditorFieldProviderTest {
 
     private DataObjectTypeEditorFieldProvider dataObjectTypeEditorFieldProvider;
-
-    @Mock
-    private TypeInfo typeInfo;
 
     @Before
     public void setUp() {

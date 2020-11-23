@@ -59,10 +59,6 @@ public class ArtifactsConverterTest {
     @Mock
     private View<DataObject> dataObjectView;
 
-    private TextAnnotation textAnnotation;
-
-    private DataObject dataObject;
-
     @Mock
     private TextAnnotationPropertyWriter textAnnotationWriter;
 
@@ -71,7 +67,7 @@ public class ArtifactsConverterTest {
 
     @Test
     public void toTextAnnotationElement() {
-        textAnnotation = new TextAnnotation();
+        TextAnnotation textAnnotation = new TextAnnotation();
         textAnnotation.getGeneral().getDocumentation().setValue(DOC);
         textAnnotation.getGeneral().getName().setValue(NAME);
 
@@ -80,7 +76,6 @@ public class ArtifactsConverterTest {
 
         when(textAnnotationView.getDefinition()).thenReturn(textAnnotation);
         when(propertyWriterFactory.of(any(org.eclipse.bpmn2.TextAnnotation.class))).thenReturn(textAnnotationWriter);
-
 
         artifactsConverter = new ArtifactsConverter(propertyWriterFactory);
 
@@ -93,7 +88,7 @@ public class ArtifactsConverterTest {
 
     @Test
     public void toDataObjectElement() {
-        dataObject = new DataObject();
+        DataObject dataObject = new DataObject();
         dataObject.getGeneral().getDocumentation().setValue(DOC);
         dataObject.setName(new Name(NAME));
         dataObject.setType(new DataObjectType(new DataObjectTypeValue(NAME)));

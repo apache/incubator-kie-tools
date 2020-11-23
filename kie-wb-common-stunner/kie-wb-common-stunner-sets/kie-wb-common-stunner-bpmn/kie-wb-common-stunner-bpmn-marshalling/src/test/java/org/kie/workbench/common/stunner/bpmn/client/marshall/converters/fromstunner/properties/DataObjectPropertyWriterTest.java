@@ -25,11 +25,13 @@ import org.jboss.drools.MetaDataType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataObjectPropertyWriterTest {
@@ -38,7 +40,7 @@ public class DataObjectPropertyWriterTest {
 
     private DataObjectPropertyWriter tested;
 
-    private DataObjectReference reference = bpmn2.createDataObjectReference();
+    private final DataObjectReference reference = bpmn2.createDataObjectReference();
 
     @Mock
     private VariableScope variableScope;
@@ -54,6 +56,8 @@ public class DataObjectPropertyWriterTest {
 
     @Before
     public void setUp() {
+        when(extensionAttributeValue.getValue()).thenReturn(valueMap);
+        when(metaDataType.getName()).thenReturn(CustomElement.name.name());
         tested = new DataObjectPropertyWriter(reference, variableScope, new HashSet<>());
     }
 

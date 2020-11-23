@@ -132,7 +132,7 @@ public class ReassignmentEditorWidgetViewImpl extends Composite implements Reass
         this.multipleSelectorInputGroups.init(groupsLiveSearchService, multipleLiveSearchSelectionHandlerGroups);
     }
 
-    void initTypeSelector() {
+    protected void initTypeSelector() {
         notStarted.setValue(ReassignmentType.NotStartedReassign.getAlias());
         notStarted.setText(ReassignmentType.NotStartedReassign.getType());
         notCompleted.setText(ReassignmentType.NotCompletedReassign.getType());
@@ -201,7 +201,7 @@ public class ReassignmentEditorWidgetViewImpl extends Composite implements Reass
         okButton.disabled = readOnly;
     }
 
-    void ok() {
+    protected void ok() {
         // TODO looks like errai data binder doenst support liststore widgets.
         current.setUsers(multipleLiveSearchSelectionHandlerUsers.getSelectedValues());
         current.setGroups(multipleLiveSearchSelectionHandlerGroups.getSelectedValues());
@@ -226,7 +226,7 @@ public class ReassignmentEditorWidgetViewImpl extends Composite implements Reass
         hide();
     }
 
-    void hide() {
+    protected void hide() {
         //clear widgets and set default values
         multipleSelectorInputUsers.setValue(Collections.EMPTY_LIST);
         multipleSelectorInputGroups.setValue(Collections.EMPTY_LIST);

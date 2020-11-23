@@ -39,18 +39,18 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Reassignm
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.reassignmentsEditor.event.ReassignmentEvent;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ReflectionUtilsTest;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDownView;
 import org.uberfire.ext.widgets.common.client.dropdown.MultipleLiveSearchSelectionHandler;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
-import static org.powermock.api.mockito.PowerMockito.mock;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ReassignmentEditorWidgetTest extends ReflectionUtilsTest {
 
     @GwtMock
