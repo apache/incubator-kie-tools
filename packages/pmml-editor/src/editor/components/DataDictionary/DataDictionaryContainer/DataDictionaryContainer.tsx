@@ -24,12 +24,14 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
   const [constrainsEdit, setConstraintsEdit] = useState<DataField>();
   const [sorting, setSorting] = useState(false);
+  let newItemDraft: DataField = { name: "", type: "string" };
 
   useEffect(() => {
     onUpdate(dataTypes);
   }, [dataTypes]);
 
   const handleOutsideClick = () => {
+    saveDraftNewItem();
     setNewType(false);
     setEditing(false);
   };
@@ -46,7 +48,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
         newTypes.push(dataType);
         setDataTypes(newTypes);
         setNewType(false);
-        setEditing(newTypes.length - 1);
+        // setEditing(newTypes.length - 1);
       } else {
         setNewType(false);
         setEditing(false);
@@ -59,8 +61,21 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
     }
   };
 
+  const saveDraftNewItem = () => {
+    if (newItemDraft && newItemDraft.name.length > 0) {
+      if (dataTypeNameValidation(newItemDraft.name)) {
+        saveDataType({ ...newItemDraft }, -1);
+      }
+      newItemDraft.name = "";
+    }
+  };
+
   const handleSave = (dataType: DataField, index: number) => {
     saveDataType(dataType, index);
+  };
+
+  const handleNewItem = (dataType: DataField) => {
+    newItemDraft = dataType;
   };
 
   const handleDelete = (index: number) => {
@@ -71,6 +86,9 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
 
   const handleEdit = (index: number) => {
     console.log("setting editing to " + index);
+    if (index > -1) {
+      saveDraftNewItem();
+    }
     setEditing(index);
     if (newType) {
       setNewType(false);
@@ -118,6 +136,8 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   };
 
   const toggleSorting = () => {
+    saveDraftNewItem();
+    setNewType(false);
     setEditing(false);
     setSorting(!sorting);
   };
@@ -216,6 +236,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                           onConstraintsEdit={handleConstraintsEdit}
                           onValidate={dataTypeNameValidation}
                           onOutsideClick={handleOutsideClick}
+                          onNewItemChange={handleNewItem}
                         />
                       )}
                     </section>

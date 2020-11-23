@@ -32,10 +32,21 @@ interface DataTypeItemProps {
   onConstraintsEdit: (dataType: DataField) => void;
   onValidate: (dataTypeName: string) => boolean;
   onOutsideClick: () => void;
+  onNewItemChange?: (dataType: DataField) => void;
 }
 
 const DataTypeItem = (props: DataTypeItemProps) => {
-  const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit, onValidate, onOutsideClick } = props;
+  const {
+    dataType,
+    index,
+    onSave,
+    onEdit,
+    onDelete,
+    onConstraintsEdit,
+    onValidate,
+    onOutsideClick,
+    onNewItemChange
+  } = props;
   const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<DataField["type"]>(dataType.type);
@@ -77,7 +88,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     } else {
       setTypeSelection(selection);
       setIsTypeSelectOpen(false);
-      onSave({ name: name.trim(), type: selection }, index);
+      if (onNewItemChange) {
+        onNewItemChange({ name, type: selection });
+      } else {
+        onSave({ name: name.trim(), type: selection }, index);
+      }
     }
   };
 
@@ -98,7 +113,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (name.trim().length === 0) {
       setName(dataType.name);
     } else {
-      handleSave();
+      if (onNewItemChange) {
+        onNewItemChange({ name, type: typeSelection });
+      } else {
+        handleSave();
+      }
     }
   };
 
