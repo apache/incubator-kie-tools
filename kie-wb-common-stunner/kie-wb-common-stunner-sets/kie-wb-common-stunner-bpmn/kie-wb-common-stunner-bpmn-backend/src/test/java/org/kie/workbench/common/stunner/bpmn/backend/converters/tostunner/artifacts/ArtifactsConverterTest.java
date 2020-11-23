@@ -33,10 +33,10 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -84,7 +84,7 @@ public class ArtifactsConverterTest {
     public void convertTextAnnotation() {
         TextAnnotation element = Bpmn2Factory.eINSTANCE.createTextAnnotation();
 
-        when(typedFactoryManager.newNode(anyString(),
+        when(typedFactoryManager.newNode(any(),
                                          eq(org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation.class))).thenReturn(nodeTextAnnotation);
         when(nodeTextAnnotation.getContent()).thenReturn(contentTextAnnotation);
         when(contentTextAnnotation.getDefinition()).thenReturn(defTextAnnotation);
@@ -99,7 +99,7 @@ public class ArtifactsConverterTest {
     @Test
     public void convertDataObject() {
         DataObjectReference element = Bpmn2Factory.eINSTANCE.createDataObjectReference();
-        when(typedFactoryManager.newNode(anyString(),
+        when(typedFactoryManager.newNode(any(),
                                          eq(org.kie.workbench.common.stunner.bpmn.definition.DataObject.class))).thenReturn(nodeDataObject);
         when(nodeDataObject.getContent()).thenReturn(contentDataObject);
         when(contentDataObject.getDefinition()).thenReturn(defDataObject);
