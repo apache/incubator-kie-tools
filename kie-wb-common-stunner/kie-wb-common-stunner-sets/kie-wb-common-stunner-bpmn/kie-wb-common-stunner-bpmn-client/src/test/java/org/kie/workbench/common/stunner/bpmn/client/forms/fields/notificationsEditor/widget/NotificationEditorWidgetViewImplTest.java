@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Expiration;
 
-import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;
+import static org.mockito.Mockito.doCallRealMethod;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class NotificationEditorWidgetViewImplTest extends GWTTestCase {

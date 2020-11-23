@@ -38,7 +38,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArtifactsConverterTest {
@@ -83,7 +83,6 @@ public class ArtifactsConverterTest {
     @Test
     public void convertTextAnnotation() {
         TextAnnotation element = Bpmn2Factory.eINSTANCE.createTextAnnotation();
-
 
         when(typedFactoryManager.newNode(anyString(),
                                          eq(org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation.class))).thenReturn(nodeTextAnnotation);

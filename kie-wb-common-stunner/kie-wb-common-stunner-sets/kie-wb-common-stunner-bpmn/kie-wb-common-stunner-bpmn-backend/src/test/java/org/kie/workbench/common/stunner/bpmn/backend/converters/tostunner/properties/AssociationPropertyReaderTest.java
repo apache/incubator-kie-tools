@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import java.util.List;
-
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.AssociationDirection;
 import org.eclipse.bpmn2.BaseElement;
@@ -28,23 +26,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.util.PropertyReaderUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
 import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
-import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(PropertyReaderUtils.class)
+@RunWith(MockitoJUnitRunner.class)
 public class AssociationPropertyReaderTest {
 
     private static String SOURCE_ID = "SOURCE_ID";
@@ -104,30 +95,6 @@ public class AssociationPropertyReaderTest {
     }
 
     @Test
-    public void testGetSourceConnection() {
-        mockStatic(PropertyReaderUtils.class);
-        PowerMockito.when(PropertyReaderUtils.getSourcePosition(definitionResolver, ASSOCIATION_ID, SOURCE_ID)).thenReturn(position);
-        boolean arbitraryBoolean = true;
-        PowerMockito.when(PropertyReaderUtils.isAutoConnectionSource(association)).thenReturn(arbitraryBoolean);
-
-        Connection result = propertyReader.getSourceConnection();
-        assertEquals(X, result.getLocation().getX(), 0);
-        assertEquals(Y, result.getLocation().getY(), 0);
-    }
-
-    @Test
-    public void testGetTargetConnection() {
-        mockStatic(PropertyReaderUtils.class);
-        PowerMockito.when(PropertyReaderUtils.getTargetPosition(definitionResolver, ASSOCIATION_ID, TARGET_ID)).thenReturn(position);
-        boolean arbitraryBoolean = true;
-        PowerMockito.when(PropertyReaderUtils.isAutoConnectionSource(association)).thenReturn(arbitraryBoolean);
-
-        Connection result = propertyReader.getTargetConnection();
-        assertEquals(X, result.getLocation().getX(), 0);
-        assertEquals(Y, result.getLocation().getY(), 0);
-    }
-
-    @Test
     public void testGetAssociationByDirection() {
         final Association association = Bpmn2Factory.eINSTANCE.createAssociation();
 
@@ -143,14 +110,5 @@ public class AssociationPropertyReaderTest {
         //one direction
         association.setAssociationDirection(AssociationDirection.ONE);
         assertEquals(DirectionalAssociation.class, propertyReader.getAssociationByDirection());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGetControlPoints() {
-        List<Point2D> controlPoints = mock(List.class);
-        mockStatic(PropertyReaderUtils.class);
-        PowerMockito.when(PropertyReaderUtils.getControlPoints(definitionResolver, ASSOCIATION_ID)).thenReturn(controlPoints);
-        assertEquals(controlPoints, propertyReader.getControlPoints());
     }
 }

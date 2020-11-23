@@ -96,7 +96,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     public static final String ASSIGNMENTS_SINGLE_INPUT = "[din]employee->input1";
     public static final String ASSIGNMENTS_SINGLE_OUTPUT = "[dout]output1->employee";
     public static final String ASSIGNMENTS_MULTIPLE = "[din]employee->input1,[din]input2=ab%7Ccd%7Cef,[din]input3=yes,[din]input4=%22Hello%22+then+%22Goodbye%22,[dout]output1->employee,[dout]output2->reason";
-    public static final List<String> DATATYPES = new ArrayList<String>(Arrays.asList("myorg.myproject1.Cardboard",
+    public static final List<String> DATATYPES = new ArrayList<>(Arrays.asList("myorg.myproject1.Cardboard",
                                                                                      "yourorg.materials.Paper",
                                                                                      "org.documents.Articles"));
     public static final String FORMATTED_DATATYPES = "Articles [org.documents]:org.documents.Articles,Cardboard [myorg.myproject1]:myorg.myproject1.Cardboard,Paper [yourorg.materials]:yourorg.materials.Paper";

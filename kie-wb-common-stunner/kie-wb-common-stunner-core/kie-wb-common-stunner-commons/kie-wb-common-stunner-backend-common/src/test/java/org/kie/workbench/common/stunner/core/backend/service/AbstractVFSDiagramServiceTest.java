@@ -52,14 +52,12 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
@@ -70,17 +68,16 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.doReturn;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("unchecked")
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extends Diagram<Graph, M>> {
 
     public static final String DEFINITION_SET_ID = "DEFINITION_SET_ID";
@@ -170,7 +167,6 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
     protected PropertyAdapter<Object, Object> propertyAdapter;
 
     @Before
-    @SuppressWarnings("all")
     public void setUp() throws IOException {
         when(resourceType.getPrefix()).thenReturn(RESOURCE_TYPE_PREFIX);
         when(resourceType.getSuffix()).thenReturn(RESOURCE_TYPE_SUFFIX);
@@ -251,7 +247,7 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
     }
 
     @Test
-    public void testGetRawContent() throws IOException {
+    public void testGetRawContent() {
         String result = diagramService.getRawContent(diagram);
         assertEquals(DIAGRAM_MARSHALLED,
                      result);
@@ -316,12 +312,9 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
                times(1)).getDiagramByPath(path);
     }
 
-    @PrepareForTest({Files.class, Paths.class})
     @Test
     public void testGetAll() {
         ArgumentCaptor<SimpleFileVisitor> visitorArgumentCaptor = ArgumentCaptor.forClass(SimpleFileVisitor.class);
-        mockStatic(Files.class);
-        mockStatic(Paths.class);
 
         org.uberfire.java.nio.file.Path root = mock(org.uberfire.java.nio.file.Path.class);
 
@@ -330,8 +323,8 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         for (int i = 0; i < 10; i++) {
             Path diagramPath = mock(Path.class);
             org.uberfire.java.nio.file.Path nioDiagramPath = mock(org.uberfire.java.nio.file.Path.class);
-            when(Paths.convert(diagramPath)).thenReturn(nioDiagramPath);
-            when(Paths.convert(nioDiagramPath)).thenReturn(diagramPath);
+            doReturn(nioDiagramPath).when(diagramService).convertToNioPath(diagramPath);
+            doReturn(diagramPath).when(diagramService).convertToBackendPath(nioDiagramPath);
             visitedPaths.add(new Pair<>(diagramPath,
                                         nioDiagramPath));
             when(resourceType.accept(diagramPath)).thenReturn(true);
@@ -340,11 +333,9 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         BasicFileAttributes attrs = mock(BasicFileAttributes.class);
 
         when(ioService.exists(root)).thenReturn(true);
-        diagramService.getDiagramsByPath(root);
 
-        verifyStatic();
-        Files.walkFileTree(eq(root),
-                           visitorArgumentCaptor.capture());
+        doNothing().when(diagramService).walkFileTree(eq(root), visitorArgumentCaptor.capture());
+        diagramService.getDiagramsByPath(root);
 
         visitedPaths.forEach(pair -> {
             visitorArgumentCaptor.getValue().visitFile(pair.getK2(),

@@ -49,7 +49,6 @@ import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -61,7 +60,6 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.java.nio.file.Files.walkFileTree;
 
 // TODO: Use the diagram registry cache.
 public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Diagram<Graph, M>> implements BaseDiagramService<M, D> {
@@ -109,7 +107,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         }
         final String fName = buildFileName(name,
                                            services.getResourceType());
-        final org.uberfire.java.nio.file.Path kiePath = Paths.convert(path).resolve(fName);
+        final org.uberfire.java.nio.file.Path kiePath = convertToNioPath(path).resolve(fName);
 
         if (getIoService().exists(kiePath)) {
             throw new FileAlreadyExistsException(kiePath.toString());
@@ -123,7 +121,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
             getIoService().write(kiePath,
                                  raw[0],
                                  new CommentedOption(identity.getIdentifier()));
-            return Paths.convert(kiePath);
+            return convertToBackendPath(kiePath);
         } catch (final Exception e) {
             LOG.error("Cannot create diagram in path [" + kiePath + "]",
                       e);
@@ -187,7 +185,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                     return (D) factory.build(name, metadata, graph);
                 } catch (Exception e) {
                     LOG.error("Cannot unmarshall diagram for diagram's path [" + file + "]", e);
-                    final String xml = getIoService().readAllString(Paths.convert(file));
+                    final String xml = getIoService().readAllString(convertToNioPath(file));
                     throw new DiagramParsingException(metadata, xml);
                 }
             }
@@ -217,11 +215,11 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         getIoService().write(svgPath,
                              rawDiagramSvg,
                              new CommentedOption(identity.getIdentifier()));
-        return Paths.convert(svgPath);
+        return convertToBackendPath(svgPath);
     }
 
     protected org.uberfire.java.nio.file.Path getDiagramSvgFilePath(Diagram diagram) {
-        final org.uberfire.java.nio.file.Path diagramFilePath = Paths.convert(diagram.getMetadata().getPath());
+        final org.uberfire.java.nio.file.Path diagramFilePath = convertToNioPath(diagram.getMetadata().getPath());
         final String fileName = getDiagramSvgFileName(diagram);
         return diagramFilePath.getParent().resolve(fileName);
     }
@@ -283,34 +281,32 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         try {
             final Collection<D> result = new ArrayList<D>();
             if (getIoService().exists(root)) {
-                walkFileTree(checkNotNull("root",
-                                          root),
-                             new SimpleFileVisitor<org.uberfire.java.nio.file.Path>() {
-                                 @Override
-                                 public FileVisitResult visitFile(final org.uberfire.java.nio.file.Path _file,
-                                                                  final BasicFileAttributes attrs) throws IOException {
-                                     checkNotNull("file",
-                                                  _file);
-                                     checkNotNull("attrs",
-                                                  attrs);
-                                     org.uberfire.backend.vfs.Path file = org.uberfire.backend.server.util.Paths.convert(_file);
-                                     if (accepts(file)) {
-                                         try {
-                                             // portable diagram representation.
-                                             D diagram = getDiagramByPath(file);
-                                             if (null != diagram) {
-                                                 result.add(diagram);
-                                             }
-                                         } catch (Exception e) {
-                                             //skipping add diagram to the result
-                                             LOG.error("Error getting diagram for path {}",
-                                                       file,
-                                                       e);
-                                         }
-                                     }
-                                     return FileVisitResult.CONTINUE;
-                                 }
-                             });
+                walkFileTree(root, new SimpleFileVisitor<org.uberfire.java.nio.file.Path>() {
+                    @Override
+                    public FileVisitResult visitFile(final org.uberfire.java.nio.file.Path _file,
+                                                     final BasicFileAttributes attrs) throws IOException {
+                        checkNotNull("file",
+                                     _file);
+                        checkNotNull("attrs",
+                                     attrs);
+                        org.uberfire.backend.vfs.Path file = convertToBackendPath(_file);
+                        if (accepts(file)) {
+                            try {
+                                // portable diagram representation.
+                                D diagram = getDiagramByPath(file);
+                                if (null != diagram) {
+                                    result.add(diagram);
+                                }
+                            } catch (Exception e) {
+                                //skipping add diagram to the result
+                                LOG.error("Error getting diagram for path {}",
+                                          file,
+                                          e);
+                            }
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
             }
             return result;
         } catch (Exception e) {
@@ -320,12 +316,24 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         }
     }
 
+    protected void walkFileTree(final org.uberfire.java.nio.file.Path root, SimpleFileVisitor<org.uberfire.java.nio.file.Path> fileVisitor) {
+        org.uberfire.java.nio.file.Files.walkFileTree(checkNotNull("root", root), fileVisitor);
+    }
+
+    protected org.uberfire.backend.vfs.Path convertToBackendPath(final org.uberfire.java.nio.file.Path path) {
+        return org.uberfire.backend.server.util.Paths.convert(path);
+    }
+
+    protected org.uberfire.java.nio.file.Path convertToNioPath(final org.uberfire.backend.vfs.Path path) {
+        return org.uberfire.backend.server.util.Paths.convert(path);
+    }
+
     protected abstract Metadata buildMetadataInstance(final org.uberfire.backend.vfs.Path path,
                                                       final String defSetId,
                                                       final String title);
 
     protected InputStream loadPath(final org.uberfire.backend.vfs.Path _path) {
-        org.uberfire.java.nio.file.Path path = Paths.convert(_path);
+        org.uberfire.java.nio.file.Path path = convertToNioPath(_path);
         final byte[] bytes = getIoService().readAllBytes(path);
         return new ByteArrayInputStream(bytes);
     }
