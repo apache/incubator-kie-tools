@@ -30,10 +30,8 @@ import static org.junit.Assert.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class DependencyValidatorTest {
 
-    @GwtMock
     ProjectEditorResources resources;
 
-    @GwtMock
     ProjectEditorConstants constants;
 
     @Test

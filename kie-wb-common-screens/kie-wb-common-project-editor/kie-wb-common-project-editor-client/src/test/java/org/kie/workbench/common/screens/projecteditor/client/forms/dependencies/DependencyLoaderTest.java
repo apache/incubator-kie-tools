@@ -36,7 +36,6 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class DependencyLoaderTest {
 
-    @GwtMock
     private CommonConstants commonConstants;
 
     @Mock
