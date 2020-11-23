@@ -13,8 +13,3 @@ Features
 #### Editing a new BPMN file
 
 ![alt](./gifs/bpmn.gif?raw=true)
-
-Release notes
----
-See the [release notes](./CHANGELOG.md).
- 

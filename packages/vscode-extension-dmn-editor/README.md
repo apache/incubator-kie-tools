@@ -19,9 +19,3 @@ Features
 DMN files must be inside a `src/` folder on your Workspace to be visible on the Test Scenario Editor.
 
 ![alt](./gifs/scesim.gif?raw=true)
-
-
-Release notes
----
-See the [release notes](./CHANGELOG.md).
- 

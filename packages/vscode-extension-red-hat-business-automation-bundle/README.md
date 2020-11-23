@@ -20,8 +20,3 @@ Features
 #### Editing a new DMN file
 
 ![alt](./gifs/dmn.gif?raw=true)
-
-Release notes
----
-See the [release notes](./CHANGELOG.md).
- 
