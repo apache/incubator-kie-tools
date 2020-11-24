@@ -23,6 +23,7 @@ interface GenericNumericInputProps {
   value: number;
   validated: Validated;
   onChange: (_value: number) => void;
+  onBlur: () => void;
 }
 
 const toNumber = (value: string): number => {
@@ -30,6 +31,8 @@ const toNumber = (value: string): number => {
 };
 
 export const GenericNumericInput = (props: GenericNumericInputProps) => {
+  const { onBlur } = props;
+
   const [state, setState] = useState(props.value.toString());
 
   const onChange = (_value: string) => {
@@ -42,6 +45,7 @@ export const GenericNumericInput = (props: GenericNumericInputProps) => {
       id={props.id}
       value={state}
       onChange={onChange}
+      onBlur={onBlur}
       validated={props.validated}
       isRequired={true}
       className="numeric-input"

@@ -28,11 +28,12 @@ import {
   TextContent,
   Title
 } from "@patternfly/react-core";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import "./CorePropertiesTable.scss";
-import { ValidatedType } from "../../../types";
 import { Operation } from "../Operation";
 import useOnclickOutside from "react-cool-onclickoutside";
+import { isEqual } from "lodash";
+import set = Reflect.set;
+import get = Reflect.get;
 
 interface CoreProperties {
   isScorable: boolean;
@@ -69,20 +70,40 @@ const GenericSelectorEditor = (
   return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
 };
 
-const GenericNumericEditor = (id: string, value: number, valid: boolean, onChange: (_value: number) => void) => {
-  return <GenericNumericInput id={id} value={value} validated={valid ? "default" : "error"} onChange={onChange} />;
+const GenericNumericEditor = (
+  id: string,
+  value: number,
+  valid: boolean,
+  onChange: (_value: number) => void,
+  onBlur: () => void
+) => {
+  return (
+    <GenericNumericInput
+      id={id}
+      value={value}
+      validated={valid ? "default" : "error"}
+      onChange={onChange}
+      onBlur={onBlur}
+    />
+  );
 };
 
-const GenericTextEditor = (id: string, value: string, valid: boolean, onChange: (_value: string) => void) => {
-  return <GenericTextInput id={id} value={value} validated={valid ? "default" : "error"} onChange={onChange} />;
-};
-
-const ValidateBaselineScore = (value: number) => {
-  return value > 0;
-};
-
-const ValidateInitialScore = (value: number) => {
-  return value > 0;
+const GenericTextEditor = (
+  id: string,
+  value: string,
+  valid: boolean,
+  onChange: (_value: string) => void,
+  onBlur: () => void
+) => {
+  return (
+    <GenericTextInput
+      id={id}
+      value={value}
+      validated={valid ? "default" : "error"}
+      onChange={onChange}
+      onBlur={onBlur}
+    />
+  );
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
@@ -92,15 +113,9 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const [isScorable, setScorable] = useState(props.isScorable);
   const [functionName, setFunctionName] = useState(props.functionName);
   const [algorithmName, setAlgorithmName] = useState(props.algorithmName);
-  const [baselineScore, setBaselineScore] = useState<ValidatedType<number>>({
-    value: props.baselineScore,
-    valid: true
-  });
+  const [baselineScore, setBaselineScore] = useState<number>(props.baselineScore);
   const [baselineMethod, setBaselineMethod] = useState(props.baselineMethod);
-  const [initialScore, setInitialScore] = useState<ValidatedType<number>>({
-    value: props.initialScore,
-    valid: true
-  });
+  const [initialScore, setInitialScore] = useState<number>(props.initialScore);
   const [useReasonCodes, setUseReasonCodes] = useState(props.useReasonCodes);
   const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState(props.reasonCodeAlgorithm);
 
@@ -108,62 +123,83 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setScorable(props.isScorable);
     setFunctionName(props.functionName);
     setAlgorithmName(props.algorithmName);
-    setBaselineScore({
-      value: props.baselineScore,
-      valid: ValidateBaselineScore(props.baselineScore)
-    });
+    setBaselineScore(props.baselineScore);
     setBaselineMethod(props.baselineMethod);
-    setInitialScore({
-      value: props.initialScore,
-      valid: ValidateInitialScore(props.initialScore)
-    });
+    setInitialScore(props.initialScore);
     setUseReasonCodes(props.useReasonCodes);
     setReasonCodeAlgorithm(props.reasonCodeAlgorithm);
   }, [props]);
 
-  const isScorableEditor = BooleanFieldEditor("is-scorable-id", isScorable, checked => setScorable(checked), true);
+  const isScorableEditor = BooleanFieldEditor("is-scorable-id", isScorable, checked => {
+    setScorable(checked);
+    onCommit({ isScorable: checked });
+  });
   const functionNameEditor = GenericSelectorEditor(
     "function-name-selector-id",
     ["associationRules", "sequences", "classification", "regression", "clustering", "timeSeries", "mixed"],
     functionName,
-    _selection => setFunctionName(_selection as MiningFunction)
+    _selection => {
+      setFunctionName(_selection as MiningFunction);
+      onCommit({ functionName: _selection as MiningFunction });
+    }
   );
-  const algorithmNameEditor = GenericTextEditor("algorithm-name-id", algorithmName, true, _value => {
-    setAlgorithmName(_value);
-  });
+  const algorithmNameEditor = GenericTextEditor(
+    "algorithm-name-id",
+    algorithmName,
+    true,
+    _value => {
+      setAlgorithmName(_value);
+    },
+    () => {
+      onCommit({ algorithmName: algorithmName });
+    }
+  );
   const baselineScoreEditor = GenericNumericEditor(
     "baseline-score-id",
-    baselineScore.value,
-    baselineScore.valid,
+    baselineScore,
+    true,
     _value => {
-      setBaselineScore({ value: _value, valid: ValidateBaselineScore(_value) });
+      setBaselineScore(_value);
+    },
+    () => {
+      onCommit({ baselineScore: baselineScore });
     }
   );
   const baselineMethodEditor = GenericSelectorEditor(
     "baseline-method-selector-id",
     ["max", "min", "mean", "neutral", "other"],
     baselineMethod,
-    _selection => setBaselineMethod(_selection as BaselineMethod)
+    _selection => {
+      setBaselineMethod(_selection as BaselineMethod);
+      onCommit({ baselineMethod: _selection as BaselineMethod });
+    }
   );
   const initialScoreEditor = GenericNumericEditor(
     "initial-score-id",
-    initialScore.value,
-    initialScore.valid,
+    initialScore,
+    true,
     _value => {
-      setInitialScore({ value: _value, valid: ValidateInitialScore(_value) });
+      setInitialScore(_value);
+    },
+    () => {
+      onCommit({ initialScore: initialScore });
     }
   );
-  const useReasonCodesEditor = BooleanFieldEditor("use-reason-codes-id", useReasonCodes, checked =>
-    setUseReasonCodes(checked)
-  );
+  const useReasonCodesEditor = BooleanFieldEditor("use-reason-codes-id", useReasonCodes, checked => {
+    setUseReasonCodes(checked);
+    onCommit({ useReasonCodes: checked });
+  });
   const reasonCodeAlgorithmEditor = GenericSelectorEditor(
     "reason-code-algorithm-selector-id",
     ["pointsAbove", "pointsBelow"],
     reasonCodeAlgorithm,
-    _selection => setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm)
+    _selection => {
+      setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
+      onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
+    }
   );
 
-  const ref = useOnclickOutside(event => commitEdit(), {
+  const ref = useOnclickOutside(event => onCommitAndClose(), {
     disabled: activeOperation !== Operation.UPDATE_CORE,
     eventTypes: ["click"]
   });
@@ -173,21 +209,21 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setActiveOperation(Operation.UPDATE_CORE);
   };
 
-  const commitEdit = () => {
-    props.commit({
-      isScorable: isScorable,
-      functionName: functionName,
-      algorithmName: algorithmName,
-      baselineScore: baselineScore.value,
-      baselineMethod: baselineMethod,
-      initialScore: initialScore.value,
-      useReasonCodes: useReasonCodes,
-      reasonCodeAlgorithm: reasonCodeAlgorithm
-    });
-
-    cancelEdit();
+  const onCommitAndClose = () => {
+    onCommit({});
+    onCancel();
   };
-  const cancelEdit = () => {
+
+  const onCommit = (partial: Partial<CoreProperties>) => {
+    const existingPartial: Partial<CoreProperties> = {};
+    Object.keys(partial).forEach(key => set(existingPartial, key, get(props, key)));
+
+    if (!isEqual(partial, existingPartial)) {
+      props.commit({ ...props, ...partial });
+    }
+  };
+
+  const onCancel = () => {
     setEditing(false);
     setActiveOperation(Operation.NONE);
   };
@@ -209,7 +245,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
           e.stopPropagation();
           onEdit();
         } else if (e.key === "Escape") {
-          cancelEdit();
+          onCancel();
         }
       }}
     >
@@ -292,34 +328,6 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       {!isEditModeEnabled && props.reasonCodeAlgorithm.toString()}
                       {isEditModeEnabled && reasonCodeAlgorithmEditor}
                     </td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>
-                      {isEditModeEnabled && !baselineScore.valid && (
-                        <FormGroup
-                          helperTextInvalid="Must be greater than zero"
-                          helperTextInvalidIcon={<ExclamationCircleIcon />}
-                          fieldId="characteristic-baselineScore-validation"
-                          validated="error"
-                        />
-                      )}
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>
-                      {isEditModeEnabled && !initialScore.valid && (
-                        <FormGroup
-                          helperTextInvalid="Must be greater than zero"
-                          helperTextInvalidIcon={<ExclamationCircleIcon />}
-                          fieldId="characteristic-initialScore-validation"
-                          validated="error"
-                        />
-                      )}
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
                   </tr>
                 </tbody>
               </table>

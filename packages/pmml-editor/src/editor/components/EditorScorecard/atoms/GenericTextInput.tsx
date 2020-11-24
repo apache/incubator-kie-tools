@@ -23,9 +23,12 @@ interface GenericTextInputProps {
   value: string | undefined;
   validated: Validated;
   onChange: (_value: string) => void;
+  onBlur: () => void;
 }
 
 export const GenericTextInput = (props: GenericTextInputProps) => {
+  const { onBlur } = props;
+
   const [state, setState] = useState(props.value);
 
   const onChange = (_value: string) => {
@@ -38,6 +41,7 @@ export const GenericTextInput = (props: GenericTextInputProps) => {
       id={props.id}
       value={state}
       onChange={onChange}
+      onBlur={onBlur}
       validated={props.validated}
       isRequired={true}
       className="text-input"
