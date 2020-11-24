@@ -64,6 +64,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       type="search"
                       aria-label="filter characteristics"
                       placeholder="Filter by name"
+                      value={filter}
                       onChange={e => setFilter(e)}
                     />
                     <Button

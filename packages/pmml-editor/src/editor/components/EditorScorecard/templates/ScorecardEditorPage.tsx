@@ -30,7 +30,6 @@ import { CharacteristicsContainer, CorePropertiesTable, IndexedCharacteristic } 
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
-import { EmptyStateNoCharacteristics, EmptyStateNoMatchingCharacteristics } from "../molecules";
 import "./ScorecardEditorPage.scss";
 import { Operation } from "../Operation";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
@@ -87,18 +86,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     filter,
     characteristics
   ]);
-
-  const onAddCharacteristic = useCallback(() => {
-    setActiveOperation(Operation.CREATE_CHARACTERISTIC);
-  }, [characteristics]);
-
-  const characteristicsEmptyStateProvider = useMemo(() => {
-    if (filter === "") {
-      return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
-    } else {
-      return <EmptyStateNoMatchingCharacteristics />;
-    }
-  }, [filter]);
 
   return (
     <div data-testid="editor-page" className={"editor"}>
@@ -187,9 +174,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   activeOperation={activeOperation}
                   setActiveOperation={setActiveOperation}
                   characteristics={filteredCharacteristics}
+                  filter={filter}
                   onFilter={setFilter}
-                  emptyStateProvider={() => characteristicsEmptyStateProvider}
-                  addCharacteristic={onAddCharacteristic}
                   deleteCharacteristic={index => {
                     if (window.confirm(`Delete Characteristic "${index}"?`)) {
                       dispatch({
@@ -201,15 +187,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                       });
                     }
                   }}
-                  commit={(_index, _name, _reasonCode, _baselineScore) => {
+                  commit={(_index, _characteristic) => {
                     if (_index === undefined) {
                       dispatch({
                         type: Actions.Scorecard_AddCharacteristic,
                         payload: {
                           modelIndex: modelIndex,
-                          name: _name,
-                          reasonCode: _reasonCode,
-                          baselineScore: _baselineScore
+                          name: _characteristic.name,
+                          reasonCode: _characteristic.reasonCode,
+                          baselineScore: _characteristic.baselineScore
                         }
                       });
                     } else {
@@ -218,9 +204,9 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                         payload: {
                           modelIndex: modelIndex,
                           characteristicIndex: _index,
-                          name: _name,
-                          reasonCode: _reasonCode,
-                          baselineScore: _baselineScore
+                          name: _characteristic.name,
+                          reasonCode: _characteristic.reasonCode,
+                          baselineScore: _characteristic.baselineScore
                         }
                       });
                     }

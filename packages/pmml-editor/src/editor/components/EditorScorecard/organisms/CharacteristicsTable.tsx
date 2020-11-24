@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Characteristic, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Form } from "@patternfly/react-core";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
@@ -27,32 +27,36 @@ export interface IndexedCharacteristic {
 }
 
 interface CharacteristicsTableProps {
+  modelIndex: number;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   characteristics: IndexedCharacteristic[];
+  selectedCharacteristicIndex: number | undefined;
+  setSelectedCharacteristicIndex: (index: number | undefined) => void;
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
-  viewAttributes: (index: number | undefined) => void;
+  viewAttribute: (index: number | undefined) => void;
   deleteCharacteristic: (index: number) => void;
-  commit: (
-    index: number | undefined,
-    name: string | undefined,
-    reasonCode: string | undefined,
-    baselineScore: number | undefined
-  ) => void;
+  onCommitAndClose: () => void;
+  onCommit: (partial: Partial<Characteristic>) => void;
+  onCancel: () => void;
 }
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const {
+    modelIndex,
     activeOperation,
     setActiveOperation,
     characteristics,
+    selectedCharacteristicIndex,
+    setSelectedCharacteristicIndex,
     validateCharacteristicName,
-    viewAttributes,
+    viewAttribute,
     deleteCharacteristic,
-    commit
+    onCommitAndClose,
+    onCommit,
+    onCancel
   } = props;
 
-  const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
@@ -60,13 +64,13 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   });
 
   useEffect(() => {
-    if (activeOperation === Operation.CREATE_CHARACTERISTIC && addCharacteristicRowRef.current) {
+    if (activeOperation === Operation.UPDATE_CHARACTERISTIC && addCharacteristicRowRef.current) {
       addCharacteristicRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
 
   const onEdit = (index: number | undefined) => {
-    setEditItemIndex(index);
+    setSelectedCharacteristicIndex(index);
     setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
   };
 
@@ -77,41 +81,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     }
   };
 
-  const onViewAttributes = (index: number | undefined): void => {
-    viewAttributes(index);
-  };
-
   const onValidateCharacteristicName = (index: number | undefined, name: string | undefined): boolean => {
     return validateCharacteristicName(index, name);
-  };
-
-  const onCommit = (
-    index: number | undefined,
-    name: string | undefined,
-    reasonCode: string | undefined,
-    baselineScore: number | undefined
-  ) => {
-    //Avoid commits with no change
-    let characteristic: Characteristic;
-    if (index === undefined) {
-      characteristic = { Attribute: [] };
-    } else {
-      characteristic = characteristics[index].characteristic;
-    }
-    if (
-      characteristic.name !== name ||
-      characteristic.baselineScore !== baselineScore ||
-      characteristic.reasonCode !== reasonCode
-    ) {
-      commit(index, name, reasonCode, baselineScore);
-    }
-
-    onCancel();
-  };
-
-  const onCancel = () => {
-    setEditItemIndex(undefined);
-    setActiveOperation(Operation.NONE);
   };
 
   return (
@@ -123,19 +94,18 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     >
       <section>
         {characteristics.map(ic => {
-          if (editItemIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC) {
+          if (selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC) {
             return (
               <CharacteristicsTableEditRow
                 key={ic.index}
+                modelIndex={modelIndex}
                 activeOperation={activeOperation}
                 setActiveOperation={setActiveOperation}
                 characteristic={ic}
                 validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
-                viewAttributes={() => onViewAttributes(ic.index)}
-                onCommit={(_name, _reasonCode, _baselineScore) =>
-                  onCommit(ic.index, _name, _reasonCode, _baselineScore)
-                }
-                onDelete={() => onDelete(ic.index)}
+                viewAttribute={viewAttribute}
+                onCommitAndClose={onCommitAndClose}
+                onCommit={onCommit}
                 onCancel={onCancel}
               />
             );
@@ -151,20 +121,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
             );
           }
         })}
-        {activeOperation === Operation.CREATE_CHARACTERISTIC && (
-          <div key={undefined} ref={addCharacteristicRowRef}>
-            <CharacteristicsTableEditRow
-              key={"add"}
-              activeOperation={activeOperation}
-              setActiveOperation={setActiveOperation}
-              characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
-              validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
-              viewAttributes={() => onViewAttributes(undefined)}
-              onCommit={(_name, _reasonCode, _baselineScore) => onCommit(undefined, _name, _reasonCode, _baselineScore)}
-              onCancel={onCancel}
-            />
-          </div>
-        )}
       </section>
     </Form>
   );

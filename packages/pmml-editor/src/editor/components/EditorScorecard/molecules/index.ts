@@ -16,7 +16,6 @@
 
 export * from "./AttributeEditor";
 export * from "./AttributeToolbar";
-export * from "./AttributesToolbar";
 export * from "./AttributesTableRow";
 export * from "./CharacteristicsToolbar";
 export * from "./CharacteristicsTableRow";

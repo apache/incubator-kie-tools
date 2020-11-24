@@ -19,20 +19,14 @@ import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 
 interface AttributeToolbarProps {
   viewOverview: () => void;
-  viewAttributes: () => void;
 }
 
 export const AttributeToolbar = (props: AttributeToolbarProps) => {
-  const { viewOverview, viewAttributes } = props;
+  const { viewOverview } = props;
 
   const onViewOverview = (e: React.MouseEvent) => {
     e.preventDefault();
     viewOverview();
-  };
-
-  const onViewAttributes = (e: React.MouseEvent) => {
-    e.preventDefault();
-    viewAttributes();
   };
 
   return (
@@ -43,14 +37,13 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
             <TextContent>
               <Title size="lg" headingLevel="h1">
                 <a onClick={e => onViewOverview(e)}>Characteristics</a>&nbsp;/&nbsp;
-                <a onClick={e => onViewAttributes(e)}>Attributes</a>&nbsp;/&nbsp;Attribute
               </Title>
             </TextContent>
           </SplitItem>
           <SplitItem>
             <Button
               variant="primary"
-              onClick={e => onViewAttributes(e)}
+              onClick={e => onViewOverview(e)}
               icon={<ArrowAltCircleLeftIcon />}
               iconPosition="left"
             >

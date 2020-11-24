@@ -60,7 +60,7 @@ interface OutputFieldsTableProps {
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
   onCommitAndClose: () => void;
-  onCommit: (outputField: Partial<OutputField>) => void;
+  onCommit: (partial: Partial<OutputField>) => void;
   onCancel: () => void;
 }
 

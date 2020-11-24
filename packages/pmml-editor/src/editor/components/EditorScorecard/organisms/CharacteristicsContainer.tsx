@@ -14,35 +14,38 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Stack, StackItem } from "@patternfly/react-core";
 import { Operation } from "../Operation";
 import { CharacteristicsTable, IndexedCharacteristic } from "./CharacteristicsTable";
 import "./CharacteristicsContainer.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { AttributesTable } from "./AttributesTable";
 import { Actions } from "../../../reducers";
 import { useDispatch } from "react-redux";
-import { AttributeEditor, AttributesToolbar, AttributeToolbar, CharacteristicsToolbar } from "../molecules";
+import {
+  AttributeEditor,
+  AttributeToolbar,
+  CharacteristicsToolbar,
+  EmptyStateNoCharacteristics,
+  EmptyStateNoMatchingCharacteristics
+} from "../molecules";
+import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { isEqual } from "lodash";
+import set = Reflect.set;
+import get = Reflect.get;
 
 interface CharacteristicsContainerProps {
   modelIndex: number;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   characteristics: IndexedCharacteristic[];
+  filter: string;
   onFilter: (filter: string) => void;
-  emptyStateProvider: () => JSX.Element;
-  addCharacteristic: () => void;
   deleteCharacteristic: (index: number) => void;
-  commit: (
-    index: number | undefined,
-    name: string | undefined,
-    reasonCode: string | undefined,
-    baselineScore: number | undefined
-  ) => void;
+  commit: (index: number | undefined, characteristic: Characteristic) => void;
 }
 
-type CharacteristicsViewSection = "overview" | "attributes" | "attribute";
+type CharacteristicsViewSection = "overview" | "attribute";
 
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
   const {
@@ -50,9 +53,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     activeOperation,
     setActiveOperation,
     characteristics,
+    filter,
     onFilter,
-    emptyStateProvider,
-    addCharacteristic,
     deleteCharacteristic,
     commit
   } = props;
@@ -61,20 +63,11 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
-  const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (activeOperation === Operation.CREATE_CHARACTERISTIC && addCharacteristicRowRef.current) {
-      addCharacteristicRowRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [activeOperation]);
 
   const [viewSection, setViewSection] = useState<CharacteristicsViewSection>("overview");
   const getTransition = (_viewSection: CharacteristicsViewSection) => {
     if (_viewSection === "overview") {
       return "characteristics-container__overview";
-    } else if (_viewSection === "attributes") {
-      return "characteristics-container__attributes";
     } else {
       return "characteristics-container__attribute";
     }
@@ -87,21 +80,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   }, [characteristics]);
 
   const onViewOverviewView = () => {
-    setActiveOperation(Operation.NONE);
+    setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
     setViewSection("overview");
-  };
-
-  const onViewAttributesView = () => {
-    setActiveOperation(Operation.NONE);
-    setViewSection("attributes");
-  };
-
-  const onViewAttributes = (index: number | undefined) => {
-    if (index === undefined) {
-      return;
-    }
-    setSelectedCharacteristicIndex(index);
-    setViewSection("attributes");
   };
 
   const onViewAttribute = (index: number | undefined) => {
@@ -123,10 +103,64 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     [characteristics]
   );
 
+  const onAddCharacteristic = useCallback(() => {
+    let numberOfCharacteristics = characteristics?.length;
+    if (numberOfCharacteristics !== undefined) {
+      //Index of the new row is equal to the number of existing rows
+      setSelectedCharacteristicIndex(numberOfCharacteristics);
+      //TODO {manstis} This will need some more magic to ensure the new default does not already exist
+      const newCharacteristicName = "New characteristic";
+      commit(undefined, {
+        name: newCharacteristicName,
+        baselineScore: undefined,
+        reasonCode: undefined,
+        Attribute: []
+      });
+      setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
+    }
+  }, [characteristics]);
+
+  const onCommitAndClose = () => {
+    onCommit({});
+    onCancel();
+  };
+
+  const onCommit = (partial: Partial<Characteristic>) => {
+    if (selectedCharacteristicIndex !== undefined) {
+      const characteristic = characteristics[selectedCharacteristicIndex].characteristic;
+      const existingPartial: Partial<Characteristic> = {};
+      Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
+
+      if (!isEqual(partial, existingPartial)) {
+        commit(selectedCharacteristicIndex, { ...characteristic, ...partial });
+      }
+    }
+  };
+
+  const onCancel = () => {
+    setSelectedCharacteristicIndex(undefined);
+    setActiveOperation(Operation.NONE);
+  };
+
+  const emptyStateProvider = useMemo(() => {
+    if (filter === "") {
+      return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
+    } else {
+      return (
+        <Stack hasGutter={true}>
+          <StackItem>
+            <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
+            <EmptyStateNoMatchingCharacteristics />
+          </StackItem>
+        </Stack>
+      );
+    }
+  }, [filter]);
+
   return (
     <div className="characteristics-container">
-      {characteristics.length === 0 && activeOperation === Operation.NONE && emptyStateProvider()}
-      {(characteristics.length > 0 || activeOperation === Operation.CREATE_CHARACTERISTIC) && (
+      {characteristics.length === 0 && emptyStateProvider}
+      {characteristics.length > 0 && (
         <SwitchTransition mode={"out-in"}>
           <CSSTransition
             timeout={{
@@ -140,44 +174,22 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
               {viewSection === "overview" && (
                 <Stack hasGutter={true}>
                   <StackItem>
-                    <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={addCharacteristic} />
+                    <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
                   </StackItem>
                   <StackItem className="characteristics-container__overview">
                     <CharacteristicsTable
+                      modelIndex={modelIndex}
                       activeOperation={activeOperation}
                       setActiveOperation={setActiveOperation}
                       characteristics={characteristics}
+                      selectedCharacteristicIndex={selectedCharacteristicIndex}
+                      setSelectedCharacteristicIndex={setSelectedCharacteristicIndex}
                       validateCharacteristicName={validateCharacteristicName}
-                      viewAttributes={onViewAttributes}
-                      deleteCharacteristic={deleteCharacteristic}
-                      commit={commit}
-                    />
-                  </StackItem>
-                </Stack>
-              )}
-              {viewSection === "attributes" && (
-                <Stack hasGutter={true}>
-                  <StackItem>
-                    <AttributesToolbar viewOverview={onViewOverviewView} onAddAttribute={onAddAttribute} />
-                  </StackItem>
-                  <StackItem className="characteristics-container__attributes">
-                    <AttributesTable
-                      modelIndex={modelIndex}
-                      characteristicIndex={selectedCharacteristicIndex}
-                      setActiveOperation={setActiveOperation}
                       viewAttribute={onViewAttribute}
-                      deleteAttribute={index => {
-                        if (window.confirm(`Delete Attribute "${index}"?`)) {
-                          dispatch({
-                            type: Actions.Scorecard_DeleteAttribute,
-                            payload: {
-                              modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristicIndex,
-                              attributeIndex: index
-                            }
-                          });
-                        }
-                      }}
+                      deleteCharacteristic={deleteCharacteristic}
+                      onCommitAndClose={onCommitAndClose}
+                      onCommit={onCommit}
+                      onCancel={onCancel}
                     />
                   </StackItem>
                 </Stack>
@@ -185,7 +197,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
               {viewSection === "attribute" && (
                 <Stack hasGutter={true}>
                   <StackItem>
-                    <AttributeToolbar viewOverview={onViewOverviewView} viewAttributes={onViewAttributesView} />
+                    <AttributeToolbar viewOverview={onViewOverviewView} />
                   </StackItem>
                   <StackItem className="characteristics-container__attribute">
                     <AttributeEditor

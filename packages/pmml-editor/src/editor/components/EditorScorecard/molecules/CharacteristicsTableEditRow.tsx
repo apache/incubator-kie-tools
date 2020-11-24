@@ -17,37 +17,44 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import { CharacteristicLabelsEditMode, CharacteristicsTableAction } from "../atoms";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
 import { ValidatedType } from "../../../types";
-import { IndexedCharacteristic } from "../organisms";
+import { AttributesTable, IndexedCharacteristic } from "../organisms";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
+import { Actions } from "../../../reducers";
+import { useDispatch } from "react-redux";
+import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicsTableEditRowProps {
+  modelIndex: number;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
-  viewAttributes: () => void;
-  onCommit: (name: string | undefined, reasonCode: string | undefined, baselineScore: number | undefined) => void;
+  viewAttribute: (index: number | undefined) => void;
+  onCommitAndClose: () => void;
+  onCommit: (partial: Partial<Characteristic>) => void;
   onCancel: () => void;
-  onDelete?: () => void;
 }
 
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
   const {
+    modelIndex,
     activeOperation,
+    setActiveOperation,
     characteristic,
     validateCharacteristicName,
-    viewAttributes,
+    viewAttribute,
+    onCommitAndClose,
     onCommit,
-    onCancel,
-    onDelete
+    onCancel
   } = props;
 
-  const index = characteristic.index;
+  const characteristicIndex = characteristic.index;
+
+  const dispatch = useDispatch();
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -58,15 +65,14 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const ref = useOnclickOutside(
     event => {
-      if (name.valid) {
-        onCommit(name.value, reasonCode, baselineScore);
+      if (name?.valid) {
+        onCommitAndClose();
       } else {
         onCancel();
       }
     },
     {
-      disabled:
-        activeOperation !== Operation.UPDATE_CHARACTERISTIC && activeOperation !== Operation.CREATE_CHARACTERISTIC,
+      disabled: activeOperation !== Operation.UPDATE_CHARACTERISTIC,
       eventTypes: ["click"]
     }
   );
@@ -94,7 +100,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   return (
     <article
       ref={ref}
-      className={`characteristic-item characteristic-item-n${index} editable editing`}
+      className={`characteristic-item characteristic-item-n${characteristicIndex} editable editing`}
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === "Escape") {
@@ -128,6 +134,13 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                       valid: validateCharacteristicName(e)
                     })
                   }
+                  onBlur={e => {
+                    if (name?.valid) {
+                      onCommit({
+                        name: name.value
+                      });
+                    }
+                  }}
                 />
               </FormGroup>
             </SplitItem>
@@ -140,6 +153,11 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   aria-describedby="characteristic-reason-code-helper"
                   value={reasonCode ?? ""}
                   onChange={e => setReasonCode(e)}
+                  onBlur={e => {
+                    onCommit({
+                      reasonCode: reasonCode
+                    });
+                  }}
                 />
               </FormGroup>
             </SplitItem>
@@ -156,19 +174,36 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   aria-describedby="characteristic-baseline-score-helper"
                   value={baselineScore ?? ""}
                   onChange={e => setBaselineScore(toNumber(e))}
+                  onBlur={e => {
+                    onCommit({
+                      baselineScore: baselineScore
+                    });
+                  }}
                 />
               </FormGroup>
             </SplitItem>
-            {onDelete && (
-              <SplitItem>
-                <CharacteristicsTableAction onDelete={onDelete} />
-              </SplitItem>
-            )}
           </Split>
         </StackItem>
         <StackItem>
           <FormGroup label="Attributes" fieldId="output-labels-helper">
-            <CharacteristicLabelsEditMode viewAttributes={viewAttributes} />
+            <AttributesTable
+              modelIndex={modelIndex}
+              characteristicIndex={characteristicIndex}
+              setActiveOperation={setActiveOperation}
+              viewAttribute={viewAttribute}
+              deleteAttribute={attributeIndex => {
+                if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {
+                  dispatch({
+                    type: Actions.Scorecard_DeleteAttribute,
+                    payload: {
+                      modelIndex: modelIndex,
+                      characteristicIndex: characteristicIndex,
+                      attributeIndex: attributeIndex
+                    }
+                  });
+                }
+              }}
+            />
           </FormGroup>
         </StackItem>
       </Stack>

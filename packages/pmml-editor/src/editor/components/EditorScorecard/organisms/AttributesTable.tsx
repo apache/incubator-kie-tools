@@ -36,8 +36,6 @@ export const AttributesTable = (props: AttributesTableProps) => {
     return state.DataDictionary.DataField;
   });
 
-  const a = 5;
-
   const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
     if (model instanceof Scorecard && characteristicIndex !== undefined) {
