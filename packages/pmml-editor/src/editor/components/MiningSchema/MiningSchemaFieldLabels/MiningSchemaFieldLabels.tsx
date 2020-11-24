@@ -30,28 +30,29 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
 
   return (
     <>
-      {field.usageType && MiningLabel("Usage Type", field.usageType, { ...field, usageType: undefined })}
-      {field.optype && MiningLabel("Op Type", field.optype, { ...field, optype: undefined })}
-      {field.importance && MiningLabel("Importance", field.importance, { ...field, importance: undefined })}
-      {field.outliers && MiningLabel("Outliers", field.outliers, { ...field, outliers: undefined })}
-      {field.lowValue && MiningLabel("Low Value", field.lowValue, { ...field, lowValue: undefined })}
-      {field.highValue && MiningLabel("High Value", field.highValue, { ...field, highValue: undefined })}
-      {field.missingValueReplacement &&
+      {field.usageType !== undefined && MiningLabel("Usage Type", field.usageType, { ...field, usageType: undefined })}
+      {field.optype !== undefined && MiningLabel("Op Type", field.optype, { ...field, optype: undefined })}
+      {field.importance !== undefined &&
+        MiningLabel("Importance", field.importance, { ...field, importance: undefined })}
+      {field.outliers !== undefined && MiningLabel("Outliers", field.outliers, { ...field, outliers: undefined })}
+      {field.lowValue !== undefined && MiningLabel("Low Value", field.lowValue, { ...field, lowValue: undefined })}
+      {field.highValue !== undefined && MiningLabel("High Value", field.highValue, { ...field, highValue: undefined })}
+      {field.missingValueReplacement !== undefined &&
         MiningLabel("Missing Value Replacement", field.missingValueReplacement, {
           ...field,
           missingValueReplacement: undefined
         })}
-      {field.missingValueTreatment &&
+      {field.missingValueTreatment !== undefined &&
         MiningLabel("Missing Value Treatment", field.missingValueTreatment, {
           ...field,
           missingValueTreatment: undefined
         })}
-      {field.invalidValueReplacement &&
+      {field.invalidValueReplacement !== undefined &&
         MiningLabel("Missing Value Replacement", field.invalidValueReplacement, {
           ...field,
           invalidValueReplacement: undefined
         })}
-      {field.invalidValueTreatment &&
+      {field.invalidValueTreatment !== undefined &&
         MiningLabel("Missing Value Treatment", field.invalidValueTreatment, {
           ...field,
           invalidValueTreatment: undefined

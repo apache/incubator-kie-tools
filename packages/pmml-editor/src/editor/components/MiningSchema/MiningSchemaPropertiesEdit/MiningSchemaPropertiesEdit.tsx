@@ -42,7 +42,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
   const [invalidValueReplacement, setInvalidValueReplacement] = useState(field.invalidValueReplacement ?? "");
   const [submitChanges, setSubmitChanges] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSave = () => {
     const updatedField = { name: field.name } as MiningField;
     if (usageType.length > 0) {
       updatedField.usageType = usageType as UsageType;
@@ -80,7 +80,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
 
   useEffect(() => {
     if (submitChanges) {
-      handleSubmit();
+      handleSave();
     }
   }, [submitChanges]);
 
@@ -154,7 +154,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                 aria-describedby="Importance"
                 value={importance}
                 onChange={value => setImportance(Number.parseFloat(value))}
-                onBlur={handleSubmit}
+                onBlur={handleSave}
               />
             </FormGroup>
             <FormGroup
@@ -182,7 +182,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                     aria-describedby="Low Value"
                     value={lowValue}
                     onChange={value => setLowValue(Number.parseFloat(value))}
-                    onBlur={handleSubmit}
+                    onBlur={handleSave}
                   />
                 </FormGroup>
               </SplitItem>
@@ -195,7 +195,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                     aria-describedby="High Value"
                     value={highValue}
                     onChange={value => setHighValue(Number.parseFloat(value))}
-                    onBlur={handleSubmit}
+                    onBlur={handleSave}
                   />
                 </FormGroup>
               </SplitItem>
@@ -210,7 +210,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                     aria-describedby="Missing Value Replacement"
                     value={missingValueReplacement}
                     onChange={value => setMissingValueReplacement(value)}
-                    onBlur={handleSubmit}
+                    onBlur={handleSave}
                   />
                 </FormGroup>
               </SplitItem>
@@ -238,7 +238,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                     aria-describedby="Invalid Value Replacement"
                     value={invalidValueReplacement}
                     onChange={value => setInvalidValueReplacement(value)}
-                    onBlur={handleSubmit}
+                    onBlur={handleSave}
                   />
                 </FormGroup>
               </SplitItem>

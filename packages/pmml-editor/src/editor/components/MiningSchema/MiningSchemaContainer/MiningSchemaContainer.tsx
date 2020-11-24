@@ -54,7 +54,6 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     ) {
       onUpdateField(editingField, field);
     }
-    // setViewSection("overview");
   };
 
   const handlePropertiesClose = () => {
