@@ -19,63 +19,47 @@ interface DataDictionaryContainerProps {
 
 const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryContainerProps) => {
   const [dataTypes, setDataTypes] = useState<DataField[]>(dataDictionary);
-  const [newType, setNewType] = useState(false);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
   const [constrainsEdit, setConstraintsEdit] = useState<DataField>();
   const [sorting, setSorting] = useState(false);
-  let newItemDraft: DataField = { name: "", type: "string" };
 
   useEffect(() => {
     onUpdate(dataTypes);
   }, [dataTypes]);
 
   const handleOutsideClick = () => {
-    saveDraftNewItem();
-    setNewType(false);
+    handleEmptyFields();
     setEditing(false);
   };
 
   const addDataType = () => {
-    setNewType(true);
-    setEditing(-1);
+    const newTypes = dataTypes;
+    newTypes.push({ name: "", type: "string" });
+    setDataTypes(newTypes);
+    setEditing(newTypes.length - 1);
+  };
+
+  const handleEmptyFields = () => {
+    if (dataTypes[dataTypes.length - 1].name.trim().length === 0) {
+      const newDataTypes = dataTypes;
+      newDataTypes[newDataTypes.length - 1].name = findIncrementalName("New Data Type", 1);
+      setDataTypes(newDataTypes);
+    }
   };
 
   const saveDataType = (dataType: DataField, index: number) => {
-    if (index === -1) {
-      if (dataType.name.length > 0) {
-        const newTypes = dataTypes;
-        newTypes.push(dataType);
-        setDataTypes(newTypes);
-        setNewType(false);
-        // setEditing(newTypes.length - 1);
-      } else {
-        setNewType(false);
-        setEditing(false);
-      }
-    } else {
-      const newTypes = dataTypes;
-      newTypes[index] = { ...newTypes[index], ...dataType };
-      console.log("updating data type");
-      setDataTypes(newTypes);
+    if (!dataTypeNameValidation(dataType.name)) {
+      dataType.name = findIncrementalName(dataType.name, 2);
     }
-  };
-
-  const saveDraftNewItem = () => {
-    if (newItemDraft && newItemDraft.name.length > 0) {
-      if (dataTypeNameValidation(newItemDraft.name)) {
-        saveDataType({ ...newItemDraft }, -1);
-      }
-      newItemDraft.name = "";
-    }
+    const newTypes = dataTypes;
+    newTypes[index] = { ...newTypes[index], ...dataType };
+    console.log("updating data type");
+    setDataTypes(newTypes);
   };
 
   const handleSave = (dataType: DataField, index: number) => {
     saveDataType(dataType, index);
-  };
-
-  const handleNewItem = (dataType: DataField) => {
-    newItemDraft = dataType;
   };
 
   const handleDelete = (index: number) => {
@@ -86,13 +70,8 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
 
   const handleEdit = (index: number) => {
     console.log("setting editing to " + index);
-    if (index > -1) {
-      saveDraftNewItem();
-    }
+    handleEmptyFields();
     setEditing(index);
-    if (newType) {
-      setNewType(false);
-    }
   };
 
   const handleMultipleAdd = (types: string) => {
@@ -107,11 +86,6 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   const handleConstraintsEdit = (dataType: DataField) => {
     if (typeof editing === "number") {
       saveDataType(dataType, editing);
-      if (editing === -1) {
-        setNewType(false);
-        setEditing(dataTypes.length);
-      }
-      // to be improved. waiting for the dataTypes to update instead of passing around dataType
       setConstraintsEdit(dataType);
       setViewSection("constraints");
     }
@@ -136,8 +110,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   };
 
   const toggleSorting = () => {
-    saveDraftNewItem();
-    setNewType(false);
+    handleEmptyFields();
     setEditing(false);
     setSorting(!sorting);
   };
@@ -163,6 +136,21 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
     } else {
       return "enter-from-right";
     }
+  };
+
+  // TODO {kelvah} rough implementation for demoing purposes. to be done properly.
+  const findIncrementalName = (name: string, startsFrom: number): string => {
+    let newName = "";
+    let counter = startsFrom;
+    do {
+      const potentialName = `${name}${counter !== 1 ? ` ${counter}` : ""}`;
+      const found = dataTypes.filter(item => item.name === potentialName);
+      if (found.length === 0) {
+        newName = potentialName;
+      }
+      counter++;
+    } while (newName.length === 0);
+    return newName;
   };
 
   return (
@@ -209,7 +197,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                 <>
                   {!sorting && (
                     <section className="data-dictionary__types-list">
-                      {dataTypes.length === 0 && !newType && (
+                      {dataTypes.length === 0 && (
                         <Bullseye style={{ height: "40vh" }}>
                           <EmptyDataDictionary />
                         </Bullseye>
@@ -227,18 +215,6 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                           onOutsideClick={handleOutsideClick}
                         />
                       ))}
-                      {newType && (
-                        <DataTypeItem
-                          dataType={{ name: "", type: "string" }}
-                          index={-1}
-                          key={uuid()}
-                          onSave={handleSave}
-                          onConstraintsEdit={handleConstraintsEdit}
-                          onValidate={dataTypeNameValidation}
-                          onOutsideClick={handleOutsideClick}
-                          onNewItemChange={handleNewItem}
-                        />
-                      )}
                     </section>
                   )}
                   {sorting && (
