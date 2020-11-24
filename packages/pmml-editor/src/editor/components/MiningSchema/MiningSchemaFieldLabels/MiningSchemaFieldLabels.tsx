@@ -19,6 +19,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
       <Label
         color="orange"
         className="mining-schema-list__item__label"
+        closeBtnProps={{ className: "ignore-onclickoutside" }}
         onClose={editing ? () => onDelete(updatedField) : undefined}
       >
         <strong>{name}:</strong>

@@ -4,6 +4,7 @@ import { Button, Split, SplitItem } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
+import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
 import "./MiningSchemaFields.scss";
 
@@ -13,10 +14,11 @@ interface MiningSchemaFieldsProps {
   onDelete: (index: number) => void;
   onPropertyDelete: (index: number, updatedField: MiningField) => void;
   onEdit: (index: number) => void;
+  onCancel: () => void;
 }
 
 const MiningSchemaFields = (props: MiningSchemaFieldsProps) => {
-  const { fields, onAddProperties, onDelete, onPropertyDelete, onEdit } = props;
+  const { fields, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
   return (
     <ul className="mining-schema-list">
       {fields?.map((field, index) => {
@@ -29,6 +31,7 @@ const MiningSchemaFields = (props: MiningSchemaFieldsProps) => {
             onDelete={onDelete}
             onPropertyDelete={onPropertyDelete}
             onEdit={onEdit}
+            onCancel={onCancel}
           />
         );
       })}
@@ -45,11 +48,22 @@ interface MiningSchemaFieldProps {
   onDelete: (index: number) => void;
   onPropertyDelete: (index: number, field: MiningField) => void;
   onEdit: (index: number) => void;
+  onCancel: () => void;
 }
 
 const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
-  const { field, index, onAddProperties, onDelete, onPropertyDelete, onEdit } = props;
+  const { field, index, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
   const editing = useContext(MiningSchemaContext);
+
+  const ref = useOnclickOutside(
+    () => {
+      onCancel();
+    },
+    {
+      disabled: editing !== index,
+      eventTypes: ["click"]
+    }
+  );
 
   const addProperties = () => {
     onAddProperties(index);
@@ -68,6 +82,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
       className={`mining-schema-list__item ${editing === index ? "editing" : ""}`}
       key={field.name.value}
       onClick={handleEdit}
+      ref={ref}
     >
       <Split hasGutter={true}>
         <SplitItem>

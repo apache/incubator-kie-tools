@@ -41,6 +41,10 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     setEditingField(index);
   };
 
+  const handleCancelEditing = () => {
+    setEditingField(-1);
+  };
+
   const goToProperties = () => {
     setViewSection("properties");
   };
@@ -124,6 +128,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                               onDelete={handleDeleteField}
                               onPropertyDelete={handlePropertyDelete}
                               onEdit={handleEditField}
+                              onCancel={handleCancelEditing}
                             />
                           )}
                         </>
