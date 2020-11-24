@@ -8,14 +8,19 @@ interface MiningSchemaFieldLabelsProps {
   field: MiningField;
   onEdit: () => void;
   onDelete: (updatedField: MiningField) => void;
+  editing: boolean;
 }
 
 const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
-  const { field, onEdit, onDelete } = props;
+  const { field, onEdit, onDelete, editing } = props;
 
   const MiningLabel = (name: string, value: any, updatedField: MiningField) => {
     return (
-      <Label color="orange" className="mining-schema-list__item__label" onClose={() => onDelete(updatedField)}>
+      <Label
+        color="orange"
+        className="mining-schema-list__item__label"
+        onClose={editing ? () => onDelete(updatedField) : undefined}
+      >
         <strong>{name}:</strong>
         &nbsp;
         <span>{value}</span>
@@ -51,19 +56,21 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
           ...field,
           invalidValueTreatment: undefined
         })}
-      <Label
-        className="mining-schema-list__item__label"
-        variant="outline"
-        color="orange"
-        href="#"
-        icon={<ArrowAltCircleRightIcon />}
-        onClick={event => {
-          event.preventDefault();
-          onEdit();
-        }}
-      >
-        Edit Properties
-      </Label>
+      {editing && (
+        <Label
+          className="mining-schema-list__item__label"
+          variant="outline"
+          color="orange"
+          href="#"
+          icon={<ArrowAltCircleRightIcon />}
+          onClick={event => {
+            event.preventDefault();
+            onEdit();
+          }}
+        >
+          Edit Properties
+        </Label>
+      )}
     </>
   );
 };

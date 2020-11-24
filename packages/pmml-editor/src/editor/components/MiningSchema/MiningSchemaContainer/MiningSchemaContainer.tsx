@@ -37,8 +37,11 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     onDeleteField(index);
   };
 
-  const goToProperties = (index: number) => {
+  const handleEditField = (index: number) => {
     setEditingField(index);
+  };
+
+  const goToProperties = () => {
     setViewSection("properties");
   };
 
@@ -51,8 +54,11 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     ) {
       onUpdateField(editingField, field);
     }
+    // setViewSection("overview");
+  };
+
+  const handlePropertiesClose = () => {
     setViewSection("overview");
-    setEditingField(-1);
   };
 
   const handlePropertyDelete = (index: number, updatedField: MiningField) => {
@@ -73,79 +79,78 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
 
   return (
     <section className="mining-schema">
-      <SwitchTransition mode={"out-in"}>
-        <CSSTransition
-          timeout={{
-            enter: 230,
-            exit: 100
-          }}
-          classNames={getTransition(viewSection)}
-          key={viewSection}
-        >
-          <>
-            {viewSection === "overview" && (
-              <Stack hasGutter={true}>
-                <StackItem>
-                  <Title headingLevel="h4" size={TitleSizes.xl}>
-                    Add Fields
-                  </Title>
-                </StackItem>
-                <StackItem>
-                  <MiningSchemaAddFields options={fields} onAdd={handleAddFields} />
-                </StackItem>
-                <StackItem>
-                  <Title headingLevel="h4" size={TitleSizes.xl}>
-                    Fields List
-                  </Title>
-                  <section className="mining-schema__fields">
-                    {fields.length === 0 && (
-                      <Bullseye style={{ height: "40vh" }}>
-                        <NoMiningSchemaFieldsOptions />
-                      </Bullseye>
-                    )}
-                    {fields.length > 0 && (
-                      <>
-                        {miningSchema === undefined ||
-                          (miningSchema?.MiningField.length === 0 && (
-                            <Bullseye style={{ height: "40vh" }}>
-                              <EmptyMiningSchema />
-                            </Bullseye>
-                          ))}
-                        {miningSchema && miningSchema.MiningField.length > 0 && (
-                          <MiningSchemaFields
-                            fields={miningSchema?.MiningField}
-                            onAddProperties={goToProperties}
-                            onDelete={handleDeleteField}
-                            onPropertyDelete={handlePropertyDelete}
-                          />
-                        )}
-                      </>
-                    )}
-                  </section>
-                </StackItem>
-              </Stack>
-            )}
-            {viewSection === "properties" && (
-              <MiningSchemaPropertiesEdit
-                field={miningSchema!.MiningField[editingField]}
-                onSave={handlePropertiesSave}
-              />
-            )}
-          </>
-        </CSSTransition>
-      </SwitchTransition>
+      <MiningSchemaContext.Provider value={editingField}>
+        <SwitchTransition mode={"out-in"}>
+          <CSSTransition
+            timeout={{
+              enter: 230,
+              exit: 100
+            }}
+            classNames={getTransition(viewSection)}
+            key={viewSection}
+          >
+            <>
+              {viewSection === "overview" && (
+                <Stack hasGutter={true}>
+                  <StackItem>
+                    <Title headingLevel="h4" size={TitleSizes.xl}>
+                      Add Fields
+                    </Title>
+                  </StackItem>
+                  <StackItem>
+                    <MiningSchemaAddFields options={fields} onAdd={handleAddFields} />
+                  </StackItem>
+                  <StackItem>
+                    <Title headingLevel="h4" size={TitleSizes.xl}>
+                      Fields List
+                    </Title>
+                    <section className="mining-schema__fields">
+                      {fields.length === 0 && (
+                        <Bullseye style={{ height: "40vh" }}>
+                          <NoMiningSchemaFieldsOptions />
+                        </Bullseye>
+                      )}
+                      {fields.length > 0 && (
+                        <>
+                          {miningSchema === undefined ||
+                            (miningSchema?.MiningField.length === 0 && (
+                              <Bullseye style={{ height: "40vh" }}>
+                                <EmptyMiningSchema />
+                              </Bullseye>
+                            ))}
+                          {miningSchema && miningSchema.MiningField.length > 0 && (
+                            <MiningSchemaFields
+                              fields={miningSchema?.MiningField}
+                              onAddProperties={goToProperties}
+                              onDelete={handleDeleteField}
+                              onPropertyDelete={handlePropertyDelete}
+                              onEdit={handleEditField}
+                            />
+                          )}
+                        </>
+                      )}
+                    </section>
+                  </StackItem>
+                </Stack>
+              )}
+              {viewSection === "properties" && (
+                <MiningSchemaPropertiesEdit
+                  field={miningSchema!.MiningField[editingField]}
+                  onSave={handlePropertiesSave}
+                  onClose={handlePropertiesClose}
+                />
+              )}
+            </>
+          </CSSTransition>
+        </SwitchTransition>
+      </MiningSchemaContext.Provider>
     </section>
   );
 };
 
 export default MiningSchemaContainer;
 
-export interface MiningSchemaOption {
-  name: string;
-  isSelected: boolean;
-}
-
-type MiningSchemaSection = "overview" | "properties";
+export const MiningSchemaContext = React.createContext<number>(-1);
 
 const prepareFieldOptions = (dictionary: DataDictionary | undefined, miningSchema: MiningSchema | undefined) => {
   if (dictionary) {
@@ -159,3 +164,9 @@ const prepareFieldOptions = (dictionary: DataDictionary | undefined, miningSchem
     return [];
   }
 };
+export interface MiningSchemaOption {
+  name: string;
+  isSelected: boolean;
+}
+
+type MiningSchemaSection = "overview" | "properties";
