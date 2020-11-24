@@ -26,22 +26,22 @@ import javax.inject.Inject;
 import org.appformer.client.stateControl.registry.Registry;
 import org.appformer.client.stateControl.registry.RegistryChangeListener;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 
 @ApplicationScoped
 public class RegistryProvider {
 
     private final ManagedInstance<CommandRegistryHolder> registryHolders;
-    private final GraphsProvider graphsProvider;
+    private final DMNGraphsProvider graphsProvider;
     private final Map<String, Registry<Command<AbstractCanvasHandler, CanvasViolation>>> registryMap;
     private RegistryChangeListener registryChangeListener;
 
     @Inject
     public RegistryProvider(final ManagedInstance<CommandRegistryHolder> registryHolders,
-                            final GraphsProvider graphsProvider) {
+                            final DMNGraphsProvider graphsProvider) {
         this.registryHolders = registryHolders;
         this.graphsProvider = graphsProvider;
         this.registryMap = new HashMap<>();

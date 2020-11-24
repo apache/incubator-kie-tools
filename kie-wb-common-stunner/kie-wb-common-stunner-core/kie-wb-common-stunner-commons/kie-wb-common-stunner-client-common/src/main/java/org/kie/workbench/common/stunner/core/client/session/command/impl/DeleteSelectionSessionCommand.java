@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DeleteNodeConfirmation;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
@@ -66,10 +68,13 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     private final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
     private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
     private final DefinitionUtils definitionUtils;
+    private final DeleteNodeConfirmation deleteNodeConfirmation;
+
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     protected DeleteSelectionSessionCommand() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -82,26 +87,29 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
                                          final @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
                                          final Event<CanvasClearSelectionEvent> clearSelectionEvent,
                                          final DefinitionUtils definitionUtils,
-                                         final SessionManager sessionmanager) {
+                                         final SessionManager sessionmanager,
+                                         final DeleteNodeConfirmation deleteNodeConfirmation) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactoryInstance = canvasCommandFactoryInstance;
         this.clearSelectionEvent = clearSelectionEvent;
         this.definitionUtils = definitionUtils;
+        this.deleteNodeConfirmation = deleteNodeConfirmation;
         SessionSingletonCommandsFactory.createOrPut(this, sessionmanager);
     }
 
     public static DeleteSelectionSessionCommand getInstance(SessionManager sessionManager) {
-        return SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager);
+        return SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager, null);
     }
 
     public static DeleteSelectionSessionCommand getInstance(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                                             final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
                                                             final Event<CanvasClearSelectionEvent> clearSelectionEvent,
                                                             final DefinitionUtils definitionUtils,
-                                                            final SessionManager sessionmanager) {
+                                                            final SessionManager sessionmanager,
+                                                            final DeleteNodeConfirmation deleteNodeConfirmation) {
 
-        return SessionSingletonCommandsFactory.getInstanceDelete(sessionCommandManager, canvasCommandFactoryInstance, clearSelectionEvent, definitionUtils, sessionmanager);
+        return SessionSingletonCommandsFactory.getInstanceDelete(sessionCommandManager, canvasCommandFactoryInstance, clearSelectionEvent, definitionUtils, sessionmanager, deleteNodeConfirmation);
     }
 
     @Override
@@ -136,28 +144,52 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
 
-            clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
-            selectionControl.clearSelection();
-
             if (selectedItems != null && !selectedItems.isEmpty()) {
-                // Execute the commands.
-                final CommandResult<CanvasViolation> result =
-                        sessionCommandManager.execute(canvasHandler,
-                                                      canvasCommandFactory.delete(selectedItems.stream()
-                                                                                          .map(uuid -> canvasHandler.getGraphIndex().get(uuid))
-                                                                                          .filter(Objects::nonNull)
-                                                                                          .collect(Collectors.toList())));
-
-                // Check the results.
-                if (!CommandUtils.isError(result)) {
-                    callback.onSuccess();
+                final List<Element> elements = selectedItems.stream()
+                        .map(uuid -> canvasHandler.getGraphIndex().get(uuid))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+                if (!Objects.isNull(deleteNodeConfirmation)
+                        && deleteNodeConfirmation.requiresDeletionConfirmation(elements)) {
+                    deleteNodeConfirmation.confirmDeletion(() -> executeDelete(elements,
+                                                                               canvasHandler,
+                                                                               selectionControl,
+                                                                               callback),
+                                                           () -> {
+                                                               // do nothing if user cancels
+                                                           },
+                                                           elements);
                 } else {
-                    callback.onError((V) new ClientRuntimeError("Error deleing elements [message=" +
-                                                                        result.toString() + "]"));
+                    executeDelete(elements,
+                                  canvasHandler,
+                                  selectionControl,
+                                  callback);
                 }
             } else {
                 callback.onError((V) new ClientRuntimeError("Cannot delete element, no element selected on canvas"));
             }
+        }
+    }
+
+    private <V> void executeDelete(final List<Element> elements,
+                                   final AbstractCanvasHandler canvasHandler,
+                                   final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
+                                   final Callback<V> callback) {
+
+        clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
+        selectionControl.clearSelection();
+
+        // Execute the commands.
+        final CommandResult<CanvasViolation> result =
+                sessionCommandManager.execute(canvasHandler,
+                                              canvasCommandFactory.delete(elements));
+
+        // Check the results.
+        if (!CommandUtils.isError(result)) {
+            callback.onSuccess();
+        } else {
+            callback.onError((V) new ClientRuntimeError("Error deleing elements [message=" +
+                                                                result.toString() + "]"));
         }
     }
 

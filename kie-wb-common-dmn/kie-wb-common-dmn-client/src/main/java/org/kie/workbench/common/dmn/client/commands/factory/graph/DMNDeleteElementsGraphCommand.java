@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.DMNSafeDeleteNodeCommand;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -29,11 +29,11 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCo
 
 public class DMNDeleteElementsGraphCommand extends DeleteElementsCommand {
 
-    private GraphsProvider graphsProvider;
+    private DMNGraphsProvider graphsProvider;
 
     public DMNDeleteElementsGraphCommand(final Supplier<Collection<Element>> elements,
                                          final DeleteCallback callback,
-                                         final GraphsProvider graphsProvider) {
+                                         final DMNGraphsProvider graphsProvider) {
         super(elements, callback);
         this.graphsProvider = graphsProvider;
     }
@@ -48,7 +48,7 @@ public class DMNDeleteElementsGraphCommand extends DeleteElementsCommand {
                                             getGraphsProvider());
     }
 
-    public GraphsProvider getGraphsProvider() {
+    public DMNGraphsProvider getGraphsProvider() {
         return graphsProvider;
     }
 }

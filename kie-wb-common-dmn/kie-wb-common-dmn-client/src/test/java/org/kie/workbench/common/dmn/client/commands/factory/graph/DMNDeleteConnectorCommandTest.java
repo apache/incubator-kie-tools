@@ -20,7 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand;
@@ -42,7 +42,7 @@ public class DMNDeleteConnectorCommandTest {
     private Edge<? extends View, Node> edge;
 
     @Mock
-    private GraphsProvider graphsProvider;
+    private DMNGraphsProvider graphsProvider;
 
     private Edge<? extends ViewConnector, Node> edgeParameter = mock(Edge.class);
 

@@ -20,11 +20,11 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.mockito.Mock;
 
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 public class DMNDeleteCanvasConnectorNodeCommandTest {
 
     @Mock
-    private GraphsProvider graphsProvider;
+    private DMNGraphsProvider graphsProvider;
 
     @Mock
     private Edge candidate;

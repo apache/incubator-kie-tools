@@ -18,8 +18,8 @@ package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -36,7 +36,7 @@ public class DMNDeleteNodeCommandTest {
     @Test
     public void testNewGraphCommand() {
 
-        final GraphsProvider selectedDiagramProvider = mock(GraphsProvider.class);
+        final DMNGraphsProvider selectedDiagramProvider = mock(DMNGraphsProvider.class);
         final Node candidate = mock(Node.class);
         when(candidate.getUUID()).thenReturn("uuid");
         final DMNDeleteNodeCommand cmd = new DMNDeleteNodeCommand(candidate, selectedDiagramProvider);

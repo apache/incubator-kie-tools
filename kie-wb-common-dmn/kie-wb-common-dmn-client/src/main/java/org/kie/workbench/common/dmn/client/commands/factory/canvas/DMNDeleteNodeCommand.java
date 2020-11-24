@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteCanvasConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteNodeCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -30,17 +30,17 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DMNDeleteNodeCommand extends DeleteNodeCommand {
 
-    private final GraphsProvider graphsProvider;
+    private final DMNGraphsProvider graphsProvider;
 
     public DMNDeleteNodeCommand(final Node candidate,
-                                final GraphsProvider graphsProvider) {
+                                final DMNGraphsProvider graphsProvider) {
         super(candidate,
               SafeDeleteNodeCommand.Options.defaults(),
               new DMNCanvasDeleteProcessor(SafeDeleteNodeCommand.Options.defaults(), graphsProvider));
         this.graphsProvider = graphsProvider;
     }
 
-    public GraphsProvider getGraphsProvider() {
+    public DMNGraphsProvider getGraphsProvider() {
         return graphsProvider;
     }
 
@@ -54,10 +54,10 @@ public class DMNDeleteNodeCommand extends DeleteNodeCommand {
 
     public static class DMNCanvasDeleteProcessor extends CanvasDeleteProcessor {
 
-        private final GraphsProvider graphsProvider;
+        private final DMNGraphsProvider graphsProvider;
 
         public DMNCanvasDeleteProcessor(final SafeDeleteNodeCommand.Options options,
-                                        final GraphsProvider graphsProvider) {
+                                        final DMNGraphsProvider graphsProvider) {
             super(options);
             this.graphsProvider = graphsProvider;
         }

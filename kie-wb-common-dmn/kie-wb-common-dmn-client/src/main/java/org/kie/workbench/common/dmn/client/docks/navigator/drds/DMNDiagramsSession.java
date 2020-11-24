@@ -39,17 +39,17 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.uberfire.backend.vfs.Path;
 
 import static java.util.Collections.emptyList;
+import static org.kie.workbench.common.dmn.client.docks.navigator.drds.DRGDiagramUtils.isDRG;
 
 @ApplicationScoped
 @Default
-public class DMNDiagramsSession implements GraphsProvider {
+public class DMNDiagramsSession {
 
     private static Diagram NO_DIAGRAM = null;
 
@@ -128,12 +128,10 @@ public class DMNDiagramsSession implements GraphsProvider {
         getSessionState().getDMNDiagramsByDiagramId().remove(diagramId);
     }
 
-    @Override
     public Diagram getDiagram(final String dmnDiagramElementId) {
         return getSessionState().getDiagram(dmnDiagramElementId);
     }
 
-    @Override
     public String getCurrentDiagramId() {
         if (!Objects.isNull(getSessionState())) {
             final Optional<DMNDiagramElement> current = getCurrentDMNDiagramElement();
@@ -183,10 +181,6 @@ public class DMNDiagramsSession implements GraphsProvider {
         return Optional.ofNullable(getSessionState()).map(DMNDiagramsSessionState::getDRGDiagramElement).orElse(null);
     }
 
-    private DMNDiagramTuple getDRGDiagramTuple() {
-        return Optional.ofNullable(getSessionState()).map(DMNDiagramsSessionState::getDRGDiagramTuple).orElse(null);
-    }
-
     public void clear() {
         getSessionState().clear();
     }
@@ -199,12 +193,10 @@ public class DMNDiagramsSession implements GraphsProvider {
         return Optional.ofNullable(getSessionState()).map(DMNDiagramsSessionState::getModelImports).orElse(emptyList());
     }
 
-    @Override
     public boolean isGlobalGraphSelected() {
         return getCurrentDMNDiagramElement().map(DRGDiagramUtils::isDRG).orElse(false);
     }
 
-    @Override
     public List<Graph> getGraphs() {
         return getDMNDiagrams()
                 .stream()
@@ -229,6 +221,14 @@ public class DMNDiagramsSession implements GraphsProvider {
                             .orElse(NO_DIAGRAM);
                 })
                 .orElse(NO_DIAGRAM);
+    }
+
+    public List<Graph> getNonGlobalGraphs() {
+        return getDMNDiagrams()
+                .stream()
+                .filter(dmnDiagramTuple -> !isDRG(dmnDiagramTuple.getDMNDiagram()))
+                .map(tuple -> tuple.getStunnerDiagram().getGraph())
+                .collect(Collectors.toList());
     }
 
     private Optional<ClientSession> getCurrentSession() {

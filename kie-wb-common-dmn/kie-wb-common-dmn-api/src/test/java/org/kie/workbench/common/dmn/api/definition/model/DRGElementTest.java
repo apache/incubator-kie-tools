@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -31,6 +32,7 @@ import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.Rea
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
@@ -56,6 +58,7 @@ public class DRGElementTest {
         doCallRealMethod().when(drgElement).isAllowOnlyVisualChange();
         doCallRealMethod().when(drgElement).isReadonlyField(anyString());
         doCallRealMethod().when(drgElement).getContentDefinitionId();
+        doCallRealMethod().when(drgElement).getStringName();
     }
 
     @Test
@@ -120,6 +123,21 @@ public class DRGElementTest {
         final String currentId = drgElement.getContentDefinitionId();
 
         assertEquals(contentDefinitionId, currentId);
+    }
+
+    @Test
+    public void testGetStringName() {
+
+        final Name name = mock(Name.class);
+        final String theName = "the name";
+
+        when(name.getValue()).thenReturn(theName);
+
+        doReturn(name).when(drgElement).getName();
+
+        final String stringName = drgElement.getStringName();
+
+        assertEquals(theName, stringName);
     }
 
     private void checkIfItIsNotReadOnly(final String property) {

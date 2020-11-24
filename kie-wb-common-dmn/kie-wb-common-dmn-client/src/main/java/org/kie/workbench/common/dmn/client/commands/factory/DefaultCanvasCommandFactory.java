@@ -26,10 +26,10 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.AddChildNodeCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.DMNDeleteElementsCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.DMNDeleteNodeCommand;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.command.LienzoCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.V
 @ApplicationScoped
 public class DefaultCanvasCommandFactory extends LienzoCanvasCommandFactory {
 
-    private GraphsProvider graphsProvider;
+    private DMNGraphsProvider graphsProvider;
 
     protected DefaultCanvasCommandFactory() {
         super();
@@ -48,7 +48,7 @@ public class DefaultCanvasCommandFactory extends LienzoCanvasCommandFactory {
     @Inject
     public DefaultCanvasCommandFactory(final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors,
                                        final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors,
-                                       final GraphsProvider graphsProvider) {
+                                       final DMNGraphsProvider graphsProvider) {
         super(childrenTraverseProcessors,
               viewTraverseProcessors);
         this.graphsProvider = graphsProvider;

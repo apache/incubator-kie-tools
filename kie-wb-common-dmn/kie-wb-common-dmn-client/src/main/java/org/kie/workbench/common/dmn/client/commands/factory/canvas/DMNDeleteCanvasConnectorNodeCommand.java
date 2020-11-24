@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteCanvasConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -30,7 +31,8 @@ public class DMNDeleteCanvasConnectorNodeCommand extends DeleteCanvasConnectorCo
 
     private final GraphsProvider graphsProvider;
 
-    public DMNDeleteCanvasConnectorNodeCommand(final Edge candidate, final GraphsProvider graphsProvider) {
+    public DMNDeleteCanvasConnectorNodeCommand(final Edge candidate,
+                                               final DMNGraphsProvider graphsProvider) {
         super(candidate);
         this.graphsProvider = graphsProvider;
     }

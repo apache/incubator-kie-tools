@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeleteConnectorCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeregisterNodeCommand;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -35,13 +36,13 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public class DMNSafeDeleteNodeCommand extends SafeDeleteNodeCommand {
 
-    private final GraphsProvider graphsProvider;
+    private final DMNGraphsProvider graphsProvider;
     private final Node<?, Edge> node;
 
     public DMNSafeDeleteNodeCommand(final Node<?, Edge> node,
                                     final SafeDeleteNodeCommandCallback safeDeleteCallback,
                                     final Options options,
-                                    final GraphsProvider graphsProvider) {
+                                    final DMNGraphsProvider graphsProvider) {
         super(node, safeDeleteCallback, options);
         this.graphsProvider = graphsProvider;
         this.node = node;

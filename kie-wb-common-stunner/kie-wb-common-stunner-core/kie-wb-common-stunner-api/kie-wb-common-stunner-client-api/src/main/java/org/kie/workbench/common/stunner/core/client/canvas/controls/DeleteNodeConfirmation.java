@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.diagram;
+package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
-import java.util.List;
+import java.util.Collection;
 
-import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.uberfire.mvp.Command;
 
-public interface GraphsProvider {
+public interface DeleteNodeConfirmation {
 
-    boolean isGlobalGraphSelected();
+    boolean requiresDeletionConfirmation(final Collection<Element> elements);
 
-    List<Graph> getGraphs();
-
-    List<Graph> getNonGlobalGraphs();
-
-    Diagram getDiagram(final String diagramId);
-
-    String getCurrentDiagramId();
+    void confirmDeletion(final Command onDeletionAccepted,
+                         final Command onDeletionRejected,
+                         final Collection<Element> elements);
 }

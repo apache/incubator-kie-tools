@@ -23,7 +23,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -43,7 +43,7 @@ public class RegistryProviderTest {
     private ManagedInstance<CommandRegistryHolder> registryHolders;
 
     @Mock
-    private GraphsProvider graphsProvider;
+    private DMNGraphsProvider graphsProvider;
 
     private RegistryProvider provider;
 

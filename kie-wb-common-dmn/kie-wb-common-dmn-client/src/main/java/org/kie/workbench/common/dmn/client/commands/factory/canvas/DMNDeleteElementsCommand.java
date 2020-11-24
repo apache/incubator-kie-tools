@@ -19,10 +19,10 @@ package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 import java.util.Collection;
 
 import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeleteElementsGraphCommand;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteElementsCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
@@ -30,15 +30,15 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DMNDeleteElementsCommand extends DeleteElementsCommand {
 
-    private final GraphsProvider graphsProvider;
+    private final DMNGraphsProvider graphsProvider;
 
     public DMNDeleteElementsCommand(final Collection<Element> elements,
-                                    final GraphsProvider graphsProvider) {
+                                    final DMNGraphsProvider graphsProvider) {
         super(elements);
         this.graphsProvider = graphsProvider;
     }
 
-    public GraphsProvider getGraphsProvider() {
+    public DMNGraphsProvider getGraphsProvider() {
         return graphsProvider;
     }
 
