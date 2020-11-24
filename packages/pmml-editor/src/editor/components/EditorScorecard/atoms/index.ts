@@ -16,7 +16,6 @@
 
 export * from "./AttributeLabel";
 export * from "./AttributeLabels";
-export * from "./AttributeLabelsEditMode";
 export * from "./AttributesTableAction";
 export * from "./AttributesTableEditModeAction";
 export * from "./CharacteristicsTableAction";
