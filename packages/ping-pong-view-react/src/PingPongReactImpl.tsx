@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useState } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "ping-pong-view/dist/api";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { useSubscription } from "@kogito-tooling/envelope-bus/dist/hooks";
@@ -88,7 +88,7 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
   });
 
   // This effect simply keeps appending a dot to the log so that users have a sense of time passing.
-  useEffect(() => {
+  useLayoutEffect(() => {
     const interval = setInterval(() => setLog((prevLog) => [...prevLog, { line: ".", time: getCurrentTime() }]), 2000);
     return () => clearInterval(interval);
   }, []);
@@ -101,10 +101,11 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
         <span>Hello from React!</span>
         <button onClick={ping}>Ping others!</button>
       </div>
-
       <div className={"ping-pong-view--log"}>
         {log.slice(-10).map((line) => (
-          <p style={{ fontFamily: "monospace" }} key={line.time}>{line.line}</p>
+          <p style={{ fontFamily: "monospace" }} key={line.time}>
+            {line.line}
+          </p>
         ))}
       </div>
     </>
@@ -112,5 +113,5 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
 });
 
 function getCurrentTime() {
-  return new Date().getTime();
+  return window.performance.now();
 }
