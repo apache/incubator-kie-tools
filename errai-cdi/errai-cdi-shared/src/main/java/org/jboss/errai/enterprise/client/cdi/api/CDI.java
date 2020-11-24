@@ -50,7 +50,6 @@ import org.jboss.errai.enterprise.client.cdi.CDIProtocol;
 import org.jboss.errai.enterprise.client.cdi.EventQualifierSerializer;
 import org.jboss.errai.enterprise.client.cdi.JsTypeEventObserver;
 import org.jboss.errai.enterprise.client.cdi.WindowEventObservers;
-import org.jboss.errai.marshalling.client.api.MarshallerFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,13 +167,6 @@ public class CDI {
     }
 
     consumeEventFromMessage(CommandMessage.createWithParts(messageMap));
-
-    if (isRemoteCommunicationEnabled()) {
-      final CommandMessage withParts = CommandMessage.createWithParts(messageMap);
-      messageMap.put(MessageParts.ToSubject.name(), SERVER_DISPATCHER_SUBJECT);
-
-      fireOnSubscribe(beanRef.getClass().getName(), withParts);
-    }
   }
 
   public static Subscription subscribeLocal(final String eventType, final AbstractCDIEventCallback<?> callback) {
@@ -388,23 +380,6 @@ public class CDI {
 
   public static void addPostInitTask(final Runnable runnable) {
     InitVotes.registerOneTimeDependencyCallback(CDI.class, runnable);
-  }
-
-  private static void fireOnSubscribe(final String type, final Message message) {
-    if (MarshallerFramework.canMarshall(type)) {
-      final MessageFireDeferral deferral = new MessageFireDeferral(System.currentTimeMillis(), message);
-
-      if (remoteEvents.contains(type)) {
-        ErraiBus.get().send(message);
-        return;
-      }
-
-      List<MessageFireDeferral> runnables = fireOnSubscribe.get(type);
-      if (runnables == null) {
-        fireOnSubscribe.put(type, runnables = new ArrayList<>());
-      }
-      runnables.add(deferral);
-    }
   }
 
 

@@ -81,7 +81,6 @@
     <module>errai-javax-enterprise</module>
     <module>errai-ioc</module>
     <module>errai-bus</module>
-    <module>errai-tools</module>
     <module>errai-codegen</module>
     <module>errai-cordova</module>
     <module>errai-marshalling</module>
@@ -98,7 +97,6 @@
     <module>errai-config</module>
     <module>errai-codegen-gwt</module>
     <module>errai-ioc-bus-support</module>
-    <module>errai-bus-websocket</module>    
     <module>errai-jboss-as-support</module>
     <module>errai-security</module>
     <module>errai-demos</module>
