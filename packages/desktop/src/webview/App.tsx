@@ -61,18 +61,6 @@ export function App() {
     [file]
   );
 
-  const onFileChange = useCallback(
-    (newFile: ElectronFile) => {
-      setFile({
-        fileName: newFile.filePath,
-        fileExtension: newFile.fileType,
-        getFileContents: () => Promise.resolve(newFile.fileContent),
-        isReadOnly: false
-      });
-    },
-    [file]
-  );
-
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,
@@ -94,10 +82,15 @@ export function App() {
   const openFile = useCallback(
     (fileToOpen: ElectronFile) => {
       closeInvalidFileTypeErrorAlert();
-      onFileChange(fileToOpen);
       setPage(Pages.EDITOR);
+      setFile({
+        fileName: fileToOpen.filePath,
+        fileExtension: fileToOpen.fileType,
+        getFileContents: () => Promise.resolve(fileToOpen.fileContent),
+        isReadOnly: false
+      });
     },
-    [closeInvalidFileTypeErrorAlert, onFileChange]
+    [closeInvalidFileTypeErrorAlert]
   );
 
   const openFileByPath = useCallback((filePath: string) => {
@@ -159,15 +152,16 @@ export function App() {
     };
   }, [dragAndDropFileEvent]);
 
-  const HomePageComponent = useMemo(() => <HomePage openFile={openFile} openFileByPath={openFileByPath} />, [
-    openFile,
-    openFileByPath
-  ]);
-
-  const EditorPageComponent = useMemo(() => <EditorPage onFilenameChange={onFilenameChange} onClose={goToHomePage} />, [
-    onFilenameChange,
-    goToHomePage
-  ]);
+  const Router = useMemo(() => {
+    switch (page) {
+      case Pages.HOME:
+        return () => <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
+      case Pages.EDITOR:
+        return () => <EditorPage onFilenameChange={onFilenameChange} onClose={goToHomePage} />;
+      default:
+        return () => <></>;
+    }
+  }, [page, openFile, openFileByPath, onFilenameChange, goToHomePage]);
 
   return (
     <I18nDictionariesProvider
@@ -193,8 +187,7 @@ export function App() {
                 />
               </div>
             )}
-            {page === Pages.HOME && HomePageComponent}
-            {page === Pages.EDITOR && EditorPageComponent}
+            <Router />
           </GlobalContext.Provider>
         )}
       </DesktopI18nContext.Consumer>
