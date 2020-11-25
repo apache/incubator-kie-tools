@@ -37,7 +37,7 @@ export const OutputLabels = (props: OutputLabelsProps) => {
       {targetField && OutputFieldLabel("TargetField", targetField)}
       {feature && OutputFieldLabel("Feature", feature)}
       {value && OutputFieldLabel("Value", value)}
-      {rank && OutputFieldLabel("Rank", rank)}
+      {rank !== undefined && OutputFieldLabel("Rank", rank)}
       {rankOrder && OutputFieldLabel("RankOrder", rankOrder)}
       {segmentId && OutputFieldLabel("SegmentId", segmentId)}
       {isFinalResult && OutputFieldLabel("FinalResult", isFinalResult.toString())}
