@@ -80,23 +80,16 @@
     <module>errai-common</module>
     <module>errai-javax-enterprise</module>
     <module>errai-ioc</module>
-    <module>errai-bus</module>
     <module>errai-codegen</module>
-    <module>errai-cordova</module>
-    <module>errai-marshalling</module>
     <module>errai-cdi</module>
-    <module>errai-jaxrs</module>
     <module>errai-ui</module>
-    <module>errai-navigation</module>
     <module>errai-data-binding</module>
     <module>errai-validation</module>
-    <module>errai-jpa</module>
     <module>errai-html5</module>
     <module>errai-reflections</module>
     <module>errai-javaee-all</module>
     <module>errai-config</module>
     <module>errai-codegen-gwt</module>
-    <module>errai-ioc-bus-support</module>
     <module>errai-jboss-as-support</module>
     <module>errai-security</module>
     <module>errai-demos</module>
@@ -457,16 +450,6 @@
         <configuration>
           <aggregate>true</aggregate>
           <show>public</show>
-
-          <groups>
-            <group>
-              <title>Bus</title>
-              <packages>org.jboss.errai.bus.*</packages>
-            </group>
-          </groups>
-          <subpackages>
-            org.jboss.errai.bus.client.api:org.jboss.errai.bus.client.framework
-          </subpackages>
         </configuration>
       </plugin>
     </plugins>
@@ -562,15 +545,6 @@
                 <property>
                   <name>errai.hosted_mode_testing</name>
                   <value>true</value>
-                </property>
-                <property>
-                  <name>org.jboss.errai.bus.do_long_poll</name>
-                  <value>false</value>
-                </property>
-                <!-- Do not accidently package server test marshallers when building Errai -->
-                <property>
-                  <name>errai.marshalling.server.classOutput.enabled</name>
-                  <value>false</value>
                 </property>
               </systemProperties>
               <includes>
@@ -692,10 +666,6 @@
                 <configuration>
                   <excludePackageNames>*.demo:*.example:*.samples:*.test:com.google:java.lang:*.bootstrap:org.jboss.servlet</excludePackageNames>
                   <groups>
-                    <group>
-                      <title>Errai Messaging</title>
-                      <packages>org.jboss.errai.bus.client:org.jboss.errai.bus.client.api:org.jboss.errai.bus.client.api.base:org.jboss.errai.bus.client.api.messaging:org.jboss.errai.bus.server.annotations:org.jboss.errai.server.api</packages>
-                    </group>
                     <group>
                       <title>Errai CDI</title>
                       <packages>org.jboss.errai.common.client.api.annotation:org.jboss.errai.enterprise.client.cdi.api:org.jboss.errai.enterprise.client.cdi.events</packages>

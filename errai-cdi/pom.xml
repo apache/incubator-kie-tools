@@ -60,7 +60,6 @@
     <module>jboss</module>
     <module>errai-cdi-client</module>
     <module>errai-cdi-shared</module>
-    <module>errai-cdi-server</module>
   </modules>
 
   <build>

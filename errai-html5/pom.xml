@@ -44,11 +44,6 @@
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-marshalling</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
     </dependency>
 
@@ -122,10 +117,6 @@
         <!-- Errai Core -->
         <dependency>
           <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-bus</artifactId>          
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
           <artifactId>errai-ioc</artifactId>          
           <exclusions>
             <exclusion>
@@ -139,11 +130,6 @@
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-cdi-client</artifactId>          
           <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-cdi-server</artifactId>          
         </dependency>
 
         <dependency>

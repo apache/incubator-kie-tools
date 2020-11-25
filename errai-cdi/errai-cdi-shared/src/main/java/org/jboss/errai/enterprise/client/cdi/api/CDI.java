@@ -30,16 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.errai.bus.client.ErraiBus;
-import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.api.Subscription;
-import org.jboss.errai.bus.client.api.base.CommandMessage;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.bus.client.api.messaging.MessageCallback;
-import org.jboss.errai.bus.client.framework.BusState;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
-import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.jboss.errai.common.client.api.WrappedPortable;
 import org.jboss.errai.common.client.api.extension.InitVotes;
 import org.jboss.errai.common.client.protocols.MessageParts;
@@ -64,8 +54,6 @@ public class CDI {
   public static final String CDI_SUBJECT_PREFIX = "cdi.event:";
 
   public static final String CDI_SERVICE_SUBJECT_PREFIX = "cdi.event:";
-  public static final String SERVER_DISPATCHER_SUBJECT = CDI_SERVICE_SUBJECT_PREFIX + "Dispatcher";
-  public static final String CLIENT_DISPATCHER_SUBJECT = CDI_SERVICE_SUBJECT_PREFIX + "ClientDispatcher";
   private static final String CLIENT_ALREADY_FIRED_RESOURCE = CDI_SERVICE_SUBJECT_PREFIX + "AlreadyFired";
 
   private static final Set<String> remoteEvents = new HashSet<>();
@@ -74,16 +62,8 @@ public class CDI {
   private static Map<String, List<AbstractCDIEventCallback<?>>> eventObservers = new HashMap<>();
   private static Set<String> localOnlyObserverTypes = new HashSet<>();
   private static Map<String, Collection<String>> lookupTable = Collections.emptyMap();
-  private static Map<String, List<MessageFireDeferral>> fireOnSubscribe = new LinkedHashMap<>();
 
   private static Logger logger = LoggerFactory.getLogger(CDI.class);
-
-  public static final MessageCallback ROUTING_CALLBACK = new MessageCallback() {
-    @Override
-    public void callback(final Message message) {
-      consumeEventFromMessage(message);
-    }
-  };
 
   public static String getSubjectNameByType(final String typeName) {
     return CDI_SUBJECT_PREFIX + typeName;
@@ -93,15 +73,8 @@ public class CDI {
    * Should only be called by bootstrapper for testing purposes.
    */
   public void __resetSubsystem() {
-    for (final String eventType : new HashSet<>(((ClientMessageBus) ErraiBus.get()).getAllRegisteredSubjects())) {
-      if (eventType.startsWith(CDI_SUBJECT_PREFIX)) {
-        ErraiBus.get().unsubscribeAll(eventType);
-      }
-    }
-
     remoteEvents.clear();
     active = false;
-    fireOnSubscribe.clear();
     eventObservers.clear();
     localOnlyObserverTypes.clear();
     lookupTable = Collections.emptyMap();
@@ -187,34 +160,19 @@ public class CDI {
           final boolean isLocalOnly) {
 
     if (!eventObservers.containsKey(eventType)) {
-      eventObservers.put(eventType, new ArrayList<AbstractCDIEventCallback<?>>());
+      eventObservers.put(eventType, new ArrayList<>());
     }
+
     eventObservers.get(eventType).add(callback);
 
     if (isLocalOnly) {
       localOnlyObserverTypes.add(eventType);
     }
 
-    return new Subscription() {
-      @Override
-      public void remove() {
-        unsubscribe(eventType, callback);
-      }
-    };
+    return () -> unsubscribe(eventType, callback);
   }
 
   public static Subscription subscribe(final String eventType, final AbstractCDIEventCallback<?> callback) {
-
-    if (isRemoteCommunicationEnabled() && ErraiBus.get() instanceof ClientMessageBusImpl
-            && ((ClientMessageBusImpl) ErraiBus.get()).getState().equals(BusState.CONNECTED)) {
-      MessageBuilder.createMessage()
-          .toSubject(CDI.SERVER_DISPATCHER_SUBJECT)
-          .command(CDICommands.RemoteSubscribe)
-          .with(CDIProtocol.BeanType, eventType)
-          .with(CDIProtocol.Qualifiers, callback.getQualifiers())
-          .noErrorHandling().sendNowWith(ErraiBus.get());
-    }
-
     return subscribeLocal(eventType, callback, false);
   }
 
@@ -223,24 +181,6 @@ public class CDI {
       eventObservers.get(eventType).remove(callback);
 
       if (!localOnlyObserverTypes.contains(eventType)) {
-        boolean shouldUnsubscribe = true;
-        for (final AbstractCDIEventCallback<?> cb : eventObservers.get(eventType)) {
-          if (cb.getQualifiers().equals(callback.getQualifiers())) {
-            // found another matching observer -> do not unsubscribe
-            shouldUnsubscribe = false;
-            break;
-          }
-        }
-
-        if (isRemoteCommunicationEnabled() && shouldUnsubscribe) {
-          MessageBuilder.createMessage()
-              .toSubject(CDI.SERVER_DISPATCHER_SUBJECT)
-              .command(CDICommands.RemoteUnsubscribe)
-              .with(CDIProtocol.BeanType, eventType)
-              .with(CDIProtocol.Qualifiers, callback.getQualifiers())
-              .noErrorHandling().sendNowWith(ErraiBus.get());
-        }
-
         if (eventObservers.get(eventType).isEmpty()) {
           eventObservers.remove(eventType);
         }
@@ -248,37 +188,7 @@ public class CDI {
     }
   }
 
-  /**
-   * Informs the server of all active CDI observers currently registered on the
-   * client. This is not strictly necessary when the client bus first connects,
-   * because observers register themselves with the server as they are created.
-   * However, if the QueueSession expires and the bus reconnects, it is
-   * essential to inform the server of all existing CDI observers so the
-   * server-side event routing can be established for the new session.
-   * <p>
-   * Application code should never have to call this method directly. The Errai
-   * framework calls this method when required.
-   */
-  public static void resendSubscriptionRequestForAllEventTypes() {
-    if (isRemoteCommunicationEnabled()) {
-      int remoteEventCount = 0;
-      for (final Map.Entry<String, List<AbstractCDIEventCallback<?>>> mapEntry : eventObservers.entrySet()) {
-        final String eventType = mapEntry.getKey();
-        if (!localOnlyObserverTypes.contains(eventType)) {
-          for (final AbstractCDIEventCallback<?> callback : mapEntry.getValue()) {
-            remoteEventCount++;
-            MessageBuilder.createMessage()
-                .toSubject(CDI.SERVER_DISPATCHER_SUBJECT)
-                .command(CDICommands.RemoteSubscribe)
-                .with(CDIProtocol.BeanType, eventType)
-                .with(CDIProtocol.Qualifiers, callback.getQualifiers())
-                .noErrorHandling().sendNowWith(ErraiBus.get());
-          }
-        }
-      }
-      logger.info("requested server to forward CDI events for " + remoteEventCount + " existing observers");
-    }
-  }
+
 
   public static void consumeEventFromMessage(final Message message) {
     final String beanType = message.get(String.class, CDIProtocol.BeanType);
@@ -351,26 +261,8 @@ public class CDI {
 
   public static void addRemoteEventType(final String remoteEvent) {
     remoteEvents.add(remoteEvent);
-
-    if (active) {
-      fireIfWaiting(remoteEvent);
-    }
   }
 
-  private static void fireIfWaiting(final String remoteEvent) {
-    if (fireOnSubscribe.containsKey(remoteEvent)) {
-      for (final MessageFireDeferral runnable : fireOnSubscribe.get(remoteEvent)) {
-        runnable.send();
-      }
-      fireOnSubscribe.remove(remoteEvent);
-    }
-  }
-
-  private static void fireAllIfWaiting() {
-    for (final String svc : new HashSet<>(fireOnSubscribe.keySet())) {
-      fireIfWaiting(svc);
-    }
-  }
 
   public static void addRemoteEventTypes(final String[] remoteEvent) {
     for (final String s : remoteEvent) {
@@ -388,36 +280,12 @@ public class CDI {
       addRemoteEventTypes(remoteTypes);
       active = true;
 
-      fireAllIfWaiting();
-
       logger.info("activated CDI eventing subsystem.");
       InitVotes.voteFor(CDI.class);
     }
   }
 
-  static class MessageFireDeferral {
-    final Message message;
-    final long time;
-
-    MessageFireDeferral(final long time, final Message message) {
-      this.time = time;
-      this.message = message;
-    }
-
-    public Message getMessage() {
-      return message;
-    }
-
-    public long getTime() {
-      return time;
-    }
-
-    public void send() {
-      ErraiBus.get().send(message);
-    }
-  }
-
-  private static boolean isRemoteCommunicationEnabled() {
-    return BusToolsCli.isRemoteCommunicationEnabled();
+  public static boolean isRemoteCommunicationEnabled() {
+    return false;
   }
 }

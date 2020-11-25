@@ -14,10 +14,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>errai-security-client</module>
     <module>errai-security-server</module>
-    <module>errai-security-picketlink</module>
-    <module>errai-security-keycloak</module>
   </modules>
 
 </project>

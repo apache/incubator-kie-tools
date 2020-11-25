@@ -16,13 +16,14 @@
 
 package org.jboss.errai.enterprise.client.cdi;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 
 import javax.enterprise.inject.Any;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.jboss.errai.enterprise.client.cdi.api.Message;
+import org.jboss.errai.enterprise.client.cdi.api.MessageCallback;
 
 /**
  * @author Christian Sadilek <csadilek@redhat.com>

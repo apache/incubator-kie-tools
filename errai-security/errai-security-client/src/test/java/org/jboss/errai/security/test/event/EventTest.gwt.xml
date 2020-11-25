@@ -1,3 +1,0 @@
-<module>
-  <inherits name='org.jboss.errai.security.Security'/>
-</module>

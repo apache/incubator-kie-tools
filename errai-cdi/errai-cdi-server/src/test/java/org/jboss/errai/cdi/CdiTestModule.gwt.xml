@@ -1,7 +1,0 @@
-<module>
-	<inherits name='com.google.gwt.user.User' />
-	<!-- It should be enough to only include this module in the test submodule 
-		it's actually used in, but ClassScanner picks up the DataBindingModuleBootstrapper 
-		even if the module is not inherited (and not known to the type oracle) -->
-	<inherits name='org.jboss.errai.databinding.DataBinding' />
-</module>

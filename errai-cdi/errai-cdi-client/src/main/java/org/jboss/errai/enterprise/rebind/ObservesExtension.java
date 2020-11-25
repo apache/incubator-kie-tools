@@ -32,24 +32,21 @@ import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 
-import org.jboss.errai.bus.client.ErraiBus;
-import org.jboss.errai.bus.client.api.Subscription;
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.Parameter;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.builder.AnonymousClassStructureBuilder;
 import org.jboss.errai.codegen.builder.BlockBuilder;
-import org.jboss.errai.codegen.builder.ContextualStatementBuilder;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaMethod;
 import org.jboss.errai.codegen.meta.MetaParameter;
 import org.jboss.errai.codegen.util.Refs;
 import org.jboss.errai.codegen.util.Stmt;
-import org.jboss.errai.config.rebind.EnvUtil;
 import org.jboss.errai.enterprise.client.cdi.AbstractCDIEventCallback;
 import org.jboss.errai.enterprise.client.cdi.EventQualifierSerializer;
 import org.jboss.errai.enterprise.client.cdi.JsTypeEventObserver;
 import org.jboss.errai.enterprise.client.cdi.api.CDI;
+import org.jboss.errai.enterprise.client.cdi.api.Subscription;
 import org.jboss.errai.ioc.client.api.CodeDecorator;
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.rebind.ioc.bootstrapper.InjectUtil;
@@ -134,12 +131,7 @@ public class ObservesExtension extends IOCDecoratorExtension<Observes> {
     if (eventType.isAnnotationPresent(JsType.class)) {
       subscribeMethod = "subscribeJsType";
       callBackBlock = getJsTypeSubscriptionCallback(decorable, controller);
-    }
-    else if (EnvUtil.isPortableType(eventType) && !EnvUtil.isLocalEventType(eventType)) {
-      subscribeMethod = "subscribe";
-      callBackBlock = getSubscriptionCallback(decorable, controller);
-    }
-    else {
+    } else {
       subscribeMethod = "subscribeLocal";
       callBackBlock = getSubscriptionCallback(decorable, controller);
     }
@@ -152,21 +144,6 @@ public class ObservesExtension extends IOCDecoratorExtension<Observes> {
       destroyStatements.add(controller.getReferenceStmt(subscrVar, Subscription.class).invoke("remove"));
     } else {
       initStatements.add(subscribeStatement);
-    }
-
-    for (final Class<?> cls : EnvUtil.getAllPortableConcreteSubtypes(eventType.asClass())) {
-      if (!EnvUtil.isLocalEventType(cls)) {
-        final ContextualStatementBuilder routingSubStmt = Stmt.invokeStatic(ErraiBus.class, "get").invoke("subscribe",
-                CDI.getSubjectNameByType(cls.getName()), Stmt.loadStatic(CDI.class, "ROUTING_CALLBACK"));
-        if (isEnclosingTypeDependent) {
-          final String subscrHandle = subscrVar + "For" + cls.getSimpleName();
-          initStatements.add(controller.setReferenceStmt(subscrHandle, routingSubStmt));
-          destroyStatements.add(
-                  Stmt.nestedCall(controller.getReferenceStmt(subscrHandle, Subscription.class)).invoke("remove"));
-        } else {
-          initStatements.add(routingSubStmt);
-        }
-      }
     }
 
     if (isEnclosingTypeDependent) {
@@ -187,7 +164,7 @@ public class ObservesExtension extends IOCDecoratorExtension<Observes> {
     final MetaClass eventType = parm.getType().asBoxed();
     final String parmClassName = eventType.getFullyQualifiedName();
     final List<Annotation> annotations = InjectUtil.extractQualifiers(parm);
-    final Annotation[] qualifiers = annotations.toArray(new Annotation[annotations.size()]);
+    final Annotation[] qualifiers = annotations.toArray(new Annotation[0]);
     final Set<String> qualifierNames = new HashSet<>(CDI.getQualifiersPart(qualifiers));
 
     final MetaClass callBackType = parameterizedAs(AbstractCDIEventCallback.class, typeParametersOf(eventType));

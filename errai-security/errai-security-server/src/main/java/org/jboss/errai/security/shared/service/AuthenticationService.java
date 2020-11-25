@@ -16,7 +16,6 @@
 
 package org.jboss.errai.security.shared.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.jboss.errai.codegen.util.Implementations;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.AuthenticationException;
@@ -26,7 +25,6 @@ import org.jboss.errai.security.shared.exception.AuthenticationException;
  *
  * @author edewit@redhat.com
  */
-@Remote
 public interface AuthenticationService {
 
   /**

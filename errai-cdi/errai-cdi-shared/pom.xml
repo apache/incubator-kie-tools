@@ -32,7 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
+      <artifactId>errai-common</artifactId>
     </dependency>
     <!-- Depend on this for CDIAnnotationUtils during rebind... should never be needed in actual deployment -->
     <dependency>
@@ -49,6 +49,15 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.3_spec</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -17,18 +17,4 @@
             </New>
         </Arg>
     </New>
-
-    <New id="Errai" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg>
-            <Ref id="sample-weld" />
-        </Arg>
-        <Arg>ErraiService</Arg>
-        <Arg>
-            <New class="javax.naming.Reference">
-                <Arg>org.jboss.errai.bus.server.service.ErraiService</Arg>
-                <Arg>org.jboss.errai.container.ErraiServiceObjectFactory</Arg>
-                <Arg />
-            </New>
-        </Arg>
-    </New>
 </Configure>

@@ -22,27 +22,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.RequiredRolesProvider;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.style.StyleBinding;
 
-/**
- * Indicates that the service or element can only be accessed / shown by logged-in users who belong
- * to all of the given security roles.
- * <p>
- * This annotation can appear anywhere {@link Service} or
- * {@link org.jboss.errai.ui.shared.api.annotations.DataField} can appear.
- *
- * @see Service
- * @see org.jboss.errai.ui.shared.api.annotations.DataField
- */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @StyleBinding
-@InterceptorBinding
 public @interface RestrictedAccess {
 
   /**
