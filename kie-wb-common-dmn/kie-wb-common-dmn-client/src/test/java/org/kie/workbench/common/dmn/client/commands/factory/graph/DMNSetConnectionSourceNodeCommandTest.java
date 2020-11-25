@@ -22,8 +22,8 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -61,7 +61,7 @@ public class DMNSetConnectionSourceNodeCommandTest {
     private Connection connection;
 
     @Mock
-    private GraphsProvider graphsProvider;
+    private DMNGraphsProvider graphsProvider;
 
     @Mock
     private GraphCommandExecutionContext context;

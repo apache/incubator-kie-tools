@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.diagram;
+package org.kie.workbench.common.stunner.core.client.canvas;
 
-import java.util.List;
+import org.uberfire.mvp.Command;
 
-import org.kie.workbench.common.stunner.core.graph.Graph;
+public interface ConfirmationDialog {
 
-public interface GraphsProvider {
-
-    boolean isGlobalGraphSelected();
-
-    List<Graph> getGraphs();
-
-    List<Graph> getNonGlobalGraphs();
-
-    Diagram getDiagram(final String diagramId);
-
-    String getCurrentDiagramId();
+    void show(final String title,
+              final String boldDescription,
+              final String question,
+              final Command onYesAction,
+              final Command onNoAction);
 }

@@ -100,35 +100,35 @@ public class SessionSingletonCommandsFactoryTest {
 
     @Test(expected = IllegalStateException.class)
     public void testOnlyOneInstancePerSessionDelete() {
-        final DeleteSelectionSessionCommand deleteSelectionSessionCommand = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager);
-        final DeleteSelectionSessionCommand deleteSelectionSessionCommand2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager);
+        final DeleteSelectionSessionCommand deleteSelectionSessionCommand = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager, null);
+        final DeleteSelectionSessionCommand deleteSelectionSessionCommand2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager, null);
     }
 
     @Test
     public void testNewInstancesOndifferentSessionsDelete() {
-        final DeleteSelectionSessionCommand deleteSelectionSessionCommand = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager);
+        final DeleteSelectionSessionCommand deleteSelectionSessionCommand = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager, null);
         when(sessionManager.getCurrentSession()).thenReturn(session2);
-        final DeleteSelectionSessionCommand deleteSelectionSessionCommand2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager);
+        final DeleteSelectionSessionCommand deleteSelectionSessionCommand2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager, null);
         assertTrue(deleteSelectionSessionCommand.hashCode() != deleteSelectionSessionCommand2.hashCode());
     }
 
     @Test
     public void testGetInstancesDelete() {
-        final DeleteSelectionSessionCommand deleteSelectionSessionCommand = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager);
-        final DeleteSelectionSessionCommand instanceCopy = SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager);
+        final DeleteSelectionSessionCommand deleteSelectionSessionCommand = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager, null);
+        final DeleteSelectionSessionCommand instanceCopy = SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager, null);
 
         assertEquals(deleteSelectionSessionCommand, instanceCopy);
 
         when(sessionManager.getCurrentSession()).thenReturn(session2);
-        final DeleteSelectionSessionCommand deleteSelectionSessionCommand2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager);
-        final DeleteSelectionSessionCommand instanceCopy2 = SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager);
+        final DeleteSelectionSessionCommand deleteSelectionSessionCommand2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager, null);
+        final DeleteSelectionSessionCommand instanceCopy2 = SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager, null);
 
         assertEquals(deleteSelectionSessionCommand2, instanceCopy2);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testGetInstancesOnFetchDelete() {
-        final DeleteSelectionSessionCommand instanceCopy = SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager);
-        final DeleteSelectionSessionCommand instanceCopy2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager);
+        final DeleteSelectionSessionCommand instanceCopy = SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager, null);
+        final DeleteSelectionSessionCommand instanceCopy2 = new DeleteSelectionSessionCommand(null, null, null, null, sessionManager, null);
     }
 }

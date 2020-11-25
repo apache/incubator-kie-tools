@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.factory.graph;
 import java.util.Optional;
 
 import org.kie.workbench.common.dmn.client.commands.util.ContentDefinitionIdUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -34,13 +35,13 @@ import static org.kie.workbench.common.dmn.client.commands.util.ContentDefinitio
 
 public class DMNSetConnectionTargetNodeCommand extends SetConnectionTargetNodeCommand {
 
-    private final GraphsProvider graphsProvider;
+    private final DMNGraphsProvider graphsProvider;
     private final Optional<String> diagramId;
 
     public DMNSetConnectionTargetNodeCommand(final Node<? extends View<?>, Edge> targetNode,
                                              final Edge<? extends View, Node> edge,
                                              final Connection connection,
-                                             final GraphsProvider graphsProvider) {
+                                             final DMNGraphsProvider graphsProvider) {
         super(targetNode, edge, connection);
         this.graphsProvider = graphsProvider;
         this.diagramId = ContentDefinitionIdUtils.getDiagramId(edge);

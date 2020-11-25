@@ -70,7 +70,7 @@ public class DMNCanvasHandler<D extends Diagram, C extends AbstractCanvas> exten
                             final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
                             final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
                             final DMNElementsSynchronizer dmnElementsSynchronizer,
-                            final GraphsProvider graphsProvider) {
+                            final @DMNEditor GraphsProvider graphsProvider) {
         super(clientDefinitionManager, commandFactory, ruleManager, graphUtils, indexBuilder, shapeManager, textPropertyProviderFactory, canvasElementAddedEvent, canvasElementRemovedEvent, canvasElementUpdatedEvent, canvasElementsClearEvent);
         this.dmnElementsSynchronizer = dmnElementsSynchronizer;
         this.graphsProvider = graphsProvider;

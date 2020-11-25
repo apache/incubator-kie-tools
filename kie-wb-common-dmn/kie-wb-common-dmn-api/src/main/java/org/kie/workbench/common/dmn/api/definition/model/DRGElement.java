@@ -29,11 +29,13 @@ import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
+import org.kie.workbench.common.stunner.core.graph.content.HasStringName;
 import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 
 @RuleExtension(handler = NoInputNodesInImportedDecisionRule.class)
 public abstract class DRGElement extends NamedElement implements DynamicReadOnly,
-                                                                 HasContentDefinitionId {
+                                                                 HasContentDefinitionId,
+                                                                 HasStringName {
 
     private static final String[] READONLY_FIELDS = {
             "NameHolder",
@@ -122,5 +124,10 @@ public abstract class DRGElement extends NamedElement implements DynamicReadOnly
 
     public void setLinksHolder(final DocumentationLinksHolder linksHolder) {
         this.linksHolder = linksHolder;
+    }
+
+    @Override
+    public String getStringName() {
+        return getName().getValue();
     }
 }

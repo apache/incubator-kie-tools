@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.factory.graph;
 
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand;
@@ -27,10 +27,10 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public class DMNDeleteConnectorCommand extends DeleteConnectorCommand {
 
-    private final GraphsProvider graphsProvider;
+    private final DMNGraphsProvider graphsProvider;
 
     public DMNDeleteConnectorCommand(final Edge<? extends View, Node> edge,
-                                     final GraphsProvider graphsProvider) {
+                                     final DMNGraphsProvider graphsProvider) {
         super(edge);
         this.graphsProvider = graphsProvider;
     }

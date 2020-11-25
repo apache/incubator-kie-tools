@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.diagram;
+package org.kie.workbench.common.stunner.core.graph.content;
 
-import java.util.List;
+public interface HasStringName {
 
-import org.kie.workbench.common.stunner.core.graph.Graph;
-
-public interface GraphsProvider {
-
-    boolean isGlobalGraphSelected();
-
-    List<Graph> getGraphs();
-
-    List<Graph> getNonGlobalGraphs();
-
-    Diagram getDiagram(final String diagramId);
-
-    String getCurrentDiagramId();
+    String getStringName();
 }

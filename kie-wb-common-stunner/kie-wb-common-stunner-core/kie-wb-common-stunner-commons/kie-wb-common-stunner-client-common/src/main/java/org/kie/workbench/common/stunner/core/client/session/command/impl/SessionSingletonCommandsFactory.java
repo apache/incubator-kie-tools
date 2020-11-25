@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DeleteNodeConfirmation;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -87,11 +88,12 @@ public class SessionSingletonCommandsFactory {
             final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
             final Event<CanvasClearSelectionEvent> clearSelectionEvent,
             final DefinitionUtils definitionUtils,
-            final SessionManager sessionManager) {
+            final SessionManager sessionManager,
+            final DeleteNodeConfirmation deleteNodeConfirmation) {
         final ClientSession currentSession = sessionManager.getCurrentSession();
 
         if (!deleteSessionInstances.containsKey(currentSession)) {
-            return new DeleteSelectionSessionCommand(sessionCommandManager, canvasCommandFactoryInstance, clearSelectionEvent, definitionUtils, sessionManager);
+            return new DeleteSelectionSessionCommand(sessionCommandManager, canvasCommandFactoryInstance, clearSelectionEvent, definitionUtils, sessionManager, deleteNodeConfirmation);
         }
 
         return deleteSessionInstances.get(currentSession);

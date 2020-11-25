@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.diagram;
+.kie-confirmation-dialog-body {
 
-import java.util.List;
+  p {
+    margin: 0;
+  }
 
-import org.kie.workbench.common.stunner.core.graph.Graph;
+  label {
+    font-weight: 600;
+    color: #555;
+    margin: 15px 0 5px;
+  }
 
-public interface GraphsProvider {
+  [data-field="bold-description"] {
+    font-weight: bold;
+  }
+}
 
-    boolean isGlobalGraphSelected();
-
-    List<Graph> getGraphs();
-
-    List<Graph> getNonGlobalGraphs();
-
-    Diagram getDiagram(final String diagramId);
-
-    String getCurrentDiagramId();
+.kie-confirmation-dialog-footer {
+  .btn {
+    padding: 2px 15px;
+  }
 }

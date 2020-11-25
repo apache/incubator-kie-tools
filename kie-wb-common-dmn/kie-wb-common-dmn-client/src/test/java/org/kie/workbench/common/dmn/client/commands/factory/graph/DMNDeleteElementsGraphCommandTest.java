@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.factory.graph;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.DMNSafeDeleteNodeCommand;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.DeleteElementsCommand;
@@ -37,7 +37,7 @@ public class DMNDeleteElementsGraphCommandTest {
     @Test
     public void testCreateSafeDeleteNodeCommand() {
 
-        final GraphsProvider selectedDiagramProvider = mock(GraphsProvider.class);
+        final DMNGraphsProvider selectedDiagramProvider = mock(DMNGraphsProvider.class);
         final Node<?, Edge> node = mock(Node.class);
         final SafeDeleteNodeCommand.Options options = SafeDeleteNodeCommand.Options.defaults();
         final DeleteElementsCommand.DeleteCallback callback = mock(DeleteElementsCommand.DeleteCallback.class);
