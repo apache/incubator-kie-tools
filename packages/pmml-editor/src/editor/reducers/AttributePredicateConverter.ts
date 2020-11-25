@@ -74,12 +74,33 @@ const _toText = (
   return "";
 };
 
+const TruePredicate = () => {
+  const predicate: True = new True({});
+  (predicate as any)._type = "True";
+  return predicate;
+};
+
+const FalsePredicate = () => {
+  const predicate: False = new False({});
+  (predicate as any)._type = "False";
+  return predicate;
+};
+
 const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, DataType>): string => {
   const dataType = fieldToDataType.get(field);
   if (dataType === "string") {
     return `"${value}"`;
   }
   return value.toString();
+};
+
+const _operator = (lookup: string): SimplePredicateOperator | undefined => {
+  const lookups = SimplePredicateOperatorMap.entries();
+  for (const [pmmlOperator, operator] of lookups) {
+    if (operator === lookup) {
+      return pmmlOperator;
+    }
+  }
 };
 
 //TODO {manstis} The text in the payload needs to have been converted to a Predicate
@@ -90,22 +111,28 @@ export const fromText = (text: string): Predicate | undefined => {
 
   //Simple cases
   if (text.toLowerCase() === "true") {
-    const predicate: True = new True({});
-    (predicate as any)._type = "True";
-    return predicate;
+    return TruePredicate();
   }
   if (text.toLowerCase() === "false") {
-    const predicate: False = new False({});
-    (predicate as any)._type = "False";
-    return predicate;
+    return FalsePredicate();
   }
 
-  //Mock complex cases
+  //Quick RegEx based match for SimplePredicates.. Need a parser for ALL Predicates
+  const regex = /^([a-zA-Z]+)\s?(=|>|<|<=|>=|<>)\s?("?[a-zA-Z0-9]+"?)$/gm;
+  const matches = regex.exec("" + text + "");
+  if (matches === null) {
+    return TruePredicate();
+  }
+  if (matches.length !== 4) {
+    return TruePredicate();
+  }
+
   const predicate = new SimplePredicate({
-    field: "mocked" as FieldName,
-    operator: "equal",
-    value: 48
+    field: matches[1] as FieldName,
+    operator: _operator(matches[2]) ?? "equal",
+    value: matches[3]
   });
+
   //TODO {manstis} This is vitally important to ensure marshalling to XML works OK!
   (predicate as any)._type = "SimplePredicate";
   return predicate;

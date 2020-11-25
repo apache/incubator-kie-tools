@@ -45,3 +45,20 @@ export const CharacteristicLabel = (name: string, value: any, tooltip?: string) 
     </>
   );
 };
+
+export const CharacteristicLabelAttribute = (name: string, value: any, tooltip: string) => {
+  return (
+    <Tooltip
+      position={TooltipPosition.top}
+      isContentLeftAligned={true}
+      maxWidth={"100em"}
+      content={<pre>{tooltip}</pre>}
+    >
+      <Label tabIndex={0} color="orange" className="characteristic-list__item__label">
+        <strong>{name}:</strong>
+        &nbsp;
+        <pre>{value}</pre>
+      </Label>
+    </Tooltip>
+  );
+};

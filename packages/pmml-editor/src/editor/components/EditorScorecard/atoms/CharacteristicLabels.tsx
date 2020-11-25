@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { Attribute, Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicLabel } from "./CharacteristicLabel";
+import { CharacteristicLabel, CharacteristicLabelAttribute } from "./CharacteristicLabel";
 import { toText } from "../../../reducers";
 
 interface CharacteristicLabelsProps {
@@ -31,7 +31,7 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
       {activeCharacteristic.reasonCode && CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
       {activeCharacteristic.baselineScore && CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
       {activeCharacteristic.Attribute.length > 0 &&
-        CharacteristicLabel(
+        CharacteristicLabelAttribute(
           "Attributes",
           attributesToTruncatedText(activeCharacteristic.Attribute, dataFields),
           attributesToFullText(activeCharacteristic.Attribute, dataFields)
