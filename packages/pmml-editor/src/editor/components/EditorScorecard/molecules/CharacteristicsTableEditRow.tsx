@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
+import { Button, FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
@@ -34,6 +34,7 @@ interface CharacteristicsTableEditRowProps {
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
   viewAttribute: (index: number | undefined) => void;
+  onAddAttribute: () => void;
   onCommitAndClose: () => void;
   onCommit: (partial: Partial<Characteristic>) => void;
   onCancel: () => void;
@@ -47,6 +48,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     characteristic,
     validateCharacteristicName,
     viewAttribute,
+    onAddAttribute,
     onCommitAndClose,
     onCommit,
     onCancel
@@ -181,6 +183,11 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   }}
                 />
               </FormGroup>
+            </SplitItem>
+            <SplitItem>
+              <Button id="add-attribute-button" variant="primary" onClick={e => onAddAttribute()}>
+                Add Attribute
+              </Button>
             </SplitItem>
           </Split>
         </StackItem>

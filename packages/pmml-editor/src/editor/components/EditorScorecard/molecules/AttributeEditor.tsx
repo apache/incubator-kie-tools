@@ -17,30 +17,34 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
 import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import { toText } from "../../../reducers";
 import { PredicateEditor } from "./PredicateEditor";
 import { Operation } from "../Operation";
-import useOnclickOutside from "react-cool-onclickoutside";
 import { useSelector } from "react-redux";
+import { isEqual } from "lodash";
+import useOnclickOutside from "react-cool-onclickoutside";
+import set = Reflect.set;
+import get = Reflect.get;
+
+interface AttributeEditorContent {
+  partialScore?: number;
+  reasonCode?: string;
+  text?: string;
+}
 
 interface AttributeEditorProps {
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   modelIndex: number;
+  activeOperation: Operation;
   characteristicIndex: number | undefined;
   attributeIndex: number | undefined;
   onCancel: () => void;
-  onCommit: (
-    index: number | undefined,
-    text: string | undefined,
-    partialScore: number | undefined,
-    reasonCode: string | undefined
-  ) => void;
+  onCommit: (index: number | undefined, content: AttributeEditorContent) => void;
 }
 
 export const AttributeEditor = (props: AttributeEditorProps) => {
-  const { activeOperation, modelIndex, characteristicIndex, attributeIndex, onCommit, onCancel } = props;
+  const { modelIndex, activeOperation, characteristicIndex, attributeIndex, onCancel, onCommit } = props;
 
   const [text, setText] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -48,6 +52,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   });
   const [partialScore, setPartialScore] = useState<number | undefined>();
   const [reasonCode, setReasonCode] = useState<string | undefined>();
+  const [originalText, setOriginalText] = useState<string>();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
@@ -65,16 +70,31 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     return new Attribute({});
   });
 
+  const commit = (partial: Partial<AttributeEditorContent>) => {
+    const existingPartial: Partial<AttributeEditorContent> = {};
+    Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+
+    if (!isEqual(partial, existingPartial)) {
+      onCommit(attributeIndex, { ...attribute, ...partial });
+    }
+  };
+
+  // Emulate onBlur for the Monaco editor.
+  // TODO {manstis} It'd be nice to have real onBlur support....
+  // When there is a click-away from the Attribute editor the Predicate
+  // text will be committed if it has changed from the original..
   const ref = useOnclickOutside(
     event => {
-      if (text.valid) {
-        onCommit(attributeIndex, text.value, partialScore, reasonCode);
+      if (text?.valid) {
+        if (text.value !== originalText) {
+          commit({ text: text.value });
+        }
       } else {
         onCancel();
       }
     },
     {
-      disabled: activeOperation !== Operation.UPDATE_ATTRIBUTE && activeOperation !== Operation.CREATE_ATTRIBUTE,
+      disabled: activeOperation !== Operation.UPDATE_ATTRIBUTE,
       eventTypes: ["click"]
     }
   );
@@ -87,6 +107,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     });
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
+    setOriginalText(_text);
   }, [props]);
 
   const toNumber = (value: string): number | undefined => {
@@ -105,14 +126,26 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   };
 
   return (
-    <article ref={ref}>
+    <article
+      ref={ref}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === "Escape") {
+          onCancel();
+        }
+      }}
+    >
       <Form>
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>
             <FormGroup
               label="Predicate"
+              isRequired={true}
               fieldId="attribute-predicate-helper"
               helperText="Expression editor for the predicate."
+              helperTextInvalid="Predicate must be present"
+              helperTextInvalidIcon={<ExclamationCircleIcon />}
+              validated={text.valid ? "default" : "error"}
             >
               <PredicateEditor text={text} setText={setText} validateText={validateText} />
             </FormGroup>
@@ -132,6 +165,11 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     aria-describedby="attribute-partial-score-helper"
                     value={partialScore ?? ""}
                     onChange={e => setPartialScore(toNumber(e))}
+                    onBlur={e => {
+                      commit({
+                        partialScore: partialScore
+                      });
+                    }}
                   />
                 </FormGroup>
               </StackItem>
@@ -148,6 +186,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     aria-describedby="attribute-reason-code-helper"
                     value={reasonCode ?? ""}
                     onChange={e => setReasonCode(e)}
+                    onBlur={e => {
+                      commit({ reasonCode: reasonCode });
+                    }}
                   />
                 </FormGroup>
               </StackItem>

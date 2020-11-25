@@ -73,12 +73,6 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     }
   };
 
-  const onAddAttribute = useCallback(() => {
-    setActiveOperation(Operation.CREATE_ATTRIBUTE);
-    setSelectedAttributeIndex(undefined);
-    setViewSection("attribute");
-  }, [characteristics]);
-
   const onViewOverviewView = () => {
     setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
     setViewSection("overview");
@@ -119,6 +113,27 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
     }
   }, [characteristics]);
+
+  const onAddAttribute = useCallback(() => {
+    if (selectedCharacteristicIndex === undefined) {
+      return;
+    }
+    let numberOfAttributes = characteristics[selectedCharacteristicIndex].characteristic.Attribute.length;
+    //Index of the new row is equal to the number of existing rows
+    setSelectedAttributeIndex(numberOfAttributes);
+    dispatch({
+      type: Actions.Scorecard_AddAttribute,
+      payload: {
+        modelIndex: modelIndex,
+        characteristicIndex: selectedCharacteristicIndex,
+        text: undefined,
+        partialScore: undefined,
+        reasonCode: undefined
+      }
+    });
+    setActiveOperation(Operation.UPDATE_ATTRIBUTE);
+    setViewSection("attribute");
+  }, [characteristics, selectedCharacteristicIndex]);
 
   const onCommitAndClose = () => {
     onCommit({});
@@ -187,6 +202,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       validateCharacteristicName={validateCharacteristicName}
                       viewAttribute={onViewAttribute}
                       deleteCharacteristic={deleteCharacteristic}
+                      onAddAttribute={onAddAttribute}
                       onCommitAndClose={onCommitAndClose}
                       onCommit={onCommit}
                       onCancel={onCancel}
@@ -201,21 +217,21 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                   </StackItem>
                   <StackItem className="characteristics-container__attribute">
                     <AttributeEditor
-                      activeOperation={activeOperation}
-                      setActiveOperation={setActiveOperation}
                       modelIndex={modelIndex}
+                      activeOperation={activeOperation}
                       characteristicIndex={selectedCharacteristicIndex}
                       attributeIndex={selectedAttributeIndex}
-                      onCommit={(_index, _text, _partialScore, _reasonCode) => {
+                      onCancel={onViewOverviewView}
+                      onCommit={(_index, _content) => {
                         if (_index === undefined) {
                           dispatch({
                             type: Actions.Scorecard_AddAttribute,
                             payload: {
                               modelIndex: modelIndex,
                               characteristicIndex: selectedCharacteristicIndex,
-                              text: _text,
-                              partialScore: _partialScore,
-                              reasonCode: _reasonCode
+                              text: _content.text,
+                              partialScore: _content.partialScore,
+                              reasonCode: _content.reasonCode
                             }
                           });
                         } else {
@@ -225,14 +241,13 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                               modelIndex: modelIndex,
                               characteristicIndex: selectedCharacteristicIndex,
                               attributeIndex: selectedAttributeIndex,
-                              text: _text,
-                              partialScore: _partialScore,
-                              reasonCode: _reasonCode
+                              text: _content.text,
+                              partialScore: _content.partialScore,
+                              reasonCode: _content.reasonCode
                             }
                           });
                         }
                       }}
-                      onCancel={() => null}
                     />
                   </StackItem>
                 </Stack>

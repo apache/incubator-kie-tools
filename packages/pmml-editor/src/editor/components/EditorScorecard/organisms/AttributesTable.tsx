@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Form } from "@patternfly/react-core";
 import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
@@ -55,32 +54,24 @@ export const AttributesTable = (props: AttributesTableProps) => {
 
   const onDelete = (index: number | undefined) => {
     if (index !== undefined) {
-      setActiveOperation(Operation.NONE);
       deleteAttribute(index);
     }
   };
 
   return (
-    <Form
-      onSubmit={e => {
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-    >
-      <section>
-        {attributes.map((attribute, index) => {
-          return (
-            <AttributesTableRow
-              key={index}
-              index={index}
-              attribute={attribute}
-              dataFields={dataFields}
-              onEdit={() => onEdit(index)}
-              onDelete={() => onDelete(index)}
-            />
-          );
-        })}
-      </section>
-    </Form>
+    <section>
+      {attributes.map((attribute, index) => {
+        return (
+          <AttributesTableRow
+            key={index}
+            index={index}
+            attribute={attribute}
+            dataFields={dataFields}
+            onEdit={() => onEdit(index)}
+            onDelete={() => onDelete(index)}
+          />
+        );
+      })}
+    </section>
   );
 };

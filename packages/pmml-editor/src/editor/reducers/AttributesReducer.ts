@@ -87,16 +87,25 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AttributesActio
       case Actions.Scorecard_UpdateAttribute:
         return service.mutate(
           state,
-          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute[${action.payload.attributeIndex}]`,
+          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
           draft => {
             const attributeIndex: number = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft[attributeIndex] = {
                 ...draft[attributeIndex],
-                predicate: fromText(action.payload.text),
                 partialScore: action.payload.partialScore,
                 reasonCode: action.payload.reasonCode
               };
+              // TODO {mantis} For the time being only update the Predicate if applicable.
+              // Normally we could include it in the spread above. However until we have a Predicate parser the
+              // Predicate is mocked for the time being... consequentially they will ALWAYS be the same when editing.
+              const predicate = fromText(action.payload.text);
+              if (predicate != null) {
+                draft[attributeIndex] = {
+                  ...draft[attributeIndex],
+                  predicate: predicate
+                };
+              }
             }
           }
         );

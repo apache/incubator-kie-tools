@@ -27,7 +27,7 @@ interface HistoryButtonsProps {
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
   return (
-    <div className="history-buttons">
+    <div className="history-buttons ignore-onclickoutside">
       <Split hasGutter={true}>
         <SplitItem>
           <Button variant="primary" onClick={props.undo}>

@@ -82,8 +82,11 @@ const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, Da
   return value.toString();
 };
 
-export const fromText = (text: string): Predicate => {
+export const fromText = (text: string): Predicate | undefined => {
   //TODO {manstis} The text in the payload needs to have been converted to a Predicate
+  if (text === undefined) {
+    return undefined;
+  }
   const predicate = new SimplePredicate({
     field: "mocked" as FieldName,
     operator: "equal",

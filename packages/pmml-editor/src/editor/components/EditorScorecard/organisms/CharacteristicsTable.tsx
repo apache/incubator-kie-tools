@@ -36,6 +36,7 @@ interface CharacteristicsTableProps {
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
   viewAttribute: (index: number | undefined) => void;
   deleteCharacteristic: (index: number) => void;
+  onAddAttribute: () => void;
   onCommitAndClose: () => void;
   onCommit: (partial: Partial<Characteristic>) => void;
   onCancel: () => void;
@@ -52,6 +53,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     validateCharacteristicName,
     viewAttribute,
     deleteCharacteristic,
+    onAddAttribute,
     onCommitAndClose,
     onCommit,
     onCancel
@@ -104,6 +106,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 characteristic={ic}
                 validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
                 viewAttribute={viewAttribute}
+                onAddAttribute={onAddAttribute}
                 onCommitAndClose={onCommitAndClose}
                 onCommit={onCommit}
                 onCancel={onCancel}
