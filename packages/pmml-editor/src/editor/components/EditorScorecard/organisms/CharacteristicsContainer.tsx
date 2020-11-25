@@ -126,7 +126,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       payload: {
         modelIndex: modelIndex,
         characteristicIndex: selectedCharacteristicIndex,
-        text: undefined,
+        text: "True",
         partialScore: undefined,
         reasonCode: undefined
       }

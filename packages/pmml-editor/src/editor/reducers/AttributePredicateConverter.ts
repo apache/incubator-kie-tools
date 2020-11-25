@@ -82,11 +82,25 @@ const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, Da
   return value.toString();
 };
 
+//TODO {manstis} The text in the payload needs to have been converted to a Predicate
 export const fromText = (text: string): Predicate | undefined => {
-  //TODO {manstis} The text in the payload needs to have been converted to a Predicate
   if (text === undefined) {
     return undefined;
   }
+
+  //Simple cases
+  if (text.toLowerCase() === "true") {
+    const predicate: True = new True({});
+    (predicate as any)._type = "True";
+    return predicate;
+  }
+  if (text.toLowerCase() === "false") {
+    const predicate: False = new False({});
+    (predicate as any)._type = "False";
+    return predicate;
+  }
+
+  //Mock complex cases
   const predicate = new SimplePredicate({
     field: "mocked" as FieldName,
     operator: "equal",
