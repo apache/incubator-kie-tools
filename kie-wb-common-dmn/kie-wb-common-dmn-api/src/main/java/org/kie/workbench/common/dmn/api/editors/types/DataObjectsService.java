@@ -19,12 +19,12 @@ package org.kie.workbench.common.dmn.api.editors.types;
 import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * This service handlers calls related to Data Objects.
  */
-@Remote
+
 public interface DataObjectsService {
 
     /**

@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.adf.engine.backend.formGeneration;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.jboss.errai.bus.server.api.RpcContext;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.AbstractI18nHelper;
 import org.kie.workbench.common.forms.adf.service.definitions.I18nSettings;
 
@@ -30,7 +30,7 @@ public class BackendI18nHelper extends AbstractI18nHelper {
         super(settings);
 
         bundle = ResourceBundle.getBundle(settings.getBundle(),
-                                          RpcContext.getServletRequest().getLocale());
+                                          Locale.US);
     }
 
     @Override

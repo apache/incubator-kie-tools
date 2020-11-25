@@ -20,12 +20,12 @@ import java.util.List;
 
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDefEditorContent;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface DriverDefEditorService {
 
     DriverDefEditorContent loadContent(final Path path);

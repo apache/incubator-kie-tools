@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.api.editors.types;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface DMNParseService {
 
     List<String> parseFEELList(final String source);

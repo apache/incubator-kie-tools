@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.services.datamodel.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.uberfire.backend.vfs.Path;
@@ -23,7 +23,7 @@ import org.uberfire.backend.vfs.Path;
 /**
  * Service to get incremental updates to a DataModelOracle
  */
-@Remote
+
 public interface IncrementalDataModelService {
 
     PackageDataModelOracleIncrementalPayload getUpdates(final Path resourcePath,

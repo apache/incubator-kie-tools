@@ -30,7 +30,7 @@ import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.utils.NewWorkspaceProjectUtils;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.shared.validation.CopyValidator;
 import org.kie.workbench.common.services.shared.validation.DeleteValidator;
@@ -42,7 +42,7 @@ import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 /**
  * Implementation of validation Service for file names
  */
-@Service
+
 @ApplicationScoped
 public class ValidationServiceImpl
         implements ValidationService {

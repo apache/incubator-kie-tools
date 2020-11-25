@@ -29,7 +29,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
@@ -62,7 +62,7 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
-@Service
+
 @ApplicationScoped
 public class FormEditorServiceImpl extends KieService<FormModelerContent> implements FormEditorService {
     public static final String SHORT_KEY = "FormEditorService.shortKey";

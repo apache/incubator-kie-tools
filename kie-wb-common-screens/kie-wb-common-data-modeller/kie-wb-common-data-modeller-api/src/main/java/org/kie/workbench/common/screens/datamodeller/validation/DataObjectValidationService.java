@@ -19,11 +19,11 @@ package org.kie.workbench.common.screens.datamodeller.validation;
 import java.util.Collection;
 
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
-@Remote
+
 public interface DataObjectValidationService {
 
     Collection<ValidationMessage> validateObjectPropertyDeletion(final DataObject dataObject,

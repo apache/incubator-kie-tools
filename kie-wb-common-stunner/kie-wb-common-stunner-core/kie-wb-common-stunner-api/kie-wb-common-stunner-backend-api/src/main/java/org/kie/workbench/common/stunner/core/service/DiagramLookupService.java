@@ -15,13 +15,12 @@
  */
 package org.kie.workbench.common.stunner.core.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupManager;
 
 /**
  * The remote service for Diagrams lookup operations.
  */
-@Remote
+
 public interface DiagramLookupService extends DiagramLookupManager {
 
 }

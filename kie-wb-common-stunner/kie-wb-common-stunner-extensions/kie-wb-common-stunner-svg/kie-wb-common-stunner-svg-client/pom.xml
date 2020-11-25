@@ -70,10 +70,7 @@
 
     <!-- Uberfire & Errai. -->
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+
 
     <dependency>
       <groupId>org.jboss.errai</groupId>

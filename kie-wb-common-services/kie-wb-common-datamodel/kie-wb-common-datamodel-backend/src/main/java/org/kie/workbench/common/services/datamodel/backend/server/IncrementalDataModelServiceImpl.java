@@ -21,7 +21,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.imports.Imports;
@@ -36,7 +36,7 @@ import org.uberfire.backend.vfs.Path;
 /**
  *
  */
-@Service
+
 @ApplicationScoped
 public class IncrementalDataModelServiceImpl implements IncrementalDataModelService {
 

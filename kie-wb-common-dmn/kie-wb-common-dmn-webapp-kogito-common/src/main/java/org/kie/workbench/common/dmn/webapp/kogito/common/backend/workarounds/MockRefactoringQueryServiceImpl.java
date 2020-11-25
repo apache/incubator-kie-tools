@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
@@ -29,7 +28,7 @@ import org.kie.workbench.common.services.refactoring.service.RefactoringQuerySer
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.uberfire.paging.PageResponse;
 
-@Service
+
 @ApplicationScoped
 public class MockRefactoringQueryServiceImpl implements RefactoringQueryService {
 

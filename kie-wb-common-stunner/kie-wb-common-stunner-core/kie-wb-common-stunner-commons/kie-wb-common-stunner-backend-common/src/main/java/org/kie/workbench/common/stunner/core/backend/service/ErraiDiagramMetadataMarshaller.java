@@ -21,7 +21,6 @@ import java.io.InputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
@@ -30,13 +29,13 @@ public class ErraiDiagramMetadataMarshaller implements DiagramMetadataMarshaller
 
     @Override
     public Metadata unmarshall(final InputStream input) throws IOException {
-        Metadata result = (Metadata) ServerMarshalling.fromJSON(input);
+        Metadata result = null; //(Metadata) ServerMarshalling.fromJSON(input);
         return result;
     }
 
     @Override
     public String marshall(final Metadata metadata) throws IOException {
-        String result = ServerMarshalling.toJSON(metadata);
+        String result = ""; //ServerMarshalling.toJSON(metadata);
         return result;
     }
 }

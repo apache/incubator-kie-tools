@@ -30,7 +30,7 @@ import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
@@ -38,7 +38,7 @@ import org.kie.workbench.common.services.shared.dependencies.TransitiveEnhancedD
 
 import static org.kie.workbench.common.services.backend.dependencies.DependencyTestUtils.toDependencies;
 
-@Service
+
 @ApplicationScoped
 public class DependencyServiceImpl
         implements DependencyService {

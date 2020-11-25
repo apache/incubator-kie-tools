@@ -19,9 +19,9 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface DependencyService {
 
     Collection<Dependency> loadDependencies( final Collection<GAV> gavs );

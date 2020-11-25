@@ -15,10 +15,9 @@
  */
 package org.kie.workbench.common.stunner.project.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 
-@Remote
+
 public interface ProjectDiagramLookupService extends DiagramLookupService {
 
 }

@@ -23,7 +23,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
@@ -36,7 +36,7 @@ import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 
-@Service
+
 @ApplicationScoped
 public class PersistenceDescriptorEditorServiceImpl
         extends KieService<PersistenceDescriptorEditorContent>

@@ -30,7 +30,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.dmn.api.DMNContentResource;
 import org.kie.workbench.common.dmn.api.DMNContentService;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
@@ -45,7 +45,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
-@Service
+
 @ApplicationScoped
 public class DMNContentServiceImpl extends KieService<String> implements DMNContentService {
 

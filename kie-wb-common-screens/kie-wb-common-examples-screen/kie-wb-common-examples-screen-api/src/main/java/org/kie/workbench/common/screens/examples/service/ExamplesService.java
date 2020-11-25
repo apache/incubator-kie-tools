@@ -21,14 +21,14 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 
-@Remote
+
 public interface ExamplesService extends ImportService,
                                          PriorityDisposable {
 

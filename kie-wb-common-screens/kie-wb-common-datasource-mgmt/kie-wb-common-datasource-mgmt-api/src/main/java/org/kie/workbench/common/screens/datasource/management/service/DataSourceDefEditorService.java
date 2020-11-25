@@ -17,13 +17,13 @@
 package org.kie.workbench.common.screens.datasource.management.service;
 
 import org.guvnor.common.services.project.model.Module;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDefEditorContent;
 import org.kie.workbench.common.screens.datasource.management.model.TestResult;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface DataSourceDefEditorService {
 
     DataSourceDefEditorContent loadContent(final Path path);

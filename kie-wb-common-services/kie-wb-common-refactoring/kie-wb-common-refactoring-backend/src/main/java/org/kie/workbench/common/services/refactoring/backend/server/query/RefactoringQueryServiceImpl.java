@@ -36,7 +36,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopFieldDocs;
 import org.apache.lucene.search.TotalHitCountCollector;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllChangeImpactQuery;
@@ -55,7 +55,7 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.paging.PageResponse;
 
-@Service
+
 @ApplicationScoped
 public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 

@@ -18,10 +18,10 @@ package org.kie.workbench.common.screens.server.management.service;
 
 import java.io.IOException;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.server.management.model.ProcessConfigModule;
 
-@Remote
+
 public interface DeploymentDescriptorService {
     ProcessConfigModule getProcessConfig(String path) throws IOException;
 }

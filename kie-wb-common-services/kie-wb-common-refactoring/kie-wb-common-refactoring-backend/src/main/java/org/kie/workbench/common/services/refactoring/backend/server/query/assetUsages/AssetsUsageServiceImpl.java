@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
@@ -34,7 +34,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.SegmentedPath;
 
-@Service
+
 @ApplicationScoped
 public class AssetsUsageServiceImpl implements AssetsUsageService {
 

@@ -21,12 +21,12 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.BackendSelectorDataProviderService;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 
-@Service
+
 @Dependent
 public class BackendSelectorDataProviderServiceImpl implements BackendSelectorDataProviderService {
 

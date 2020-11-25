@@ -15,10 +15,10 @@
 
 package org.kie.workbench.common.screens.server.management.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 
-@Remote
+
 public interface ContainerService {
 
     boolean isRunningContainer(ContainerSpec containerSpec);

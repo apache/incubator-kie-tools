@@ -23,7 +23,7 @@ import javax.inject.Named;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
@@ -36,7 +36,7 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 /**
  * Represents a "white list" of permitted package names for use with authoring
  */
-@Service
+
 @ApplicationScoped
 public class PackageNameWhiteListServiceImpl
         implements PackageNameWhiteListService {

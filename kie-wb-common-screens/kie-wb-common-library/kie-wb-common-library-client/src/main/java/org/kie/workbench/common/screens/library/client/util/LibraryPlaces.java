@@ -324,7 +324,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
      * Re-reroutes this event for project screen. If we tried to observe this directly from the project screen,
      * there are timing issues involved with subscribing to the event.
      */
-    public void onAssetListUpdateEvent(@Observes @Remote final ProjectAssetListUpdated event) {
+    public void onAssetListUpdateEvent(@Observes  final ProjectAssetListUpdated event) {
         assetListUpdatedEvent.fire(event);
     }
 

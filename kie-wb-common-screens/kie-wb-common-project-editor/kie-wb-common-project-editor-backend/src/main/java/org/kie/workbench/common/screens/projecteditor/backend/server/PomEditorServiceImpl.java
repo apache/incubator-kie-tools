@@ -38,7 +38,7 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.screens.projecteditor.model.InvalidPomException;
@@ -54,7 +54,7 @@ import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.io.IOService;
 
-@Service
+
 @ApplicationScoped
 public class PomEditorServiceImpl implements PomEditorService {
 

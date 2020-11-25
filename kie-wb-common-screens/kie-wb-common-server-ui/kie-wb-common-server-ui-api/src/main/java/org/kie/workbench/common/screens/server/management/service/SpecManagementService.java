@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.server.management.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.server.controller.api.model.spec.*;
 
-@Remote
+
 public interface SpecManagementService {
 
     void saveContainerSpec(String serverTemplateId,

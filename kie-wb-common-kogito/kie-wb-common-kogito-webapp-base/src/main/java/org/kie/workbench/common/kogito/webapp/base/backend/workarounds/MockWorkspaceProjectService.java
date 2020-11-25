@@ -30,7 +30,7 @@ import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.spaces.Space;
 
@@ -40,7 +40,7 @@ import static org.kie.workbench.common.kogito.api.KogitoConstants.NOT_AVAILABLE_
  * kogito does not have the concept of Workspaces or Projects. Therefore this dummy
  * implementation of the WorkspaceProjectService returns non-null sensible defaults.
  */
-@Service
+
 @ApplicationScoped
 public class MockWorkspaceProjectService implements WorkspaceProjectService {
 

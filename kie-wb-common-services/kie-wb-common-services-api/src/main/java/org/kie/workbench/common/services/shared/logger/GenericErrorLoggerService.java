@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.services.shared.logger;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface GenericErrorLoggerService {
 
     void log(final String errorId,

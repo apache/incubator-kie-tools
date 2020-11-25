@@ -18,11 +18,11 @@ package org.kie.workbench.common.forms.jbpm.service.shared;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface BPMFinderService {
 
     List<JBPMProcessModel> getAvailableProcessModels(Path path);

@@ -22,7 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.forms.service.FormGeneratedEvent;
@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.forms.service.FormGenerationService;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-@Service
+
 public class FormGenerationServiceImpl implements FormGenerationService {
 
     private static Logger LOGGER = Logger.getLogger(FormGenerationServiceImpl.class.getName());

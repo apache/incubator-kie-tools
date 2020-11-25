@@ -26,10 +26,10 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.config.BranchPermissions;
 import org.guvnor.structure.repositories.Branch;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 
-@Remote
+
 public interface LibraryService {
 
     String LAST_MODIFIED_TIME = "lastModifiedTime";

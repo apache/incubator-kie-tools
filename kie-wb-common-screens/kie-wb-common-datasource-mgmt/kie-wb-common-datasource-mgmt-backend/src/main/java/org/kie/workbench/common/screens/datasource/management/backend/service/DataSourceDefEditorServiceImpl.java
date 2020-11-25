@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Module;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DeploymentOptions;
 import org.kie.workbench.common.screens.datasource.management.backend.core.UnDeploymentOptions;
@@ -52,7 +52,7 @@ import org.uberfire.io.IOService;
 
 import static org.kie.workbench.common.screens.datasource.management.util.ServiceUtil.isEmpty;
 
-@Service
+
 @ApplicationScoped
 public class DataSourceDefEditorServiceImpl
         extends AbstractDefEditorService<DataSourceDefEditorContent, DataSourceDef, DataSourceDeploymentInfo>

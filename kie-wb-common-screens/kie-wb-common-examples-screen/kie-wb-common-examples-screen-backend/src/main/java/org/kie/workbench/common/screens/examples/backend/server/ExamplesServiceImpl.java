@@ -54,7 +54,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
@@ -73,7 +73,7 @@ import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
-@Service
+
 @ApplicationScoped
 public class ExamplesServiceImpl extends BaseProjectImportService implements ExamplesService {
 

@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface BPMNDiagramService {
 
     ProjectType getProjectType(Path projectRootPath);

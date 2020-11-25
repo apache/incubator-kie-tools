@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.TimeZoneService;
 
-@Service
+
 public class TimeZoneServiceImpl implements TimeZoneService {
 
     @Override

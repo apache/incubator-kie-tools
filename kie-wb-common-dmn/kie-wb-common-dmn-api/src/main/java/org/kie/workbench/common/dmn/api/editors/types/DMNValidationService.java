@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.api.editors.types;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface DMNValidationService {
 
     boolean isValidVariableName(final String source);

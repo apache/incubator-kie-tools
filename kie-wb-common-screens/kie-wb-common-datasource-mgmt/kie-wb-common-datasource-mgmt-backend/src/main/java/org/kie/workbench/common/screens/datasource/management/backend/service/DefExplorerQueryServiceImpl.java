@@ -30,7 +30,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQuery;
@@ -41,7 +41,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class DefExplorerQueryServiceImpl
         implements DefExplorerQueryService {

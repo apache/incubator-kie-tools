@@ -26,14 +26,14 @@ import org.guvnor.ala.runtime.providers.ProviderType;
 import org.guvnor.ala.services.api.RuntimeQuery;
 import org.guvnor.ala.services.api.RuntimeQueryResultItem;
 import org.guvnor.ala.services.exceptions.BusinessException;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Runtime Provisioning Service Backend interface. It allows the registering and interaction with different Provisioning
  * Providers and the creation of new Runtimes on these providers.
- * Backend @Remote implementation to be used in CDI environments with Errai
+ * Backend  implementation to be used in CDI environments with Errai
  */
-@Remote
+
 public interface RuntimeProvisioningServiceBackend {
 
     /**

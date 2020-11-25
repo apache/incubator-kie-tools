@@ -28,7 +28,7 @@ import org.guvnor.common.services.project.backend.server.ProjectConfigurationCon
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.backend.service.KieService;
@@ -41,7 +41,7 @@ import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
-@Service
+
 @ApplicationScoped
 public class ProjectImportsServiceImpl
         extends KieService<ProjectImportsContent>

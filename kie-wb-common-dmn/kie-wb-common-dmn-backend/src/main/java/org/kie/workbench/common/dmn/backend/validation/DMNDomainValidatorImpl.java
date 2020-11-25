@@ -32,7 +32,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.model.api.DMNElement;
@@ -56,7 +56,7 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.Paths;
 
-@Service
+
 @ApplicationScoped
 public class DMNDomainValidatorImpl implements DMNDomainValidator {
 

@@ -18,11 +18,11 @@ package org.kie.workbench.common.screens.defaulteditor.service;
 
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
-@Remote
+
 public interface DefaultEditorService extends SupportsUpdate<String>,
                                               SupportsSaveAndRename<String, Metadata> {
 

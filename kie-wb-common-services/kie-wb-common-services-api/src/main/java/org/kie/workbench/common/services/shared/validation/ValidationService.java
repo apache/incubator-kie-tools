@@ -20,13 +20,13 @@ import java.util.Map;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Validation Service
  */
-@Remote
+
 public interface ValidationService {
 
     boolean isProjectNameValid(final String projectName);

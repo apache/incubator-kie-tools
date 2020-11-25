@@ -27,7 +27,7 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.DeploymentMode;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.backend.builder.ala.LocalBuildConfig;
 import org.kie.workbench.common.services.backend.builder.core.Builder;
 import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
@@ -35,7 +35,7 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
-@Service
+
 @ApplicationScoped
 public class BuildServiceImpl
         implements BuildService {

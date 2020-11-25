@@ -32,7 +32,7 @@ import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.displayer.TableDisplayerSettingsBuilder;
 import org.dashbuilder.renderer.client.DefaultRenderer;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.metadata.DatabaseMetadata;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDeploymentInfo;
@@ -42,7 +42,7 @@ import org.kie.workbench.common.screens.datasource.management.util.DataSetDefBui
 
 import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
-@Service
+
 @ApplicationScoped
 public class DataManagementServiceImpl
         implements DataManagementService {

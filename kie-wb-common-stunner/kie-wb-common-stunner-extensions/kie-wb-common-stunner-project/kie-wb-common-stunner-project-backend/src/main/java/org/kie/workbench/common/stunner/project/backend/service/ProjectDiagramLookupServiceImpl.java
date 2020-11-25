@@ -22,7 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.stunner.core.backend.lookup.impl.VFSLookupManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractDiagramLookupService;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.project.service.ProjectDiagramLookupServ
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 
 @ApplicationScoped
-@Service
+
 public class ProjectDiagramLookupServiceImpl
         extends AbstractDiagramLookupService<ProjectMetadata, ProjectDiagram>
         implements ProjectDiagramLookupService {

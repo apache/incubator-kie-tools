@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client.callbacks;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -39,7 +38,7 @@ public class CommandDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCall
     }
 
     @Override
-    public boolean error(final Message message,
+    public boolean error(final Object message,
                          final Throwable throwable) {
         // The *real* Throwable is wrapped in an InvocationTargetException when ran as a Unit Test and invoked with Reflection.
         final Throwable _throwable = (throwable.getCause() == null ? throwable : throwable.getCause());

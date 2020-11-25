@@ -15,10 +15,10 @@
  */
 package org.kie.workbench.common.forms.editor.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.forms.model.FormDefinition;
 
-@Remote
+
 public interface FormCreatorService {
 
     FormDefinition getNewFormInstance();

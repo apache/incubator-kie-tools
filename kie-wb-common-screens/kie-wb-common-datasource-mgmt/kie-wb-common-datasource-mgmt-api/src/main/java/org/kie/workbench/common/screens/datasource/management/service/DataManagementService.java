@@ -17,9 +17,9 @@
 package org.kie.workbench.common.screens.datasource.management.service;
 
 import org.dashbuilder.displayer.DisplayerSettings;
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface DataManagementService {
 
     /**

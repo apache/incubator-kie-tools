@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindPackageNamesQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueModuleRootPathIndexTerm;
@@ -34,7 +34,7 @@ import org.kie.workbench.common.services.refactoring.service.PackageServiceLoade
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @ApplicationScoped
 public class PackageServiceLoaderImpl
         implements PackageServiceLoader {

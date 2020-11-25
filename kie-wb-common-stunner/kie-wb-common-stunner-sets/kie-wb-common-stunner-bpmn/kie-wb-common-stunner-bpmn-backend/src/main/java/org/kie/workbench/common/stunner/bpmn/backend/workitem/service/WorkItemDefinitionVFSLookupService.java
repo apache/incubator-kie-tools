@@ -24,7 +24,7 @@ import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionResources;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionService;
@@ -38,7 +38,7 @@ import org.uberfire.backend.vfs.VFSService;
 import static org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionParser.parse;
 
 @ApplicationScoped
-@Service
+
 public class WorkItemDefinitionVFSLookupService
         implements WorkItemDefinitionService<Metadata> {
 

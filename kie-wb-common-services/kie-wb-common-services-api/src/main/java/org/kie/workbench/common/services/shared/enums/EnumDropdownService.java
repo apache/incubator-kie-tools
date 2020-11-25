@@ -15,10 +15,10 @@
 
 package org.kie.workbench.common.services.shared.enums;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface EnumDropdownService {
 
     /**

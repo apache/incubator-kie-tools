@@ -18,12 +18,12 @@ package org.kie.workbench.common.services.shared.project;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ModuleService;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * KIE specific implementation of ModuleService
  */
-@Remote
+
 public interface KieModuleService
         extends ModuleService<KieModule> {
 

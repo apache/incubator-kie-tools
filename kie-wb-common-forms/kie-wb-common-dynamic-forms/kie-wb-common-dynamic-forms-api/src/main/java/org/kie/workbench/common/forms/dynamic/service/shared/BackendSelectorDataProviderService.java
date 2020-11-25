@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.dynamic.service.shared;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface BackendSelectorDataProviderService extends SelectorDataProviderManager {
 
 }

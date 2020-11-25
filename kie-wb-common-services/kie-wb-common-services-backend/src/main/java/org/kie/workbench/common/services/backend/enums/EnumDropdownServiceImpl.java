@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @ApplicationScoped
 public class EnumDropdownServiceImpl implements EnumDropdownService {
 

@@ -19,9 +19,9 @@ package org.guvnor.ala.ui.backend.service;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.ala.ui.service.ProvisioningValidationService;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class ProvisioningValidationServiceImpl
         implements ProvisioningValidationService {

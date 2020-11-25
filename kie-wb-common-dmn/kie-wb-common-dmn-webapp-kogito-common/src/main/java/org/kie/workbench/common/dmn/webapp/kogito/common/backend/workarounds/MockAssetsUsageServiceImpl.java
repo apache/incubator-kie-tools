@@ -20,13 +20,12 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @ApplicationScoped
 public class MockAssetsUsageServiceImpl implements AssetsUsageService {
 

@@ -22,7 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSource;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDeploymentInfo;
@@ -32,7 +32,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DataSource
 
 import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
-@Service
+
 @ApplicationScoped
 public class DataSourceRuntimeManagerClientServiceImpl
         implements DataSourceRuntimeManagerClientService {

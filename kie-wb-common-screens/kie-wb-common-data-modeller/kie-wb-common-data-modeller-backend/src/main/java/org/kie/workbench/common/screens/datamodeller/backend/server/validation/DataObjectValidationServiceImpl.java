@@ -24,13 +24,13 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.datamodeller.validation.ObjectPropertyDeleteValidator;
 import org.kie.workbench.common.screens.datamodeller.validation.DataObjectValidationService;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
-@Service
+
 @ApplicationScoped
 public class DataObjectValidationServiceImpl implements DataObjectValidationService {
 

@@ -19,13 +19,13 @@ package org.guvnor.ala.ui.service;
 import java.util.Collection;
 
 import org.guvnor.common.services.project.model.Module;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.spaces.Space;
 
 /**
  * Service for establishing/selecting the source configuration parameters to be used for launching a pipeline, etc.
  */
-@Remote
+
 public interface SourceService {
 
     /**

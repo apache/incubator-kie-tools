@@ -19,7 +19,7 @@ package org.kie.workbench.common.screens.datasource.management.service;
 import java.util.Collection;
 
 import org.guvnor.common.services.project.model.Module;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDefInfo;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDefInfo;
 import org.uberfire.backend.vfs.Path;
@@ -27,7 +27,7 @@ import org.uberfire.backend.vfs.Path;
 /**
  * Service for getting information about the different data sources and drivers defined globally or for a given module.
  */
-@Remote
+
 public interface DataSourceDefQueryService {
 
     /**

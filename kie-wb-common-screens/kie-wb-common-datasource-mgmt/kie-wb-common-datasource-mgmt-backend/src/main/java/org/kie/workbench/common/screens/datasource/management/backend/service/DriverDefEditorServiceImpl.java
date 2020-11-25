@@ -32,7 +32,7 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DeploymentOptions;
 import org.kie.workbench.common.screens.datasource.management.backend.core.UnDeploymentOptions;
@@ -50,7 +50,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.io.IOService;
 
-@Service
+
 @ApplicationScoped
 public class DriverDefEditorServiceImpl
         extends AbstractDefEditorService<DriverDefEditorContent, DriverDef, DriverDeploymentInfo>

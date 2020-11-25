@@ -21,9 +21,9 @@ import javax.enterprise.context.ApplicationScoped;
 import org.guvnor.ala.ui.wildfly.service.TestConnectionResult;
 import org.guvnor.ala.ui.wildfly.service.WildflyClientService;
 import org.guvnor.ala.wildfly.access.WildflyClient;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class WildflyClientServiceImpl
         implements WildflyClientService {

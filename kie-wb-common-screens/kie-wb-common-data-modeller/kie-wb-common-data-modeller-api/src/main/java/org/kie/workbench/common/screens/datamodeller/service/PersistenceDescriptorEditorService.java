@@ -17,12 +17,12 @@
 package org.kie.workbench.common.screens.datamodeller.service;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
-@Remote
+
 public interface PersistenceDescriptorEditorService extends SupportsSaveAndRename<PersistenceDescriptorEditorContent, Metadata> {
 
     PersistenceDescriptorEditorContent loadContent(Path path);

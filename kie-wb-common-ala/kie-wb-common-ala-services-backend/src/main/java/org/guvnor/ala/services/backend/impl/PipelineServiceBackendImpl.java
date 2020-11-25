@@ -26,9 +26,9 @@ import org.guvnor.ala.runtime.providers.ProviderType;
 import org.guvnor.ala.services.api.PipelineService;
 import org.guvnor.ala.services.api.backend.PipelineServiceBackend;
 import org.guvnor.ala.services.exceptions.BusinessException;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class PipelineServiceBackendImpl
         implements PipelineServiceBackend {

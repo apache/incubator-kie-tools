@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -45,7 +45,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 
 @ApplicationScoped
-@Service
+
 public class DiagramServiceImpl
         extends AbstractVFSDiagramService<Metadata, Diagram<Graph, Metadata>>
         implements DiagramService {

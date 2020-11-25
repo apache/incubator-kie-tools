@@ -39,7 +39,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -68,7 +68,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import static java.util.Collections.emptyList;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 
-@Service
+
 @Dependent
 public class ExplorerServiceImpl
         implements ExplorerService {

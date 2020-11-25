@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.stunner.bpmn.project.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.uberfire.backend.server.util.Paths;
@@ -29,7 +29,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 
-@Service
+
 public class BPMNDiagramProjectService implements BPMNDiagramService {
 
     private IOService ioService;

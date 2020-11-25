@@ -4,7 +4,7 @@
     "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 
 <module>
-  <inherits name="org.jboss.errai.bus.ErraiBus"/>
+
   <inherits name="org.uberfire.commons.UberfireCommons"/>
 
   <source path="events"/>

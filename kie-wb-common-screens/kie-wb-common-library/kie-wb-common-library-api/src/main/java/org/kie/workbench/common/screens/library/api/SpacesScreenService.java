@@ -15,7 +15,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-@Remote
+
 @Path("/spacesScreen")
 @Produces(APPLICATION_JSON)
 public interface SpacesScreenService {

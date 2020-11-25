@@ -18,11 +18,11 @@ package org.kie.workbench.common.forms.editor.service.shared;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface ModuleFormFinderService {
 
     List<FormDefinition> findAllForms(Path path);

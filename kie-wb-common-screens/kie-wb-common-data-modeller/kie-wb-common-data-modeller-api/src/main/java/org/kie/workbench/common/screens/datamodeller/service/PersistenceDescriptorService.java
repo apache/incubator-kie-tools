@@ -19,14 +19,14 @@ package org.kie.workbench.common.screens.datamodeller.service;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.ValidationService;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.services.shared.source.ViewSourceService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsUpdate;
 
-@Remote
+
 public interface PersistenceDescriptorService
         extends ViewSourceService<PersistenceDescriptorModel>,
                 ValidationService<PersistenceDescriptorModel>,

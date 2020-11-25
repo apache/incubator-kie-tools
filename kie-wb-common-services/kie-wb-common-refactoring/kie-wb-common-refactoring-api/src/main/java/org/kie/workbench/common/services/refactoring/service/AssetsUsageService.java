@@ -18,10 +18,10 @@ package org.kie.workbench.common.services.refactoring.service;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface AssetsUsageService {
 
     List<Path> getAssetUsages(String resourceFQN,

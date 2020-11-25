@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.integration.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
 import org.kie.workbench.common.stunner.core.marshaller.MarshallingResponse;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface IntegrationService {
 
     enum ServiceError {

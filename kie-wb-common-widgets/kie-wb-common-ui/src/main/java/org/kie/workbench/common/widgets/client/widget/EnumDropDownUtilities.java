@@ -23,13 +23,8 @@ import java.util.Set;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.jboss.errai.bus.client.api.BusErrorCallback;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.soup.commons.util.ListSplitter;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
-import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.uberfire.backend.vfs.Path;
@@ -60,32 +55,32 @@ public class EnumDropDownUtilities {
                 public void execute() {
                     BusyPopup.showMessage(CommonConstants.INSTANCE.RefreshingList());
 
-                    MessageBuilder.createCall(new RemoteCallback<String[]>() {
-                                                  public void callback(String[] response) {
-                                                      BusyPopup.close();
-
-                                                      if (response.length == 0) {
-                                                          response = new String[]{CommonConstants.INSTANCE.UnableToLoadList()};
-                                                      }
-
-                                                      fillDropDown(value,
-                                                                   response,
-                                                                   isMultipleSelect,
-                                                                   listBox);
-                                                  }
-                                              },
-                                              new BusErrorCallback() {
-                                                  @Override
-                                                  public boolean error(Message message,
-                                                                       Throwable throwable) {
-                                                      BusyPopup.close();
-                                                      return false;
-                                                  }
-                                              },
-                                              EnumDropdownService.class
-                    ).loadDropDownExpression(resource,
-                                             dropData.getValuePairs(),
-                                             dropData.getQueryExpression());
+//                    MessageBuilder.createCall(new RemoteCallback<String[]>() {
+//                                                  public void callback(String[] response) {
+//                                                      BusyPopup.close();
+//
+//                                                      if (response.length == 0) {
+//                                                          response = new String[]{CommonConstants.INSTANCE.UnableToLoadList()};
+//                                                      }
+//
+//                                                      fillDropDown(value,
+//                                                                   response,
+//                                                                   isMultipleSelect,
+//                                                                   listBox);
+//                                                  }
+//                                              },
+//                                              new ErrorCallback<Object>() {
+//                                                  @Override
+//                                                  public boolean error(Object message,
+//                                                                       Throwable throwable) {
+//                                                      BusyPopup.close();
+//                                                      return false;
+//                                                  }
+//                                              },
+//                                              EnumDropdownService.class
+//                    ).loadDropDownExpression(resource,
+//                                             dropData.getValuePairs(),
+//                                             dropData.getQueryExpression());
                 }
             });
         } else {

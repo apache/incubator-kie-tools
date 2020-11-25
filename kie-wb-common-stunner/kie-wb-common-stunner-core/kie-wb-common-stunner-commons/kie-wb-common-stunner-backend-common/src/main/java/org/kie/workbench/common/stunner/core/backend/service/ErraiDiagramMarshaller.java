@@ -22,7 +22,6 @@ import java.io.InputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -47,14 +46,14 @@ public class ErraiDiagramMarshaller implements DiagramMarshaller<Graph, Metadata
     @SuppressWarnings("unchecked")
     public Graph unmarshall(final Metadata metadata,
                             final InputStream input) throws IOException {
-        Graph result = (Graph) ServerMarshalling.fromJSON(input);
+        Graph result = null; //(Graph) ServerMarshalling.fromJSON(input);
         return result;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
-        String result = ServerMarshalling.toJSON(diagram.getGraph());
+        String result = ""; //ServerMarshalling.toJSON(diagram.getGraph());
         return result;
     }
 

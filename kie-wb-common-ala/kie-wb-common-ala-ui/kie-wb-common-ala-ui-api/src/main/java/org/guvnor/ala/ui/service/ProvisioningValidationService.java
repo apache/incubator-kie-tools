@@ -16,12 +16,12 @@
 
 package org.guvnor.ala.ui.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Service for holding validations oriented to the different provisioning-ui screens and client widgets.
  */
-@Remote
+
 public interface ProvisioningValidationService {
 
     /**

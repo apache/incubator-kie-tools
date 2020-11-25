@@ -32,11 +32,11 @@ import org.guvnor.ala.ui.service.ProviderService;
 import org.guvnor.ala.ui.service.ProviderTypeService;
 import org.guvnor.ala.ui.service.ProvisioningScreensService;
 import org.guvnor.ala.ui.service.RuntimeService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class ProvisioningScreensServiceImpl
         implements ProvisioningScreensService {

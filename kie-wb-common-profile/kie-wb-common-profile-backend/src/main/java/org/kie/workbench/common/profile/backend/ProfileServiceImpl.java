@@ -7,10 +7,10 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.profile.api.preferences.ProfileService;
 
-@Service
+
 @ApplicationScoped
 public class ProfileServiceImpl implements ProfileService {
     

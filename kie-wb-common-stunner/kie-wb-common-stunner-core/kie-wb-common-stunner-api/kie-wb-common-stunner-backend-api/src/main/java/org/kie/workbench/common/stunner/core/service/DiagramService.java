@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -24,7 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 /**
  * Default Stunner's diagram service implementation.
  */
-@Remote
+
 public interface DiagramService extends BaseDiagramService<Metadata, Diagram<Graph, Metadata>> {
 
 }

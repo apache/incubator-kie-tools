@@ -27,7 +27,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Package;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -58,7 +58,7 @@ import static org.kie.workbench.common.stunner.bpmn.integration.service.Integrat
 import static org.kie.workbench.common.stunner.bpmn.integration.service.IntegrationService.ServiceError.STUNNER_PROCESS_ALREADY_EXIST;
 
 @ApplicationScoped
-@Service
+
 public class IntegrationServiceImpl implements IntegrationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationServiceImpl.class);

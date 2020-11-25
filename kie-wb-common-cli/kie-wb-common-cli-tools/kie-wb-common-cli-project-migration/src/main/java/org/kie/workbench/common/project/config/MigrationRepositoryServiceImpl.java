@@ -38,7 +38,7 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
@@ -48,7 +48,7 @@ import org.uberfire.spaces.SpacesAPI;
 import static org.uberfire.backend.server.util.Paths.convert;
 
 @Migration
-@Service
+
 @ApplicationScoped
 public class MigrationRepositoryServiceImpl extends RepositoryServiceImpl {
 

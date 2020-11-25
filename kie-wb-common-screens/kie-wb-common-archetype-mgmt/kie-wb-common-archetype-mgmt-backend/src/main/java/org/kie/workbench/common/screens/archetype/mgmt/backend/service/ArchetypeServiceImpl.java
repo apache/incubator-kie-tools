@@ -58,7 +58,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.archetype.mgmt.backend.config.ArchetypeConfigStorage;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.config.ArchetypeConfigStorageImpl;
 import org.kie.workbench.common.screens.archetype.mgmt.backend.maven.AbstractMavenCommand;
@@ -94,7 +94,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpt
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Startup
-@Service
+
 @ApplicationScoped
 public class ArchetypeServiceImpl implements ArchetypeService {
 

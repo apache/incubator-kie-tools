@@ -25,9 +25,9 @@ import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface RuntimeService {
 
     /**

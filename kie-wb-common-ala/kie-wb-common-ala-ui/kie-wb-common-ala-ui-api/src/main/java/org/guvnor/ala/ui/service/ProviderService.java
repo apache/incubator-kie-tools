@@ -22,12 +22,12 @@ import org.guvnor.ala.ui.model.Provider;
 import org.guvnor.ala.ui.model.ProviderConfiguration;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Service for managing the providers related to the different provider types.
  */
-@Remote
+
 public interface ProviderService {
 
     /**

@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.forms.conditions;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface ConditionEditorService {
 
     List<FunctionDef> findAvailableFunctions(Path path, String clazz);

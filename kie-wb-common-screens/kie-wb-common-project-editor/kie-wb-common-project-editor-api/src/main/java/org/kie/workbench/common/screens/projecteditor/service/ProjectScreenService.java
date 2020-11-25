@@ -17,11 +17,11 @@ package org.kie.workbench.common.screens.projecteditor.service;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface ProjectScreenService {
 
     ProjectScreenModel load(final Path path);

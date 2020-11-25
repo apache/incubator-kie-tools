@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.forms.editor.service.shared.ModuleFormFinderService;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -48,7 +48,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 
 @Dependent
-@Service
+
 public class ModuleFormFinderServiceImpl implements ModuleFormFinderService {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleFormFinderServiceImpl.class);

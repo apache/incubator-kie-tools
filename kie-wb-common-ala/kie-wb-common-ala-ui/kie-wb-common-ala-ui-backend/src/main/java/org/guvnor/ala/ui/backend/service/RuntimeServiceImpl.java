@@ -46,13 +46,13 @@ import org.guvnor.ala.ui.model.RuntimeListItem;
 import org.guvnor.ala.ui.service.ProviderService;
 import org.guvnor.ala.ui.service.RuntimeService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class RuntimeServiceImpl
         implements RuntimeService {

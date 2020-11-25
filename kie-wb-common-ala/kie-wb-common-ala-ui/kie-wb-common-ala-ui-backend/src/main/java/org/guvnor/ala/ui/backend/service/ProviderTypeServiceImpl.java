@@ -37,10 +37,10 @@ import org.guvnor.ala.ui.model.ProviderTypeStatus;
 import org.guvnor.ala.ui.preferences.ProvisioningPreferences;
 import org.guvnor.ala.ui.service.ProviderTypeService;
 import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 
-@Service
+
 @ApplicationScoped
 public class ProviderTypeServiceImpl
         implements ProviderTypeService {

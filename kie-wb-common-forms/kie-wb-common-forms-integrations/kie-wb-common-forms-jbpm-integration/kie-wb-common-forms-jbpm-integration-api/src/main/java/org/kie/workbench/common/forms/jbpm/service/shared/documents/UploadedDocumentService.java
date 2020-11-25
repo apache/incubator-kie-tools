@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.jbpm.service.shared.documents;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface UploadedDocumentService {
 
     DocumentUploadResponse uploadContent(DocumentUploadChunk chunk);

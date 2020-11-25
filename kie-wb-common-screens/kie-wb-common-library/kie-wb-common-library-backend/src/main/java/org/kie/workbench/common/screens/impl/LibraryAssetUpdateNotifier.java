@@ -53,7 +53,7 @@ public class LibraryAssetUpdateNotifier {
     @Inject
     public LibraryAssetUpdateNotifier(final WorkspaceProjectService projectService,
                                       final LibraryIndexer libraryIndexer,
-                                      final @Remote Event<ProjectAssetListUpdated> assetListUpdateEvent,
+                                      final  Event<ProjectAssetListUpdated> assetListUpdateEvent,
                                       final Logger logger) {
         this.projectService = projectService;
         this.libraryIndexer = libraryIndexer;

@@ -16,10 +16,9 @@
 
 package org.kie.workbench.common.stunner.forms.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
-@Remote
+
 public interface FormGenerationService {
 
     void generateProcessForm(Diagram diagram);

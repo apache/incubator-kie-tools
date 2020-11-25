@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.stunner.core.backend.lookup.impl.VFSLookupManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractDiagramLookupService;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -36,7 +36,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-@Service
+
 public class DiagramLookupServiceImpl
         extends AbstractDiagramLookupService<Metadata, Diagram<Graph, Metadata>> {
 

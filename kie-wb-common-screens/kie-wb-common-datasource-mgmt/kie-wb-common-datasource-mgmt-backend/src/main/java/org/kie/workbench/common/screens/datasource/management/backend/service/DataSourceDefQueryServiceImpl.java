@@ -27,7 +27,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Module;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceProviderFactory;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
@@ -51,7 +51,7 @@ import org.uberfire.java.nio.file.Files;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class DataSourceDefQueryServiceImpl
         implements DataSourceDefQueryService {

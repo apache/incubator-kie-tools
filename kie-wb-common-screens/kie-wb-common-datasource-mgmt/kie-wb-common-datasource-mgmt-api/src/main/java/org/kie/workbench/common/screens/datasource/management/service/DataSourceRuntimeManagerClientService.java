@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datasource.management.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDeploymentInfo;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDeploymentInfo;
 import org.kie.workbench.common.screens.datasource.management.model.TestResult;
@@ -24,7 +24,7 @@ import org.kie.workbench.common.screens.datasource.management.model.TestResult;
 /**
  * Convenient client side methods to interact with the DataSourceRuntimeManager.
  */
-@Remote
+
 public interface DataSourceRuntimeManagerClientService {
 
     /**

@@ -20,12 +20,12 @@ import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProvidersInfo;
 import org.guvnor.ala.ui.model.RuntimesInfo;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Service for holding methods oriented to the different provisioning-ui screens and client widgets.
  */
-@Remote
+
 public interface ProvisioningScreensService {
 
     /**

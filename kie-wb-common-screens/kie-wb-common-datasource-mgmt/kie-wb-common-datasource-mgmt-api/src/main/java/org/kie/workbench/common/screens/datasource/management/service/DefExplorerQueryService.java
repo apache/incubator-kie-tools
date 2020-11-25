@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.screens.datasource.management.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Service for getting the information required by the DataSourceDefExplorerScreen and the internal widgets
  * ProjectDataSourceExplorer and GlobalDataSourceExplore. The returned results are calculated by using the
  * AuthorizationManager and depends on current user.
  */
-@Remote
+
 public interface DefExplorerQueryService {
 
     /**

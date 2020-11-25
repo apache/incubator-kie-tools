@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.server.api.model.instance.ProcessInstance;
 import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.QueryServicesClient;
@@ -34,7 +34,7 @@ import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.server.controller.api.service.SpecManagementService;
 import org.kie.workbench.common.screens.server.management.service.ContainerService;
 
-@Service
+
 @ApplicationScoped
 public class ContainerServiceImpl implements ContainerService {
 

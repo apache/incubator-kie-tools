@@ -24,7 +24,7 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.AbstractModuleRepositoriesServiceImpl;
 import org.guvnor.common.services.project.backend.server.ModuleRepositoriesContentHandler;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -33,7 +33,7 @@ import org.uberfire.io.IOService;
 /**
  * CDI implementation for KIE Workbenches
  */
-@Service
+
 @ApplicationScoped
 public class KieModuleRepositoriesServiceImpl
         extends AbstractModuleRepositoriesServiceImpl<KieModule> {

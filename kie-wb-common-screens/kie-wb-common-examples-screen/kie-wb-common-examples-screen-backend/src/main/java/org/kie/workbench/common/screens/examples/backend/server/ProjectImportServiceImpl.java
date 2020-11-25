@@ -38,7 +38,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 
-@Service
+
 @ApplicationScoped
 public class ProjectImportServiceImpl extends BaseProjectImportService implements ProjectImportService {
 

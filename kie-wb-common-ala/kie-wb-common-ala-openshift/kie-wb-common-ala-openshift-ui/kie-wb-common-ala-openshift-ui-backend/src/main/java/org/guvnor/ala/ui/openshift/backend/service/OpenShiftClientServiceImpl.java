@@ -27,13 +27,13 @@ import org.guvnor.ala.ui.openshift.model.DefaultSettings;
 import org.guvnor.ala.ui.openshift.model.TemplateDescriptorModel;
 import org.guvnor.ala.ui.openshift.model.TemplateParam;
 import org.guvnor.ala.ui.openshift.service.OpenShiftClientService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class OpenShiftClientServiceImpl
         implements OpenShiftClientService {

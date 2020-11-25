@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorIO;
 import org.kie.workbench.common.screens.server.management.model.ProcessConfigModule;
@@ -38,7 +38,7 @@ import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 
 import static org.kie.workbench.common.screens.server.management.model.RuntimeStrategy.*;
 
-@Service
+
 @ApplicationScoped
 public class DeploymentDescriptorServiceCDI implements DeploymentDescriptorService {
 

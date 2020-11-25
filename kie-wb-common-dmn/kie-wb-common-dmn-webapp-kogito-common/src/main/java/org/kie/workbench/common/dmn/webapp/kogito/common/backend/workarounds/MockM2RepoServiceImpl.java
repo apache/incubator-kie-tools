@@ -21,10 +21,10 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.paging.PageResponse;
 
-@Service
+
 @ApplicationScoped
 public class MockM2RepoServiceImpl implements M2RepoService {
 

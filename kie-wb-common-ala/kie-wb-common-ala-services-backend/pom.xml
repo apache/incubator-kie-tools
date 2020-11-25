@@ -28,10 +28,7 @@
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-ala-services-rest</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-ala-spi</artifactId>

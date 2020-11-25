@@ -18,14 +18,14 @@ package org.kie.workbench.common.screens.datasource.management.service;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datasource.management.metadata.DatabaseMetadata;
 import org.kie.workbench.common.screens.datasource.management.metadata.TableMetadata;
 
 /**
  * Service for getting information about a database structure.
  */
-@Remote
+
 public interface DatabaseMetadataService {
 
     /**

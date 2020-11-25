@@ -29,14 +29,14 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @ApplicationScoped
 public class ProjectScreenServiceImpl
         implements ProjectScreenService {

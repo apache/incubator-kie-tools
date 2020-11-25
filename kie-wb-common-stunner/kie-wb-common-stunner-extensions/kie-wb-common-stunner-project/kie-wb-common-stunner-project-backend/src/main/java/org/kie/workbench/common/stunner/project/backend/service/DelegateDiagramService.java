@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.project.backend.service;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-@Service
+
 public class DelegateDiagramService implements DiagramService {
 
     private final ProjectDiagramService projectDiagramService;

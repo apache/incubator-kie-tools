@@ -17,10 +17,10 @@
 
 package org.kie.workbench.common.screens.examples.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 
-@Remote
+
 public interface ProjectImportService extends ImportService,
                                               PriorityDisposable {
 

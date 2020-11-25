@@ -20,11 +20,11 @@ import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface DMNContentService {
 
     /**

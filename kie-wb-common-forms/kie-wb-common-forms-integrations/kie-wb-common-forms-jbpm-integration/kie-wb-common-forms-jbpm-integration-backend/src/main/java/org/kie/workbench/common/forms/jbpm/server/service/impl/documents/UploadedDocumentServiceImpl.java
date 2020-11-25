@@ -24,7 +24,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage.UploadedDocumentStorage;
 import org.kie.workbench.common.forms.jbpm.service.shared.documents.DocumentUploadChunk;
 import org.kie.workbench.common.forms.jbpm.service.shared.documents.DocumentUploadResponse;
@@ -32,7 +32,7 @@ import org.kie.workbench.common.forms.jbpm.service.shared.documents.UploadedDocu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Service
+
 @SessionScoped
 public class UploadedDocumentServiceImpl implements UploadedDocumentService,
                                                     Serializable {

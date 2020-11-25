@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
@@ -43,7 +43,7 @@ import org.kie.workbench.common.dmn.backend.editors.common.PMMLIncludedDocuments
 import org.kie.workbench.common.dmn.backend.editors.types.exceptions.DMNIncludeModelCouldNotBeCreatedException;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 public class DMNIncludedModelsServiceImpl implements DMNIncludedModelsService {
 
     private static Logger LOGGER = Logger.getLogger(DMNIncludedModelsServiceImpl.class.getName());

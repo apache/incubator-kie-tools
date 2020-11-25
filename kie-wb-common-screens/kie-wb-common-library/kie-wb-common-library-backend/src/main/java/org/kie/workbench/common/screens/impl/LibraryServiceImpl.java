@@ -48,7 +48,7 @@ import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.guvnor.structure.security.RepositoryAction;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.model.Archetype;
@@ -91,7 +91,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class LibraryServiceImpl implements LibraryService {
 

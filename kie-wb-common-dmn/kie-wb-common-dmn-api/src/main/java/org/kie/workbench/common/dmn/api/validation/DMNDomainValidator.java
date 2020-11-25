@@ -18,12 +18,11 @@ package org.kie.workbench.common.dmn.api.validation;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.validation.DomainValidator;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 
-@Remote
+
 public interface DMNDomainValidator extends DomainValidator {
 
     Collection<DomainViolation> validate(final Diagram diagram,

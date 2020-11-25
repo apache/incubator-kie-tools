@@ -85,10 +85,7 @@
       <artifactId>kie-wb-common-dmn-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+
 
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -155,12 +152,6 @@
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <!-- TODO {manstis} This is temporary until DMNMarshaller is fully implemented -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-marshalling</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

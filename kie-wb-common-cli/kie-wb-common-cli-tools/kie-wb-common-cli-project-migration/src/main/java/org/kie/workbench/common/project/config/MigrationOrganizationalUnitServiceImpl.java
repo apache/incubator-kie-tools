@@ -32,7 +32,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
@@ -40,7 +40,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.SpacesAPI;
 
 @Migration
-@Service
+
 @ApplicationScoped
 public class MigrationOrganizationalUnitServiceImpl extends OrganizationalUnitServiceImpl {
 

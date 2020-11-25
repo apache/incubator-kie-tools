@@ -18,12 +18,12 @@ package org.kie.workbench.common.screens.projecteditor.service;
 
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
-@Remote
+
 public interface PomEditorService extends SupportsSaveAndRename<String, Metadata> {
 
     DefaultEditorContent loadContent(final Path path);

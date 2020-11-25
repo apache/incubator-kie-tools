@@ -19,13 +19,13 @@ package org.kie.workbench.common.services.backend.logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.shared.logger.GenericErrorLoggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Service
+
 @ApplicationScoped
 public class GenericErrorLoggerServiceImpl implements GenericErrorLoggerService {
 

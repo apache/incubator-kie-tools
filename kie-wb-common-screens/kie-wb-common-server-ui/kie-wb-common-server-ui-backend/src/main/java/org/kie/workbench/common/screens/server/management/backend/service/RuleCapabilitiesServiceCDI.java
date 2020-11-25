@@ -20,12 +20,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.workbench.common.screens.server.management.service.RuleCapabilitiesService;
 
-@Service
+
 @ApplicationScoped
 public class RuleCapabilitiesServiceCDI implements RuleCapabilitiesService {
 

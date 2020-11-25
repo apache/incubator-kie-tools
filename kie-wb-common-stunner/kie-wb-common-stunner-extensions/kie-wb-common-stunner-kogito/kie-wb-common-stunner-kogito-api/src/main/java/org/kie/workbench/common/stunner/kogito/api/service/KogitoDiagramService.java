@@ -15,12 +15,11 @@
  */
 package org.kie.workbench.common.stunner.kogito.api.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.kogito.api.Kogito;
 
 @Kogito
-@Remote
+
 public interface KogitoDiagramService {
 
     Diagram transform(final String xml);

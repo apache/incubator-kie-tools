@@ -30,9 +30,9 @@ import org.guvnor.ala.services.api.RuntimeQuery;
 import org.guvnor.ala.services.api.RuntimeQueryResultItem;
 import org.guvnor.ala.services.api.backend.RuntimeProvisioningServiceBackend;
 import org.guvnor.ala.services.exceptions.BusinessException;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class RuntimeProvisioningServiceBackendImpl
         implements RuntimeProvisioningServiceBackend {

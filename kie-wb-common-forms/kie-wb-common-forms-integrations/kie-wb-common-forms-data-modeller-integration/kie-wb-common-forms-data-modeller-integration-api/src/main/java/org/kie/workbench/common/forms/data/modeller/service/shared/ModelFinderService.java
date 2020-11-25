@@ -18,11 +18,11 @@ package org.kie.workbench.common.forms.data.modeller.service.shared;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface ModelFinderService {
 
     DataObjectFormModel getModel(String typeName, Path path);

@@ -21,7 +21,7 @@ import java.util.Set;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
@@ -30,7 +30,7 @@ import org.uberfire.backend.vfs.Path;
 /**
  * Service definition for Explorer editor
  */
-@Remote
+
 public interface ExplorerService {
 
     String BUILD_PROJECT_PROPERTY_NAME = "org.kie.build.disable-project-explorer";

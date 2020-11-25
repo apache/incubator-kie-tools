@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.jboss.errai.bus.server.api.RpcContext;
 import org.kie.workbench.common.stunner.core.backend.util.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,11 +169,12 @@ public class BackendFileSystemManager {
                 WEBINF_PATH :
                 WEBINF_PATH + "/" + path) :
                 WEBINF_PATH;
-        return RpcContext.getServletRequest()
-                .getServletContext()
-                .getRealPath(wbp)
-                .replaceAll("\\\\",
-                            "/");
+//        return RpcContext.getServletRequest()
+//                .getServletContext()
+//                .getRealPath(wbp)
+//                .replaceAll("\\\\",
+//                            "/");
+        return "";
     }
 
     public void findAndDeployFiles(final File directory,

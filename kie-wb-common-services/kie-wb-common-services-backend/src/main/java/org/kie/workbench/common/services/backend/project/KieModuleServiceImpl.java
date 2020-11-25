@@ -39,7 +39,7 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.refactoring.service.PackageServiceLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModulePackages;
@@ -51,7 +51,7 @@ import org.uberfire.rpc.SessionInfo;
 
 import static org.guvnor.common.services.project.utils.ModuleResourcePaths.MAIN_RESOURCES_PATH;
 
-@Service
+
 @ApplicationScoped
 public class KieModuleServiceImpl
         extends AbstractModuleService<KieModule>

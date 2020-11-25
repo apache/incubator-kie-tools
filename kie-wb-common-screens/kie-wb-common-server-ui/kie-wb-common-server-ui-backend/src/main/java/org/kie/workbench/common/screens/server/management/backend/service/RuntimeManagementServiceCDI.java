@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ContainerList;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
@@ -32,7 +32,7 @@ import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 
-@Service
+
 @ApplicationScoped
 public class RuntimeManagementServiceCDI implements RuntimeManagementService {
 

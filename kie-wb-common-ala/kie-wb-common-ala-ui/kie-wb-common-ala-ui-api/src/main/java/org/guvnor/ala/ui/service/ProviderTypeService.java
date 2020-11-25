@@ -22,12 +22,12 @@ import java.util.Map;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderTypeStatus;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Service for managing the provider types.
  */
-@Remote
+
 public interface ProviderTypeService {
 
     /**

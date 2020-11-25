@@ -18,12 +18,11 @@ package org.kie.workbench.common.stunner.project.service;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 
-@Remote
+
 public interface ProjectValidationService {
 
     Collection<DiagramElementViolation<RuleViolation>> validate(Diagram diagram);

@@ -19,14 +19,14 @@ package org.kie.workbench.common.stunner.bpmn.project.backend.forms.conditions;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @ApplicationScoped
 public class ConditionEditorServiceImpl
         extends BaseConditionEditorServiceImpl

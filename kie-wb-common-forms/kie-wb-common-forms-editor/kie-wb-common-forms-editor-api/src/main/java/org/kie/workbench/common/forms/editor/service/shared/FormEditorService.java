@@ -16,12 +16,12 @@
 package org.kie.workbench.common.forms.editor.service.shared;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface FormEditorService {
 
     Path createForm(Path path,

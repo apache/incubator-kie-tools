@@ -27,7 +27,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.deploy.WorkItemDefinitionDeployServices;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionVFSLookupService;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
  * - If no work item definitions found for the module, it starts the deployment (see <code>DEFAULT_DEPLOY_PREDICATE</code>)
  */
 @RequestScoped
-@Service
+
 public class WorkItemDefinitionProjectService
         implements WorkItemDefinitionLookupService {
 

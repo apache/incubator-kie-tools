@@ -19,14 +19,14 @@ package org.kie.workbench.common.dmn.api.editors.included;
 import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * This service handles calls related to included DMN models.
  */
-@Remote
+
 public interface DMNIncludedModelsService {
 
     /**

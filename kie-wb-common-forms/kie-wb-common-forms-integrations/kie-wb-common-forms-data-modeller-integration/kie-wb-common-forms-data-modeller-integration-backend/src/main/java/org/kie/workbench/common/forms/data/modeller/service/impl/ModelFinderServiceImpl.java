@@ -21,13 +21,13 @@ import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
 import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @Dependent
 public class ModelFinderServiceImpl implements ModelFinderService {
 

@@ -17,10 +17,10 @@ package org.kie.workbench.common.services.refactoring.service;
 
 import java.util.Set;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface PackageServiceLoader {
 
     Set<String> find(final Path path);

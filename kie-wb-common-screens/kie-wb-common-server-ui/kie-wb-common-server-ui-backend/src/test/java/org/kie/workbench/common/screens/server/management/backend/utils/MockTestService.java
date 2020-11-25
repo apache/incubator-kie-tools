@@ -23,10 +23,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @ApplicationScoped
 public class MockTestService implements TestService {
 

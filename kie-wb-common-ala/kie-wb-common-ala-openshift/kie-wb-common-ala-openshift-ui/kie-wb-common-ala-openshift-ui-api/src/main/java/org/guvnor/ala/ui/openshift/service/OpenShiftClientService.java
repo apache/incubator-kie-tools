@@ -18,12 +18,12 @@ package org.guvnor.ala.ui.openshift.service;
 
 import org.guvnor.ala.ui.openshift.model.DefaultSettings;
 import org.guvnor.ala.ui.openshift.model.TemplateDescriptorModel;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * This service has specific methods that are required by the OpenShift ui.
  */
-@Remote
+
 public interface OpenShiftClientService {
 
     /**

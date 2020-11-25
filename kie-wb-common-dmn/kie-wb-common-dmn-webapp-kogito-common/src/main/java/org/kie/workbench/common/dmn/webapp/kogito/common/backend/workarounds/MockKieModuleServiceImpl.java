@@ -24,13 +24,13 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.repositories.Branch;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
-@Service
+
 @ApplicationScoped
 public class MockKieModuleServiceImpl implements KieModuleService {
 

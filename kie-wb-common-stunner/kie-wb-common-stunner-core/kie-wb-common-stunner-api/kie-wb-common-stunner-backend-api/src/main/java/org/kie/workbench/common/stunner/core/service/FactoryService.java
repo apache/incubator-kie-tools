@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 
 /**
@@ -23,7 +22,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
  * Usually factories can be present on client side, but some concrete situations
  * could require building instances on the server.
  */
-@Remote
+
 public interface FactoryService extends FactoryManager {
 
 }

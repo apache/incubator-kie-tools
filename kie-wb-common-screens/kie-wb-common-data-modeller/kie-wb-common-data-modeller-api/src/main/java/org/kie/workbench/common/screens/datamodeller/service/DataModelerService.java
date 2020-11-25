@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSou
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.vfs.Path;
 
-@Remote
+
 public interface DataModelerService {
 
     Path createJavaFile(final Path context,

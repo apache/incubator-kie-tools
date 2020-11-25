@@ -85,11 +85,6 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-server</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -561,7 +556,7 @@
               <localWorkers>4</localWorkers>
               <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
               <module>org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp</module>
-              <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+              <extraJvmArgs>-Xmx12g -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
               <optimizationLevel>9</optimizationLevel>
               <style>OBFUSCATED</style>
 
@@ -570,6 +565,7 @@
               <runTarget>test.html</runTarget>
               <hostedWebapp>src/main/webapp</hostedWebapp>
               <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
+              <gen>tiago</gen>
               <logLevel>INFO</logLevel>
               <generateJsInteropExports>true</generateJsInteropExports>
 

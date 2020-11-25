@@ -22,13 +22,13 @@ import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.PipelineConfig;
 import org.guvnor.ala.runtime.providers.ProviderType;
 import org.guvnor.ala.services.exceptions.BusinessException;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Pipeline Service Backend interface. It allows the creation and execution of pipelines.
- * Backend @Remote implementation to be used in CDI environments with Errai
+ * Backend  implementation to be used in CDI environments with Errai
  */
-@Remote
+
 public interface PipelineServiceBackend {
 
     /**

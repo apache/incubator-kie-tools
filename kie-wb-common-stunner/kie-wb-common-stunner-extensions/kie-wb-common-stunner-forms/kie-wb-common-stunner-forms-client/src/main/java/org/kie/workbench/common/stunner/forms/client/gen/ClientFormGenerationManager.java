@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -80,13 +79,13 @@ public class ClientFormGenerationManager {
         return aVoid -> callback.execute();
     }
 
-    private ErrorCallback<Message> getErrorCallback() {
+    private ErrorCallback<Object> getErrorCallback() {
         return getErrorCallback(e -> {
         });
     }
 
     @SuppressWarnings("unchecked")
-    private <V> ErrorCallback<Message> getErrorCallback(final ParameterizedCommand<V> callback) {
+    private <V> ErrorCallback<Object> getErrorCallback(final ParameterizedCommand<V> callback) {
         return (message, throwable) -> {
             final Throwable t = null != throwable.getCause() ?
                     throwable.getCause() :

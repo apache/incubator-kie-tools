@@ -25,7 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.soup.project.datamodel.oracle.DataType;
@@ -42,7 +42,7 @@ import org.kie.workbench.common.services.datamodel.util.PrimitiveUtilities;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 
-@Service
+
 @Dependent
 public class DataObjectsServiceImpl implements DataObjectsService {
 
