@@ -68,7 +68,9 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
   const addProperties = () => {
     onAddProperties(index);
   };
-  const deleteField = () => {
+  const deleteField = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    event.stopPropagation();
     onDelete(index);
   };
   const deleteProperty = (updatedField: MiningField) => {
