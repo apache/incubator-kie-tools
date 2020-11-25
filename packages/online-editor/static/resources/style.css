@@ -147,8 +147,13 @@
   --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
 }
 
-.kogito--editor__toolbar-toggle-icon-button {
-  --pf-c-dropdown__toggle--FontSize: var(--pf-global--icon--FontSize--md);
+.kogito--editor__toolbar-save {
+  background-color: blue;
+  color: white;
+}
+
+.kogito--editor__toolbar-share {
+  --pf-c-dropdown__toggle--FontSize: var(--pf-c-button--FontSize);
 }
 
 .kogito--editor__toolbar-edited {
@@ -163,5 +168,5 @@
 }
 
 .kogito--editor__embed-modal-embed-code-items {
-  padding: var(--pf-global--spacer--xs)
+  padding: var(--pf-global--spacer--xs);
 }

@@ -62,15 +62,13 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     };
   };
   editorToolbar: {
+    saveAndDownload: string;
     sendChangesToGitHub: string;
     copySource: string;
     downloadSVG: string;
     setGitHubToken: string;
     gistIt: string;
     gistItTooltip: string;
-    fileActions: string;
-    updateGist: string;
-    updateGistTooltip: string;
     share: string;
     embed: string;
   };
