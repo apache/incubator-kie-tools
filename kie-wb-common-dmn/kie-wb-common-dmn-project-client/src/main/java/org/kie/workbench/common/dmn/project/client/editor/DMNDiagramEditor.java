@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.project.client.editor;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -38,6 +39,8 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramTuple;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
@@ -72,6 +75,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
@@ -136,6 +140,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     private final ReadOnlyProvider readOnlyProvider;
     private final DRDNameChanger drdNameChanger;
     private final LazyCanvasFocusUtils lazyCanvasFocusUtils;
+    private final DMNDiagramsSession dmnDiagramsSession;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -166,7 +171,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final SearchBarComponent<DMNSearchableElement> searchBarComponent,
                             final MonacoFEELInitializer feelInitializer,
                             final @DMNEditor ReadOnlyProvider readOnlyProvider,
-                            final DRDNameChanger drdNameChanger, final LazyCanvasFocusUtils lazyCanvasFocusUtils) {
+                            final DRDNameChanger drdNameChanger,
+                            final LazyCanvasFocusUtils lazyCanvasFocusUtils,
+                            final DMNDiagramsSession dmnDiagramsSession) {
         super(view,
               xmlEditorView,
               editorSessionPresenterInstances,
@@ -197,6 +204,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.readOnlyProvider = readOnlyProvider;
         this.drdNameChanger = drdNameChanger;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
+        this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
     @Override
@@ -257,6 +265,21 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                     }
                 };
             }
+
+            @Override
+            protected int getDiagramHashCode() {
+                if (Objects.isNull(dmnDiagramsSession.getDMNDiagrams()) ||
+                        dmnDiagramsSession.getDMNDiagrams().isEmpty()) {
+                    return super.getDiagramHashCode();
+                }
+                int hash = 0;
+                for (final DMNDiagramTuple dmnDiagram : dmnDiagramsSession.getDMNDiagrams()) {
+                    hash = HashUtil.combineHashCodes(hash,
+                                                     dmnDiagram.getStunnerDiagram().hashCode(),
+                                                     dmnDiagram.getDMNDiagram().hashCode());
+                }
+                return hash;
+            }
         };
     }
 
@@ -292,8 +315,19 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         setupSearchComponent();
     }
 
+    @Override
+    protected void updateOriginalHash() {
+        if (Objects.isNull(originalHash) || Objects.equals(originalHash, 0)) {
+            setOriginalHash(getCurrentDiagramHash());
+        }
+    }
+
     void superInitialiseKieEditorForSession(final ProjectDiagram diagram) {
         super.initialiseKieEditorForSession(diagram);
+    }
+
+    Integer getOriginalHash() {
+        return originalHash;
     }
 
     @Override
