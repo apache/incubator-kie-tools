@@ -70,11 +70,11 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
     commit
   } = props;
 
-  const toNumber = (value: string): number | undefined => {
-    if (value === "") {
+  const toNumber = (_value: string): number | undefined => {
+    if (_value === "") {
       return undefined;
     }
-    const n = Number(value);
+    const n = Number(_value);
     if (isNaN(n)) {
       return undefined;
     }
@@ -219,7 +219,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-rank"
           name="output-rank"
           aria-describedby="output-rank-helper"
-          value={rank}
+          value={rank ?? ""}
           onChange={e => setRank(toNumber(e))}
           onBlur={e =>
             commit({
@@ -245,7 +245,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-segmentId"
           name="output-segmentId"
           aria-describedby="output-segmentId-helper"
-          value={segmentId}
+          value={segmentId ?? ""}
           onChange={e => setSegmentId(e)}
           onBlur={e =>
             commit({
