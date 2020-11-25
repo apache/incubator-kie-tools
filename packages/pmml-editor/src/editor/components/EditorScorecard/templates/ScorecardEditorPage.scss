@@ -15,24 +15,21 @@
  */
 
 .editor {
-
   position: relative;
   height: calc(100vh - 48px);
-
 }
 
 .editable {
   cursor: pointer;
-}
+  transition: border-left 0.12s ease-in;
 
-.editable:hover {
-  box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+  &:hover {
+    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+  }
 }
 
 .editing {
   cursor: auto;
   box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
-  border-left-color: var(--pf-global--active-color--100);
-  border-left-width: var(--pf-global--BorderWidth--l);
-  border-left-style: solid;
+  border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
 }

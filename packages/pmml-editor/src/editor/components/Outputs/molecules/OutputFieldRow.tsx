@@ -18,10 +18,8 @@ import { Label, Split, SplitItem } from "@patternfly/react-core";
 import { DataType, FieldName, OpType, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
-import { ValidatedType } from "../../../types";
 
 interface OutputFieldRowProps {
-  activeOutputFieldIndex: number;
   name: FieldName | undefined;
   dataType: DataType;
   optype: OpType | undefined;
@@ -38,7 +36,6 @@ interface OutputFieldRowProps {
 
 export const OutputFieldRow = (props: OutputFieldRowProps) => {
   const {
-    activeOutputFieldIndex,
     name,
     dataType,
     optype,
@@ -54,8 +51,8 @@ export const OutputFieldRow = (props: OutputFieldRowProps) => {
   } = props;
 
   return (
-    <article
-      className={`output-item output-item-n${activeOutputFieldIndex} editable`}
+    <section
+      className={`output-item__inner`}
       onClick={onEditOutputField}
       tabIndex={0}
       onKeyDown={e => {
@@ -89,6 +86,6 @@ export const OutputFieldRow = (props: OutputFieldRowProps) => {
           <OutputFieldRowAction onDeleteOutputField={onDeleteOutputField} />
         </SplitItem>
       </Split>
-    </article>
+    </section>
   );
 };
