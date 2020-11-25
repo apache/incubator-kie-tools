@@ -24,6 +24,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	infra "github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/operator"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
@@ -89,27 +90,46 @@ var (
 	}
 )
 
-// DeployKogitoOperatorFromYaml Deploy Kogito Operator from yaml files
-func DeployKogitoOperatorFromYaml(namespace string) error {
+// DeployKogitoOperatorFromYaml Deploy Kogito Operator from yaml files, return all objects created for deployment
+func DeployKogitoOperatorFromYaml(namespace string) (created []meta.ResourceObject, err error) {
 	var deployURI = config.GetOperatorDeployURI()
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
-	// TODO: error handling, go lint is screaming about this
-	if err := loadResource(namespace, deployURI+"service_account.yaml", &corev1.ServiceAccount{}, nil); err != nil {
-		return err
+	sa := &corev1.ServiceAccount{}
+	if err = loadResource(namespace, deployURI+"service_account.yaml", sa, nil); err != nil {
+		return
 	}
-	if err := loadResource(namespace, deployURI+"role.yaml", &rbac.Role{}, nil); err != nil {
-		return err
+	created = append(created, sa)
+
+	cr := &rbac.ClusterRole{}
+	err = loadResource(namespace, deployURI+"clusterrole.yaml", cr, func(object interface{}) {
+		// Object name needs to be unique so we can create independent objects for parallel tests
+		object.(*rbac.ClusterRole).SetName(object.(*rbac.ClusterRole).GetName() + "-" + namespace)
+	})
+	if err != nil {
+		return
 	}
-	if err := loadResource(namespace, deployURI+"role_binding.yaml", &rbac.RoleBinding{}, nil); err != nil {
-		return err
+	created = append(created, cr)
+
+	crb := &rbac.ClusterRoleBinding{}
+	err = loadResource(namespace, deployURI+"clusterrole_binding.yaml", crb, func(object interface{}) {
+		// Object name needs to be unique so we can create independent objects for parallel tests
+		object.(*rbac.ClusterRoleBinding).SetName(object.(*rbac.ClusterRoleBinding).GetName() + "-" + namespace)
+		for i := range object.(*rbac.ClusterRoleBinding).Subjects {
+			object.(*rbac.ClusterRoleBinding).Subjects[i].Namespace = namespace
+		}
+		object.(*rbac.ClusterRoleBinding).RoleRef.Name = cr.Name
+	})
+	if err != nil {
+		return
 	}
+	created = append(created, crb)
 
 	if IsOpenshift() {
 		// Wait for docker pulling secret available for kogito-operator serviceaccount
 		// This is needed if images are stored into local Openshift registry
 		// Note that this is specific to Openshift
-		err := WaitForOnOpenshift(namespace, "image pulling secret", 2, func() (bool, error) {
+		err = WaitForOnOpenshift(namespace, "image pulling secret", 2, func() (bool, error) {
 			// unfortunately the SecretList is buggy, so we have to fetch it manually: https://github.com/kubernetes-sigs/controller-runtime/issues/362
 			// so use direct command to look for specific secret
 			output, err := CreateCommand("oc", "get", "secrets", "-o", "name", "-n", namespace).WithLoggerContext(namespace).Execute()
@@ -122,19 +142,29 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 		})
 
 		if err != nil {
-			return err
+			return
 		}
 	}
 
 	// Then deploy operator
-	err := loadResource(namespace, deployURI+"operator.yaml", &coreapps.Deployment{}, func(object interface{}) {
+	d := &coreapps.Deployment{}
+	err = loadResource(namespace, deployURI+"operator.yaml", d, func(object interface{}) {
 		GetLogger(namespace).Debugf("Using operator image %s", getOperatorImageNameAndTag())
 		object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0].Image = getOperatorImageNameAndTag()
+
+		// Set Kogito operator to watch only namespace where it is installed
+		container := object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0]
+		for i := range container.Env {
+			if container.Env[i].Name == "WATCH_NAMESPACE" {
+				container.Env[i].Value = namespace
+			}
+		}
 	})
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	created = append(created, d)
+	return
 }
 
 // IsKogitoOperatorRunning returns whether Kogito operator is running

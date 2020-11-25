@@ -166,6 +166,13 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 
 		// Namespace should be deleted after all other operations have been done
 		if !config.IsKeepNamespace() {
+			// Delete all objects created for the scenario
+			for _, o := range data.GetCreatedOperatorObjects() {
+				if err := framework.DeleteObject(o); err != nil {
+					framework.GetMainLogger().Errorf("Error removing created objects for namespace %s: %v", data.Namespace, err)
+				}
+			}
+
 			deleteNamespaceIfExists(data.Namespace)
 		}
 	})
