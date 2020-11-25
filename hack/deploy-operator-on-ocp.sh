@@ -33,17 +33,21 @@ echo "Deploying Operator $OPERATOR_NAME"
 source $SCRIPT_DIR/crds-utils.sh
 apply_crds "deploy"
 
+#Namespace
+oc apply -f deploy/namespace.yaml
+
 # Service Account
-oc create -f deploy/service_account.yaml
+oc apply -f deploy/service_account.yaml
 
 # Roles
-oc create -f deploy/role.yaml
-oc create -f deploy/role_binding.yaml
+oc apply -f deploy/clusterrole.yaml
+oc apply -f deploy/clusterrole_binding.yaml
 
 # Operator
 sed "s/name: kogito-operator/name: $OPERATOR_NAME/g" deploy/operator.yaml > $TMP_FOLDER/operator.yaml
 sed "s|image: quay.io/kiegroup/.*|image: $IMAGE|g" $TMP_FOLDER/operator.yaml > $TMP_FOLDER/operator-tmp.yaml
-oc create -f $TMP_FOLDER/operator-tmp.yaml
+sed '4 a \ \ namespace: kogito-operator-system' $TMP_FOLDER/operator-tmp.yaml > $TMP_FOLDER/operator.yaml
+oc apply -f $TMP_FOLDER/operator.yaml
 
 # Clean Up
 rm -rf $TMP_FOLDER/*

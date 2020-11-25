@@ -25,9 +25,11 @@ operator-sdk generate crds --crd-version=v1beta1
 echo "Generating YAML installer"
 # Generate kogito-operator.yaml
 rm kogito-operator.yaml
-declare deploy_files=("./deploy/role.yaml" "./deploy/service_account.yaml" "./deploy/role_binding.yaml" "./deploy/operator.yaml")
+declare rbac_files=("./deploy/clusterrole.yaml" "./deploy/service_account.yaml" "./deploy/clusterrole_binding.yaml")
+cat ./deploy/namespace.yaml > kogito-operator.yaml; printf "\n---\n" >> kogito-operator.yaml
 for yaml in deploy/crds/*_crd.yaml; do cat "${yaml}" >> kogito-operator.yaml; printf "\n---\n" >> kogito-operator.yaml; done
-for yaml in "${deploy_files[@]}"; do cat "${yaml}" >> kogito-operator.yaml; printf "\n---\n" >> kogito-operator.yaml; done
+for yaml in "${rbac_files[@]}"; do cat "${yaml}" >> kogito-operator.yaml; printf "\n---\n" >> kogito-operator.yaml; done
+sed '4 a \ \ namespace: kogito-operator-system' ./deploy/operator.yaml >> kogito-operator.yaml
 
 # get the openapi binary
 command -v openapi-gen > /dev/null || go build -o "${GOPATH}"/bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
