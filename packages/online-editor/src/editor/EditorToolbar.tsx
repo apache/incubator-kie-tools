@@ -30,7 +30,7 @@ import {
   Tooltip,
   DropdownToggle
 } from "@patternfly/react-core";
-import { CloseIcon, EllipsisVIcon } from "@patternfly/react-icons";
+import { CloseIcon, EllipsisVIcon, ExpandIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
@@ -91,6 +91,14 @@ export function EditorToolbar(props: Props) {
 
   const kebabItems = useCallback(
     (dropdownId: string) => [
+      <DropdownItem
+        key={`dropdown-${dropdownId}-fullscreen`}
+        component="button"
+        onClick={props.onFullScreen}
+        className={"pf-u-display-none-on-xl"}
+      >
+        {i18n.terms.fullScreen}
+      </DropdownItem>,
       <DropdownItem
         key={`dropdown-${dropdownId}-save`}
         component={"button"}
@@ -156,7 +164,7 @@ export function EditorToolbar(props: Props) {
       props.onDownload,
       props.onCopyContentToClipboard,
       props.onGistIt,
-      window.location,
+      window.location
     ]
   );
 
@@ -244,6 +252,25 @@ export function EditorToolbar(props: Props) {
                 dropdownItems={kebabItems("sm")}
                 position={DropdownPosition.right}
               />
+            </PageHeaderToolsItem>
+            <PageHeaderToolsItem
+              visibility={{
+                default: "hidden",
+                "2xl": "visible",
+                xl: "visible",
+                lg: "hidden",
+                md: "hidden",
+                sm: "hidden"
+              }}
+            >
+              <Button
+                className={"kogito--editor__toolbar-icon-button"}
+                variant={"plain"}
+                onClick={props.onFullScreen}
+                aria-label={"Full screen"}
+              >
+                <ExpandIcon />
+              </Button>
             </PageHeaderToolsItem>
             {!context.external && (
               <PageHeaderToolsItem

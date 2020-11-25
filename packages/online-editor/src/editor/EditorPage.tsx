@@ -208,6 +208,7 @@ export function EditorPage(props: Props) {
     });
   }, [editor]);
 
+  // TODO
   const enterFullscreen = useCallback(() => {
     document.documentElement.requestFullscreen?.();
     (document.documentElement as any).webkitRequestFullscreen?.();
