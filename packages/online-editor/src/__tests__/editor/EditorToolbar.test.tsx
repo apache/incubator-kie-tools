@@ -145,7 +145,6 @@ describe("EditorToolbar", () => {
 
       fireEvent.click(getByTestId("file-actions"));
       expect(getByTestId("update-gist-button")).toBeVisible();
-      expect(getByTestId("update-gist-button")).toBeDisabled();
       expect(getByTestId("file-actions")).toMatchSnapshot();
     });
 
