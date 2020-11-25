@@ -18,11 +18,11 @@ package org.uberfire.shared.experimental;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 
-@Remote
+
 public interface ExperimentalEditorService extends SupportsDelete {
 
     List<Path> listAll();

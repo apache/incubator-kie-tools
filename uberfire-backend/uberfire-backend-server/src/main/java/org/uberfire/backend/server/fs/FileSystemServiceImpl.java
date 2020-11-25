@@ -18,11 +18,11 @@ package org.uberfire.backend.server.fs;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.fs.FileSystemService;
 import org.uberfire.java.nio.file.api.FileSystemUtils;
 
-@Service
+
 @ApplicationScoped
 public class FileSystemServiceImpl implements FileSystemService {
 

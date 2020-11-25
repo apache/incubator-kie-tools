@@ -61,7 +61,7 @@ import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.Customizable;
@@ -75,7 +75,7 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInf
 import static org.guvnor.common.services.project.backend.server.MavenLocalRepositoryUtils.getRepositoryPath;
 import static org.guvnor.common.services.project.backend.server.MavenLocalRepositoryUtils.tearDownMavenRepository;
 
-@Service
+
 @WorkspaceScoped
 public class ModuleRepositoryResolverImpl
         implements ModuleRepositoryResolver {

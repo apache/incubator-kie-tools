@@ -19,9 +19,9 @@ package org.dashbuilder.kieserver;
 import java.util.List;
 import java.util.Optional;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface KieServerConnectionInfoProvider {
 
     Optional<KieServerConnectionInfo> get(String name, String serverTemplate);

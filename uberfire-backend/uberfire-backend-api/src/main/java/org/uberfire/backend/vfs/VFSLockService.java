@@ -18,7 +18,7 @@ package org.uberfire.backend.vfs;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.java.nio.IOException;
@@ -26,7 +26,7 @@ import org.uberfire.java.nio.IOException;
 /**
  * Provides methods to manage locks in UberFire's virtual file system.
  */
-@Remote
+
 public interface VFSLockService {
 
     /**

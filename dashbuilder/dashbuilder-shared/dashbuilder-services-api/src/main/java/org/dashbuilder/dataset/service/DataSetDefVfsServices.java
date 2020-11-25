@@ -17,7 +17,7 @@ package org.dashbuilder.dataset.service;
 
 import org.dashbuilder.dataset.backend.EditDataSetDef;
 import org.dashbuilder.dataset.def.DataSetDef;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
@@ -25,7 +25,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 /**
  * Services for the handling the storage of data set definitions
  */
-@Remote
+
 public interface DataSetDefVfsServices extends SupportsDelete, SupportsCopy {
 
     Path resolve(DataSetDef dataSetDef);

@@ -23,7 +23,6 @@ import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Group;
@@ -64,9 +63,9 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected UserEditorDriver userEditorDriver;
     protected ChangePassword changePassword;
     protected LoadingBox loadingBox;
-    protected final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
+    protected final ErrorCallback<Object> errorCallback = new ErrorCallback<Object>() {
         @Override
-        public boolean error(final Message message,
+        public boolean error(final Object message,
                              final Throwable throwable) {
             hideLoadingBox();
             showError(throwable);

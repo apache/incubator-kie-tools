@@ -16,13 +16,6 @@
 
 package org.guvnor.structure.backend.repositories.git.hooks.impl;
 
-import org.apache.commons.io.FilenameUtils;
-import org.guvnor.structure.backend.LocaleContext;
-import org.jboss.errai.bus.server.api.RpcContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.Dependent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +27,13 @@ import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
+
+import javax.enterprise.context.Dependent;
+
+import org.apache.commons.io.FilenameUtils;
+import org.guvnor.structure.backend.LocaleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Dependent
 public class MessageReader {
@@ -47,7 +47,7 @@ public class MessageReader {
     private Supplier<Locale> localeSupplier;
 
     public MessageReader() {
-        this(() -> RpcContext.getServletRequest().getLocale());
+        this(() -> Locale.US);
     }
 
     MessageReader(Supplier<Locale> localeSupplier) {

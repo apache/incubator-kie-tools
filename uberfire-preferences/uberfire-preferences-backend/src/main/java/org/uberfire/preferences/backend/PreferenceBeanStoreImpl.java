@@ -27,7 +27,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.annotations.Customizable;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -48,7 +48,7 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInf
 /**
  * Backend implementation for {@link PreferenceBeanStore}.
  */
-@Service
+
 public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     private static final AnnotationLiteral<PortablePreference> portablePreferenceAnnotation = new AnnotationLiteral<PortablePreference>() {

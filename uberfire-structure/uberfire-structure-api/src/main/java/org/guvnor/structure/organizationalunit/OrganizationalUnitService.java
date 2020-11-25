@@ -21,10 +21,10 @@ import java.util.function.Predicate;
 
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.spaces.Space;
 
-@Remote
+
 public interface OrganizationalUnitService {
 
     /**

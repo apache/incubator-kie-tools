@@ -27,9 +27,6 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 
-import static org.jboss.errai.bus.server.api.RpcContext.getMessage;
-import static org.jboss.errai.bus.server.api.RpcContext.getQueueSession;
-
 public class UberFireGeneralFactory {
 
     @Inject
@@ -60,6 +57,6 @@ public class UberFireGeneralFactory {
     }
 
     private String getSessionId() {
-        return (getMessage() != null && getQueueSession() != null ? getQueueSession().getSessionId() : null);
+        return "tiago";
     }
 }

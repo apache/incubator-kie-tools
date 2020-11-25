@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.form.error.BasicEditorError;
 import org.gwtbootstrap3.client.ui.form.validator.Validator;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.mvp.UberView;
@@ -169,14 +168,14 @@ public class ChangePassword implements IsWidget {
                                         view.hide();
                                     }
                                 },
-                                new ErrorCallback<Message>() {
+                                new ErrorCallback<Object>() {
                                     @Override
-                                    public boolean error(final Message message,
+                                    public boolean error(final Object message,
                                                          final Throwable throwable) {
                                         if (throwable != null) {
                                             showError(throwable);
                                         } else {
-                                            showErrorMessage(message.getSubject());
+                                            showErrorMessage(message.toString()); //FIXME: tiago
                                         }
 
                                         // Run the callback when backend request completed.

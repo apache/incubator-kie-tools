@@ -18,12 +18,12 @@ package org.guvnor.structure.repositories;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * {@link Repository} remote search interface
  */
-@Remote
+
 public interface RepositorySearchService {
 
     /**

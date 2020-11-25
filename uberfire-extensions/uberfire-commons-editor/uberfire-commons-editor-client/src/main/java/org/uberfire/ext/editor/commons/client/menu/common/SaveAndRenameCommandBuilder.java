@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
@@ -262,7 +261,7 @@ public class SaveAndRenameCommandBuilder<T, M> {
         }
 
         @Override
-        public boolean error(final Message message,
+        public boolean error(final Object message,
                              final Throwable throwable) {
 
             if (fileAlreadyExists(throwable)) {
@@ -278,7 +277,7 @@ public class SaveAndRenameCommandBuilder<T, M> {
             return callSuper(message, throwable);
         }
 
-        boolean callSuper(final Message message,
+        boolean callSuper(final Object message,
                           final Throwable throwable) {
             return super.error(message, throwable);
         }

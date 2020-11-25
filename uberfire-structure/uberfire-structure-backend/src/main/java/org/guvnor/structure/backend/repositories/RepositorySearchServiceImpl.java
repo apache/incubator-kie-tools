@@ -27,10 +27,10 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositorySearchService;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.spaces.Space;
 
-@Service
+
 @ApplicationScoped
 public class RepositorySearchServiceImpl implements RepositorySearchService {
 

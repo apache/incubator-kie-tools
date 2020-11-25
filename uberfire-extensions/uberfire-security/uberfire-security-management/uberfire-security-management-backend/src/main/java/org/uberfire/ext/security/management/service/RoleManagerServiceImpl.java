@@ -22,7 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ import org.uberfire.ext.security.management.api.service.RoleManagerService;
 /**
  * <p>The UberFire service implementation for RolesManager API.</p>
  */
-@Service
+
 @ApplicationScoped
 public class RoleManagerServiceImpl implements RoleManagerService {
 

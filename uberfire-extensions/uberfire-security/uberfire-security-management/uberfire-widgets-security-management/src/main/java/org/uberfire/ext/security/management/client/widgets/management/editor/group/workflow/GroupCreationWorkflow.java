@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -70,9 +69,9 @@ public class GroupCreationWorkflow implements IsWidget {
     Event<OnErrorEvent> errorEvent;
     ConfirmBox confirmBox;
     LoadingBox loadingBox;
-    final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
+    final ErrorCallback<Object> errorCallback = new ErrorCallback<Object>() {
         @Override
-        public boolean error(final Message message,
+        public boolean error(final Object message,
                              final Throwable throwable) {
             loadingBox.hide();
             showError(throwable);
@@ -211,9 +210,9 @@ public class GroupCreationWorkflow implements IsWidget {
                                              showErrorMessage(UsersManagementClientConstants.INSTANCE.groupAlreadyExists());
                                              createEntity.setErrorState();
                                          },
-                                         new ErrorCallback<Message>() {
+                                         new ErrorCallback<Object>() {
                                              @Override
-                                             public boolean error(final Message o,
+                                             public boolean error(final Object o,
                                                                   final Throwable throwable) {
                                                  loadingBox.hide();
                                                  Throwable error = throwable;

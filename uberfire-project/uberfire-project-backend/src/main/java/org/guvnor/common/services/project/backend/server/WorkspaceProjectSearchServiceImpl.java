@@ -25,12 +25,12 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectSearchService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 
 /**
  * TODO: Improve using indexes. Avoid to iterate thorough the entire repo>project hierarchy.
  */
-@Service
+
 @ApplicationScoped
 public class WorkspaceProjectSearchServiceImpl implements WorkspaceProjectSearchService {
 

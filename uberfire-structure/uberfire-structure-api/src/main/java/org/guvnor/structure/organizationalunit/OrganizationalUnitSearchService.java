@@ -18,12 +18,12 @@ package org.guvnor.structure.organizationalunit;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * {@link OrganizationalUnit} remote search interface
  */
-@Remote
+
 public interface OrganizationalUnitSearchService {
 
     /**

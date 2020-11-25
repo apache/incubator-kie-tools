@@ -18,13 +18,10 @@ package org.uberfire.backend.server.plugins;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.errai.bus.server.api.RpcContext;
-
 public class PluginUtils {
 
     public static String getRealPath(final String path) {
-        return getRealPath(RpcContext.getServletRequest().getServletContext(),
-                           path);
+        return "";
     }
 
     public static String getRealPath(final ServletContext servletContext,

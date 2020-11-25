@@ -25,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -49,7 +49,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 
-@Service
+
 @ApplicationScoped
 public class BpmnServiceImpl implements BpmnService {
 

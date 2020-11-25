@@ -17,14 +17,14 @@ package org.uberfire.ext.editor.commons.service;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 
 /**
  * Responsible for paths renaming.
  */
-@Remote
+
 public interface RenameService extends SupportsRename {
 
     /**

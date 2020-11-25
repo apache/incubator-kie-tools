@@ -15,14 +15,14 @@
  */
 package org.uberfire.backend.authz;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.security.authz.AuthorizationPolicy;
 
 /**
  * Provides methods to manipulate the AuthorizationPolicy instance stored in the Uberfire's virtual file system.
  */
-@Remote
+
 public interface AuthorizationService {
 
     /**

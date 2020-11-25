@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -82,7 +81,7 @@ public class PreferenceStore {
         };
     }
 
-    private ErrorCallback<Message> defaultErrorCallback() {
+    private ErrorCallback<Object> defaultErrorCallback() {
         return ( message, throwable ) -> false;
     }
 
@@ -110,7 +109,7 @@ public class PreferenceStore {
                         final String key,
                         final T value,
                         final RemoteCallback<Void> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).put(scope,
                                                       key,
@@ -141,7 +140,7 @@ public class PreferenceStore {
                         final String key,
                         final T value,
                         final RemoteCallback<Void> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).put(scopeResolutionStrategyInfo,
                                                       key,
@@ -167,7 +166,7 @@ public class PreferenceStore {
     public <T> void put(final String key,
                         final T value,
                         final RemoteCallback<Void> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         put(scopeResolutionStrategyInfo,
             key,
             value,
@@ -194,7 +193,7 @@ public class PreferenceStore {
     public <T> void put(final PreferenceScope scope,
                         final Map<String, T> valueByKey,
                         final RemoteCallback<Void> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).put(scope,
                                                       valueByKey);
@@ -219,7 +218,7 @@ public class PreferenceStore {
     public <T> void put(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                         final Map<String, T> valueByKey,
                         final RemoteCallback<Void> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).put(scopeResolutionStrategyInfo,
                                                       valueByKey);
@@ -239,7 +238,7 @@ public class PreferenceStore {
 
     public <T> void put(final Map<String, T> valueByKey,
                         final RemoteCallback<Void> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         put(scopeResolutionStrategyInfo,
             valueByKey,
             successCallback,
@@ -270,7 +269,7 @@ public class PreferenceStore {
                                 final String key,
                                 final T value,
                                 final RemoteCallback<Void> successCallback,
-                                final ErrorCallback<Message> errorCallback) {
+                                final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).putIfAbsent(scope,
                                                               key,
@@ -301,7 +300,7 @@ public class PreferenceStore {
                                 final String key,
                                 final T value,
                                 final RemoteCallback<Void> successCallback,
-                                final ErrorCallback<Message> errorCallback) {
+                                final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).putIfAbsent(scopeResolutionStrategyInfo,
                                                               key,
@@ -327,7 +326,7 @@ public class PreferenceStore {
     public <T> void putIfAbsent(final String key,
                                 final T value,
                                 final RemoteCallback<Void> successCallback,
-                                final ErrorCallback<Message> errorCallback) {
+                                final ErrorCallback<Object> errorCallback) {
         putIfAbsent(scopeResolutionStrategyInfo,
                     key,
                     value,
@@ -354,7 +353,7 @@ public class PreferenceStore {
     public <T> void putIfAbsent(final PreferenceScope scope,
                                 final Map<String, T> valueByKey,
                                 final RemoteCallback<Void> successCallback,
-                                final ErrorCallback<Message> errorCallback) {
+                                final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).putIfAbsent(scope,
                                                               valueByKey);
@@ -379,7 +378,7 @@ public class PreferenceStore {
     public <T> void putIfAbsent(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                 final Map<String, T> valueByKey,
                                 final RemoteCallback<Void> successCallback,
-                                final ErrorCallback<Message> errorCallback) {
+                                final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).putIfAbsent(scopeResolutionStrategyInfo,
                                                               valueByKey);
@@ -399,7 +398,7 @@ public class PreferenceStore {
 
     public <T> void putIfAbsent(final Map<String, T> valueByKey,
                                 final RemoteCallback<Void> successCallback,
-                                final ErrorCallback<Message> errorCallback) {
+                                final ErrorCallback<Object> errorCallback) {
         putIfAbsent(scopeResolutionStrategyInfo,
                     valueByKey,
                     successCallback,
@@ -425,7 +424,7 @@ public class PreferenceStore {
     public <T> void get(final PreferenceScope scope,
                         final String key,
                         final RemoteCallback<T> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).get(scope,
                                                       key);
@@ -455,7 +454,7 @@ public class PreferenceStore {
                         final String key,
                         final T defaultValue,
                         final RemoteCallback<T> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).get(scope,
                                                       key,
@@ -481,7 +480,7 @@ public class PreferenceStore {
     public <T> void get(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                         final String key,
                         final RemoteCallback<T> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).get(scopeResolutionStrategyInfo,
                                                       key);
@@ -511,7 +510,7 @@ public class PreferenceStore {
                         final String key,
                         final T defaultValue,
                         final RemoteCallback<T> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).get(scopeResolutionStrategyInfo,
                                                       key,
@@ -532,7 +531,7 @@ public class PreferenceStore {
 
     public <T> void get(final String key,
                         final RemoteCallback<T> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         get(scopeResolutionStrategyInfo,
             key,
             successCallback,
@@ -558,7 +557,7 @@ public class PreferenceStore {
     public <T> void get(final String key,
                         final T defaultValue,
                         final RemoteCallback<T> successCallback,
-                        final ErrorCallback<Message> errorCallback) {
+                        final ErrorCallback<Object> errorCallback) {
         get(scopeResolutionStrategyInfo,
             key,
             defaultValue,
@@ -585,7 +584,7 @@ public class PreferenceStore {
     public <T> void getScoped(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                               final String key,
                               final RemoteCallback<PreferenceScopedValue<T>> successCallback,
-                              final ErrorCallback<Message> errorCallback) {
+                              final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).getScoped(scopeResolutionStrategyInfo,
                                                             key);
@@ -615,7 +614,7 @@ public class PreferenceStore {
                               final String key,
                               final T defaultValue,
                               final RemoteCallback<PreferenceScopedValue<T>> successCallback,
-                              final ErrorCallback<Message> errorCallback) {
+                              final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).getScoped(scopeResolutionStrategyInfo,
                                                             key,
@@ -636,7 +635,7 @@ public class PreferenceStore {
 
     public <T> void getScoped(final String key,
                               final RemoteCallback<PreferenceScopedValue<T>> successCallback,
-                              final ErrorCallback<Message> errorCallback) {
+                              final ErrorCallback<Object> errorCallback) {
         getScoped(scopeResolutionStrategyInfo,
                   key,
                   successCallback,
@@ -662,7 +661,7 @@ public class PreferenceStore {
     public <T> void getScoped(final String key,
                               final T defaultValue,
                               final RemoteCallback<PreferenceScopedValue<T>> successCallback,
-                              final ErrorCallback<Message> errorCallback) {
+                              final ErrorCallback<Object> errorCallback) {
         getScoped(scopeResolutionStrategyInfo,
                   key,
                   defaultValue,
@@ -689,7 +688,7 @@ public class PreferenceStore {
     public void search(final PreferenceScope scope,
                        final Collection<String> keys,
                        final RemoteCallback<Map<String, Object>> successCallback,
-                       final ErrorCallback<Message> errorCallback) {
+                       final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).search(scope,
                                                          keys);
@@ -714,7 +713,7 @@ public class PreferenceStore {
     public void search(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                        final Collection<String> keys,
                        final RemoteCallback<Map<String, Object>> successCallback,
-                       final ErrorCallback<Message> errorCallback) {
+                       final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).search(scopeResolutionStrategyInfo,
                                                          keys);
@@ -734,7 +733,7 @@ public class PreferenceStore {
 
     public void search(final Collection<String> keys,
                        final RemoteCallback<Map<String, Object>> successCallback,
-                       final ErrorCallback<Message> errorCallback) {
+                       final ErrorCallback<Object> errorCallback) {
         search(scopeResolutionStrategyInfo,
                keys,
                successCallback,
@@ -760,7 +759,7 @@ public class PreferenceStore {
     public void searchScoped(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                              final Collection<String> keys,
                              final RemoteCallback<Map<String, PreferenceScopedValue<Object>>> successCallback,
-                             final ErrorCallback<Message> errorCallback) {
+                             final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).searchScoped(scopeResolutionStrategyInfo,
                                                                keys);
@@ -780,7 +779,7 @@ public class PreferenceStore {
 
     public void searchScoped(final Collection<String> keys,
                              final RemoteCallback<Map<String, PreferenceScopedValue<Object>>> successCallback,
-                             final ErrorCallback<Message> errorCallback) {
+                             final ErrorCallback<Object> errorCallback) {
         searchScoped(scopeResolutionStrategyInfo,
                      keys,
                      successCallback,
@@ -801,7 +800,7 @@ public class PreferenceStore {
 
     public void all(final PreferenceScope scope,
                     final RemoteCallback<Map<String, Object>> successCallback,
-                    final ErrorCallback<Message> errorCallback) {
+                    final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).all(scope);
     }
@@ -820,7 +819,7 @@ public class PreferenceStore {
 
     public void all(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                     final RemoteCallback<Map<String, Object>> successCallback,
-                    final ErrorCallback<Message> errorCallback) {
+                    final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).all(scopeResolutionStrategyInfo);
     }
@@ -835,7 +834,7 @@ public class PreferenceStore {
     }
 
     public void all(final RemoteCallback<Map<String, Object>> successCallback,
-                    final ErrorCallback<Message> errorCallback) {
+                    final ErrorCallback<Object> errorCallback) {
         all(scopeResolutionStrategyInfo,
             successCallback,
             errorCallback);
@@ -855,7 +854,7 @@ public class PreferenceStore {
 
     public void allScoped(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                           final RemoteCallback<Map<String, PreferenceScopedValue<Object>>> successCallback,
-                          final ErrorCallback<Message> errorCallback) {
+                          final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).allScoped(scopeResolutionStrategyInfo);
     }
@@ -870,7 +869,7 @@ public class PreferenceStore {
     }
 
     public void allScoped(final RemoteCallback<Map<String, PreferenceScopedValue<Object>>> successCallback,
-                          final ErrorCallback<Message> errorCallback) {
+                          final ErrorCallback<Object> errorCallback) {
         allScoped(scopeResolutionStrategyInfo,
                   successCallback,
                   errorCallback);
@@ -895,7 +894,7 @@ public class PreferenceStore {
     public void remove(final PreferenceScope scope,
                        final String key,
                        final RemoteCallback<Void> successCallback,
-                       final ErrorCallback<Message> errorCallback) {
+                       final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).remove(scope,
                                                          key);
@@ -920,7 +919,7 @@ public class PreferenceStore {
     public void remove(final List<PreferenceScope> scopes,
                        final String key,
                        final RemoteCallback<Void> successCallback,
-                       final ErrorCallback<Message> errorCallback) {
+                       final ErrorCallback<Object> errorCallback) {
         preferenceStoreCaller.call(successCallback,
                                    errorCallback).remove(scopes,
                                                          key);

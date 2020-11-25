@@ -31,10 +31,7 @@
   <description>Uberfire Commons Editor Backend</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-server</artifactId>

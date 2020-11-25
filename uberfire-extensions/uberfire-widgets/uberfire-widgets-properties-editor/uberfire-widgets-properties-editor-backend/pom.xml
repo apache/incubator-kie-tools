@@ -43,9 +43,6 @@
     </dependency>
 
     <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+
   </dependencies>
 </project>

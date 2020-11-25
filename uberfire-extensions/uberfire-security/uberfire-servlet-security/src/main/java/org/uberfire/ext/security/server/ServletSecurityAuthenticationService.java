@@ -26,7 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
@@ -35,7 +35,7 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSource;
 
-@Service
+
 @ApplicationScoped
 public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizationSource implements AuthenticationService {
 

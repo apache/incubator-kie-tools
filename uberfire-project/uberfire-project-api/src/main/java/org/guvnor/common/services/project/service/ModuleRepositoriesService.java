@@ -17,11 +17,11 @@
 package org.guvnor.common.services.project.service;
 
 import org.guvnor.common.services.project.model.ModuleRepositories;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 
-@Remote
+
 public interface ModuleRepositoriesService
         extends SupportsRead<ModuleRepositories> {
 

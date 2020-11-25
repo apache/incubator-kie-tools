@@ -25,7 +25,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.annotations.Customizable;
 import org.uberfire.preferences.backend.annotations.ComponentKey;
 import org.uberfire.preferences.shared.PreferenceScope;
@@ -38,7 +38,7 @@ import org.uberfire.preferences.shared.impl.DefaultPreferenceScopeResolutionStra
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.preferences.shared.impl.PreferenceScopedValue;
 
-@Service
+
 public class PreferenceStoreImpl implements PreferenceStore {
 
     protected PreferenceStorage storage;

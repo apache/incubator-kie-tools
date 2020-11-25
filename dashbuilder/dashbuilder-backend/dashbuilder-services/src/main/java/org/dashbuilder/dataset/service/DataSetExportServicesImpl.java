@@ -59,7 +59,7 @@ import org.dashbuilder.dataset.DataSetManagerCDI;
 import org.dashbuilder.dataset.group.Interval;
 import org.dashbuilder.dataset.uuid.UUIDGenerator;
 import org.dashbuilder.exception.ExceptionManager;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -67,7 +67,7 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
-@Service
+
 public class DataSetExportServicesImpl implements DataSetExportServices {
 
     private static final String TEXT_CELL = "text_cell";

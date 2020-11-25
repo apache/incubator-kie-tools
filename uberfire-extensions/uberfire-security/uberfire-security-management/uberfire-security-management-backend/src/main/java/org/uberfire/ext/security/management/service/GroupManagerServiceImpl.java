@@ -25,7 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 /**
  * <p>The UberFire service implementation for GroupsManager API.</p>
  */
-@Service
+
 @ApplicationScoped
 public class GroupManagerServiceImpl implements GroupManagerService {
 

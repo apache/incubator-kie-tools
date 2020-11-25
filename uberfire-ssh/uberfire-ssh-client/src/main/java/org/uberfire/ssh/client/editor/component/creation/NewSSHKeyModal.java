@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -79,7 +78,7 @@ public class NewSSHKeyModal implements NewSSHKeyModalView.Presenter {
         if (nameValid && keyValid) {
             serviceCaller.call((RemoteCallback<Void>) response -> {
                 handler.onAddKey();
-            }, (ErrorCallback<Message>) (message, throwable) -> {
+            }, (ErrorCallback<Object>) (message, throwable) -> {
                 view.setKeyValidationError(translationService.getTranslation(AppformerSSHConstants.ValidationKeyFormatError));
                 return false;
             }).addKey(name, key);

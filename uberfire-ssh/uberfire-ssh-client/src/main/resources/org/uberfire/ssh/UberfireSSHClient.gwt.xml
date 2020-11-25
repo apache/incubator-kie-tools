@@ -5,7 +5,6 @@
 <module>
 
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
-  <inherits name="org.jboss.errai.bus.ErraiBus"/>
   <inherits name="org.jboss.errai.ui.UI"/>
 
   <inherits name="org.kie.soup.commons.KIESoupCommons"/>

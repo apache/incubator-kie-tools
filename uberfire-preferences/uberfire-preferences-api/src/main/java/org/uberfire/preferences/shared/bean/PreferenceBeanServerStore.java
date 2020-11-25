@@ -18,14 +18,14 @@ package org.uberfire.preferences.shared.bean;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
  * Service to manage preference beans.
  */
-@Remote
+
 public interface PreferenceBeanServerStore extends PreferenceBeanStore {
 
     /**

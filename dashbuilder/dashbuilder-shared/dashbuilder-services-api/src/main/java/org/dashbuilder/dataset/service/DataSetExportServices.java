@@ -17,12 +17,12 @@ package org.dashbuilder.dataset.service;
 
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookup;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Data set export (CSV & Excel) services
  */
-@Remote
+
 public interface DataSetExportServices {
 
     /**

@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.xstream.XStreamUtils;
 import org.uberfire.commons.cluster.ClusterParameters;
 import org.uberfire.io.IOService;
@@ -42,7 +42,7 @@ import org.uberfire.workbench.services.WorkbenchServices;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
-@Service
+
 @ApplicationScoped
 public class WorkbenchServicesImpl implements WorkbenchServices {
 

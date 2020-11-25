@@ -25,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.experimental.service.backend.BackendExperimentalFeaturesRegistryService;
 import org.uberfire.experimental.service.backend.ExperimentalFeaturesSession;
 import org.uberfire.experimental.service.backend.impl.ExperimentalFeaturesSessionImpl;
@@ -37,7 +37,7 @@ import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
 import org.uberfire.experimental.service.registry.impl.ExperimentalFeaturesRegistryImpl;
 import org.uberfire.experimental.service.storage.ExperimentalFeaturesStorage;
 
-@Service
+
 @ApplicationScoped
 public class BackendExperimentalFeaturesRegistryServiceImpl implements ExperimentalFeaturesRegistryService,
                                                                        BackendExperimentalFeaturesRegistryService,

@@ -34,7 +34,6 @@ import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -159,10 +158,10 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
         };
     }
 
-    private ErrorCallback<Message> getErrorCallback() {
-        return new ErrorCallback<Message>() {
+    private ErrorCallback<Object> getErrorCallback() {
+        return new ErrorCallback<Object>() {
             @Override
-            public boolean error(final Message message,
+            public boolean error(final Object message,
                                  final Throwable throwable) {
                 try {
                     throw throwable;
@@ -234,9 +233,9 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                                }
                                            }
                                        },
-                                       new ErrorCallback<Message>() {
+                                       new ErrorCallback<Object>() {
                                            @Override
-                                           public boolean error(final Message message,
+                                           public boolean error(final Object message,
                                                                 final Throwable throwable) {
                                                view.errorLoadOrganizationalUnitsFail(throwable);
                                                return false;

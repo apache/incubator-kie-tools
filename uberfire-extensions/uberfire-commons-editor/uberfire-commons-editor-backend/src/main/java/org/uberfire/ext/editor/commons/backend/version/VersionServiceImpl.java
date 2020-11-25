@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.version.VersionService;
@@ -35,7 +35,7 @@ import org.uberfire.rpc.SessionInfo;
 import static org.uberfire.backend.server.util.Paths.convert;
 import static org.uberfire.java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-@Service
+
 @ApplicationScoped
 public class VersionServiceImpl
         implements VersionService {

@@ -25,9 +25,9 @@ import org.dashbuilder.dataset.DataSetManager;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.service.DataSetLookupServices;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class RuntimeDataSetLookupServices implements DataSetLookupServices {
 

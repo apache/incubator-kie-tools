@@ -18,13 +18,13 @@ package org.dashbuilder.external.service;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * List and calls functions available on backend.
  *
  */
-@Remote
+
 public interface BackendComponentFunctionService {
 
     List<String> listFunctions();

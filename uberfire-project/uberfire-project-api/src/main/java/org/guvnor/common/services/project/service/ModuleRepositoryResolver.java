@@ -21,9 +21,9 @@ import java.util.Set;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.Module;
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface ModuleRepositoryResolver {
 
     /**

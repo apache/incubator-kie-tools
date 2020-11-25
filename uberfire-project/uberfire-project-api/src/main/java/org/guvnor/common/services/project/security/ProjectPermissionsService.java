@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.guvnor.structure.organizationalunit.config.BranchPermissions;
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface ProjectPermissionsService {
 
     BranchPermissions loadBranchPermissions(final String spaceName,

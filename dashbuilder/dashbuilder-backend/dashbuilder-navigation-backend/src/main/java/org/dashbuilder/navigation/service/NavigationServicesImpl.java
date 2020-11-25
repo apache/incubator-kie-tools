@@ -20,10 +20,10 @@ import javax.inject.Inject;
 
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.storage.NavTreeStorage;
-import org.jboss.errai.bus.server.annotations.Service;
+
 
 @ApplicationScoped
-@Service
+
 public class NavigationServicesImpl implements NavigationServices {
 
     private NavTreeStorage storage;

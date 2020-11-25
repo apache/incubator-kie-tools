@@ -19,14 +19,14 @@ import java.util.Collection;
 
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.layout.LayoutTemplateInfo;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.plugin.model.Plugin;
 
 /**
  * Runtime perspective plugins related services.
  */
-@Remote
+
 public interface PerspectivePluginServices {
 
     Collection<Plugin> listPlugins();

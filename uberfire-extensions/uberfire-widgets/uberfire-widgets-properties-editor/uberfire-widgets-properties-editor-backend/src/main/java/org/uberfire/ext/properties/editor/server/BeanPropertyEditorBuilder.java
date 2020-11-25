@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.ext.properties.editor.service.BeanPropertyEditorBuilderService;
 
-@Service
+
 @Dependent
 public class BeanPropertyEditorBuilder implements BeanPropertyEditorBuilderService {
 

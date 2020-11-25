@@ -28,7 +28,7 @@ import org.guvnor.structure.navigator.FileNavigatorService;
 import org.guvnor.structure.navigator.NavigatorContent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.ocpsoft.prettytime.PrettyTime;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
@@ -41,7 +41,7 @@ import org.uberfire.spaces.Space;
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
 
-@Service
+
 @ApplicationScoped
 public class FileNavigatorServiceImpl implements FileNavigatorService {
 

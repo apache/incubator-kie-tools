@@ -17,6 +17,7 @@ package org.dashbuilder.dataset.service;
 
 import java.io.File;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,14 +30,12 @@ import org.dashbuilder.dataset.DataSetDefRegistryCDI;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.uuid.UUIDGenerator;
 import org.dashbuilder.exception.ExceptionManager;
-import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.bus.server.api.RpcContext;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-@Service
+
 public class DataSetDefServicesImpl implements DataSetDefServices {
 
     protected static Logger log = LoggerFactory.getLogger(DataSetDefServicesImpl.class);
@@ -64,7 +63,7 @@ public class DataSetDefServicesImpl implements DataSetDefServices {
     @PostConstruct
     protected void init() {
         // By default, enable the register of data set definitions stored into the deployment folder.
-        ServletContext servletContext = RpcContext.getHttpSession().getServletContext();
+        ServletContext servletContext = null;
         if (!dataSetDefDeployer.isRunning() && servletContext != null) {
             String dir = servletContext.getRealPath("WEB-INF/datasets");
             if (dir != null && new File(dir).exists()) {

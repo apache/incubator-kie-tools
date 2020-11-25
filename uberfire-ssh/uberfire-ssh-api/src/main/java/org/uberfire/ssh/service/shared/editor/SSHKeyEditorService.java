@@ -19,13 +19,13 @@ package org.uberfire.ssh.service.shared.editor;
 import java.security.PublicKey;
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.ssh.service.backend.keystore.SSHKeyStore;
 
 /**
  * Remote service for the Key service
  */
-@Remote
+
 public interface SSHKeyEditorService {
 
     /**

@@ -65,10 +65,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -94,11 +91,6 @@
           <artifactId>jboss-annotations-api_1.3_spec</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-client</artifactId>
     </dependency>
 
     <!-- GWT and GWT Extensions -->

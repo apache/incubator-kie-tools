@@ -19,9 +19,6 @@ package org.uberfire.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.BusLifecycleAdapter;
-import org.jboss.errai.bus.client.api.BusLifecycleEvent;
-import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.slf4j.Logger;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
@@ -33,8 +30,6 @@ public class WorkbenchBackendEntryPoint {
     private static final int MAX_RETRIES = 5;
 
     private Logger logger;
-
-    private ClientMessageBus bus;
 
     private WorkbenchServicesProxy workbenchServices;
 
@@ -52,42 +47,40 @@ public class WorkbenchBackendEntryPoint {
 
     @Inject
     public WorkbenchBackendEntryPoint(final Logger logger,
-                                      final ClientMessageBus bus,
                                       final WorkbenchServicesProxy workbenchServices,
                                       final ErrorPopupPresenter errorPopupPresenter) {
         this.logger = logger;
-        this.bus = bus;
         this.workbenchServices = workbenchServices;
         this.errorPopupPresenter = errorPopupPresenter;
     }
 
     @PostConstruct
     public void init() {
-        bus.addLifecycleListener(new BusLifecycleAdapter() {
-
-            @Override
-            public void busOnline(final BusLifecycleEvent e) {
-                logger.info("Bus is back online.");
-                setShowedError(false);
-                resetRetries();
-            }
-
-            @Override
-            public void busOffline(final BusLifecycleEvent e) {
-                if (isShowedError()) {
-                    return;
-                }
-                logger.error("Bus is offline. [" + e.getReason().getErrorMessage() + "]");
-                if (!isWorkbenchOnCluster && !hasMoreRetries() && !isOpen()) {
-
-                    errorPopupPresenter.showMessage("You've been disconnected.",
-                                                    () -> isOpen = true,
-                                                    () -> isOpen = false);
-                    setShowedError(true);
-                }
-                decrementRetries();
-            }
-        });
+//        bus.addLifecycleListener(new BusLifecycleAdapter() {
+//
+//            @Override
+//            public void busOnline(final BusLifecycleEvent e) {
+//                logger.info("Bus is back online.");
+//                setShowedError(false);
+//                resetRetries();
+//            }
+//
+//            @Override
+//            public void busOffline(final BusLifecycleEvent e) {
+//                if (isShowedError()) {
+//                    return;
+//                }
+//                logger.error("Bus is offline. [" + e.getReason().getErrorMessage() + "]");
+//                if (!isWorkbenchOnCluster && !hasMoreRetries() && !isOpen()) {
+//
+//                    errorPopupPresenter.showMessage("You've been disconnected.",
+//                                                    () -> isOpen = true,
+//                                                    () -> isOpen = false);
+//                    setShowedError(true);
+//                }
+//                decrementRetries();
+//            }
+//        });
         workbenchServices.isWorkbenchOnCluster(parameter -> isWorkbenchOnCluster = !(parameter == null || parameter.equals(Boolean.FALSE)));
     }
 

@@ -15,14 +15,14 @@
  */
 package org.uberfire.ext.security.management.api.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.ext.security.management.api.RoleManager;
 
 /**
  * <p>Remote service API for the Roles Manager.</p>
  * @since 0.8.0
  */
-@Remote
+
 public interface RoleManagerService extends RoleManager {
 
 }

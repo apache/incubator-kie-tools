@@ -21,8 +21,6 @@ import java.util.HashMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.marshalling.server.MappingContextSingleton;
-import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
@@ -62,7 +60,7 @@ public class ObjectStorageImpl implements ObjectStorage {
         try {
             if (ioService.exists(fsPath)) {
                 String content = ioService.readAllString(fsPath);
-                return (T) ServerMarshalling.fromJSON(content);
+                return (T) null; //ServerMarshalling.fromJSON(content);
             }
         } catch (final Exception e) {
             throw new RuntimeException(e);
@@ -88,7 +86,7 @@ public class ObjectStorageImpl implements ObjectStorage {
                 ioService.startBatch(fileSystem);
             }
             Path fsPath = fileSystem.getPath(path);
-            String content = ServerMarshalling.toJSON(value);
+            String content = ""; //ServerMarshalling.toJSON(value);
             ioService.write(fsPath,
                             content);
         } catch (final Exception e) {
@@ -119,7 +117,7 @@ public class ObjectStorageImpl implements ObjectStorage {
     }
 
     private void initializeMarshaller() {
-        MappingContextSingleton.get();
+//        MappingContextSingleton.get();
     }
 
     private void initializeFileSystem(final URI rootURI) {

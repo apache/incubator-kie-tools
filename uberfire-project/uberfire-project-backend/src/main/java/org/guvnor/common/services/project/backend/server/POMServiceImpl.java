@@ -42,7 +42,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.Customizable;
@@ -53,7 +53,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.mvp.Command;
 
-@Service
+
 @WorkspaceScoped
 public class POMServiceImpl
         implements POMService {

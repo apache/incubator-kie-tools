@@ -37,9 +37,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
-import org.jboss.errai.bus.client.api.QueueSession;
-import org.jboss.errai.bus.server.api.SessionProvider;
-import org.jboss.errai.bus.server.servlet.ServletBootstrapUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -60,12 +57,10 @@ public abstract class AbstractFileServlet extends BaseFilteredServlet {
 
     public static final String DEFAULT_CLIENT_ID = "0";
 
-    protected SessionProvider sessionProvider;
-
     @Override
     public void init(final ServletConfig config) throws ServletException {
         super.init(config);
-        sessionProvider = ServletBootstrapUtil.getService(config).getSessionProvider();
+//        sessionProvider = ServletBootstrapUtil.getService(config).getSessionProvider();
     }
 
     /**
@@ -311,13 +306,14 @@ public abstract class AbstractFileServlet extends BaseFilteredServlet {
     }
 
     protected String getSessionId(final HttpServletRequest request,
-                                  final SessionProvider sessionProvider) {
-        final HttpSession session = request.getSession(true);
-        final String clientId = getClientId(request);
-        final QueueSession queueSession = sessionProvider.createOrGetSession(session,
-                                                                             clientId);
-
-        return queueSession.getSessionId();
+                                  final Object sessionProvider) {
+//        final HttpSession session = request.getSession(true);
+//        final String clientId = getClientId(request);
+//        final QueueSession queueSession = sessionProvider.createOrGetSession(session,
+//                                                                             clientId);
+//
+//        return queueSession.getSessionId();
+        return "tiago";
     }
 
     private String getClientId(final HttpServletRequest request) {

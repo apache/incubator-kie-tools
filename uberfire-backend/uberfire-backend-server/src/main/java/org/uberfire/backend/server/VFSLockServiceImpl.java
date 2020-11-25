@@ -31,8 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.bus.server.api.RpcContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -54,7 +53,7 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
 /**
  * Errai RPC endpoint exposing a {@link VFSLockService}.
  */
-@Service
+
 @ApplicationScoped
 public class VFSLockServiceImpl implements VFSLockService {
 
@@ -236,7 +235,7 @@ public class VFSLockServiceImpl implements VFSLockService {
      */
     private void updateSession(final LockInfo lockInfo,
                                boolean remove) {
-        final HttpSession session = RpcContext.getHttpSession();
+        final HttpSession session = null;
         if (session != null) {
             @SuppressWarnings("unchecked")
             Set<LockInfo> locks = (Set<LockInfo>) session.getAttribute(LOCK_SESSION_ATTRIBUTE_NAME);

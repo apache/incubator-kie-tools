@@ -21,12 +21,12 @@ import java.util.Set;
 
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.spaces.Space;
 
-@Remote
+
 /**
  * This RepositoryService is dependent on the WorkspaceProjectContext.
  * It uses WorkspaceProjectContext in order to lookup for the current space.

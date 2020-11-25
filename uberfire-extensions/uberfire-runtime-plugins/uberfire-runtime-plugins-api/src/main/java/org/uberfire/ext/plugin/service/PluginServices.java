@@ -18,7 +18,7 @@ package org.uberfire.ext.plugin.service;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
@@ -33,7 +33,7 @@ import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.model.RuntimePlugin;
 
-@Remote
+
 public interface PluginServices extends SupportsDelete,
                                         SupportsCopy,
                                         SupportsSaveAndRename<Plugin, DefaultMetadata> {

@@ -20,8 +20,6 @@
 <module>
 
   <inherits name="org.jboss.errai.enterprise.CDI"/>
-  <inherits name="org.jboss.errai.security.Security"/>
-  <inherits name="org.jboss.errai.ui.nav.Navigation"/>
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementAPI"/>
 

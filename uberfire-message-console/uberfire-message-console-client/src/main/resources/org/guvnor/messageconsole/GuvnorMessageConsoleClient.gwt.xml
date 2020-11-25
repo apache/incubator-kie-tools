@@ -19,7 +19,6 @@
     "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
 
-  <inherits name='org.jboss.errai.bus.ErraiBus'/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.client.views.PatternFly"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>

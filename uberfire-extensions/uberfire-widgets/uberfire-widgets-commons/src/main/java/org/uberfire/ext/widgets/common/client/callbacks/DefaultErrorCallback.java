@@ -15,7 +15,6 @@
  */
 package org.uberfire.ext.widgets.common.client.callbacks;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
@@ -26,10 +25,10 @@ import org.uberfire.java.nio.IOException;
  * @deprecated Please use GenericErrorPopup instead.
  */
 @Deprecated
-public class DefaultErrorCallback implements ErrorCallback<Message> {
+public class DefaultErrorCallback implements ErrorCallback<Object> {
 
     @Override
-    public boolean error(final Message message,
+    public boolean error(final Object message,
                          final Throwable throwable) {
         try {
             throw throwable;

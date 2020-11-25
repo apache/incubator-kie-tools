@@ -25,14 +25,14 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.validation.FileNameValidator;
 import org.uberfire.ext.editor.commons.service.ValidationService;
 
 import static java.util.Collections.sort;
 
-@Service
+
 @ApplicationScoped
 public class ValidationServiceImpl implements ValidationService {
 

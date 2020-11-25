@@ -30,13 +30,13 @@ import javax.enterprise.context.ApplicationScoped;
 import org.dashbuilder.kieserver.KieServerConnectionInfo;
 import org.dashbuilder.kieserver.KieServerConnectionInfoProvider;
 import org.dashbuilder.kieserver.RemoteDataSetDef;
-import org.jboss.errai.bus.server.annotations.Service;
+
 
 /**
  * Provide access to user configured connection provider
  *
  */
-@Service
+
 @ApplicationScoped
 public class KieServerConnectionInfoProviderImpl implements KieServerConnectionInfoProvider {
 

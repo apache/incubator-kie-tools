@@ -57,7 +57,7 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeType;
 import org.guvnor.structure.repositories.changerequest.portable.NothingToMergeException;
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestCommentList;
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestList;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -81,7 +81,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class ChangeRequestServiceImpl implements ChangeRequestService {
 

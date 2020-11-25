@@ -18,13 +18,13 @@ package org.dashbuilder.transfer;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Perform validations on an ExportModel
  *
  */
-@Remote
+
 public interface ExportModelValidationService {
 
     /**

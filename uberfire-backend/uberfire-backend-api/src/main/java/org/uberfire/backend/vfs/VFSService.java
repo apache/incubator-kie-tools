@@ -18,9 +18,7 @@ package org.uberfire.backend.vfs;
 
 import java.util.Map;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.jboss.errai.common.client.api.interceptor.InterceptedCall;
-import org.uberfire.backend.vfs.impl.VFSCacheInterceptor;
+
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
@@ -30,7 +28,7 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
 
-@Remote
+
 public interface VFSService {
 
     Path get(String uri);
@@ -60,7 +58,6 @@ public interface VFSService {
             throws UnsupportedOperationException, FileAlreadyExistsException,
             IOException;
 
-    @InterceptedCall(VFSCacheInterceptor.class)
     Map<String, Object> readAttributes(final Path path)
             throws UnsupportedOperationException, IllegalArgumentException, IOException;
 

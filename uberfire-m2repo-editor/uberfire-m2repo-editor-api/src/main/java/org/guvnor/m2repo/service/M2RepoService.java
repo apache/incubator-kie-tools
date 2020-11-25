@@ -19,10 +19,10 @@ package org.guvnor.m2repo.service;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.paging.PageResponse;
 
-@Remote
+
 public interface M2RepoService {
 
     /**

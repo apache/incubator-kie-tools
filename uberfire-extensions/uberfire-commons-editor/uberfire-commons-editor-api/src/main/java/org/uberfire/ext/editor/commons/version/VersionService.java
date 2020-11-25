@@ -18,14 +18,14 @@ package org.uberfire.ext.editor.commons.version;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
 /**
  *
  */
-@Remote
+
 public interface VersionService {
 
     List<VersionRecord> getVersions(final Path path);

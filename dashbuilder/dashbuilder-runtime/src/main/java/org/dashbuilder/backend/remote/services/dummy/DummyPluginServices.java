@@ -21,7 +21,7 @@ import java.util.Collections;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.plugin.model.DynamicMenu;
@@ -37,7 +37,7 @@ import org.uberfire.ext.plugin.service.PluginServices;
  * This should be removed as soon as PluginServices cliend side mocked service starts working.
  *
  */
-@Service
+
 @ApplicationScoped
 public class DummyPluginServices implements PluginServices {
 

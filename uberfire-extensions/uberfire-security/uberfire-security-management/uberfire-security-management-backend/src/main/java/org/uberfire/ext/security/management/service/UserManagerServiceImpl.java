@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 /**
  * <p>The UberFire service implementation for UsersManager API.</p>
  */
-@Service
+
 @ApplicationScoped
 public class UserManagerServiceImpl implements UserManagerService {
 

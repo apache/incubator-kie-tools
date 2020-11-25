@@ -19,12 +19,12 @@ import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.def.DataSetDef;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Data set lookup services
  */
-@Remote
+
 public interface DataSetLookupServices {
 
     /**

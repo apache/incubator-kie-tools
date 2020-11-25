@@ -32,7 +32,6 @@ import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.editor.client.resources.i18n.DataSetAuthoringConstants;
 import org.dashbuilder.dataset.service.DataSetDefVfsServices;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -284,7 +283,7 @@ public class DataSetDefWizardScreen {
         }
     };
 
-    ErrorCallback<Message> errorCallback = (message, throwable) -> {
+    ErrorCallback<Object> errorCallback = (message, throwable) -> {
         BusyPopup.close();
         showError(new ClientRuntimeError(throwable));
         return false;

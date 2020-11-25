@@ -16,12 +16,12 @@
 
 package org.uberfire.experimental.service.backend;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Definition of the Backend Service to lookup the user {@link ExperimentalFeaturesSession}
  */
-@Remote
+
 public interface BackendExperimentalFeaturesRegistryService {
 
     /**

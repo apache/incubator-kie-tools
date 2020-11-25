@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.ssh.service.backend.keystore.SSHKeyStore;
 import org.uberfire.ssh.service.backend.keystore.SSHKeyStoreService;
@@ -34,7 +34,7 @@ import org.uberfire.ssh.service.backend.keystore.util.PublicKeyConverter;
 import org.uberfire.ssh.service.shared.editor.PortableSSHPublicKey;
 import org.uberfire.ssh.service.shared.editor.SSHKeyEditorService;
 
-@Service
+
 @Dependent
 public class SSHKeyEditorServiceImpl implements SSHKeyEditorService {
 

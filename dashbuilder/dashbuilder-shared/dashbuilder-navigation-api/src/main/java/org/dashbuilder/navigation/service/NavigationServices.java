@@ -16,12 +16,12 @@
 package org.dashbuilder.navigation.service;
 
 import org.dashbuilder.navigation.NavTree;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Navigation related services, like for instance persistent services for the application navigation tree.
  */
-@Remote
+
 public interface NavigationServices {
 
     NavTree loadNavTree();

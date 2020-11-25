@@ -29,12 +29,12 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.preferences.ApplicationPreferencesLoader;
 import org.guvnor.common.services.backend.preferences.SystemPropertiesInitializer;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.services.cdi.ApplicationStarted;
 
-@Service
+
 @ApplicationScoped
 public class AppConfigServiceImpl implements AppConfigService {
 

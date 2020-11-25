@@ -25,9 +25,9 @@ import javax.inject.Inject;
 import org.dashbuilder.external.model.ExternalComponent;
 import org.dashbuilder.external.service.ExternalComponentLoader;
 import org.dashbuilder.external.service.ExternalComponentService;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class ExternalComponentServiceImpl implements ExternalComponentService {
 

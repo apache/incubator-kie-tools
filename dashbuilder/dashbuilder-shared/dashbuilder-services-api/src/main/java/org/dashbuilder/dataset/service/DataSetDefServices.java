@@ -19,12 +19,12 @@ import java.util.List;
 
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.def.DataSetDef;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Services for the handling of data set definitions
  */
-@Remote
+
 public interface DataSetDefServices {
 
     /**

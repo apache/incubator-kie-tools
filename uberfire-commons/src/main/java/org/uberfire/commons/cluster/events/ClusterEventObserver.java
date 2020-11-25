@@ -24,7 +24,6 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.inject.Inject;
 
-import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterJMSService;
@@ -87,7 +86,7 @@ public class ClusterEventObserver {
     }
 
     Object fromJSON(ClusterSerializedCDIMessageWrapper message) {
-        return ServerMarshalling.fromJSON(message.getJson());
+        return null; // ServerMarshalling.fromJSON(message.getJson());
     }
 
     public void observeAllEvents(@Observes(notifyObserver = Reception.IF_EXISTS) Object event,
@@ -113,7 +112,7 @@ public class ClusterEventObserver {
     }
 
     String toJSON(Object event) {
-        return ServerMarshalling.toJSON(event);
+        return ""; //ServerMarshalling.toJSON(event);
     }
 
     boolean shouldObserveThisEvent(Object event,

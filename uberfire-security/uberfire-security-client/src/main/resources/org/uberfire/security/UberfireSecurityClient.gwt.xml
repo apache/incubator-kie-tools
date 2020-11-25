@@ -21,8 +21,6 @@
 
   <inherits name="org.jboss.errai.enterprise.CDI"/>
   <inherits name="org.uberfire.security.UberfireSecurityAPI"/>
-  <inherits name="org.jboss.errai.security.Security"/>
-  <inherits name="org.jboss.errai.ui.nav.Navigation"/>
 
   <source path='client'/>
 

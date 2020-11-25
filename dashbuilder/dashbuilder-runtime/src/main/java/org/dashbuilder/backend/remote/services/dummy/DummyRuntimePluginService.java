@@ -22,11 +22,11 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.plugin.RuntimePlugin;
 import org.uberfire.backend.plugin.RuntimePluginService;
 
-@Service
+
 @ApplicationScoped
 public class DummyRuntimePluginService implements RuntimePluginService {
 

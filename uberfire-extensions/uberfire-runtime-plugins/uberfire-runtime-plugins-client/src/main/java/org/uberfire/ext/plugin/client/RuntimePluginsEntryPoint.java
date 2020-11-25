@@ -23,9 +23,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.StyleInjector;
-import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
@@ -76,7 +76,7 @@ public class RuntimePluginsEntryPoint {
 
     @PostConstruct
     public void init() {
-        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+        if (!CDI.isRemoteCommunicationEnabled()) {
             return;
         }
 

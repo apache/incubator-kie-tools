@@ -55,7 +55,7 @@ import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.ext.security.management.api.event.UserDeletedEvent;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -64,7 +64,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
-@Service
+
 @ApplicationScoped
 public class OrganizationalUnitServiceImpl implements OrganizationalUnitService {
 

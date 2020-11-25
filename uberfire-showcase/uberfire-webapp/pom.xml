@@ -172,10 +172,7 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+
 
     <dependency>
       <groupId>org.picketlink</groupId>
@@ -188,25 +185,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-picketlink</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-navigation</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -232,11 +212,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-table</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-server</artifactId>
     </dependency>
 
     <dependency>
@@ -471,11 +446,6 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-shared</artifactId>
       </dependency>
-
-    <dependency>  
-      <groupId>org.jboss.errai</groupId>	      
-      <artifactId>errai-marshalling</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>

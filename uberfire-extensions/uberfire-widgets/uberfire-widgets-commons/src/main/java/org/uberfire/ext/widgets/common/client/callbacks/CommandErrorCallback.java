@@ -15,7 +15,6 @@
  */
 package org.uberfire.ext.widgets.common.client.callbacks;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -33,7 +32,7 @@ public class CommandErrorCallback
     }
 
     @Override
-    public boolean error(final Message message,
+    public boolean error(final Object message,
                          final Throwable throwable) {
         command.execute();
         return super.error(message, throwable);

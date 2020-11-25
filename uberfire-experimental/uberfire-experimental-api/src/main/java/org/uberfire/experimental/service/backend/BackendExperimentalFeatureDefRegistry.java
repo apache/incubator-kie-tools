@@ -18,11 +18,11 @@ package org.uberfire.experimental.service.backend;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefRegistry;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinition;
 
-@Remote
+
 public interface BackendExperimentalFeatureDefRegistry extends ExperimentalFeatureDefRegistry {
 
     Collection<ExperimentalFeatureDefinition> loadFeatureDefinitions(Collection<ExperimentalFeatureDefinition> clientDefinitions);

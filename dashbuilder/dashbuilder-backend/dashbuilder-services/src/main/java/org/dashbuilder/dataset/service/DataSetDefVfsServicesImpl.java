@@ -28,12 +28,12 @@ import org.dashbuilder.dataset.backend.EditDataSetDef;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.exception.ExceptionManager;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-@Service
+
 public class DataSetDefVfsServicesImpl implements DataSetDefVfsServices {
 
     private static final String SYSTEM = "system";

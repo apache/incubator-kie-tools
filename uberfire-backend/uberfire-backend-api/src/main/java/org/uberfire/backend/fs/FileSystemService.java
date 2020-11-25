@@ -16,9 +16,9 @@
 
 package org.uberfire.backend.fs;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface FileSystemService {
 
     Boolean isGitDefaultFileSystem();

@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -261,9 +260,9 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
                                         callback.invalid(new UserAlreadyExistsException(identifier));
                                     }
                                 },
-                                new ErrorCallback<Message>() {
+                                new ErrorCallback<Object>() {
                                     @Override
-                                    public boolean error(Message o,
+                                    public boolean error(Object o,
                                                          Throwable throwable) {
                                         hideLoadingBox();
                                         if (throwable instanceof UserNotFoundException) {

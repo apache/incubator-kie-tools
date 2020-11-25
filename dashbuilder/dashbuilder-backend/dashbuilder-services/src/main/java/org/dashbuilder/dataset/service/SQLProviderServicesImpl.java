@@ -21,10 +21,10 @@ import javax.inject.Inject;
 
 import org.dashbuilder.dataprovider.sql.SQLDataSourceLocator;
 import org.dashbuilder.dataset.def.SQLDataSourceDef;
-import org.jboss.errai.bus.server.annotations.Service;
+
 
 @ApplicationScoped
-@Service
+
 public class SQLProviderServicesImpl implements SQLProviderServices {
 
     SQLDataSourceLocator sqlDataSourceLocator;

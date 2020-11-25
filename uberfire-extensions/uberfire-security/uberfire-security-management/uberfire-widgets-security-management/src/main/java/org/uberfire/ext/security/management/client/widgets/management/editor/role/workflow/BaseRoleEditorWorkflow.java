@@ -21,7 +21,6 @@ import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.security.shared.api.Role;
@@ -64,7 +63,7 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
     protected RoleEditor roleEditor;
     protected RoleEditorDriver roleEditorDriver;
     protected LoadingBox loadingBox;
-    protected final ErrorCallback<Message> errorCallback = (message, throwable) -> {
+    protected final ErrorCallback<Object> errorCallback = (message, throwable) -> {
         hideLoadingBox();
         showError(throwable);
         return false;

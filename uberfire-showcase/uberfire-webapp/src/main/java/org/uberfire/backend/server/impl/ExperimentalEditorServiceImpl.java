@@ -28,7 +28,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -39,7 +39,7 @@ import org.uberfire.shared.experimental.ExperimentalAssetRemoved;
 import org.uberfire.shared.experimental.ExperimentalEditorService;
 import org.uberfire.spaces.SpacesAPI;
 
-@Service
+
 @ApplicationScoped
 public class ExperimentalEditorServiceImpl implements ExperimentalEditorService {
 

@@ -19,7 +19,7 @@ package org.uberfire.experimental.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.util.BusToolsCli;
+import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.experimental.client.service.ClientExperimentalFeaturesDefRegistry;
@@ -43,7 +43,7 @@ public class UberfireExperimentalEntryPoint {
 
     @PostConstruct
     public void init() {
-        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+        if (!CDI.isRemoteCommunicationEnabled()) {
             return;
         }
 

@@ -31,9 +31,9 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.dashbuilder.navigation.service.PerspectivePluginServices;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class ExportModelValidationServiceImpl implements ExportModelValidationService {
 

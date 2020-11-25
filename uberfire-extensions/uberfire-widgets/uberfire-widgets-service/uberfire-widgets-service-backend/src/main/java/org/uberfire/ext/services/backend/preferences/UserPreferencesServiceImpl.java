@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.soup.xstream.XStreamUtils;
 import org.uberfire.backend.server.UserServicesBackendImpl;
@@ -29,7 +29,7 @@ import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
-@Service
+
 public class UserPreferencesServiceImpl implements UserPreferencesService {
 
     @Inject

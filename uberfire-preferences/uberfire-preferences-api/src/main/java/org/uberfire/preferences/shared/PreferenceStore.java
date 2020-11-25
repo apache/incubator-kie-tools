@@ -20,14 +20,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.preferences.shared.impl.PreferenceScopedValue;
 
 /**
  * Store API for preferences. All preference management should be made through this service.
  */
-@Remote
+
 public interface PreferenceStore {
 
     /**

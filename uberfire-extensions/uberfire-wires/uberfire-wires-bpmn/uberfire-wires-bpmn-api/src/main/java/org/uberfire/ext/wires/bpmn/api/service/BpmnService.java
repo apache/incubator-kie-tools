@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.bpmn.api.service;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
@@ -30,7 +30,7 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
 
-@Remote
+
 public interface BpmnService extends SupportsCreate<ProcessNode>,
                                      SupportsRead<ProcessNode>,
                                      SupportsUpdate<ProcessNode, Metadata>,

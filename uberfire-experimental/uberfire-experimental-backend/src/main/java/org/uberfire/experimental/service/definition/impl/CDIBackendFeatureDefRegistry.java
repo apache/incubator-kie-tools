@@ -24,12 +24,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.experimental.service.backend.BackendExperimentalFeatureDefRegistry;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinition;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinitionProvider;
 
-@Service
+
 @ApplicationScoped
 public class CDIBackendFeatureDefRegistry extends ExperimentalFeatureDefRegistryImpl implements BackendExperimentalFeatureDefRegistry {
 

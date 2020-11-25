@@ -43,7 +43,6 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.editor.client.resources.i18n.DataSetAuthoringConstants;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.dashbuilder.dataset.service.DataSetDefVfsServices;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -283,15 +282,15 @@ public class DataSetDefEditorPresenter extends BaseEditor<DataSetDef, DefaultMet
              result != null ? result.getColumns() : null);
     };
 
-    ErrorCallback<Message> errorCallback = (message, throwable) -> {
+    ErrorCallback<Object> errorCallback = (message, throwable) -> {
         // Edit only the definition, so user can fix the wrong attributes, if any.
         loadDefinition();
         return false;
     };
 
-    ErrorCallback<Message> getDefinitionErrorCallback = new ErrorCallback<Message>() {
+    ErrorCallback<Object> getDefinitionErrorCallback = new ErrorCallback<Object>() {
         @Override
-        public boolean error(Message message,
+        public boolean error(Object message,
                              Throwable throwable) {
             view.hideBusyIndicator();
             showError(new ClientRuntimeError(throwable));

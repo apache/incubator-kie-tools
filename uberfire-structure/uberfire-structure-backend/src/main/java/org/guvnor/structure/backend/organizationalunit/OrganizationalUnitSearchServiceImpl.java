@@ -25,9 +25,9 @@ import javax.inject.Inject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitSearchService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class OrganizationalUnitSearchServiceImpl implements OrganizationalUnitSearchService {
 

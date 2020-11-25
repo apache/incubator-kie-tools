@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.jboss.errai.bus.client.api.InvalidBusContentException;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
@@ -85,7 +84,7 @@ public class DefaultRuntimeErrorCallback {
     }
 
     private static boolean isInvalidBusContentException(final Throwable throwable) {
-        return throwable instanceof InvalidBusContentException;
+        return false;
     }
 
     protected static boolean isServerOfflineException(final Throwable throwable) {

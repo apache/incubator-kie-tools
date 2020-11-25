@@ -18,12 +18,12 @@ package org.guvnor.common.services.shared.config;
 
 import java.util.Map;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  *
  */
-@Remote
+
 public interface AppConfigService {
 
     Map<String, String> loadPreferences();

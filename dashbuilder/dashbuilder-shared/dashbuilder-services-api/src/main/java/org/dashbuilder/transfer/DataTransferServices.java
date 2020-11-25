@@ -18,9 +18,9 @@ package org.dashbuilder.transfer;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface DataTransferServices {
 
     public static final String FILE_PATH = "dashbuilder-data-transfer";

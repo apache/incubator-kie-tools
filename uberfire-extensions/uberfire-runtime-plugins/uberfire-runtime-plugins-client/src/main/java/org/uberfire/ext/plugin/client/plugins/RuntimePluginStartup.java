@@ -7,9 +7,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.ScriptInjector;
-import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.backend.plugin.PluginProcessor;
@@ -32,7 +32,7 @@ public class RuntimePluginStartup {
 
     @PostConstruct
     public void init() {
-        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+        if (!CDI.isRemoteCommunicationEnabled()) {
             return;
         }
 
@@ -40,7 +40,7 @@ public class RuntimePluginStartup {
     }
 
     void startPlugins(@Observes UberfireJSAPIReadyEvent event) {
-        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+        if (!CDI.isRemoteCommunicationEnabled()) {
             return;
         }
 

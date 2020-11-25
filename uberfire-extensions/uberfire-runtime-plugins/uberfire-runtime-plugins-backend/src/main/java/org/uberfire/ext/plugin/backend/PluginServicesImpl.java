@@ -40,7 +40,7 @@ import javax.inject.Named;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 import static org.uberfire.backend.server.util.Paths.convert;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
-@Service
+
 @ApplicationScoped
 public class PluginServicesImpl implements PluginServices {
 

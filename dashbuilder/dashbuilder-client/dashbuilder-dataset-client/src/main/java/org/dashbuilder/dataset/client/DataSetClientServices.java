@@ -43,7 +43,6 @@ import org.dashbuilder.dataset.group.AggregateFunctionManager;
 import org.dashbuilder.dataset.service.DataSetDefServices;
 import org.dashbuilder.dataset.service.DataSetExportServices;
 import org.dashbuilder.dataset.service.DataSetLookupServices;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -194,8 +193,8 @@ public class DataSetClientServices {
                             }
                         }
                         ,
-                        new ErrorCallback<Message>() {
-                            public boolean error(Message message,
+                        new ErrorCallback<Object>() {
+                            public boolean error(Object message,
                                                  Throwable throwable) {
                                 listener.onError(new ClientRuntimeError(throwable));
                                 return true;
@@ -213,8 +212,8 @@ public class DataSetClientServices {
                                 }
                             }
                             ,
-                            new ErrorCallback<Message>() {
-                                public boolean error(Message message,
+                            new ErrorCallback<Object>() {
+                                public boolean error(Object message,
                                                      Throwable throwable) {
                                     listener.onError(new ClientRuntimeError(throwable));
                                     return true;
@@ -264,8 +263,8 @@ public class DataSetClientServices {
                                 }
                             }
                             ,
-                            new ErrorCallback<Message>() {
-                                public boolean error(Message message,
+                            new ErrorCallback<Object>() {
+                                public boolean error(Object message,
                                                      Throwable throwable) {
                                     listener.onError(new ClientRuntimeError(throwable));
                                     return true;
@@ -314,9 +313,9 @@ public class DataSetClientServices {
                                 }
                             }
                         },
-                        new ErrorCallback<Message>() {
+                        new ErrorCallback<Object>() {
                             @Override
-                            public boolean error(Message message,
+                            public boolean error(Object message,
                                                  Throwable throwable) {
                                 return listener.onError(new ClientRuntimeError(throwable));
                             }
@@ -415,9 +414,9 @@ public class DataSetClientServices {
                             }
                         }
                     },
-                    new ErrorCallback<Message>() {
+                    new ErrorCallback<Object>() {
                         @Override
-                        public boolean error(Message message,
+                        public boolean error(Object message,
                                              Throwable throwable) {
                             return listener.onError(new ClientRuntimeError(throwable));
                         }

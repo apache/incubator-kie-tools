@@ -22,12 +22,10 @@ import java.util.function.Consumer;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.bus.client.ErraiBus;
-import org.jboss.errai.bus.client.api.Subscription;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.enterprise.client.cdi.AbstractCDIEventCallback;
 import org.jboss.errai.enterprise.client.cdi.api.CDI;
-import org.jboss.errai.marshalling.client.Marshalling;
+import org.jboss.errai.enterprise.client.cdi.api.Subscription;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.jsbridge.JsWorkbenchLazyActivity;
@@ -218,13 +216,15 @@ public class JsWorkbenchScreenActivity extends AbstractWorkbenchScreenActivity i
     }
 
     void subscribeOnErraiBus(final String eventFqcn) {
-        ErraiBus.get().subscribe("cdi.event:" + eventFqcn, CDI.ROUTING_CALLBACK);
+//        ErraiBus.get().subscribe("cdi.event:" + eventFqcn, CDI.ROUTING_CALLBACK);
+        throw new RuntimeException("AF-JS Events not supported");
     }
 
     Subscription getSubscription(final Object callback, final String eventFqcn) {
         return CDI.subscribe(eventFqcn, new AbstractCDIEventCallback<Object>() {
             public void fireEvent(final Object event) {
-                callWithParsedJsonObject(callback, Marshalling.toJSON(event));
+//                callWithParsedJsonObject(callback, Marshalling.toJSON(event));
+                throw new RuntimeException("AF-JS Events not supported");
             }
         });
     }

@@ -19,9 +19,9 @@ package org.uberfire.backend.plugin;
 import java.util.Collection;
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface RuntimePluginService {
 
     Collection<String> listFrameworksContent();

@@ -4,7 +4,6 @@
 <module>
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='com.ait.lienzo.Lienzo'/>
-  <inherits name="org.jboss.errai.bus.ErraiBus"/>
   <inherits name="org.jboss.errai.ioc.Container"/>
 
   <source path="client"></source>

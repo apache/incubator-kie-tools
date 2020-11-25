@@ -16,7 +16,7 @@
 
 package org.uberfire.jsbridge.client.screen;
 
-import org.jboss.errai.bus.client.api.Subscription;
+import org.jboss.errai.enterprise.client.cdi.api.Subscription;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

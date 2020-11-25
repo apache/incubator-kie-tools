@@ -21,7 +21,7 @@ import java.util.Collections;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
@@ -29,7 +29,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate.Style;
 import org.uberfire.ext.plugin.model.Plugin;
 
-@Service
+
 @ApplicationScoped
 public class DummyPerspectiveServices implements PerspectiveServices {
 

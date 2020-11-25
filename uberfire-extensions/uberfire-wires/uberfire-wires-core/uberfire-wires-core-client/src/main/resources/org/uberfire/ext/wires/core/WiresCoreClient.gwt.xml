@@ -18,7 +18,6 @@
 
 <module>
   <inherits name='com.google.gwt.user.User'/>
-  <inherits name="org.jboss.errai.bus.ErraiBus"/>
   <inherits name="org.jboss.errai.ioc.Container"/>
 
   <inherits name="org.uberfire.ext.wires.core.WiresCoreApi"/>

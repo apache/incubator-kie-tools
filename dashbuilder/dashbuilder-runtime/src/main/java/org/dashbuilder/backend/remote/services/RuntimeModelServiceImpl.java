@@ -34,11 +34,11 @@ import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.dashbuilder.shared.service.RuntimeModelService;
 import org.dashbuilder.shared.services.ExternalImportService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Service
+
 @ApplicationScoped
 public class RuntimeModelServiceImpl implements RuntimeModelService {
 

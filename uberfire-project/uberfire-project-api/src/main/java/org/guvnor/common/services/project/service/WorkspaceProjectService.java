@@ -25,11 +25,11 @@ import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.spaces.Space;
 
-@Remote
+
 public interface WorkspaceProjectService {
 
     Collection<WorkspaceProject> getAllWorkspaceProjects();

@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
@@ -42,9 +41,9 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     ClientUserSystemManager userSystemManager;
     Event<OnErrorEvent> errorEvent;
     LoadingBox loadingBox;
-    protected final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
+    protected final ErrorCallback<Object> errorCallback = new ErrorCallback<Object>() {
         @Override
-        public boolean error(final Message message,
+        public boolean error(final Object message,
                              final Throwable throwable) {
             showError(throwable);
             return false;

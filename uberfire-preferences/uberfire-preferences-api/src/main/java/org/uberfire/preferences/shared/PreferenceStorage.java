@@ -19,14 +19,14 @@ package org.uberfire.preferences.shared;
 import java.util.Collection;
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.preferences.shared.impl.PreferenceScopedValue;
 
 /**
  * Storage API for preferences.
  */
-@Remote
+
 public interface PreferenceStorage {
 
     /**

@@ -18,12 +18,12 @@ package org.dashbuilder.dataset.service;
 import java.util.List;
 
 import org.dashbuilder.dataset.def.SQLDataSourceDef;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Services around the SQL provider type.
  */
-@Remote
+
 public interface SQLProviderServices {
 
     /**

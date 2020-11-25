@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.layout.LayoutTemplateInfo;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.impl.LayoutServicesImpl;
 import org.uberfire.ext.plugin.backend.PluginServicesImpl;
@@ -31,7 +31,7 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 
 @ApplicationScoped
-@Service
+
 public class PerspectivePluginServicesImpl implements PerspectivePluginServices {
 
     private PluginServicesImpl pluginServices;

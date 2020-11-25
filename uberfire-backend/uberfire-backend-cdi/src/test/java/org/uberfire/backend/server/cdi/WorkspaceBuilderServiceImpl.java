@@ -18,14 +18,14 @@ package org.uberfire.backend.server.cdi;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceScoped;
 
 /**
  * Just for testing purposes
  */
-@Service
+
 @WorkspaceScoped
 public class WorkspaceBuilderServiceImpl implements
                                          WorkspaceBuilderService {

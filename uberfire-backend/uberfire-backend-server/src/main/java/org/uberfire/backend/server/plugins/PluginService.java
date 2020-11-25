@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.server.plugins.engine.PluginManager;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -42,7 +42,7 @@ import org.uberfire.commons.services.cdi.StartupType;
  * perspectives, editors, screens) are automatically discovered and activated by
  * Errai IOC.
  */
-@Service
+
 @ApplicationScoped
 @Startup(StartupType.BOOTSTRAP)
 public class PluginService {

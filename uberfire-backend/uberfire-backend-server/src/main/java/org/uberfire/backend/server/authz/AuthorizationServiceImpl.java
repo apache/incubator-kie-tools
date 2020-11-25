@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.authz.AuthorizationService;
@@ -27,7 +27,7 @@ import org.uberfire.backend.events.AuthorizationPolicySavedEvent;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.PermissionManager;
 
-@Service
+
 @ApplicationScoped
 public class AuthorizationServiceImpl implements AuthorizationService {
 

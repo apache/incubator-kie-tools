@@ -46,7 +46,7 @@ import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
 import org.dashbuilder.external.service.ExternalComponentLoader;
 import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.navigation.storage.NavTreeStorage;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.plugin.event.PluginAdded;
@@ -68,7 +68,7 @@ import static org.dashbuilder.dataset.DataSetDefRegistryCDI.DATASET_EXT;
 import static org.uberfire.ext.plugin.model.Plugin.FILE_EXT;
 
 @ApplicationScoped
-@Service
+
 public class DataTransferServicesImpl implements DataTransferServices {
 
     public static final String VERSION = "1.0.0";

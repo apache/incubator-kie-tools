@@ -16,9 +16,9 @@
 
 package org.uberfire.experimental.service.editor;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface FeaturesEditorService {
 
     void save(EditableExperimentalFeature editableFeature);

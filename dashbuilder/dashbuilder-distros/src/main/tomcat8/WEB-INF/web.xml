@@ -19,13 +19,6 @@
     <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
   </resource-env-ref>
 
-  <resource-env-ref>
-    <description>Object factory for the Errai Service</description>
-    <resource-env-ref-name>ErraiService</resource-env-ref-name>
-    <resource-env-ref-type>org.jboss.errai.bus.server.service.ErraiService</resource-env-ref-type>
-  </resource-env-ref>
-
-  
   <!-- ***************************************** -->
   <!-- Contents from web.xml from webapp module. -->
   <!-- ***************************************** -->
@@ -113,22 +106,6 @@
       <form-error-page>/login.jsp?message=Login failed: Invalid UserName or Password</form-error-page>
     </form-login-config>
   </login-config>
-
-  <servlet>
-    <servlet-name>ErraiServlet</servlet-name>
-    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-
-    <init-param>
-      <param-name>service-locator</param-name>
-      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>ErraiServlet</servlet-name>
-    <url-pattern>*.erraiBus</url-pattern>
-  </servlet-mapping>
 
   <servlet>
     <servlet-name>UberfireFileUploadServlet</servlet-name>

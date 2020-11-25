@@ -41,7 +41,7 @@ import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -58,7 +58,7 @@ import org.uberfire.rpc.SessionInfo;
 import static java.util.Collections.emptyList;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Service
+
 @ApplicationScoped
 public class MetadataServiceImpl
         implements MetadataServerSideService {

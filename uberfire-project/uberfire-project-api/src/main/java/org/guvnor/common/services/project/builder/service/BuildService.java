@@ -23,11 +23,11 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.DeploymentMode;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
-@Remote
+
 public interface BuildService {
 
     /**

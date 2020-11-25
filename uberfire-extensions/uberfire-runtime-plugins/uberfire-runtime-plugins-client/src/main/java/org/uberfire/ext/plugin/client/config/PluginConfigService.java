@@ -19,9 +19,9 @@ package org.uberfire.ext.plugin.client.config;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.plugin.service.PluginServices;
 
@@ -35,7 +35,7 @@ public class PluginConfigService {
 
     @PostConstruct
     public void init() {
-        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+        if (!CDI.isRemoteCommunicationEnabled()) {
             return;
         }
 

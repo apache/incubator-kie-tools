@@ -28,7 +28,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.plugin.RuntimePlugin;
@@ -43,7 +43,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.spaces.SpacesAPI;
 
-@Service
+
 @ApplicationScoped
 @Startup(StartupType.BOOTSTRAP)
 public class RuntimePluginServiceImpl implements RuntimePluginService {

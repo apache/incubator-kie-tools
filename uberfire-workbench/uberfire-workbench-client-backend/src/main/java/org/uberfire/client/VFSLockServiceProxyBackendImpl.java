@@ -19,9 +19,8 @@ package org.uberfire.client;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.BusErrorCallback;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.slf4j.Logger;
 import org.uberfire.backend.vfs.Path;
@@ -51,10 +50,10 @@ public class VFSLockServiceProxyBackendImpl implements VFSLockServiceProxy {
                                     parameterizedCommand.execute(result);
                                 }
                             },
-                            new BusErrorCallback() {
+                            new ErrorCallback() {
 
                                 @Override
-                                public boolean error(Message message,
+                                public boolean error(Object message,
                                                      Throwable throwable) {
 
                                     logger.error("Error when trying to acquire lock for " + path.toURI(),

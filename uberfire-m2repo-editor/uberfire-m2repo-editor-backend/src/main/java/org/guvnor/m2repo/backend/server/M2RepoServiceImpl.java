@@ -41,15 +41,15 @@ import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.paging.PageResponse;
 
-@Service
+
 @ApplicationScoped
 // Implementation needs to implement both interfaces even though one extends the other
-// otherwise the implementation discovery mechanism for the @Service annotation fails.
+// otherwise the implementation discovery mechanism for the  annotation fails.
 public class M2RepoServiceImpl implements M2RepoService,
                                           ExtendedM2RepoService {
 

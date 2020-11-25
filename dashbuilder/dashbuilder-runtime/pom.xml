@@ -497,11 +497,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-marshalling</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>de.benediktmeurer.gwt-slf4j</groupId>
       <artifactId>gwt-slf4j</artifactId>
       <scope>provided</scope>
@@ -527,11 +522,6 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-server</artifactId>
     </dependency>
 
     <dependency>

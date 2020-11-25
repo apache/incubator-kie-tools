@@ -31,7 +31,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -138,8 +137,6 @@ public class Workbench {
     @Inject
     private User identity;
     @Inject
-    private ClientMessageBus bus;
-    @Inject
     private Logger logger;
     private SessionInfo sessionInfo = null;
     @Inject
@@ -217,7 +214,7 @@ public class Workbench {
 
     private void bootstrap() {
         logger.info("Starting workbench...");
-        ((SessionInfoImpl) currentSession()).setId(bus.getSessionId());
+        ((SessionInfoImpl) currentSession()).setId("tiago");
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if (!isStandaloneMode) {

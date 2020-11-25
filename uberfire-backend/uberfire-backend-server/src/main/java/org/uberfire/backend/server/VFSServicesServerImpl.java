@@ -28,7 +28,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
@@ -46,7 +46,7 @@ import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-@Service
+
 @ApplicationScoped
 public class VFSServicesServerImpl implements VFSService {
 

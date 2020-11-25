@@ -26,7 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.ext.apps.api.AppsPersistenceAPI;
 import org.uberfire.ext.apps.api.Directory;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
@@ -39,7 +39,7 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 
-@Service
+
 @ApplicationScoped
 public class AppsPersistenceImpl implements AppsPersistenceAPI {
 

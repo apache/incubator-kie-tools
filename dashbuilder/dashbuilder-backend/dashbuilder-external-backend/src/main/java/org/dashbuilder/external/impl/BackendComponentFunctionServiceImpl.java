@@ -26,9 +26,9 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.dashbuilder.external.service.BackendComponentFunctionService;
-import org.jboss.errai.bus.server.annotations.Service;
 
-@Service
+
+
 @ApplicationScoped
 public class BackendComponentFunctionServiceImpl implements BackendComponentFunctionService {
 

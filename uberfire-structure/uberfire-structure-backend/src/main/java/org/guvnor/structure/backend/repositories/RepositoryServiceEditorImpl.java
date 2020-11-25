@@ -24,7 +24,7 @@ import javax.inject.Named;
 
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryServiceEditor;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -36,7 +36,7 @@ import org.uberfire.spaces.SpacesAPI;
 import static org.uberfire.backend.server.util.Paths.convert;
 import static org.uberfire.java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-@Service
+
 @ApplicationScoped
 public class RepositoryServiceEditorImpl implements RepositoryServiceEditor {
 

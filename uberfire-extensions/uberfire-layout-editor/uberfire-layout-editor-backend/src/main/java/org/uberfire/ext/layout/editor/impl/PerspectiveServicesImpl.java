@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
@@ -35,7 +35,7 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.spaces.SpacesAPI;
 
-@Service
+
 @ApplicationScoped
 public class PerspectiveServicesImpl implements PerspectiveServices {
 

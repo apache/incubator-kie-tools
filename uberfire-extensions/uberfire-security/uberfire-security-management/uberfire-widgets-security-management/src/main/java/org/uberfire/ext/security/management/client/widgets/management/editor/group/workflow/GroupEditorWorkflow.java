@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.security.shared.api.Group;
@@ -75,7 +74,7 @@ public class GroupEditorWorkflow implements IsWidget {
     Caller<AuthorizationService> authorizationService;
     PermissionManager permissionManager;
     Event<OnErrorEvent> errorEvent;
-    protected final ErrorCallback<Message> errorCallback = (Message message, Throwable throwable) -> {
+    protected final ErrorCallback<Object> errorCallback = (Object message, Throwable throwable) -> {
         hideLoadingBox();
         showError(throwable);
         return false;

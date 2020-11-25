@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -81,9 +80,9 @@ public class ClientUserSystemManager implements UserSystemManager {
     private final Caller<RoleManagerService> rolesManagerService;
     private final ClientSecurityExceptionMessageResolver exceptionMessageResolver;
     private boolean isActive;
-    protected final ErrorCallback<Message> loadErrorCallback = new ErrorCallback<Message>() {
+    protected final ErrorCallback<Object> loadErrorCallback = new ErrorCallback<Object>() {
         @Override
-        public boolean error(final Message message,
+        public boolean error(final Object message,
                              final Throwable throwable) {
             showError(throwable);
             ClientUserSystemManager.this.isActive = false;
@@ -267,7 +266,7 @@ public class ClientUserSystemManager implements UserSystemManager {
     }
 
     private void initializeCache(final Command command,
-                                 final ErrorCallback<Message> errorCallback) {
+                                 final ErrorCallback<Object> errorCallback) {
         // Load user & group management providers' settings.
         loadUserSettings(() -> loadGroupSettings(new Command() {
                                                      @Override
@@ -284,7 +283,7 @@ public class ClientUserSystemManager implements UserSystemManager {
      * @param callback Load finished callback.
      */
     private void loadUserSettings(final Command callback,
-                                  final ErrorCallback<Message> errorCallback) {
+                                  final ErrorCallback<Object> errorCallback) {
         if (null == userManagerSettings) {
             usersManagerService.call(new RemoteCallback<UserManagerSettings>() {
                                          @Override
@@ -306,7 +305,7 @@ public class ClientUserSystemManager implements UserSystemManager {
      * @param callback Load finished callback.
      */
     private void loadGroupSettings(final Command callback,
-                                   final ErrorCallback<Message> errorCallback) {
+                                   final ErrorCallback<Object> errorCallback) {
         if (null == groupManagerSettings) {
             groupsManagerService.call(new RemoteCallback<GroupManagerSettings>() {
                                           @Override

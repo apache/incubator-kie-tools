@@ -24,7 +24,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -237,7 +236,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView) {
 
             @Override
-            public boolean error(final Message message,
+            public boolean error(final Object message,
                                  final Throwable throwable) {
                 if (fileAlreadyExists(throwable)) {
                     hideBusyIndicator();
@@ -318,7 +317,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView) {
 
             @Override
-            public boolean error(final Message message,
+            public boolean error(final Object message,
                                  final Throwable throwable) {
                 if (fileAlreadyExists(throwable)) {
                     hideBusyIndicator();

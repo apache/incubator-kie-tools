@@ -25,7 +25,7 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestDif
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatus;
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestCommentList;
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestList;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.rpc.SessionInfo;
 import org.jboss.errai.security.shared.api.identity.User;
 
@@ -35,7 +35,7 @@ import org.jboss.errai.security.shared.api.identity.User;
  * The change request id is unique in every repository, but it can be repeated
  * across them.
  */
-@Remote
+
 public interface ChangeRequestService {
 
     /**

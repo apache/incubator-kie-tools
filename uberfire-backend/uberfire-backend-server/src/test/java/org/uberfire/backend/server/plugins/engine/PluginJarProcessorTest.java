@@ -28,7 +28,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.plugin.PluginProcessor;
-import org.uberfire.backend.server.plugins.processors.GWTScriptPluginProcessor;
 import org.uberfire.backend.server.plugins.processors.HTMLPluginProcessor;
 import org.uberfire.backend.server.plugins.processors.UFJSPluginProcessor;
 import org.uberfire.workbench.events.PluginReloadedEvent;

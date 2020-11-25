@@ -31,13 +31,12 @@ import org.dashbuilder.dataset.exception.DataSetLookupException;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.uuid.UUIDGenerator;
 import org.dashbuilder.exception.ExceptionManager;
-import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.bus.server.api.RpcContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-@Service
+
 public class DataSetLookupServicesImpl implements DataSetLookupServices {
 
     protected static Logger log = LoggerFactory.getLogger(DataSetLookupServicesImpl.class);
@@ -62,7 +61,7 @@ public class DataSetLookupServicesImpl implements DataSetLookupServices {
     @PostConstruct
     protected void init() {
         // By default, enable the register of data set definitions stored into the deployment folder.
-        ServletContext servletContext = RpcContext.getHttpSession().getServletContext();
+        ServletContext servletContext = null;
         if (!dataSetDefDeployer.isRunning() && servletContext != null) {
             String dir = servletContext.getRealPath("WEB-INF/datasets");
             if (dir != null && new File(dir).exists()) {

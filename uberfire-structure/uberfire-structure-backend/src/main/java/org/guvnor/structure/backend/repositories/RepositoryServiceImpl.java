@@ -52,7 +52,7 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ import static org.guvnor.structure.repositories.EnvironmentParameters.SECURE_PRE
 import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
 import static org.uberfire.backend.server.util.Paths.convert;
 
-@Service
+
 @ApplicationScoped
 public class RepositoryServiceImpl implements RepositoryService {
 

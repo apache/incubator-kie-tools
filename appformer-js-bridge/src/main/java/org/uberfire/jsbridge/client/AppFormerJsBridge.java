@@ -28,12 +28,8 @@ import com.google.gwt.core.client.ScriptInjector;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.IThenable;
 import elemental2.promise.Promise;
-import org.jboss.errai.bus.client.ErraiBus;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.marshalling.client.Marshalling;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
@@ -41,8 +37,6 @@ import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.jsbridge.client.loading.AppFormerJsActivityLoader;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
-import static java.util.Arrays.stream;
 
 @Dependent
 public class AppFormerJsBridge {
@@ -137,7 +131,8 @@ public class AppFormerJsBridge {
     }-*/;
 
     public void fireEvent(final String eventJson) {
-        CDI.fireEvent(Marshalling.fromJSON(eventJson));
+//        CDI.fireEvent(Marshalling.fromJSON(eventJson));
+        throw new RuntimeException("AF-JS Firing events not supported.");
     }
 
     public void goTo(final String place) {
@@ -182,28 +177,31 @@ public class AppFormerJsBridge {
 
         final Function<Object, Object> jsonToGwt = object -> {
             try {
-                return Marshalling.fromJSON((String) object);
+                throw new RuntimeException("AF-JS RPC not supported.");
+//                return Marshalling.fromJSON((String) object);
             } catch (final Exception e) {
                 DomGlobal.console.info("Error converting JS obj to GWT obj", e);
                 throw e;
             }
         };
 
-        final Function<Object, Object> gwtToJson = value -> value != null
-                ? Marshalling.toJSON(value)
-                : null;
+        return promises.reject(null);
 
-        final Object[] gwtParams = stream(params).map(jsonToGwt).toArray();
-
-        return new Promise<>((res, rej) -> MessageBuilder.createCall()
-                .call(serviceFqcn)
-                .endpoint(method, qualifiers, gwtParams)
-                .respondTo(Object.class, value -> res.onInvoke(gwtToJson.apply(value)))
-                .errorsHandledBy((e, a) -> {
-                    rej.onInvoke(e);
-                    return true;
-                })
-                .sendNowWith(ErraiBus.get()));
+//        final Function<Object, Object> gwtToJson = value -> value != null
+//                ? Marshalling.toJSON(value)
+//                : null;
+//
+//        final Object[] gwtParams = stream(params).map(jsonToGwt).toArray();
+//
+//        return new Promise<>((res, rej) -> MessageBuilder.createCall()
+//                .call(serviceFqcn)
+//                .endpoint(method, qualifiers, gwtParams)
+//                .respondTo(Object.class, value -> res.onInvoke(gwtToJson.apply(value)))
+//                .errorsHandledBy((e, a) -> {
+//                    rej.onInvoke(e);
+//                    return true;
+//                })
+//                .sendNowWith(ErraiBus.get()));
     }
 
     private static class CallbackProducer<T> {

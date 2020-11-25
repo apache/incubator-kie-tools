@@ -18,7 +18,7 @@ package org.uberfire.ext.layout.editor.api;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
@@ -28,7 +28,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.plugin.model.Plugin;
 
-@Remote
+
 public interface PerspectiveServices extends SupportsCopy,
                                              SupportsDelete,
                                              SupportsSaveAndRename<LayoutTemplate, DefaultMetadata> {

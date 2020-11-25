@@ -20,13 +20,13 @@ import java.util.Optional;
 
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.dashbuilder.shared.model.RuntimeModel;
-import org.jboss.errai.bus.server.annotations.Remote;
+
 
 /**
  * Service to access RuntimeModel.
  *
  */
-@Remote
+
 public interface RuntimeModelService {
 
     /**

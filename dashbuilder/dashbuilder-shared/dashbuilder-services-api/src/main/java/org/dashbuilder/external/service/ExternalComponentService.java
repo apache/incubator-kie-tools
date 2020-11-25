@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.dashbuilder.external.model.ExternalComponent;
-import org.jboss.errai.bus.server.annotations.Remote;
 
-@Remote
+
+
 public interface ExternalComponentService {
 
     List<ExternalComponent> listComponents();

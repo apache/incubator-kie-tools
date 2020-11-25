@@ -21,11 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.uberfire.ext.layout.editor.api.LayoutServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-@Service
+
 @ApplicationScoped
 public class LayoutServicesImpl implements LayoutServices {
 

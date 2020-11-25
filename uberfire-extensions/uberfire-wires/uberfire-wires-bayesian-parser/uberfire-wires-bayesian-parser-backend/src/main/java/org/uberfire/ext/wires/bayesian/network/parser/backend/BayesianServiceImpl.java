@@ -20,7 +20,7 @@ import java.io.InputStream;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.thoughtworks.xstream.XStream;
-import org.jboss.errai.bus.server.annotations.Service;
+
 import org.kie.soup.xstream.XStreamUtils;
 import org.uberfire.ext.wires.bayesian.network.parser.client.builder.BayesianBuilder;
 import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesNetwork;
@@ -30,7 +30,7 @@ import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Network;
 import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Probability;
 import org.uberfire.ext.wires.bayesian.network.parser.client.service.BayesianService;
 
-@Service
+
 @ApplicationScoped
 public class BayesianServiceImpl implements BayesianService {
 

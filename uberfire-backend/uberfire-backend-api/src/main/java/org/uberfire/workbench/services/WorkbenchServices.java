@@ -18,14 +18,14 @@ package org.uberfire.workbench.services;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
 /**
  * Workbench services
  */
-@Remote
+
 public interface WorkbenchServices {
 
     void save(String perspectiveId,
