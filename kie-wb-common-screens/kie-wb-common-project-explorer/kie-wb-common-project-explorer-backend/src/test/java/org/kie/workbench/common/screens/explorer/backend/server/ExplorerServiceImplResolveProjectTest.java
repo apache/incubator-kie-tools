@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import java.net.URI;
+
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.junit.Test;
@@ -22,11 +24,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 
-import static org.jgroups.util.Util.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -34,7 +38,7 @@ import static org.mockito.Mockito.mock;
 public class ExplorerServiceImplResolveProjectTest {
 
     @Mock
-    IOService ioServiceConfig;
+    IOService ioService;
 
     @Mock
     WorkspaceProjectService projectService;
@@ -45,6 +49,10 @@ public class ExplorerServiceImplResolveProjectTest {
     @Test
     public void resolveProject() throws Exception {
         final WorkspaceProject project = mock(WorkspaceProject.class);
+
+        doReturn(Paths.convert(PathFactory.newPath("testFile",
+                                                   "file:///moduleName"))).when(ioService).get(any(URI.class));
+
         doReturn(project).when(projectService).resolveProject(any(Path.class));
 
         assertEquals(project, explorerService.resolveProject("path"));
