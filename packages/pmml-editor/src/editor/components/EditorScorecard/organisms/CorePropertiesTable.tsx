@@ -15,17 +15,21 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { GenericNumericInput, GenericSelector, GenericTextInput } from "../atoms";
+import { GenericSelector } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import {
+  Bullseye,
   Form,
   FormGroup,
+  Level,
+  LevelItem,
   PageSection,
   PageSectionVariants,
   Stack,
   StackItem,
   Switch,
   TextContent,
+  TextInput,
   Title
 } from "@patternfly/react-core";
 import "./CorePropertiesTable.scss";
@@ -52,72 +56,27 @@ interface CorePropertiesTableProps extends CoreProperties {
   commit: (props: CoreProperties) => void;
 }
 
-const BooleanFieldEditor = (
-  id: string,
-  isChecked: boolean,
-  onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void,
-  autoFocus?: boolean
-) => {
-  return <Switch id={id} isChecked={isChecked} onChange={onChange} autoFocus={autoFocus === true} />;
-};
-
 const GenericSelectorEditor = (
   id: string,
   items: string[],
-  selection: string,
+  selection: string | undefined,
   onSelect: (_selection: string) => void
 ) => {
   return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
-};
-
-const GenericNumericEditor = (
-  id: string,
-  value: number,
-  valid: boolean,
-  onChange: (_value: number) => void,
-  onBlur: () => void
-) => {
-  return (
-    <GenericNumericInput
-      id={id}
-      value={value}
-      validated={valid ? "default" : "error"}
-      onChange={onChange}
-      onBlur={onBlur}
-    />
-  );
-};
-
-const GenericTextEditor = (
-  id: string,
-  value: string,
-  valid: boolean,
-  onChange: (_value: string) => void,
-  onBlur: () => void
-) => {
-  return (
-    <GenericTextInput
-      id={id}
-      value={value}
-      validated={valid ? "default" : "error"}
-      onChange={onChange}
-      onBlur={onBlur}
-    />
-  );
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const { activeOperation, setActiveOperation } = props;
 
   const [isEditing, setEditing] = useState(false);
-  const [isScorable, setScorable] = useState(props.isScorable);
-  const [functionName, setFunctionName] = useState(props.functionName);
-  const [algorithmName, setAlgorithmName] = useState(props.algorithmName);
-  const [baselineScore, setBaselineScore] = useState<number>(props.baselineScore);
-  const [baselineMethod, setBaselineMethod] = useState(props.baselineMethod);
-  const [initialScore, setInitialScore] = useState<number>(props.initialScore);
-  const [useReasonCodes, setUseReasonCodes] = useState(props.useReasonCodes);
-  const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState(props.reasonCodeAlgorithm);
+  const [isScorable, setScorable] = useState<boolean>();
+  const [functionName, setFunctionName] = useState<MiningFunction>();
+  const [algorithmName, setAlgorithmName] = useState<string | undefined>();
+  const [baselineScore, setBaselineScore] = useState<number | undefined>();
+  const [baselineMethod, setBaselineMethod] = useState<BaselineMethod | undefined>();
+  const [initialScore, setInitialScore] = useState<number | undefined>(props.initialScore);
+  const [useReasonCodes, setUseReasonCodes] = useState<boolean>(props.useReasonCodes);
+  const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState<ReasonCodeAlgorithm | undefined>();
 
   useEffect(() => {
     setScorable(props.isScorable);
@@ -130,79 +89,25 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setReasonCodeAlgorithm(props.reasonCodeAlgorithm);
   }, [props]);
 
-  const isScorableEditor = BooleanFieldEditor("is-scorable-id", isScorable, checked => {
-    setScorable(checked);
-    onCommit({ isScorable: checked });
-  });
-  const functionNameEditor = GenericSelectorEditor(
-    "function-name-selector-id",
-    ["associationRules", "sequences", "classification", "regression", "clustering", "timeSeries", "mixed"],
-    functionName,
-    _selection => {
-      setFunctionName(_selection as MiningFunction);
-      onCommit({ functionName: _selection as MiningFunction });
-    }
-  );
-  const algorithmNameEditor = GenericTextEditor(
-    "algorithm-name-id",
-    algorithmName,
-    true,
-    _value => {
-      setAlgorithmName(_value);
-    },
-    () => {
-      onCommit({ algorithmName: algorithmName });
-    }
-  );
-  const baselineScoreEditor = GenericNumericEditor(
-    "baseline-score-id",
-    baselineScore,
-    true,
-    _value => {
-      setBaselineScore(_value);
-    },
-    () => {
-      onCommit({ baselineScore: baselineScore });
-    }
-  );
-  const baselineMethodEditor = GenericSelectorEditor(
-    "baseline-method-selector-id",
-    ["max", "min", "mean", "neutral", "other"],
-    baselineMethod,
-    _selection => {
-      setBaselineMethod(_selection as BaselineMethod);
-      onCommit({ baselineMethod: _selection as BaselineMethod });
-    }
-  );
-  const initialScoreEditor = GenericNumericEditor(
-    "initial-score-id",
-    initialScore,
-    true,
-    _value => {
-      setInitialScore(_value);
-    },
-    () => {
-      onCommit({ initialScore: initialScore });
-    }
-  );
-  const useReasonCodesEditor = BooleanFieldEditor("use-reason-codes-id", useReasonCodes, checked => {
-    setUseReasonCodes(checked);
-    onCommit({ useReasonCodes: checked });
-  });
-  const reasonCodeAlgorithmEditor = GenericSelectorEditor(
-    "reason-code-algorithm-selector-id",
-    ["pointsAbove", "pointsBelow"],
-    reasonCodeAlgorithm,
-    _selection => {
-      setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
-      onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
-    }
-  );
-
   const ref = useOnclickOutside(event => onCommitAndClose(), {
     disabled: activeOperation !== Operation.UPDATE_CORE,
     eventTypes: ["click"]
   });
+
+  const value = (_value: any) => {
+    return _value ? <span>{_value}</span> : <span>&nbsp;</span>;
+  };
+
+  const toNumber = (value: string): number | undefined => {
+    if (value === "") {
+      return undefined;
+    }
+    const n = Number(value);
+    if (isNaN(n)) {
+      return undefined;
+    }
+    return n;
+  };
 
   const onEdit = () => {
     setEditing(true);
@@ -250,7 +155,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       }}
     >
       <PageSection variant={PageSectionVariants.light}>
-        <Stack>
+        <Stack hasGutter={true}>
           <StackItem>
             <TextContent>
               <Title size="lg" headingLevel="h1">
@@ -259,79 +164,151 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
             </TextContent>
           </StackItem>
           <StackItem>
-            <Form
-              onSubmit={e => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            >
-              <table className="core-properties__table">
-                <thead>
-                  <tr>
-                    <th>
-                      <FormGroup fieldId="IsScorable" label="Is Scorable" />
-                    </th>
-                    <th>
-                      <FormGroup fieldId="FunctionName" label="Function Name" />
-                    </th>
-                    <th>
-                      <FormGroup fieldId="AlgorithmName" label="Algorithm Name" />
-                    </th>
-                    <th>
-                      <FormGroup fieldId="BaselineScore" label="Baseline Score" />
-                    </th>
-                    <th>
-                      <FormGroup fieldId="BaselineMethod" label="Baseline Method" />
-                    </th>
-                    <th>
-                      <FormGroup fieldId="InitialScore" label="Initial Score" />
-                    </th>
-                    <th>
-                      <FormGroup fieldId="UseReasonCodes" label="Use Reason Codes" />
-                    </th>
-                    <th>
-                      <FormGroup fieldId="ReasonCodeAlgorithm" label="Reason Code Algorithm" />
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      {!isEditModeEnabled && props.isScorable.toString()}
-                      {isEditModeEnabled && isScorableEditor}
-                    </td>
-                    <td>
-                      {!isEditModeEnabled && props.functionName}
-                      {isEditModeEnabled && functionNameEditor}
-                    </td>
-                    <td>
-                      {!isEditModeEnabled && props.algorithmName}
-                      {isEditModeEnabled && algorithmNameEditor}
-                    </td>
-                    <td>
-                      {!isEditModeEnabled && props.baselineScore.toString()}
-                      {isEditModeEnabled && baselineScoreEditor}
-                    </td>
-                    <td>
-                      {!isEditModeEnabled && props.baselineMethod}
-                      {isEditModeEnabled && baselineMethodEditor}
-                    </td>
-                    <td>
-                      {!isEditModeEnabled && props.initialScore.toString()}
-                      {isEditModeEnabled && initialScoreEditor}
-                    </td>
-                    <td>
-                      {!isEditModeEnabled && props.useReasonCodes.toString()}
-                      {isEditModeEnabled && useReasonCodesEditor}
-                    </td>
-                    <td>
-                      {!isEditModeEnabled && props.reasonCodeAlgorithm.toString()}
-                      {isEditModeEnabled && reasonCodeAlgorithmEditor}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Form>
+            <Bullseye>
+              <Form
+                onSubmit={e => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                className="core-properties__container"
+              >
+                <Level hasGutter={true}>
+                  <LevelItem>
+                    <FormGroup label="Scorable?" fieldId="core-isScorable">
+                      {!isEditModeEnabled && value(props.isScorable.toString())}
+                      {isEditModeEnabled && (
+                        <Switch
+                          id="core-isScorable"
+                          isChecked={isScorable}
+                          onChange={checked => {
+                            setScorable(checked);
+                            onCommit({ isScorable: checked });
+                          }}
+                        />
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Function" fieldId="core-functionName" required={true}>
+                      {!isEditModeEnabled && value(props.functionName)}
+                      {isEditModeEnabled &&
+                        GenericSelectorEditor(
+                          "core-functionName",
+                          [
+                            "associationRules",
+                            "sequences",
+                            "classification",
+                            "regression",
+                            "clustering",
+                            "timeSeries",
+                            "mixed"
+                          ],
+                          functionName,
+                          _selection => {
+                            setFunctionName(_selection as MiningFunction);
+                            onCommit({ functionName: _selection as MiningFunction });
+                          }
+                        )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Algorithm" fieldId="core-algorithmName">
+                      {!isEditModeEnabled && value(props.algorithmName)}
+                      {isEditModeEnabled && (
+                        <TextInput
+                          type="text"
+                          id="core-algorithmName"
+                          name="core-algorithmName"
+                          aria-describedby="core-algorithmName"
+                          value={algorithmName}
+                          onChange={e => setAlgorithmName(e)}
+                          onBlur={e => {
+                            onCommit({ algorithmName: algorithmName });
+                          }}
+                        />
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Baseline score" fieldId="core-baselinScore">
+                      {!isEditModeEnabled && value(props.baselineScore.toString())}
+                      {isEditModeEnabled && (
+                        <TextInput
+                          id="core-baselineScore"
+                          value={baselineScore}
+                          onChange={e => setBaselineScore(toNumber(e))}
+                          onBlur={() => {
+                            onCommit({ baselineScore: baselineScore });
+                          }}
+                          type="number"
+                        />
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Baseline method" fieldId="core-baselineMethod">
+                      {!isEditModeEnabled && value(props.baselineMethod)}
+                      {isEditModeEnabled &&
+                        GenericSelectorEditor(
+                          "core-baselineMethod",
+                          ["max", "min", "mean", "neutral", "other"],
+                          baselineMethod,
+                          _selection => {
+                            setBaselineMethod(_selection as BaselineMethod);
+                            onCommit({ baselineMethod: _selection as BaselineMethod });
+                          }
+                        )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Initial score" fieldId="core-initialScore">
+                      {!isEditModeEnabled && value(props.initialScore.toString())}
+                      {isEditModeEnabled && (
+                        <TextInput
+                          id="core-initialScore"
+                          value={initialScore}
+                          onChange={e => setInitialScore(toNumber(e))}
+                          onBlur={() => {
+                            onCommit({ initialScore: initialScore });
+                          }}
+                          type="number"
+                        />
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
+                      {!isEditModeEnabled && value(props.useReasonCodes.toString())}
+                      {isEditModeEnabled && (
+                        <Switch
+                          id="core-useReasonCodes"
+                          isChecked={useReasonCodes}
+                          onChange={checked => {
+                            setUseReasonCodes(checked);
+                            onCommit({ useReasonCodes: checked });
+                          }}
+                        />
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Reason code algorithm" fieldId="core-reasonCodeAlgorithm">
+                      {!isEditModeEnabled && value(props.reasonCodeAlgorithm.toString())}
+                      {isEditModeEnabled &&
+                        GenericSelectorEditor(
+                          "core-reasonCodeAlgorithm",
+                          ["pointsAbove", "pointsBelow"],
+                          reasonCodeAlgorithm,
+                          _selection => {
+                            setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
+                            onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
+                          }
+                        )}
+                    </FormGroup>
+                  </LevelItem>
+                </Level>
+              </Form>
+            </Bullseye>
           </StackItem>
         </Stack>
       </PageSection>

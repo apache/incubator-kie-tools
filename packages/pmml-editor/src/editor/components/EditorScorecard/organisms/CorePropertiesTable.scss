@@ -16,25 +16,7 @@
 
 .core-properties {
 
-  &__table {
-    table-layout: fixed;
+  &__container {
     width: 100%;
-
-    td {
-      width: calc(100% / 7);
-      padding-right: 32px;
-    }
-
-    tr {
-      padding-right: 32px;
-    }
-
-    tr:nth-child(1) {
-      height: 48px;
-    }
-  }
-
-  &__edit_buttons {
-    margin-top: 16px;
   }
 }

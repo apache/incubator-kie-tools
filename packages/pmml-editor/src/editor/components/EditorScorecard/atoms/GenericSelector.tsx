@@ -20,7 +20,7 @@ import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patter
 interface GenericSelectorProps {
   id: string;
   items: string[];
-  selection: string;
+  selection: string | undefined;
   onSelect: (_selection: string) => void;
 }
 
