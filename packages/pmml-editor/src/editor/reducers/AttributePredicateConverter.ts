@@ -86,7 +86,22 @@ const FalsePredicate = () => {
   return predicate;
 };
 
+const UnarySimplePredicate = (field: FieldName, operator: SimplePredicateOperator) => {
+  const predicate: SimplePredicate = new SimplePredicate({ field: field, operator: operator });
+  (predicate as any)._type = "SimplePredicate";
+  return predicate;
+};
+
+const BinarySimplePredicate = (field: FieldName, operator: SimplePredicateOperator, value: any) => {
+  const predicate: SimplePredicate = new SimplePredicate({ field: field, operator: operator, value: value });
+  (predicate as any)._type = "SimplePredicate";
+  return predicate;
+};
+
 const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, DataType>): string => {
+  if (value === undefined) {
+    return "";
+  }
   const dataType = fieldToDataType.get(field);
   if (dataType === "string") {
     return `"${value}"`;
@@ -109,31 +124,32 @@ export const fromText = (text: string): Predicate | undefined => {
     return undefined;
   }
 
-  //Simple cases
-  if (text.toLowerCase() === "true") {
+  //Quick RegEx based match for SimplePredicates.. Need a parser for ALL Predicates
+  const regTrue = /^True$/gm;
+  const regFalse = /^False$/gm;
+  const regUnaryOperator = /^([a-zA-Z]+[0-9]*)\s+(isMissing|isNotMissing)\s*$/gm;
+  const regBinaryOperator = /^([a-zA-Z]+[0-9]*)\s*(=|>|<|<=|>=|<>)\s*"?([a-zA-Z0-9]+)"?$/gm;
+
+  if (regTrue.test(text)) {
     return TruePredicate();
   }
-  if (text.toLowerCase() === "false") {
+  if (regFalse.test(text)) {
     return FalsePredicate();
   }
 
-  //Quick RegEx based match for SimplePredicates.. Need a parser for ALL Predicates
-  const regex = /^([a-zA-Z]+)\s?(=|>|<|<=|>=|<>)\s?("?[a-zA-Z0-9]+"?)$/gm;
-  const matches = regex.exec("" + text + "");
-  if (matches === null) {
-    return TruePredicate();
-  }
-  if (matches.length !== 4) {
-    return TruePredicate();
+  let unaryMatches: RegExpExecArray | null;
+  if ((unaryMatches = regUnaryOperator.exec(text))) {
+    return UnarySimplePredicate(unaryMatches[1] as FieldName, unaryMatches[2] as SimplePredicateOperator);
   }
 
-  const predicate = new SimplePredicate({
-    field: matches[1] as FieldName,
-    operator: _operator(matches[2]) ?? "equal",
-    value: matches[3]
-  });
+  let binaryMatches: RegExpExecArray | null;
+  if ((binaryMatches = regBinaryOperator.exec(text))) {
+    return BinarySimplePredicate(
+      binaryMatches[1] as FieldName,
+      _operator(binaryMatches[2]) as SimplePredicateOperator,
+      binaryMatches[3]
+    );
+  }
 
-  //TODO {manstis} This is vitally important to ensure marshalling to XML works OK!
-  (predicate as any)._type = "SimplePredicate";
-  return predicate;
+  return TruePredicate();
 };
