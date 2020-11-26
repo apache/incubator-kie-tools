@@ -280,6 +280,24 @@ setup() {
     [[ "${output}" != *"--tests.http-retry-nb"* ]]
 }
 
+@test "invoke run-tests with olm_namespace" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --olm_namespace olm --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.olm-namespace=olm" ]]
+}
+
+@test "invoke run-tests with olm_namespace missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --olm_namespace --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.olm-namespace"* ]]
+}
+
+@test "invoke run-tests with olm_namespace empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --olm_namespace "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.olm-namespace"* ]]
+}
+
 # operator information
 
 @test "invoke run-tests with operator_image" {

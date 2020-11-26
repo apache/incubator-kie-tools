@@ -51,6 +51,7 @@ function usage(){
   printf "\n--domain_suffix\n\tTo be used if you want to set a domain suffix for exposed services. Ignored when running tests on Openshift."
   printf "\n--image_cache_mode\n\tUse this option to specify whether you want to use image cache for runtime images. Available options are 'always', 'never' or 'if-available'(default)."
   printf "\n--http_retry_nb {INT_VALUE}\n\tSet the retry number for all HTTP calls in case it fails (and response code != 500). Default value is 3."
+  printf "\n--olm_namespace \n\tSet the namespace which is used for cluster scope operators. Default is 'openshift-operators'."
 
   # operator information
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-cloud-operator' one."
@@ -229,6 +230,10 @@ case $1 in
   --http_retry_nb)
     shift
     if addParamKeyValueIfAccepted "--tests.http-retry-nb" ${1}; then shift; fi
+  ;;
+  --olm_namespace)
+    shift
+    if addParamKeyValueIfAccepted "--tests.olm-namespace" ${1}; then shift; fi
   ;;
 
   # operator information
