@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
 import org.dashbuilder.external.model.ComponentParameter;
 import org.dashbuilder.external.model.ExternalComponent;
-import org.dashbuilder.external.service.ExternalComponentService;
+import org.dashbuilder.external.service.ComponentService;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
@@ -66,7 +66,7 @@ public class ExternalComponentPropertiesEditor implements IsWidget {
     View view;
 
     @Inject
-    Caller<ExternalComponentService> externalComponentService;
+    Caller<ComponentService> externalComponentService;
 
     @Inject
     BusyIndicatorView loading;
@@ -176,7 +176,7 @@ public class ExternalComponentPropertiesEditor implements IsWidget {
         return view.asWidget();
     }
 
-    void setExternalComponentService(Caller<ExternalComponentService> externalComponentService) {
+    void setExternalComponentService(Caller<ComponentService> externalComponentService) {
         this.externalComponentService = externalComponentService;
     }
     

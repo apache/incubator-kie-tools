@@ -40,7 +40,7 @@ import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
-import org.dashbuilder.external.service.ExternalComponentLoader;
+import org.dashbuilder.external.service.ComponentLoader;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.model.DataSetContent;
@@ -52,6 +52,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
+import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_ID_KEY;
 import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_PARTITION_KEY;
 import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_DEF_PREFIX;
 import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_FILE;
@@ -78,7 +79,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
     RuntimeModelRegistry registry;
 
     @Inject
-    ExternalComponentLoader externalComponentLoader;
+    ComponentLoader externalComponentLoader;
 
     Gson gson;
 
@@ -110,7 +111,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
                     continue;
                 }
                 String entryName = entry.getName();
-                
+
                 if (entryName.startsWith(DATASET_DEF_PREFIX)) {
                     datasetContents.add(retrieveDataSetContent(entry, zis));
                 }
@@ -206,10 +207,12 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
     private void partitionLayoutTemplate(String modelId, LayoutTemplate lt) {
         allComponentsStream(lt.getRows()).forEach(lc -> {
             String json = lc.getProperties().get("json");
+            String componentId = lc.getProperties().get(COMPONENT_ID_KEY);
             if (json != null) {
                 partitionDisplayer(lc, modelId, json);
             }
-            if (options.isComponentPartition()) {
+            // For components that does not use displayers (noData components)
+            if (options.isComponentPartition() && isExternalComponent(componentId)) {
                 lc.getProperties().put(COMPONENT_PARTITION_KEY, modelId);
             }
         });
@@ -218,6 +221,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
 
     private void partitionDisplayer(LayoutComponent lc, String modelId, String json) {
         DisplayerSettings settings = displayerSettingsMarshaller.fromJsonString(json);
+        String componentId = settings.getComponentId();
 
         if (options.isDatasetPartition() &&
             settings.getDataSetLookup() != null) {
@@ -227,7 +231,8 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         }
 
         if (options.isComponentPartition() &&
-            settings.getType() == DisplayerType.EXTERNAL_COMPONENT) {
+            settings.getType() == DisplayerType.EXTERNAL_COMPONENT &&
+                    isExternalComponent(componentId)) {
             settings.setComponentPartition(modelId);
         }
 
@@ -239,6 +244,10 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
                   .flatMap(r -> r.getLayoutColumns().stream())
                   .flatMap(cl -> Stream.concat(cl.getLayoutComponents().stream(),
                                                allComponentsStream(cl.getRows())));
+    }
+
+    private boolean isExternalComponent(String componentId) {
+        return externalComponentLoader.loadProvided().stream().noneMatch(c -> c.getId().equals(componentId));
     }
 
 }

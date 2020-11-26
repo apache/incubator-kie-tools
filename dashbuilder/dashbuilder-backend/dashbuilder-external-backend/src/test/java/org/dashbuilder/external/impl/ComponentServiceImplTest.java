@@ -19,7 +19,7 @@ package org.dashbuilder.external.impl;
 import java.util.Collections;
 
 import org.dashbuilder.external.model.ExternalComponent;
-import org.dashbuilder.external.service.ExternalComponentLoader;
+import org.dashbuilder.external.service.ComponentLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,32 +28,44 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExternalComponentServiceImplTest {
-    
+public class ComponentServiceImplTest {
+
     private static final String C1_ID = "c1";
     private static final String C2_ID = "c2";
 
     @Mock
-    ExternalComponentLoader loader;
-      
+    ComponentLoader loader;
+
     @InjectMocks
-    ExternalComponentServiceImpl externalComponentServiceImpl;
-    
+    ComponentServiceImpl externalComponentServiceImpl;
+
     @Test
     public void testById() {
         ExternalComponent c1 = new ExternalComponent(C1_ID, "c1 name", "c1 icon", false, Collections.emptyList());
         ExternalComponent c2 = new ExternalComponent(C2_ID, "c2 name", "c2 icon", false, Collections.emptyList());
-        
-        Mockito.when(loader.load()).thenReturn(asList(c1, c2));
-        
+
+        Mockito.when(loader.loadExternal()).thenReturn(asList(c1, c2));
+
         assertTrue(externalComponentServiceImpl.byId(C1_ID).isPresent());
         assertTrue(externalComponentServiceImpl.byId(C2_ID).isPresent());
         assertFalse(externalComponentServiceImpl.byId("do not exist").isPresent());
     }
-    
+
+    @Test
+    public void testByIdProvidedPriority() {
+        String c1ProvidedName = "c1 provided";
+        ExternalComponent c1_provided = new ExternalComponent(C1_ID, c1ProvidedName, "c1 icon", false, Collections.emptyList());
+        ExternalComponent c1_external = new ExternalComponent(C1_ID, "c1 external", "c1 icon", false, Collections.emptyList());
+
+        Mockito.when(loader.loadProvided()).thenReturn(asList(c1_provided));
+        Mockito.when(loader.loadExternal()).thenReturn(asList(c1_external));
+
+        assertEquals(c1ProvidedName, externalComponentServiceImpl.byId(C1_ID).get().getName());
+    }
 
 }

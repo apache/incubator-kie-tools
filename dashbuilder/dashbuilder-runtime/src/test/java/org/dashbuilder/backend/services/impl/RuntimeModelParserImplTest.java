@@ -33,7 +33,7 @@ import javax.enterprise.event.Event;
 import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
-import org.dashbuilder.external.service.ExternalComponentLoader;
+import org.dashbuilder.external.service.ComponentLoader;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.model.DataSetContent;
@@ -72,7 +72,7 @@ public class RuntimeModelParserImplTest {
     RuntimeModelRegistry runtimeModelRegistry;
     
     @Mock
-    ExternalComponentLoader externalComponentLoader;
+    ComponentLoader externalComponentLoader;
 
     @InjectMocks
     RuntimeModelParserImpl parser;
