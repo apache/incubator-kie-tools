@@ -28,8 +28,10 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
 
   return (
     <>
-      {activeCharacteristic.reasonCode && CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
-      {activeCharacteristic.baselineScore && CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
+      {activeCharacteristic.reasonCode !== undefined &&
+        CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
+      {activeCharacteristic.baselineScore !== undefined &&
+        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
       {activeCharacteristic.Attribute.length > 0 &&
         CharacteristicLabelAttribute(
           "Attributes",

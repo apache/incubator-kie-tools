@@ -22,7 +22,7 @@
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
-    height: calc(100vh - 540px);
+    height: calc(100vh - 482px);
 
     &-enter {
       opacity: 0;
@@ -47,7 +47,7 @@
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
-    height: calc(100vh - 540px);
+    height: calc(100vh - 482px);
 
     &-enter {
       transform: translateX(100px);
@@ -76,7 +76,7 @@
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
-    height: calc(100vh - 540px);
+    height: calc(100vh - 482px);
 
     &-enter {
       transform: translateX(100px);

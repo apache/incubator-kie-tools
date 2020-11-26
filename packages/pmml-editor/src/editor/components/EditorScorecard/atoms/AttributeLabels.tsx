@@ -26,8 +26,8 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
 
   return (
     <>
-      {activeAttribute.reasonCode && CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
-      {activeAttribute.partialScore && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
+      {activeAttribute.reasonCode !== undefined && CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
+      {activeAttribute.partialScore !== undefined && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
     </>
   );
 };
