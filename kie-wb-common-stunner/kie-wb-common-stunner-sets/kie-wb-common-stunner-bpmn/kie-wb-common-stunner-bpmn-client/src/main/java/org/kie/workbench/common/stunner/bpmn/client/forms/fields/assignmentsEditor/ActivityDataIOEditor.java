@@ -25,7 +25,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.marshalling.client.Marshalling;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
@@ -85,7 +84,8 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     }
 
     protected String marshallToJson(final AssignmentData data) {
-        return Marshalling.toJSON(data);
+        //FIXME: tiago ???
+        return ""; // Marshalling.toJSON(data);
     }
 
     @Override

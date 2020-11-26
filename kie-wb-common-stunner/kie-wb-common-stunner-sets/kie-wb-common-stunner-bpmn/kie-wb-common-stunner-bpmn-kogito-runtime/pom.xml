@@ -67,11 +67,6 @@
     <!-- Errai -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-server</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
       <scope>provided</scope>
     </dependency>

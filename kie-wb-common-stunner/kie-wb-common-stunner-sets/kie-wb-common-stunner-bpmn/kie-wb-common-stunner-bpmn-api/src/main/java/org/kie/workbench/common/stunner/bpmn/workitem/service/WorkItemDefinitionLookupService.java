@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.workitem.service;
 
-
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.kogito.api.Kogito;
 
 @Kogito
-
 public interface WorkItemDefinitionLookupService
         extends WorkItemDefinitionService<Metadata> {
 

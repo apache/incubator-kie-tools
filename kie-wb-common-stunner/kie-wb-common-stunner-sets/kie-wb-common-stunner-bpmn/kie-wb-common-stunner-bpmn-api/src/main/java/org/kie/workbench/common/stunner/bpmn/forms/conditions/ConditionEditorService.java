@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.bpmn.forms.conditions;
 
 import java.util.List;
 
-
 import org.uberfire.backend.vfs.Path;
 
 

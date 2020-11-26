@@ -16,62 +16,56 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
-import org.jboss.errai.common.client.protocols.SerializationParts;
-import org.jboss.errai.marshalling.client.api.MarshallingSession;
-import org.jboss.errai.marshalling.client.api.annotations.ClientMarshaller;
-import org.jboss.errai.marshalling.client.api.annotations.ServerMarshaller;
-import org.jboss.errai.marshalling.client.api.json.EJObject;
-import org.jboss.errai.marshalling.client.api.json.EJValue;
-import org.jboss.errai.marshalling.client.marshallers.AbstractNullableMarshaller;
-
-@ClientMarshaller(AssignmentData.class)
-@ServerMarshaller(AssignmentData.class)
+//@ClientMarshaller(AssignmentData.class)
+//@ServerMarshaller(AssignmentData.class)
+// FIXME: tiago ???
 public class AssignmentDataMarshaller
-        extends AbstractNullableMarshaller<AssignmentData> {
+//        extends AbstractNullableMarshaller<AssignmentData>
+{
 
-    public static final String INPUT_VARIABLES = "inputVariables";
-    public static final String OUTPUT_VARIABLES = "outputVariables";
-    public static final String PROCESS_VARIABLES = "processVariables";
-    public static final String ASSIGNMENTS = "assignments";
-    public static final String DATA_TYPES = "dataTypes";
-    public static final String DISALLOWED_PROPERTY_NAMES = "disallowedPropertyNames";
-    public static final String VARIABLE_COUNTS_STRING = "variablecountsstring";
-
-    public AssignmentData doNotNullDemarshall(final EJValue o,
-                                              final MarshallingSession ctx) {
-        EJObject obj = o.isObject();
-        String inputVariables = obj.get(INPUT_VARIABLES).isString().stringValue();
-        String outputVariables = obj.get(OUTPUT_VARIABLES).isString().stringValue();
-        String processVariables = obj.get(PROCESS_VARIABLES).isString().stringValue();
-        String assignments = obj.get(ASSIGNMENTS).isString().stringValue();
-        String varCounts = obj.get(VARIABLE_COUNTS_STRING).isString().stringValue();
-        String dataTypes = obj.get(DATA_TYPES).isString().stringValue();
-        String disallowedPropertyNames = obj.get(DISALLOWED_PROPERTY_NAMES).isString().stringValue();
-        AssignmentData data = new AssignmentData(inputVariables,
-                                                 outputVariables,
-                                                 processVariables,
-                                                 assignments,
-                                                 dataTypes,
-                                                 disallowedPropertyNames);
-        data.setVariableCountsString(varCounts);
-        return data;
-    }
-
-    public String doNotNullMarshall(final AssignmentData o,
-                                    final MarshallingSession ctx) {
-        return "{\"" + SerializationParts.ENCODED_TYPE + "\":\"" + AssignmentData.class.getName() + "\"," +
-                "\"" + SerializationParts.OBJECT_ID + "\":\"" + o.hashCode() + "\"," +
-                "\"" + INPUT_VARIABLES + "\":\"" + o.getInputVariablesString() + "\"," +
-                "\"" + OUTPUT_VARIABLES + "\":\"" + o.getOutputVariablesString() + "\"," +
-                "\"" + PROCESS_VARIABLES + "\":\"" + o.getProcessVariablesString() + "\"," +
-                "\"" + ASSIGNMENTS + "\":\"" + o.getAssignmentsString() + "\"," +
-                "\"" + VARIABLE_COUNTS_STRING + "\":\"" + o.getVariableCountsString() + "\"," +
-                "\"" + DATA_TYPES + "\":\"" + o.getDataTypesString() + "\"," +
-                "\"" + DISALLOWED_PROPERTY_NAMES + "\":\"" + o.getDisallowedPropertyNamesString() + "\"}";
-    }
-
-    @Override
-    public AssignmentData[] getEmptyArray() {
-        return new AssignmentData[0];
-    }
+//    public static final String INPUT_VARIABLES = "inputVariables";
+//    public static final String OUTPUT_VARIABLES = "outputVariables";
+//    public static final String PROCESS_VARIABLES = "processVariables";
+//    public static final String ASSIGNMENTS = "assignments";
+//    public static final String DATA_TYPES = "dataTypes";
+//    public static final String DISALLOWED_PROPERTY_NAMES = "disallowedPropertyNames";
+//    public static final String VARIABLE_COUNTS_STRING = "variablecountsstring";
+//
+//    public AssignmentData doNotNullDemarshall(final EJValue o,
+//                                              final MarshallingSession ctx) {
+//        EJObject obj = o.isObject();
+//        String inputVariables = obj.get(INPUT_VARIABLES).isString().stringValue();
+//        String outputVariables = obj.get(OUTPUT_VARIABLES).isString().stringValue();
+//        String processVariables = obj.get(PROCESS_VARIABLES).isString().stringValue();
+//        String assignments = obj.get(ASSIGNMENTS).isString().stringValue();
+//        String varCounts = obj.get(VARIABLE_COUNTS_STRING).isString().stringValue();
+//        String dataTypes = obj.get(DATA_TYPES).isString().stringValue();
+//        String disallowedPropertyNames = obj.get(DISALLOWED_PROPERTY_NAMES).isString().stringValue();
+//        AssignmentData data = new AssignmentData(inputVariables,
+//                                                 outputVariables,
+//                                                 processVariables,
+//                                                 assignments,
+//                                                 dataTypes,
+//                                                 disallowedPropertyNames);
+//        data.setVariableCountsString(varCounts);
+//        return data;
+//    }
+//
+//    public String doNotNullMarshall(final AssignmentData o,
+//                                    final MarshallingSession ctx) {
+//        return "{\"" + SerializationParts.ENCODED_TYPE + "\":\"" + AssignmentData.class.getName() + "\"," +
+//                "\"" + SerializationParts.OBJECT_ID + "\":\"" + o.hashCode() + "\"," +
+//                "\"" + INPUT_VARIABLES + "\":\"" + o.getInputVariablesString() + "\"," +
+//                "\"" + OUTPUT_VARIABLES + "\":\"" + o.getOutputVariablesString() + "\"," +
+//                "\"" + PROCESS_VARIABLES + "\":\"" + o.getProcessVariablesString() + "\"," +
+//                "\"" + ASSIGNMENTS + "\":\"" + o.getAssignmentsString() + "\"," +
+//                "\"" + VARIABLE_COUNTS_STRING + "\":\"" + o.getVariableCountsString() + "\"," +
+//                "\"" + DATA_TYPES + "\":\"" + o.getDataTypesString() + "\"," +
+//                "\"" + DISALLOWED_PROPERTY_NAMES + "\":\"" + o.getDisallowedPropertyNamesString() + "\"}";
+//    }
+//
+//    @Override
+//    public AssignmentData[] getEmptyArray() {
+//        return new AssignmentData[0];
+//    }
 }
