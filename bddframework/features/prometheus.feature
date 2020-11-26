@@ -20,4 +20,4 @@ Feature: Service Deployment: Prometheus
       }
       """
 
-    Then HTTP GET request on service "prometheus-operated" with path "/api/v1/query?query=api_execution_elapsed_nanosecond" should contain a string "hello" within 3 minutes
+    Then HTTP GET request on service "prometheus-operated" with path "/api/v1/query?query=api_execution_elapsed_seconds" should contain a string "hello" within 3 minutes
