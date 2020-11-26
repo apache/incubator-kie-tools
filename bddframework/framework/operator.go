@@ -22,6 +22,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	rbac "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
@@ -38,12 +39,16 @@ const (
 	kogitoInfinispanDependencyName = "Infinispan"
 	kogitoKafkaDependencyName      = "Kafka"
 	kogitoKeycloakDependencyName   = "Keycloak"
+
+	// clusterWideSubscriptionLabel label marking cluster wide Subscriptions created by BDD tests
+	clusterWideSubscriptionLabel = "kogito-operator-bdd-tests"
 )
 
 type dependentOperator struct {
 	operatorPackageName string
 	timeoutInMin        int
 	channel             string
+	clusterWide         bool
 }
 
 type operatorCatalog struct {
@@ -63,16 +68,19 @@ var (
 			operatorPackageName: "infinispan",
 			timeoutInMin:        10,
 			channel:             "2.0.x",
+			clusterWide:         false,
 		},
 		kogitoKafkaDependencyName: {
 			operatorPackageName: "strimzi-kafka-operator",
 			timeoutInMin:        10,
-			channel:             "strimzi-0.19.x",
+			channel:             "stable",
+			clusterWide:         true,
 		},
 		kogitoKeycloakDependencyName: {
 			operatorPackageName: "keycloak-operator",
 			timeoutInMin:        10,
 			channel:             "alpha",
+			clusterWide:         false,
 		},
 	}
 
@@ -231,8 +239,14 @@ func WaitForKogitoOperatorRunningWithDependencies(namespace string) error {
 // InstallKogitoOperatorDependency installs dependent operator from parameter
 func InstallKogitoOperatorDependency(namespace, dependentOperator string, catalog operatorCatalog) error {
 	if operatorInfo, exists := catalog.dependencies[dependentOperator]; exists {
-		if err := InstallOperator(namespace, operatorInfo.operatorPackageName, operatorInfo.channel, catalog); err != nil {
-			return err
+		if operatorInfo.clusterWide {
+			if err := InstallClusterWideOperator(namespace, operatorInfo.operatorPackageName, operatorInfo.channel, catalog); err != nil {
+				return err
+			}
+		} else {
+			if err := InstallOperator(namespace, operatorInfo.operatorPackageName, operatorInfo.channel, catalog); err != nil {
+				return err
+			}
 		}
 	} else {
 		return fmt.Errorf("Operator %s not found", dependentOperator)
@@ -243,8 +257,14 @@ func InstallKogitoOperatorDependency(namespace, dependentOperator string, catalo
 // WaitForKogitoOperatorDependencyRunning waits for dependent operator to be running
 func WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator string, catalog operatorCatalog) error {
 	if operatorInfo, exists := catalog.dependencies[dependentOperator]; exists {
-		if err := WaitForOperatorRunning(namespace, operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
-			return err
+		if operatorInfo.clusterWide {
+			if err := WaitForClusterWideOperatorRunning(operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
+				return err
+			}
+		} else {
+			if err := WaitForOperatorRunning(namespace, operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
+				return err
+			}
 		}
 	} else {
 		return fmt.Errorf("Operator %s not found", dependentOperator)
@@ -266,11 +286,32 @@ func InstallOperator(namespace, subscriptionName, channel string, catalog operat
 	return nil
 }
 
+// InstallClusterWideOperator installs an operator for all namespaces via subscrition
+func InstallClusterWideOperator(namespace, subscriptionName, channel string, catalog operatorCatalog) error {
+	olmNamespace := config.GetOlmNamespace()
+
+	GetLogger(namespace).Infof("Subscribing to %s operator from source %s on channel %s in namespace %s", subscriptionName, catalog.source, channel, olmNamespace)
+	if _, err := CreateNamespacedSubscriptionIfNotExist(olmNamespace, subscriptionName, subscriptionName, catalog, channel); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // WaitForOperatorRunning waits for an operator to be running
 func WaitForOperatorRunning(namespace, operatorPackageName string, catalog operatorCatalog, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator running", operatorPackageName), timeoutInMin,
 		func() (bool, error) {
 			return IsOperatorRunning(namespace, operatorPackageName, catalog)
+		})
+}
+
+// WaitForClusterWideOperatorRunning waits for a cluster wide operator to be running
+func WaitForClusterWideOperatorRunning(operatorPackageName string, catalog operatorCatalog, timeoutInMin int) error {
+	olmNamespace := config.GetOlmNamespace()
+	return WaitForOnOpenshift(olmNamespace, fmt.Sprintf("%s operator in namespace %s running", operatorPackageName, olmNamespace), timeoutInMin,
+		func() (bool, error) {
+			return IsOperatorRunning(olmNamespace, operatorPackageName, catalog)
 		})
 }
 
@@ -309,6 +350,7 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      subscriptionName,
 			Namespace: namespace,
+			Labels:    map[string]string{clusterWideSubscriptionLabel: ""},
 		},
 		Spec: &olmapiv1alpha1.SubscriptionSpec{
 			Package:                operatorName,
@@ -323,6 +365,43 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 	}
 
 	return subscription, nil
+}
+
+// GetClusterWideTestSubscriptions returns cluster wide subscriptions created by BDD tests
+func GetClusterWideTestSubscriptions() (*olmapiv1alpha1.SubscriptionList, error) {
+	olmNamespace := config.GetOlmNamespace()
+
+	subscriptions := &olmapiv1alpha1.SubscriptionList{}
+	if err := kubernetes.ResourceC(kubeClient).ListWithNamespaceAndLabel(olmNamespace, subscriptions, map[string]string{clusterWideSubscriptionLabel: ""}); err != nil {
+		return nil, fmt.Errorf("Error retrieving SubscriptionList in namespace %s: %v", olmNamespace, err)
+	}
+
+	return subscriptions, nil
+}
+
+// DeleteSubscription deletes Subscription and related objects
+func DeleteSubscription(subscription *olmapiv1alpha1.Subscription) error {
+	installedCsv := subscription.Status.InstalledCSV
+	suscriptionNamespace := subscription.Namespace
+
+	// Delete Subscription
+	if err := kubernetes.ResourceC(kubeClient).Delete(subscription); err != nil {
+		return err
+	}
+
+	// Delete related CSV
+	csv := &olmapiv1alpha1.ClusterServiceVersion{}
+	exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Namespace: suscriptionNamespace, Name: installedCsv}, csv)
+	if err != nil {
+		return err
+	}
+	if exists {
+		if err := kubernetes.ResourceC(kubeClient).Delete(csv); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func getOperatorImageNameAndTag() string {

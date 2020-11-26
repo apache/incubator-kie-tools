@@ -146,6 +146,14 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	if err := framework.CheckSetup(); err != nil {
 		panic(err)
 	}
+
+	// Final cleanup once test suite finishes
+	ctx.AfterSuite(func() {
+		if !config.IsKeepNamespace() {
+			// Delete all operators created by test suite
+			deleteClusterWideTestOperators()
+		}
+	})
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
@@ -237,4 +245,19 @@ func showScenarios(features []*feature, showSteps bool) {
 		}
 	}
 	mainLogger.Info("------------------ END SHOW SCENARIOS ------------------")
+}
+
+func deleteClusterWideTestOperators() {
+	subscriptions, err := framework.GetClusterWideTestSubscriptions()
+	if err != nil {
+		framework.GetMainLogger().Errorf("Error retrieving cluster wide test subscriptions: %v", err)
+		return
+	}
+
+	for _, subscription := range subscriptions.Items {
+		err := framework.DeleteSubscription(&subscription)
+		if err != nil {
+			framework.GetMainLogger().Errorf("Error deleting cluster wide test subscription %s: %v", subscription.Name, err)
+		}
+	}
 }
