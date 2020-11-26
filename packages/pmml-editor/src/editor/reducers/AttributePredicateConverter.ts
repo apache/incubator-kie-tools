@@ -15,6 +15,7 @@
  */
 import {
   CompoundPredicate,
+  CompoundPredicateBooleanOperator,
   DataField,
   DataType,
   False,
@@ -65,10 +66,10 @@ const _toText = (
     const cp: CompoundPredicate = predicate as CompoundPredicate;
     let text: string = "";
     const children: string[] = [];
-    text = text + (nesting > 0 ? "( " : "");
+    // TODO {manstis} If parenthesis are needed: text = text + (nesting > 0 ? "( " : "");
     cp.predicates?.forEach(p => children.push(_toText(p, fieldToDataType, nesting + 1)));
     text = text + children.join(" " + cp.booleanOperator + " ");
-    text = text + (nesting > 0 ? ")" : "");
+    // TODO {manstis} If parenthesis are needed: text = text + (nesting > 0 ? ")" : "");
     return text;
   }
   return "";
@@ -98,6 +99,16 @@ const BinarySimplePredicate = (field: FieldName, operator: SimplePredicateOperat
   return predicate;
 };
 
+const SimpleCompoundPredicate = (
+  predicate1: Predicate,
+  predicate2: Predicate,
+  booleanOperator: CompoundPredicateBooleanOperator
+) => {
+  const predicate: CompoundPredicate = new CompoundPredicate({ predicates: [predicate1, predicate2], booleanOperator });
+  (predicate as any)._type = "CompoundPredicate";
+  return predicate;
+};
+
 const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, DataType>): string => {
   if (value === undefined) {
     return "";
@@ -124,11 +135,14 @@ export const fromText = (text: string): Predicate | undefined => {
     return undefined;
   }
 
+  text = text.trim();
+
   //Quick RegEx based match for SimplePredicates.. Need a parser for ALL Predicates
   const regTrue = /^True$/gm;
   const regFalse = /^False$/gm;
   const regUnaryOperator = /^([a-zA-Z]+[0-9]*)\s+(isMissing|isNotMissing)\s*$/gm;
   const regBinaryOperator = /^([a-zA-Z]+[0-9]*)\s*(=|>|<|<=|>=|<>)\s*"?([a-zA-Z0-9]+)"?$/gm;
+  const regSimpleCompound = /^(.*)\s*(and|or|xor)\s*(.*)$/gm;
 
   if (regTrue.test(text)) {
     return TruePredicate();
@@ -149,6 +163,16 @@ export const fromText = (text: string): Predicate | undefined => {
       _operator(binaryMatches[2]) as SimplePredicateOperator,
       binaryMatches[3]
     );
+  }
+
+  const compoundMatches = regSimpleCompound.exec(text);
+  if (compoundMatches !== null) {
+    const predicate1 = fromText(compoundMatches[1]);
+    const predicate2 = fromText(compoundMatches[3]);
+    const booleanOperator = compoundMatches[2] as CompoundPredicateBooleanOperator;
+    if (predicate1 !== undefined && predicate2 !== undefined && booleanOperator !== undefined) {
+      return SimpleCompoundPredicate(predicate1, predicate2, booleanOperator);
+    }
   }
 
   return TruePredicate();
