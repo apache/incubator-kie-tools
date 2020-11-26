@@ -35,6 +35,7 @@
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production",
+    "build:productization": "yarn run build:prod && echo",
     "build:showcase": "yarn run build:fast --mode development",
     "start": "webpack-dev-server -d --host 0.0.0.0 --mode development"
   },

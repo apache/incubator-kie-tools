@@ -21,7 +21,8 @@
     "watch": "webpack",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
-    "build:prod": "yarn run build --mode production --devtool none"
+    "build:prod": "yarn run build --mode production --devtool none",
+    "build:productization": "yarn run build:prod && echo"
   },
   "jest-junit": {
     "outputDirectory": "./target"
