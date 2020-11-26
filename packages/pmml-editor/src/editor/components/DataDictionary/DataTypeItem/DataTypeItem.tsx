@@ -54,7 +54,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       console.log("click outside");
       onOutsideClick();
     },
-    { eventTypes: ["click"], ignoreClass: "data-type-item__type-select__option" }
+    { eventTypes: ["click"], ignoreClass: "data-type-item__type-select__option", disabled: editing !== index }
   );
 
   const handleNameChange = (value: string) => {
@@ -119,94 +119,92 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   }, [editing]);
 
   return (
-    <>
+    <article className={`data-type-item editable ${editing === index ? "editing" : ""} data-type-item-n${index}`}>
       {editing === index && (
-        <article className={`data-type-item editing data-type-item-n${index}`}>
-          <section ref={ref}>
-            <Form onSubmit={handleSave}>
-              <Stack hasGutter={true}>
-                <StackItem>
-                  <Split hasGutter={true}>
-                    <SplitItem>
-                      <FormGroup
-                        fieldId="name"
-                        helperTextInvalid="Name already used by another Data Type"
+        <section className="data-type-item__inner" ref={ref}>
+          <Form onSubmit={handleSave}>
+            <Stack hasGutter={true}>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    <FormGroup
+                      fieldId="name"
+                      helperTextInvalid="Name already used by another Data Type"
+                      validated={validation}
+                      style={{ width: 280 }}
+                    >
+                      <TextInput
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={name}
+                        onChange={handleNameChange}
+                        placeholder="Name"
                         validated={validation}
-                        style={{ width: 280 }}
-                      >
-                        <TextInput
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={name}
-                          onChange={handleNameChange}
-                          placeholder="Name"
-                          validated={validation}
-                          onBlur={handleNameSave}
-                          autoComplete="off"
+                        onBlur={handleNameSave}
+                        autoComplete="off"
+                      />
+                    </FormGroup>
+                  </SplitItem>
+                  <SplitItem>
+                    <Select
+                      variant={SelectVariant.single}
+                      aria-label="Select Input"
+                      onToggle={typeToggle}
+                      onSelect={typeSelect}
+                      selections={typeSelection}
+                      isOpen={isTypeSelectOpen}
+                      placeholder="Type"
+                      className="data-type-item__type-select"
+                    >
+                      {typeOptions.map((option, optionIndex) => (
+                        <SelectOption
+                          key={optionIndex}
+                          value={option.value}
+                          className="data-type-item__type-select__option"
                         />
-                      </FormGroup>
-                    </SplitItem>
-                    <SplitItem>
-                      <Select
-                        variant={SelectVariant.single}
-                        aria-label="Select Input"
-                        onToggle={typeToggle}
-                        onSelect={typeSelect}
-                        selections={typeSelection}
-                        isOpen={isTypeSelectOpen}
-                        placeholder="Type"
-                        className="data-type-item__type-select"
+                      ))}
+                    </Select>
+                  </SplitItem>
+                  <SplitItem isFilled={true}>&nbsp;</SplitItem>
+                </Split>
+              </StackItem>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    {dataType.constraints === undefined && (
+                      <Button
+                        variant="link"
+                        icon={<AngleRightIcon />}
+                        isInline={true}
+                        iconPosition="right"
+                        onClick={handleConstraints}
+                        isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
                       >
-                        {typeOptions.map((option, optionIndex) => (
-                          <SelectOption
-                            key={optionIndex}
-                            value={option.value}
-                            className="data-type-item__type-select__option"
-                          />
-                        ))}
-                      </Select>
-                    </SplitItem>
-                    <SplitItem isFilled={true}>&nbsp;</SplitItem>
-                  </Split>
-                </StackItem>
-                <StackItem>
-                  <Split hasGutter={true}>
-                    <SplitItem>
-                      {dataType.constraints === undefined && (
+                        <span>Add Constraints</span>
+                      </Button>
+                    )}
+                    {dataType.constraints !== undefined && (
+                      <>
+                        <span>Constraints</span>
                         <Button
                           variant="link"
-                          icon={<AngleRightIcon />}
-                          isInline={true}
-                          iconPosition="right"
                           onClick={handleConstraints}
                           isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
                         >
-                          <span>Add Constraints</span>
+                          <ConstraintsLabel constraints={dataType.constraints} />
                         </Button>
-                      )}
-                      {dataType.constraints !== undefined && (
-                        <>
-                          <span>Constraints</span>
-                          <Button
-                            variant="link"
-                            onClick={handleConstraints}
-                            isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
-                          >
-                            <ConstraintsLabel constraints={dataType.constraints} />
-                          </Button>
-                        </>
-                      )}
-                    </SplitItem>
-                  </Split>
-                </StackItem>
-              </Stack>
-            </Form>
-          </section>
-        </article>
+                      </>
+                    )}
+                  </SplitItem>
+                </Split>
+              </StackItem>
+            </Stack>
+          </Form>
+        </section>
       )}
       {editing !== index && (
-        <article className={`data-type-item data-type-item-n${index}`} onClick={handleEditStatus}>
+        <section className="data-type-item__inner" onClick={handleEditStatus}>
           <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
             <FlexItem>
               <strong>{name}</strong>
@@ -228,9 +226,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               </Button>
             </FlexItem>
           </Flex>
-        </article>
+        </section>
       )}
-    </>
+    </article>
   );
 };
 

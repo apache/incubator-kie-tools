@@ -113,8 +113,8 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   };
 
-  const onValidateOutputFieldName = (index: number | undefined, name: string | undefined): boolean => {
-    return validateOutputFieldName(index, name);
+  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: string | undefined): boolean => {
+    return validateOutputFieldName(index, nameToValidate);
   };
 
   return (
@@ -125,13 +125,16 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
       }}
     >
       <section>
-        {outputs.map((o, index) => {
-          if (activeOutputFieldIndex === index) {
-            return (
+        {outputs.map((o, index) => (
+          <article
+            className={`output-item output-item-n${activeOutputFieldIndex} editable ${
+              activeOutputFieldIndex === index ? "editing" : ""
+            }`}
+            key={o.name.value}
+          >
+            {activeOutputFieldIndex === index && (
               <OutputFieldEditRow
-                key={index}
                 activeOperation={activeOperation}
-                activeOutputFieldIndex={index}
                 name={name}
                 setName={setName}
                 dataType={dataType}
@@ -158,12 +161,9 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
                 onCommit={onCommit}
                 onCancel={onCancel}
               />
-            );
-          } else {
-            return (
+            )}
+            {activeOutputFieldIndex !== index && (
               <OutputFieldRow
-                key={index}
-                activeOutputFieldIndex={index}
                 name={o.name}
                 dataType={o.dataType}
                 optype={o.optype}
@@ -177,9 +177,9 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
                 onEditOutputField={() => onEditOutputField(index)}
                 onDeleteOutputField={() => onDelete(index)}
               />
-            );
-          }
-        })}
+            )}
+          </article>
+        ))}
       </section>
       {outputs.length === 0 && (
         <Bullseye>

@@ -43,7 +43,6 @@ import { Operation } from "../../EditorScorecard";
 
 interface OutputFieldEditRowProps {
   activeOperation: Operation;
-  activeOutputFieldIndex: number | undefined;
   name: ValidatedType<FieldName> | undefined;
   setName: (name: ValidatedType<FieldName>) => void;
   dataType: DataType;
@@ -94,7 +93,6 @@ const dataTypes = [
 export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   const {
     activeOperation,
-    activeOutputFieldIndex,
     name,
     setName,
     dataType,
@@ -128,7 +126,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   };
 
   const ref = useOnclickOutside(
-    event => {
+    () => {
       if (name?.valid) {
         onCommitAndClose();
       } else {
@@ -142,9 +140,9 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   );
 
   return (
-    <article
+    <section
       ref={ref}
-      className={`output-item output-item-n${activeOutputFieldIndex} editable editing`}
+      className={`output-item__inner`}
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === "Escape") {
@@ -178,7 +176,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                       valid: validateOutputName(e)
                     });
                   }}
-                  onBlur={e => {
+                  onBlur={() => {
                     if (name?.valid) {
                       onCommit({
                         name: name?.value as FieldName
@@ -248,6 +246,6 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
           </Split>
         </StackItem>
       </Stack>
-    </article>
+    </section>
   );
 };

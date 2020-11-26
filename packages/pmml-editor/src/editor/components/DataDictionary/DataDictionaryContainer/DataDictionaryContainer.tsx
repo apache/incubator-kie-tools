@@ -2,7 +2,6 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
-import { v4 as uuid } from "uuid";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
@@ -206,7 +205,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                         <DataTypeItem
                           dataType={item}
                           index={index}
-                          key={uuid()}
+                          key={item.name}
                           onSave={handleSave}
                           onEdit={handleEdit}
                           onDelete={handleDelete}
