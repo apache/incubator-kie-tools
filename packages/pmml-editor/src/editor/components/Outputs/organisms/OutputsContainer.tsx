@@ -24,7 +24,7 @@ import {
   RankOrder,
   ResultFeature
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { Button, Stack, StackItem, Title, TitleSizes } from "@patternfly/react-core";
+import { Button, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, PlusIcon } from "@patternfly/react-icons";
 import { OutputFieldsTable } from "./OutputFieldsTable";
 import { Operation } from "../../EditorScorecard";
@@ -209,16 +209,11 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
             {viewSection === "extended-properties" && (
               <Stack hasGutter={true}>
                 <StackItem>
-                  <Title headingLevel="h4" size={TitleSizes.xl}>
-                    Editing Properties{" "}
-                    {name?.value !== "" ? (
-                      <span>
-                        for <em>{name?.value}</em>
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </Title>
+                  <TextContent>
+                    <Title size="lg" headingLevel="h1">
+                      <a onClick={e => setViewSection("overview")}>{name?.value}</a>&nbsp;/&nbsp;Properties
+                    </Title>
+                  </TextContent>
                 </StackItem>
                 <StackItem className="outputs-container__extended-properties">
                   <OutputFieldExtendedProperties
