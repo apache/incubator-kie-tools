@@ -98,11 +98,11 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     return _value ? <span>{_value}</span> : <span>&nbsp;</span>;
   };
 
-  const toNumber = (value: string): number | undefined => {
-    if (value === "") {
+  const toNumber = (_value: string): number | undefined => {
+    if (_value === "") {
       return undefined;
     }
-    const n = Number(value);
+    const n = Number(_value);
     if (isNaN(n)) {
       return undefined;
     }

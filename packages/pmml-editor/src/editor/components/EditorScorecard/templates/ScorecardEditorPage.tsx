@@ -173,7 +173,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   modelIndex={modelIndex}
                   activeOperation={activeOperation}
                   setActiveOperation={setActiveOperation}
-                  characteristics={filteredCharacteristics}
+                  characteristics={characteristics?.Characteristic ?? []}
+                  filteredCharacteristics={filteredCharacteristics}
                   filter={filter}
                   onFilter={setFilter}
                   deleteCharacteristic={index => {

@@ -41,7 +41,7 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
 };
 
 const attributesToTruncatedText = (attributes: Attribute[], fields: DataField[]): string => {
-  let text: string[] = [];
+  const text: string[] = [];
   attributes.forEach(attribute => {
     let line: string = toText(attribute.predicate, fields);
     if (line.length > 32) {
@@ -53,9 +53,9 @@ const attributesToTruncatedText = (attributes: Attribute[], fields: DataField[])
 };
 
 const attributesToFullText = (attributes: Attribute[], fields: DataField[]): string => {
-  let text: string[] = [];
+  const text: string[] = [];
   attributes.forEach(attribute => {
-    let line: string = toText(attribute.predicate, fields);
+    const line: string = toText(attribute.predicate, fields);
     text.push(line);
   });
   return text.join("\n");

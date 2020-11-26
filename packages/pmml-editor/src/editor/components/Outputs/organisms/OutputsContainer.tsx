@@ -74,7 +74,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const addOutputField = () => {
-    let numberOfOutputFields = output?.OutputField.length;
+    const numberOfOutputFields = output?.OutputField.length;
     if (numberOfOutputFields !== undefined) {
       //Index of the new row is equal to the number of existing rows
       setEditItemIndex(numberOfOutputFields);

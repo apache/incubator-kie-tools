@@ -121,8 +121,8 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     return n;
   };
 
-  const validateText = (text: string | undefined) => {
-    return text !== undefined && text.trim() !== "";
+  const validateText = (_text: string | undefined) => {
+    return _text !== undefined && _text.trim() !== "";
   };
 
   return (

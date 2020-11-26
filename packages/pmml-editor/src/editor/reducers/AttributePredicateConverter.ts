@@ -64,7 +64,7 @@ const _toText = (
   } else if (predicate instanceof CompoundPredicate) {
     const cp: CompoundPredicate = predicate as CompoundPredicate;
     let text: string = "";
-    let children: string[] = [];
+    const children: string[] = [];
     text = text + (nesting > 0 ? "( " : "");
     cp.predicates?.forEach(p => children.push(_toText(p, fieldToDataType, nesting + 1)));
     text = text + children.join(" " + cp.booleanOperator + " ");
@@ -137,13 +137,13 @@ export const fromText = (text: string): Predicate | undefined => {
     return FalsePredicate();
   }
 
-  let unaryMatches: RegExpExecArray | null;
-  if ((unaryMatches = regUnaryOperator.exec(text))) {
+  const unaryMatches = regUnaryOperator.exec(text);
+  if (unaryMatches !== null) {
     return UnarySimplePredicate(unaryMatches[1] as FieldName, unaryMatches[2] as SimplePredicateOperator);
   }
 
-  let binaryMatches: RegExpExecArray | null;
-  if ((binaryMatches = regBinaryOperator.exec(text))) {
+  const binaryMatches = regBinaryOperator.exec(text);
+  if (binaryMatches !== null) {
     return BinarySimplePredicate(
       binaryMatches[1] as FieldName,
       _operator(binaryMatches[2]) as SimplePredicateOperator,

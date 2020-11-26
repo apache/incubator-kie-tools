@@ -38,7 +38,8 @@ interface CharacteristicsContainerProps {
   modelIndex: number;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
-  characteristics: IndexedCharacteristic[];
+  characteristics: Characteristic[];
+  filteredCharacteristics: IndexedCharacteristic[];
   filter: string;
   onFilter: (filter: string) => void;
   deleteCharacteristic: (index: number) => void;
@@ -53,6 +54,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     activeOperation,
     setActiveOperation,
     characteristics,
+    filteredCharacteristics,
     filter,
     onFilter,
     deleteCharacteristic,
@@ -87,18 +89,18 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   };
 
   const validateCharacteristicName = useCallback(
-    (index: number | undefined, name: string): boolean => {
+    (editIndex: number | undefined, name: string): boolean => {
       if (name === undefined || name.trim() === "") {
         return false;
       }
-      const matching = characteristics.filter(ic => index !== ic.index && ic.characteristic.name === name);
+      const matching = characteristics.filter((c, index) => editIndex !== index && c.name === name);
       return matching.length === 0;
     },
     [characteristics]
   );
 
   const onAddCharacteristic = useCallback(() => {
-    let numberOfCharacteristics = characteristics?.length;
+    const numberOfCharacteristics = characteristics?.length;
     if (numberOfCharacteristics !== undefined) {
       //Index of the new row is equal to the number of existing rows
       setSelectedCharacteristicIndex(numberOfCharacteristics);
@@ -118,7 +120,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     if (selectedCharacteristicIndex === undefined) {
       return;
     }
-    let numberOfAttributes = characteristics[selectedCharacteristicIndex].characteristic.Attribute.length;
+    const numberOfAttributes = characteristics[selectedCharacteristicIndex].Attribute.length;
     //Index of the new row is equal to the number of existing rows
     setSelectedAttributeIndex(numberOfAttributes);
     dispatch({
@@ -141,28 +143,15 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   };
 
   const onCommit = (partial: Partial<Characteristic>) => {
-    if (selectedCharacteristicIndex !== undefined) {
-      // {selectedCharacteristicIndex} is the absolute index for unfiltered data. It is used to identify
-      // the correct Characteristic in the model to update. However {characteristics} represent only the
-      // visible Characteristics following applicable of a filter. We therefore need to do a reverse
-      // lookup for the correct (visible) index.
-      const visibleIndex: number | undefined = characteristics
-        .map((value, index) => {
-          return { absolute: value.index, relative: index };
-        })
-        .filter((value, index) => value.absolute === selectedCharacteristicIndex)
-        .map(value => value.relative)[0];
-      if (visibleIndex === undefined) {
-        return;
-      }
+    if (selectedCharacteristicIndex === undefined) {
+      return;
+    }
+    const characteristic = characteristics[selectedCharacteristicIndex];
+    const existingPartial: Partial<Characteristic> = {};
+    Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
 
-      const characteristic = characteristics[visibleIndex].characteristic;
-      const existingPartial: Partial<Characteristic> = {};
-      Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
-
-      if (!isEqual(partial, existingPartial)) {
-        commit(selectedCharacteristicIndex, { ...characteristic, ...partial });
-      }
+    if (!isEqual(partial, existingPartial)) {
+      commit(selectedCharacteristicIndex, { ...characteristic, ...partial });
     }
   };
 
@@ -188,8 +177,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   return (
     <div className="characteristics-container">
-      {characteristics.length === 0 && emptyStateProvider}
-      {characteristics.length > 0 && (
+      {filteredCharacteristics.length === 0 && emptyStateProvider}
+      {filteredCharacteristics.length > 0 && (
         <SwitchTransition mode={"out-in"}>
           <CSSTransition
             timeout={{
@@ -210,7 +199,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       modelIndex={modelIndex}
                       activeOperation={activeOperation}
                       setActiveOperation={setActiveOperation}
-                      characteristics={characteristics}
+                      characteristics={filteredCharacteristics}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
                       setSelectedCharacteristicIndex={setSelectedCharacteristicIndex}
                       validateCharacteristicName={validateCharacteristicName}
