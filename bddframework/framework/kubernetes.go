@@ -280,9 +280,9 @@ func IsCrdAvailable(crdName string) (bool, error) {
 	return kubernetes.ResourceC(kubeClient).Fetch(crdEntity)
 }
 
-// DeletePod deletes pod
-func DeletePod(pod *corev1.Pod) error {
-	return kubernetes.ResourceC(kubeClient).Delete(pod)
+// DeleteObject deletes object
+func DeleteObject(o meta.ResourceObject) error {
+	return kubernetes.ResourceC(kubeClient).Delete(o)
 }
 
 // CreateSecret creates a new secret

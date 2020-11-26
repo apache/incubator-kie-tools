@@ -22,6 +22,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	imgv1 "github.com/openshift/api/image/v1"
@@ -29,6 +30,7 @@ import (
 )
 
 var (
+	// Map of created namespaces, contains slices of objects created in those namespaces
 	namespacesCreated sync.Map
 )
 
@@ -103,7 +105,7 @@ func generateNamespaceName() string {
 	for isNamespaceAlreadyCreated(ns) {
 		ns = framework.GenerateNamespaceName("cucumber")
 	}
-	namespacesCreated.Store(ns, true)
+	namespacesCreated.Store(ns, []meta.ResourceObject{})
 	return ns
 }
 
@@ -185,4 +187,13 @@ func deleteTemporaryExamplesFolder(data *Data) {
 	if err != nil {
 		framework.GetMainLogger().Errorf("Error while deleting temporary examples folder %s: %v", data.KogitoExamplesLocation, err)
 	}
+}
+
+// GetCreatedOperatorObjects returns all operator objects created for this namespace
+func (data *Data) GetCreatedOperatorObjects() []meta.ResourceObject {
+	result := []meta.ResourceObject{}
+	if value, ok := namespacesCreated.Load(data.Namespace); ok {
+		result = value.([]meta.ResourceObject)
+	}
+	return result
 }
