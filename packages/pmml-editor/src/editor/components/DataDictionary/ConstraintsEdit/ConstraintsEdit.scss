@@ -1,4 +1,11 @@
 .constraints {
+  &__form {
+    // TODO {kelvah} those magic numbers must disappear
+    height: calc(60vh - 90px);
+    overflow-y: auto;
+    padding: 1em;
+    background-color: var(--pf-global--BackgroundColor--200);
+  }
   &__include-range {
     margin-top: 1em;
     label {

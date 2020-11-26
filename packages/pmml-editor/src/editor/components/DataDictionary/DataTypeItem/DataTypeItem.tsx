@@ -17,7 +17,7 @@ import {
   StackItem,
   TextInput
 } from "@patternfly/react-core";
-import { AngleRightIcon, TrashIcon } from "@patternfly/react-icons";
+import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
 import { DataField, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
@@ -30,12 +30,23 @@ interface DataTypeItemProps {
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;
   onConstraintsEdit: (dataType: DataField) => void;
+  onConstraintsDelete: () => void;
   onValidate: (dataTypeName: string) => boolean;
   onOutsideClick: () => void;
 }
 
 const DataTypeItem = (props: DataTypeItemProps) => {
-  const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit, onValidate, onOutsideClick } = props;
+  const {
+    dataType,
+    index,
+    onSave,
+    onEdit,
+    onDelete,
+    onConstraintsEdit,
+    onConstraintsDelete,
+    onValidate,
+    onOutsideClick
+  } = props;
   const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<DataField["type"]>(dataType.type);
@@ -172,29 +183,27 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <StackItem>
                 <Split hasGutter={true}>
                   <SplitItem>
-                    {dataType.constraints === undefined && (
-                      <Button
-                        variant="link"
-                        icon={<AngleRightIcon />}
-                        isInline={true}
-                        iconPosition="right"
-                        onClick={handleConstraints}
-                        isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
-                      >
-                        <span>Add Constraints</span>
-                      </Button>
-                    )}
                     {dataType.constraints !== undefined && (
-                      <>
-                        <span>Constraints</span>
-                        <Button
-                          variant="link"
-                          onClick={handleConstraints}
-                          isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
-                        >
-                          <ConstraintsLabel constraints={dataType.constraints} />
-                        </Button>
-                      </>
+                      <ConstraintsLabel constraints={dataType.constraints} onConstraintsDelete={onConstraintsDelete} />
+                    )}
+                    {(name.trim().length === 0 || typeSelection === "boolean") && (
+                      <Label icon={<ArrowAltCircleRightIcon />}>
+                        {dataType.constraints === undefined ? "Add" : "Edit"} Constraints
+                      </Label>
+                    )}
+                    {!(name.trim().length === 0 || typeSelection === "boolean") && (
+                      <Label
+                        variant="outline"
+                        color="orange"
+                        href="#"
+                        icon={<ArrowAltCircleRightIcon />}
+                        onClick={event => {
+                          event.preventDefault();
+                          handleConstraints();
+                        }}
+                      >
+                        {dataType.constraints === undefined ? "Add" : "Edit"} Constraints
+                      </Label>
                     )}
                   </SplitItem>
                 </Split>

@@ -2,7 +2,6 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import {
-  ActionGroup,
   Alert,
   Button,
   Card,
@@ -23,6 +22,7 @@ import {
   TextInput,
   TextVariants
 } from "@patternfly/react-core";
+import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
 import { Constraints, DataField, EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { Validated } from "../../../types";
@@ -169,136 +169,154 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       <Stack hasGutter={true}>
         <StackItem>
           <TextContent>
-            <Text component={TextVariants.h3}>Constraints for {dataType.name}</Text>
+            <Text component={TextVariants.h3}>
+              <Button variant="link" isInline={true} onClick={event => handleSubmit(event)}>
+                {dataType.name}
+              </Button>
+              &nbsp;/&nbsp;Constraints
+            </Text>
           </TextContent>
         </StackItem>
-
         <StackItem>
-          <Form onSubmit={handleSubmit} autoComplete="off" className="constraints-form">
-            <FormGroup
-              fieldId="constraints-type"
-              label="Constraints Type"
-              helperText="Select the type of constraint and then fill in the required fields."
-            >
-              {/*PF 2020.08 has a bug setting width of a Select*/}
-              <div style={{ width: 300 }}>
-                <Select
-                  id="constraints-type"
-                  variant={SelectVariant.single}
-                  aria-label="Select Constraint Type"
-                  onToggle={handleTypeOpening}
-                  onSelect={handleTypeChange}
-                  selections={constraintType}
-                  isOpen={typeIsOpen}
-                  placeholderText={"Select a type"}
-                >
-                  {constraintsTypes.map((item, index) => (
-                    <SelectOption key={index} value={item.value}>
-                      {item.isPlaceholder ? "Select a type" : item.value}
-                    </SelectOption>
-                  ))}
-                </Select>
-              </div>
-            </FormGroup>
-            {/*range constraints editing to be moved to a dedicated component*/}
-            {constraintType === "Range" && (
-              <Card isCompact={true}>
-                <CardTitle>Range Constraint</CardTitle>
-                <CardBody>
-                  <Stack hasGutter={true}>
-                    {validation.form === "error" && (
+          <section className="constraints__form">
+            <Form onSubmit={handleSubmit} autoComplete="off">
+              <FormGroup
+                fieldId="constraints-type"
+                label="Constraints Type"
+                helperText="Select the type of constraint and then fill in the required fields."
+              >
+                {/*PF 2020.08 has a bug setting width of a Select*/}
+                <div style={{ width: 300 }}>
+                  <Select
+                    id="constraints-type"
+                    variant={SelectVariant.single}
+                    aria-label="Select Constraint Type"
+                    onToggle={handleTypeOpening}
+                    onSelect={handleTypeChange}
+                    selections={constraintType}
+                    isOpen={typeIsOpen}
+                    placeholderText={"Select a type"}
+                  >
+                    {constraintsTypes.map((item, index) => (
+                      <SelectOption key={index} value={item.value}>
+                        {item.isPlaceholder ? "Select a type" : item.value}
+                      </SelectOption>
+                    ))}
+                  </Select>
+                </div>
+              </FormGroup>
+              {/*range constraints editing to be moved to a dedicated component*/}
+              {constraintType === "Range" && (
+                <Card isCompact={true}>
+                  <CardTitle>Range Constraint</CardTitle>
+                  <CardBody>
+                    <Stack hasGutter={true}>
+                      {validation.form === "error" && (
+                        <StackItem>
+                          <Alert variant="danger" isInline={true} title="Please enter both start and end value." />
+                        </StackItem>
+                      )}
                       <StackItem>
-                        <Alert variant="danger" isInline={true} title="Please enter both start and end value." />
+                        <TextContent>
+                          <Text component={TextVariants.p}>
+                            A range has a start and an end value, both field values are required (*). <br />
+                            The value at each end of the range may be included or excluded from the range definition.
+                            <br />
+                            If the check box is cleared, the start or end value is excluded.
+                          </Text>
+                        </TextContent>
                       </StackItem>
-                    )}
-                    <StackItem>
-                      <TextContent>
-                        <Text component={TextVariants.p}>
-                          A range has a start and an end value, both field values are required (*). <br />
-                          The value at each end of the range may be included or excluded from the range definition.
-                          <br />
-                          If the check box is cleared, the start or end value is excluded.
-                        </Text>
-                      </TextContent>
-                    </StackItem>
-                    <StackItem>
-                      <Split hasGutter={true}>
-                        <SplitItem style={{ width: 320 }}>
-                          <FormGroup label="Start Value" fieldId="start-value" isRequired={true}>
-                            <TextInput
-                              type="text"
-                              id="start-value"
-                              name="start-value"
-                              value={range.start.value}
-                              onChange={handleRangeChange}
-                              validated={validation.fields.start as Validated}
-                              tabIndex={20}
-                            />
-                          </FormGroup>
-                          <FormGroup fieldId="start-included" className="constraints__include-range">
-                            <Checkbox
-                              label="Include Start Value"
-                              aria-label="Include Start Value"
-                              id="start-included"
-                              isChecked={range.start.included}
-                              onChange={handleRangeChange}
-                              tabIndex={22}
-                            />
-                          </FormGroup>
-                        </SplitItem>
-                        <SplitItem style={{ width: 320 }}>
-                          <FormGroup label="End Value" fieldId="end-value" isRequired={true}>
-                            <TextInput
-                              type="text"
-                              id="end-value"
-                              name="end-value"
-                              value={range.end.value}
-                              onChange={handleRangeChange}
-                              validated={validation.fields.end as Validated}
-                              tabIndex={21}
-                            />
-                          </FormGroup>
-                          <FormGroup fieldId="end-included" className="constraints__include-range">
-                            <Checkbox
-                              label="Include End Value"
-                              aria-label="Include End Value"
-                              id="end-included"
-                              isChecked={range.end.included}
-                              onChange={handleRangeChange}
-                              tabIndex={23}
-                            />
-                          </FormGroup>
-                        </SplitItem>
-                      </Split>
-                    </StackItem>
-                  </Stack>
-                </CardBody>
-              </Card>
-            )}
-            {constraintType === "Enumeration" && (
-              <Card isCompact={true}>
-                <CardTitle>Enumerations List</CardTitle>
-                <CardBody>
-                  <ConstraintsEnumEdit
-                    enumerations={enums}
-                    onChange={handleEnumsChange}
-                    onDelete={handleEnumsDelete}
-                    onAdd={handleAddEnum}
-                    onSort={handleEnumSort}
-                    validation={validation}
-                  />
-                </CardBody>
-              </Card>
-            )}
-            <ActionGroup>
-              <Button variant="primary" type="submit">
+                      <StackItem>
+                        <Split hasGutter={true}>
+                          <SplitItem style={{ width: 320 }}>
+                            <FormGroup label="Start Value" fieldId="start-value" isRequired={true}>
+                              <TextInput
+                                type="text"
+                                id="start-value"
+                                name="start-value"
+                                value={range.start.value}
+                                onChange={handleRangeChange}
+                                validated={validation.fields.start as Validated}
+                                tabIndex={20}
+                              />
+                            </FormGroup>
+                            <FormGroup fieldId="start-included" className="constraints__include-range">
+                              <Checkbox
+                                label="Include Start Value"
+                                aria-label="Include Start Value"
+                                id="start-included"
+                                isChecked={range.start.included}
+                                onChange={handleRangeChange}
+                                tabIndex={22}
+                              />
+                            </FormGroup>
+                          </SplitItem>
+                          <SplitItem style={{ width: 320 }}>
+                            <FormGroup label="End Value" fieldId="end-value" isRequired={true}>
+                              <TextInput
+                                type="text"
+                                id="end-value"
+                                name="end-value"
+                                value={range.end.value}
+                                onChange={handleRangeChange}
+                                validated={validation.fields.end as Validated}
+                                tabIndex={21}
+                              />
+                            </FormGroup>
+                            <FormGroup fieldId="end-included" className="constraints__include-range">
+                              <Checkbox
+                                label="Include End Value"
+                                aria-label="Include End Value"
+                                id="end-included"
+                                isChecked={range.end.included}
+                                onChange={handleRangeChange}
+                                tabIndex={23}
+                              />
+                            </FormGroup>
+                          </SplitItem>
+                        </Split>
+                      </StackItem>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              )}
+              {constraintType === "Enumeration" && (
+                <Card isCompact={true}>
+                  <CardTitle>Enumerations List</CardTitle>
+                  <CardBody>
+                    <ConstraintsEnumEdit
+                      enumerations={enums}
+                      onChange={handleEnumsChange}
+                      onDelete={handleEnumsDelete}
+                      onAdd={handleAddEnum}
+                      onSort={handleEnumSort}
+                      validation={validation}
+                    />
+                  </CardBody>
+                </Card>
+              )}
+            </Form>
+          </section>
+        </StackItem>
+        <StackItem>
+          <Split hasGutter={true}>
+            <SplitItem>
+              <Button
+                variant="primary"
+                type="button"
+                onClick={handleSubmit}
+                icon={<ArrowAltCircleLeftIcon />}
+                iconPosition="left"
+              >
                 Done
               </Button>
+            </SplitItem>
+            <SplitItem>
               <Button variant="secondary" type="button" onClick={clearConstraints}>
                 Clear Constraints
               </Button>
-            </ActionGroup>
-          </Form>
+            </SplitItem>
+          </Split>
         </StackItem>
       </Stack>
     </section>

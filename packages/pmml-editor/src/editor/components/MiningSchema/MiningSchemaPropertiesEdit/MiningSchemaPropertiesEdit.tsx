@@ -12,6 +12,7 @@ import {
   Title,
   TitleSizes
 } from "@patternfly/react-core";
+import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 import { GenericSelector } from "../../EditorScorecard/atoms";
 import {
   InvalidValueTreatmentMethod,
@@ -101,7 +102,10 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
     <Stack hasGutter={true} className="mining-schema__edit">
       <StackItem>
         <Title headingLevel="h4" size={TitleSizes.xl}>
-          Editing Properties for <em>{field.name}</em>
+          <Button variant="link" isInline={true} onClick={onClose}>
+            {field.name}
+          </Button>
+          &nbsp;/&nbsp;Properties
         </Title>
       </StackItem>
       <StackItem>
@@ -259,7 +263,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
           </Form>
         </section>
         <section className="mining-schema__edit__actions">
-          <Button variant="primary" onClick={onClose}>
+          <Button variant="primary" onClick={onClose} icon={<ArrowAltCircleLeftIcon />} iconPosition="left">
             Done
           </Button>
         </section>

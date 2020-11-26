@@ -155,33 +155,6 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   return (
     <div className="data-dictionary">
       <StatusContext.Provider value={editing}>
-        <Flex style={{ margin: "1em 0 2em 0" }}>
-          <FlexItem>
-            <Button variant="primary" onClick={addDataType} icon={<PlusIcon />} iconPosition="left">
-              Add Data Type
-            </Button>
-          </FlexItem>
-          <FlexItem>
-            <Button
-              variant="secondary"
-              onClick={() => setViewSection("batch-add")}
-              icon={<BoltIcon />}
-              iconPosition="left"
-            >
-              Add Multiple Data Types
-            </Button>
-          </FlexItem>
-          <FlexItem align={{ default: "alignRight" }}>
-            <Button
-              variant={sorting ? "primary" : "secondary"}
-              onClick={toggleSorting}
-              icon={<SortIcon />}
-              iconPosition="left"
-            >
-              {sorting ? "End Sorting" : "Sort"}
-            </Button>
-          </FlexItem>
-        </Flex>
         <SwitchTransition mode={"out-in"}>
           <CSSTransition
             timeout={{
@@ -193,7 +166,42 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
           >
             <>
               {viewSection === "main" && (
-                <>
+                <section style={{ height: "100%" }}>
+                  <Flex style={{ margin: "0 0 2em 0" }}>
+                    <FlexItem>
+                      <Button
+                        variant="primary"
+                        onClick={addDataType}
+                        icon={<PlusIcon />}
+                        iconPosition="left"
+                        isDisabled={editing !== false}
+                      >
+                        Add Data Type
+                      </Button>
+                    </FlexItem>
+                    <FlexItem>
+                      <Button
+                        variant="secondary"
+                        onClick={() => setViewSection("batch-add")}
+                        icon={<BoltIcon />}
+                        iconPosition="left"
+                        isDisabled={editing !== false}
+                      >
+                        Add Multiple Data Types
+                      </Button>
+                    </FlexItem>
+                    <FlexItem align={{ default: "alignRight" }}>
+                      <Button
+                        variant={sorting ? "primary" : "secondary"}
+                        onClick={toggleSorting}
+                        icon={<SortIcon />}
+                        iconPosition="left"
+                        isDisabled={editing !== false}
+                      >
+                        {sorting ? "End Sorting" : "Sort"}
+                      </Button>
+                    </FlexItem>
+                  </Flex>
                   {!sorting && (
                     <section className="data-dictionary__types-list">
                       {dataTypes.length === 0 && (
@@ -210,6 +218,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                           onEdit={handleEdit}
                           onDelete={handleDelete}
                           onConstraintsEdit={handleConstraintsEdit}
+                          onConstraintsDelete={handleConstraintsDelete}
                           onValidate={dataTypeNameValidation}
                           onOutsideClick={handleOutsideClick}
                         />
@@ -221,7 +230,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                       <DataTypesSort dataTypes={dataTypes} onSort={handleSorting} />
                     </section>
                   )}
-                </>
+                </section>
               )}
               {viewSection === "batch-add" && (
                 <>
