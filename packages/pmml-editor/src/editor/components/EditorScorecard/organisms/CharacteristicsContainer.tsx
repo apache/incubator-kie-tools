@@ -142,7 +142,21 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const onCommit = (partial: Partial<Characteristic>) => {
     if (selectedCharacteristicIndex !== undefined) {
-      const characteristic = characteristics[selectedCharacteristicIndex].characteristic;
+      // {selectedCharacteristicIndex} is the absolute index for unfiltered data. It is used to identify
+      // the correct Characteristic in the model to update. However {characteristics} represent only the
+      // visible Characteristics following applicable of a filter. We therefore need to do a reverse
+      // lookup for the correct (visible) index.
+      const visibleIndex: number | undefined = characteristics
+        .map((value, index) => {
+          return { absolute: value.index, relative: index };
+        })
+        .filter((value, index) => value.absolute === selectedCharacteristicIndex)
+        .map(value => value.relative)[0];
+      if (visibleIndex === undefined) {
+        return;
+      }
+
+      const characteristic = characteristics[visibleIndex].characteristic;
       const existingPartial: Partial<Characteristic> = {};
       Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
 
