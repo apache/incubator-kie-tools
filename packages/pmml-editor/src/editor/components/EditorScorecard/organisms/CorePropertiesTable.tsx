@@ -60,9 +60,10 @@ const GenericSelectorEditor = (
   id: string,
   items: string[],
   selection: string | undefined,
-  onSelect: (_selection: string) => void
+  onSelect: (_selection: string) => void,
+  isDisabled?: boolean
 ) => {
-  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
+  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} isDisabled={isDisabled} />;
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
@@ -107,6 +108,10 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       return undefined;
     }
     return n;
+  };
+
+  const toYesNo = (value: boolean) => {
+    return value ? "Yes" : "No";
   };
 
   const onEdit = () => {
@@ -175,7 +180,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                 <Level hasGutter={true}>
                   <LevelItem>
                     <FormGroup label="Scorable?" fieldId="core-isScorable">
-                      {!isEditModeEnabled && value(props.isScorable.toString())}
+                      {!isEditModeEnabled && value(toYesNo(props.isScorable))}
                       {isEditModeEnabled && (
                         <Switch
                           id="core-isScorable"
@@ -207,7 +212,10 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           _selection => {
                             setFunctionName(_selection as MiningFunction);
                             onCommit({ functionName: _selection as MiningFunction });
-                          }
+                          },
+                          // TODO {manstis] Scorecards are ALWAYS regression. We probably don't need this field.
+                          // See http://dmg.org/pmml/v4-4/Scorecard.html
+                          true
                         )}
                     </FormGroup>
                   </LevelItem>
@@ -230,37 +238,6 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     </FormGroup>
                   </LevelItem>
                   <LevelItem>
-                    <FormGroup label="Baseline score" fieldId="core-baselinScore">
-                      {!isEditModeEnabled && value(props.baselineScore.toString())}
-                      {isEditModeEnabled && (
-                        <TextInput
-                          id="core-baselineScore"
-                          value={baselineScore}
-                          onChange={e => setBaselineScore(toNumber(e))}
-                          onBlur={() => {
-                            onCommit({ baselineScore: baselineScore });
-                          }}
-                          type="number"
-                        />
-                      )}
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup label="Baseline method" fieldId="core-baselineMethod">
-                      {!isEditModeEnabled && value(props.baselineMethod)}
-                      {isEditModeEnabled &&
-                        GenericSelectorEditor(
-                          "core-baselineMethod",
-                          ["max", "min", "mean", "neutral", "other"],
-                          baselineMethod,
-                          _selection => {
-                            setBaselineMethod(_selection as BaselineMethod);
-                            onCommit({ baselineMethod: _selection as BaselineMethod });
-                          }
-                        )}
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
                     <FormGroup label="Initial score" fieldId="core-initialScore">
                       {!isEditModeEnabled && value(props.initialScore.toString())}
                       {isEditModeEnabled && (
@@ -278,7 +255,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
-                      {!isEditModeEnabled && value(props.useReasonCodes.toString())}
+                      {!isEditModeEnabled && value(toYesNo(props.useReasonCodes))}
                       {isEditModeEnabled && (
                         <Switch
                           id="core-useReasonCodes"
@@ -302,7 +279,47 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           _selection => {
                             setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
                             onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
-                          }
+                          },
+                          // Reason Code Algorithm is only required when Reason Codes are enabled.
+                          // See http://dmg.org/pmml/v4-4/Scorecard.html
+                          !useReasonCodes
+                        )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Baseline score" fieldId="core-baselineScore">
+                      {!isEditModeEnabled && value(props.baselineScore.toString())}
+                      {isEditModeEnabled && (
+                        <TextInput
+                          id="core-baselineScore"
+                          value={baselineScore}
+                          onChange={e => setBaselineScore(toNumber(e))}
+                          onBlur={() => {
+                            onCommit({ baselineScore: baselineScore });
+                          }}
+                          type="number"
+                          // Baseline Score is only required when Reason Codes are enabled.
+                          // See http://dmg.org/pmml/v4-4/Scorecard.html
+                          isDisabled={!useReasonCodes}
+                        />
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Baseline method" fieldId="core-baselineMethod">
+                      {!isEditModeEnabled && value(props.baselineMethod)}
+                      {isEditModeEnabled &&
+                        GenericSelectorEditor(
+                          "core-baselineMethod",
+                          ["max", "min", "mean", "neutral", "other"],
+                          baselineMethod,
+                          _selection => {
+                            setBaselineMethod(_selection as BaselineMethod);
+                            onCommit({ baselineMethod: _selection as BaselineMethod });
+                          },
+                          // Baseline Method is only required when Reason Codes are enabled.
+                          // See http://dmg.org/pmml/v4-4/Scorecard.html
+                          !useReasonCodes
                         )}
                     </FormGroup>
                   </LevelItem>

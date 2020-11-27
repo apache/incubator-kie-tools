@@ -22,6 +22,7 @@ interface GenericSelectorProps {
   items: string[];
   selection: string | undefined;
   onSelect: (_selection: string) => void;
+  isDisabled?: boolean;
 }
 
 export const GenericSelector = (props: GenericSelectorProps) => {
@@ -46,6 +47,7 @@ export const GenericSelector = (props: GenericSelectorProps) => {
       selections={props.selection}
       isOpen={isOpen}
       menuAppendTo={() => document.body}
+      isDisabled={props.isDisabled ?? false}
     >
       {props.items.map((item, index) => (
         <SelectOption key={index} value={item} />
