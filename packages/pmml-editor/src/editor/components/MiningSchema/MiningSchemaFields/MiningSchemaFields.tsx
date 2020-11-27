@@ -85,6 +85,17 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
       key={field.name.value}
       onClick={handleEdit}
       ref={ref}
+      tabIndex={0}
+      onKeyDown={event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          event.stopPropagation();
+          handleEdit();
+        }
+        if (event.key === "Escape") {
+          onCancel();
+        }
+      }}
     >
       <Split hasGutter={true}>
         <SplitItem>

@@ -99,7 +99,8 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
     onSave({ name: name.trim(), type: typeSelection }, index);
   };
 
@@ -132,7 +133,16 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   return (
     <article className={`data-type-item editable ${editing === index ? "editing" : ""} data-type-item-n${index}`}>
       {editing === index && (
-        <section className="data-type-item__inner" ref={ref}>
+        <section
+          className="data-type-item__inner"
+          ref={ref}
+          tabIndex={0}
+          onKeyDown={event => {
+            if (event.key === "Escape") {
+              onOutsideClick();
+            }
+          }}
+        >
           <Form onSubmit={handleSave}>
             <Stack hasGutter={true}>
               <StackItem>
@@ -213,7 +223,18 @@ const DataTypeItem = (props: DataTypeItemProps) => {
         </section>
       )}
       {editing !== index && (
-        <section className="data-type-item__inner" onClick={handleEditStatus}>
+        <section
+          className="data-type-item__inner"
+          tabIndex={0}
+          onClick={handleEditStatus}
+          onKeyDown={event => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              event.stopPropagation();
+              handleEditStatus();
+            }
+          }}
+        >
           <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
             <FlexItem>
               <strong>{name}</strong>

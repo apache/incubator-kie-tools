@@ -167,7 +167,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
             <>
               {viewSection === "main" && (
                 <section style={{ height: "100%" }}>
-                  <Flex style={{ margin: "0 0 2em 0" }}>
+                  <Flex style={{ padding: "1em 0" }}>
                     <FlexItem>
                       <Button
                         variant="primary"
@@ -198,7 +198,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                         iconPosition="left"
                         isDisabled={editing !== false}
                       >
-                        {sorting ? "End Sorting" : "Sort"}
+                        {sorting ? "End Ordering" : "Order"}
                       </Button>
                     </FlexItem>
                   </Flex>
