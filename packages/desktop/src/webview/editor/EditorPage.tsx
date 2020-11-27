@@ -185,13 +185,11 @@ export function EditorPage(props: Props) {
             fileType: "svg",
             fileContent: previewSvg
           });
-        })
-        .catch(err => console.log(err))
-        .finally(() => {
           editor?.getStateControl().setSavedCommand();
           setSaveFileSuccessAlertVisible(true);
           props.onFilenameChange(data.filePath);
-        });
+        })
+        .catch(err => console.log(err))
     });
 
     return () => {

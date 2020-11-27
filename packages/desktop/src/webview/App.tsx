@@ -155,11 +155,11 @@ export function App() {
   const Router = useMemo(() => {
     switch (page) {
       case Pages.HOME:
-        return () => <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
+        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
       case Pages.EDITOR:
-        return () => <EditorPage onFilenameChange={onFilenameChange} onClose={goToHomePage} />;
+        return <EditorPage onFilenameChange={onFilenameChange} onClose={goToHomePage} />;
       default:
-        return () => <></>;
+        return <></>;
     }
   }, [page, openFile, openFileByPath, onFilenameChange, goToHomePage]);
 
@@ -187,7 +187,7 @@ export function App() {
                 />
               </div>
             )}
-            <Router />
+            {Router}
           </GlobalContext.Provider>
         )}
       </DesktopI18nContext.Consumer>
