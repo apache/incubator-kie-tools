@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ElectronFile, FileSaveActions, UNSAVED_FILE_NAME, SAMPLE } from "../common/File";
+import { ElectronFile, FileSaveActions, UNSAVED_FILE_NAME, SAMPLE } from "../common/ElectronFile";
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { Files } from "../storage/core/Files";
 import { FS } from "../storage/core/FS";

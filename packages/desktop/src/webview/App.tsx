@@ -22,7 +22,7 @@ import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
-import { ElectronFile } from "../common/File";
+import { ElectronFile } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";

@@ -16,7 +16,7 @@
 
 import { act } from "react-dom/test-utils";
 import * as electron from "electron";
-import { FileSaveActions } from "../../common/File";
+import { FileSaveActions } from "../../common/ElectronFile";
 import { DesktopUserData } from "../../backend/DesktopUserData";
 import { Menu } from "../../backend/Menu";
 import { FileOperations } from "../../backend/FileOperations";

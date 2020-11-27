@@ -19,7 +19,7 @@ import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSidebar } from "@pa
 import { useCallback, useMemo, useState } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
-import { ElectronFile } from "../../common/File";
+import { ElectronFile } from "../../common/ElectronFile";
 import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
