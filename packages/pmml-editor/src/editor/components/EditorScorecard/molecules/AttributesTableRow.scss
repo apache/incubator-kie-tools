@@ -1,9 +1,9 @@
 .attribute-item {
-  min-height: 70px;
+  min-height: 50px;
   border: 1px solid var(--pf-global--BorderColor--100);
-  padding: 1em;
+  padding: 0.5em 0.5em 0em 0.5em;
   background-color: #ffffff;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   user-select: none;
   // write the following better
   span,

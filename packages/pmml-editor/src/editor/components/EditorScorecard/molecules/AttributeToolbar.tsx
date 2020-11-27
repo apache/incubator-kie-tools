@@ -36,7 +36,7 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
           <SplitItem isFilled={true}>
             <TextContent>
               <Title size="lg" headingLevel="h1">
-                <a onClick={e => onViewOverview(e)}>Characteristic</a>&nbsp;/&nbsp;Attribute
+                <a onClick={e => onViewOverview(e)}>Characteristics</a>&nbsp;/&nbsp;Attribute
               </Title>
             </TextContent>
           </SplitItem>
