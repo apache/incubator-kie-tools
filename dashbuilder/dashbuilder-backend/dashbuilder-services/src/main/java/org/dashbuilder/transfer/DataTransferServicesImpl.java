@@ -43,7 +43,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.dashbuilder.dataset.DataSetDefRegistryCDI;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
-import org.dashbuilder.external.service.ExternalComponentLoader;
+import org.dashbuilder.external.service.ComponentLoader;
 import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.navigation.storage.NavTreeStorage;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -85,7 +85,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
     private Event<NavTreeChangedEvent> navTreeChangedEvent;
     private NavTreeStorage navTreeStorage;
     private byte[] buffer = new byte[1024];
-    private ExternalComponentLoader externalComponentLoader;
+    private ComponentLoader externalComponentLoader;
 
     private String dashbuilderLocation;
     private String exportDir;
@@ -108,7 +108,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                     final Event<PluginAdded> pluginAddedEvent,
                                     final Event<NavTreeChangedEvent> navTreeChangedEvent,
                                     final NavTreeStorage navTreeStorage,
-                                    final ExternalComponentLoader externalComponentLoader) {
+                                    final ComponentLoader externalComponentLoader) {
 
         this.ioService = ioService;
         this.datasetsFS = datasetsFS;
@@ -167,7 +167,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
             zipFileSystem(navigationFS, zos, readmeFilter);
         }
 
-        if (externalComponentLoader.isEnabled()) {
+        if (externalComponentLoader.isExternalComponentsEnabled()) {
             String componentsPath = externalComponentLoader.getExternalComponentsDir();
 
             if (componentsPath != null && exists(componentsPath)) {
@@ -175,7 +175,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                                                        .append("://")
                                                                        .append(componentsPath)
                                                                        .toString());
-                externalComponentLoader.load().forEach(c -> {
+                externalComponentLoader.loadExternal().forEach(c -> {
                     Path componentPath = componentsBasePath.resolve(c.getId());
                     zipComponentFiles(componentsBasePath,
                                       componentPath,
@@ -325,7 +325,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
                 if (isComponent(zipEntry) &&
                     externalComponentLoader.getExternalComponentsDir() != null &&
-                    externalComponentLoader.isEnabled()) {
+                    externalComponentLoader.isExternalComponentsEnabled()) {
                     try {
                         importComponentFile(zipEntry.getName(), newFile);
                         imported.add(zipEntry.getName());

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import org.dashbuilder.external.model.ComponentParameter;
 import org.dashbuilder.external.model.ExternalComponent;
@@ -34,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ExternalComponentLoaderImplTest {
+public class ComponentLoaderImplTest {
 
     private static final String C1_ID = "c1_id";
     private static final String C2_ID = "c2_id";
@@ -83,17 +84,17 @@ public class ExternalComponentLoaderImplTest {
 
     private Path componentPath;
 
-    ExternalComponentLoaderImpl externalComponentLoaderImpl;
+    ComponentLoaderImpl externalComponentLoaderImpl;
 
     @Before
     public void init() throws URISyntaxException {
-        String rootPath = ExternalComponentLoaderImplTest.class.getResource("/")
+        String rootPath = ComponentLoaderImplTest.class.getResource("/")
                                                                .getFile();
-        externalComponentLoaderImpl = new ExternalComponentLoaderImpl();
+        externalComponentLoaderImpl = new ComponentLoaderImpl();
         componentPath = Paths.get(rootPath, "components");
 
-        System.setProperty(ExternalComponentLoaderImpl.EXTERNAL_COMP_DIR_PROP, componentPath.toString());
-        System.setProperty(ExternalComponentLoaderImpl.EXTERNAL_COMP_ENABLE_PROP, Boolean.TRUE.toString());
+        System.setProperty(ComponentLoaderImpl.EXTERNAL_COMP_DIR_PROP, componentPath.toString());
+        System.setProperty(ComponentLoaderImpl.EXTERNAL_COMP_ENABLE_PROP, Boolean.TRUE.toString());
     }
 
     @After
@@ -113,7 +114,7 @@ public class ExternalComponentLoaderImplTest {
     public void testLoad() {
         externalComponentLoaderImpl.init();
         createComponentsFiles();
-        List<ExternalComponent> components = externalComponentLoaderImpl.load();
+        List<ExternalComponent> components = externalComponentLoaderImpl.loadExternal();
         assertEquals(2, components.size());
         ExternalComponent c1 = getComponent(components, C1_ID);
         ExternalComponent c2 = getComponent(components, C2_ID);
@@ -139,14 +140,64 @@ public class ExternalComponentLoaderImplTest {
 
     @Test
     public void testLoadWhenDisabled() throws IOException {
-        System.setProperty(ExternalComponentLoaderImpl.EXTERNAL_COMP_ENABLE_PROP, Boolean.FALSE.toString());
+        System.setProperty(ComponentLoaderImpl.EXTERNAL_COMP_ENABLE_PROP, Boolean.FALSE.toString());
         externalComponentLoaderImpl.init();
         assertFalse(Files.exists(componentPath));
 
         Files.createDirectory(componentPath);
         createComponentsFiles();
 
-        assertTrue(externalComponentLoaderImpl.load().isEmpty());
+        assertTrue(externalComponentLoaderImpl.loadExternal().isEmpty());
+    }
+
+    @Test
+    public void testLoadInternalComponents() throws IOException {
+        externalComponentLoaderImpl.init();
+        List<ExternalComponent> internalComponents = externalComponentLoaderImpl.loadProvided();
+
+        assertEquals(1, internalComponents.size());
+
+        ExternalComponent component = internalComponents.get(0);
+        assertEquals("logo-provided", component.getId());
+
+        List<ComponentParameter> parameters = component.getParameters();
+        assertEquals(3, parameters.size());
+
+        Optional<ComponentParameter> srcParamOp = component.getParameters()
+                                                           .stream()
+                                                           .filter(p -> p.getName().equals("src"))
+                                                           .findFirst();
+
+        assertTrue(srcParamOp.isPresent());
+
+        ComponentParameter srcParam = srcParamOp.get();
+        assertEquals("src", srcParam.getName());
+        assertEquals("Logo URL", srcParam.getLabel());
+        assertEquals("text", srcParam.getType());
+
+        Optional<ComponentParameter> widthParamOp = component.getParameters()
+                                                             .stream()
+                                                             .filter(p -> p.getName().equals("width"))
+                                                             .findFirst();
+
+        assertTrue(widthParamOp.isPresent());
+
+        ComponentParameter widthParam = widthParamOp.get();
+        assertEquals("width", widthParam.getName());
+        assertEquals("Width", widthParam.getLabel());
+        assertEquals("text", widthParam.getType());
+
+        Optional<ComponentParameter> heightParamOp = component.getParameters()
+                                                              .stream()
+                                                              .filter(p -> p.getName().equals("height"))
+                                                              .findFirst();
+
+        assertTrue(heightParamOp.isPresent());
+
+        ComponentParameter heightParam = heightParamOp.get();
+        assertEquals("height", heightParam.getName());
+        assertEquals("Height", heightParam.getLabel());
+        assertEquals("text", heightParam.getType());
     }
 
     private ExternalComponent getComponent(List<ExternalComponent> components, String id) {
@@ -155,12 +206,12 @@ public class ExternalComponentLoaderImplTest {
 
     private void createComponentsFiles() {
         try {
-            Path c1 = Paths.get(componentPath.toString(), C1_ID, ExternalComponentLoaderImpl.DESCRIPTOR_FILE);
+            Path c1 = Paths.get(componentPath.toString(), C1_ID, ComponentLoaderImpl.DESCRIPTOR_FILE);
             c1.toFile().getParentFile().mkdirs();
             c1.toFile().createNewFile();
             Files.write(c1, C1_MANIFEST.getBytes());
 
-            Path c2 = Paths.get(componentPath.toString(), C2_ID, ExternalComponentLoaderImpl.DESCRIPTOR_FILE);
+            Path c2 = Paths.get(componentPath.toString(), C2_ID, ComponentLoaderImpl.DESCRIPTOR_FILE);
             c2.toFile().getParentFile().mkdirs();
             c2.toFile().createNewFile();
             Files.write(c2, C2_MANIFEST.getBytes());

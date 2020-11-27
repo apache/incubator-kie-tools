@@ -25,7 +25,7 @@ import java.util.Optional;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.external.model.ComponentParameter;
 import org.dashbuilder.external.model.ExternalComponent;
-import org.dashbuilder.external.service.ExternalComponentService;
+import org.dashbuilder.external.service.ComponentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class ExternalComponentPropertiesEditorTest {
 
     @Mock
-    ExternalComponentService externalComponentServiceMock;
+    ComponentService externalComponentServiceMock;
 
     @Mock
     ExternalComponentPropertiesEditor.View view;
@@ -59,7 +59,7 @@ public class ExternalComponentPropertiesEditorTest {
     @Captor
     ArgumentCaptor<Collection<PropertyEditorCategory>> categoriesCaptor;
 
-    CallerMock<ExternalComponentService> externalComponentService;
+    CallerMock<ComponentService> externalComponentService;
 
     @InjectMocks
     ExternalComponentPropertiesEditor externalComponentPropertiesEditor;

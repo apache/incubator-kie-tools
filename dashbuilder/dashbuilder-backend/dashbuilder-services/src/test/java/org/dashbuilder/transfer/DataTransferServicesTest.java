@@ -35,7 +35,7 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.external.model.ExternalComponent;
-import org.dashbuilder.external.service.ExternalComponentLoader;
+import org.dashbuilder.external.service.ComponentLoader;
 import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.navigation.storage.NavTreeStorage;
 import org.junit.After;
@@ -44,7 +44,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lesscss.deps.org.apache.commons.io.FileUtils;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
@@ -95,7 +95,7 @@ public class DataTransferServicesTest {
     @Mock
     DataSetDefJSONMarshaller dataSetDefJSONMarshaller;
     @Mock
-    ExternalComponentLoader externalComponentLoader;
+    ComponentLoader externalComponentLoader;
 
     Path componentsDir;
     
@@ -111,7 +111,7 @@ public class DataTransferServicesTest {
 
         when(dataSetDefRegistryCDI.getDataSetDefJsonMarshaller()).thenReturn(dataSetDefJSONMarshaller);
         when(externalComponentLoader.getExternalComponentsDir()).thenReturn(componentsDir.toString());
-        when(externalComponentLoader.isEnabled()).thenReturn(true);
+        when(externalComponentLoader.isExternalComponentsEnabled()).thenReturn(true);
 
         dataTransferServices = new DataTransferServicesImpl(ioService,
                                                             datasetsFS,
@@ -301,7 +301,7 @@ public class DataTransferServicesTest {
     
     @Test
     public void testDoExportWithComponents() throws Exception {
-        when(externalComponentLoader.load()).thenReturn(asList(component("c1")));
+        when(externalComponentLoader.loadExternal()).thenReturn(asList(component("c1")));
 
         createFile(perspectivesFS, "page1/perspective_layout", "");
         createFile(perspectivesFS, "page1/perspective_layout.plugin", "");
@@ -342,8 +342,9 @@ public class DataTransferServicesTest {
     @Test
     @SuppressWarnings("serial")
     public void testDoExportIgnoringComponents() throws Exception {
-        when(externalComponentLoader.isEnabled()).thenReturn(false);
-
+        when(externalComponentLoader.isExternalComponentsEnabled()).thenReturn(false);
+        when(externalComponentLoader.loadExternal()).thenReturn(asList(component("c1")));
+        
         createFile(perspectivesFS, "page1/perspective_layout", "");
         createFile(perspectivesFS, "page1/perspective_layout.plugin", "");
         
@@ -601,6 +602,7 @@ public class DataTransferServicesTest {
         
         DataSetDef dataSetDef = mock(DataSetDef.class);
         when(dataSetDef.isPublic()).thenReturn(false);
+        when(dataSetDef.getName()).thenReturn(DS_NAME);
         when(dataSetDefJSONMarshaller.fromJson(DS_CONTENT)).thenReturn(dataSetDef);
 
         createFile(datasetsFS, DS, DS_CONTENT);

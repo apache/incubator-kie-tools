@@ -70,7 +70,6 @@ public class BackendFunctionLoader {
                 }).callFunction(name, params);
             }
         }));
-
     }
 
 }

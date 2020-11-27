@@ -20,6 +20,7 @@
     <module>dashbuilder-navigation-api</module>
     <module>dashbuilder-services-api</module>
     <module>dashbuilder-kie-server-api</module>
+    <module>dashbuilder-js</module>
   </modules>
 
 </project>
