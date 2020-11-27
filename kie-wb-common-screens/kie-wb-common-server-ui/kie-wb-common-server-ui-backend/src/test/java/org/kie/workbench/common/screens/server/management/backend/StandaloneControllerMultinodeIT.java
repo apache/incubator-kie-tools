@@ -39,6 +39,7 @@ import org.jboss.resteasy.client.jaxrs.BasicAuthentication;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.controller.api.model.events.ContainerSpecUpdated;
@@ -59,6 +60,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@Ignore
 @RunWith(Arquillian.class)
 public class StandaloneControllerMultinodeIT extends AbstractControllerIT {
 
