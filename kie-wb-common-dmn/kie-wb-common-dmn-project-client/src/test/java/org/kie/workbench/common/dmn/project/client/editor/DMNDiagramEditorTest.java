@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
@@ -199,6 +200,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private ElementWrapperWidget drdNameWidget;
 
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
     @Captor
     private ArgumentCaptor<Consumer<String>> errorConsumerCaptor;
 
@@ -261,7 +265,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  feelInitializer,
                                                  readOnlyProvider,
                                                  drdNameChanger,
-                                                 lazyCanvasFocusUtils) {
+                                                 lazyCanvasFocusUtils,
+                                                 dmnDiagramsSession) {
             {
                 docks = DMNDiagramEditorTest.this.docks;
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
@@ -625,5 +630,23 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         super.testLoadContentWithInvalidFile();
 
         verify(feelInitializer, never()).initializeFEELEditor();
+    }
+
+    @Test
+    public void testUpdateOriginalHash() {
+
+        final Integer currentHash = 27;
+        final Integer previousSetHash = 5;
+        doReturn(currentHash).when(diagramEditor).getCurrentDiagramHash();
+
+        diagramEditor.setOriginalHash(0);
+        diagramEditor.updateOriginalHash();
+
+        assertEquals(currentHash, diagramEditor.getOriginalHash());
+
+        diagramEditor.setOriginalHash(previousSetHash);
+        diagramEditor.updateOriginalHash();
+
+        assertEquals(previousSetHash, diagramEditor.getOriginalHash());
     }
 }
