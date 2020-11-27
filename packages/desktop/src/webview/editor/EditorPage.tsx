@@ -27,8 +27,8 @@ import {
 } from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { File as ElectronFile, FileSaveActions } from "../../common/File";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { ElectronFile, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;

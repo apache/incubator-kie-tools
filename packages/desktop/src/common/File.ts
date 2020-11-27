@@ -17,7 +17,7 @@
 export const UNSAVED_FILE_NAME = "unsaved file";
 export const SAMPLE = "sample";
 
-export interface File {
+export interface ElectronFile {
   filePath: string;
   fileType: string;
   fileContent: string;
