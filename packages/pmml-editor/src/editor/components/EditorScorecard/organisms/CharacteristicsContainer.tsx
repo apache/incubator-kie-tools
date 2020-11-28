@@ -38,6 +38,8 @@ interface CharacteristicsContainerProps {
   modelIndex: number;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
+  useReasonCodes: boolean;
+  isBaselineScoreRequired: boolean;
   characteristics: Characteristic[];
   filteredCharacteristics: IndexedCharacteristic[];
   filter: string;
@@ -53,6 +55,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     modelIndex,
     activeOperation,
     setActiveOperation,
+    useReasonCodes,
+    isBaselineScoreRequired,
     characteristics,
     filteredCharacteristics,
     filter,
@@ -108,7 +112,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       const newCharacteristicName = "New characteristic";
       commit(undefined, {
         name: newCharacteristicName,
-        baselineScore: undefined,
+        baselineScore: 0,
         reasonCode: undefined,
         Attribute: []
       });
@@ -199,6 +203,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       modelIndex={modelIndex}
                       activeOperation={activeOperation}
                       setActiveOperation={setActiveOperation}
+                      useReasonCodes={useReasonCodes}
+                      isBaselineScoreRequired={isBaselineScoreRequired}
                       characteristics={filteredCharacteristics}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
                       setSelectedCharacteristicIndex={setSelectedCharacteristicIndex}
@@ -224,6 +230,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       activeOperation={activeOperation}
                       characteristicIndex={selectedCharacteristicIndex}
                       attributeIndex={selectedAttributeIndex}
+                      useReasonCodes={useReasonCodes}
                       onCancel={onViewOverviewView}
                       onCommit={(_index, _content) => {
                         if (_index === undefined) {

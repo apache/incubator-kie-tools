@@ -173,6 +173,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   modelIndex={modelIndex}
                   activeOperation={activeOperation}
                   setActiveOperation={setActiveOperation}
+                  useReasonCodes={model.useReasonCodes ?? true}
+                  isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
                   characteristics={characteristics?.Characteristic ?? []}
                   filteredCharacteristics={filteredCharacteristics}
                   filter={filter}

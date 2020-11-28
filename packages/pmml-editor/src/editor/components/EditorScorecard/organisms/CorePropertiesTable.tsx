@@ -95,7 +95,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     eventTypes: ["click"]
   });
 
-  const value = (_value: any) => {
+  const value = (_value: any | undefined) => {
     return _value ? <span>{_value}</span> : <span>&nbsp;</span>;
   };
 
@@ -110,7 +110,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     return n;
   };
 
-  const toYesNo = (value: boolean) => {
+  const toYesNo = (value: boolean | undefined) => {
     return value ? "Yes" : "No";
   };
 
@@ -180,7 +180,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                 <Level hasGutter={true}>
                   <LevelItem>
                     <FormGroup label="Scorable?" fieldId="core-isScorable">
-                      {!isEditModeEnabled && value(toYesNo(props.isScorable))}
+                      {!isEditModeEnabled && value(toYesNo(isScorable))}
                       {isEditModeEnabled && (
                         <Switch
                           id="core-isScorable"
@@ -195,7 +195,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Function" fieldId="core-functionName" required={true}>
-                      {!isEditModeEnabled && value(props.functionName)}
+                      {!isEditModeEnabled && value(functionName)}
                       {isEditModeEnabled &&
                         GenericSelectorEditor(
                           "core-functionName",
@@ -221,7 +221,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Algorithm" fieldId="core-algorithmName">
-                      {!isEditModeEnabled && value(props.algorithmName)}
+                      {!isEditModeEnabled && value(algorithmName)}
                       {isEditModeEnabled && (
                         <TextInput
                           type="text"
@@ -239,7 +239,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Initial score" fieldId="core-initialScore">
-                      {!isEditModeEnabled && value(props.initialScore.toString())}
+                      {!isEditModeEnabled && value(initialScore)}
                       {isEditModeEnabled && (
                         <TextInput
                           id="core-initialScore"
@@ -255,7 +255,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
-                      {!isEditModeEnabled && value(toYesNo(props.useReasonCodes))}
+                      {!isEditModeEnabled && value(toYesNo(useReasonCodes))}
                       {isEditModeEnabled && (
                         <Switch
                           id="core-useReasonCodes"
@@ -270,7 +270,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Reason code algorithm" fieldId="core-reasonCodeAlgorithm">
-                      {!isEditModeEnabled && value(props.reasonCodeAlgorithm.toString())}
+                      {!isEditModeEnabled && value(reasonCodeAlgorithm)}
                       {isEditModeEnabled &&
                         GenericSelectorEditor(
                           "core-reasonCodeAlgorithm",
@@ -288,7 +288,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Baseline score" fieldId="core-baselineScore">
-                      {!isEditModeEnabled && value(props.baselineScore.toString())}
+                      {!isEditModeEnabled && value(baselineScore)}
                       {isEditModeEnabled && (
                         <TextInput
                           id="core-baselineScore"
@@ -307,7 +307,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Baseline method" fieldId="core-baselineMethod">
-                      {!isEditModeEnabled && value(props.baselineMethod)}
+                      {!isEditModeEnabled && value(baselineMethod)}
                       {isEditModeEnabled &&
                         GenericSelectorEditor(
                           "core-baselineMethod",

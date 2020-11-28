@@ -39,12 +39,21 @@ interface AttributeEditorProps {
   activeOperation: Operation;
   characteristicIndex: number | undefined;
   attributeIndex: number | undefined;
+  useReasonCodes: boolean;
   onCancel: () => void;
   onCommit: (index: number | undefined, content: AttributeEditorContent) => void;
 }
 
 export const AttributeEditor = (props: AttributeEditorProps) => {
-  const { modelIndex, activeOperation, characteristicIndex, attributeIndex, onCancel, onCommit } = props;
+  const {
+    modelIndex,
+    activeOperation,
+    characteristicIndex,
+    attributeIndex,
+    useReasonCodes,
+    onCancel,
+    onCommit
+  } = props;
 
   const [text, setText] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -173,25 +182,27 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                   />
                 </FormGroup>
               </StackItem>
-              <StackItem>
-                <FormGroup
-                  label="Reason code"
-                  fieldId="attribute-reason-code-helper"
-                  helperText="A Reason Code is mapped to a Business reason."
-                >
-                  <TextInput
-                    type="text"
-                    id="attribute-reason-code"
-                    name="attribute-reason-code"
-                    aria-describedby="attribute-reason-code-helper"
-                    value={reasonCode ?? ""}
-                    onChange={e => setReasonCode(e)}
-                    onBlur={e => {
-                      commit({ reasonCode: reasonCode });
-                    }}
-                  />
-                </FormGroup>
-              </StackItem>
+              {useReasonCodes && (
+                <StackItem>
+                  <FormGroup
+                    label="Reason code"
+                    fieldId="attribute-reason-code-helper"
+                    helperText="A Reason Code is mapped to a Business reason."
+                  >
+                    <TextInput
+                      type="text"
+                      id="attribute-reason-code"
+                      name="attribute-reason-code"
+                      aria-describedby="attribute-reason-code-helper"
+                      value={reasonCode ?? ""}
+                      onChange={e => setReasonCode(e)}
+                      onBlur={e => {
+                        commit({ reasonCode: reasonCode });
+                      }}
+                    />
+                  </FormGroup>
+                </StackItem>
+              )}
             </Stack>
           </SplitItem>
         </Split>

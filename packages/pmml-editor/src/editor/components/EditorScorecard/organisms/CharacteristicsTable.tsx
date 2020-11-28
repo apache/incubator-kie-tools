@@ -30,6 +30,8 @@ interface CharacteristicsTableProps {
   modelIndex: number;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
+  useReasonCodes: boolean;
+  isBaselineScoreRequired: boolean;
   characteristics: IndexedCharacteristic[];
   selectedCharacteristicIndex: number | undefined;
   setSelectedCharacteristicIndex: (index: number | undefined) => void;
@@ -47,6 +49,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     modelIndex,
     activeOperation,
     setActiveOperation,
+    useReasonCodes,
+    isBaselineScoreRequired,
     characteristics,
     selectedCharacteristicIndex,
     setSelectedCharacteristicIndex,
@@ -103,6 +107,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 modelIndex={modelIndex}
                 activeOperation={activeOperation}
                 setActiveOperation={setActiveOperation}
+                useReasonCodes={useReasonCodes}
+                isBaselineScoreRequired={isBaselineScoreRequired}
                 characteristic={ic}
                 validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
                 viewAttribute={viewAttribute}
