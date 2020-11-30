@@ -189,13 +189,22 @@ export function EditorPage(props: Props) {
           setSaveFileSuccessAlertVisible(true);
           props.onFilenameChange(data.filePath);
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(err));
     });
 
     return () => {
       electron.ipcRenderer.removeAllListeners("saveFileSuccess");
     };
   }, [editor, props.onFilenameChange]);
+
+  const saveOpenedFileThumbnail = useCallback(async () => {
+    const previewSvg = await editor?.getPreview();
+    electron.ipcRenderer.send("saveThumbnail", {
+      filePath: context.file!.fileName,
+      fileType: "svg",
+      fileContent: previewSvg
+    });
+  }, [editor, context.file]);
 
   useEffect(() => {
     electron.ipcRenderer.on("savePreviewSuccess", () => {
@@ -274,6 +283,7 @@ export function EditorPage(props: Props) {
             <EmbeddedEditor
               ref={editorRef}
               file={context.file}
+              receive_ready={saveOpenedFileThumbnail}
               editorEnvelopeLocator={context.editorEnvelopeLocator}
               channelType={ChannelType.DESKTOP}
               locale={locale}

@@ -138,7 +138,7 @@ export function App() {
     return () => {
       electron.ipcRenderer.removeAllListeners("openFile");
     };
-  }, [page, editorEnvelopeLocator]);
+  }, [page, editorEnvelopeLocator, openFile]);
 
   useEffect(() => {
     document.addEventListener("dragover", e => e.preventDefault());
@@ -175,7 +175,7 @@ export function App() {
           <GlobalContext.Provider
             value={{
               file,
-              editorEnvelopeLocator: editorEnvelopeLocator
+              editorEnvelopeLocator
             }}
           >
             {invalidFileTypeErrorVisible && (
