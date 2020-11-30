@@ -95,33 +95,8 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
 
   const featureEditor = GenericSelectorEditor(
     "output-feature",
-    [
-      "",
-      "affinity",
-      "antecedent",
-      "clusterAffinity",
-      "clusterId",
-      "confidence",
-      "consequent",
-      "decision",
-      "entityAffinity",
-      "entityId",
-      "leverage",
-      "lift",
-      "predictedDisplayValue",
-      "predictedValue",
-      "probability",
-      "reasonCode",
-      "residual",
-      "rule",
-      "ruleId",
-      "ruleValue",
-      "standardDeviation",
-      "standardError",
-      "support",
-      "transformedValue",
-      "warning"
-    ],
+    // See http://dmg.org/pmml/v4-4-1/Output.html#xsdType_RESULT-FEATURE ("Outputs Per Model Type")
+    ["", "decision", "predictedValue", "reasonCode", "transformedValue", "warning"],
     (feature ?? "").toString(),
     _selection => {
       setFeature(_selection === "" ? undefined : (_selection as ResultFeature));
