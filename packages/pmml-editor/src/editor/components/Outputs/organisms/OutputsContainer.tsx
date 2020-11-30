@@ -15,6 +15,11 @@
  */
 import * as React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { isEqual } from "lodash";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
+import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
 import {
   DataType,
   FieldName,
@@ -24,20 +29,15 @@ import {
   RankOrder,
   ResultFeature
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
-import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
-import { isEqual } from "lodash";
-import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { ValidatedType } from "../../../types";
+import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
 import { Operation } from "../../EditorScorecard";
 import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
-import { ValidatedType } from "../../../types";
+import "./OutputsContainer.scss";
 import get = Reflect.get;
 import set = Reflect.set;
-import "./OutputsContainer.scss";
-import { Actions } from "../../../reducers";
-import { useDispatch } from "react-redux";
 
 interface OutputsContainerProps {
   modelIndex: number;
