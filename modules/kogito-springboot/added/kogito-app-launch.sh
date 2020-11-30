@@ -17,7 +17,8 @@ fi
 CONFIGURE_SCRIPTS=(
 
 )
-source ${KOGITO_HOME}/launch/configure.sh
+source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
 
-exec java ${JAVA_OPTIONS} ${KOGITO_SPRINGBOOT_PROPS} -Dserver.address=0.0.0.0 -Dserver.port=8080 -jar $KOGITO_HOME/bin/*.jar
+# shellcheck disable=SC2086
+exec java ${JAVA_OPTIONS} ${KOGITO_SPRINGBOOT_PROPS} -Dserver.address=0.0.0.0 -Dserver.port=8080 -jar "${KOGITO_HOME}"/bin/*.jar

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Clone the kogito-examples and edit the rules-quarkus-helloworld and dmn-quarkus-example for testing purposes
 
@@ -10,15 +10,15 @@ MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS="-Dquarkus.native.container-build=true
 # exit when any command fails
 set -e
 #Setup maven configuration only on CI
-if [ $CI ]; then
+if [ "${CI}" ]; then
 # setup maven env
     export JBOSS_MAVEN_REPO_URL="https://repository.jboss.org/nexus/content/groups/public/"
     # export MAVEN_REPO_URL=
-    cp ${MVN_MODULE}/maven/settings.xml ${HOME}/.m2/settings.xml
-    source ${MVN_MODULE}/added/configure-maven.sh
+    cp "${MVN_MODULE}"/maven/settings.xml "${HOME}"/.m2/settings.xml
+    source "${MVN_MODULE}"/added/configure-maven.sh
     configure
 
-    cat ${HOME}/.m2/settings.xml
+    cat "${HOME}"/.m2/settings.xml
 fi
 
 # Clone examples
@@ -44,12 +44,12 @@ cp /tmp/kogito-examples/dmn-quarkus-example/src/main/resources/* /tmp/kogito-exa
 # by adding the application.properties file telling app to start on
 # port 10000, the purpose of this tests is make sure that the images
 # will ensure the use of the port 8080.
-cp ${SCRIPT_DIR}/application.properties /tmp/kogito-examples/rules-quarkus-helloworld/src/main/resources/META-INF/
+cp "${SCRIPT_DIR}"/application.properties /tmp/kogito-examples/rules-quarkus-helloworld/src/main/resources/META-INF/
 (echo ""; echo "server.port=10000") >> /tmp/kogito-examples/process-springboot-example/src/main/resources/application.properties
 
 git add --all  :/
 git commit -am "test"
 
-if [ $CI ]; then
-    rm ${HOME}/.m2/settings.xml
+if [ "${CI}" ]; then
+    rm "${HOME}"/.m2/settings.xml
 fi

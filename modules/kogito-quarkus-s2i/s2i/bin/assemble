@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
 #
 # S2I assemble script for the 'kogito-quarkus-ubi8-s2i' image.
 # The 'assemble' script builds your application source so that it is ready to run.
@@ -6,6 +7,7 @@
 # For more information refer to the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
+set -e
 
 source ${S2I_MODULE_LOCATION}/s2i-core
 
@@ -15,10 +17,10 @@ source ${S2I_MODULE_LOCATION}/s2i-core
 # file.
 # Configure GraalVM memory limits
 CONFIGURE_SCRIPTS=(
-  ${KOGITO_HOME}/launch/configure-maven.sh
-  ${KOGITO_HOME}/launch/memory-limit.sh
+  "${KOGITO_HOME}"/launch/configure-maven.sh
+  "${KOGITO_HOME}"/launch/memory-limit.sh
 )
-source ${KOGITO_HOME}/launch/configure.sh
+source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
 
 
@@ -28,7 +30,7 @@ manage_incremental_build
 # kogito app build
 build_kogito_app $QUARKUS_RUNTIME_TYPE
 
-# copy kogito app to ${KOGITO_HOME}/bin dir
+# copy kogito app to "${KOGITO_HOME}"/bin dir
 copy_kogito_app
 
 # handle custom image-metadata.json

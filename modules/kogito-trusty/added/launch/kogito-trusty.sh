@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #import
-source ${KOGITO_HOME}/launch/logging.sh
+source "${KOGITO_HOME}"/launch/logging.sh
 
 function prepareEnv() {
     # keep it on alphabetical order
@@ -16,7 +16,8 @@ function configure() {
 function enable_explainability {
     local allowed_values=("TRUE" "FALSE")
     local explainability_enabled="true"
-    if [[ ! "${allowed_values[@]}" =~ "${EXPLAINABILITY_ENABLED^^}" ]]; then
+    # shellcheck disable=SC2153
+    if [[ ! "${allowed_values[*]}" =~ ${EXPLAINABILITY_ENABLED^^} ]]; then
         log_warning "Explainability enabled type ${EXPLAINABILITY_ENABLED} is not allowed, the allowed types are [${allowed_values[*]}]. Defaulting to ${explainability_enabled}."
     elif [ "${EXPLAINABILITY_ENABLED^^}" == "FALSE" ]; then
         explainability_enabled="${EXPLAINABILITY_ENABLED^^}"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #import
-source ${KOGITO_HOME}/launch/logging.sh
+source "${KOGITO_HOME}"/launch/logging.sh
 
 function prepareEnv() {
     # keep it on alphabetical order

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # This script executes a list of modules defined by CONFIGURE_SCRIPTS.
 #
 # Configuration occurs over three basic phases: preConfigure, configure and
@@ -47,7 +47,7 @@
 #
 
 #import
-source ${KOGITO_HOME}/launch/logging.sh
+source "${KOGITO_HOME}"/launch/logging.sh
 
 # clear functions from any previous module
 function prepareModule() {
@@ -65,18 +65,18 @@ function prepareModule() {
 # $1 - module file
 # $2 - function name
 function executeModule() {
-  source $1;
-  if [ -n "$(type -t $2)" ]; then
-    eval $2
+  source "$1"
+  if [ -n "$(type -t "$2")" ]; then
+    eval "$2"
   fi
 }
 
 # Run through the list of scripts, executing the specified function for each.
 # $1 - function name
 function executeModules() {
-  for module in ${CONFIGURE_SCRIPTS[@]}; do
+  for module in ${CONFIGURE_SCRIPTS[*]}; do
     prepareModule
-    executeModule $module $1
+    executeModule "${module}" "${1}"
   done
 }
 
@@ -88,23 +88,20 @@ function executeModules() {
 # (i.e. we don't have to run prepareEnv for each file).
 function processEnvFiles() {
   if [ -n "$ENV_FILES" ]; then
-    (
-      executeModules prepareEnv
-      for prop_file_arg in $(echo $ENV_FILES | sed "s/,/ /g"); do
-        for prop_file in $(find $prop_file_arg -maxdepth 0 2>/dev/null); do
-          (
-            if [ -f $prop_file ]; then
-              source $prop_file
-              executeModules preConfigureEnv
-              executeModules configureEnv
-              executeModules postConfigureEnv
-            else
-              log_warning "Could not process environment for $prop_file.  File does not exist."
-            fi
-          )
-        done
-      done
-    )
+    executeModules prepareEnv
+    for prop_file_arg in ${ENV_FILES//,/ }; do
+      while IFS= read -r -d '' prop_file
+        do
+          if [ -f "${prop_file}" ]; then
+            source "${prop_file}"
+            executeModules preConfigureEnv
+            executeModules configureEnv
+            executeModules postConfigureEnv
+          else
+            log_warning "Could not process environment for ${prop_file}.  File does not exist."
+          fi
+        done < <(find "${prop_file_arg}" -maxdepth 0 2>/dev/null)
+    done
   fi
 }
 

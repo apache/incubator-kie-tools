@@ -1,2 +1,3 @@
-#!/bin/bash -e
-exec $KOGITO_HOME/kogito-app-launch.sh ${1}
+#!/usr/bin/env bash
+set -e
+exec "${KOGITO_HOME}"/kogito-app-launch.sh ${1}

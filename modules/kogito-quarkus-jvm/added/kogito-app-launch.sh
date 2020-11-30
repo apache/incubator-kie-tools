@@ -17,10 +17,11 @@ fi
 CONFIGURE_SCRIPTS=(
 
 )
-source ${KOGITO_HOME}/launch/configure.sh
+source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
 
+# shellcheck disable=SC2086
 exec java ${JAVA_OPTIONS}  ${KOGITO_QUARKUS_JVM_PROPS} \
       -Dquarkus.http.host=0.0.0.0 \
       -Dquarkus.http.port=8080 \
-      -jar $KOGITO_HOME/bin/*runner.jar
+      -jar "${KOGITO_HOME}"/bin/*runner.jar

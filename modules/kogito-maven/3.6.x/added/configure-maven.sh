@@ -42,11 +42,11 @@ function configure_proxy() {
     proxy=${HTTPS_PROXY:-${https_proxy:-${HTTP_PROXY:-$http_proxy}}}
     # if http_proxy_host/port is set, prefer that (oldest mechanism)
     # before looking at HTTP(S)_PROXY
-    proxyhost=${HTTP_PROXY_HOST:-$(echo $proxy | cut -d : -f 1,2)}
-    proxyport=${HTTP_PROXY_PORT:-$(echo $proxy | cut -d : -f 3)}
+    proxyhost=${HTTP_PROXY_HOST:-$(echo "${proxy}" | cut -d : -f 1,2)}
+    proxyport=${HTTP_PROXY_PORT:-$(echo "${proxy}" | cut -d : -f 3)}
 
     if [ -n "$proxyhost" ]; then
-        if [[ `echo $proxyhost | grep -i https://` ]]; then
+        if echo "${proxyhost}" | grep -q -i https://; then
           proxyport=${proxyport:-443}
           proxyprotocol="https"
         else
@@ -61,19 +61,19 @@ function configure_proxy() {
          <host>$proxyhost</host>\
          <port>$proxyport</port>"
 
-        if [ -n "$HTTP_PROXY_USERNAME" -a -n "$HTTP_PROXY_PASSWORD" ]; then
+        if [ -n "$HTTP_PROXY_USERNAME" ] && [ -n "$HTTP_PROXY_PASSWORD" ]; then
             xml="$xml\
          <username>$HTTP_PROXY_USERNAME</username>\
          <password>$HTTP_PROXY_PASSWORD</password>"
         fi
         if [ -n "$HTTP_PROXY_NONPROXYHOSTS" ]; then
-            nonproxyhosts=$(echo ${HTTP_PROXY_NONPROXYHOSTS} | sed -e 's/|/\\|/')
+            nonproxyhosts="${HTTP_PROXY_NONPROXYHOSTS//|/\\|}"
             xml="$xml\
          <nonProxyHosts>$nonproxyhosts</nonProxyHosts>"
         fi
         xml="$xml\
        </proxy>"
-        sed -i "s|<!-- ### configured http proxy ### -->|${xml}|" $HOME/.m2/settings.xml
+        sed -i "s|<!-- ### configured http proxy ### -->|${xml}|" "${HOME}"/.m2/settings.xml
     fi
 }
 
@@ -85,7 +85,7 @@ function configure_mirrors() {
       <url>$MAVEN_MIRROR_URL</url>\
       <mirrorOf>external:*</mirrorOf>\
     </mirror>"
-        sed -i "s|<!-- ### configured mirrors ### -->|$xml|" $HOME/.m2/settings.xml
+        sed -i "s|<!-- ### configured mirrors ### -->|$xml|" "${HOME}"/.m2/settings.xml
     fi
 }
 
@@ -104,7 +104,7 @@ function ignore_maven_self_signed_certificates() {
 function set_kogito_maven_repo() {
     local kogito_maven_repo_url="${JBOSS_MAVEN_REPO_URL}"
     if [ -n "${kogito_maven_repo_url}" ]; then
-        sed -i "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" $HOME/.m2/settings.xml
+        sed -i "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" "${HOME}"/.m2/settings.xml
     fi
 }
 
@@ -112,18 +112,18 @@ function add_maven_repo() {
     # single remote repository scenario: respect fully qualified url if specified, otherwise find and use service
     local single_repo_url="${MAVEN_REPO_URL}"
     if [ -n "$single_repo_url" ]; then
-        local single_repo_id=$(_maven_find_env "MAVEN_REPO_ID" "repo-$(_generate_random_id)")
+        single_repo_id=$(_maven_find_env "MAVEN_REPO_ID" "repo-$(_generate_random_id)")
         _add_maven_repo "$single_repo_url" "$single_repo_id" ""
     fi
 
     # multiple remote repositories scenario: respect fully qualified url(s) if specified, otherwise find and use service(s); can be used together with "single repo scenario" above
     local multi_repo_counter=1
-    IFS=',' read -a multi_repo_prefixes <<< ${MAVEN_REPOS}
-    for multi_repo_prefix in ${multi_repo_prefixes[@]}; do
-        local multi_repo_url=$(_maven_find_prefixed_env "${multi_repo_prefix}" "MAVEN_REPO_URL")
-        local multi_repo_id=$(_maven_find_prefixed_env "${multi_repo_prefix}" "MAVEN_REPO_ID" "repo${multi_repo_counter}-$(_generate_random_id)")
+    IFS=',' read -r -a multi_repo_prefixes <<<"${MAVEN_REPOS}"
+    for multi_repo_prefix in "${multi_repo_prefixes[@]}"; do
+        multi_repo_url=$(_maven_find_prefixed_env "${multi_repo_prefix}" "MAVEN_REPO_URL")
+        multi_repo_id=$(_maven_find_prefixed_env "${multi_repo_prefix}" "MAVEN_REPO_ID" "repo${multi_repo_counter}-$(_generate_random_id)")
         _add_maven_repo "$multi_repo_url" "$multi_repo_id" "$multi_repo_prefix"
-        multi_repo_counter=$((multi_repo_counter+1))
+        multi_repo_counter=$((multi_repo_counter + 1))
     done
 }
 # add maven repositories
@@ -136,14 +136,14 @@ function _add_maven_repo() {
     local repo_id=$2
     local prefix=$3
 
-    local repo_name=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_NAME" "${repo_id}")
-    local repo_layout=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_LAYOUT" "default")
-    local releases_enabled=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_RELEASES_ENABLED" "true")
-    local releases_update_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_RELEASES_UPDATE_POLICY" "always")
-    local releases_checksum_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_RELEASES_CHECKSUM_POLICY" "warn")
-    local snapshots_enabled=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_SNAPSHOTS_ENABLED" "true")
-    local snapshots_update_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_SNAPSHOTS_UPDATE_POLICY" "always")
-    local snapshots_checksum_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_SNAPSHOTS_CHECKSUM_POLICY" "warn")
+    repo_name=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_NAME" "${repo_id}")
+    repo_layout=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_LAYOUT" "default")
+    releases_enabled=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_RELEASES_ENABLED" "true")
+    releases_update_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_RELEASES_UPDATE_POLICY" "always")
+    releases_checksum_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_RELEASES_CHECKSUM_POLICY" "warn")
+    snapshots_enabled=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_SNAPSHOTS_ENABLED" "true")
+    snapshots_update_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_SNAPSHOTS_UPDATE_POLICY" "always")
+    snapshots_checksum_policy=$(_maven_find_prefixed_env "${prefix}" "MAVEN_REPO_SNAPSHOTS_CHECKSUM_POLICY" "warn")
 
     local repo="\n\
                 <repository>\n\
@@ -163,8 +163,7 @@ function _add_maven_repo() {
                     </snapshots>\n\
                 </repository>\n\
                 <!-- ### configured repositories ### -->"
-    sed -i "s|<!-- ### configured repositories ### -->|${repo}|" $HOME/.m2/settings.xml
-
+    sed -i "s|<!-- ### configured repositories ### -->|${repo}|" "${HOME}"/.m2/settings.xml
 
     local pluginRepo="\n\
                 <pluginRepository>\n\
@@ -185,10 +184,10 @@ function _add_maven_repo() {
                 </pluginRepository>\n\
                 <!-- ### configured plugin repositories ### -->"
 
-    sed -i "s|<!-- ### configured plugin repositories ### -->|${pluginRepo}|" $HOME/.m2/settings.xml
+    sed -i "s|<!-- ### configured plugin repositories ### -->|${pluginRepo}|" "${HOME}"/.m2/settings.xml
 
     # new repo should be skipped by mirror if exists
-    sed -i "s|</mirrorOf>|,!${repo_id}</mirrorOf>|g" $HOME/.m2/settings.xml
+    sed -i "s|</mirrorOf>|,!${repo_id}</mirrorOf>|g" "${HOME}"/.m2/settings.xml
 }
 
 # Finds the environment variable  and returns its value if found.
@@ -214,18 +213,17 @@ function _maven_find_prefixed_env() {
     local prefix=$1
 
     if [[ -z $prefix ]]; then
-        _maven_find_env $2 $3
+        _maven_find_env "${2}" "${3}"
     else
         prefix=${prefix^^} # uppercase
         prefix=${prefix//-/_} #replace - by _
 
-        local var_name=$prefix"_"$2
-        echo ${!var_name:-$3}
+        local var_name="${prefix}_${2}"
+        echo "${!var_name:-${3}}"
       fi
 }
 
 # private
 function _generate_random_id() {
-    cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1
+    env LC_CTYPE=C < /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1
 }
-

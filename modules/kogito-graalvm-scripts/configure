@@ -2,8 +2,8 @@
 set -e
 
 SOURCES_DIR=/tmp/artifacts
-SCRIPT_DIR=$(dirname $0)
+SCRIPT_DIR=$(dirname "${0}")
 
-cp -v ${SCRIPT_DIR}/added/* ${KOGITO_HOME}/launch/
+cp -v "${SCRIPT_DIR}"/added/* "${KOGITO_HOME}"/launch/
 
-/usr/share/graalvm/bin/gu -L install ${SOURCES_DIR}/native-image-installable-svm-java${GRAALVM_JAVA_VERSION}-linux-amd64-${GRAALVM_VERSION}.jar
+/usr/share/graalvm/bin/gu -L install "${SOURCES_DIR}"/native-image-installable-svm-java"${GRAALVM_JAVA_VERSION}"-linux-amd64-"${GRAALVM_VERSION}".jar

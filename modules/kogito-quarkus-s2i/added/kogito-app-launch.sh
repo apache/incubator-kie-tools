@@ -16,14 +16,16 @@ fi
 CONFIGURE_SCRIPTS=(
 
 )
-source ${KOGITO_HOME}/launch/configure.sh
+source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
 
 if [ "${NATIVE^^}" == "TRUE" ]; then
-    exec $KOGITO_HOME/bin/*-runner ${JAVA_OPTIONS} ${KOGITO_QUARKUS_S2I_PROPS} \
-         -Dquarkus.http.host=0.0.0.0 -Djava.library.path=$KOGITO_HOME/ssl-libs \
+    # shellcheck disable=SC2086
+    exec "${KOGITO_HOME}"/bin/*-runner ${JAVA_OPTIONS} ${KOGITO_QUARKUS_S2I_PROPS} \
+         -Dquarkus.http.host=0.0.0.0 -Djava.library.path="${KOGITO_HOME}"/ssl-libs \
          -Dquarkus.http.port=8080 \
-         -Djavax.net.ssl.trustStore=$KOGITO_HOME/cacerts
+         -Djavax.net.ssl.trustStore="${KOGITO_HOME}"/cacerts
 else
-    exec java ${JAVA_OPTIONS} ${KOGITO_QUARKUS_S2I_PROPS} -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar $KOGITO_HOME/bin/*runner.jar
+    # shellcheck disable=SC2086
+    exec java ${JAVA_OPTIONS} ${KOGITO_QUARKUS_S2I_PROPS} -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "${KOGITO_HOME}"/bin/*runner.jar
 fi

@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 
 export KOGITO_HOME=/tmp/kogito
-mkdir -p ${KOGITO_HOME}/launch
-cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/launch/
+mkdir -p "${KOGITO_HOME}"/launch
+cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh "${KOGITO_HOME}"/launch/
 
 # imports
 source $BATS_TEST_DIRNAME/../../added/memory-limit.sh

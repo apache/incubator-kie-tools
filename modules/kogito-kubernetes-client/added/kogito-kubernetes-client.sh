@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # imports
-source ${KOGITO_HOME}/launch/logging.sh
+source "${KOGITO_HOME}"/launch/logging.sh
 
 # checks if this script is running on a Kubernetes environment
 function is_running_on_kubernetes() {
@@ -28,13 +28,13 @@ function list_or_get_k8s_resource() {
     log_info "--> [k8s-client] Trying to fetch Kubernetes API ${api} for resource ${resource}"
 
     if is_running_on_kubernetes; then 
-        local namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-        local token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-        local response=$(curl -s -w "%{http_code}" --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+        namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+        token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+        response=$(curl -s -w "%{http_code}" --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
             -H "Authorization: Bearer $token" \
             -H 'Accept: application/json' \
-            ${KUBERNETES_SERVICE_PROTOCOL:-https}://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443}/${api}/v1/namespaces/${namespace}/${resource}?labelSelector=${labels}\&fieldSelector=${fields})
-        log_info ${response}
+            "${KUBERNETES_SERVICE_PROTOCOL:-https}://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443}/${api}/v1/namespaces/${namespace}/${resource}?labelSelector=${labels}\&fieldSelector=${fields}")
+        log_info "${response}"
     else
         log_info "--> [k8s-client] Not running on Kubernetes, skipping..."
     fi
@@ -53,15 +53,15 @@ function patch_json_k8s_resource() {
     log_info "--> [k8s-client] Trying to patch resource ${resource} in Kubernetes API ${api}"
 
     if is_running_on_kubernetes; then
-        local namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-        local token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-        local response=$(curl --request PATCH -s -w "%{http_code}" --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+        namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+        token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+        response=$(curl --request PATCH -s -w "%{http_code}" --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
             -H "Authorization: Bearer $token" \
             -H 'Accept: application/json' \
             -H 'Content-Type: application/json-patch+json' \
             --data "@${file}" \
-            ${KUBERNETES_SERVICE_PROTOCOL:-https}://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443}/${api}/v1/namespaces/${namespace}/${resource})
-        echo ${response}
+            "${KUBERNETES_SERVICE_PROTOCOL:-https}://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443}/${api}/v1/namespaces/${namespace}/${resource}")
+        echo "${response}"
     else
         log_info "--> [k8s-client] Not running on Kubernetes, skipping..."
     fi
