@@ -39,7 +39,7 @@
     "@types/vscode": "^1.46.0",
     "@types/underscore": "1.10.22",
     "babel-loader": "8.0.6",
-    "chromedriver": "^85.0.0",
+    "chromedriver": "^86.0.0",
     "circular-dependency-plugin": "5.2.0",
     "copy-webpack-plugin": "5.1.0",
     "cross-var": "1.1.0",
