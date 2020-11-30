@@ -90,7 +90,7 @@ const dataTypes = [
   "dateTimeSecondsSince[1980]"
 ];
 
-export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
+const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   const {
     activeOperation,
     name,
@@ -249,3 +249,5 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
     </section>
   );
 };
+
+export default OutputFieldEditRow;

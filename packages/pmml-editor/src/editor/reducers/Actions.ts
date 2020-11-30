@@ -48,6 +48,7 @@ export enum Actions {
   SetDataFieldName = "SET_DATA_FIELD_NAME",
   SetHeaderDescription = "SET_HEADER_DESCRIPTION",
   AddOutput = "OUTPUT_ADD",
+  AddBatchOutputs = "OUTPUT_BATCH_ADD",
   UpdateOutput = "OUTPUT_UPDATE",
   DeleteOutput = "OUTPUT_DELETE",
   AddMiningSchemaFields = "MINING_SCHEMA_ADD",

@@ -1,0 +1,7 @@
+.outputs-container {
+  &__multiple-outputs {
+    min-height: 200px;
+    font-family: monospace;
+    font-size: var(--pf-global--FontSize--lg);
+  }
+}
