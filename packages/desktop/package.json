@@ -20,7 +20,7 @@
     "react-router-dom": "5.1.1"
   },
   "scripts": {
-    "start": "electron dist",
+    "start": "electron dist --disable-gpu",
     "rebuild": "electron-rebuild -f -w sqlite3",
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest --silent --verbose",

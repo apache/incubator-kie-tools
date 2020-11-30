@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { app, BrowserWindow, globalShortcut } from "electron";
+import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import { Menu } from "./Menu";
 import { FS } from "../storage/core/FS";
 import { Files } from "../storage/core/Files";
 import { DesktopUserData } from "./DesktopUserData";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { desktopI18nDefaults, desktopI18nDictionaries } from "./i18n";
 
 let mainWindow: BrowserWindow | null = null;
 let forceQuit = false; // flag needed to keep app running on MacOS when the window is closed
@@ -64,8 +66,9 @@ const createWindow = () => {
     });
   }
 
+  const desktopI18n = new I18n(desktopI18nDefaults, desktopI18nDictionaries);
   const userData = new DesktopUserData();
-  const menu = new Menu(mainWindow, userData);
+  const menu = new Menu(mainWindow, userData, desktopI18n);
   menu.setup();
 };
 

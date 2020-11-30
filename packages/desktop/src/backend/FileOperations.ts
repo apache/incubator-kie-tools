@@ -23,16 +23,20 @@ import { DesktopUserData } from "./DesktopUserData";
 import { Menu } from "./Menu";
 import * as path from "path";
 import IpcMainEvent = Electron.IpcMainEvent;
+import { DesktopI18n } from "./i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 export class FileOperations {
   private readonly window: BrowserWindow;
   private readonly menu: Menu;
   private readonly userData: DesktopUserData;
+  private readonly i18n: DesktopI18n;
 
-  constructor(window: BrowserWindow, menu: Menu, userData: DesktopUserData) {
+  constructor(window: BrowserWindow, menu: Menu, userData: DesktopUserData, desktopI18n: I18n<DesktopI18n>) {
     this.window = window;
     this.menu = menu;
     this.userData = userData;
+    this.i18n = desktopI18n.getCurrent();
 
     ipcMain.on("saveFile", (event: IpcMainEvent, data: { action: FileSaveActions; file: ElectronFile }) => {
       if (
@@ -47,7 +51,7 @@ export class FileOperations {
       dialog
         .showSaveDialog(this.window, {
           defaultPath: "model." + data.file.fileType,
-          title: "Save file",
+          title: this.i18n.fileOperations.dialog.saveFile,
           filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }]
         })
         .then(result => {
@@ -64,7 +68,7 @@ export class FileOperations {
         dialog
           .showSaveDialog(this.window, {
             defaultPath: removeFileExtension(data.filePath) + "." + data.fileType,
-            title: "Save preview",
+            title: this.i18n.fileOperations.dialog.savePreview,
             filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }]
           })
           .then(result => {
@@ -179,7 +183,7 @@ export class FileOperations {
       .then(() => {
         this.userData.registerFile(filePath);
         console.info("File " + filePath + " saved.");
-        this.window.webContents.send("saveFileSuccess", { filePath })
+        this.window.webContents.send("saveFileSuccess", { filePath });
       })
       .catch(error => {
         console.info("Failed to save file" + filePath + ":" + error);

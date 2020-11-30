@@ -28,7 +28,7 @@ import {
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { ElectronFile, FileSaveActions } from "../../common/ElectronFile";
+import { FileSaveActions } from "../../common/ElectronFile";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;

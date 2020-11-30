@@ -21,6 +21,8 @@ import { DesktopUserData } from "../../backend/DesktopUserData";
 import { Menu } from "../../backend/Menu";
 import { FileOperations } from "../../backend/FileOperations";
 import { showSaveDialogMock } from "../../../__mocks__/electron";
+import { desktopI18nDefaults, desktopI18nDictionaries } from "../../backend/i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 beforeEach(() => {
   document.execCommand = () => true;
@@ -42,8 +44,9 @@ describe("saveFile ipc event", () => {
   test("check dialog for save file as operation", () => {
     const window = new electron.BrowserWindow();
     const userData = new DesktopUserData();
-    const menu = new Menu(window, userData);
-    const fileOperations = new FileOperations(window, menu, userData);
+    const desktopI18n = new I18n(desktopI18nDefaults, desktopI18nDictionaries);
+    const menu = new Menu(window, userData, desktopI18n);
+    const fileOperations = new FileOperations(window, menu, userData, desktopI18n);
 
     act(() =>
       electron.ipcRenderer.send("saveFile", {
