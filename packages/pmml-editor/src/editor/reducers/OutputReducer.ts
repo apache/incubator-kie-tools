@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface OutputPayload {
@@ -26,6 +26,10 @@ interface OutputPayload {
   [Actions.DeleteOutput]: {
     readonly modelIndex: number;
     readonly outputIndex: number;
+  };
+  [Actions.AddBatchOutputs]: {
+    readonly modelIndex: number;
+    readonly outputFields: FieldName[];
   };
 }
 
@@ -57,6 +61,15 @@ export const OutputReducer: HistoryAwareReducer<Output, OutputActions> = (
           if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
             draft.OutputField.splice(outputIndex, 1);
           }
+        });
+      case Actions.AddBatchOutputs:
+        return service.mutate(state, `models[${action.payload.modelIndex}].Output`, draft => {
+          action.payload.outputFields.forEach(name => {
+            draft.OutputField.push({
+              name: name,
+              dataType: "string"
+            });
+          });
         });
     }
 

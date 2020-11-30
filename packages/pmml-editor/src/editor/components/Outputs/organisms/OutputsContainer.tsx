@@ -15,6 +15,11 @@
  */
 import * as React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { isEqual } from "lodash";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
+import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
 import {
   DataType,
   FieldName,
@@ -24,15 +29,13 @@ import {
   RankOrder,
   ResultFeature
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { Button, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
-import { ArrowAltCircleLeftIcon, PlusIcon } from "@patternfly/react-icons";
-import { OutputFieldsTable } from "./OutputFieldsTable";
-import { Operation } from "../../EditorScorecard";
-import "./OutputsContainer.scss";
-import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import { ValidatedType } from "../../../types";
-import { isEqual } from "lodash";
+import { Actions } from "../../../reducers";
+import OutputFieldsTable from "./OutputFieldsTable";
+import OutputsBatchAdd from "./OutputsBatchAdd";
+import { Operation } from "../../EditorScorecard";
+import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
+import "./OutputsContainer.scss";
 import get = Reflect.get;
 import set = Reflect.set;
 
@@ -46,10 +49,18 @@ interface OutputsContainerProps {
   commit: (index: number | undefined, outputField: OutputField) => void;
 }
 
-type OutputsViewSection = "overview" | "extended-properties";
+type OutputsViewSection = "overview" | "extended-properties" | "batch-add";
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { activeOperation, setActiveOperation, output, validateOutputFieldName, deleteOutputField, commit } = props;
+  const {
+    modelIndex,
+    activeOperation,
+    setActiveOperation,
+    output,
+    validateOutputFieldName,
+    deleteOutputField,
+    commit
+  } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const [name, setName] = useState<ValidatedType<FieldName> | undefined>();
@@ -62,15 +73,24 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const [rankOrder, setRankOrder] = useState<RankOrder | undefined>();
   const [segmentId, setSegmentId] = useState<string | undefined>();
   const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
-
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
+  const dispatch = useDispatch();
+
   const getTransition = (_viewSection: OutputsViewSection) => {
-    if (_viewSection === "overview") {
-      return "outputs-container__overview";
-    } else {
-      return "outputs-container__extended-properties";
+    let cssClass;
+    switch (_viewSection) {
+      case "overview":
+        cssClass = "outputs-container__overview";
+        break;
+      case "extended-properties":
+        cssClass = "outputs-container__extended-properties";
+        break;
+      case "batch-add":
+        cssClass = "outputs-container__batch-add";
+        break;
     }
+    return cssClass;
   };
 
   const addOutputField = () => {
@@ -93,7 +113,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         isFinalResult: undefined
       });
       setName({ value: newOutputFieldName, valid: true });
-      setDataType("boolean");
+      setDataType("string");
       setOptype(undefined);
       setTargetField(undefined);
       setFeature(undefined);
@@ -120,6 +140,18 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     setSegmentId(outputField.segmentId);
     setIsFinalResult(outputField.isFinalResult);
     setActiveOperation(Operation.UPDATE_OUTPUT);
+  };
+
+  const addBatchOutputs = (outputs: string) => {
+    const outputsNames = outputs.split("\n").filter(item => item.trim().length > 0);
+    dispatch({
+      type: Actions.AddBatchOutputs,
+      payload: {
+        modelIndex: modelIndex,
+        outputFields: outputsNames
+      }
+    });
+    setViewSection("overview");
   };
 
   const onCommitAndClose = () => {
@@ -159,15 +191,30 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
             {viewSection === "overview" && (
               <Stack hasGutter={true}>
                 <StackItem>
-                  <Button
-                    variant="primary"
-                    onClick={addOutputField}
-                    isDisabled={activeOperation !== Operation.NONE}
-                    icon={<PlusIcon />}
-                    iconPosition="left"
-                  >
-                    Add Output
-                  </Button>
+                  <Flex>
+                    <FlexItem>
+                      <Button
+                        variant="primary"
+                        onClick={addOutputField}
+                        isDisabled={activeOperation !== Operation.NONE}
+                        icon={<PlusIcon />}
+                        iconPosition="left"
+                      >
+                        Add Output
+                      </Button>
+                    </FlexItem>
+                    <FlexItem>
+                      <Button
+                        variant="secondary"
+                        onClick={() => setViewSection("batch-add")}
+                        isDisabled={activeOperation !== Operation.NONE}
+                        icon={<BoltIcon />}
+                        iconPosition="left"
+                      >
+                        Add Multiple Outputs
+                      </Button>
+                    </FlexItem>
+                  </Flex>
                 </StackItem>
                 <StackItem className="outputs-container__overview">
                   <OutputFieldsTable
@@ -211,7 +258,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 <StackItem>
                   <TextContent>
                     <Title size="lg" headingLevel="h1">
-                      <a onClick={e => setViewSection("overview")}>{name?.value}</a>&nbsp;/&nbsp;Properties
+                      <a onClick={() => setViewSection("overview")}>{name?.value}</a>&nbsp;/&nbsp;Properties
                     </Title>
                   </TextContent>
                 </StackItem>
@@ -239,7 +286,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 <StackItem>
                   <Button
                     variant="primary"
-                    onClick={e => setViewSection("overview")}
+                    onClick={() => setViewSection("overview")}
                     icon={<ArrowAltCircleLeftIcon />}
                     iconPosition="left"
                   >
@@ -247,6 +294,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                   </Button>
                 </StackItem>
               </Stack>
+            )}
+            {viewSection === "batch-add" && (
+              <OutputsBatchAdd onAdd={addBatchOutputs} onCancel={() => setViewSection("overview")} />
             )}
           </>
         </CSSTransition>

@@ -24,11 +24,12 @@ import {
   RankOrder,
   ResultFeature
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputFieldEditRow, OutputFieldRow } from "../molecules";
 import "./OutputFieldsTable.scss";
 import { Operation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import { ValidatedType } from "../../../types";
+import OutputFieldRow from "../molecules/OutputFieldRow";
+import OutputFieldEditRow from "../molecules/OutputFieldEditRow";
 
 interface OutputFieldsTableProps {
   activeOperation: Operation;
@@ -64,7 +65,7 @@ interface OutputFieldsTableProps {
   onCancel: () => void;
 }
 
-export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
+const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   const {
     activeOperation,
     onAddOutputField,
@@ -130,7 +131,7 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
             className={`output-item output-item-n${activeOutputFieldIndex} editable ${
               activeOutputFieldIndex === index ? "editing" : ""
             }`}
-            key={o.name.value}
+            key={o.name as string}
           >
             {activeOutputFieldIndex === index && (
               <OutputFieldEditRow
@@ -189,3 +190,5 @@ export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     </Form>
   );
 };
+
+export default OutputFieldsTable;

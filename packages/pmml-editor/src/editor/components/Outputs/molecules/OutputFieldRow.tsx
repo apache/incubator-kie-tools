@@ -34,7 +34,7 @@ interface OutputFieldRowProps {
   onDeleteOutputField: () => void;
 }
 
-export const OutputFieldRow = (props: OutputFieldRowProps) => {
+const OutputFieldRow = (props: OutputFieldRowProps) => {
   const {
     name,
     dataType,
@@ -89,3 +89,5 @@ export const OutputFieldRow = (props: OutputFieldRowProps) => {
     </section>
   );
 };
+
+export default OutputFieldRow;
