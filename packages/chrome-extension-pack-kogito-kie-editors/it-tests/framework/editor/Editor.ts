@@ -24,8 +24,8 @@ export default abstract class Editor extends PageFragment {
 
     public async waitUntilLoaded(): Promise<void> {
         await this.enter();
-        if (await this.tools.by(Editor.LOADING_POPUP_LOCATOR).wait(5000).isPresent()) {
-            await this.tools.by(Editor.LOADING_POPUP_LOCATOR).wait(15000).untilAbsent();
+        if (await this.tools.by(Editor.LOADING_POPUP_LOCATOR).wait(10000).isPresent()) {
+            await this.tools.by(Editor.LOADING_POPUP_LOCATOR).wait(30000).untilAbsent();
         }
         await this.tools.by(Editor.EXPLORE_ICON_LOCATOR).wait(5000).untilPresent();
         return await this.leave();
