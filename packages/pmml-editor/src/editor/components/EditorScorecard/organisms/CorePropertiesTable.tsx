@@ -43,9 +43,9 @@ interface CoreProperties {
   isScorable: boolean;
   functionName: MiningFunction;
   algorithmName: string;
-  baselineScore: number;
+  baselineScore: number | undefined;
   baselineMethod: BaselineMethod;
-  initialScore: number;
+  initialScore: number | undefined;
   useReasonCodes: boolean;
   reasonCodeAlgorithm: ReasonCodeAlgorithm;
 }

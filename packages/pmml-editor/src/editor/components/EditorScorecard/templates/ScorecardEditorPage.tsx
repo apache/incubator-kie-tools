@@ -142,9 +142,9 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               isScorable={model.isScorable ?? true}
               functionName={model.functionName}
               algorithmName={model.algorithmName ?? ""}
-              baselineScore={model.baselineScore ?? 0}
+              baselineScore={model.baselineScore}
               baselineMethod={model.baselineMethod ?? "other"}
-              initialScore={model.initialScore ?? 0}
+              initialScore={model.initialScore}
               useReasonCodes={model.useReasonCodes ?? true}
               reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
               commit={_props => {

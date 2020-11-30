@@ -182,7 +182,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   <FormGroup
                     label="Baseline score"
                     fieldId="characteristic-baseline-score-helper"
-                    required={isBaselineScoreRequired}
+                    isRequired={isBaselineScoreRequired}
                     helperTextInvalid={
                       isBaselineScoreRequired && baselineScore.value === undefined
                         ? "Baseline score required"
