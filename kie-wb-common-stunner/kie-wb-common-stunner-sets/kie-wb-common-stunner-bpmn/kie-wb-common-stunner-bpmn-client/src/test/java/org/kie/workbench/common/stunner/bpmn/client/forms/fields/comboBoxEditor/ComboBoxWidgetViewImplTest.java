@@ -23,10 +23,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -58,7 +59,7 @@ public class ComboBoxWidgetViewImplTest {
         doCallRealMethod().when(view).setValue(any());
         doCallRealMethod().when(view).setValue(any(),
                                                anyBoolean());
-        doCallRealMethod().when(view).setComboBoxValues(any(ListBoxValues.class));
+        doCallRealMethod().when(view).setComboBoxValues(Mockito.<ListBoxValues>any());
     }
 
     @Test
