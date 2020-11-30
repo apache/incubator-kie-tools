@@ -219,7 +219,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                 </FormGroup>
               </SplitItem>
               <SplitItem style={{ width: 320 }}>
-                <FormGroup label="Missing Value Treatment" fieldId="missingValueTreatment">
+                <FormGroup label="Missing Value Treatment Method" fieldId="missingValueTreatment">
                   <GenericSelector
                     id="missingValueTreatment"
                     items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
@@ -247,10 +247,10 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                 </FormGroup>
               </SplitItem>
               <SplitItem style={{ width: 320 }}>
-                <FormGroup label="Invalid Value Treatment" fieldId="invalidValueTreatment">
+                <FormGroup label="Invalid Value Treatment Method" fieldId="invalidValueTreatment">
                   <GenericSelector
                     id="invalidValueTreatment"
-                    items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
+                    items={["", "returnInvalid", "asIs", "asMissing", "asValue"]}
                     onSelect={selection => {
                       setInvalidValueTreatment(selection as InvalidValueTreatmentMethod);
                       setSubmitChanges(true);
