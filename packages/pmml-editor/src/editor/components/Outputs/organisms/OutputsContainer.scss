@@ -16,6 +16,7 @@
 
 .outputs-container {
   height: 60vh;
+
   &__overview {
     height: calc(60vh - 52px);
     overflow-y: auto;
@@ -75,15 +76,18 @@
       transform: translateY(-50px);
       opacity: 0;
     }
+
     &-enter-active {
       transform: translateY(0);
       opacity: 1;
       transition: all 230ms;
     }
+
     &-exit {
       transform: translateY(0);
       opacity: 1;
     }
+
     &-exit-active {
       opacity: 0;
       transform: translateY(-21px);
