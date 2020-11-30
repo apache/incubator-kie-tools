@@ -296,9 +296,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
               </Stack>
             )}
             {viewSection === "batch-add" && (
-              <>
-                <OutputsBatchAdd onAdd={addBatchOutputs} onCancel={() => setViewSection("overview")} />
-              </>
+              <OutputsBatchAdd onAdd={addBatchOutputs} onCancel={() => setViewSection("overview")} />
             )}
           </>
         </CSSTransition>
