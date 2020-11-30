@@ -136,7 +136,6 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
 
   return (
     <article
-      ref={ref}
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === "Escape") {
@@ -156,7 +155,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
               helperTextInvalidIcon={<ExclamationCircleIcon />}
               validated={text.valid ? "default" : "error"}
             >
-              <PredicateEditor text={text} setText={setText} validateText={validateText} />
+              <div ref={ref}>
+                <PredicateEditor text={text} setText={setText} validateText={validateText} />
+              </div>
             </FormGroup>
           </SplitItem>
           <SplitItem>
