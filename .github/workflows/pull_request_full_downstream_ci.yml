@@ -43,7 +43,7 @@ jobs:
             category="comment";
             id="${{ github.event.comment.id }}";
           else
-            user=${{ github.event.pull_request.user.login }}
+            user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])");
             ref=${{ github.head_ref }}
             category="pull";
             id="${{ github.event.pull_request.number }}";
