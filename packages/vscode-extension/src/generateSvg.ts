@@ -42,7 +42,7 @@ export async function generateSvg(
   }
 
   const parsedPath = __path.parse(editor.document.uri.fsPath);
-  const svgFileName = `${parsedPath.name}${parsedPath.ext}.svg`;
+  const svgFileName = `${parsedPath.name}-svg.svg`;
   const svgAbsoluteFilePath = __path.join(parsedPath.dir, svgFileName);
   fs.writeFileSync(svgAbsoluteFilePath, previewSvg);
 
