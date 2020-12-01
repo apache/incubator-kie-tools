@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.OperatorPage;
@@ -41,6 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
@@ -56,7 +55,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class NewGuidedDecisionTableColumnWizardTest {
 
     private List<WizardPage> pages;
@@ -164,7 +163,6 @@ public class NewGuidedDecisionTableColumnWizardTest {
     public void testSetupTitleWhenColumnIsNew() {
         final String title = "title";
 
-        doNothing().when(wizard).parentStart();
         doReturn(title).when(translationService).format(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_AddNewColumn);
         doReturn(true).when(plugin).isNewColumn();
 
@@ -177,7 +175,6 @@ public class NewGuidedDecisionTableColumnWizardTest {
     public void testSetupTitleWhenColumnIsNotNew() {
         final String title = "title";
 
-        doNothing().when(wizard).parentStart();
         doReturn(title).when(translationService).format(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_EditColumn);
         doReturn(false).when(plugin).isNewColumn();
 
@@ -241,7 +238,6 @@ public class NewGuidedDecisionTableColumnWizardTest {
 
     @Test
     public void testCompleteWizardConditionColumnPlugin() {
-        when(conditionColumnPlugin.editingPattern()).thenReturn(new Pattern52());
         testCompleteWizard(conditionColumnPlugin);
     }
 
