@@ -56,7 +56,6 @@ interface Props {
 
 export function EmbedModal(props: Props) {
   const context = useContext(GlobalContext);
-  const [copied, setCopied] = useState(false);
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
   const { i18n } = useOnlineI18n();

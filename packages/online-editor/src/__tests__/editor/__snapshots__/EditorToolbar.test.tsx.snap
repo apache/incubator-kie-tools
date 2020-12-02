@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`EditorToolbar file actions Gist it button should be disable with invalid token 1`] = `
+exports[`EditorToolbar file actions Gist it button should be disable without token 1`] = `
 <button
   aria-expanded="true"
   aria-haspopup="true"
