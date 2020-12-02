@@ -25,10 +25,7 @@ import java.util.Set;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TestName;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
@@ -77,6 +74,7 @@ public class KieMetadataTest {
         tmpRoot = Files.createTempDirectory("repo");
     }
 
+    @Ignore //https://issues.redhat.com/browse/AF-2741
     @Test //AF-1459 it tooks 30% of the time of the time spent by all module's test (108), alone it took 30 sec
     public void compileAndLoadKieJarMetadataAllResourcesPackagedJar() throws Exception {
         /**

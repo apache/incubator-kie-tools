@@ -31,6 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
@@ -61,6 +62,7 @@ public class ConcurrentBuildTest {
         mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
+    @Ignore //https://issues.redhat.com/browse/AF-2744
     @Test
     public void buildFourProjectsInFourThreadCompletableFuture() throws Exception {
         latch = new CountDownLatch(4);
@@ -83,6 +85,7 @@ public class ConcurrentBuildTest {
         assertThat(resFour.get().isSuccessful()).isTrue();
     }
 
+    @Ignore //https://issues.redhat.com/browse/AF-2743
     @Test
     public void buildFourProjectsInFourThread() {
         latch = new CountDownLatch(4);
@@ -119,6 +122,7 @@ public class ConcurrentBuildTest {
         }
     }
 
+    @Ignore //https://issues.redhat.com/browse/AF-2742
     @Test
     public void buildFourProjectsInTheSameThread() throws Exception {
         latch = new CountDownLatch(4);
