@@ -142,7 +142,6 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   return (
     <section
       ref={ref}
-      className={`output-item__inner`}
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === "Escape") {

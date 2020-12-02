@@ -81,7 +81,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
   };
   return (
     <li
-      className={`mining-schema-list__item editable ${editing === index ? "editing" : ""}`}
+      className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
       key={field.name.value}
       onClick={handleEdit}
       ref={ref}

@@ -174,7 +174,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                         onClick={addDataType}
                         icon={<PlusIcon />}
                         iconPosition="left"
-                        isDisabled={editing !== false}
+                        isDisabled={editing !== false || sorting}
                       >
                         Add Data Type
                       </Button>
@@ -185,7 +185,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                         onClick={() => setViewSection("batch-add")}
                         icon={<BoltIcon />}
                         iconPosition="left"
-                        isDisabled={editing !== false}
+                        isDisabled={editing !== false || sorting}
                       >
                         Add Multiple Data Types
                       </Button>

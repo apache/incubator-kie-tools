@@ -19,17 +19,41 @@
   height: calc(100vh - 48px);
 }
 
-.editable {
+.editable-item {
+  --sizeEasing: cubic-bezier(0.25, 1, 0.5, 1);
+  border: 1px solid var(--pf-global--BorderColor--100);
+  background-color: #ffffff;
+  margin-bottom: 1em;
+  transition: margin-bottom 0.15s var(--sizeEasing), padding 0.15s var(--sizeEasing), border-left 0.12s ease-in;
+  user-select: none;
   cursor: pointer;
-  transition: border-left 0.12s ease-in;
+  padding: 1em;
 
   &:hover {
     box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
   }
-}
 
-.editing {
-  cursor: auto;
-  box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
-  border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
+  // from 5 items reduce spacing
+  &:first-child:nth-last-child(n + 5),
+  &:first-child:nth-last-child(n + 5) ~ & {
+    margin-bottom: 10px;
+    padding: 10px 1em;
+  }
+
+  // from 8 items reduce spacing further
+  &:first-child:nth-last-child(n + 8),
+  &:first-child:nth-last-child(n + 8) ~ & {
+    margin-bottom: 6px;
+    padding: 6px 1em;
+  }
+
+  &--editing {
+    cursor: auto;
+    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
+    padding: 1em !important;
+  }
+  &:last-child {
+    margin-bottom: 0 !important;
+  }
 }

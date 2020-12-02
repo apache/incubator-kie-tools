@@ -1,13 +1,5 @@
 .mining-schema-list {
   &__item {
-    border: 1px solid var(--pf-global--BorderColor--100);
-    padding: 1em;
-    background-color: #ffffff;
-    margin-bottom: 1em;
-    user-select: none;
-    &:last-child {
-      margin-bottom: 0;
-    }
     &__name {
       display: block;
       font-weight: bold;

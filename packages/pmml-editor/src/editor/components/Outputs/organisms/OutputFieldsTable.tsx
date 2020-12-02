@@ -128,8 +128,8 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
       <section>
         {outputs.map((o, index) => (
           <article
-            className={`output-item output-item-n${activeOutputFieldIndex} editable ${
-              activeOutputFieldIndex === index ? "editing" : ""
+            className={`editable-item output-item-n${activeOutputFieldIndex} ${
+              activeOutputFieldIndex === index ? "editable-item--editing" : ""
             }`}
             key={o.name as string}
           >

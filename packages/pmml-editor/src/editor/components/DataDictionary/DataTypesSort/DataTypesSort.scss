@@ -1,12 +1,20 @@
 .data-type-item {
   &__sortable {
-    height: 70px;
     // sorting library is canceling pointer events for some reason
     // they are needed for setting the cursor while dragging
     pointer-events: auto !important;
     cursor: grab;
     z-index: 9999;
     list-style: none;
+
+    &--sm-size {
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+    }
+    &--md-size {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
   }
 }
 

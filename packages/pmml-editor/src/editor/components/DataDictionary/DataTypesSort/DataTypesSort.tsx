@@ -21,7 +21,16 @@ const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
     onSort(newOrder);
   };
 
-  return <SortableList items={state} onSortEnd={onSortEnd} lockAxis="y" />;
+  const getHelperClass = () => {
+    if (state.length >= 8) {
+      return "data-type-item__sortable--sm-size";
+    }
+    if (state.length >= 5) {
+      return "data-type-item__sortable--md-size";
+    }
+  };
+
+  return <SortableList items={state} onSortEnd={onSortEnd} lockAxis="y" helperClass={getHelperClass()} />;
 };
 
 export default DataTypesSort;
@@ -37,9 +46,9 @@ const SortableList = SortableContainer(({ items }: { items: DataField[] }) => {
 });
 
 const SortableItem = SortableElement(({ item }: { item: DataField }) => (
-  <li className="data-type-item data-type-item__sortable">
+  <li className="editable-item data-type-item__sortable">
     {/*abstract data field component from DataDictionaryContainer and reuse it here*/}
-    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+    <Flex alignItems={{ default: "alignItemsCenter" }}>
       <FlexItem spacer={{ default: "spacerXs" }}>
         <Button variant="plain" aria-label="Drag to sort" component={"span"}>
           <GripVerticalIcon />

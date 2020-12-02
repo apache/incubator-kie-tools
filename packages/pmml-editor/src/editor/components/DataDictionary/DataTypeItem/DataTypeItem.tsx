@@ -131,10 +131,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   }, [editing]);
 
   return (
-    <article className={`data-type-item editable ${editing === index ? "editing" : ""} data-type-item-n${index}`}>
+    <article className={`editable-item ${editing === index ? "editable-item--editing" : ""} data-type-item-n${index}`}>
       {editing === index && (
         <section
-          className="data-type-item__inner"
           ref={ref}
           tabIndex={0}
           onKeyDown={event => {
@@ -224,7 +223,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       )}
       {editing !== index && (
         <section
-          className="data-type-item__inner"
           tabIndex={0}
           onClick={handleEditStatus}
           onKeyDown={event => {
