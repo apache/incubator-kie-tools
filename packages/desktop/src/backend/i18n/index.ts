@@ -14,13 +14,5 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { File } from "@kogito-tooling/editor/dist/channel";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-
-export interface GlobalContextType {
-  file: File;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
-}
-
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
+export * from "./DesktopI18n";
+export * from "./setup";

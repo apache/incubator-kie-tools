@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { File } from "@kogito-tooling/editor/dist/channel";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+export const UNSAVED_FILE_NAME = "unsaved file";
+export const SAMPLE = "sample";
 
-export interface GlobalContextType {
-  file: File;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
+export interface ElectronFile {
+  filePath: string;
+  fileType: string;
+  fileContent: string;
 }
 
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
+export enum FileSaveActions {
+  SAVE,
+  SAVE_AS
+}

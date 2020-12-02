@@ -23,26 +23,36 @@ export type CommonDictionary = {
   cancel: string;
   close: string;
   continue: string;
+  copy: string;
+  cut: string;
   dismiss: string;
   done: string;
   download: string;
+  edit: string;
   edited: string;
   exit: string;
+  file: string;
   files: string;
   forum: string;
   fullScreen: string;
   install: string;
   launch: string;
   loading: string;
+  new: string;
   note: string;
+  open: string;
   os: {
     initials: string;
     full: string;
   };
+  paste: string;
   poweredBy: string;
+  quit: string;
+  redo: string;
   reset: string;
   save: string;
   token: string;
+  undo: string;
   uninstall: string;
 };
 

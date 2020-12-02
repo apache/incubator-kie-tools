@@ -27,21 +27,19 @@ import {
 } from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { File, FileSaveActions } from "../../common/File";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { FileSaveActions } from "../../common/ElectronFile";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
-  fileExtension: string;
   onClose: () => void;
+  onFilenameChange: (filePath: string) => void;
 }
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
-
-let contentRequestData: { action: FileSaveActions; file?: File };
 
 export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
@@ -60,24 +58,29 @@ export function EditorPage(props: Props) {
     } else {
       setShowUnsavedAlert(true);
     }
-  }, [isDirty]);
+  }, [isDirty, props.onClose]);
 
   const onCloseWithoutSave = useCallback(() => {
     setShowUnsavedAlert(false);
     props.onClose();
-  }, []);
+  }, [props.onClose]);
 
-  const requestSaveFile = useCallback(() => {
-    setShowUnsavedAlert(false);
-    editor?.getContent().then(content => {
-      contentRequestData.file = {
-        filePath: context.file!.filePath,
-        fileType: context.file!.fileType,
-        fileContent: content
-      };
-      electron.ipcRenderer.send("saveFile", contentRequestData);
-    });
-  }, [context.file, editor]);
+  const requestSaveFile = useCallback(
+    (action: FileSaveActions) => {
+      setShowUnsavedAlert(false);
+      editor?.getContent().then(content => {
+        electron.ipcRenderer.send("saveFile", {
+          file: {
+            filePath: context.file.fileName,
+            fileType: context.file.fileExtension,
+            fileContent: content
+          },
+          action
+        });
+      });
+    },
+    [context.file, editor]
+  );
 
   const requestCopyContentToClipboard = useCallback(() => {
     editor?.getContent().then(content => {
@@ -94,32 +97,19 @@ export function EditorPage(props: Props) {
   const requestSavePreview = useCallback(() => {
     editor?.getPreview().then(previewSvg => {
       electron.ipcRenderer.send("savePreview", {
-        filePath: context.file!.filePath,
+        filePath: context.file!.fileName,
         fileType: "svg",
         fileContent: previewSvg
       });
     });
-  }, [editor]);
-
-  const requestThumbnailPreview = useCallback(() => {
-    editor?.getPreview().then(previewSvg => {
-      electron.ipcRenderer.send("saveThumbnail", {
-        filePath: context.file!.filePath,
-        fileType: "svg",
-        fileContent: previewSvg
-      });
-    });
-  }, [editor]);
+  }, [editor, context.file]);
 
   const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
   const closeSaveFileSuccessAlert = useCallback(() => setSaveFileSuccessAlertVisible(false), []);
   const closeSavePreviewSuccessAlert = useCallback(() => setSavePreviewSuccessAlertVisible(false), []);
 
   const onSave = useCallback(() => {
-    contentRequestData = {
-      action: FileSaveActions.SAVE
-    };
-    requestSaveFile();
+    requestSaveFile(FileSaveActions.SAVE);
   }, [requestSaveFile]);
 
   useEffect(() => {
@@ -156,13 +146,9 @@ export function EditorPage(props: Props) {
   }, [savePreviewSuccessAlertVisible, closeSavePreviewSuccessAlert]);
 
   useEffect(() => {
-    electron.ipcRenderer.on(
-      "requestOpenedFile",
-      (event: IpcRendererEvent, data: { action: FileSaveActions; file?: File }) => {
-        contentRequestData = data;
-        requestSaveFile();
-      }
-    );
+    electron.ipcRenderer.on("requestOpenedFile", (event: IpcRendererEvent, data: { action: FileSaveActions }) => {
+      requestSaveFile(data.action);
+    });
 
     return () => {
       electron.ipcRenderer.removeAllListeners("requestOpenedFile");
@@ -190,27 +176,35 @@ export function EditorPage(props: Props) {
   }, [requestSavePreview]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("saveThumbnail", () => {
-      requestThumbnailPreview();
+    electron.ipcRenderer.on("saveFileSuccess", (event: IpcRendererEvent, data: { filePath: string }): void => {
+      editor
+        ?.getPreview()
+        .then(previewSvg => {
+          electron.ipcRenderer.send("saveThumbnail", {
+            filePath: data.filePath,
+            fileType: "svg",
+            fileContent: previewSvg
+          });
+          editor?.getStateControl().setSavedCommand();
+          setSaveFileSuccessAlertVisible(true);
+          props.onFilenameChange(data.filePath);
+        })
+        .catch(err => console.log(err));
     });
 
     return () => {
-      electron.ipcRenderer.removeAllListeners("saveThumbnail");
+      electron.ipcRenderer.removeAllListeners("saveFileSuccess");
     };
-  }, [requestThumbnailPreview]);
+  }, [editor, props.onFilenameChange]);
 
-  useEffect(() => {
-    const saveFileSuccessListener = () => {
-      editor?.getStateControl().setSavedCommand();
-      setSaveFileSuccessAlertVisible(true);
-      requestThumbnailPreview();
-    };
-
-    electron.ipcRenderer.on("saveFileSuccess", saveFileSuccessListener);
-    return () => {
-      electron.ipcRenderer.removeListener("saveFileSuccess", saveFileSuccessListener);
-    };
-  }, [requestThumbnailPreview, editor]);
+  const saveOpenedFileThumbnail = useCallback(async () => {
+    const previewSvg = await editor?.getPreview();
+    electron.ipcRenderer.send("saveThumbnail", {
+      filePath: context.file!.fileName,
+      fileType: "svg",
+      fileContent: previewSvg
+    });
+  }, [editor, context.file]);
 
   useEffect(() => {
     electron.ipcRenderer.on("savePreviewSuccess", () => {
@@ -221,20 +215,6 @@ export function EditorPage(props: Props) {
       electron.ipcRenderer.removeAllListeners("savePreviewSuccess");
     };
   }, []);
-
-  const getFileContents = useMemo(() => () => Promise.resolve(context.file?.fileContent ?? ""), [
-    context.file?.fileContent
-  ]);
-
-  const file = useMemo(
-    () => ({
-      fileName: context.file?.filePath ?? "",
-      fileExtension: context.file?.fileType!,
-      getFileContents,
-      isReadOnly: false
-    }),
-    [context.file?.filePath, context.file?.fileType, getFileContents]
-  );
 
   return (
     <Page className={"kogito--editor-page"}>
@@ -257,7 +237,7 @@ export function EditorPage(props: Props) {
                   }
                   actionLinks={
                     <React.Fragment>
-                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
+                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={onSave}>
                         {i18n.terms.save}
                       </AlertActionLink>
                       <AlertActionLink
@@ -302,10 +282,10 @@ export function EditorPage(props: Props) {
             )}
             <EmbeddedEditor
               ref={editorRef}
-              file={file}
-              channelType={ChannelType.DESKTOP}
-              receive_ready={requestThumbnailPreview}
+              file={context.file}
+              receive_ready={saveOpenedFileThumbnail}
               editorEnvelopeLocator={context.editorEnvelopeLocator}
+              channelType={ChannelType.DESKTOP}
               locale={locale}
             />
           </StackItem>

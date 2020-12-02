@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-export const UNSAVED_FILE_NAME = "unsaved file";
-export const SAMPLE = "sample";
-
-export interface File {
-  filePath: string;
-  fileType: string;
-  fileContent: string;
-}
-
-export enum FileSaveActions {
-  SAVE,
-  SAVE_AS
-}
+export { en } from "./en";
