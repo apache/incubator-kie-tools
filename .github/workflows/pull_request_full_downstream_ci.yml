@@ -116,7 +116,7 @@ jobs:
             echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
-          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -B
 
       - name: Checkout kie-wb-common
         uses: actions/checkout@v2
