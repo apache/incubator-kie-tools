@@ -76,6 +76,11 @@ export default class Tools {
     }
 
     public static async init(testName: string): Promise<Tools> {
-        return new Tools(await Driver.init(), testName);
+        const driver: WebDriver = await Driver.init();
+        if (driver === undefined) {
+            throw new Error("Driver was not created.")
+        } else {
+            return new Tools(driver, testName);
+        }
     }
 }

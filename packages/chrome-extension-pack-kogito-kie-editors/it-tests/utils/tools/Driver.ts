@@ -36,7 +36,7 @@ export default class Driver {
 
         // init chrome options
         const chromeOptions: Options = new Options();
-        chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost");
+        chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost", "--start-maximized");
 
         // init chrome driver log
         const LOGS_DIR: string = resolve("logs");
@@ -55,10 +55,10 @@ export default class Driver {
             .build();
 
         // maximize chrome browser window
-        await ErrorProcessor.run(
+        /*await ErrorProcessor.run(
             async () => await driver.manage().window().maximize(),
             "Error while maximizing browser window."
-        );
+        );*/
 
         return driver;
     }
