@@ -25,6 +25,7 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest"
   },
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+    "monaco-editor": "<rootDir>/__mocks__/monacoMock.js"
   }
 };

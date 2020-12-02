@@ -110,8 +110,8 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     return n;
   };
 
-  const toYesNo = (value: boolean | undefined) => {
-    return value ? "Yes" : "No";
+  const toYesNo = (_value: boolean | undefined) => {
+    return _value ? "Yes" : "No";
   };
 
   const onEdit = () => {

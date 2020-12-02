@@ -24,11 +24,6 @@ interface AttributeToolbarProps {
 export const AttributeToolbar = (props: AttributeToolbarProps) => {
   const { viewOverview } = props;
 
-  const onViewOverview = (e: React.MouseEvent) => {
-    e.preventDefault();
-    viewOverview();
-  };
-
   return (
     <Toolbar id="attribute-toolbar" data-testid="attribute-toolbar">
       <ToolbarContent>
@@ -36,14 +31,25 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
           <SplitItem isFilled={true}>
             <TextContent>
               <Title size="lg" headingLevel="h1">
-                <a onClick={e => onViewOverview(e)}>Characteristics</a>&nbsp;/&nbsp;Attribute
+                <a
+                  onClick={e => {
+                    e.preventDefault();
+                    viewOverview();
+                  }}
+                >
+                  Characteristics
+                </a>
+                &nbsp;/&nbsp;Attribute
               </Title>
             </TextContent>
           </SplitItem>
           <SplitItem>
             <Button
               variant="primary"
-              onClick={e => onViewOverview(e)}
+              onClick={e => {
+                e.preventDefault();
+                viewOverview();
+              }}
               icon={<ArrowAltCircleLeftIcon />}
               iconPosition="left"
             >
