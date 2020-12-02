@@ -140,7 +140,7 @@ public class LocalDateFieldValueMarshallerTest {
 
         assertNotNull(flatValue);
 
-        Assertions.assertThat(LocalTime.ofInstant(flatValue.toInstant(), ZoneId.systemDefault()))
+        Assertions.assertThat(LocalTime.from(flatValue.toInstant().atZone(ZoneId.systemDefault())))
                 .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
 
         LocalTime rawValue = (LocalTime) marshaller.toRawValue(flatValue);

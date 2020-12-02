@@ -172,7 +172,7 @@ public abstract class AbstractDateMultipleFieldValueMarshallerTest<F extends Fie
         Assertions.assertThat(flatValue)
                 .hasSize(1);
 
-        Assertions.assertThat(LocalTime.ofInstant(flatValue.get(0).toInstant(), ZoneId.systemDefault()))
+        Assertions.assertThat(LocalTime.from(flatValue.get(0).toInstant().atZone(ZoneId.systemDefault())))
                 .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
 
         List<LocalTime> rawValue = (List<LocalTime>) marshaller.toRawValue(flatValue);
