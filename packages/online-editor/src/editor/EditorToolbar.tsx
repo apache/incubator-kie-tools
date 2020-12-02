@@ -144,6 +144,7 @@ export function EditorToolbar(props: Props) {
             trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
           >
             <DropdownItem
+              data-testid={"gist-it-button"}
               component="button"
               onClick={props.onGistIt}
               isDisabled={!context.githubService.isAuthenticated()}
@@ -214,12 +215,11 @@ export function EditorToolbar(props: Props) {
               }}
             >
               <Dropdown
-                data-testid={"share-menu-lg"}
                 onSelect={() => setShareMenuOpen(false)}
                 toggle={
                   <DropdownToggle
                     id={"share-id-lg"}
-                    data-testid={"file-actions"}
+                    data-testid={"share-menu"}
                     onToggle={isOpen => setShareMenuOpen(isOpen)}
                   >
                     {i18n.editorToolbar.share}
@@ -243,10 +243,10 @@ export function EditorToolbar(props: Props) {
               }}
             >
               <Dropdown
-                data-testid={"view-kebab-lg"}
                 onSelect={() => setViewKebabOpen(false)}
                 toggle={
                   <DropdownToggle
+                    data-testid={"view-kebab"}
                     className={"kogito--editor__toolbar-icon-button"}
                     id={"view-id-lg"}
                     toggleIndicator={null}
@@ -272,10 +272,10 @@ export function EditorToolbar(props: Props) {
               }}
             >
               <Dropdown
-                data-testid={"kebab-sm"}
                 onSelect={() => setKebabOpen(false)}
                 toggle={
                   <DropdownToggle
+                    data-testid={"kebab-sm"}
                     className={"kogito--editor__toolbar-icon-button"}
                     id={"kebab-id-sm"}
                     toggleIndicator={null}

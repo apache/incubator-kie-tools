@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
@@ -31,7 +30,6 @@ import { useFileUrl } from "../common/Hooks";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
-
 
 export enum Alerts {
   NONE,

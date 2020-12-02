@@ -71,7 +71,7 @@ export const en: OnlineI18n = {
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
     setGitHubToken: `Set up your ${en_common.names.github} token`,
     gistIt: "Gist it!",
-    gistItTooltip: `Set up your ${en_common.names.github} token to be able to create gists!`,
+    gistItTooltip: `Set up your ${en_common.names.github} token to be able to create and update gists!`,
     share: "Share",
     embed: "Embed"
   },

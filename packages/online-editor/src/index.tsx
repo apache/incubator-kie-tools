@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import '@patternfly/react-core/dist/styles/base.css';
+import "@patternfly/react-core/dist/styles/base.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import { App } from "./App";
 import { newFile } from "@kogito-tooling/editor/dist/channel";

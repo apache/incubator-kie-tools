@@ -1,5 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`EditorToolbar file actions Gist it button should be disable with invalid token 1`] = `
+<button
+  aria-expanded="true"
+  aria-haspopup="true"
+  class="pf-c-dropdown__toggle pf-m-plain"
+  data-testid="share-menu"
+  id="share-id-lg"
+  type="button"
+>
+  <span
+    class="pf-c-dropdown__toggle-text"
+  >
+    Share
+  </span>
+  <span
+    class="pf-c-dropdown__toggle-icon"
+  >
+    <svg
+      aria-hidden="true"
+      fill="currentColor"
+      height="1em"
+      role="img"
+      style="vertical-align: -0.125em;"
+      viewBox="0 0 320 512"
+      width="1em"
+    >
+      <path
+        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+        transform=""
+      />
+    </svg>
+  </span>
+</button>
+`;
+
 exports[`EditorToolbar file actions Set GitHub token button should open a GitHubTokenModal 1`] = `
 <div
   class="pf-c-modal-box__body"
@@ -54,76 +89,6 @@ exports[`EditorToolbar file actions Set GitHub token button should open a GitHub
      permission.
   </p>
 </div>
-`;
-
-exports[`EditorToolbar file actions Update Gist button should be disable with invalid user 1`] = `
-<button
-  aria-expanded="true"
-  aria-haspopup="true"
-  class="pf-c-dropdown__toggle pf-m-plain kogito--editor__toolbar-toggle-icon-button"
-  data-testid="file-actions"
-  id="toggle-id-lg"
-  type="button"
->
-  <span
-    class="pf-c-dropdown__toggle-text"
-  >
-    File actions
-  </span>
-  <span
-    class="pf-c-dropdown__toggle-icon"
-  >
-    <svg
-      aria-hidden="true"
-      fill="currentColor"
-      height="1em"
-      role="img"
-      style="vertical-align: -0.125em;"
-      viewBox="0 0 320 512"
-      width="1em"
-    >
-      <path
-        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-        transform=""
-      />
-    </svg>
-  </span>
-</button>
-`;
-
-exports[`EditorToolbar file actions Update Gist button should be enable with valid user 1`] = `
-<button
-  aria-expanded="true"
-  aria-haspopup="true"
-  class="pf-c-dropdown__toggle pf-m-plain kogito--editor__toolbar-toggle-icon-button"
-  data-testid="file-actions"
-  id="toggle-id-lg"
-  type="button"
->
-  <span
-    class="pf-c-dropdown__toggle-text"
-  >
-    File actions
-  </span>
-  <span
-    class="pf-c-dropdown__toggle-icon"
-  >
-    <svg
-      aria-hidden="true"
-      fill="currentColor"
-      height="1em"
-      role="img"
-      style="vertical-align: -0.125em;"
-      viewBox="0 0 320 512"
-      width="1em"
-    >
-      <path
-        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-        transform=""
-      />
-    </svg>
-  </span>
-</button>
 `;
 
 exports[`EditorToolbar is dirty indicator should show the isDirty indicator when isEdited is true 1`] = `
