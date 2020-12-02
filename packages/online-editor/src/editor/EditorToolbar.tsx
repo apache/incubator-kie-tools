@@ -20,6 +20,7 @@ import {
   DropdownGroup,
   DropdownItem,
   DropdownPosition,
+  DropdownSeparator,
   TextInput,
   Title,
   PageHeaderTools,
@@ -30,7 +31,7 @@ import {
   Tooltip,
   DropdownToggle
 } from "@patternfly/react-core";
-import { CloseIcon, EllipsisVIcon, ExpandIcon } from "@patternfly/react-icons";
+import { EllipsisVIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
@@ -57,6 +58,7 @@ export function EditorToolbar(props: Props) {
   const location = useLocation();
   const [fileName, setFileName] = useState(context.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
+  const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
 
@@ -89,16 +91,29 @@ export function EditorToolbar(props: Props) {
     [saveNewName, cancelNewName]
   );
 
-  const kebabItems = useCallback(
+  const viewItems = useCallback(
     (dropdownId: string) => [
-      <DropdownItem
-        key={`dropdown-${dropdownId}-fullscreen`}
-        component="button"
-        onClick={props.onFullScreen}
-        className={"pf-u-display-none-on-xl"}
-      >
-        {i18n.terms.fullScreen}
-      </DropdownItem>,
+      <React.Fragment key={`dropdown-${dropdownId}-close`}>
+        {!context.external && (
+          <DropdownItem
+            component={"button"}
+            onClick={props.onClose}
+            aria-label={"Close"}
+            data-testid={"close-editor-button"}
+          >
+            {i18n.editorToolbar.closeAndReturnHome}
+          </DropdownItem>
+        )}
+      </React.Fragment>,
+      <DropdownItem key={`dropdown-${dropdownId}-fullscreen`} component={"button"} onClick={props.onFullScreen}>
+        {i18n.editorToolbar.enterFullScreenView}
+      </DropdownItem>
+    ],
+    [i18n, context, props.onClose, props.onFullScreen]
+  );
+
+  const shareItems = useCallback(
+    (dropdownId: string) => [
       <DropdownItem
         key={`dropdown-${dropdownId}-save`}
         component={"button"}
@@ -156,16 +171,7 @@ export function EditorToolbar(props: Props) {
         </DropdownItem>
       </DropdownGroup>
     ],
-    [
-      i18n,
-      context.external,
-      context.readonly,
-      props.onSave,
-      props.onDownload,
-      props.onCopyContentToClipboard,
-      props.onGistIt,
-      window.location
-    ]
+    [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
 
   return !props.isPageFullscreen ? (
@@ -190,7 +196,7 @@ export function EditorToolbar(props: Props) {
                 variant={"primary"}
                 onClick={props.onDownload}
                 aria-label={"Save and Download button"}
-                className={"kogito--editor__toolbar-save"}
+                className={"kogito--editor__toolbar button"}
               >
                 {i18n.editorToolbar.saveAndDownload}
               </Button>
@@ -208,20 +214,50 @@ export function EditorToolbar(props: Props) {
               }}
             >
               <Dropdown
+                data-testid={"share-menu-lg"}
                 onSelect={() => setShareMenuOpen(false)}
                 toggle={
                   <DropdownToggle
-                    id={"toggle-id-lg"}
+                    id={"share-id-lg"}
                     data-testid={"file-actions"}
-                    className={"kogito--editor__toolbar-share"}
                     onToggle={isOpen => setShareMenuOpen(isOpen)}
                   >
                     {i18n.editorToolbar.share}
                   </DropdownToggle>
                 }
-                isOpen={isShareMenuOpen}
                 isPlain={true}
-                dropdownItems={kebabItems("lg")}
+                className={"kogito--editor__toolbar dropdown"}
+                isOpen={isShareMenuOpen}
+                dropdownItems={shareItems("lg")}
+                position={DropdownPosition.right}
+              />
+            </PageHeaderToolsItem>
+            <PageHeaderToolsItem
+              visibility={{
+                default: "hidden",
+                "2xl": "visible",
+                xl: "visible",
+                lg: "hidden",
+                md: "hidden",
+                sm: "hidden"
+              }}
+            >
+              <Dropdown
+                data-testid={"view-kebab-lg"}
+                onSelect={() => setViewKebabOpen(false)}
+                toggle={
+                  <DropdownToggle
+                    className={"kogito--editor__toolbar-icon-button"}
+                    id={"view-id-lg"}
+                    toggleIndicator={null}
+                    onToggle={isOpen => setViewKebabOpen(isOpen)}
+                  >
+                    <EllipsisVIcon />
+                  </DropdownToggle>
+                }
+                isOpen={isViewKebabOpen}
+                isPlain={true}
+                dropdownItems={viewItems("lg")}
                 position={DropdownPosition.right}
               />
             </PageHeaderToolsItem>
@@ -236,11 +272,12 @@ export function EditorToolbar(props: Props) {
               }}
             >
               <Dropdown
+                data-testid={"kebab-sm"}
                 onSelect={() => setKebabOpen(false)}
                 toggle={
                   <DropdownToggle
                     className={"kogito--editor__toolbar-icon-button"}
-                    id={"toggle-id-sm"}
+                    id={"kebab-id-sm"}
                     toggleIndicator={null}
                     onToggle={isOpen => setKebabOpen(isOpen)}
                   >
@@ -249,51 +286,16 @@ export function EditorToolbar(props: Props) {
                 }
                 isOpen={isKebabOpen}
                 isPlain={true}
-                dropdownItems={kebabItems("sm")}
+                dropdownItems={[
+                  ...viewItems("sm"),
+                  <DropdownSeparator key={"separator"} />,
+                  <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
+                    {...shareItems("sm")}
+                  </DropdownGroup>
+                ]}
                 position={DropdownPosition.right}
               />
             </PageHeaderToolsItem>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden"
-              }}
-            >
-              <Button
-                className={"kogito--editor__toolbar-icon-button"}
-                variant={"plain"}
-                onClick={props.onFullScreen}
-                aria-label={"Full screen"}
-              >
-                <ExpandIcon />
-              </Button>
-            </PageHeaderToolsItem>
-            {!context.external && (
-              <PageHeaderToolsItem
-                visibility={{
-                  default: "visible",
-                  "2xl": "visible",
-                  xl: "visible",
-                  lg: "visible",
-                  md: "visible",
-                  sm: "visible"
-                }}
-              >
-                <Button
-                  className={"kogito--editor__toolbar-icon-button"}
-                  variant={"plain"}
-                  onClick={props.onClose}
-                  aria-label={"Close"}
-                  data-testid="close-editor-button"
-                >
-                  <CloseIcon />
-                </Button>
-              </PageHeaderToolsItem>
-            )}
           </PageHeaderToolsGroup>
         </PageHeaderTools>
       }

@@ -63,6 +63,8 @@ export const en: OnlineI18n = {
     }
   },
   editorToolbar: {
+    closeAndReturnHome: "Close and return Home",
+    enterFullScreenView: "Enter full screen view",
     saveAndDownload: "Save & Download",
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",

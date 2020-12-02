@@ -15,9 +15,6 @@
  */
 
 import { File } from "@kogito-tooling/editor/dist/channel";
-import "@patternfly/patternfly/base/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.scss";
-import "@patternfly/patternfly/patternfly.scss";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { Route, Switch } from "react-router";
@@ -29,7 +26,6 @@ import { EditorPage } from "./editor/EditorPage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
-import "../static/resources/style.css";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";

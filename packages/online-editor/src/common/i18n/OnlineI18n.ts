@@ -62,6 +62,8 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     };
   };
   editorToolbar: {
+    closeAndReturnHome: string,
+    enterFullScreenView: string,
     saveAndDownload: string;
     sendChangesToGitHub: string;
     copySource: string;

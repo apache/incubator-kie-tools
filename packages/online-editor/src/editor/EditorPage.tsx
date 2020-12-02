@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
-import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
+
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+
 import { useLocation } from "react-router";
 import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
@@ -29,6 +28,10 @@ import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
 import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
+
 
 export enum Alerts {
   NONE,

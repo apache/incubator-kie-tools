@@ -147,9 +147,52 @@
   --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
 }
 
-.kogito--editor__toolbar-save {
-  background-color: blue;
-  color: white;
+.kogito--editor__toolbar.button {
+  background-color: var(--pf-global--palette--blue-400);
+  color: var(--pf-global--palette--white);
+  padding-top: var(--pf-global--spacer--form-element);
+  padding-right: var(--pf-global--spacer--md);
+  padding-bottom: var(--pf-global--spacer--form-element);
+  padding-left: var(--pf-global--spacer--md);
+  line-height: var(--pf-global--LineHeight--md);
+  font-weight: var(--pf-global--FontWeight--normal);
+  font-size: var(--pf-global--FontSize--md);
+  border-radius: var(--pf-global--BorderRadius--sm);
+}
+
+.kogito--editor__toolbar.button:hover,
+.kogito--editor__toolbar-button:focus,
+.kogito--editor__toolbar-button:active {
+  background-color: var(--pf-global--palette--blue-500);
+}
+
+.kogito--editor__toolbar.button:after {
+  border-radius: var(--pf-global--BorderRadius--sm);
+  border-color: transparent;
+  border-width: var(--pf-global--BorderWidth--sm);
+}
+
+.kogito--editor__toolbar.button:after:hover,
+.kogito--editor__toolbar.button:after:focus,
+.kogito--editor__toolbar.button:after:active {
+  border-width: var(--pf-global--BorderWidth--sm);
+}
+
+.kogito--editor__toolbar.dropdown {
+  background-color: #292d32;
+  border-bottom: solid transparent 1px;
+  padding-bottom: 1px;
+}
+
+.kogito--editor__toolbar.dropdown:hover {
+  border-bottom: solid var(--pf-global--palette--blue-300) 1px;
+}
+
+.kogito--editor__toolbar.dropdown:active,
+.kogito--editor__toolbar.dropdown:hover:active,
+.kogito--editor__toolbar.dropdown:active::before {
+  border-bottom: solid var(--pf-global--palette--blue-300) 2px;
+  padding-bottom: 0;
 }
 
 .kogito--editor__toolbar-share {

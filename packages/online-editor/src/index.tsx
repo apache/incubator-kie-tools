@@ -16,6 +16,8 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import '@patternfly/react-core/dist/styles/base.css';
+import "@patternfly/patternfly/patternfly-addons.scss";
 import { App } from "./App";
 import { newFile } from "@kogito-tooling/editor/dist/channel";
 import {
@@ -27,6 +29,7 @@ import {
 import { GithubService } from "./common/GithubService";
 import { Alert, AlertActionLink, AlertVariant } from "@patternfly/react-core";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+import "../static/resources/style.css";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
