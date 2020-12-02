@@ -141,6 +141,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
 
   return (
     <section
+      className={"editable-item__inner"}
       ref={ref}
       tabIndex={0}
       onKeyDown={e => {

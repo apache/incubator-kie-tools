@@ -7,11 +7,11 @@
     z-index: 9999;
     list-style: none;
 
-    &--sm-size {
+    &--sm-size .editable-item__inner {
       padding-top: 8px !important;
       padding-bottom: 8px !important;
     }
-    &--md-size {
+    &--md-size .editable-item__inner {
       padding-top: 10px !important;
       padding-bottom: 10px !important;
     }

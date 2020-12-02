@@ -24,11 +24,13 @@
   border: 1px solid var(--pf-global--BorderColor--100);
   background-color: #ffffff;
   margin-bottom: 1em;
-  transition: margin-bottom 0.15s var(--sizeEasing), padding 0.15s var(--sizeEasing), border-left 0.12s ease-in;
+  transition: margin-bottom 0.15s var(--sizeEasing), border-left 0.12s ease-in;
   user-select: none;
   cursor: pointer;
-  padding: 1em;
-
+  &__inner {
+    padding: 1em;
+    transition: padding 0.15s var(--sizeEasing);
+  }
   &:hover {
     box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
   }
@@ -37,23 +39,44 @@
   &:first-child:nth-last-child(n + 5),
   &:first-child:nth-last-child(n + 5) ~ & {
     margin-bottom: 10px;
-    padding: 10px 1em;
+    .editable-item__inner {
+      padding: 10px 1em;
+    }
   }
 
   // from 8 items reduce spacing further
   &:first-child:nth-last-child(n + 8),
   &:first-child:nth-last-child(n + 8) ~ & {
     margin-bottom: 6px;
-    padding: 6px 1em;
+    .editable-item__inner {
+      padding: 6px 1em;
+    }
   }
 
   &--editing {
     cursor: auto;
     box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
     border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
-    padding: 1em !important;
+    .editable-item__inner {
+      padding: 1em !important;
+    }
   }
   &:last-child {
     margin-bottom: 0 !important;
   }
+}
+
+// editable class to get hover styles and border animation
+.editable {
+  cursor: pointer;
+  transition: border-left 0.12s ease-in;
+  &:hover {
+    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+  }
+}
+
+.editing {
+  cursor: auto;
+  box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+  border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
 }

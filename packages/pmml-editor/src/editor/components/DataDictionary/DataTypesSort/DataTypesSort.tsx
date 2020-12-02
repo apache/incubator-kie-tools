@@ -47,26 +47,28 @@ const SortableList = SortableContainer(({ items }: { items: DataField[] }) => {
 
 const SortableItem = SortableElement(({ item }: { item: DataField }) => (
   <li className="editable-item data-type-item__sortable">
-    {/*abstract data field component from DataDictionaryContainer and reuse it here*/}
-    <Flex alignItems={{ default: "alignItemsCenter" }}>
-      <FlexItem spacer={{ default: "spacerXs" }}>
-        <Button variant="plain" aria-label="Drag to sort" component={"span"}>
-          <GripVerticalIcon />
-        </Button>
-      </FlexItem>
-      <FlexItem>
-        <strong>{item.name}</strong>
-      </FlexItem>
-      <FlexItem>
-        <Label color="blue">{item.type}</Label>
-        {item.constraints !== undefined && (
-          <>
-            {" "}
-            <ConstraintsLabel constraints={item.constraints} />
-          </>
-        )}
-      </FlexItem>
-    </Flex>
+    <section className="editable-item__inner">
+      {/*abstract data field component from DataDictionaryContainer and reuse it here*/}
+      <Flex alignItems={{ default: "alignItemsCenter" }}>
+        <FlexItem spacer={{ default: "spacerXs" }}>
+          <Button variant="plain" aria-label="Drag to sort" component={"span"}>
+            <GripVerticalIcon />
+          </Button>
+        </FlexItem>
+        <FlexItem>
+          <strong>{item.name}</strong>
+        </FlexItem>
+        <FlexItem>
+          <Label color="blue">{item.type}</Label>
+          {item.constraints !== undefined && (
+            <>
+              {" "}
+              <ConstraintsLabel constraints={item.constraints} />
+            </>
+          )}
+        </FlexItem>
+      </Flex>
+    </section>
   </li>
 ));
 

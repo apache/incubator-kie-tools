@@ -97,24 +97,26 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
         }
       }}
     >
-      <Split hasGutter={true}>
-        <SplitItem>
-          <span className="mining-schema-list__item__name">{field.name}</span>
-        </SplitItem>
-        <SplitItem isFilled={true}>
-          <MiningSchemaFieldLabels
-            field={field}
-            onEdit={addProperties}
-            onDelete={deleteProperty}
-            editing={index === editing}
-          />
-        </SplitItem>
-        <SplitItem>
-          <Button variant="plain" onClick={deleteField}>
-            <TrashIcon />
-          </Button>
-        </SplitItem>
-      </Split>
+      <section className={"editable-item__inner"}>
+        <Split hasGutter={true}>
+          <SplitItem>
+            <span className="mining-schema-list__item__name">{field.name}</span>
+          </SplitItem>
+          <SplitItem isFilled={true}>
+            <MiningSchemaFieldLabels
+              field={field}
+              onEdit={addProperties}
+              onDelete={deleteProperty}
+              editing={index === editing}
+            />
+          </SplitItem>
+          <SplitItem>
+            <Button variant="plain" onClick={deleteField}>
+              <TrashIcon />
+            </Button>
+          </SplitItem>
+        </Split>
+      </section>
     </li>
   );
 };

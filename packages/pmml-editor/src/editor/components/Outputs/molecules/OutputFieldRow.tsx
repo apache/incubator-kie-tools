@@ -52,6 +52,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
 
   return (
     <section
+      className={"editable-item__inner"}
       onClick={onEditOutputField}
       tabIndex={0}
       onKeyDown={e => {
