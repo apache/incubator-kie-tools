@@ -31,21 +31,18 @@ beforeEach(async () => {
 
 test(TEST_NAME, async () => {
     const bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, "https://github.com/kiegroup/" +
-        "kogito-examples/blob/stable/process-business-rules-quarkus/src/main/resources/org/acme/travels/persons.bpmn");
+        "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn");
     const onlineEditorPage: OnlineEditorPage = await bpmnPage.openOnlineEditor();
-    expect(await onlineEditorPage.getFileName()).toEqual("persons");
+    expect(await onlineEditorPage.getFileName()).toEqual("test");
     const onlineEditor: BpmnEditor = await onlineEditorPage.getBpmnEditor();
     await onlineEditor.enter();
     const onlineEditorSideBar: SideBar = await onlineEditor.getSideBar();
     const onlineEditorExplorer: Explorer = await onlineEditorSideBar.openExplorer();
     expect((await onlineEditorExplorer.getNodeNames()).sort())
         .toEqual([
-            "StartProcess",
-            "End Event 1",
-            "End Event 2",
-            "Evaluate Person",
-            "Exclusive Gateway 1",
-            "Special handling for children"
+            "MyStart",
+            "MyTask",
+            "MyEnd"
         ].sort());
 });
 

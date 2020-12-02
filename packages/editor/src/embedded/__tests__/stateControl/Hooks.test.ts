@@ -17,7 +17,8 @@
 import * as React from "react";
 import { renderHook } from "@testing-library/react-hooks";
 import { EmbeddedEditorRef } from "../../embedded";
-import { StateControl, useDirtyState } from "../../stateControl";
+import { useDirtyState } from "../../stateControl";
+import { StateControl } from "../../../channel";
 import { act } from "react-test-renderer";
 
 describe("useDirtyState", () => {

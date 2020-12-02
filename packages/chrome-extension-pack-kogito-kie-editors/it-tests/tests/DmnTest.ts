@@ -32,11 +32,11 @@ beforeEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-    const WEB_PAGE = "https://github.com/kiegroup/kogito-examples/blob/stable/dmn-quarkus-example/src/main/resources";
-    const EXPECTED_LINK = "kiegroup/kogito-examples/stable/dmn-quarkus-example/src/main/resources/Traffic%20Violation.dmn";
-    const DMN_NAME = "Traffic Violation";
-    const FILE_NAME = DMN_NAME + ".dmn";
-    const DRIVER_NODE_NAME = "Driver";
+    const WEB_PAGE = "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
+    const EXPECTED_LINK = "kiegroup/kogito-tooling/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn";
+    const DMN_NAME = "myDmn";
+    const FILE_NAME = "test.dmn";
+    const DATA_NODE_NAME = "MyInputData";
 
     // check link to online editor in the list
     const gitHubListPage: GitHubListPage = await tools.openPage(GitHubListPage, WEB_PAGE);
@@ -58,13 +58,18 @@ test(TEST_NAME, async () => {
     //check DMN nodes in navigator
     const decisionNavigator: DecisionNavigator = await sideBar.openDecisionNavigator();
     expect((await decisionNavigator.getNodeNames()).sort())
-        .toEqual(["Driver", "Fine", "Decision Table", "Should the driver be suspended?", "Context", "Violation"].sort());
+        .toEqual([
+            "MyDecision",
+            "MyInputData",
+            "MyModel",
+            "Function"
+        ].sort());
     expect(await decisionNavigator.getDmnName()).toEqual(DMN_NAME);
 
     // check Driver node properties
-    await decisionNavigator.selectNode(DRIVER_NODE_NAME);
+    await decisionNavigator.selectNode(DATA_NODE_NAME);
     const nodeProps: Properties = await sideBar.openProperties();
-    expect(await nodeProps.getDmnNameFromInput()).toEqual(DRIVER_NODE_NAME);
+    expect(await nodeProps.getDmnNameFromInput()).toEqual(DATA_NODE_NAME);
 
     await dmnEditor.leave();
 

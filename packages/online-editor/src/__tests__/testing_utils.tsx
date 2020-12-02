@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EMPTY_FILE_DMN } from "@kogito-tooling/editor/dist/embedded";
+import { EMPTY_FILE_DMN } from "@kogito-tooling/editor/dist/channel";
 import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";

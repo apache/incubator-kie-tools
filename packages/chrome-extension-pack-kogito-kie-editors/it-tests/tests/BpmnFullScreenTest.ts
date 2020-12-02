@@ -30,8 +30,8 @@ beforeEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-    const processUrl: string = "https://github.com/kiegroup/" +
-        "kogito-examples/blob/stable/process-business-rules-quarkus/src/main/resources/org/acme/travels/persons.bpmn";
+    const processUrl: string = "https://github.com/kiegroup/kogito-tooling/" +
+        "blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
     let bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, processUrl);
     const fullScreenPage: FullScreenPage = await bpmnPage.fullScreen();
     const fullScreenEditor: BpmnEditor = await fullScreenPage.getBpmnEditor();
@@ -40,12 +40,9 @@ test(TEST_NAME, async () => {
     const fullScreenExplorer: Explorer = await fullScreenSideBar.openExplorer();
     expect((await fullScreenExplorer.getNodeNames()).sort())
         .toEqual([
-            "StartProcess",
-            "End Event 1",
-            "End Event 2",
-            "Evaluate Person",
-            "Exclusive Gateway 1",
-            "Special handling for children"
+            "MyStart",
+            "MyTask",
+            "MyEnd"
         ].sort());
     await fullScreenEditor.leave();
 
