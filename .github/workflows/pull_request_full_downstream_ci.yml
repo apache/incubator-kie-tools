@@ -293,7 +293,7 @@ jobs:
           cd -
 
       - name: Wait until editors are running
-        run: sleep 120 
+        run: sleep 121 
 
       - name: Run Chrome plugin integration tests
         env:
