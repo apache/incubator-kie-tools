@@ -97,11 +97,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
 
@@ -166,12 +161,6 @@
     <dependency>
       <groupId>org.kie.workbench.playground</groupId>
       <artifactId>kie-all-playground</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-testing-utils</artifactId>
       <scope>test</scope>
     </dependency>
 

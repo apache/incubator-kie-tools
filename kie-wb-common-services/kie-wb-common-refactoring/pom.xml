@@ -17,7 +17,6 @@
 
   <modules>
     <module>kie-wb-common-refactoring-api</module>
-    <module>kie-wb-common-refactoring-backend</module>
     <module>kie-wb-common-refactoring-client</module>
   </modules>
 

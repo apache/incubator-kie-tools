@@ -493,11 +493,6 @@
       <artifactId>guava</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-    </dependency>
-
     <!-- Runtime for maven in memory classpath plugin -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

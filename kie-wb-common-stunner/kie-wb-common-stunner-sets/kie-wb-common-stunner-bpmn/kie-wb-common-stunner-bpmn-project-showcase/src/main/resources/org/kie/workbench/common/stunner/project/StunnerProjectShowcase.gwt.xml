@@ -8,7 +8,6 @@
   <!-- Uberfire dependencies -->
   <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
 
-  <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
   <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
 

@@ -33,6 +33,5 @@
 
   <modules>
     <module>kie-wb-common-datamodel-api</module>
-    <module>kie-wb-common-datamodel-backend</module>
   </modules>
 </project>

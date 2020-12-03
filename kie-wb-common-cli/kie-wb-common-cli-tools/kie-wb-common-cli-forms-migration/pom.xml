@@ -60,10 +60,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-structure-api</artifactId>
     </dependency>
     <dependency>
@@ -226,12 +222,6 @@
       <artifactId>kie-wb-common-forms-fields</artifactId>
       <scope>test</scope>
       <type>test-jar</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

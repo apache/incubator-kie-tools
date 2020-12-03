@@ -241,11 +241,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-preferences-client-backend</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-service-api</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -370,17 +365,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-runtime-plugins-client</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-layout-editor-backend</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
 
     <!-- UberFire Properties Editor -->
     <!-- Needed by uberfire-layout-client -->
@@ -429,17 +413,7 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-backend</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -633,17 +607,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-testing-utils</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.activation</groupId>
-          <artifactId>activation</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <scope>test</scope>
@@ -696,6 +659,20 @@
             </goals>
             <configuration>
               <rules>
+                <banTransitiveDependencies>
+                  <excludes>
+                    <!-- the rule will not fail even if it detects ignoredArtifact
+                         of group org.apache.maven, because it is excluded -->
+                    <exclude>org.apache.maven:ignoredArtifact</exclude>
+                    <exclude>*:anotherIgnoredArtifact</exclude>
+                  </excludes>
+                  <includes>
+                    <!-- override "org.apache.maven:ignoredArtifact" to fail
+                         if exactly 1.0 version of ignoreArtifact is detected
+                         to be transitive dependency of the project -->
+                    <include>org.apache.maven:ignoredArtifact:[1.0]</include>
+                  </includes>
+                </banTransitiveDependencies>
                 <banDuplicateClasses>
                   <dependencies>
                     <dependency>

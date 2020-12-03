@@ -24,7 +24,6 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
-  <inherits name="org.uberfire.UberfireClientAll"/>
 
   <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorClient'/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>

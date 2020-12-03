@@ -39,7 +39,6 @@
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
 
   <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorClient'/>
-  <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.ext.properties.editor.PropertiesEditorClient"/>
 
 </module>

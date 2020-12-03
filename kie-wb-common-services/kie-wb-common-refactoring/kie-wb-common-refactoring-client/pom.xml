@@ -101,10 +101,5 @@
     </dependency>
 
     <!--test -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-testing-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>

@@ -20,7 +20,6 @@
     <module>kie-wb-common-compiler</module>
     <module>kie-wb-common-datamodel</module>
     <module>kie-wb-common-services-api</module>
-    <module>kie-wb-common-services-backend</module>
     <module>kie-wb-common-data-modeller-core</module>
     <module>kie-wb-common-verifier</module>
     <module>kie-wb-common-refactoring</module>

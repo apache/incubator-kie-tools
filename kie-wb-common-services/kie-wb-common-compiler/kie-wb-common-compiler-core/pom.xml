@@ -552,12 +552,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-testing-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-test-utils</artifactId>
       <scope>test</scope>
       <exclusions>
@@ -574,12 +568,6 @@
           <artifactId>uberfire-metadata-backend-lucene</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
