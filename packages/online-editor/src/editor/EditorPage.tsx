@@ -161,7 +161,7 @@ export function EditorPage(props: Props) {
 
       // create gist
       try {
-        const createResponse = await context.githubService.createGist({
+        const newGistUrl = await context.githubService.createGist({
           filename: `${context.file.fileName}.${context.file.fileExtension}`,
           content: content,
           description: `${context.file.fileName}.${context.file.fileExtension}`,
@@ -170,7 +170,7 @@ export function EditorPage(props: Props) {
 
         setAlert(Alerts.NONE);
         // FIXME: KOGITO-1202
-        window.location.href = `?file=${createResponse}#/editor/${fileExtension}`;
+        window.location.href = `?file=${newGistUrl}#/editor/${fileExtension}`;
         return;
       } catch (err) {
         console.error(err);
@@ -208,7 +208,6 @@ export function EditorPage(props: Props) {
     });
   }, [editor]);
 
-  // TODO
   const enterFullscreen = useCallback(() => {
     document.documentElement.requestFullscreen?.();
     (document.documentElement as any).webkitRequestFullscreen?.();
