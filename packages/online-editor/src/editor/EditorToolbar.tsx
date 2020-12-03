@@ -135,6 +135,7 @@ export function EditorToolbar(props: Props) {
       <DropdownItem key={`dropdown-${dropdownId}-embed`} component="button" onClick={props.onEmbed}>
         {i18n.editorToolbar.embed}
       </DropdownItem>,
+      <DropdownSeparator key={"separator"} />,
       <DropdownGroup key={"github-group"} label={i18n.names.github}>
         <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
           <Tooltip
@@ -232,6 +233,8 @@ export function EditorToolbar(props: Props) {
                 position={DropdownPosition.right}
               />
             </PageHeaderToolsItem>
+          </PageHeaderToolsGroup>
+          <PageHeaderToolsGroup>
             <PageHeaderToolsItem
               visibility={{
                 default: "hidden",
@@ -288,7 +291,7 @@ export function EditorToolbar(props: Props) {
                 isPlain={true}
                 dropdownItems={[
                   ...viewItems("sm"),
-                  <DropdownSeparator key={"separator"} />,
+                  <DropdownSeparator key={"separator-sm"} />,
                   <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                     {...shareItems("sm")}
                   </DropdownGroup>
