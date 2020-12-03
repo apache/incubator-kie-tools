@@ -45,7 +45,7 @@ export const ModelTitle = (props: HeaderTitleProps) => {
   }, [props]);
 
   const onCommit = () => {
-    if (modelName.value != props.modelName) {
+    if (modelName.value !== props.modelName) {
       commitModelName(modelName.value);
     }
     onCancel();
