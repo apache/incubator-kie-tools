@@ -88,7 +88,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
             aria-expanded="true"
             aria-label="Global navigation"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="18"
+            data-ouia-component-id="13"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             id="nav-toggle"
@@ -131,7 +131,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         <nav
           aria-label="Global"
           class="pf-c-nav"
-          data-ouia-component-id="19"
+          data-ouia-component-id="14"
           data-ouia-component-type="PF4/Nav"
           data-ouia-safe="true"
         >
@@ -343,7 +343,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <button
                 aria-disabled="false"
                 class="pf-c-button pf-m-secondary"
-                data-ouia-component-id="20"
+                data-ouia-component-id="15"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 type="button"
@@ -364,7 +364,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         </h3>
         <div
           class="pf-c-toolbar"
-          id="pf-random-id-2"
+          id="pf-random-id-0"
         >
           <div
             class="pf-c-toolbar__content"
@@ -377,16 +377,16 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               >
                 <div
                   class="pf-c-select"
-                  data-ouia-component-id="23"
+                  data-ouia-component-id="18"
                   data-ouia-component-type="PF4/Select"
                   data-ouia-safe="true"
                 >
                   <button
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby=" pf-toggle-id-5"
+                    aria-labelledby=" pf-toggle-id-4"
                     class="pf-c-select__toggle"
-                    id="pf-toggle-id-5"
+                    id="pf-toggle-id-4"
                     type="button"
                   >
                     <div
@@ -444,7 +444,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
                   aria-disabled="false"
                   aria-label="sort file view"
                   class="pf-c-button pf-m-plain kogito--filter-btn"
-                  data-ouia-component-id="22"
+                  data-ouia-component-id="17"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   data-testid="orderAlphabeticallyButton"
@@ -469,7 +469,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
             </div>
             <div
               class="pf-c-toolbar__expandable-content"
-              id="pf-random-id-2-expandable-content-3"
+              id="pf-random-id-0-expandable-content-2"
             >
               <div
                 class="pf-c-toolbar__group"
@@ -508,7 +508,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
     <div
       aria-label="Danger Alert"
       class="pf-c-alert pf-m-danger"
-      data-ouia-component-id="46"
+      data-ouia-component-id="36"
       data-ouia-component-type="PF4/Alert"
       data-ouia-safe="true"
     >
@@ -547,7 +547,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           aria-disabled="false"
           aria-label="Close Danger alert: alert: This file extension is not supported."
           class="pf-c-button pf-m-plain"
-          data-ouia-component-id="47"
+          data-ouia-component-id="37"
           data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
           type="button"
@@ -588,7 +588,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
             aria-expanded="true"
             aria-label="Global navigation"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="53"
+            data-ouia-component-id="38"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             id="nav-toggle"
@@ -631,7 +631,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         <nav
           aria-label="Global"
           class="pf-c-nav"
-          data-ouia-component-id="54"
+          data-ouia-component-id="39"
           data-ouia-component-type="PF4/Nav"
           data-ouia-safe="true"
         >
@@ -843,7 +843,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <button
                 aria-disabled="false"
                 class="pf-c-button pf-m-secondary"
-                data-ouia-component-id="55"
+                data-ouia-component-id="40"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 type="button"
@@ -864,7 +864,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         </h3>
         <div
           class="pf-c-toolbar"
-          id="pf-random-id-8"
+          id="pf-random-id-2"
         >
           <div
             class="pf-c-toolbar__content"
@@ -877,16 +877,16 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               >
                 <div
                   class="pf-c-select"
-                  data-ouia-component-id="58"
+                  data-ouia-component-id="43"
                   data-ouia-component-type="PF4/Select"
                   data-ouia-safe="true"
                 >
                   <button
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby=" pf-toggle-id-14"
+                    aria-labelledby=" pf-toggle-id-11"
                     class="pf-c-select__toggle"
-                    id="pf-toggle-id-14"
+                    id="pf-toggle-id-11"
                     type="button"
                   >
                     <div
@@ -944,7 +944,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                   aria-disabled="false"
                   aria-label="sort file view"
                   class="pf-c-button pf-m-plain kogito--filter-btn"
-                  data-ouia-component-id="57"
+                  data-ouia-component-id="42"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   data-testid="orderAlphabeticallyButton"
@@ -969,7 +969,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
             </div>
             <div
               class="pf-c-toolbar__expandable-content"
-              id="pf-random-id-8-expandable-content-9"
+              id="pf-random-id-2-expandable-content-6"
             >
               <div
                 class="pf-c-toolbar__group"
@@ -1062,7 +1062,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       aria-disabled="false"
                       aria-label="Save file"
                       class="pf-c-button pf-m-tertiary pf-u-display-flex-on-lg"
-                      data-ouia-component-id="61"
+                      data-ouia-component-id="46"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe="true"
                       data-testid="save-button"
@@ -1078,7 +1078,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       aria-disabled="false"
                       aria-label="Go to homepage"
                       class="pf-c-button pf-m-plain"
-                      data-ouia-component-id="62"
+                      data-ouia-component-id="47"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe="true"
                       data-testid="close-editor-button"

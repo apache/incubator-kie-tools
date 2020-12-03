@@ -11,6 +11,7 @@
     "test": "echo 'No tests to run'",
     "build:fast": "rm -rf bpmn/* dmn/* scesim/* && mvn clean package -B -nsu && echo ",
     "build": "yarn run build:fast",
-    "build:prod": "rm -rf bpmn/* dmn/* scesim/* && mvn clean package -B -nsu && echo "
+    "build:prod": "rm -rf bpmn/* dmn/* scesim/* && mvn clean package -B -nsu && echo ",
+    "build:productization": "rm -rf bpmn/* dmn/* scesim/* && mvn clean package -B -nsu -s $MVN_SETTINGS_PATH"
   }
 }

@@ -115,7 +115,8 @@
     "build": "yarn run build:fast",
     "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run test:it && yarn run package:prod",
     "build:prod:windows": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
-    "build:prod": "run-script-os"
+    "build:prod": "run-script-os",
+    "build:productization": "yarn run build:prod"
   },
   "jest-junit": {
     "outputDirectory": "./target"

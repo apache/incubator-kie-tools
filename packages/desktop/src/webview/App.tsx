@@ -22,7 +22,7 @@ import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
-import { File } from "../common/File";
+import { ElectronFile } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
@@ -30,10 +30,7 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
-
-interface Props {
-  file?: File;
-}
+import { File } from "@kogito-tooling/editor/dist/channel";
 
 enum Pages {
   HOME,
@@ -42,11 +39,27 @@ enum Pages {
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
-export function App(props: Props) {
+export function App() {
   const [page, setPage] = useState(Pages.HOME);
-  const [file, setFile] = useState(props.file);
-
+  const [file, setFile] = useState<File>({
+    fileName: "",
+    fileExtension: "",
+    getFileContents: () => Promise.resolve(""),
+    isReadOnly: false
+  });
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
+
+  const onFilenameChange = useCallback(
+    (filePath: string) => {
+      setFile({
+        fileName: filePath,
+        fileExtension: file.fileExtension,
+        getFileContents: file.getFileContents,
+        isReadOnly: false
+      });
+    },
+    [file]
+  );
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
@@ -67,12 +80,17 @@ export function App(props: Props) {
   }, [page]);
 
   const openFile = useCallback(
-    (fileToOpen: File) => {
+    (fileToOpen: ElectronFile) => {
       closeInvalidFileTypeErrorAlert();
-      setFile(fileToOpen);
       setPage(Pages.EDITOR);
+      setFile({
+        fileName: fileToOpen.filePath,
+        fileExtension: fileToOpen.fileType,
+        getFileContents: () => Promise.resolve(fileToOpen.fileContent),
+        isReadOnly: false
+      });
     },
-    [page, file, closeInvalidFileTypeErrorAlert]
+    [closeInvalidFileTypeErrorAlert]
   );
 
   const openFileByPath = useCallback((filePath: string) => {
@@ -82,8 +100,7 @@ export function App(props: Props) {
   const goToHomePage = useCallback(() => {
     electron.ipcRenderer.send("setFileMenusEnabled", { enabled: false });
     setPage(Pages.HOME);
-    setFile(undefined);
-  }, [page, file]);
+  }, []);
 
   const dragAndDropFileEvent = useCallback(
     ev => {
@@ -94,17 +111,6 @@ export function App(props: Props) {
     },
     [openFileByPath]
   );
-
-  const Router = () => {
-    switch (page) {
-      case Pages.HOME:
-        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
-      case Pages.EDITOR:
-        return <EditorPage fileExtension={file!.fileType} onClose={goToHomePage} />;
-      default:
-        return <></>;
-    }
-  };
 
   useEffect(() => {
     if (invalidFileTypeErrorVisible) {
@@ -118,7 +124,7 @@ export function App(props: Props) {
   }, [invalidFileTypeErrorVisible, closeInvalidFileTypeErrorAlert]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: File }) => {
+    electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: ElectronFile }) => {
       if (editorEnvelopeLocator.mapping.has(data.file.fileType)) {
         if (page === Pages.EDITOR) {
           setPage(Pages.HOME);
@@ -132,18 +138,7 @@ export function App(props: Props) {
     return () => {
       electron.ipcRenderer.removeAllListeners("openFile");
     };
-  }, [page, file]);
-
-  useEffect(() => {
-    const saveFileSuccess = (event: IpcRendererEvent, data: { filePath: string }) => {
-      file!.filePath = data.filePath;
-    };
-    electron.ipcRenderer.on("saveFileSuccess", saveFileSuccess);
-
-    return () => {
-      electron.ipcRenderer.removeListener("saveFileSuccess", saveFileSuccess);
-    };
-  }, [file]);
+  }, [page, editorEnvelopeLocator, openFile]);
 
   useEffect(() => {
     document.addEventListener("dragover", e => e.preventDefault());
@@ -157,6 +152,17 @@ export function App(props: Props) {
     };
   }, [dragAndDropFileEvent]);
 
+  const Router = useMemo(() => {
+    switch (page) {
+      case Pages.HOME:
+        return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
+      case Pages.EDITOR:
+        return <EditorPage onFilenameChange={onFilenameChange} onClose={goToHomePage} />;
+      default:
+        return <></>;
+    }
+  }, [page, openFile, openFileByPath, onFilenameChange, goToHomePage]);
+
   return (
     <I18nDictionariesProvider
       defaults={desktopI18nDefaults}
@@ -168,8 +174,8 @@ export function App(props: Props) {
         {({ i18n }) => (
           <GlobalContext.Provider
             value={{
-              file: file,
-              editorEnvelopeLocator: editorEnvelopeLocator
+              file,
+              editorEnvelopeLocator
             }}
           >
             {invalidFileTypeErrorVisible && (
@@ -181,7 +187,7 @@ export function App(props: Props) {
                 />
               </div>
             )}
-            <Router />
+            {Router}
           </GlobalContext.Provider>
         )}
       </DesktopI18nContext.Consumer>

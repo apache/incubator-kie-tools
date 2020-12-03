@@ -22,7 +22,6 @@ import { desktopI18nDefaults, desktopI18nDictionaries, DesktopI18nContext } from
 import { DesktopI18n } from "../webview/common/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
-
   const dmnEnvelopeMapping: EnvelopeMapping = {
     envelopePath: "envelope/envelope.html",
     resourcesPathPrefix: ""
@@ -30,7 +29,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
 
   const usedCtx = {
     editorEnvelopeLocator: { targetOrigin: window.location.origin, mapping: new Map([["dmn", dmnEnvelopeMapping]]) },
-    file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" },
+    file: { fileName: "test.dmn", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
     ...ctx
   };
   return {

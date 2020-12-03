@@ -21,6 +21,7 @@ import { usingTestingDesktopI18nContext, usingTestingGlobalContext } from "../..
 
 const fileExtension = "";
 const onClose = jest.fn(() => null);
+const onFilenameChange = jest.fn((filePath: string) => null)
 
 function mockFunctions() {
   const original = require.requireActual("@kogito-tooling/editor/dist/embedded");
@@ -36,7 +37,7 @@ describe("EditorPage", () => {
     test("should not appear by default with isDirty equal to false", () => {
       const { queryByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
+          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose}  />).wrapper
         ).wrapper
       );
 
@@ -46,7 +47,7 @@ describe("EditorPage", () => {
     test("should not appear by default with isDirty equal to true", () => {
       const { queryByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
+          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose} />).wrapper
         ).wrapper
       );
 
@@ -56,7 +57,7 @@ describe("EditorPage", () => {
     test("should appear when tries to close after an edit with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
+          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose} />).wrapper
         ).wrapper
       );
 
@@ -68,7 +69,7 @@ describe("EditorPage", () => {
     test("should appear and then close after click on save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
+          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose} />).wrapper
         ).wrapper
       );
 
@@ -81,7 +82,7 @@ describe("EditorPage", () => {
     test("should appear and then close after click on close with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
+          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose} />).wrapper
         ).wrapper
       );
 
@@ -94,7 +95,7 @@ describe("EditorPage", () => {
     test("should appear and then close after click on close without save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
+          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose} />).wrapper
         ).wrapper
       );
 

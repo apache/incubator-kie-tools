@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File, FileSaveActions, UNSAVED_FILE_NAME, SAMPLE } from "../common/File";
+import { ElectronFile, FileSaveActions, UNSAVED_FILE_NAME, SAMPLE } from "../common/ElectronFile";
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { Files } from "../storage/core/Files";
 import { FS } from "../storage/core/FS";
@@ -23,18 +23,22 @@ import { DesktopUserData } from "./DesktopUserData";
 import { Menu } from "./Menu";
 import * as path from "path";
 import IpcMainEvent = Electron.IpcMainEvent;
+import { DesktopI18n } from "./i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 export class FileOperations {
   private readonly window: BrowserWindow;
   private readonly menu: Menu;
   private readonly userData: DesktopUserData;
+  private readonly i18n: DesktopI18n;
 
-  constructor(window: BrowserWindow, menu: Menu, userData: DesktopUserData) {
+  constructor(window: BrowserWindow, menu: Menu, userData: DesktopUserData, desktopI18n: I18n<DesktopI18n>) {
     this.window = window;
     this.menu = menu;
     this.userData = userData;
+    this.i18n = desktopI18n.getCurrent();
 
-    ipcMain.on("saveFile", (event: IpcMainEvent, data: { action: FileSaveActions; file: File }) => {
+    ipcMain.on("saveFile", (event: IpcMainEvent, data: { action: FileSaveActions; file: ElectronFile }) => {
       if (
         data.action !== FileSaveActions.SAVE_AS &&
         data.file.filePath !== UNSAVED_FILE_NAME &&
@@ -47,7 +51,7 @@ export class FileOperations {
       dialog
         .showSaveDialog(this.window, {
           defaultPath: "model." + data.file.fileType,
-          title: "Save file",
+          title: this.i18n.fileOperations.dialog.saveFile,
           filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }]
         })
         .then(result => {
@@ -57,26 +61,32 @@ export class FileOperations {
         });
     });
 
-    ipcMain.on("savePreview", (event: IpcMainEvent, data: { filePath: string, fileType: string, fileContent: string }) => {
-      console.info(removeFileExtension(data.filePath) + "." + data.fileType);
-      dialog
-        .showSaveDialog(this.window, {
-          defaultPath: removeFileExtension(data.filePath) + "." + data.fileType,
-          title: "Save preview",
-          filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }]
-        })
-        .then(result => {
-          if (!result.canceled) {
-            this.savePreview(result.filePath!, data.fileContent);
-          }
-        });
-    });
-
-    ipcMain.on("saveThumbnail", (event: IpcMainEvent, data: { filePath: string, fileType: string, fileContent: string }) => {
-      if (data.filePath !== UNSAVED_FILE_NAME) {
-        this.userData.saveFileThumbnail(data.filePath, data.fileType, data.fileContent);
+    ipcMain.on(
+      "savePreview",
+      (event: IpcMainEvent, data: { filePath: string; fileType: string; fileContent: string }) => {
+        console.info(removeFileExtension(data.filePath) + "." + data.fileType);
+        dialog
+          .showSaveDialog(this.window, {
+            defaultPath: removeFileExtension(data.filePath) + "." + data.fileType,
+            title: this.i18n.fileOperations.dialog.savePreview,
+            filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }]
+          })
+          .then(result => {
+            if (!result.canceled) {
+              this.savePreview(result.filePath!, data.fileContent);
+            }
+          });
       }
-    });
+    );
+
+    ipcMain.on(
+      "saveThumbnail",
+      (event: IpcMainEvent, data: { filePath: string; fileType: string; fileContent: string }) => {
+        if (data.filePath !== UNSAVED_FILE_NAME) {
+          this.userData.saveFileThumbnail(data.filePath, data.fileType, data.fileContent);
+        }
+      }
+    );
 
     ipcMain.on("requestLastOpenedFiles", () => {
       this.userData.getLastOpenedFiles().then(lastOpenedFiles => {
@@ -173,10 +183,7 @@ export class FileOperations {
       .then(() => {
         this.userData.registerFile(filePath);
         console.info("File " + filePath + " saved.");
-
-        this.window.webContents.send("saveFileSuccess", {
-          filePath: filePath
-        });
+        this.window.webContents.send("saveFileSuccess", { filePath });
       })
       .catch(error => {
         console.info("Failed to save file" + filePath + ":" + error);

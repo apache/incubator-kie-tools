@@ -11,6 +11,7 @@
     "test": "echo 'No tests to run'",
     "build:fast": "mvn clean package -B -nsu && echo ",
     "build": "yarn run build:fast",
-    "build:prod": "mvn clean package -B -nsu && echo "
+    "build:prod": "mvn clean package -B -nsu && echo ",
+    "build:productization": "mvn clean package -B -nsu -s $MVN_SETTINGS_PATH"
   }
 }

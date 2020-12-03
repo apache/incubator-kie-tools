@@ -45,14 +45,14 @@ import { SortAlphaDownIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { File, UNSAVED_FILE_NAME } from "../../common/File";
+import { ElectronFile, UNSAVED_FILE_NAME } from "../../common/ElectronFile";
 import { RecentOpenedFile } from "../../common/RecentOpenedFile";
 import { extractFileExtension, removeDirectories } from "../../common/utils";
 import { GlobalContext } from "../common/GlobalContext";
 import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
-  openFile: (file: File) => void;
+  openFile: (file: ElectronFile) => void;
   openFileByPath: (filePath: string) => void;
 }
 

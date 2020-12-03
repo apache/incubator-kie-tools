@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { File } from "@kogito-tooling/editor/dist/channel";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+import { en } from "./locales";
+import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
+import { DesktopI18n } from "./DesktopI18n";
 
-export interface GlobalContextType {
-  file: File;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
-}
-
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
+export const desktopI18nDefaults: I18nDefaults<DesktopI18n> = { locale: "en", dictionary: en };
+export const desktopI18nDictionaries: I18nDictionaries<DesktopI18n> = new Map([["en", en]]);
