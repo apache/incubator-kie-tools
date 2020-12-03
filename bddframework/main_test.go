@@ -147,11 +147,31 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 		panic(err)
 	}
 
+	// Initialization of cluster wide resources
+	ctx.BeforeSuite(func() {
+		go func() {
+			// Monitor OLM namespace for cluster wide operator deployments
+			olmNamespace := config.GetOlmNamespace()
+			err := framework.StartPodLogCollector(olmNamespace)
+			if err != nil {
+				framework.GetLogger(olmNamespace).Errorf("Error staring log collector for namespace %s: %v", olmNamespace, err)
+			}
+		}()
+	})
+
 	// Final cleanup once test suite finishes
 	ctx.AfterSuite(func() {
 		if !config.IsKeepNamespace() {
 			// Delete all operators created by test suite
 			deleteClusterWideTestOperators()
+		}
+		// Stop OLM namespace monitoring
+		olmNamespace := config.GetOlmNamespace()
+		if err := framework.StopPodLogCollector(olmNamespace); err != nil {
+			framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", olmNamespace, err)
+		}
+		if err := framework.BumpEvents(olmNamespace); err != nil {
+			framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", olmNamespace, err)
 		}
 	})
 }

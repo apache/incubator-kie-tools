@@ -258,7 +258,7 @@ func InstallKogitoOperatorDependency(namespace, dependentOperator string, catalo
 func WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator string, catalog operatorCatalog) error {
 	if operatorInfo, exists := catalog.dependencies[dependentOperator]; exists {
 		if operatorInfo.clusterWide {
-			if err := WaitForClusterWideOperatorRunning(operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
+			if err := WaitForClusterWideOperatorRunning(namespace, operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
 				return err
 			}
 		} else {
@@ -307,9 +307,9 @@ func WaitForOperatorRunning(namespace, operatorPackageName string, catalog opera
 }
 
 // WaitForClusterWideOperatorRunning waits for a cluster wide operator to be running
-func WaitForClusterWideOperatorRunning(operatorPackageName string, catalog operatorCatalog, timeoutInMin int) error {
+func WaitForClusterWideOperatorRunning(namespace, operatorPackageName string, catalog operatorCatalog, timeoutInMin int) error {
 	olmNamespace := config.GetOlmNamespace()
-	return WaitForOnOpenshift(olmNamespace, fmt.Sprintf("%s operator in namespace %s running", operatorPackageName, olmNamespace), timeoutInMin,
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator in namespace %s running", operatorPackageName, olmNamespace), timeoutInMin,
 		func() (bool, error) {
 			return IsOperatorRunning(olmNamespace, operatorPackageName, catalog)
 		})
