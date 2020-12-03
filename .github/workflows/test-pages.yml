@@ -1,0 +1,30 @@
+name: Test pages
+
+on:
+  pull_request:
+    branches: "**"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        node: [12.16.3]
+        yarn: [1.19.1]
+
+    steps:
+      - name: Test pages are online
+        run: |
+          for (( i=0; i<100; i++ ))
+          do
+            page="https://kiegroup.github.io/kogito-online-ci/pull/${{ steps.buildInfo.outputs.id }}/#"
+            httpCode=`curl --write-out "%{http_code}\n" --silent --output /dev/null $page`
+            echo "Http status is: $httpCode"
+            if [[ $httpCode -eq 200 ]]
+            then
+              break
+            fi
+            sleep 60
+          done
