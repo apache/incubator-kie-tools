@@ -15,7 +15,7 @@
 
 
 DIR=$(mktemp -d)
-LEAK_RESOURCES=( infinispan keycloakclients keycloakusers keycloakrealms )
+LEAK_RESOURCES=( infinispan keycloakclients keycloakusers keycloakrealms kogitoruntimes kogitosupportingservices)
 
 oc get namespaces | grep "Terminating" | awk -F " " '{print $1}' > ${DIR}/projects
 
