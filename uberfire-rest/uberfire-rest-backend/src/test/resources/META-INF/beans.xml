@@ -1,5 +1,0 @@
-<beans>
-  <alternatives>
-    <class>org.guvnor.test.GuvnorTestAppSetup</class>
-   </alternatives>
-</beans>

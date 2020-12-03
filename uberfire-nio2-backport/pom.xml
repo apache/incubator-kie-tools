@@ -31,7 +31,6 @@
 
   <modules>
     <module>uberfire-nio2-model</module>
-    <module>uberfire-nio2-impls</module>
     <module>uberfire-nio2-api</module>
   </modules>
 </project>

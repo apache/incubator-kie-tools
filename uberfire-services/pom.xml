@@ -31,6 +31,5 @@
 
   <modules>
     <module>uberfire-services-api</module>
-    <module>uberfire-services-backend</module>
   </modules>
 </project>

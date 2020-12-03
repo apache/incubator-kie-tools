@@ -17,7 +17,6 @@
 
   <modules>
     <module>uberfire-message-console-api</module>
-    <module>uberfire-message-console-backend</module>
     <module>uberfire-message-console-client</module>
   </modules>
 

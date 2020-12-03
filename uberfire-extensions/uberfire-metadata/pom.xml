@@ -31,7 +31,5 @@
 
   <modules>
     <module>uberfire-metadata-api</module>
-    <module>uberfire-metadata-backends</module>
-    <module>uberfire-metadata-commons-io</module>
   </modules>
 </project>

@@ -33,9 +33,6 @@
 
   <modules>
     <module>uberfire-wires-core</module>
-    <module>uberfire-wires-bayesian-parser</module>
-    <module>uberfire-wires-bayesian-network</module>
-    <module>uberfire-wires-bpmn</module>
   </modules>
 
 </project>

@@ -30,8 +30,6 @@
   <!---->
   <!--<inherits name="org.uberfire.UberfireClientAPI"/>-->
   <!---->
-  <inherits name="org.uberfire.preferences.UberfirePreferencesClientBackend"/>
-
   <!--<inherits name="org.uberfire.ext.preferences.UberfirePreferencesAPI"/>-->
 
   <source path='client'/>

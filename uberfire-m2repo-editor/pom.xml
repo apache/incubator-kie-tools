@@ -31,7 +31,5 @@
 
   <modules>
     <module>uberfire-m2repo-editor-api</module>
-    <module>uberfire-m2repo-editor-client</module>
-    <module>uberfire-m2repo-editor-backend</module>
   </modules>
 </project>

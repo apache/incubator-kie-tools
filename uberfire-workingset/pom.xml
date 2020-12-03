@@ -31,6 +31,5 @@
 
   <modules>
     <module>uberfire-workingset-api</module>
-    <module>uberfire-workingset-client</module>
   </modules>
 </project>

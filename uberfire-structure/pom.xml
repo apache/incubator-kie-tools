@@ -30,7 +30,5 @@
 
   <modules>
     <module>uberfire-structure-api</module>
-    <module>uberfire-structure-client</module>
-    <module>uberfire-structure-backend</module>
   </modules>
 </project>

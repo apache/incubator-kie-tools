@@ -33,7 +33,6 @@
 
   <modules>
     <module>uberfire-experimental-api</module>
-    <module>uberfire-experimental-backend</module>
     <module>uberfire-experimental-client</module>
   </modules>
 

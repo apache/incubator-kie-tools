@@ -1,5 +1,0 @@
-<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
-  <scan>
-    <exclude name="org.uberfire.ssh.client.**"/>
-  </scan>
-</beans>

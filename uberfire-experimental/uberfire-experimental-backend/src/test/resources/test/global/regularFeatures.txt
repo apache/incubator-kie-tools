@@ -1,3 +1,0 @@
-globalFeature_1=true
-globalFeature_2=false
-globalFeature_3=true
