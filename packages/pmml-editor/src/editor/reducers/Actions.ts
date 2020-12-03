@@ -56,6 +56,7 @@ export enum Actions {
   UpdateMiningSchemaField = "MINING_SCHEMA_UPDATE",
   Undo = "UNDO",
   Redo = "REDO",
+  Scorecard_SetModelName = "SCORECARD_SET_MODEL_NAME",
   Scorecard_SetCoreProperties = "SCORECARD_SET_CORE_PROPERTIES",
   Scorecard_AddCharacteristic = "SCORECARD_ADD_CHARACTERISTIC",
   Scorecard_DeleteCharacteristic = "SCORECARD_DELETE_CHARACTERISTIC",

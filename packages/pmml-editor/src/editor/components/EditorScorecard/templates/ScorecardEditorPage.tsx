@@ -94,7 +94,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
         <>
           <PageSection variant={PageSectionVariants.light} isFilled={false}>
             <EditorHeader
-              title={getModelName(model)}
+              modelName={getModelName(model)}
               activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}
               modelIndex={modelIndex}
@@ -112,7 +112,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   });
                 }
               }}
-              commit={(_index, _outputField: OutputField) => {
+              commitOutputField={(_index, _outputField: OutputField) => {
                 if (_index === undefined) {
                   dispatch({
                     type: Actions.AddOutput,
@@ -131,6 +131,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                     }
                   });
                 }
+              }}
+              commitModelName={(_modelName: string) => {
+                dispatch({
+                  type: Actions.Scorecard_SetModelName,
+                  payload: {
+                    modelIndex: modelIndex,
+                    modelName: _modelName
+                  }
+                });
               }}
             />
           </PageSection>

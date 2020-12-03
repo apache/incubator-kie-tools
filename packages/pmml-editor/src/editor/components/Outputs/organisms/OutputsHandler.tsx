@@ -37,7 +37,7 @@ interface OutputsHandlerProps {
   output?: Output;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
-  commit: (index: number | undefined, outputField: OutputField) => void;
+  commitOutputField: (index: number | undefined, outputField: OutputField) => void;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
@@ -48,7 +48,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
     output,
     validateOutputFieldName,
     deleteOutputField,
-    commit
+    commitOutputField
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,7 +94,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
           output={output}
           validateOutputFieldName={validateOutputFieldName}
           deleteOutputField={deleteOutputField}
-          commit={commit}
+          commitOutputField={commitOutputField}
         />
       </Modal>
     </>

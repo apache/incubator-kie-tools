@@ -16,6 +16,7 @@
 
 export enum Operation {
   NONE,
+  UPDATE_NAME,
   UPDATE_CORE,
   UPDATE_ATTRIBUTE,
   UPDATE_CHARACTERISTIC,

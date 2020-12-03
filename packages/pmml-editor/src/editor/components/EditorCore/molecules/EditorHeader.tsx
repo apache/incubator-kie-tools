@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { HeaderTitle } from "../../Header/atoms";
+import { ModelTitle } from "../atoms";
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
@@ -23,7 +23,7 @@ import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-m
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 
 interface EditorHeaderProps {
-  title: string;
+  modelName: string;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   modelIndex: number;
@@ -31,11 +31,13 @@ interface EditorHeaderProps {
   miningSchema?: MiningSchema;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
-  commit: (index: number | undefined, outputField: OutputField) => void;
+  commitOutputField: (index: number | undefined, outputField: OutputField) => void;
+  commitModelName: (modelName: string) => void;
 }
 
 export const EditorHeader = (props: EditorHeaderProps) => {
   const {
+    modelName,
     activeOperation,
     setActiveOperation,
     miningSchema,
@@ -43,13 +45,22 @@ export const EditorHeader = (props: EditorHeaderProps) => {
     output,
     validateOutputFieldName,
     deleteOutputField,
-    commit
+    commitOutputField,
+    commitModelName
   } = props;
 
   return (
     <Split hasGutter={true}>
+      <SplitItem>
+        <ModelTitle
+          modelName={modelName}
+          activeOperation={activeOperation}
+          setActiveOperation={setActiveOperation}
+          commitModelName={commitModelName}
+        />
+      </SplitItem>
       <SplitItem isFilled={true}>
-        <HeaderTitle title={props.title} />
+        <div>&nbsp;</div>
       </SplitItem>
       <SplitItem>
         <DataDictionaryHandler activeOperation={activeOperation} />
@@ -65,7 +76,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
           output={output}
           validateOutputFieldName={validateOutputFieldName}
           deleteOutputField={deleteOutputField}
-          commit={commit}
+          commitOutputField={commitOutputField}
         />
       </SplitItem>
     </Split>

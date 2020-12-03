@@ -46,7 +46,7 @@ interface OutputsContainerProps {
   output?: Output;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
-  commit: (index: number | undefined, outputField: OutputField) => void;
+  commitOutputField: (index: number | undefined, outputField: OutputField) => void;
 }
 
 type OutputsViewSection = "overview" | "extended-properties" | "batch-add";
@@ -59,7 +59,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     output,
     validateOutputFieldName,
     deleteOutputField,
-    commit
+    commitOutputField
   } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
@@ -100,7 +100,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
       setEditItemIndex(numberOfOutputFields);
       //TODO {manstis} This will need some more magic to ensure the new default does not already exist
       const newOutputFieldName: FieldName = "New output" as FieldName;
-      commit(undefined, {
+      commitOutputField(undefined, {
         name: newOutputFieldName,
         dataType: "string",
         optype: undefined,
@@ -166,7 +166,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
       Object.keys(partial).forEach(key => set(existingPartial, key, get(outputField, key)));
 
       if (!isEqual(partial, existingPartial)) {
-        commit(editItemIndex, { ...outputField, ...partial });
+        commitOutputField(editItemIndex, { ...outputField, ...partial });
       }
     }
   };

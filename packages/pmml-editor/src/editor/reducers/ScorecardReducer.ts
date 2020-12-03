@@ -26,8 +26,13 @@ import { AttributesActions } from "./AttributesReducer";
 Scorecard[immerable] = true;
 
 interface ScorecardPayload {
+  [Actions.Scorecard_SetModelName]: {
+    readonly modelIndex: number;
+    readonly modelName: string;
+  };
   [Actions.Scorecard_SetCoreProperties]: {
     readonly modelIndex: number;
+    readonly modelName: string;
     readonly isScorable: boolean;
     readonly functionName: MiningFunction;
     readonly algorithmName: string;
@@ -48,6 +53,11 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
 ): Reducer<Scorecard, ScorecardActions> => {
   return (state: Scorecard, action: ScorecardActions) => {
     switch (action.type) {
+      case Actions.Scorecard_SetModelName:
+        return service.mutate(state, `models[${action.payload.modelIndex}]`, draft => {
+          draft.modelName = action.payload.modelName;
+        });
+
       case Actions.Scorecard_SetCoreProperties:
         return service.mutate(state, `models[${action.payload.modelIndex}]`, draft => {
           draft.isScorable = action.payload.isScorable;
