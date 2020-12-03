@@ -45,6 +45,7 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
@@ -65,7 +66,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
-@PrepareForTest(IOUtils.class)
+@PrepareForTest({IOUtils.class, Paths.class})
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "javax.management.*"})
 @RunWith(PowerMockRunner.class)
 public class DecisionTableXLSServiceImplTest {
@@ -103,6 +104,9 @@ public class DecisionTableXLSServiceImplTest {
     private Path path;
 
     @Mock
+    private org.uberfire.java.nio.file.Path nioPath;
+
+    @Mock
     private InputStream inputstream;
 
     @Mock
@@ -135,6 +139,10 @@ public class DecisionTableXLSServiceImplTest {
             //Do nothing; tests do not use a *real* XLS file
         });
 
+        mockStatic(Paths.class);
+
+        when(Paths.convert(any(Path.class))).thenReturn(nioPath);
+
         service.create(path,
                        inputstream,
                        sessionId,
@@ -149,6 +157,10 @@ public class DecisionTableXLSServiceImplTest {
         this.service = getServiceWithValidationOverride((tempFile) -> {
             //Do nothing; tests do not use a *real* XLS file
         });
+
+        mockStatic(Paths.class);
+
+        when(Paths.convert(any(Path.class))).thenReturn(nioPath);
 
         service.save(path,
                      inputstream,
@@ -176,6 +188,9 @@ public class DecisionTableXLSServiceImplTest {
         });
 
         mockStatic(IOUtils.class);
+        mockStatic(Paths.class);
+
+        when(Paths.convert(any(Path.class))).thenReturn(nioPath);
 
         service.create(path,
                        inputstream,
