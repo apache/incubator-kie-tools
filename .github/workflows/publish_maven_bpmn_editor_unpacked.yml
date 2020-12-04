@@ -1,4 +1,4 @@
-name: Publish BPMN Editor unpacked
+name: MVN :: Publish BPMN Editor unpacked
 
 on:
   workflow_dispatch:

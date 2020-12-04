@@ -1,4 +1,4 @@
-name: Publish DMN Editor unpacked
+name: MVN :: Publish DMN Editor unpacked
 
 on:
   workflow_dispatch:

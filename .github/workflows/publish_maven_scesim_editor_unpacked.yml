@@ -1,4 +1,4 @@
-name: Publish SceSim Editor unpacked
+name: MVN :: Publish SceSim Editor unpacked
 
 on:
   workflow_dispatch:
