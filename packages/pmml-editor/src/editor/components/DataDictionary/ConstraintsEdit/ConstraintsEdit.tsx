@@ -24,12 +24,12 @@ import {
 } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
-import { Constraints, DataField, EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { Constraints, DDDataField, EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { Validated } from "../../../types";
 import "./ConstraintsEdit.scss";
 
 interface ConstraintsEditProps {
-  dataType: DataField;
+  dataType: DDDataField;
   onAdd: (payload: Constraints) => void;
   onDelete: () => void;
 }

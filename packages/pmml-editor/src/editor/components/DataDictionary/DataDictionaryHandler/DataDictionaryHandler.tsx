@@ -13,34 +13,73 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import { isEqual } from "lodash";
-import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, DataType, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
-import DataDictionaryContainer, { DataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { convertDD2PMML, convertPMML2DD } from "../dataDictionaryUtils";
 
 const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
   const dispatch = useDispatch();
   const pmmlDataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
-  const [dictionary, setDictionary] = useState<DataField[]>(convertPMML2DD(pmmlDataDictionary));
-  const handleDataDictionaryUpdate = (updatedDictionary: DataField[]) => {
+  const [dictionary, setDictionary] = useState<DDDataField[]>(convertPMML2DD(pmmlDataDictionary));
+  const handleDataDictionaryUpdate = (updatedDictionary: DDDataField[]) => {
     setDictionary(updatedDictionary);
   };
 
   const handleDataDictionaryToggle = () => {
-    if (isDataDictionaryOpen) {
-      const convertedDataDictionary = convertDD2PMML(dictionary);
-      // temporary: checking if they are equals to prevent dispatching actions with no data changes
-      if (!isEqual(pmmlDataDictionary?.DataField, convertedDataDictionary)) {
-        dispatch({
-          type: Actions.SetDataFields,
-          payload: {
-            dataFields: convertedDataDictionary
-          }
-        });
-      }
-    }
+    // if (isDataDictionaryOpen) {
+    //   const convertedDataDictionary = convertDD2PMML(dictionary);
+    //   // temporary: checking if they are equals to prevent dispatching actions with no data changes
+    //   if (!isEqual(pmmlDataDictionary?.DataField, convertedDataDictionary)) {
+    //     dispatch({
+    //       type: Actions.SetDataFields,
+    //       payload: {
+    //         dataFields: convertedDataDictionary
+    //       }
+    //     });
+    //   }
+    // }
     setIsDataDictionaryOpen(!isDataDictionaryOpen);
+  };
+
+  const addField = (name: string, type: DDDataField["type"]) => {
+    dispatch({
+      type: Actions.AddDataDictionaryField,
+      payload: {
+        name: name,
+        type: type
+      }
+    });
+  };
+
+  const addBatchFields = (fields: string[]) => {
+    dispatch({
+      type: Actions.AddBatchDataDictionaryFields,
+      payload: {
+        dataDictionaryFields: fields
+      }
+    });
+  };
+
+  const deleteField = (index: number) => {
+    dispatch({
+      type: Actions.DeleteDataDictionaryField,
+      payload: {
+        index
+      }
+    });
+  };
+
+  const updateField = (index: number, field: DDDataField) => {
+    dispatch({
+      type: Actions.UpdateDataDictionaryField,
+      payload: {
+        dataDictionaryIndex: index,
+        name: field.name,
+        type: field.type
+      }
+    });
   };
 
   useEffect(() => {
@@ -76,7 +115,14 @@ const DataDictionaryHandler = () => {
         variant={ModalVariant.large}
         onEscapePress={() => false}
       >
-        <DataDictionaryContainer dataDictionary={dictionary} onUpdate={handleDataDictionaryUpdate} />
+        <DataDictionaryContainer
+          dataDictionary={dictionary}
+          onUpdate={handleDataDictionaryUpdate}
+          onAdd={addField}
+          onEdit={updateField}
+          onDelete={deleteField}
+          onBatchAdd={addBatchFields}
+        />
       </Modal>
     </>
   );

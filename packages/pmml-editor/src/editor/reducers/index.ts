@@ -20,7 +20,7 @@ export * from "./AttributePredicateConverter";
 export * from "./CharacteristicReducer";
 export * from "./CharacteristicsReducer";
 export * from "./DataDictionaryReducer";
-export * from "./DataFieldReducer";
+export * from "./DataDictionaryFieldReducer";
 export * from "./HeaderReducer";
 export * from "./ModelReducer";
 export * from "./OutputReducer";

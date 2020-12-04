@@ -15,7 +15,7 @@
  */
 import { StateControlActions, VersionActions } from "./PMMLReducer";
 import { DataDictionaryActions } from "./DataDictionaryReducer";
-import { DataFieldActions } from "./DataFieldReducer";
+import { DataDictionaryFieldActions } from "./DataDictionaryFieldReducer";
 import { HeaderActions } from "./HeaderReducer";
 import { ModelActions } from "./ModelReducer";
 import { ScorecardActions } from "./ScorecardReducer";
@@ -42,10 +42,11 @@ export type ActionMap<M extends { [index: string]: any }> = {
 export enum Actions {
   SetVersion = "SET_VERSION",
   DeleteModel = "DELETE_MODEL",
-  CreateDataField = "CREATE_DATA_FIELD",
-  DeleteDataField = "DELETE_DATA_FIELD",
+  AddDataDictionaryField = "DATA_DICTIONARY_ADD_FIELD",
+  AddBatchDataDictionaryFields = "DATA_DICTIONARY_BATCH_ADD",
+  DeleteDataDictionaryField = "DATA_DICTIONARY_DELETE_FIELD",
+  UpdateDataDictionaryField = "DATA_DICTIONARY_UPDATE_FIELD",
   SetDataFields = "SET_DATA_FIELDS",
-  SetDataFieldName = "SET_DATA_FIELD_NAME",
   SetHeaderDescription = "SET_HEADER_DESCRIPTION",
   AddOutput = "OUTPUT_ADD",
   AddBatchOutputs = "OUTPUT_BATCH_ADD",
@@ -73,7 +74,7 @@ export type AllActions =
   | MiningSchemaActions
   | MiningSchemaFieldActions
   | DataDictionaryActions
-  | DataFieldActions
+  | DataDictionaryFieldActions
   | ModelActions
   | ScorecardActions
   | CharacteristicsActions

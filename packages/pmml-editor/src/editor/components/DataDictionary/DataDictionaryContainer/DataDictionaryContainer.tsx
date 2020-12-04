@@ -3,41 +3,71 @@ import { useEffect, useState } from "react";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-
+import { differenceWith, isEqual, findIndex } from "lodash";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";
-import "./DataDictionaryContainer.scss";
 import EmptyDataDictionary from "../EmptyDataDictionary/EmptyDataDictionary";
 import { findIncrementalName } from "../../../PMMLModelHelper";
+import "./DataDictionaryContainer.scss";
 
 interface DataDictionaryContainerProps {
-  dataDictionary: DataField[];
-  onUpdate: (updatedDictionary: DataField[]) => void;
+  dataDictionary: DDDataField[];
+  onUpdate: (updatedDictionary: DDDataField[]) => void;
+  onAdd: (name: string, type: DDDataField["type"]) => void;
+  onEdit: (index: number, field: DDDataField) => void;
+  onDelete: (index: number) => void;
+  onBatchAdd: (fields: string[]) => void;
 }
 
-const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryContainerProps) => {
-  const [dataTypes, setDataTypes] = useState<DataField[]>(dataDictionary);
+const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
+  const { dataDictionary, onUpdate, onAdd, onEdit, onDelete, onBatchAdd } = props;
+  const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
-  const [constrainsEdit, setConstraintsEdit] = useState<DataField>();
+  const [constrainsEdit, setConstraintsEdit] = useState<DDDataField>();
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
-    onUpdate(dataTypes);
+    // onUpdate(dataTypes);
+    // console.table(dataTypes);
   }, [dataTypes]);
 
+  useEffect(() => {
+    // before reflecting datadictionary updates to local state,
+    // let's see if there are changes OUTSIDE of the currently edited item or
+    // if the changes involve deleted new items
+    // console.log("DIFF");
+    // const diff: DDDataField[] = differenceWith(dataTypes, dataDictionary, isEqual);
+    // console.table(diff);
+    // if (diff.length) {
+    //   const position = findIndex(dataTypes, item => item.name === diff[0].name);
+    //   if (position === dataDictionary.length || position !== editing) {
+    //     setEditing(false);
+    //   }
+    // }
+    setDataTypes(dataDictionary);
+  }, [dataDictionary]);
+
   const handleOutsideClick = () => {
-    handleEmptyFields();
+    //handleEmptyFields();
     setEditing(false);
   };
 
   const addDataType = () => {
-    const newTypes = dataTypes;
-    newTypes.push({ name: "", type: "string" });
-    setDataTypes(newTypes);
-    setEditing(newTypes.length - 1);
+    // const newTypes = dataTypes;
+    // newTypes.push({ name: "", type: "string" });
+    // setDataTypes(newTypes);
+    onAdd(
+      findIncrementalName(
+        "New Data Type",
+        dataTypes.map(dt => dt.name),
+        1
+      ),
+      "string"
+    );
+    setEditing(dataTypes.length);
   };
 
   const handleEmptyFields = () => {
@@ -52,46 +82,49 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
     }
   };
 
-  const saveDataType = (dataType: DataField, index: number) => {
-    if (!dataTypeNameValidation(dataType.name)) {
-      dataType.name = findIncrementalName(
-        dataType.name,
-        dataTypes.map(dt => dt.name),
-        2
-      );
-    }
-    const newTypes = dataTypes;
-    newTypes[index] = { ...newTypes[index], ...dataType };
+  const saveDataType = (dataType: DDDataField, index: number) => {
+    // if (!dataTypeNameValidation(dataType.name)) {
+    //   dataType.name = findIncrementalName(
+    //     dataType.name,
+    //     dataTypes.map(dt => dt.name),
+    //     2
+    //   );
+    // }
     console.log("updating data type");
-    setDataTypes(newTypes);
+    onEdit(index, dataType);
+    // const newTypes = dataTypes;
+    // newTypes[index] = { ...newTypes[index], ...dataType };
+    // setDataTypes(newTypes);
   };
 
-  const handleSave = (dataType: DataField, index: number) => {
+  const handleSave = (dataType: DDDataField, index: number) => {
     saveDataType(dataType, index);
   };
 
   const handleDelete = (index: number) => {
-    const newDataTypes = [...dataTypes];
-    newDataTypes.splice(index, 1);
-    setDataTypes(newDataTypes);
+    // const newDataTypes = [...dataTypes];
+    // newDataTypes.splice(index, 1);
+    // setDataTypes(newDataTypes);
+    onDelete(index);
   };
 
   const handleEdit = (index: number) => {
     console.log("setting editing to " + index);
-    handleEmptyFields();
+    // handleEmptyFields();
     setEditing(index);
   };
 
-  const handleMultipleAdd = (types: string) => {
-    const typesNames = types.split("\n").filter(item => item.trim().length > 0);
-    const newDataTypes: DataField[] = typesNames.map(name => {
-      return { name: name.trim(), type: "string" };
-    });
-    setDataTypes([...dataTypes, ...newDataTypes]);
+  const handleMultipleAdd = (fields: string) => {
+    const fieldsNames = fields.split("\n").filter(item => item.trim().length > 0);
+    // const newDataTypes: DDDataField[] = typesNames.map(name => {
+    //   return { name: name.trim(), type: "string" };
+    // });
+    // setDataTypes([...dataTypes, ...newDataTypes]);
+    onBatchAdd(fieldsNames);
     setViewSection("main");
   };
 
-  const handleConstraintsEdit = (dataType: DataField) => {
+  const handleConstraintsEdit = (dataType: DDDataField) => {
     if (typeof editing === "number") {
       saveDataType(dataType, editing);
       setConstraintsEdit(dataType);
@@ -118,12 +151,12 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   };
 
   const toggleSorting = () => {
-    handleEmptyFields();
+    // handleEmptyFields();
     setEditing(false);
     setSorting(!sorting);
   };
 
-  const handleSorting = (sortedDataTypes: DataField[]) => {
+  const handleSorting = (sortedDataTypes: DDDataField[]) => {
     setDataTypes(sortedDataTypes);
   };
 
@@ -207,7 +240,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                         <DataTypeItem
                           dataType={item}
                           index={index}
-                          key={item.name}
+                          key={index}
                           onSave={handleSave}
                           onEdit={handleEdit}
                           onDelete={handleDelete}
@@ -250,7 +283,7 @@ export const StatusContext = React.createContext<number | boolean>(false);
 
 export default DataDictionaryContainer;
 
-export interface DataField {
+export interface DDDataField {
   name: string;
   type: "string" | "integer" | "float" | "double" | "boolean";
   constraints?: Constraints;

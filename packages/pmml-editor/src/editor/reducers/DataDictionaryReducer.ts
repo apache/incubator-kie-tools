@@ -15,15 +15,19 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { DataDictionary, DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, DataField, DataType, FieldName, OpType } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface DataDictionaryPayload {
-  [Actions.CreateDataField]: {
-    readonly name: string;
+  [Actions.AddDataDictionaryField]: {
+    readonly name?: string;
+    readonly type: DataType;
   };
-  [Actions.DeleteDataField]: {
+  [Actions.DeleteDataDictionaryField]: {
     readonly index: number;
+  };
+  [Actions.AddBatchDataDictionaryFields]: {
+    readonly dataDictionaryFields: FieldName[];
   };
   [Actions.SetDataFields]: {
     readonly dataFields: DataField[];
@@ -37,17 +41,31 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDict
 ): Reducer<DataDictionary, DataDictionaryActions> => {
   return (state: DataDictionary, action: DataDictionaryActions) => {
     switch (action.type) {
-      case Actions.CreateDataField:
+      case Actions.AddDataDictionaryField:
         return service.mutate(state, "DataDictionary", draft => {
+          let opType: OpType;
+          switch (action.payload.type) {
+            case "boolean":
+            case "string":
+              opType = "categorical";
+              break;
+            case "double":
+            case "float":
+            case "integer":
+              opType = "continuous";
+              break;
+            default:
+              opType = "continuous";
+              break;
+          }
           draft.DataField.push({
-            dataType: "string",
             name: action.payload.name as FieldName,
-            displayName: action.payload.name,
-            optype: "categorical"
+            dataType: action.payload.type,
+            optype: opType
           });
         });
 
-      case Actions.DeleteDataField:
+      case Actions.DeleteDataDictionaryField:
         return service.mutate(state, "DataDictionary", draft => {
           const index = action.payload.index;
           if (index >= 0 && index < draft.DataField.length) {
@@ -59,6 +77,17 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDict
         return service.mutate(state, "DataDictionary", draft => {
           draft.DataField = [...action.payload.dataFields];
           draft.numberOfFields = action.payload.dataFields.length;
+        });
+
+      case Actions.AddBatchDataDictionaryFields:
+        return service.mutate(state, "DataDictionary", draft => {
+          action.payload.dataDictionaryFields.forEach(name => {
+            draft.DataField.push({
+              name,
+              dataType: "string",
+              optype: "categorical"
+            });
+          });
         });
     }
 

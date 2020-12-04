@@ -3,17 +3,17 @@ import { useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Button, Flex, FlexItem, Label } from "@patternfly/react-core";
 import { GripVerticalIcon } from "@patternfly/react-icons";
-import { DataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import "./DataTypesSort.scss";
 
 interface DataTypesSortProps {
-  dataTypes: DataField[];
-  onSort: (dataTypes: DataField[]) => void;
+  dataTypes: DDDataField[];
+  onSort: (dataTypes: DDDataField[]) => void;
 }
 
 const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
-  const [state, setState] = useState<DataField[]>(dataTypes);
+  const [state, setState] = useState<DDDataField[]>(dataTypes);
 
   const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
     const newOrder = reorder(state, oldIndex, newIndex);
@@ -35,7 +35,7 @@ const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
 
 export default DataTypesSort;
 
-const SortableList = SortableContainer(({ items }: { items: DataField[] }) => {
+const SortableList = SortableContainer(({ items }: { items: DDDataField[] }) => {
   return (
     <ul className="data-types-sorting">
       {items.map((item, index) => (
@@ -45,7 +45,7 @@ const SortableList = SortableContainer(({ items }: { items: DataField[] }) => {
   );
 });
 
-const SortableItem = SortableElement(({ item }: { item: DataField }) => (
+const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
   <li className="editable-item data-type-item__sortable">
     <section className="editable-item__inner">
       {/*abstract data field component from DataDictionaryContainer and reuse it here*/}
@@ -72,7 +72,7 @@ const SortableItem = SortableElement(({ item }: { item: DataField }) => (
   </li>
 ));
 
-const reorder = (list: DataField[], startIndex: number, endIndex: number) => {
+const reorder = (list: DDDataField[], startIndex: number, endIndex: number) => {
   const result = [...list];
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);

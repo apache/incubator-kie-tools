@@ -23,7 +23,7 @@ import {
   Actions,
   AllActions,
   DataDictionaryReducer,
-  DataFieldReducer,
+  DataDictionaryFieldReducer,
   HeaderReducer,
   ModelReducer,
   PMMLReducer
@@ -84,7 +84,9 @@ export class PMMLEditor extends React.Component<Props, State> {
 
     this.reducer = mergeReducers(PMMLReducer(this.service), {
       Header: HeaderReducer(this.service),
-      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) }),
+      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), {
+        DataField: DataDictionaryFieldReducer(this.service)
+      }),
       models: ModelReducer(this.service)
     });
   }

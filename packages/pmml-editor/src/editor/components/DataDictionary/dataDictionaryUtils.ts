@@ -4,14 +4,14 @@ import {
   DataType,
   FieldName
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { DataField } from "./DataDictionaryContainer/DataDictionaryContainer";
+import { DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
 
-export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DataField[] => {
+export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DDDataField[] => {
   if (PMMLDataDictionary === undefined) {
     return [];
   } else {
     return PMMLDataDictionary.DataField.filter(item => item.dataType !== undefined).map(item => {
-      let type: DataField["type"];
+      let type: DDDataField["type"];
       // supporting a few types only for now
       if (
         item.dataType === "string" ||
@@ -26,14 +26,13 @@ export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): 
       }
       return {
         name: item.name as string,
-        type: type,
-        list: false
+        type: type
       };
     });
   }
 };
 
-export const convertDD2PMML = (dataDictionary: DataField[]): PMMLDataField[] => {
+export const convertDD2PMML = (dataDictionary: DDDataField[]): PMMLDataField[] => {
   return dataDictionary.map(item => {
     const dataField: PMMLDataField = {
       name: item.name as FieldName,
