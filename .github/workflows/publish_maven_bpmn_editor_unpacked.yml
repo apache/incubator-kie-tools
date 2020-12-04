@@ -1,4 +1,4 @@
-name: "MVN :: Publish BPMN Editor unpacked"
+name: "Maven :: Publish BPMN Editor unpacked"
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
 
       - run: |
           cd .github/supporting-files/maven-artifacts/bpmn-editor-unpacked
-          mvn package -Dversion.bpmn.webapp=${{ github.event.inputs.mvnVersion }}
+          mvn package -B -Dversion.bpmn.webapp=${{ github.event.inputs.mvnVersion }}
           npm version ${{ github.event.inputs.npmVersion }}
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           npm publish --access public

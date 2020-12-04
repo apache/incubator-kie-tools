@@ -1,4 +1,4 @@
-name: "MVN :: Publish SceSim Editor unpacked"
+name: "Maven :: Publish SceSim Editor unpacked"
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
 
       - run: |
           cd .github/supporting-files/maven-artifacts/scesim-editor-unpacked
-          mvn package -Dversion.scesim.webapp=${{ github.event.inputs.mvnVersion }}
+          mvn package -B -Dversion.scesim.webapp=${{ github.event.inputs.mvnVersion }}
           npm version ${{ github.event.inputs.npmVersion }}
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           npm publish --access public

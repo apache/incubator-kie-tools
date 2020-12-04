@@ -1,4 +1,4 @@
-name: "MVN :: Publish DMN Editor unpacked"
+name: "Maven :: Publish DMN Editor unpacked"
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
 
       - run: |
           cd .github/supporting-files/maven-artifacts/dmn-editor-unpacked
-          mvn package -Dversion.dmn.webapp=${{ github.event.inputs.mvnVersion }}
+          mvn package -B -Dversion.dmn.webapp=${{ github.event.inputs.mvnVersion }}
           npm version ${{ github.event.inputs.npmVersion }}
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           npm publish --access public
