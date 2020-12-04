@@ -31,7 +31,6 @@ import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import "./ScorecardEditorPage.scss";
-import { Operation } from "../Operation";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
 
 interface ScorecardEditorPageProps {
@@ -45,7 +44,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const dispatch = useDispatch();
 
   const [filter, setFilter] = useState("");
-  const [activeOperation, setActiveOperation] = useState(Operation.NONE);
 
   const model: Scorecard | undefined = useSelector<PMML, Scorecard | undefined>((state: PMML) => {
     const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
@@ -95,8 +93,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           <PageSection variant={PageSectionVariants.light} isFilled={false}>
             <EditorHeader
               modelName={getModelName(model)}
-              activeOperation={activeOperation}
-              setActiveOperation={setActiveOperation}
               modelIndex={modelIndex}
               miningSchema={miningSchema}
               output={output}
@@ -146,8 +142,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
           <PageSection isFilled={false}>
             <CorePropertiesTable
-              activeOperation={activeOperation}
-              setActiveOperation={setActiveOperation}
               isScorable={model.isScorable ?? true}
               functionName={model.functionName}
               algorithmName={model.algorithmName ?? ""}
@@ -180,8 +174,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               <div>
                 <CharacteristicsContainer
                   modelIndex={modelIndex}
-                  activeOperation={activeOperation}
-                  setActiveOperation={setActiveOperation}
                   useReasonCodes={model.useReasonCodes ?? true}
                   isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
                   characteristics={characteristics?.Characteristic ?? []}

@@ -17,7 +17,6 @@ import { HeaderTitle } from "../../Header/atoms";
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
-import { Operation } from "../../EditorScorecard";
 
 interface LandingPageHeaderProps {
   title: string;
@@ -30,7 +29,7 @@ export const LandingPageHeader = (props: LandingPageHeaderProps) => {
         <HeaderTitle title={props.title} />
       </SplitItem>
       <SplitItem>
-        <DataDictionaryHandler activeOperation={Operation.NONE} />
+        <DataDictionaryHandler />
       </SplitItem>
     </Split>
   );

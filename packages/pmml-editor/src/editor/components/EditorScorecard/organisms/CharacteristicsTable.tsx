@@ -20,6 +20,7 @@ import { Form } from "@patternfly/react-core";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
+import { OperationContext } from "../../../PMMLEditor";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -28,8 +29,6 @@ export interface IndexedCharacteristic {
 
 interface CharacteristicsTableProps {
   modelIndex: number;
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   useReasonCodes: boolean;
   isBaselineScoreRequired: boolean;
   characteristics: IndexedCharacteristic[];
@@ -47,8 +46,6 @@ interface CharacteristicsTableProps {
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const {
     modelIndex,
-    activeOperation,
-    setActiveOperation,
     useReasonCodes,
     isBaselineScoreRequired,
     characteristics,
@@ -64,6 +61,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   } = props;
 
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
+
+  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
@@ -105,8 +104,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               <CharacteristicsTableEditRow
                 key={ic.index}
                 modelIndex={modelIndex}
-                activeOperation={activeOperation}
-                setActiveOperation={setActiveOperation}
                 useReasonCodes={useReasonCodes}
                 isBaselineScoreRequired={isBaselineScoreRequired}
                 characteristic={ic}

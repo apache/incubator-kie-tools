@@ -37,13 +37,12 @@ import { Operation } from "../../EditorScorecard";
 import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import "./OutputsContainer.scss";
 import { findIncrementalName } from "../../../PMMLModelHelper";
+import { OperationContext } from "../../../PMMLEditor";
 import get = Reflect.get;
 import set = Reflect.set;
 
 interface OutputsContainerProps {
   modelIndex: number;
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   output?: Output;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
@@ -53,15 +52,7 @@ interface OutputsContainerProps {
 type OutputsViewSection = "overview" | "extended-properties" | "batch-add";
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const {
-    modelIndex,
-    activeOperation,
-    setActiveOperation,
-    output,
-    validateOutputFieldName,
-    deleteOutputField,
-    commitOutputField
-  } = props;
+  const { modelIndex, output, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const [name, setName] = useState<ValidatedType<FieldName> | undefined>();
@@ -77,6 +68,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
   const dispatch = useDispatch();
+
+  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
 
   const getTransition = (_viewSection: OutputsViewSection) => {
     let cssClass;

@@ -26,11 +26,10 @@ import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { OperationContext } from "../../../PMMLEditor";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   useReasonCodes: boolean;
   isBaselineScoreRequired: boolean;
   characteristic: IndexedCharacteristic;
@@ -45,8 +44,6 @@ interface CharacteristicsTableEditRowProps {
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
   const {
     modelIndex,
-    activeOperation,
-    setActiveOperation,
     useReasonCodes,
     isBaselineScoreRequired,
     characteristic,
@@ -61,6 +58,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   const characteristicIndex = characteristic.index;
 
   const dispatch = useDispatch();
+
+  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -128,11 +127,6 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
       ref={ref}
       className={`characteristic-item characteristic-item-n${characteristicIndex} editable editing`}
       tabIndex={0}
-      onKeyDown={e => {
-        if (e.key === "Escape") {
-          onCancel();
-        }
-      }}
     >
       <Stack hasGutter={true}>
         <StackItem>
@@ -245,7 +239,6 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             <FormGroup label="Attributes" fieldId="output-labels-helper">
               <AttributesTable
                 attributes={attributes}
-                setActiveOperation={setActiveOperation}
                 viewAttribute={viewAttribute}
                 deleteAttribute={attributeIndex => {
                   if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {

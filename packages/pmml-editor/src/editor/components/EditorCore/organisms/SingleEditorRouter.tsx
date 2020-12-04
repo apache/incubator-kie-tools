@@ -16,11 +16,12 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
 import { ScorecardEditorPage } from "../../EditorScorecard/templates";
-import { getModelType, isSupportedModelType } from "../../..";
+import { getModelType, isSupportedModelType, OperationContext } from "../../..";
 import { Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { EmptyStateModelNotFound } from ".";
 import { UnsupportedModelPage } from "../templates";
+import { Operation } from "../../EditorScorecard";
 
 interface ModelParams {
   index?: string;
@@ -32,6 +33,9 @@ interface SingleEditorRouterProps {
 
 export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
   const { index } = useParams<ModelParams>();
+
+  const { setActiveOperation } = React.useContext(OperationContext);
+
   const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
   if (!models) {
     return <EmptyStateModelNotFound />;
@@ -46,7 +50,14 @@ export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
   const _isSupportedModelType: boolean = isSupportedModelType(model);
 
   return (
-    <div>
+    <div
+      tabIndex={-1}
+      onKeyDown={e => {
+        if (e.key === "Escape") {
+          setActiveOperation(Operation.NONE);
+        }
+      }}
+    >
       {!_isSupportedModelType && <UnsupportedModelPage path={props.path} model={model} />}
       {_isSupportedModelType && modelType === "Scorecard" && (
         <ScorecardEditorPage path={props.path} modelIndex={_index} />

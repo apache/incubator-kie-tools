@@ -36,6 +36,7 @@ import "./CorePropertiesTable.scss";
 import { Operation } from "../Operation";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { isEqual } from "lodash";
+import { OperationContext } from "../../../PMMLEditor";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -51,8 +52,6 @@ interface CoreProperties {
 }
 
 interface CorePropertiesTableProps extends CoreProperties {
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   commit: (props: CoreProperties) => void;
 }
 
@@ -67,7 +66,7 @@ const GenericSelectorEditor = (
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
-  const { activeOperation, setActiveOperation } = props;
+  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
 
   const [isEditing, setEditing] = useState(false);
   const [isScorable, setScorable] = useState<boolean>();
@@ -154,8 +153,6 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
           e.preventDefault();
           e.stopPropagation();
           onEdit();
-        } else if (e.key === "Escape") {
-          onCancel();
         }
       }}
     >

@@ -21,19 +21,19 @@ import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { ValidatedType } from "../../../types";
 import { Operation } from "../../EditorScorecard";
+import { OperationContext } from "../../../PMMLEditor";
 
 interface HeaderTitleProps {
   modelName: string;
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   commitModelName: (_modelName: string) => void;
 }
 
 export const ModelTitle = (props: HeaderTitleProps) => {
-  const { activeOperation, setActiveOperation, commitModelName } = props;
+  const { commitModelName } = props;
 
   const [modelName, setModelName] = useState<ValidatedType<string>>({ value: "", valid: true });
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
 
   const ref = useOnclickOutside(event => onCancel(), {
     disabled: activeOperation !== Operation.UPDATE_NAME,
@@ -52,7 +52,6 @@ export const ModelTitle = (props: HeaderTitleProps) => {
   };
 
   const onCancel = () => {
-    setIsEditing(false);
     setActiveOperation(Operation.NONE);
   };
 
@@ -63,11 +62,6 @@ export const ModelTitle = (props: HeaderTitleProps) => {
         e.stopPropagation();
         e.preventDefault();
       }}
-      onKeyDown={e => {
-        if (e.key === "Escape") {
-          onCancel();
-        }
-      }}
     >
       <FormGroup
         fieldId="modelName"
@@ -75,24 +69,28 @@ export const ModelTitle = (props: HeaderTitleProps) => {
         helperTextInvalidIcon={<ExclamationCircleIcon />}
         validated={modelName.valid ? "default" : "error"}
       >
-        {!isEditing && (
+        {activeOperation !== Operation.UPDATE_NAME && (
           <Tooltip content={<div>{props.modelName}</div>}>
-            <TextContent>
+            <TextContent
+              tabIndex={0}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  setActiveOperation(Operation.UPDATE_NAME);
+                }
+              }}
+            >
               <Title
                 size="3xl"
                 headingLevel="h2"
                 className="modelTitle__truncate"
-                onClick={e => {
-                  setIsEditing(true);
-                  setActiveOperation(Operation.UPDATE_NAME);
-                }}
+                onClick={e => setActiveOperation(Operation.UPDATE_NAME)}
               >
                 {modelName.value}
               </Title>
             </TextContent>
           </Tooltip>
         )}
-        {isEditing && (
+        {activeOperation === Operation.UPDATE_NAME && (
           <TextInput
             ref={ref}
             type="text"

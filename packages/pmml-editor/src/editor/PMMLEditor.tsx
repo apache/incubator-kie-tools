@@ -39,6 +39,7 @@ import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels } from "./PMMLModelHelper";
+import { Operation } from "./components/EditorScorecard";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -51,7 +52,18 @@ export interface State {
   path: string;
   content: string;
   originalContent: string;
+  activeOperation: Operation;
 }
+
+interface ActiveOperation {
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
+}
+
+export const OperationContext = React.createContext<ActiveOperation>({
+  activeOperation: Operation.NONE,
+  setActiveOperation: (operation: Operation) => null
+});
 
 export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
@@ -64,7 +76,8 @@ export class PMMLEditor extends React.Component<Props, State> {
     this.state = {
       path: "",
       content: "",
-      originalContent: ""
+      originalContent: "",
+      activeOperation: Operation.NONE
     };
 
     enableAllPlugins();
@@ -105,7 +118,7 @@ export class PMMLEditor extends React.Component<Props, State> {
     }
 
     this.store = createStore(this.reducer, pmml);
-    this.setState({ path: path, content: _content, originalContent: _content });
+    this.setState({ path: path, content: _content, originalContent: _content, activeOperation: Operation.NONE });
   }
 
   public getContent(): Promise<string> {
@@ -173,7 +186,18 @@ export class PMMLEditor extends React.Component<Props, State> {
                   {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
                 </Route>
                 <Route exact={true} path={"/editor/:index"}>
-                  <SingleEditorRouter path={path} />
+                  <OperationContext.Provider
+                    value={{
+                      activeOperation: this.state.activeOperation,
+                      setActiveOperation: operation =>
+                        this.setState({
+                          ...this.state,
+                          activeOperation: operation
+                        })
+                    }}
+                  >
+                    <SingleEditorRouter path={path} />
+                  </OperationContext.Provider>
                 </Route>
               </Switch>
             </Provider>

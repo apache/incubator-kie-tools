@@ -29,11 +29,10 @@ import { CloseIcon } from "@patternfly/react-icons";
 import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation } from "../../EditorScorecard";
+import { OperationContext } from "../../../PMMLEditor";
 
 interface OutputsHandlerProps {
   modelIndex: number;
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   output?: Output;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
@@ -41,17 +40,11 @@ interface OutputsHandlerProps {
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
-  const {
-    modelIndex,
-    activeOperation,
-    setActiveOperation,
-    output,
-    validateOutputFieldName,
-    deleteOutputField,
-    commitOutputField
-  } = props;
+  const { modelIndex, output, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { setActiveOperation } = React.useContext(OperationContext);
 
   const toggleModal = () => {
     setActiveOperation(Operation.NONE);
@@ -89,8 +82,6 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
       >
         <OutputsContainer
           modelIndex={modelIndex}
-          activeOperation={activeOperation}
-          setActiveOperation={setActiveOperation}
           output={output}
           validateOutputFieldName={validateOutputFieldName}
           deleteOutputField={deleteOutputField}

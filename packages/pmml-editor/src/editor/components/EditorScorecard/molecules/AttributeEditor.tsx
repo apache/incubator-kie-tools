@@ -25,6 +25,7 @@ import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 import { isEqual } from "lodash";
 import useOnclickOutside from "react-cool-onclickoutside";
+import { OperationContext } from "../../../PMMLEditor";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -36,7 +37,6 @@ interface AttributeEditorContent {
 
 interface AttributeEditorProps {
   modelIndex: number;
-  activeOperation: Operation;
   characteristicIndex: number | undefined;
   attributeIndex: number | undefined;
   useReasonCodes: boolean;
@@ -45,15 +45,7 @@ interface AttributeEditorProps {
 }
 
 export const AttributeEditor = (props: AttributeEditorProps) => {
-  const {
-    modelIndex,
-    activeOperation,
-    characteristicIndex,
-    attributeIndex,
-    useReasonCodes,
-    onCancel,
-    onCommit
-  } = props;
+  const { modelIndex, characteristicIndex, attributeIndex, useReasonCodes, onCancel, onCommit } = props;
 
   const [text, setText] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -62,6 +54,8 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   const [partialScore, setPartialScore] = useState<number | undefined>();
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [originalText, setOriginalText] = useState<string>();
+
+  const { activeOperation } = React.useContext(OperationContext);
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
@@ -135,14 +129,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   };
 
   return (
-    <article
-      tabIndex={0}
-      onKeyDown={e => {
-        if (e.key === "Escape") {
-          onCancel();
-        }
-      }}
-    >
+    <article tabIndex={0}>
       <Form>
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>

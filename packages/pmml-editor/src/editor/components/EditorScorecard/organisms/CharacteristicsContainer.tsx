@@ -32,13 +32,12 @@ import {
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
+import { OperationContext } from "../../../PMMLEditor";
 import set = Reflect.set;
 import get = Reflect.get;
 
 interface CharacteristicsContainerProps {
   modelIndex: number;
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   useReasonCodes: boolean;
   isBaselineScoreRequired: boolean;
   characteristics: Characteristic[];
@@ -54,8 +53,6 @@ type CharacteristicsViewSection = "overview" | "attribute";
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
   const {
     modelIndex,
-    activeOperation,
-    setActiveOperation,
     useReasonCodes,
     isBaselineScoreRequired,
     characteristics,
@@ -67,6 +64,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   } = props;
 
   const dispatch = useDispatch();
+
+  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
 
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
@@ -204,8 +203,6 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                   <StackItem className="characteristics-container__overview">
                     <CharacteristicsTable
                       modelIndex={modelIndex}
-                      activeOperation={activeOperation}
-                      setActiveOperation={setActiveOperation}
                       useReasonCodes={useReasonCodes}
                       isBaselineScoreRequired={isBaselineScoreRequired}
                       characteristics={filteredCharacteristics}
@@ -230,7 +227,6 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                   <StackItem className="characteristics-container__attribute">
                     <AttributeEditor
                       modelIndex={modelIndex}
-                      activeOperation={activeOperation}
                       characteristicIndex={selectedCharacteristicIndex}
                       attributeIndex={selectedAttributeIndex}
                       useReasonCodes={useReasonCodes}

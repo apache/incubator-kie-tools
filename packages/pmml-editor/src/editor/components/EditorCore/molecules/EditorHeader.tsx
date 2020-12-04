@@ -18,14 +18,11 @@ import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../../Outputs/organisms";
-import { Operation } from "../../EditorScorecard";
 import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 
 interface EditorHeaderProps {
   modelName: string;
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
   modelIndex: number;
   output?: Output;
   miningSchema?: MiningSchema;
@@ -38,8 +35,6 @@ interface EditorHeaderProps {
 export const EditorHeader = (props: EditorHeaderProps) => {
   const {
     modelName,
-    activeOperation,
-    setActiveOperation,
     miningSchema,
     modelIndex,
     output,
@@ -52,26 +47,19 @@ export const EditorHeader = (props: EditorHeaderProps) => {
   return (
     <Split hasGutter={true}>
       <SplitItem>
-        <ModelTitle
-          modelName={modelName}
-          activeOperation={activeOperation}
-          setActiveOperation={setActiveOperation}
-          commitModelName={commitModelName}
-        />
+        <ModelTitle modelName={modelName} commitModelName={commitModelName} />
       </SplitItem>
       <SplitItem isFilled={true}>
         <div>&nbsp;</div>
       </SplitItem>
       <SplitItem>
-        <DataDictionaryHandler activeOperation={activeOperation} />
+        <DataDictionaryHandler />
       </SplitItem>
       <SplitItem>
-        <MiningSchemaHandler activeOperation={activeOperation} miningSchema={miningSchema} modelIndex={modelIndex} />
+        <MiningSchemaHandler miningSchema={miningSchema} modelIndex={modelIndex} />
       </SplitItem>
       <SplitItem>
         <OutputsHandler
-          activeOperation={activeOperation}
-          setActiveOperation={setActiveOperation}
           modelIndex={modelIndex}
           output={output}
           validateOutputFieldName={validateOutputFieldName}

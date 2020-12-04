@@ -11,21 +11,18 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
-import { Operation } from "../../EditorScorecard";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
 import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 
 interface MiningSchemaHandlerProps {
-  activeOperation: Operation;
-  setActiveOperation?: (operation: Operation) => void;
   miningSchema?: MiningSchema;
   modelIndex: number;
 }
 
 const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
-  const { activeOperation, miningSchema, modelIndex } = props;
+  const { miningSchema, modelIndex } = props;
   const [isMiningSchemaOpen, setIsMiningSchemaOpen] = useState(false);
   const dispatch = useDispatch();
   const dataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);

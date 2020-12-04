@@ -17,16 +17,8 @@ import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { convertDD2PMML, convertPMML2DD } from "../dataDictionaryUtils";
-import { Operation } from "../../EditorScorecard";
 
-interface DataDictionaryHandlerProps {
-  activeOperation: Operation;
-  setActiveOperation?: (operation: Operation) => void;
-}
-
-const DataDictionaryHandler = (props: DataDictionaryHandlerProps) => {
-  const { activeOperation } = props;
-
+const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
   const dispatch = useDispatch();
   const pmmlDataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
