@@ -33,7 +33,6 @@
   <name>Extensions to UberFire</name>
 
   <modules>
-    <module>uberfire-metadata</module>
     <module>uberfire-widgets</module>
     <module>uberfire-commons-editor</module>
     <module>uberfire-preferences-ui-client</module>
