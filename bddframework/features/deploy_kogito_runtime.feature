@@ -349,3 +349,60 @@ Feature: Deploy Kogito Runtime
     Examples:
       | runtime    | example-service         | profile                   |
       | quarkus    | process-quarkus-example | native,persistence,events |
+
+#####
+
+  @failover
+  @persistence
+  @infinispan
+  Scenario Outline: Test Kogito Runtime <example-service> failover with Infinispan
+    Given Kogito Operator is deployed with Infinispan operator
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | infinispan |
+    And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
+    And Start "orders" process on service "<example-service>" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john",
+        "order" : {
+          "orderNumber" : "12345",
+          "shipped" : false
+        }
+      }
+      """
+
+    Then Service "<example-service>" contains 1 instances of process with name "orders"
+
+    When Scale Infinispan instance "kogito-infinispan" to 0 pods within 2 minutes
+    Then HTTP GET request on service "<example-service>" with path "orders" fails within 2 minutes
+
+    When Scale Infinispan instance "kogito-infinispan" to 1 pods within 2 minutes
+    Then Service "<example-service>" contains 0 instances of process with name "orders" within 2 minutes
+
+    When Start "orders" process on service "<example-service>" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john",
+        "order" : {
+          "orderNumber" : "12345",
+          "shipped" : false
+        }
+      }
+      """
+
+    Then Service "<example-service>" contains 1 instances of process with name "orders"
+
+    @springboot
+    Examples:
+      | runtime    | example-service            | profile     |
+      | springboot | process-springboot-example | persistence |
+
+    @quarkus
+    Examples:
+      | runtime    | example-service         | profile     |
+      | quarkus    | process-quarkus-example | persistence |

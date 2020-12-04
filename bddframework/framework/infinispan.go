@@ -18,6 +18,8 @@ import (
 	"fmt"
 
 	"gopkg.in/yaml.v2"
+	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/types"
 
 	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
@@ -76,6 +78,20 @@ func WaitForInfinispanPodsToBeRunningWithConfig(namespace string, expectedConfig
 
 }
 
+// SetInfinispanReplicas sets the number of replicas for an Infinispan instance
+func SetInfinispanReplicas(namespace, name string, nbPods int) error {
+	GetLogger(namespace).Infof("Set Infinispan %s replica number to %d", name, nbPods)
+	infinispan, err := getInfinispan(namespace, name)
+	if err != nil {
+		return err
+	} else if infinispan == nil {
+		return fmt.Errorf("No Infinispan found with name %s in namespace %s", name, namespace)
+	}
+	replicas := int32(nbPods)
+	infinispan.Spec.Replicas = replicas
+	return kubernetes.ResourceC(kubeClient).Update(infinispan)
+}
+
 // GetInfinispanStub returns the preconfigured Infinispan stub with set namespace, name and secretName
 func GetInfinispanStub(namespace, name, secretName string) *infinispan.Infinispan {
 	return &infinispan.Infinispan{
@@ -105,4 +121,14 @@ func convertInfinispanCredentialsToYaml(credentialsMap map[string]string) (strin
 		return "", err
 	}
 	return string(data), nil
+}
+
+func getInfinispan(namespace, name string) (*infinispan.Infinispan, error) {
+	infinispan := &infinispan.Infinispan{}
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, infinispan); err != nil && !errors.IsNotFound(err) {
+		return nil, fmt.Errorf("Error while trying to look for Infinispan %s: %v ", name, err)
+	} else if errors.IsNotFound(err) || !exists {
+		return nil, nil
+	}
+	return infinispan, nil
 }

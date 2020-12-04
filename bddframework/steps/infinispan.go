@@ -42,6 +42,7 @@ func registerInfinispanSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Infinispan instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.infinispanInstanceHasPodsRunningWithinMinutes)
 	ctx.Step(`^Infinispan instance "([^"]*)" is deployed with configuration:$`, data.infinispanInstanceIsDeployedWithConfiguration)
 	ctx.Step(`^Infinispan instance "([^"]*)" is deployed for performance within (\d+) minute\(s\) with configuration:$`, data.infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration)
+	ctx.Step(`^Scale Infinispan instance "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleInfinispanInstanceToPodsWithinMinutes)
 }
 
 func (data *Data) infinispanInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {
@@ -76,6 +77,14 @@ func (data *Data) infinispanInstanceIsDeployedForPerformanceWithinMinutesWithCon
 	}
 
 	return framework.WaitForInfinispanPodsToBeRunningWithConfig(data.Namespace, performanceInfinispanContainerSpec, 1, timeOutInMin)
+}
+
+func (data *Data) scaleInfinispanInstanceToPodsWithinMinutes(name string, nbPods, timeoutInMin int) error {
+	err := framework.SetInfinispanReplicas(data.Namespace, name, nbPods)
+	if err != nil {
+		return err
+	}
+	return framework.WaitForPodsWithLabel(data.Namespace, "infinispan_cr", name, nbPods, timeoutInMin)
 }
 
 // Misc methods

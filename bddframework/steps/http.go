@@ -25,6 +25,7 @@ import (
 func registerHTTPSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is forbidden within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsForbiddenWithinMinutes)
+	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" fails within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathFailsWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" using access token "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceUsingAccessTokenWithPathIsSuccessfulWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
@@ -51,6 +52,15 @@ func (data *Data) httpGetRequestOnServiceWithPathIsForbiddenWithinMinutes(servic
 	}
 	requestInfo := framework.NewGETHTTPRequestInfo(uri, data.ResolveWithScenarioContext(path))
 	return framework.WaitForForbiddenHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
+}
+
+func (data *Data) httpGetRequestOnServiceWithPathFailsWithinMinutes(serviceName, path string, timeoutInMin int) error {
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	requestInfo := framework.NewGETHTTPRequestInfo(uri, data.ResolveWithScenarioContext(path))
+	return framework.WaitForFailedHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
 }
 
 func (data *Data) httpGetRequestOnServiceUsingAccessTokenWithPathIsSuccessfulWithinMinutes(serviceName, token, path string, timeoutInMin int) error {

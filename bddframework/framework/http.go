@@ -82,6 +82,14 @@ func WaitForForbiddenHTTPRequest(namespace string, requestInfo HTTPRequestInfo, 
 		})
 }
 
+// WaitForFailedHTTPRequest waits for an HTTP request to fail
+func WaitForFailedHTTPRequest(namespace string, requestInfo HTTPRequestInfo, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("HTTP %s request on path '%s' to fail", requestInfo.HTTPMethod, requestInfo.Path), timeoutInMin,
+		func() (bool, error) {
+			return IsHTTPRequestFailed(namespace, requestInfo)
+		})
+}
+
 // ExecuteHTTPRequest executes an HTTP request
 func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Response, error) {
 	// Setup a retry in case the first time it did not work
@@ -186,6 +194,11 @@ func IsHTTPRequestForbidden(namespace string, requestInfo HTTPRequestInfo) (bool
 	return checkHTTPRequestConditionC(&http.Client{}, namespace, requestInfo, checkHTTPResponseForbidden)
 }
 
+// IsHTTPRequestFailed makes and checks whether an http request fails
+func IsHTTPRequestFailed(namespace string, requestInfo HTTPRequestInfo) (bool, error) {
+	return checkHTTPRequestConditionC(&http.Client{}, namespace, requestInfo, checkHTTPResponseFailed)
+}
+
 // checkHTTPRequestConditionC makes and checks whether an http request matches a condition using a given HTTP client
 func checkHTTPRequestConditionC(client *http.Client, namespace string, requestInfo HTTPRequestInfo, condition func(response *http.Response) bool) (bool, error) {
 	response, err := ExecuteHTTPRequestC(client, namespace, requestInfo)
@@ -210,9 +223,14 @@ func checkHTTPResponseSuccessful(response *http.Response) bool {
 	return response.StatusCode >= 200 && response.StatusCode < 300
 }
 
-// checkHTTPResponseForbidden checks the HTTP response is successful
+// checkHTTPResponseForbidden checks the HTTP response is forbidden
 func checkHTTPResponseForbidden(response *http.Response) bool {
 	return response.StatusCode == 401
+}
+
+// checkHTTPResponseFailed checks the HTTP response failed
+func checkHTTPResponseFailed(response *http.Response) bool {
+	return response.StatusCode >= 404
 }
 
 // ExecuteHTTPRequestsInThreads executes given number of requests using given number of threads (Go routines).
