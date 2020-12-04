@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.kogito-tooling</groupId>
+  <artifactId>kogito-tooling</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.0</version>
+
+  <name>Kogito Tooling parent</name>
+  <description>
+    We need this pom for productization process, so you, community member, shouldn't care too much about it.
+  </description>
+
+  <url>http://www.kiegroup.org</url>
+  <inceptionYear>2020</inceptionYear>
+  <organization>
+    <name>JBoss by Red Hat</name>
+    <url>http://www.jboss.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/kiegroup/kogito-tooling.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/kogito-tooling.git</developerConnection>
+    <url>https://github.com/kiegroup/kogito-tooling</url>
+  </scm>
+
+
+  <modules>
+    <module>packages/backend-quarkus-runner-unpacked</module>
+    <module>packages/kie-bc-editors-unpacked</module>
+  </modules>
+
+
+</project>
