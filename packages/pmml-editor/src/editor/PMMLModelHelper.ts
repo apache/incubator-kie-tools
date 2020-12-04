@@ -243,6 +243,7 @@ export const isSupportedModelType = (model: Model): boolean => {
   return false;
 };
 
+// TODO {kelvah} rough implementation for demoing purposes. to be done properly.
 export const findIncrementalName = (name: string, existingNames: string[], startsFrom: number): string => {
   let newName = "";
   let counter = startsFrom;

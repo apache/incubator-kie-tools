@@ -146,21 +146,6 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
     }
   };
 
-  // TODO {kelvah} rough implementation for demoing purposes. to be done properly.
-  const findIncrementalName2 = (name: string, startsFrom: number): string => {
-    let newName = "";
-    let counter = startsFrom;
-    do {
-      const potentialName = `${name}${counter !== 1 ? ` ${counter}` : ""}`;
-      const found = dataTypes.filter(item => item.name === potentialName);
-      if (found.length === 0) {
-        newName = potentialName;
-      }
-      counter++;
-    } while (newName.length === 0);
-    return newName;
-  };
-
   return (
     <div className="data-dictionary">
       <StatusContext.Provider value={editing}>
