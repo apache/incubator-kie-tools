@@ -31,6 +31,5 @@
 
   <modules>
     <module>uberfire-backend-api</module>
-    <module>uberfire-backend-cdi</module>
   </modules>
 </project>

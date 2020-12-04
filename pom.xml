@@ -832,7 +832,6 @@
     <module>uberfire-security</module>
     <module>uberfire-nio2-backport</module>
     <module>uberfire-io</module>
-    <module>uberfire-server</module>
     <module>uberfire-backend</module>
     <module>uberfire-experimental</module>
     <module>uberfire-workbench</module>
