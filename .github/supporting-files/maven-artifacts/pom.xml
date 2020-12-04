@@ -19,12 +19,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kie-bc-editors-unpacked</artifactId>
+    <artifactId>maven-artifacts</artifactId>
     <groupId>org.kogito-tooling</groupId>
     <packaging>pom</packaging>
     <version>0.0.0</version>
+
+    <properties>
+        <version.dmn.webapp>${version.editors}</version.dmn.webapp>
+        <version.bpmn.webapp>${version.editors}</version.bpmn.webapp>
+        <version.scesim.webapp>${version.editors}</version.scesim.webapp>
+        <version.quarkus.runner>0.7.0-SNAPSHOT</version.quarkus.runner>
+    </properties>
+
     <modules>
-        <module>backend-quarkus-runner-unpacked</module>
+        <module>quarkus-runner-unpacked</module>
         <module>bpmn-editor-unpacked</module>
         <module>dmn-editor-unpacked</module>
         <module>scesim-editor-unpacked</module>
