@@ -1,4 +1,4 @@
-name: MVN :: Publish Backend Quarkus Runner unpacked
+name: "MVN :: Publish Backend Quarkus Runner unpacked"
 
 on:
   workflow_dispatch:
