@@ -50,7 +50,9 @@ pipeline {
                         println "[DEBUG] 2"
                         pmebuild.checkoutProjects(projectCollection, buildConfigMap, buildConfigAdditionalVariables)
                         println "[DEBUG] 3"
-                        projectCollection.each { project -> buildProject(project, SETTINGS_XML_ID, buildConfigMap, "${env.PME_CLI_PATH}", [:], variableVersionsMap) }
+                        configFileProvider([configFile(fileId: SETTINGS_XML_ID, variable: 'MVN_SETTINGS_PATH')]) {
+                          projectCollection.each { project -> buildProject(project, SETTINGS_XML_ID, buildConfigMap, "${env.PME_CLI_PATH}", [:], variableVersionsMap) }
+                        }
                     }, 2, 60*60)
                 }
             }
