@@ -125,8 +125,8 @@ public class Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals_
   }
 
   public PropertiesPanelNotifier createInstance(final ContextManager contextManager) {
-    final Event<RefreshFormPropertiesEvent> _refreshFormPropertiesEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
     final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<RefreshFormPropertiesEvent> _refreshFormPropertiesEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
     final PropertiesPanelNotifier instance = new PropertiesPanelNotifier(_refreshFormPropertiesEvent_0, _sessionManager_1);
     registerDependentScopedReference(instance, _refreshFormPropertiesEvent_0);
     setIncompleteInstance(instance);

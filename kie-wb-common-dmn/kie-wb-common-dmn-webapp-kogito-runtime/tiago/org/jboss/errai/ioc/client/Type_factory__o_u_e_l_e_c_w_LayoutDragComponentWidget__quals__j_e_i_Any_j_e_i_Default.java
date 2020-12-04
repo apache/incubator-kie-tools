@@ -36,18 +36,18 @@ public class Type_factory__o_u_e_l_e_c_w_LayoutDragComponentWidget__quals__j_e_i
   public LayoutDragComponentWidget createInstance(final ContextManager contextManager) {
     final LayoutDragComponentWidget instance = new LayoutDragComponentWidget();
     setIncompleteInstance(instance);
-    final Span LayoutDragComponentWidget_title = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, LayoutDragComponentWidget_title);
-    LayoutDragComponentWidget_Span_title(instance, LayoutDragComponentWidget_title);
-    final Div LayoutDragComponentWidget_dndcomponent = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, LayoutDragComponentWidget_dndcomponent);
-    LayoutDragComponentWidget_Div_dndcomponent(instance, LayoutDragComponentWidget_dndcomponent);
-    final Span LayoutDragComponentWidget_icon = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, LayoutDragComponentWidget_icon);
-    LayoutDragComponentWidget_Span_icon(instance, LayoutDragComponentWidget_icon);
     final Event LayoutDragComponentWidget_dragComponentEnd = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DragComponentEndEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, LayoutDragComponentWidget_dragComponentEnd);
     LayoutDragComponentWidget_Event_dragComponentEnd(instance, LayoutDragComponentWidget_dragComponentEnd);
+    final Span LayoutDragComponentWidget_icon = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, LayoutDragComponentWidget_icon);
+    LayoutDragComponentWidget_Span_icon(instance, LayoutDragComponentWidget_icon);
+    final Div LayoutDragComponentWidget_dndcomponent = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, LayoutDragComponentWidget_dndcomponent);
+    LayoutDragComponentWidget_Div_dndcomponent(instance, LayoutDragComponentWidget_dndcomponent);
+    final Span LayoutDragComponentWidget_title = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, LayoutDragComponentWidget_title);
+    LayoutDragComponentWidget_Span_title(instance, LayoutDragComponentWidget_title);
     o_u_e_l_e_c_w_LayoutDragComponentWidgetTemplateResource templateForLayoutDragComponentWidget = GWT.create(o_u_e_l_e_c_w_LayoutDragComponentWidgetTemplateResource.class);
     Element parentElementForTemplateOfLayoutDragComponentWidget = TemplateUtil.getRootTemplateParentElement(templateForLayoutDragComponentWidget.getContents().getText(), "org/uberfire/ext/layout/editor/client/widgets/LayoutDragComponentWidget.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/layout/editor/client/widgets/LayoutDragComponentWidget.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfLayoutDragComponentWidget));

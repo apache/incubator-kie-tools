@@ -38,12 +38,12 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_b_i_ElementBuilderControlImpl__qual
   }
 
   public ElementBuilderControlImpl createInstance(final ContextManager contextManager) {
-    final ClientDefinitionManager _clientDefinitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
-    final ClientTranslationMessages _translationMessages_4 = (ClientTranslationMessages) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationMessages__quals__j_e_i_Any_j_e_i_Default");
     final ClientFactoryService _clientFactoryServices_1 = (ClientFactoryService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ClientFactoryService__quals__j_e_i_Any_j_e_i_Default");
-    final RuleManager _ruleManager_2 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
     final CanvasCommandFactory<AbstractCanvasHandler> _canvasCommandFactory_3 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final GraphBoundsIndexer _graphBoundsIndexer_5 = (GraphBoundsIndexerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_i_b_GraphBoundsIndexerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final ClientDefinitionManager _clientDefinitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ClientTranslationMessages _translationMessages_4 = (ClientTranslationMessages) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationMessages__quals__j_e_i_Any_j_e_i_Default");
+    final RuleManager _ruleManager_2 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
     final ElementBuilderControlImpl instance = new ElementBuilderControlImpl(_clientDefinitionManager_0, _clientFactoryServices_1, _ruleManager_2, _canvasCommandFactory_3, _translationMessages_4, _graphBoundsIndexer_5);
     registerDependentScopedReference(instance, _graphBoundsIndexer_5);
     setIncompleteInstance(instance);

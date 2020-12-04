@@ -49,6 +49,11 @@ public class Type_factory__o_u_e_l_e_c_c_c_ContainerView__quals__j_e_i_Any_j_e_i
   public ContainerView createInstance(final ContextManager contextManager) {
     final ContainerView instance = new ContainerView();
     setIncompleteInstance(instance);
+    final PlaceManagerImpl ContainerView_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    ContainerView_PlaceManager_placeManager(instance, ContainerView_placeManager);
+    final Div ContainerView_header = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ContainerView_header);
+    ContainerView_Div_header(instance, ContainerView_header);
     final Div ContainerView_container = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ContainerView_container);
     ContainerView_Div_container(instance, ContainerView_container);
@@ -58,11 +63,6 @@ public class Type_factory__o_u_e_l_e_c_c_c_ContainerView__quals__j_e_i_Any_j_e_i
     final Div ContainerView_layout = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ContainerView_layout);
     ContainerView_Div_layout(instance, ContainerView_layout);
-    final PlaceManagerImpl ContainerView_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    ContainerView_PlaceManager_placeManager(instance, ContainerView_placeManager);
-    final Div ContainerView_header = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ContainerView_header);
-    ContainerView_Div_header(instance, ContainerView_header);
     o_u_e_l_e_c_c_c_ContainerViewTemplateResource templateForContainerView = GWT.create(o_u_e_l_e_c_c_c_ContainerViewTemplateResource.class);
     Element parentElementForTemplateOfContainerView = TemplateUtil.getRootTemplateParentElement(templateForContainerView.getContents().getText(), "org/uberfire/ext/layout/editor/client/components/container/ContainerView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/layout/editor/client/components/container/ContainerView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfContainerView));

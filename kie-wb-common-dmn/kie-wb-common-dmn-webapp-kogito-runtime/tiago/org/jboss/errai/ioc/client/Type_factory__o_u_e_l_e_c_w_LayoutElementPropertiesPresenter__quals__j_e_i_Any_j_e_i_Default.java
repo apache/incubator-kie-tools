@@ -20,13 +20,13 @@ public class Type_factory__o_u_e_l_e_c_w_LayoutElementPropertiesPresenter__quals
 
   public LayoutElementPropertiesPresenter createInstance(final ContextManager contextManager) {
     final View _view_0 = (LayoutElementPropertiesView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_w_LayoutElementPropertiesView__quals__j_e_i_Any_j_e_i_Default");
-    final Event<LayoutElementClearAllPropertiesEvent> _propertyClearAllEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutElementClearAllPropertiesEvent.class }, new Annotation[] { });
     final LayoutEditorCssHelper _cssHelper_1 = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
     final Event<LayoutElementPropertyChangedEvent> _propertyChangedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutElementPropertyChangedEvent.class }, new Annotation[] { });
+    final Event<LayoutElementClearAllPropertiesEvent> _propertyClearAllEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutElementClearAllPropertiesEvent.class }, new Annotation[] { });
     final LayoutElementPropertiesPresenter instance = new LayoutElementPropertiesPresenter(_view_0, _cssHelper_1, _propertyChangedEvent_2, _propertyClearAllEvent_3);
     registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _propertyClearAllEvent_3);
     registerDependentScopedReference(instance, _propertyChangedEvent_2);
+    registerDependentScopedReference(instance, _propertyClearAllEvent_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

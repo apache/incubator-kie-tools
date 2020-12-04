@@ -13,8 +13,6 @@ import org.jboss.errai.ioc.client.container.Proxy;
 import org.jboss.errai.ioc.client.container.ProxyHelper;
 import org.jboss.errai.ioc.client.container.ProxyHelperImpl;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
-import org.uberfire.experimental.client.service.impl.ClientExperimentalFeaturesRegistryServiceImpl;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutComponentPaletteGroupProvider;
@@ -170,8 +168,7 @@ public class Type_factory__o_u_e_l_e_c_w_LayoutComponentPalettePresenter__quals_
   public LayoutComponentPalettePresenter createInstance(final ContextManager contextManager) {
     final ManagedInstance<LayoutDragComponentGroupPresenter> _layoutDragComponentGroupInstance_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { LayoutDragComponentGroupPresenter.class }, new Annotation[] { });
     final View _view_0 = (LayoutComponentPaletteView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_w_LayoutComponentPaletteView__quals__j_e_i_Any_j_e_i_Default");
-    final ClientExperimentalFeaturesRegistryService _experimentalFeaturesRegistryService_2 = (ClientExperimentalFeaturesRegistryServiceImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryServiceImpl__quals__j_e_i_Any_j_e_i_Default");
-    final LayoutComponentPalettePresenter instance = new LayoutComponentPalettePresenter(_view_0, _layoutDragComponentGroupInstance_1, _experimentalFeaturesRegistryService_2);
+    final LayoutComponentPalettePresenter instance = new LayoutComponentPalettePresenter(_view_0, _layoutDragComponentGroupInstance_1);
     registerDependentScopedReference(instance, _layoutDragComponentGroupInstance_1);
     registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);

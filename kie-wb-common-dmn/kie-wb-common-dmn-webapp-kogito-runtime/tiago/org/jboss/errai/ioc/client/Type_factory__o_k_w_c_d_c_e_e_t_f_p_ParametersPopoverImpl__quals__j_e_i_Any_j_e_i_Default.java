@@ -167,8 +167,8 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_f_p_ParametersPopoverImpl__quals__j
   }
 
   public ParametersPopoverImpl createInstance(final ContextManager contextManager) {
-    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ParametersPopoverView _view_0 = (ParametersPopoverViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_f_p_ParametersPopoverViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ParametersPopoverImpl instance = new ParametersPopoverImpl(_view_0, _translationService_1);
     registerDependentScopedReference(instance, _translationService_1);
     setIncompleteInstance(instance);

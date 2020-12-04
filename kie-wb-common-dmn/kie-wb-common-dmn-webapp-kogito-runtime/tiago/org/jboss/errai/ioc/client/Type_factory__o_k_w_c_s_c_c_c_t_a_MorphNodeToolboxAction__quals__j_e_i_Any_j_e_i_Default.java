@@ -25,12 +25,12 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_MorphNodeToolboxAction__quals__j_
   }
 
   public MorphNodeToolboxAction createInstance(final ContextManager contextManager) {
-    final Event<CanvasClearSelectionEvent> _clearSelectionEventEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
     final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasClearSelectionEvent> _clearSelectionEventEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
+    final Event<CanvasSelectionEvent> _selectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
+    final ClientTranslationService _translationService_3 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final CanvasCommandFactory<AbstractCanvasHandler> _commandFactory_2 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final ClientTranslationService _translationService_3 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasSelectionEvent> _selectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
     final MorphNodeToolboxAction instance = new MorphNodeToolboxAction(_definitionUtils_0, _sessionCommandManager_1, _commandFactory_2, _translationService_3, _selectionEvent_4, _clearSelectionEventEvent_5);
     registerDependentScopedReference(instance, _clearSelectionEventEvent_5);
     registerDependentScopedReference(instance, _selectionEvent_4);

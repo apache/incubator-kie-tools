@@ -19,8 +19,8 @@ public class Type_factory__o_k_w_c_d_c_e_i_i_p_DMNIncludedModelHandler__quals__j
   }
 
   public DMNIncludedModelHandler createInstance(final ContextManager contextManager) {
-    final DefaultCanvasCommandFactory _canvasCommandFactory_1 = (DefaultCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_f_DefaultCanvasCommandFactory__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final DMNGraphUtils _dmnGraphUtils_0 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DefaultCanvasCommandFactory _canvasCommandFactory_1 = (DefaultCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_f_DefaultCanvasCommandFactory__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_2 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final DMNIncludedModelHandler instance = new DMNIncludedModelHandler(_dmnGraphUtils_0, _canvasCommandFactory_1, _sessionCommandManager_2, _definitionUtils_3);

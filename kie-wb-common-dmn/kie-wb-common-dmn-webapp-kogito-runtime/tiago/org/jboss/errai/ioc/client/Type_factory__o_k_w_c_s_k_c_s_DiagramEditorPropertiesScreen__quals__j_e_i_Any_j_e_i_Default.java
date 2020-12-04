@@ -28,15 +28,15 @@ public class Type_factory__o_k_w_c_s_k_c_s_DiagramEditorPropertiesScreen__quals_
 
   public DiagramEditorPropertiesScreen createInstance(final ContextManager contextManager) {
     final SessionManager _clientSessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
-    final Event<ChangeTitleWidgetEvent> _changeTitleNotification_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
     final DiagramEditorScreenView _view_3 = (DiagramEditorScreenViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_k_c_v_DiagramEditorScreenViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final FormPropertiesWidget _formPropertiesWidget_0 = (FormPropertiesWidget) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_w_FormPropertiesWidget__quals__j_e_i_Any_j_e_i_Default");
     final Event<ScreenPreMaximizedStateEvent> _screenStateEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ScreenPreMaximizedStateEvent.class }, new Annotation[] { });
+    final FormPropertiesWidget _formPropertiesWidget_0 = (FormPropertiesWidget) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_w_FormPropertiesWidget__quals__j_e_i_Any_j_e_i_Default");
+    final Event<ChangeTitleWidgetEvent> _changeTitleNotification_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
     final DiagramEditorPropertiesScreen instance = new DiagramEditorPropertiesScreen(_formPropertiesWidget_0, _clientSessionManager_1, _changeTitleNotification_2, _view_3, _screenStateEvent_4);
-    registerDependentScopedReference(instance, _changeTitleNotification_2);
     registerDependentScopedReference(instance, _view_3);
-    registerDependentScopedReference(instance, _formPropertiesWidget_0);
     registerDependentScopedReference(instance, _screenStateEvent_4);
+    registerDependentScopedReference(instance, _formPropertiesWidget_0);
+    registerDependentScopedReference(instance, _changeTitleNotification_2);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onPlaceMaximizedEventSubscription", CDI.subscribeLocal("org.uberfire.client.workbench.events.PlaceMaximizedEvent", new AbstractCDIEventCallback<PlaceMaximizedEvent>() {
       public void fireEvent(final PlaceMaximizedEvent event) {

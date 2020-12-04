@@ -16,8 +16,8 @@ public class Type_factory__o_k_w_c_s_c_r_i_DefaultDefinitionsCacheRegistry__qual
   }
 
   public DefaultDefinitionsCacheRegistry createInstance(final ContextManager contextManager) {
-    final FactoryManager _factoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final AdapterManager _adapterManager_1 = (AdapterManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_a_AdapterManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final FactoryManager _factoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final DefaultDefinitionsCacheRegistry instance = new DefaultDefinitionsCacheRegistry(_factoryManager_0, _adapterManager_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

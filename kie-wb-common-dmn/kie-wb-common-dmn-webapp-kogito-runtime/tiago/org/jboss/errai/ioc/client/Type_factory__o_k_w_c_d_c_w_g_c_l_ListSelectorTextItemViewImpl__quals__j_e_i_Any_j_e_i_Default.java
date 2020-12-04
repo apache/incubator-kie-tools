@@ -32,11 +32,11 @@ public class Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelectorTextItemViewImpl__qua
   }
 
   public ListSelectorTextItemViewImpl createInstance(final ContextManager contextManager) {
-    final Span _text_1 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ListItem _item_0 = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Span _text_1 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ListSelectorTextItemViewImpl instance = new ListSelectorTextItemViewImpl(_item_0, _text_1);
-    registerDependentScopedReference(instance, _text_1);
     registerDependentScopedReference(instance, _item_0);
+    registerDependentScopedReference(instance, _text_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_w_g_c_l_ListSelectorTextItemViewImplTemplateResource templateForListSelectorTextItemViewImpl = GWT.create(o_k_w_c_d_c_w_g_c_l_ListSelectorTextItemViewImplTemplateResource.class);
     Element parentElementForTemplateOfListSelectorTextItemViewImpl = TemplateUtil.getRootTemplateParentElement(templateForListSelectorTextItemViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/widgets/grid/controls/list/ListSelectorTextItemViewImpl.html", "");

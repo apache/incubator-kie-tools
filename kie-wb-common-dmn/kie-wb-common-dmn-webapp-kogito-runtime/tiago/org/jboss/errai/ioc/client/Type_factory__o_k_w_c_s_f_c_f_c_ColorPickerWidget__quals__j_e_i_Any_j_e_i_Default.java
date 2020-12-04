@@ -45,12 +45,12 @@ public class Type_factory__o_k_w_c_s_f_c_f_c_ColorPickerWidget__quals__j_e_i_Any
   public ColorPickerWidget createInstance(final ContextManager contextManager) {
     final ColorPickerWidget instance = new ColorPickerWidget();
     setIncompleteInstance(instance);
-    final Button ColorPickerWidget_colorButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, ColorPickerWidget_colorButton);
-    ColorPickerWidget_Button_colorButton(instance, ColorPickerWidget_colorButton);
     final TextBox ColorPickerWidget_colorTextBox = (TextBox) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_TextBox__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ColorPickerWidget_colorTextBox);
     ColorPickerWidget_TextBox_colorTextBox(instance, ColorPickerWidget_colorTextBox);
+    final Button ColorPickerWidget_colorButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, ColorPickerWidget_colorButton);
+    ColorPickerWidget_Button_colorButton(instance, ColorPickerWidget_colorButton);
     o_k_w_c_s_f_c_f_c_ColorPickerWidgetTemplateResource templateForColorPickerWidget = GWT.create(o_k_w_c_s_f_c_f_c_ColorPickerWidgetTemplateResource.class);
     Element parentElementForTemplateOfColorPickerWidget = TemplateUtil.getRootTemplateParentElement(templateForColorPickerWidget.getContents().getText(), "org/kie/workbench/common/stunner/forms/client/fields/colorPicker/ColorPickerWidget.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/forms/client/fields/colorPicker/ColorPickerWidget.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfColorPickerWidget));

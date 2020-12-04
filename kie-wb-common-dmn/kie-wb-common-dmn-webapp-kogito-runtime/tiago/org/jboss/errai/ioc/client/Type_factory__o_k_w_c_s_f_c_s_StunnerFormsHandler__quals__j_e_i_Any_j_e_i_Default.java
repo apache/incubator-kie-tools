@@ -84,8 +84,8 @@ public class Type_factory__o_k_w_c_s_f_c_s_StunnerFormsHandler__quals__j_e_i_Any
   }
 
   public StunnerFormsHandler createInstance(final ContextManager contextManager) {
-    final Event<RefreshFormPropertiesEvent> _refreshFormsEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
     final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<RefreshFormPropertiesEvent> _refreshFormsEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
     final StunnerFormsHandler instance = new StunnerFormsHandler(_sessionManager_0, _refreshFormsEvent_1);
     registerDependentScopedReference(instance, _refreshFormsEvent_1);
     setIncompleteInstance(instance);

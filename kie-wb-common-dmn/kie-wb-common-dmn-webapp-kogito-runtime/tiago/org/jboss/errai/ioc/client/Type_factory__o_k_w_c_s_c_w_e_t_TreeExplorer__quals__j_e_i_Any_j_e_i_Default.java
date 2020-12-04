@@ -35,11 +35,9 @@ public class Type_factory__o_k_w_c_s_c_w_e_t_TreeExplorer__quals__j_e_i_Any_j_e_
   }
 
   public TreeExplorer createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final DOMGlyphRenderers _domGlyphRenderers_5 = (DOMGlyphRenderers) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_c_g_DOMGlyphRenderers__quals__j_e_i_Any_j_e_i_Default");
     final TextPropertyProviderFactory _textPropertyProviderFactory_1 = (TextPropertyProviderFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_c_a_TextPropertyProviderFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ChildrenTraverseProcessor _childrenTraverseProcessor_0 = (ChildrenTraverseProcessorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_t_c_ChildrenTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasSelectionEvent> _selectionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
+    final ShapeManager _shapeManager_4 = (ShapeManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DOMGlyphRenderers _domGlyphRenderers_5 = (DOMGlyphRenderers) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_c_g_DOMGlyphRenderers__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<View> _views_6 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { View.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -48,11 +46,13 @@ public class Type_factory__o_k_w_c_s_c_w_e_t_TreeExplorer__quals__j_e_i_Any_j_e_
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final ShapeManager _shapeManager_4 = (ShapeManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final ChildrenTraverseProcessor _childrenTraverseProcessor_0 = (ChildrenTraverseProcessorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_t_c_ChildrenTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasSelectionEvent> _selectionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
     final TreeExplorer instance = new TreeExplorer(_childrenTraverseProcessor_0, _textPropertyProviderFactory_1, _selectionEvent_2, _definitionUtils_3, _shapeManager_4, _domGlyphRenderers_5, _views_6);
+    registerDependentScopedReference(instance, _views_6);
     registerDependentScopedReference(instance, _childrenTraverseProcessor_0);
     registerDependentScopedReference(instance, _selectionEvent_2);
-    registerDependentScopedReference(instance, _views_6);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onCanvasClearEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent", new AbstractCDIEventCallback<CanvasClearEvent>() {
       public void fireEvent(final CanvasClearEvent event) {

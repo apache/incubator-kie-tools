@@ -50,12 +50,12 @@ public class Type_factory__o_u_e_p_c_c_a_PreferencesCentralActionsView__quals__j
     final PreferencesCentralActionsView instance = new PreferencesCentralActionsView(_translationService_0);
     registerDependentScopedReference(instance, _translationService_0);
     setIncompleteInstance(instance);
-    final Button PreferencesCentralActionsView_saveButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, PreferencesCentralActionsView_saveButton);
-    PreferencesCentralActionsView_Button_saveButton(instance, PreferencesCentralActionsView_saveButton);
     final Button PreferencesCentralActionsView_cancelButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, PreferencesCentralActionsView_cancelButton);
     PreferencesCentralActionsView_Button_cancelButton(instance, PreferencesCentralActionsView_cancelButton);
+    final Button PreferencesCentralActionsView_saveButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, PreferencesCentralActionsView_saveButton);
+    PreferencesCentralActionsView_Button_saveButton(instance, PreferencesCentralActionsView_saveButton);
     o_u_e_p_c_c_a_PreferencesCentralActionsViewTemplateResource templateForPreferencesCentralActionsView = GWT.create(o_u_e_p_c_c_a_PreferencesCentralActionsViewTemplateResource.class);
     Element parentElementForTemplateOfPreferencesCentralActionsView = TemplateUtil.getRootTemplateParentElement(templateForPreferencesCentralActionsView.getContents().getText(), "org/uberfire/ext/preferences/client/central/actions/PreferencesCentralActionsView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/preferences/client/central/actions/PreferencesCentralActionsView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfPreferencesCentralActionsView));

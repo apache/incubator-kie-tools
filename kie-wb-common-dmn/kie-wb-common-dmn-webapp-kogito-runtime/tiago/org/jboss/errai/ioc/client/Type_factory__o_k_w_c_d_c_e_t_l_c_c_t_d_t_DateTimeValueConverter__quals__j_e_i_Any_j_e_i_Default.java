@@ -14,11 +14,11 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DateTimeValueConverter__q
   }
 
   public DateTimeValueConverter createInstance(final ContextManager contextManager) {
-    final DateValueFormatter _dateValueFormatter_0 = (DateValueFormatter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateValueFormatter__quals__j_e_i_Any_j_e_i_Default");
     final TimeValueFormatter _timeValueFormatter_1 = (TimeValueFormatter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimeValueFormatter__quals__j_e_i_Any_j_e_i_Default");
+    final DateValueFormatter _dateValueFormatter_0 = (DateValueFormatter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateValueFormatter__quals__j_e_i_Any_j_e_i_Default");
     final DateTimeValueConverter instance = new DateTimeValueConverter(_dateValueFormatter_0, _timeValueFormatter_1);
-    registerDependentScopedReference(instance, _dateValueFormatter_0);
     registerDependentScopedReference(instance, _timeValueFormatter_1);
+    registerDependentScopedReference(instance, _dateValueFormatter_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -48,23 +48,7 @@ public class Type_factory__o_k_w_c_w_c_s_c_SearchBarComponentView__quals__j_e_i_
   }
 
   public SearchBarComponentView createInstance(final ContextManager contextManager) {
-    final HTMLButtonElement _closeSearch_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final TranslationService _translationService_6 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLButtonElement _searchContainer_1 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _searchButton_0 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _nextElement_3 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLInputElement _inputElement_5 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _currentResult_7 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=span)";
-        }
-        public String value() {
-          return "span";
-        }
-    } });
     final HTMLElement _totalOfResults_8 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -76,17 +60,33 @@ public class Type_factory__o_k_w_c_w_c_s_c_SearchBarComponentView__quals__j_e_i_
           return "span";
         }
     } });
+    final HTMLButtonElement _searchButton_0 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _searchContainer_1 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _prevElement_2 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLElement _currentResult_7 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=span)";
+        }
+        public String value() {
+          return "span";
+        }
+    } });
+    final HTMLButtonElement _closeSearch_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_6 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLInputElement _inputElement_5 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final SearchBarComponentView instance = new SearchBarComponentView(_searchButton_0, _searchContainer_1, _prevElement_2, _nextElement_3, _closeSearch_4, _inputElement_5, _translationService_6, _currentResult_7, _totalOfResults_8);
+    registerDependentScopedReference(instance, _nextElement_3);
+    registerDependentScopedReference(instance, _totalOfResults_8);
+    registerDependentScopedReference(instance, _searchButton_0);
+    registerDependentScopedReference(instance, _searchContainer_1);
+    registerDependentScopedReference(instance, _prevElement_2);
+    registerDependentScopedReference(instance, _currentResult_7);
     registerDependentScopedReference(instance, _closeSearch_4);
     registerDependentScopedReference(instance, _translationService_6);
-    registerDependentScopedReference(instance, _searchContainer_1);
-    registerDependentScopedReference(instance, _searchButton_0);
-    registerDependentScopedReference(instance, _nextElement_3);
     registerDependentScopedReference(instance, _inputElement_5);
-    registerDependentScopedReference(instance, _currentResult_7);
-    registerDependentScopedReference(instance, _totalOfResults_8);
-    registerDependentScopedReference(instance, _prevElement_2);
     setIncompleteInstance(instance);
     o_k_w_c_w_c_s_c_SearchBarComponentViewTemplateResource templateForSearchBarComponentView = GWT.create(o_k_w_c_w_c_s_c_SearchBarComponentViewTemplateResource.class);
     Element parentElementForTemplateOfSearchBarComponentView = TemplateUtil.getRootTemplateParentElement(templateForSearchBarComponentView.getContents().getText(), "org/kie/workbench/common/widgets/client/search/component/SearchBarComponentView.html", "");

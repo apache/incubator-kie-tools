@@ -25,9 +25,7 @@ public class Type_factory__o_k_w_c_s_c_c_s_c_i_ClearSessionCommand__quals__j_e_i
   }
 
   public ClearSessionCommand createInstance(final ContextManager contextManager) {
-    final Event<ClearSessionCommandExecutedEvent> _commandExecutedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ClearSessionCommandExecutedEvent.class }, new Annotation[] { });
     final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> _canvasCommandFactoryInstance_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CanvasCommandFactory.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -36,9 +34,11 @@ public class Type_factory__o_k_w_c_s_c_c_s_c_i_ClearSessionCommand__quals__j_e_i
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final Event<ClearSessionCommandExecutedEvent> _commandExecutedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ClearSessionCommandExecutedEvent.class }, new Annotation[] { });
+    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ClearSessionCommand instance = new ClearSessionCommand(_canvasCommandFactoryInstance_0, _sessionCommandManager_1, _commandExecutedEvent_2, _definitionUtils_3);
-    registerDependentScopedReference(instance, _commandExecutedEvent_2);
     registerDependentScopedReference(instance, _canvasCommandFactoryInstance_0);
+    registerDependentScopedReference(instance, _commandExecutedEvent_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

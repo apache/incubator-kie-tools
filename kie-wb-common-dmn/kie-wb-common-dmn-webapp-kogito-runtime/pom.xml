@@ -128,11 +128,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-backend-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
       <exclusions>
         <exclusion>
@@ -173,16 +168,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-preferences-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -633,10 +618,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-preferences-ui-client</compileSourcesArtifact>
-
-                <!-- Uberfire Experimentals -->
-                <compileSourcesArtifact>org.uberfire:uberfire-experimental-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-experimental-client</compileSourcesArtifact>
 
                 <!-- Forms -->
                 <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-api</compileSourcesArtifact>

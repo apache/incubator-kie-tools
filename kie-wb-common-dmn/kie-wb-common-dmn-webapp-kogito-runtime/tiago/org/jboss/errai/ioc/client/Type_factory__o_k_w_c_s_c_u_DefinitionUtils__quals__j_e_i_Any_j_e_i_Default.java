@@ -197,8 +197,8 @@ public class Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i
   }
 
   public DefinitionUtils createInstance(final ContextManager contextManager) {
-    final DefinitionsCacheRegistry _definitionsRegistry_1 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionsCacheRegistry _definitionsRegistry_1 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils instance = new DefinitionUtils(_definitionManager_0, _definitionsRegistry_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

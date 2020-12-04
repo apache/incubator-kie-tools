@@ -42,11 +42,11 @@ public class Type_factory__o_k_w_c_f_d_c_r_f_i_d_DefaultFormGroupViewImpl__quals
     final FieldLabel DefaultFormGroupViewImpl_fieldLabel = (FieldLabel) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_l_FieldLabel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DefaultFormGroupViewImpl_fieldLabel);
     DefaultFormGroupViewImpl_FieldLabel_fieldLabel(instance, DefaultFormGroupViewImpl_fieldLabel);
+    final FormsElementWrapperWidgetUtilImpl DefaultFormGroupViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
+    DefaultFormGroupViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, DefaultFormGroupViewImpl_wrapperWidgetUtil);
     final Div DefaultFormGroupViewImpl_helpBlock = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DefaultFormGroupViewImpl_helpBlock);
     DefaultFormGroupViewImpl_Div_helpBlock(instance, DefaultFormGroupViewImpl_helpBlock);
-    final FormsElementWrapperWidgetUtilImpl DefaultFormGroupViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
-    DefaultFormGroupViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, DefaultFormGroupViewImpl_wrapperWidgetUtil);
     o_k_w_c_f_d_c_r_f_i_d_DefaultFormGroupViewImplTemplateResource templateForDefaultFormGroupViewImpl = GWT.create(o_k_w_c_f_d_c_r_f_i_d_DefaultFormGroupViewImplTemplateResource.class);
     Element parentElementForTemplateOfDefaultFormGroupViewImpl = TemplateUtil.getRootTemplateParentElement(templateForDefaultFormGroupViewImpl.getContents().getText(), "org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/impl/def/DefaultFormGroupViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/impl/def/DefaultFormGroupViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfDefaultFormGroupViewImpl));

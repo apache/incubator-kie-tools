@@ -24,21 +24,21 @@ public class Type_factory__o_k_w_c_w_c_m_FileMenuBuilderImpl__quals__j_e_i_Any_j
   public FileMenuBuilderImpl createInstance(final ContextManager contextManager) {
     final FileMenuBuilderImpl instance = new FileMenuBuilderImpl();
     setIncompleteInstance(instance);
-    final Caller FileMenuBuilderImpl_deleteService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { DeleteService.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, FileMenuBuilderImpl_deleteService);
-    FileMenuBuilderImpl_Caller_deleteService(instance, FileMenuBuilderImpl_deleteService);
-    final Caller FileMenuBuilderImpl_copyService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { CopyService.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, FileMenuBuilderImpl_copyService);
-    FileMenuBuilderImpl_Caller_copyService(instance, FileMenuBuilderImpl_copyService);
-    final Caller FileMenuBuilderImpl_renameService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { RenameService.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, FileMenuBuilderImpl_renameService);
-    FileMenuBuilderImpl_Caller_renameService(instance, FileMenuBuilderImpl_renameService);
-    final CurrentBranch FileMenuBuilderImpl_currentBranch = (CurrentBranch) contextManager.getInstance("Producer_factory__o_u_e_e_c_v_CurrentBranch__quals__j_e_i_Any_o_u_a_Customizable");
-    registerDependentScopedReference(instance, FileMenuBuilderImpl_currentBranch);
-    FileMenuBuilderImpl_CurrentBranch_currentBranch(instance, FileMenuBuilderImpl_currentBranch);
     final BasicFileMenuBuilderImpl FileMenuBuilderImpl_menuBuilder = (BasicFileMenuBuilderImpl) contextManager.getInstance("Type_factory__o_u_e_e_c_c_m_BasicFileMenuBuilderImpl__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, FileMenuBuilderImpl_menuBuilder);
     FileMenuBuilderImpl_BasicFileMenuBuilder_menuBuilder(instance, FileMenuBuilderImpl_menuBuilder);
+    final Caller FileMenuBuilderImpl_copyService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { CopyService.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, FileMenuBuilderImpl_copyService);
+    FileMenuBuilderImpl_Caller_copyService(instance, FileMenuBuilderImpl_copyService);
+    final CurrentBranch FileMenuBuilderImpl_currentBranch = (CurrentBranch) contextManager.getInstance("Producer_factory__o_u_e_e_c_v_CurrentBranch__quals__j_e_i_Any_o_u_a_Customizable");
+    registerDependentScopedReference(instance, FileMenuBuilderImpl_currentBranch);
+    FileMenuBuilderImpl_CurrentBranch_currentBranch(instance, FileMenuBuilderImpl_currentBranch);
+    final Caller FileMenuBuilderImpl_deleteService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { DeleteService.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, FileMenuBuilderImpl_deleteService);
+    FileMenuBuilderImpl_Caller_deleteService(instance, FileMenuBuilderImpl_deleteService);
+    final Caller FileMenuBuilderImpl_renameService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { RenameService.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, FileMenuBuilderImpl_renameService);
+    FileMenuBuilderImpl_Caller_renameService(instance, FileMenuBuilderImpl_renameService);
     setIncompleteInstance(null);
     return instance;
   }

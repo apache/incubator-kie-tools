@@ -1,4 +1,4 @@
-// .ui.xml template last modified: 1607096093935
+// .ui.xml template last modified: 1607097776752
 package org.uberfire.ext.properties.editor.client;
 
 import com.google.gwt.core.client.GWT;

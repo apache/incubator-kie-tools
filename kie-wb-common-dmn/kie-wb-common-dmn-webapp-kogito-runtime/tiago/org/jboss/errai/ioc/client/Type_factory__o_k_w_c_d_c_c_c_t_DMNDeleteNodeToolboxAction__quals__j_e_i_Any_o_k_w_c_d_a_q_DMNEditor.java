@@ -33,7 +33,6 @@ public class Type_factory__o_k_w_c_d_c_c_c_t_DMNDeleteNodeToolboxAction__quals__
   }
 
   public DMNDeleteNodeToolboxAction createInstance(final ContextManager contextManager) {
-    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DefaultCanvasCommandFactory> _commandFactories_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultCanvasCommandFactory.class }, new Annotation[] { new DMNEditor() {
         public Class annotationType() {
           return DMNEditor.class;
@@ -42,9 +41,10 @@ public class Type_factory__o_k_w_c_d_c_c_c_t_DMNDeleteNodeToolboxAction__quals__
           return "@org.kie.workbench.common.dmn.api.qualifiers.DMNEditor()";
         }
     } });
-    final Event<CanvasClearSelectionEvent> _clearSelectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
-    final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasClearSelectionEvent> _clearSelectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
     final DMNDeleteNodeToolboxAction instance = new DMNDeleteNodeToolboxAction(_translationService_0, _sessionCommandManager_1, _commandFactories_2, _definitionUtils_3, _clearSelectionEvent_4);
     registerDependentScopedReference(instance, _commandFactories_2);
     registerDependentScopedReference(instance, _clearSelectionEvent_4);

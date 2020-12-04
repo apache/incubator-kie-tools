@@ -204,9 +204,9 @@ public class Type_factory__o_u_c_a_PerspectiveTreeProvider__quals__j_e_i_Any_j_e
   }
 
   public PerspectiveTreeProvider createInstance(final ContextManager contextManager) {
-    final PermissionTreeI18n _i18n_2 = (PermissionTreeI18NImpl) contextManager.getInstance("Type_factory__o_u_c_r_i_PermissionTreeI18NImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ActivityBeansCache _activityBeansCache_0 = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
     final PermissionManager _permissionManager_1 = (DefaultPermissionManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultPermissionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ActivityBeansCache _activityBeansCache_0 = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
+    final PermissionTreeI18n _i18n_2 = (PermissionTreeI18NImpl) contextManager.getInstance("Type_factory__o_u_c_r_i_PermissionTreeI18NImpl__quals__j_e_i_Any_j_e_i_Default");
     final PerspectiveTreeProvider instance = new PerspectiveTreeProvider(_activityBeansCache_0, _permissionManager_1, _i18n_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

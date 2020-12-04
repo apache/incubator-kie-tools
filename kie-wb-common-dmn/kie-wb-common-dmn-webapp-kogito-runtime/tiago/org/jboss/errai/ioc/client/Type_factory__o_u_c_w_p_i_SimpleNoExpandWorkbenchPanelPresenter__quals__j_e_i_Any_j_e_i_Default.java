@@ -24,8 +24,8 @@ public class Type_factory__o_u_c_w_p_i_SimpleNoExpandWorkbenchPanelPresenter__qu
   }
 
   public SimpleNoExpandWorkbenchPanelPresenter createInstance(final ContextManager contextManager) {
-    final WorkbenchPanelView<SimpleNoExpandWorkbenchPanelPresenter> _view_0 = (SimpleNoExpandWorkbenchPanelView) contextManager.getInstance("Type_factory__o_u_c_w_p_i_SimpleNoExpandWorkbenchPanelView__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final PlaceManager _placeManager_2 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final WorkbenchPanelView<SimpleNoExpandWorkbenchPanelPresenter> _view_0 = (SimpleNoExpandWorkbenchPanelView) contextManager.getInstance("Type_factory__o_u_c_w_p_i_SimpleNoExpandWorkbenchPanelView__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final PerspectiveManager _perspectiveManager_1 = (PerspectiveManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final SimpleNoExpandWorkbenchPanelPresenter instance = new SimpleNoExpandWorkbenchPanelPresenter(_view_0, _perspectiveManager_1, _placeManager_2);
     registerDependentScopedReference(instance, _view_0);

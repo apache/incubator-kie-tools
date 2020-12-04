@@ -18,11 +18,11 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_i_DateEditableColumnGenerat
   }
 
   public DateEditableColumnGenerator createInstance(final ContextManager contextManager) {
-    final ManagedInstance<DateTimePickerCell> _dateTimePickerCells_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DateTimePickerCell.class }, new Annotation[] { });
     final TranslationService _translationService_0 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<DateTimePickerCell> _dateTimePickerCells_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DateTimePickerCell.class }, new Annotation[] { });
     final DateEditableColumnGenerator instance = new DateEditableColumnGenerator(_translationService_0, _dateTimePickerCells_1);
-    registerDependentScopedReference(instance, _dateTimePickerCells_1);
     registerDependentScopedReference(instance, _translationService_0);
+    registerDependentScopedReference(instance, _dateTimePickerCells_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -79,8 +79,8 @@ public class Type_factory__o_k_w_c_s_c_w_p_d_i_DiagramLoader__quals__j_e_i_Any_j
   }
 
   public DiagramLoader createInstance(final ContextManager contextManager) {
-    final ClientDiagramService _clientDiagramServices_0 = (ClientDiagramServiceImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ClientDiagramServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final StunnerPreferencesRegistryLoader _preferencesRegistryLoader_1 = (StunnerPreferencesRegistryLoader) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_p_StunnerPreferencesRegistryLoader__quals__j_e_i_Any_j_e_i_Default");
+    final ClientDiagramService _clientDiagramServices_0 = (ClientDiagramServiceImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ClientDiagramServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final DiagramLoader instance = new DiagramLoader(_clientDiagramServices_0, _preferencesRegistryLoader_1);
     registerDependentScopedReference(instance, _clientDiagramServices_0);
     setIncompleteInstance(instance);

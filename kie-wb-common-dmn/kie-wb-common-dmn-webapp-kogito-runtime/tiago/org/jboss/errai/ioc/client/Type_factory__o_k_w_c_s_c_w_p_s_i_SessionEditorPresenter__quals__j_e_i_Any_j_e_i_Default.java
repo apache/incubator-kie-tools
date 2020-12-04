@@ -43,9 +43,10 @@ public class Type_factory__o_k_w_c_s_c_w_p_s_i_SessionEditorPresenter__quals__j_
   }
 
   public SessionEditorPresenter createInstance(final ContextManager contextManager) {
+    final NotificationsObserver _notificationsObserver_7 = (NotificationsObserver) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_n_NotificationsObserver__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_11 = (SessionPresenterView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionPresenterView__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final Event<SessionFocusedEvent> _sessionFocusedEvent_8 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionFocusedEvent.class }, new Annotation[] { });
-    final SessionEditorImpl _editor_2 = (SessionEditorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionEditorImpl__quals__j_e_i_Any_j_e_i_Default");
-    final SessionCardinalityStateHandler _cardinalityStateHandler_3 = (SessionCardinalityStateHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionCardinalityStateHandler__quals__j_e_i_Any_j_e_i_Default");
     final Event<SessionDiagramOpenedEvent> _sessionDiagramOpenedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionDiagramOpenedEvent.class }, new Annotation[] { });
     final ManagedInstance<EditorToolbar> _toolbars_5 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { EditorToolbar.class }, new Annotation[] { new Any() {
         public Class annotationType() {
@@ -55,24 +56,23 @@ public class Type_factory__o_k_w_c_s_c_w_p_s_i_SessionEditorPresenter__quals__j_
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final SessionCardinalityStateHandler _cardinalityStateHandler_3 = (SessionCardinalityStateHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionCardinalityStateHandler__quals__j_e_i_Any_j_e_i_Default");
+    final DefaultPaletteFactory<AbstractCanvasHandler> _paletteWidgetFactory_6 = (DefaultPaletteFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_DefaultPaletteFactory__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final SessionEditorImpl _editor_2 = (SessionEditorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionEditorImpl__quals__j_e_i_Any_j_e_i_Default");
     final Event<CanvasLostFocusEvent> _canvasLostFocusEventEvent_10 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasLostFocusEvent.class }, new Annotation[] { });
     final Event<SessionLostFocusEvent> _sessionLostFocusEvent_9 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionLostFocusEvent.class }, new Annotation[] { });
-    final View _view_11 = (SessionPresenterView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionPresenterView__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
-    final DefaultPaletteFactory<AbstractCanvasHandler> _paletteWidgetFactory_6 = (DefaultPaletteFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_DefaultPaletteFactory__quals__j_e_i_Any_j_e_i_Default");
-    final NotificationsObserver _notificationsObserver_7 = (NotificationsObserver) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_n_NotificationsObserver__quals__j_e_i_Any_j_e_i_Default");
     final SessionEditorPresenter instance = new SessionEditorPresenter(_definitionUtils_0, _sessionManager_1, _editor_2, _cardinalityStateHandler_3, _sessionDiagramOpenedEvent_4, _toolbars_5, _paletteWidgetFactory_6, _notificationsObserver_7, _sessionFocusedEvent_8, _sessionLostFocusEvent_9, _canvasLostFocusEventEvent_10, _view_11);
+    registerDependentScopedReference(instance, _notificationsObserver_7);
+    registerDependentScopedReference(instance, _view_11);
     registerDependentScopedReference(instance, _sessionFocusedEvent_8);
-    registerDependentScopedReference(instance, _editor_2);
-    registerDependentScopedReference(instance, _cardinalityStateHandler_3);
     registerDependentScopedReference(instance, _sessionDiagramOpenedEvent_4);
     registerDependentScopedReference(instance, _toolbars_5);
+    registerDependentScopedReference(instance, _cardinalityStateHandler_3);
+    registerDependentScopedReference(instance, _paletteWidgetFactory_6);
+    registerDependentScopedReference(instance, _editor_2);
     registerDependentScopedReference(instance, _canvasLostFocusEventEvent_10);
     registerDependentScopedReference(instance, _sessionLostFocusEvent_9);
-    registerDependentScopedReference(instance, _view_11);
-    registerDependentScopedReference(instance, _paletteWidgetFactory_6);
-    registerDependentScopedReference(instance, _notificationsObserver_7);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onScreenMaximizedEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent", new AbstractCDIEventCallback<ScreenMaximizedEvent>() {
       public void fireEvent(final ScreenMaximizedEvent event) {

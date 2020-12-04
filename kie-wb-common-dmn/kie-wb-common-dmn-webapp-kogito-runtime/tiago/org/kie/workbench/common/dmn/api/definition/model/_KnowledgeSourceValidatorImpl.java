@@ -30,45 +30,45 @@ public class _KnowledgeSourceValidatorImpl extends com.google.gwt.validation.cli
           org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource.class,
           javax.validation.groups.Default.class);
   
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "id",
-          org.kie.workbench.common.dmn.api.property.dmn.Id.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl linksHolder_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "linksHolder",
-          org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "description",
-          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl fontSet_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "fontSet",
           org.kie.workbench.common.dmn.api.property.font.FontSet.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "id",
+          org.kie.workbench.common.dmn.api.property.dmn.Id.class,
           true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl backgroundSet_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "backgroundSet",
           org.kie.workbench.common.dmn.api.property.background.BackgroundSet.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "description",
+          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "nameHolder",
           org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl linksHolder_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "linksHolder",
+          org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource.class)
           .setConstrained(false)
-          .put("id", id_pd)
-          .put("linksHolder", linksHolder_pd)
-          .put("description", description_pd)
           .put("fontSet", fontSet_pd)
+          .put("id", id_pd)
           .put("backgroundSet", backgroundSet_pd)
+          .put("description", description_pd)
           .put("nameHolder", nameHolder_pd)
+          .put("linksHolder", linksHolder_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -164,16 +164,16 @@ public class _KnowledgeSourceValidatorImpl extends com.google.gwt.validation.cli
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("id")) {
-    } else if (propertyName.equals("linksHolder")) {
-    } else if (propertyName.equals("description")) {
-    } else if (propertyName.equals("fontSet")) {
+    if (propertyName.equals("fontSet")) {
       validateProperty_getfontSet(context, violations, object, object.getFontSet(), false, groups);
       validateProperty_fontSet(context, violations, object, _fontSet(object), false, groups);
+    } else if (propertyName.equals("id")) {
     } else if (propertyName.equals("backgroundSet")) {
       validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), false, groups);
       validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), false, groups);
+    } else if (propertyName.equals("description")) {
     } else if (propertyName.equals("nameHolder")) {
+    } else if (propertyName.equals("linksHolder")) {
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource");
     }
@@ -186,13 +186,7 @@ public class _KnowledgeSourceValidatorImpl extends com.google.gwt.validation.cli
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("id")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("linksHolder")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("description")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("fontSet")) {
+    if (propertyName.equals("fontSet")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSet) {
         valueTypeMatches = true;
@@ -205,6 +199,8 @@ public class _KnowledgeSourceValidatorImpl extends com.google.gwt.validation.cli
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
       }
+    } else if (propertyName.equals("id")) {
+      boolean valueTypeMatches = false;
     } else if (propertyName.equals("backgroundSet")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BackgroundSet) {
@@ -218,7 +214,11 @@ public class _KnowledgeSourceValidatorImpl extends com.google.gwt.validation.cli
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
       }
+    } else if (propertyName.equals("description")) {
+      boolean valueTypeMatches = false;
     } else if (propertyName.equals("nameHolder")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("linksHolder")) {
       boolean valueTypeMatches = false;
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource");
@@ -331,12 +331,12 @@ public class _KnowledgeSourceValidatorImpl extends com.google.gwt.validation.cli
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.property.font.FontSet _fontSet(org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource::fontSet;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.property.background.BackgroundSet _backgroundSet(org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource::backgroundSet;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.property.font.FontSet _fontSet(org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource::fontSet;
   }-*/;
   
   

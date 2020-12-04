@@ -63,22 +63,22 @@ public class Type_factory__o_k_w_c_d_c_e_d_DMNDocumentationView__quals__j_e_i_An
   }
 
   public DMNDocumentationView createInstance(final ContextManager contextManager) {
-    final HTMLDivElement _documentationPanel_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final PrintHelper _printHelper_4 = (PrintHelper) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_u_PrintHelper__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDocumentationService _documentationService_5 = (DMNDocumentationServiceImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_c_DMNDocumentationServiceImpl__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLButtonElement _downloadHtmlFile_3 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _printButton_2 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDownloadHelper _downloadHelper_6 = (HTMLDownloadHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_c_HTMLDownloadHelper__quals__j_e_i_Any_j_e_i_Default");
+    final PrintHelper _printHelper_4 = (PrintHelper) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_u_PrintHelper__quals__j_e_i_Any_j_e_i_Default");
     final HTMLDivElement _documentationContent_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final org.kie.workbench.common.dmn.client.editors.documentation.DMNDocumentationViewButtonsVisibilitySupplier _buttonsVisibilitySupplier_7 = (DMNDocumentationViewButtonsVisibilitySupplier) contextManager.getInstance("Type_factory__o_k_w_c_d_w_k_c_c_e_d_DMNDocumentationViewButtonsVisibilitySupplier__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLDivElement _documentationPanel_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _downloadHtmlFile_3 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final DMNDocumentationService _documentationService_5 = (DMNDocumentationServiceImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_c_DMNDocumentationServiceImpl__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLButtonElement _printButton_2 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DMNDocumentationView instance = new DMNDocumentationView(_documentationPanel_0, _documentationContent_1, _printButton_2, _downloadHtmlFile_3, _printHelper_4, _documentationService_5, _downloadHelper_6, _buttonsVisibilitySupplier_7);
-    registerDependentScopedReference(instance, _documentationPanel_0);
-    registerDependentScopedReference(instance, _printHelper_4);
-    registerDependentScopedReference(instance, _documentationService_5);
-    registerDependentScopedReference(instance, _downloadHtmlFile_3);
-    registerDependentScopedReference(instance, _printButton_2);
     registerDependentScopedReference(instance, _downloadHelper_6);
+    registerDependentScopedReference(instance, _printHelper_4);
     registerDependentScopedReference(instance, _documentationContent_1);
+    registerDependentScopedReference(instance, _documentationPanel_0);
+    registerDependentScopedReference(instance, _downloadHtmlFile_3);
+    registerDependentScopedReference(instance, _documentationService_5);
+    registerDependentScopedReference(instance, _printButton_2);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_d_DMNDocumentationViewTemplateResource templateForDMNDocumentationView = GWT.create(o_k_w_c_d_c_e_d_DMNDocumentationViewTemplateResource.class);
     Element parentElementForTemplateOfDMNDocumentationView = TemplateUtil.getRootTemplateParentElement(templateForDMNDocumentationView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/documentation/DMNDocumentationView.html", "");

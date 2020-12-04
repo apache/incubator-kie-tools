@@ -15,11 +15,11 @@ public class Type_factory__o_k_w_c_s_s_c_s_f_SVGShapeFactory__quals__j_e_i_Any_j
   }
 
   public SVGShapeFactory createInstance(final ContextManager contextManager) {
-    final ShapeDefFunctionalFactory _functionalFactory_1 = (ShapeDefFunctionalFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_f_ShapeDefFunctionalFactory__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _beanManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
+    final ShapeDefFunctionalFactory _functionalFactory_1 = (ShapeDefFunctionalFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_f_ShapeDefFunctionalFactory__quals__j_e_i_Any_j_e_i_Default");
     final SVGShapeFactory instance = new SVGShapeFactory(_beanManager_0, _functionalFactory_1);
-    registerDependentScopedReference(instance, _functionalFactory_1);
     registerDependentScopedReference(instance, _beanManager_0);
+    registerDependentScopedReference(instance, _functionalFactory_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

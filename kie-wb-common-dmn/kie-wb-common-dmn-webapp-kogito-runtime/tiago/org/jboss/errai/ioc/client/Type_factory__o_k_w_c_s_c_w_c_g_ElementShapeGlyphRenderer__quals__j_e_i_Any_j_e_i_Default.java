@@ -22,7 +22,6 @@ public class Type_factory__o_k_w_c_s_c_w_c_g_ElementShapeGlyphRenderer__quals__j
   }
 
   public ElementShapeGlyphRenderer createInstance(final ContextManager contextManager) {
-    final LienzoGlyphRenderer<ShapeGlyph> _lienzoShapeGlyphRenderer_0 = (LienzoShapeGlyphRenderer) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_g_LienzoShapeGlyphRenderer__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<WidgetElementRendererView> _viewInstances_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { WidgetElementRendererView.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -31,9 +30,10 @@ public class Type_factory__o_k_w_c_s_c_w_c_g_ElementShapeGlyphRenderer__quals__j
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final LienzoGlyphRenderer<ShapeGlyph> _lienzoShapeGlyphRenderer_0 = (LienzoShapeGlyphRenderer) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_g_LienzoShapeGlyphRenderer__quals__j_e_i_Any_j_e_i_Default");
     final ElementShapeGlyphRenderer instance = new ElementShapeGlyphRenderer(_lienzoShapeGlyphRenderer_0, _viewInstances_1);
-    registerDependentScopedReference(instance, _lienzoShapeGlyphRenderer_0);
     registerDependentScopedReference(instance, _viewInstances_1);
+    registerDependentScopedReference(instance, _lienzoShapeGlyphRenderer_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

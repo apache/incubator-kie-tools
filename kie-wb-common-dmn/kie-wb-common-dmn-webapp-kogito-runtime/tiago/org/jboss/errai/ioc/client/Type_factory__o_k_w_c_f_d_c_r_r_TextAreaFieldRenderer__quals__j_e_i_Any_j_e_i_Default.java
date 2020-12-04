@@ -23,17 +23,17 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_TextAreaFieldRenderer__quals__j_e_i
   public TextAreaFieldRenderer createInstance(final ContextManager contextManager) {
     final TextAreaFieldRenderer instance = new TextAreaFieldRenderer();
     setIncompleteInstance(instance);
-    final ConfigErrorDisplayer FieldRenderer_errorDisplayer = (ConfigErrorDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_i_c_ConfigErrorDisplayer__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, FieldRenderer_errorDisplayer);
-    FieldRenderer_ConfigErrorDisplayer_errorDisplayer(instance, FieldRenderer_errorDisplayer);
+    final TextArea TextAreaFieldRenderer_textArea = (TextArea) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_TextArea__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, TextAreaFieldRenderer_textArea);
+    TextAreaFieldRenderer_TextArea_textArea(instance, TextAreaFieldRenderer_textArea);
     final ManagedInstance FieldRenderer_formGroupsInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultFormGroup.class }, new Annotation[] { });
     registerDependentScopedReference(instance, FieldRenderer_formGroupsInstance);
     FieldRenderer_ManagedInstance_formGroupsInstance(instance, FieldRenderer_formGroupsInstance);
     final FormsElementWrapperWidgetUtilImpl FieldRenderer_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
     FieldRenderer_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, FieldRenderer_wrapperWidgetUtil);
-    final TextArea TextAreaFieldRenderer_textArea = (TextArea) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_TextArea__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, TextAreaFieldRenderer_textArea);
-    TextAreaFieldRenderer_TextArea_textArea(instance, TextAreaFieldRenderer_textArea);
+    final ConfigErrorDisplayer FieldRenderer_errorDisplayer = (ConfigErrorDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_i_c_ConfigErrorDisplayer__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, FieldRenderer_errorDisplayer);
+    FieldRenderer_ConfigErrorDisplayer_errorDisplayer(instance, FieldRenderer_errorDisplayer);
     setIncompleteInstance(null);
     return instance;
   }

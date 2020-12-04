@@ -40,15 +40,15 @@ public class Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelectorViewImpl__quals__j_e_
   }
 
   public ListSelectorViewImpl createInstance(final ContextManager contextManager) {
-    final ManagedInstance<ListSelectorTextItemView> _listSelectorTextItemViews_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ListSelectorTextItemView.class }, new Annotation[] { });
-    final UnorderedList _itemsContainer_0 = (UnorderedList) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_UnorderedList__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ManagedInstance<ListSelectorHeaderItemView> _listSelectorHeaderItemViews_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ListSelectorHeaderItemView.class }, new Annotation[] { });
+    final ManagedInstance<ListSelectorTextItemView> _listSelectorTextItemViews_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ListSelectorTextItemView.class }, new Annotation[] { });
     final ManagedInstance<ListSelectorDividerItemView> _listSelectorDividerItemViews_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ListSelectorDividerItemView.class }, new Annotation[] { });
+    final UnorderedList _itemsContainer_0 = (UnorderedList) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_UnorderedList__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ListSelectorViewImpl instance = new ListSelectorViewImpl(_itemsContainer_0, _listSelectorTextItemViews_1, _listSelectorDividerItemViews_2, _listSelectorHeaderItemViews_3);
-    registerDependentScopedReference(instance, _listSelectorTextItemViews_1);
-    registerDependentScopedReference(instance, _itemsContainer_0);
     registerDependentScopedReference(instance, _listSelectorHeaderItemViews_3);
+    registerDependentScopedReference(instance, _listSelectorTextItemViews_1);
     registerDependentScopedReference(instance, _listSelectorDividerItemViews_2);
+    registerDependentScopedReference(instance, _itemsContainer_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_w_g_c_l_ListSelectorViewImplTemplateResource templateForListSelectorViewImpl = GWT.create(o_k_w_c_d_c_w_g_c_l_ListSelectorViewImplTemplateResource.class);
     Element parentElementForTemplateOfListSelectorViewImpl = TemplateUtil.getRootTemplateParentElement(templateForListSelectorViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/widgets/grid/controls/list/ListSelectorViewImpl.html", "");

@@ -34,12 +34,12 @@ public class Type_factory__o_u_c_v_p_w_InputAutocomplete__quals__j_e_i_Any_j_e_i
   public InputAutocomplete createInstance(final ContextManager contextManager) {
     final InputAutocomplete instance = new InputAutocomplete();
     setIncompleteInstance(instance);
-    final JQuery InputAutocomplete_jQuery = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryElementalProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, InputAutocomplete_jQuery);
-    InputAutocomplete_JQuery_jQuery(instance, InputAutocomplete_jQuery);
     final HTMLInputElement InputAutocomplete_input = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, InputAutocomplete_input);
     InputAutocomplete_HTMLInputElement_input(instance, InputAutocomplete_input);
+    final JQuery InputAutocomplete_jQuery = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryElementalProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, InputAutocomplete_jQuery);
+    InputAutocomplete_JQuery_jQuery(instance, InputAutocomplete_jQuery);
     o_u_c_v_p_w_InputAutocompleteTemplateResource templateForInputAutocomplete = GWT.create(o_u_c_v_p_w_InputAutocompleteTemplateResource.class);
     Element parentElementForTemplateOfInputAutocomplete = TemplateUtil.getRootTemplateParentElement(templateForInputAutocomplete.getContents().getText(), "org/uberfire/client/views/pfly/widgets/InputAutocomplete.html", "");
     TemplateUtil.translateTemplate("org/uberfire/client/views/pfly/widgets/InputAutocomplete.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfInputAutocomplete));

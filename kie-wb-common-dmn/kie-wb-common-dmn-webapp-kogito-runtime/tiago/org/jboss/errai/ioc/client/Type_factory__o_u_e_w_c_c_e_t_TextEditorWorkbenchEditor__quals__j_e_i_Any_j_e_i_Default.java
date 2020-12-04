@@ -21,9 +21,6 @@ public class Type_factory__o_u_e_w_c_c_e_t_TextEditorWorkbenchEditor__quals__j_e
   public TextEditorWorkbenchEditor createInstance(final ContextManager contextManager) {
     final TextEditorWorkbenchEditor instance = new TextEditorWorkbenchEditor();
     setIncompleteInstance(instance);
-    final Event TextEditorWorkbenchEditor_changeTitleWidgetEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, TextEditorWorkbenchEditor_changeTitleWidgetEvent);
-    TextEditorWorkbenchEditor_Event_changeTitleWidgetEvent(instance, TextEditorWorkbenchEditor_changeTitleWidgetEvent);
     final TextEditorView TextEditorPresenter_view = (TextEditorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_e_t_TextEditorView__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, TextEditorPresenter_view);
     instance.view = TextEditorPresenter_view;
@@ -33,6 +30,9 @@ public class Type_factory__o_u_e_w_c_c_e_t_TextEditorWorkbenchEditor__quals__j_e
     final Caller TextEditorPresenter_vfsServices = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { VFSService.class }, new Annotation[] { });
     registerDependentScopedReference(instance, TextEditorPresenter_vfsServices);
     TextEditorPresenter_Caller_vfsServices(instance, TextEditorPresenter_vfsServices);
+    final Event TextEditorWorkbenchEditor_changeTitleWidgetEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, TextEditorWorkbenchEditor_changeTitleWidgetEvent);
+    TextEditorWorkbenchEditor_Event_changeTitleWidgetEvent(instance, TextEditorWorkbenchEditor_changeTitleWidgetEvent);
     setIncompleteInstance(null);
     return instance;
   }

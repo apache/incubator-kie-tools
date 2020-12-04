@@ -121,12 +121,12 @@ public class Type_factory__o_k_w_c_d_w_k_c_c_s_DMNClientDiagramServiceImpl__qual
 
   public DMNClientDiagramServiceImpl createInstance(final ContextManager contextManager) {
     final FactoryManager _factoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
+    final DMNMarshallerService _marshallerService_3 = (DMNMarshallerService) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_DMNMarshallerService__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_1 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final Promises _promises_2 = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
-    final DMNMarshallerService _marshallerService_3 = (DMNMarshallerService) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_DMNMarshallerService__quals__j_e_i_Any_j_e_i_Default");
     final DMNClientDiagramServiceImpl instance = new DMNClientDiagramServiceImpl(_factoryManager_0, _definitionManager_1, _promises_2, _marshallerService_3);
-    registerDependentScopedReference(instance, _promises_2);
     registerDependentScopedReference(instance, _marshallerService_3);
+    registerDependentScopedReference(instance, _promises_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

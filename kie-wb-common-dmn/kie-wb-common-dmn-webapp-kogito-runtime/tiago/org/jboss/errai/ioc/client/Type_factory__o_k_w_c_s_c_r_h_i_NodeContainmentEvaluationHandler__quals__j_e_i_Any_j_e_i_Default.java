@@ -108,8 +108,8 @@ public class Type_factory__o_k_w_c_s_c_r_h_i_NodeContainmentEvaluationHandler__q
   }
 
   public NodeContainmentEvaluationHandler createInstance(final ContextManager contextManager) {
-    final ContainmentEvaluationHandler _containmentHandler_1 = (ContainmentEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_ContainmentEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ContainmentEvaluationHandler _containmentHandler_1 = (ContainmentEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_ContainmentEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final NodeContainmentEvaluationHandler instance = new NodeContainmentEvaluationHandler(_definitionManager_0, _containmentHandler_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

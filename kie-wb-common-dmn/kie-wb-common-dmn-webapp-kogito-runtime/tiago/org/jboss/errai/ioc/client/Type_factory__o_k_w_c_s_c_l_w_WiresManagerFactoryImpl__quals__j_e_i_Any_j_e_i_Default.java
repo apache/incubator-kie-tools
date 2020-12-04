@@ -78,8 +78,8 @@ public class Type_factory__o_k_w_c_s_c_l_w_WiresManagerFactoryImpl__quals__j_e_i
   }
 
   public WiresManagerFactoryImpl createInstance(final ContextManager contextManager) {
-    final WiresHandlerFactory _wiresHandlerFactory_1 = (StunnerWiresHandlerFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_w_StunnerWiresHandlerFactory__quals__j_e_i_Any_j_e_i_Default");
     final WiresControlFactory _wiresControlFactory_0 = (StunnerWiresControlFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_w_StunnerWiresControlFactory__quals__j_e_i_Any_j_e_i_Default");
+    final WiresHandlerFactory _wiresHandlerFactory_1 = (StunnerWiresHandlerFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_w_StunnerWiresHandlerFactory__quals__j_e_i_Any_j_e_i_Default");
     final WiresManagerFactoryImpl instance = new WiresManagerFactoryImpl(_wiresControlFactory_0, _wiresHandlerFactory_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

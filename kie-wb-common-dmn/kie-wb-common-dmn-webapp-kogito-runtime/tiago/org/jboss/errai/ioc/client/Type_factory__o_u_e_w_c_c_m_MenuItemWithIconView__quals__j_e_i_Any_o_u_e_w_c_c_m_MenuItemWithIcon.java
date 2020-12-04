@@ -47,15 +47,15 @@ public class Type_factory__o_u_e_w_c_c_m_MenuItemWithIconView__quals__j_e_i_Any_
   public MenuItemWithIconView createInstance(final ContextManager contextManager) {
     final MenuItemWithIconView instance = new MenuItemWithIconView();
     setIncompleteInstance(instance);
-    final Div MenuItemWithIconView_icon = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, MenuItemWithIconView_icon);
-    MenuItemWithIconView_Div_icon(instance, MenuItemWithIconView_icon);
     final ListItem MenuItemWithIconView_listItem = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, MenuItemWithIconView_listItem);
     MenuItemWithIconView_ListItem_listItem(instance, MenuItemWithIconView_listItem);
     final Span MenuItemWithIconView_caption = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, MenuItemWithIconView_caption);
     MenuItemWithIconView_Span_caption(instance, MenuItemWithIconView_caption);
+    final Div MenuItemWithIconView_icon = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, MenuItemWithIconView_icon);
+    MenuItemWithIconView_Div_icon(instance, MenuItemWithIconView_icon);
     o_u_e_w_c_c_m_MenuItemWithIconViewTemplateResource templateForMenuItemWithIconView = GWT.create(o_u_e_w_c_c_m_MenuItemWithIconViewTemplateResource.class);
     Element parentElementForTemplateOfMenuItemWithIconView = TemplateUtil.getRootTemplateParentElement(templateForMenuItemWithIconView.getContents().getText(), "org/uberfire/ext/widgets/common/client/menu/MenuItemWithIconView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/widgets/common/client/menu/MenuItemWithIconView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfMenuItemWithIconView));

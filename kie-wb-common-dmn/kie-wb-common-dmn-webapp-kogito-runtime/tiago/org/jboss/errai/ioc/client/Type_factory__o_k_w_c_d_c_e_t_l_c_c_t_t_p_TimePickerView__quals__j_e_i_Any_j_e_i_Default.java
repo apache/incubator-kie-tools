@@ -44,8 +44,7 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimePickerView__quals__j_
   }
 
   public TimePickerView createInstance(final ContextManager contextManager) {
-    final HTMLAnchorElement _decreaseMinutes_3 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _seconds_8 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+    final HTMLElement _hours_6 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
         }
@@ -67,7 +66,9 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimePickerView__quals__j_
           return "span";
         }
     } });
-    final HTMLElement _hours_6 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+    final HTMLAnchorElement _increaseHours_0 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _increaseMinutes_2 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLElement _seconds_8 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
         }
@@ -78,21 +79,20 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimePickerView__quals__j_
           return "span";
         }
     } });
-    final HTMLAnchorElement _increaseHours_0 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLAnchorElement _decreaseHours_1 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLAnchorElement _increaseMinutes_2 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLAnchorElement _increaseSeconds_4 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLAnchorElement _decreaseSeconds_5 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _decreaseMinutes_3 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _increaseSeconds_4 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TimePickerView instance = new TimePickerView(_increaseHours_0, _decreaseHours_1, _increaseMinutes_2, _decreaseMinutes_3, _increaseSeconds_4, _decreaseSeconds_5, _hours_6, _minutes_7, _seconds_8);
-    registerDependentScopedReference(instance, _decreaseMinutes_3);
-    registerDependentScopedReference(instance, _seconds_8);
-    registerDependentScopedReference(instance, _minutes_7);
     registerDependentScopedReference(instance, _hours_6);
+    registerDependentScopedReference(instance, _minutes_7);
     registerDependentScopedReference(instance, _increaseHours_0);
-    registerDependentScopedReference(instance, _decreaseHours_1);
     registerDependentScopedReference(instance, _increaseMinutes_2);
-    registerDependentScopedReference(instance, _increaseSeconds_4);
+    registerDependentScopedReference(instance, _seconds_8);
+    registerDependentScopedReference(instance, _decreaseHours_1);
     registerDependentScopedReference(instance, _decreaseSeconds_5);
+    registerDependentScopedReference(instance, _decreaseMinutes_3);
+    registerDependentScopedReference(instance, _increaseSeconds_4);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimePickerViewTemplateResource templateForTimePickerView = GWT.create(o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimePickerViewTemplateResource.class);
     Element parentElementForTemplateOfTimePickerView = TemplateUtil.getRootTemplateParentElement(templateForTimePickerView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/constraint/common/typed/time/picker/TimePickerView.html", "");

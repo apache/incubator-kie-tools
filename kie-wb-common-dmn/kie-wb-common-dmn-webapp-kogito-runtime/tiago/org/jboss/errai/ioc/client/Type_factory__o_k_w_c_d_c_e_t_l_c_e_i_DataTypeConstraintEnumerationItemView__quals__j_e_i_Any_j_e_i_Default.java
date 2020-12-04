@@ -47,11 +47,6 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_e_i_DataTypeConstraintEnumeration
   }
 
   public DataTypeConstraintEnumerationItemView createInstance(final ContextManager contextManager) {
-    final TypedValueComponentSelector _valueComponentSelector_6 = (TypedValueComponentSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_TypedValueComponentSelector__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLAnchorElement _removeAnchor_3 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _valueInput_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLAnchorElement _saveAnchor_2 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLAnchorElement _clearFieldAnchor_4 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _valueText_0 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -63,15 +58,20 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_e_i_DataTypeConstraintEnumeration
           return "span";
         }
     } });
+    final HTMLAnchorElement _removeAnchor_3 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _clearFieldAnchor_4 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _valueInput_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TranslationService _translationService_5 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLAnchorElement _saveAnchor_2 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TypedValueComponentSelector _valueComponentSelector_6 = (TypedValueComponentSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_TypedValueComponentSelector__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConstraintEnumerationItemView instance = new DataTypeConstraintEnumerationItemView(_valueText_0, _valueInput_1, _saveAnchor_2, _removeAnchor_3, _clearFieldAnchor_4, _translationService_5, _valueComponentSelector_6);
-    registerDependentScopedReference(instance, _valueComponentSelector_6);
-    registerDependentScopedReference(instance, _removeAnchor_3);
-    registerDependentScopedReference(instance, _valueInput_1);
-    registerDependentScopedReference(instance, _saveAnchor_2);
-    registerDependentScopedReference(instance, _clearFieldAnchor_4);
     registerDependentScopedReference(instance, _valueText_0);
+    registerDependentScopedReference(instance, _removeAnchor_3);
+    registerDependentScopedReference(instance, _clearFieldAnchor_4);
+    registerDependentScopedReference(instance, _valueInput_1);
     registerDependentScopedReference(instance, _translationService_5);
+    registerDependentScopedReference(instance, _saveAnchor_2);
+    registerDependentScopedReference(instance, _valueComponentSelector_6);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_c_e_i_DataTypeConstraintEnumerationItemViewTemplateResource templateForDataTypeConstraintEnumerationItemView = GWT.create(o_k_w_c_d_c_e_t_l_c_e_i_DataTypeConstraintEnumerationItemViewTemplateResource.class);
     Element parentElementForTemplateOfDataTypeConstraintEnumerationItemView = TemplateUtil.getRootTemplateParentElement(templateForDataTypeConstraintEnumerationItemView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/constraint/enumeration/item/DataTypeConstraintEnumerationItemView.html", "");

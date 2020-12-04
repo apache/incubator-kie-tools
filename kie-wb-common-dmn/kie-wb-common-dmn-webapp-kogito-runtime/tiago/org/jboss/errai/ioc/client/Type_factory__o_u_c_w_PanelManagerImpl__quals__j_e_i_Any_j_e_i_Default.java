@@ -335,29 +335,29 @@ public class Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Defa
   }
 
   public PanelManagerImpl createInstance(final ContextManager contextManager) {
-    final Event<PlaceGainFocusEvent> _placeGainFocusEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceGainFocusEvent.class }, new Annotation[] { });
-    final SyncBeanManager _iocManager_7 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
-    final Event<PlaceMinimizedEvent> _placeMinimizedEventEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceMinimizedEvent.class }, new Annotation[] { });
+    final Event<PlaceLostFocusEvent> _placeLostFocusEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceLostFocusEvent.class }, new Annotation[] { });
     final Event<PanelFocusEvent> _panelFocusEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PanelFocusEvent.class }, new Annotation[] { });
-    final LayoutSelection _layoutSelection_9 = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
+    final Elemental2DomUtil _elemental2DomUtil_11 = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
+    final Event<PlaceHiddenEvent> _placeHiddenEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceHiddenEvent.class }, new Annotation[] { });
+    final SyncBeanManager _iocManager_7 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
+    final BeanFactory _beanFactory_10 = (DefaultBeanFactory) contextManager.getInstance("Type_factory__o_u_c_w_DefaultBeanFactory__quals__j_e_i_Any_j_e_i_Default");
     final Instance<PlaceManager> _placeManager_8 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { PlaceManager.class }, new Annotation[] { });
     final Event<PlaceMaximizedEvent> _placeMaximizedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceMaximizedEvent.class }, new Annotation[] { });
-    final Event<PlaceHiddenEvent> _placeHiddenEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceHiddenEvent.class }, new Annotation[] { });
-    final BeanFactory _beanFactory_10 = (DefaultBeanFactory) contextManager.getInstance("Type_factory__o_u_c_w_DefaultBeanFactory__quals__j_e_i_Any_j_e_i_Default");
-    final Elemental2DomUtil _elemental2DomUtil_11 = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
     final Event<SelectPlaceEvent> _selectPlaceEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SelectPlaceEvent.class }, new Annotation[] { });
-    final Event<PlaceLostFocusEvent> _placeLostFocusEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceLostFocusEvent.class }, new Annotation[] { });
+    final Event<PlaceMinimizedEvent> _placeMinimizedEventEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceMinimizedEvent.class }, new Annotation[] { });
+    final LayoutSelection _layoutSelection_9 = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
+    final Event<PlaceGainFocusEvent> _placeGainFocusEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PlaceGainFocusEvent.class }, new Annotation[] { });
     final PanelManagerImpl instance = new PanelManagerImpl(_placeGainFocusEvent_0, _placeLostFocusEvent_1, _panelFocusEvent_2, _selectPlaceEvent_3, _placeMaximizedEvent_4, _placeMinimizedEventEvent_5, _placeHiddenEvent_6, _iocManager_7, _placeManager_8, _layoutSelection_9, _beanFactory_10, _elemental2DomUtil_11);
-    registerDependentScopedReference(instance, _placeGainFocusEvent_0);
-    registerDependentScopedReference(instance, _iocManager_7);
-    registerDependentScopedReference(instance, _placeMinimizedEventEvent_5);
+    registerDependentScopedReference(instance, _placeLostFocusEvent_1);
     registerDependentScopedReference(instance, _panelFocusEvent_2);
+    registerDependentScopedReference(instance, _elemental2DomUtil_11);
+    registerDependentScopedReference(instance, _placeHiddenEvent_6);
+    registerDependentScopedReference(instance, _iocManager_7);
     registerDependentScopedReference(instance, _placeManager_8);
     registerDependentScopedReference(instance, _placeMaximizedEvent_4);
-    registerDependentScopedReference(instance, _placeHiddenEvent_6);
-    registerDependentScopedReference(instance, _elemental2DomUtil_11);
     registerDependentScopedReference(instance, _selectPlaceEvent_3);
-    registerDependentScopedReference(instance, _placeLostFocusEvent_1);
+    registerDependentScopedReference(instance, _placeMinimizedEventEvent_5);
+    registerDependentScopedReference(instance, _placeGainFocusEvent_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

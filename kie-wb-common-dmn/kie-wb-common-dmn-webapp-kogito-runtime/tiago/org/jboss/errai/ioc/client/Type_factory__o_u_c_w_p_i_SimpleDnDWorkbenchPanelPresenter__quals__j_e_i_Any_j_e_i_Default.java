@@ -23,9 +23,9 @@ public class Type_factory__o_u_c_w_p_i_SimpleDnDWorkbenchPanelPresenter__quals__
   }
 
   public SimpleDnDWorkbenchPanelPresenter createInstance(final ContextManager contextManager) {
+    final PlaceManager _placeManager_2 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final SimpleDnDWorkbenchPanelView _view_0 = (SimpleDnDWorkbenchPanelView) contextManager.getInstance("Type_factory__o_u_c_w_p_i_SimpleDnDWorkbenchPanelView__quals__j_e_i_Any_j_e_i_Default");
     final PerspectiveManager _perspectiveManager_1 = (PerspectiveManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final PlaceManager _placeManager_2 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final SimpleDnDWorkbenchPanelPresenter instance = new SimpleDnDWorkbenchPanelPresenter(_view_0, _perspectiveManager_1, _placeManager_2);
     registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);

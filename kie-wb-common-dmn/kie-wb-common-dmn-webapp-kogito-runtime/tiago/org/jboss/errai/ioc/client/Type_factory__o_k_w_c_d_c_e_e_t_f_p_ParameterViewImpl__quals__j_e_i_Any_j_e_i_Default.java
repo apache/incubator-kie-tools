@@ -40,12 +40,12 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_f_p_ParameterViewImpl__quals__j_e_i
 
   public ParameterViewImpl createInstance(final ContextManager contextManager) {
     final DataTypePickerWidget _typeRefEditor_1 = (DataTypePickerWidget) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_DataTypePickerWidget__quals__j_e_i_Any_j_e_i_Default");
-    final Input _name_0 = (Input) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Input__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final Button _remove_2 = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Input _name_0 = (Input) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Input__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ParameterViewImpl instance = new ParameterViewImpl(_name_0, _typeRefEditor_1, _remove_2);
     registerDependentScopedReference(instance, _typeRefEditor_1);
-    registerDependentScopedReference(instance, _name_0);
     registerDependentScopedReference(instance, _remove_2);
+    registerDependentScopedReference(instance, _name_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_e_t_f_p_ParameterViewImplTemplateResource templateForParameterViewImpl = GWT.create(o_k_w_c_d_c_e_e_t_f_p_ParameterViewImplTemplateResource.class);
     Element parentElementForTemplateOfParameterViewImpl = TemplateUtil.getRootTemplateParentElement(templateForParameterViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/expressions/types/function/parameters/ParameterViewImpl.html", "");

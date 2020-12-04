@@ -27,12 +27,12 @@ public class Type_factory__o_k_w_c_w_c_s_ViewSourceViewImpl__quals__j_e_i_Any_j_
   public ViewSourceViewImpl createInstance(final ContextManager contextManager) {
     final ViewSourceViewImpl instance = new ViewSourceViewImpl();
     setIncompleteInstance(instance);
-    final BusyIndicatorView ViewSourceViewImpl_busyIndicatorView = (BusyIndicatorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_c_BusyIndicatorView__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, ViewSourceViewImpl_busyIndicatorView);
-    ViewSourceViewImpl_BusyIndicatorView_busyIndicatorView(instance, ViewSourceViewImpl_busyIndicatorView);
     final ViewDRLSourceWidget ViewSourceViewImpl_drlSourceViewer = (ViewDRLSourceWidget) contextManager.getInstance("ExtensionProvided_factory__o_k_w_c_w_c_s_ViewDRLSourceWidget__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ViewSourceViewImpl_drlSourceViewer);
     ViewSourceViewImpl_ViewDRLSourceWidget_drlSourceViewer(instance, ViewSourceViewImpl_drlSourceViewer);
+    final BusyIndicatorView ViewSourceViewImpl_busyIndicatorView = (BusyIndicatorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_c_BusyIndicatorView__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, ViewSourceViewImpl_busyIndicatorView);
+    ViewSourceViewImpl_BusyIndicatorView_busyIndicatorView(instance, ViewSourceViewImpl_busyIndicatorView);
     setIncompleteInstance(null);
     return instance;
   }

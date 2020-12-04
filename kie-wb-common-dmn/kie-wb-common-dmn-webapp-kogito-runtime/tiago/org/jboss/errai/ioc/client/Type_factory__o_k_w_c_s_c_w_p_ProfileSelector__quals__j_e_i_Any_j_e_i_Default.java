@@ -21,12 +21,12 @@ public class Type_factory__o_k_w_c_s_c_w_p_ProfileSelector__quals__j_e_i_Any_j_e
   }
 
   public ProfileSelector createInstance(final ContextManager contextManager) {
-    final SelectorImpl<Profile> _selector_0 = (SelectorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_SelectorImpl__quals__j_e_i_Any_j_e_i_Default");
     final ProfileManager _profileManager_1 = (ClientProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientProfileManager__quals__j_e_i_Any_j_e_i_Default");
     final Event<RequestSessionRefreshEvent> _requestSessionRefreshEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RequestSessionRefreshEvent.class }, new Annotation[] { });
+    final SelectorImpl<Profile> _selector_0 = (SelectorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_SelectorImpl__quals__j_e_i_Any_j_e_i_Default");
     final ProfileSelector instance = new ProfileSelector(_selector_0, _profileManager_1, _requestSessionRefreshEvent_2);
-    registerDependentScopedReference(instance, _selector_0);
     registerDependentScopedReference(instance, _requestSessionRefreshEvent_2);
+    registerDependentScopedReference(instance, _selector_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

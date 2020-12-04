@@ -16,11 +16,11 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_TimeSelector__quals__j_e_i_
   }
 
   public TimeSelector createInstance(final ContextManager contextManager) {
-    final View _view_0 = (TimeSelectorView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_TimeSelectorView__quals__j_e_i_Any_j_e_i_Default");
     final TimeValueFormatter _formatter_1 = (TimeValueFormatter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimeValueFormatter__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_0 = (TimeSelectorView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_TimeSelectorView__quals__j_e_i_Any_j_e_i_Default");
     final TimeSelector instance = new TimeSelector(_view_0, _formatter_1);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _formatter_1);
+    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

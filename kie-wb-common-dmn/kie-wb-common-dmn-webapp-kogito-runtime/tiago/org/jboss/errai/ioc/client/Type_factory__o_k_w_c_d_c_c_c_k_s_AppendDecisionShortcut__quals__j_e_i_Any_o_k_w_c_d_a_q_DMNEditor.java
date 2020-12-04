@@ -27,9 +27,9 @@ public class Type_factory__o_k_w_c_d_c_c_c_k_s_AppendDecisionShortcut__quals__j_
   }
 
   public AppendDecisionShortcut createInstance(final ContextManager contextManager) {
+    final ToolboxDomainLookups _toolboxDomainLookups_0 = (ToolboxDomainLookups) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_t_a_ToolboxDomainLookups__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionsCacheRegistry _definitionsCacheRegistry_1 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
     final GeneralCreateNodeAction _generalCreateNodeAction_2 = (GeneralCreateNodeAction) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_t_a_GeneralCreateNodeAction__quals__j_e_i_Any_j_e_i_Default");
-    final ToolboxDomainLookups _toolboxDomainLookups_0 = (ToolboxDomainLookups) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_t_a_ToolboxDomainLookups__quals__j_e_i_Any_j_e_i_Default");
     final AppendDecisionShortcut instance = new AppendDecisionShortcut(_toolboxDomainLookups_0, _definitionsCacheRegistry_1, _generalCreateNodeAction_2);
     registerDependentScopedReference(instance, _generalCreateNodeAction_2);
     setIncompleteInstance(instance);

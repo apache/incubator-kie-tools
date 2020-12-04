@@ -37,15 +37,15 @@ public class Type_factory__o_k_w_c_f_d_c_r_f_l_l_FieldLabelViewImpl__quals__j_e_
   public FieldLabelViewImpl createInstance(final ContextManager contextManager) {
     final FieldLabelViewImpl instance = new FieldLabelViewImpl();
     setIncompleteInstance(instance);
+    final Span FieldLabelViewImpl_labelText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, FieldLabelViewImpl_labelText);
+    FieldLabelViewImpl_Span_labelText(instance, FieldLabelViewImpl_labelText);
     final FieldRequired FieldLabelViewImpl_fieldRequired = (FieldRequired) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_r_FieldRequired__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, FieldLabelViewImpl_fieldRequired);
     FieldLabelViewImpl_FieldRequired_fieldRequired(instance, FieldLabelViewImpl_fieldRequired);
     final FieldHelp FieldLabelViewImpl_fieldHelp = (FieldHelp) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_h_FieldHelp__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, FieldLabelViewImpl_fieldHelp);
     FieldLabelViewImpl_FieldHelp_fieldHelp(instance, FieldLabelViewImpl_fieldHelp);
-    final Span FieldLabelViewImpl_labelText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, FieldLabelViewImpl_labelText);
-    FieldLabelViewImpl_Span_labelText(instance, FieldLabelViewImpl_labelText);
     o_k_w_c_f_d_c_r_f_l_l_FieldLabelViewImplTemplateResource templateForFieldLabelViewImpl = GWT.create(o_k_w_c_f_d_c_r_f_l_l_FieldLabelViewImplTemplateResource.class);
     Element parentElementForTemplateOfFieldLabelViewImpl = TemplateUtil.getRootTemplateParentElement(templateForFieldLabelViewImpl.getContents().getText(), "org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/labels/label/FieldLabelViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/labels/label/FieldLabelViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfFieldLabelViewImpl));

@@ -87,9 +87,9 @@ public class Type_factory__o_k_w_c_s_c_d_c_CloneManagerImpl__quals__j_e_i_Any_j_
   }
 
   public CloneManagerImpl createInstance(final ContextManager contextManager) {
-    final NoneCloneProcess _noneCloneProcess_2 = (NoneCloneProcess) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_c_NoneCloneProcess__quals__j_e_i_Any_j_e_i_Default");
-    final IDeepCloneProcess _deepCloneProcess_0 = (DMNDeepCloneProcess) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_c_DMNDeepCloneProcess__quals__j_e_i_Any_j_e_i_Default");
     final DefaultCloneProcess _defaultCloneProcess_1 = (DefaultCloneProcess) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_c_DefaultCloneProcess__quals__j_e_i_Any_j_e_i_Default");
+    final IDeepCloneProcess _deepCloneProcess_0 = (DMNDeepCloneProcess) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_c_DMNDeepCloneProcess__quals__j_e_i_Any_j_e_i_Default");
+    final NoneCloneProcess _noneCloneProcess_2 = (NoneCloneProcess) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_c_NoneCloneProcess__quals__j_e_i_Any_j_e_i_Default");
     final CloneManagerImpl instance = new CloneManagerImpl(_deepCloneProcess_0, _defaultCloneProcess_1, _noneCloneProcess_2);
     registerDependentScopedReference(instance, _noneCloneProcess_2);
     setIncompleteInstance(instance);

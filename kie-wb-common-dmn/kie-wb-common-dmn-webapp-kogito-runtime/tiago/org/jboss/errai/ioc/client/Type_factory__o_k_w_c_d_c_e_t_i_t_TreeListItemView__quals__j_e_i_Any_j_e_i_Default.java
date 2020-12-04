@@ -49,7 +49,8 @@ public class Type_factory__o_k_w_c_d_c_e_t_i_t_TreeListItemView__quals__j_e_i_An
   public TreeListItemView createInstance(final ContextManager contextManager) {
     final HTMLDivElement _itemHeader_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _itemDetails_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _itemsContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLInputElement _checkbox_5 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _itemRoot_6 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _expand_4 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -61,17 +62,16 @@ public class Type_factory__o_k_w_c_d_c_e_t_i_t_TreeListItemView__quals__j_e_i_An
           return "span";
         }
     } });
-    final HTMLDivElement _itemRoot_6 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _expandContainer_3 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLInputElement _checkbox_5 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _itemsContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TreeListItemView instance = new TreeListItemView(_itemHeader_0, _itemsContainer_1, _itemDetails_2, _expandContainer_3, _expand_4, _checkbox_5, _itemRoot_6);
     registerDependentScopedReference(instance, _itemHeader_0);
     registerDependentScopedReference(instance, _itemDetails_2);
-    registerDependentScopedReference(instance, _itemsContainer_1);
-    registerDependentScopedReference(instance, _expand_4);
-    registerDependentScopedReference(instance, _itemRoot_6);
-    registerDependentScopedReference(instance, _expandContainer_3);
     registerDependentScopedReference(instance, _checkbox_5);
+    registerDependentScopedReference(instance, _itemRoot_6);
+    registerDependentScopedReference(instance, _expand_4);
+    registerDependentScopedReference(instance, _expandContainer_3);
+    registerDependentScopedReference(instance, _itemsContainer_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_i_t_TreeListItemViewTemplateResource templateForTreeListItemView = GWT.create(o_k_w_c_d_c_e_t_i_t_TreeListItemViewTemplateResource.class);
     Element parentElementForTemplateOfTreeListItemView = TemplateUtil.getRootTemplateParentElement(templateForTreeListItemView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/imported/treelist/TreeListItemView.html", "");

@@ -16,8 +16,8 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_d_DNDDataTypesHandler__quals__j_e_i
 
   public DNDDataTypesHandler createInstance(final ContextManager contextManager) {
     final DataTypeManager _dataTypeManager_1 = (DataTypeManager) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManager__quals__j_e_i_Any_j_e_i_Default");
-    final ItemDefinitionStore _itemDefinitionStore_2 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeStore _dataTypeStore_0 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
+    final ItemDefinitionStore _itemDefinitionStore_2 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
     final DNDDataTypesHandler instance = new DNDDataTypesHandler(_dataTypeStore_0, _dataTypeManager_1, _itemDefinitionStore_2);
     registerDependentScopedReference(instance, _dataTypeManager_1);
     setIncompleteInstance(instance);

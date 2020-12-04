@@ -403,12 +403,12 @@ public class _DefaultSelectorOptionValidatorImpl extends com.google.gwt.validati
   }
   
   // Write the wrappers after we know which are needed
-  private native java.lang.Object _value(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption object) /*-{
-    return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption::value;
-  }-*/;
-  
   private native java.lang.String _text(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption object) /*-{
     return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption::text;
+  }-*/;
+  
+  private native java.lang.Object _value(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption object) /*-{
+    return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption::value;
   }-*/;
   
   

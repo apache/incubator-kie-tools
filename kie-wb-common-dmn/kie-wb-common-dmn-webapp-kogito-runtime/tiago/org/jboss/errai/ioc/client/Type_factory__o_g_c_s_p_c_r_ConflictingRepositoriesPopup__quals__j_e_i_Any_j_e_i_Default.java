@@ -16,11 +16,11 @@ public class Type_factory__o_g_c_s_p_c_r_ConflictingRepositoriesPopup__quals__j_
   }
 
   public ConflictingRepositoriesPopup createInstance(final ContextManager contextManager) {
-    final ConflictingRepositoriesPopupView _view_1 = (ConflictingRepositoriesPopupViewImpl) contextManager.getInstance("Type_factory__o_g_c_s_p_c_r_ConflictingRepositoriesPopupViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final User _identity_0 = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
+    final ConflictingRepositoriesPopupView _view_1 = (ConflictingRepositoriesPopupViewImpl) contextManager.getInstance("Type_factory__o_g_c_s_p_c_r_ConflictingRepositoriesPopupViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final ConflictingRepositoriesPopup instance = new ConflictingRepositoriesPopup(_identity_0, _view_1);
-    registerDependentScopedReference(instance, _view_1);
     registerDependentScopedReference(instance, _identity_0);
+    registerDependentScopedReference(instance, _view_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

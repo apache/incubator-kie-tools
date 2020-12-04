@@ -21,11 +21,11 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_MultipleInput__quals__j_e_i_A
   }
 
   public MultipleInput createInstance(final ContextManager contextManager) {
-    final MultipleInputComponent _component_1 = (MultipleInputComponent) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_MultipleInputComponent__quals__j_e_i_Any_j_e_i_Default");
     final MultipleInputView _view_0 = (MultipleInputViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_MultipleInputViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final MultipleInputComponent _component_1 = (MultipleInputComponent) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_MultipleInputComponent__quals__j_e_i_Any_j_e_i_Default");
     final MultipleInput instance = new MultipleInput(_view_0, _component_1);
-    registerDependentScopedReference(instance, _component_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _component_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

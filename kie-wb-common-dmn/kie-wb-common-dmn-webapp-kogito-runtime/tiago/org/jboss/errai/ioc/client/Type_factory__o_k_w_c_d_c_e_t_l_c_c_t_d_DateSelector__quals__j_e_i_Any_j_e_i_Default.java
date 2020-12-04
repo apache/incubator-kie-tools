@@ -16,11 +16,11 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateSelector__quals__j_e_i_
   }
 
   public DateSelector createInstance(final ContextManager contextManager) {
-    final DateValueFormatter _dateValueFormatter_1 = (DateValueFormatter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateValueFormatter__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DateSelectorView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateSelectorView__quals__j_e_i_Any_j_e_i_Default");
+    final DateValueFormatter _dateValueFormatter_1 = (DateValueFormatter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateValueFormatter__quals__j_e_i_Any_j_e_i_Default");
     final DateSelector instance = new DateSelector(_view_0, _dateValueFormatter_1);
-    registerDependentScopedReference(instance, _dateValueFormatter_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _dateValueFormatter_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

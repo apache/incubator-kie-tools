@@ -48,14 +48,14 @@ public class Type_factory__o_k_w_c_s_c_w_p_c_i_DefinitionPaletteItemWidgetViewIm
   public DefinitionPaletteItemWidgetViewImpl createInstance(final ContextManager contextManager) {
     final DefinitionPaletteItemWidgetViewImpl instance = new DefinitionPaletteItemWidgetViewImpl();
     setIncompleteInstance(instance);
-    final Anchor DefinitionPaletteItemWidgetViewImpl_itemAnchor = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, DefinitionPaletteItemWidgetViewImpl_itemAnchor);
-    DefinitionPaletteItemWidgetViewImpl_Anchor_itemAnchor(instance, DefinitionPaletteItemWidgetViewImpl_itemAnchor);
     final Span DefinitionPaletteItemWidgetViewImpl_icon = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DefinitionPaletteItemWidgetViewImpl_icon);
     DefinitionPaletteItemWidgetViewImpl_Span_icon(instance, DefinitionPaletteItemWidgetViewImpl_icon);
     final DOMGlyphRenderers DefinitionPaletteItemWidgetViewImpl_domGlyphRenderers = (DOMGlyphRenderers) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_c_g_DOMGlyphRenderers__quals__j_e_i_Any_j_e_i_Default");
     DefinitionPaletteItemWidgetViewImpl_DOMGlyphRenderers_domGlyphRenderers(instance, DefinitionPaletteItemWidgetViewImpl_domGlyphRenderers);
+    final Anchor DefinitionPaletteItemWidgetViewImpl_itemAnchor = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, DefinitionPaletteItemWidgetViewImpl_itemAnchor);
+    DefinitionPaletteItemWidgetViewImpl_Anchor_itemAnchor(instance, DefinitionPaletteItemWidgetViewImpl_itemAnchor);
     final Span DefinitionPaletteItemWidgetViewImpl_name = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DefinitionPaletteItemWidgetViewImpl_name);
     DefinitionPaletteItemWidgetViewImpl_Span_name(instance, DefinitionPaletteItemWidgetViewImpl_name);

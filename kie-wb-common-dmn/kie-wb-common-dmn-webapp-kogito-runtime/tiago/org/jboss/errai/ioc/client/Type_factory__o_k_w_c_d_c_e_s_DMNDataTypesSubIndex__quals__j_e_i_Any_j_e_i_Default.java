@@ -91,8 +91,8 @@ public class Type_factory__o_k_w_c_d_c_e_s_DMNDataTypesSubIndex__quals__j_e_i_An
 
   public DMNDataTypesSubIndex createInstance(final ContextManager contextManager) {
     final DataTypeList _dataTypeList_0 = (DataTypeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeList__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeShortcuts _dataTypeShortcuts_1 = (DataTypeShortcuts) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeShortcuts__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeStore _dataTypeStore_2 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeShortcuts _dataTypeShortcuts_1 = (DataTypeShortcuts) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeShortcuts__quals__j_e_i_Any_j_e_i_Default");
     final DMNDataTypesSubIndex instance = new DMNDataTypesSubIndex(_dataTypeList_0, _dataTypeShortcuts_1, _dataTypeStore_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

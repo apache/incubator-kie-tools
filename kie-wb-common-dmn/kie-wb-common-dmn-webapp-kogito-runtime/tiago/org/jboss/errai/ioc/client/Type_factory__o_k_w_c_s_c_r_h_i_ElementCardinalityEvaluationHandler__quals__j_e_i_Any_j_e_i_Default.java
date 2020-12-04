@@ -108,8 +108,8 @@ public class Type_factory__o_k_w_c_s_c_r_h_i_ElementCardinalityEvaluationHandler
   }
 
   public ElementCardinalityEvaluationHandler createInstance(final ContextManager contextManager) {
-    final CardinalityEvaluationHandler _cardinalityEvaluationHandler_1 = (CardinalityEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_CardinalityEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final CardinalityEvaluationHandler _cardinalityEvaluationHandler_1 = (CardinalityEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_CardinalityEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final ElementCardinalityEvaluationHandler instance = new ElementCardinalityEvaluationHandler(_definitionManager_0, _cardinalityEvaluationHandler_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

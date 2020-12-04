@@ -15,8 +15,8 @@ public class Type_factory__o_k_w_c_d_w_k_c_c_s_DMNClientServicesProxyImpl__quals
   }
 
   public DMNClientServicesProxyImpl createInstance(final ContextManager contextManager) {
-    final DMNMarshallerImportsClientHelper _kogitoImportsHelper_1 = (DMNMarshallerImportsClientHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsClientHelper__quals__j_e_i_Any_j_e_i_Default");
     final TimeZonesProvider _timeZonesProvider_0 = (TimeZonesProvider) contextManager.getInstance("Type_factory__o_k_w_c_d_w_k_c_c_s_TimeZonesProvider__quals__j_e_i_Any_j_e_i_Default");
+    final DMNMarshallerImportsClientHelper _kogitoImportsHelper_1 = (DMNMarshallerImportsClientHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsClientHelper__quals__j_e_i_Any_j_e_i_Default");
     final DMNClientServicesProxyImpl instance = new DMNClientServicesProxyImpl(_timeZonesProvider_0, _kogitoImportsHelper_1);
     registerDependentScopedReference(instance, _kogitoImportsHelper_1);
     setIncompleteInstance(instance);

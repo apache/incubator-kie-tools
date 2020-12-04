@@ -48,15 +48,15 @@ public class Type_factory__o_u_c_w_p_i_MultiListWorkbenchPanelView__quals__j_e_i
     AbstractDockingWorkbenchPanelView_ResizeFlowPanel_partViewContainer(instance, AbstractDockingWorkbenchPanelView_partViewContainer);
     final LayoutSelection AbstractWorkbenchPanelView_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
     AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(instance, AbstractWorkbenchPanelView_layoutSelection);
+    final WorkbenchDragAndDropManager AbstractDockingWorkbenchPanelView_dndManager = (WorkbenchDragAndDropManager) contextManager.getInstance("Type_factory__o_u_c_w_w_d_WorkbenchDragAndDropManager__quals__j_e_i_Any_j_e_i_Default");
+    AbstractDockingWorkbenchPanelView_WorkbenchDragAndDropManager_dndManager(instance, AbstractDockingWorkbenchPanelView_dndManager);
+    final DefaultBeanFactory AbstractDockingWorkbenchPanelView_factory = (DefaultBeanFactory) contextManager.getInstance("Type_factory__o_u_c_w_DefaultBeanFactory__quals__j_e_i_Any_j_e_i_Default");
+    AbstractDockingWorkbenchPanelView_BeanFactory_factory(instance, AbstractDockingWorkbenchPanelView_factory);
     final ListBarWidgetImpl MultiListWorkbenchPanelView_listBar = (ListBarWidgetImpl) contextManager.getInstance("Type_factory__o_u_c_v_p_l_ListBarWidgetImpl__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, MultiListWorkbenchPanelView_listBar);
     MultiListWorkbenchPanelView_ListBarWidget_listBar(instance, MultiListWorkbenchPanelView_listBar);
     final PanelManagerImpl AbstractWorkbenchPanelView_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     AbstractWorkbenchPanelView_PanelManager_panelManager(instance, AbstractWorkbenchPanelView_panelManager);
-    final DefaultBeanFactory AbstractDockingWorkbenchPanelView_factory = (DefaultBeanFactory) contextManager.getInstance("Type_factory__o_u_c_w_DefaultBeanFactory__quals__j_e_i_Any_j_e_i_Default");
-    AbstractDockingWorkbenchPanelView_BeanFactory_factory(instance, AbstractDockingWorkbenchPanelView_factory);
-    final WorkbenchDragAndDropManager AbstractDockingWorkbenchPanelView_dndManager = (WorkbenchDragAndDropManager) contextManager.getInstance("Type_factory__o_u_c_w_w_d_WorkbenchDragAndDropManager__quals__j_e_i_Any_j_e_i_Default");
-    AbstractDockingWorkbenchPanelView_WorkbenchDragAndDropManager_dndManager(instance, AbstractDockingWorkbenchPanelView_dndManager);
     setIncompleteInstance(null);
     return instance;
   }
@@ -82,20 +82,20 @@ public class Type_factory__o_u_c_w_p_i_MultiListWorkbenchPanelView__quals__j_e_i
     instance.@org.uberfire.client.workbench.panels.impl.AbstractDockingWorkbenchPanelView::partViewContainer = value;
   }-*/;
 
-  native static ListBarWidget MultiListWorkbenchPanelView_ListBarWidget_listBar(MultiListWorkbenchPanelView instance) /*-{
-    return instance.@org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView::listBar;
-  }-*/;
-
-  native static void MultiListWorkbenchPanelView_ListBarWidget_listBar(MultiListWorkbenchPanelView instance, ListBarWidget value) /*-{
-    instance.@org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView::listBar = value;
-  }-*/;
-
   native static BeanFactory AbstractDockingWorkbenchPanelView_BeanFactory_factory(AbstractDockingWorkbenchPanelView instance) /*-{
     return instance.@org.uberfire.client.workbench.panels.impl.AbstractDockingWorkbenchPanelView::factory;
   }-*/;
 
   native static void AbstractDockingWorkbenchPanelView_BeanFactory_factory(AbstractDockingWorkbenchPanelView instance, BeanFactory value) /*-{
     instance.@org.uberfire.client.workbench.panels.impl.AbstractDockingWorkbenchPanelView::factory = value;
+  }-*/;
+
+  native static ListBarWidget MultiListWorkbenchPanelView_ListBarWidget_listBar(MultiListWorkbenchPanelView instance) /*-{
+    return instance.@org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView::listBar;
+  }-*/;
+
+  native static void MultiListWorkbenchPanelView_ListBarWidget_listBar(MultiListWorkbenchPanelView instance, ListBarWidget value) /*-{
+    instance.@org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView::listBar = value;
   }-*/;
 
   native static PanelManager AbstractWorkbenchPanelView_PanelManager_panelManager(AbstractWorkbenchPanelView instance) /*-{

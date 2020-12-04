@@ -22,6 +22,7 @@ public class Type_factory__o_k_w_c_s_c_c_s_i_ManagedSession__quals__j_e_i_Any_j_
   }
 
   public ManagedSession createInstance(final ContextManager contextManager) {
+    final SessionLoader _sessionLoader_1 = (SessionLoader) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_i_SessionLoader__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<CanvasControl<AbstractCanvasHandler>> _canvasHandlerControlInstances_5 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CanvasControl.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -38,16 +39,7 @@ public class Type_factory__o_k_w_c_s_c_c_s_i_ManagedSession__quals__j_e_i_Any_j_
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final ManagedInstance<CanvasControl<AbstractCanvas>> _canvasControlInstances_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CanvasControl.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
     final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final SessionLoader _sessionLoader_1 = (SessionLoader) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_i_SessionLoader__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<AbstractCanvasHandler> _canvasHandlerInstances_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AbstractCanvasHandler.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -56,12 +48,20 @@ public class Type_factory__o_k_w_c_s_c_c_s_i_ManagedSession__quals__j_e_i_Any_j_
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final ManagedInstance<CanvasControl<AbstractCanvas>> _canvasControlInstances_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CanvasControl.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
     final ManagedSession instance = new ManagedSession(_definitionUtils_0, _sessionLoader_1, _canvasInstances_2, _canvasHandlerInstances_3, _canvasControlInstances_4, _canvasHandlerControlInstances_5);
+    registerDependentScopedReference(instance, _sessionLoader_1);
     registerDependentScopedReference(instance, _canvasHandlerControlInstances_5);
     registerDependentScopedReference(instance, _canvasInstances_2);
-    registerDependentScopedReference(instance, _canvasControlInstances_4);
-    registerDependentScopedReference(instance, _sessionLoader_1);
     registerDependentScopedReference(instance, _canvasHandlerInstances_3);
+    registerDependentScopedReference(instance, _canvasControlInstances_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

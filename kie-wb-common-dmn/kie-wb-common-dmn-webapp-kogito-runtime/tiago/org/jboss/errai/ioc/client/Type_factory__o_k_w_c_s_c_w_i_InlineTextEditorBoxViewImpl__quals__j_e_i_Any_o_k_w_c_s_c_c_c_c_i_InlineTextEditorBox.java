@@ -60,12 +60,12 @@ public class Type_factory__o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImpl__quals__j
     final InlineTextEditorBoxViewImpl instance = new InlineTextEditorBoxViewImpl(_translationService_0);
     registerDependentScopedReference(instance, _translationService_0);
     setIncompleteInstance(instance);
-    final Div InlineTextEditorBoxViewImpl_nameField = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, InlineTextEditorBoxViewImpl_nameField);
-    InlineTextEditorBoxViewImpl_Div_nameField(instance, InlineTextEditorBoxViewImpl_nameField);
     final Div AbstractInlineTextEditorBoxView_editNameBox = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, AbstractInlineTextEditorBoxView_editNameBox);
     AbstractInlineTextEditorBoxView_Div_editNameBox(instance, AbstractInlineTextEditorBoxView_editNameBox);
+    final Div InlineTextEditorBoxViewImpl_nameField = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, InlineTextEditorBoxViewImpl_nameField);
+    InlineTextEditorBoxViewImpl_Div_nameField(instance, InlineTextEditorBoxViewImpl_nameField);
     o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImplTemplateResource templateForInlineTextEditorBoxViewImpl = GWT.create(o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImplTemplateResource.class);
     Element parentElementForTemplateOfInlineTextEditorBoxViewImpl = TemplateUtil.getRootTemplateParentElement(templateForInlineTextEditorBoxViewImpl.getContents().getText(), "org/kie/workbench/common/stunner/client/widgets/inlineeditor/InlineTextEditorBox.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/client/widgets/inlineeditor/InlineTextEditorBox.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfInlineTextEditorBoxViewImpl));

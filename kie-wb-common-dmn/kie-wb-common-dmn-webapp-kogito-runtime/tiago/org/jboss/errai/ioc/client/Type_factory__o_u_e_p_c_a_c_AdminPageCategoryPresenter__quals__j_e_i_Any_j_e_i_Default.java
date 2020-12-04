@@ -17,11 +17,11 @@ public class Type_factory__o_u_e_p_c_a_c_AdminPageCategoryPresenter__quals__j_e_
   }
 
   public AdminPageCategoryPresenter createInstance(final ContextManager contextManager) {
-    final ManagedInstance<AdminPageItemPresenter> _adminPageItemPresenterProvider_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AdminPageItemPresenter.class }, new Annotation[] { });
     final View _view_0 = (AdminPageCategoryView) contextManager.getInstance("Type_factory__o_u_e_p_c_a_c_AdminPageCategoryView__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<AdminPageItemPresenter> _adminPageItemPresenterProvider_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AdminPageItemPresenter.class }, new Annotation[] { });
     final AdminPageCategoryPresenter instance = new AdminPageCategoryPresenter(_view_0, _adminPageItemPresenterProvider_1);
-    registerDependentScopedReference(instance, _adminPageItemPresenterProvider_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _adminPageItemPresenterProvider_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

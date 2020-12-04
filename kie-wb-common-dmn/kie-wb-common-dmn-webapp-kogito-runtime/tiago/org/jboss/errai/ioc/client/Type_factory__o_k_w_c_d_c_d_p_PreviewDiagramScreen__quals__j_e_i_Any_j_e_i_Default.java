@@ -29,6 +29,8 @@ public class Type_factory__o_k_w_c_d_c_d_p_PreviewDiagramScreen__quals__j_e_i_An
   }
 
   public PreviewDiagramScreen createInstance(final ContextManager contextManager) {
+    final View _view_2 = (PreviewDiagramScreenView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_p_PreviewDiagramScreenView__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _clientSessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<SessionDiagramPreview<AbstractSession>> _sessionPreviews_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { SessionDiagramPreview.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -44,12 +46,10 @@ public class Type_factory__o_k_w_c_d_c_d_p_PreviewDiagramScreen__quals__j_e_i_An
           return "@org.kie.workbench.common.dmn.api.qualifiers.DMNEditor()";
         }
     } });
-    final View _view_2 = (PreviewDiagramScreenView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_p_PreviewDiagramScreenView__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession _session_3 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _clientSessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final PreviewDiagramScreen instance = new PreviewDiagramScreen(_clientSessionManager_0, _sessionPreviews_1, _view_2, _session_3);
-    registerDependentScopedReference(instance, _sessionPreviews_1);
     registerDependentScopedReference(instance, _view_2);
+    registerDependentScopedReference(instance, _sessionPreviews_1);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onCanvasSessionOpenedSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent", new AbstractCDIEventCallback<SessionOpenedEvent>() {
       public void fireEvent(final SessionOpenedEvent event) {

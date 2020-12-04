@@ -19,8 +19,6 @@ import org.uberfire.client.mvp.ResourceTypeManagerCache;
 import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
-import org.uberfire.experimental.client.service.auth.ExperimentalActivitiesAuthorizationManagerImpl;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 
 public class Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default extends Factory<ActivityBeansCache> { private class Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_DefaultProxyImpl extends ActivityBeansCache implements Proxy<ActivityBeansCache> {
     private final ProxyHelper<ActivityBeansCache> proxyHelper = new ProxyHelperImpl<ActivityBeansCache>("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
@@ -196,16 +194,15 @@ public class Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_De
   }
 
   public ActivityBeansCache createInstance(final ContextManager contextManager) {
-    final Event<NewWorkbenchScreenEvent> _newWorkbenchScreenEventEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NewWorkbenchScreenEvent.class }, new Annotation[] { });
-    final ResourceTypeManagerCache _resourceTypeManagerCache_3 = (ResourceTypeManagerCache) contextManager.getInstance("Type_factory__o_u_c_m_ResourceTypeManagerCache__quals__j_e_i_Any_j_e_i_Default");
-    final ExperimentalActivitiesAuthorizationManager _experimentalActivitiesAuthorizationManager_4 = (ExperimentalActivitiesAuthorizationManagerImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_a_ExperimentalActivitiesAuthorizationManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final GWTEditorNativeRegister _gwtEditorNativeRegister_5 = (GWTEditorNativeRegister) contextManager.getInstance("Type_factory__o_u_c_u_GWTEditorNativeRegister__quals__j_e_i_Any_j_e_i_Default");
-    final Event<NewPerspectiveEvent> _newPerspectiveEventEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NewPerspectiveEvent.class }, new Annotation[] { });
     final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
-    final ActivityBeansCache instance = new ActivityBeansCache(_iocManager_0, _newPerspectiveEventEvent_1, _newWorkbenchScreenEventEvent_2, _resourceTypeManagerCache_3, _experimentalActivitiesAuthorizationManager_4, _gwtEditorNativeRegister_5);
-    registerDependentScopedReference(instance, _newWorkbenchScreenEventEvent_2);
-    registerDependentScopedReference(instance, _newPerspectiveEventEvent_1);
+    final Event<NewPerspectiveEvent> _newPerspectiveEventEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NewPerspectiveEvent.class }, new Annotation[] { });
+    final ResourceTypeManagerCache _resourceTypeManagerCache_3 = (ResourceTypeManagerCache) contextManager.getInstance("Type_factory__o_u_c_m_ResourceTypeManagerCache__quals__j_e_i_Any_j_e_i_Default");
+    final Event<NewWorkbenchScreenEvent> _newWorkbenchScreenEventEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NewWorkbenchScreenEvent.class }, new Annotation[] { });
+    final GWTEditorNativeRegister _gwtEditorNativeRegister_4 = (GWTEditorNativeRegister) contextManager.getInstance("Type_factory__o_u_c_u_GWTEditorNativeRegister__quals__j_e_i_Any_j_e_i_Default");
+    final ActivityBeansCache instance = new ActivityBeansCache(_iocManager_0, _newPerspectiveEventEvent_1, _newWorkbenchScreenEventEvent_2, _resourceTypeManagerCache_3, _gwtEditorNativeRegister_4);
     registerDependentScopedReference(instance, _iocManager_0);
+    registerDependentScopedReference(instance, _newPerspectiveEventEvent_1);
+    registerDependentScopedReference(instance, _newWorkbenchScreenEventEvent_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

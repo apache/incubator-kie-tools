@@ -108,9 +108,9 @@ public class Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBar__quals__j_e_i_Any
   }
 
   public DataTypeSearchBar createInstance(final ContextManager contextManager) {
+    final View _view_0 = (DataTypeSearchBarView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBarView__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeSearchEngine _searchEngine_1 = (DataTypeSearchEngine) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchEngine__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeList _dataTypeList_2 = (DataTypeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeList__quals__j_e_i_Any_j_e_i_Default");
-    final View _view_0 = (DataTypeSearchBarView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBarView__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeSearchBar instance = new DataTypeSearchBar(_view_0, _searchEngine_1, _dataTypeList_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

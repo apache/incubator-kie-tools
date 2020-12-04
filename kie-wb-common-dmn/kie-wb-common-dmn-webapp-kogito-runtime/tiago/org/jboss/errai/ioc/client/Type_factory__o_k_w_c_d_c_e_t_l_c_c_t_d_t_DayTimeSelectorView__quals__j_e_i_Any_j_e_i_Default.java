@@ -41,15 +41,15 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeSelectorView__qual
   }
 
   public DayTimeSelectorView createInstance(final ContextManager contextManager) {
-    final HTMLInputElement _daysInput_0 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLInputElement _secondsInput_3 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLInputElement _minutesInput_2 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLInputElement _hoursInput_1 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLInputElement _daysInput_0 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLInputElement _minutesInput_2 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLInputElement _secondsInput_3 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DayTimeSelectorView instance = new DayTimeSelectorView(_daysInput_0, _hoursInput_1, _minutesInput_2, _secondsInput_3);
-    registerDependentScopedReference(instance, _daysInput_0);
-    registerDependentScopedReference(instance, _secondsInput_3);
-    registerDependentScopedReference(instance, _minutesInput_2);
     registerDependentScopedReference(instance, _hoursInput_1);
+    registerDependentScopedReference(instance, _daysInput_0);
+    registerDependentScopedReference(instance, _minutesInput_2);
+    registerDependentScopedReference(instance, _secondsInput_3);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeSelectorViewTemplateResource templateForDayTimeSelectorView = GWT.create(o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeSelectorViewTemplateResource.class);
     Element parentElementForTemplateOfDayTimeSelectorView = TemplateUtil.getRootTemplateParentElement(templateForDayTimeSelectorView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/constraint/common/typed/day/time/DayTimeSelectorView.html", "");

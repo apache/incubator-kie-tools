@@ -36,8 +36,6 @@ import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.experimental.client.service.auth.ExperimentalActivitiesAuthorizationManagerImpl;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -492,20 +490,16 @@ public class Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Defa
   public PlaceManagerImpl createInstance(final ContextManager contextManager) {
     final PlaceManagerImpl instance = new PlaceManagerImpl();
     setIncompleteInstance(instance);
-    final Event PlaceManagerImpl_selectWorkbenchPartEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SelectPlaceEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, PlaceManagerImpl_selectWorkbenchPartEvent);
-    PlaceManagerImpl_Event_selectWorkbenchPartEvent(instance, PlaceManagerImpl_selectWorkbenchPartEvent);
     final Event PlaceManagerImpl_workbenchPartBeforeCloseEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { BeforeClosePlaceEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, PlaceManagerImpl_workbenchPartBeforeCloseEvent);
     PlaceManagerImpl_Event_workbenchPartBeforeCloseEvent(instance, PlaceManagerImpl_workbenchPartBeforeCloseEvent);
-    final ActivityLifecycleErrorHandler PlaceManagerImpl_lifecycleErrorHandler = (ActivityLifecycleErrorHandler) contextManager.getInstance("Type_factory__o_u_c_m_ActivityLifecycleErrorHandler__quals__j_e_i_Any_j_e_i_Default");
-    PlaceManagerImpl_ActivityLifecycleErrorHandler_lifecycleErrorHandler(instance, PlaceManagerImpl_lifecycleErrorHandler);
-    final PlaceHistoryHandler PlaceManagerImpl_placeHistoryHandler = (PlaceHistoryHandler) contextManager.getInstance("Type_factory__o_u_c_m_PlaceHistoryHandler__quals__j_e_i_Any_j_e_i_Default");
-    PlaceManagerImpl_PlaceHistoryHandler_placeHistoryHandler(instance, PlaceManagerImpl_placeHistoryHandler);
+    final Event PlaceManagerImpl_newSplashScreenActiveEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NewSplashScreenActiveEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, PlaceManagerImpl_newSplashScreenActiveEvent);
+    PlaceManagerImpl_Event_newSplashScreenActiveEvent(instance, PlaceManagerImpl_newSplashScreenActiveEvent);
     final PanelManagerImpl PlaceManagerImpl_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     PlaceManagerImpl_PanelManager_panelManager(instance, PlaceManagerImpl_panelManager);
-    final ExperimentalActivitiesAuthorizationManagerImpl PlaceManagerImpl_activitiesAuthorizationManager = (ExperimentalActivitiesAuthorizationManagerImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_a_ExperimentalActivitiesAuthorizationManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    PlaceManagerImpl_ExperimentalActivitiesAuthorizationManager_activitiesAuthorizationManager(instance, PlaceManagerImpl_activitiesAuthorizationManager);
+    final PlaceHistoryHandler PlaceManagerImpl_placeHistoryHandler = (PlaceHistoryHandler) contextManager.getInstance("Type_factory__o_u_c_m_PlaceHistoryHandler__quals__j_e_i_Any_j_e_i_Default");
+    PlaceManagerImpl_PlaceHistoryHandler_placeHistoryHandler(instance, PlaceManagerImpl_placeHistoryHandler);
     final PerspectiveManagerImpl PlaceManagerImpl_perspectiveManager = (PerspectiveManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     PlaceManagerImpl_PerspectiveManager_perspectiveManager(instance, PlaceManagerImpl_perspectiveManager);
     final ActivityManagerImpl PlaceManagerImpl_activityManager = (ActivityManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_Default");
@@ -515,9 +509,11 @@ public class Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Defa
     PlaceManagerImpl_Event_workbenchPartCloseEvent(instance, PlaceManagerImpl_workbenchPartCloseEvent);
     final LayoutSelection PlaceManagerImpl_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
     PlaceManagerImpl_LayoutSelection_layoutSelection(instance, PlaceManagerImpl_layoutSelection);
-    final Event PlaceManagerImpl_newSplashScreenActiveEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NewSplashScreenActiveEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, PlaceManagerImpl_newSplashScreenActiveEvent);
-    PlaceManagerImpl_Event_newSplashScreenActiveEvent(instance, PlaceManagerImpl_newSplashScreenActiveEvent);
+    final Event PlaceManagerImpl_selectWorkbenchPartEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SelectPlaceEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, PlaceManagerImpl_selectWorkbenchPartEvent);
+    PlaceManagerImpl_Event_selectWorkbenchPartEvent(instance, PlaceManagerImpl_selectWorkbenchPartEvent);
+    final ActivityLifecycleErrorHandler PlaceManagerImpl_lifecycleErrorHandler = (ActivityLifecycleErrorHandler) contextManager.getInstance("Type_factory__o_u_c_m_ActivityLifecycleErrorHandler__quals__j_e_i_Any_j_e_i_Default");
+    PlaceManagerImpl_ActivityLifecycleErrorHandler_lifecycleErrorHandler(instance, PlaceManagerImpl_lifecycleErrorHandler);
     setIncompleteInstance(null);
     return instance;
   }
@@ -572,14 +568,6 @@ public class Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Defa
     instance.@org.uberfire.client.mvp.PlaceManagerImpl::perspectiveManager = value;
   }-*/;
 
-  native static Event PlaceManagerImpl_Event_selectWorkbenchPartEvent(PlaceManagerImpl instance) /*-{
-    return instance.@org.uberfire.client.mvp.PlaceManagerImpl::selectWorkbenchPartEvent;
-  }-*/;
-
-  native static void PlaceManagerImpl_Event_selectWorkbenchPartEvent(PlaceManagerImpl instance, Event<SelectPlaceEvent> value) /*-{
-    instance.@org.uberfire.client.mvp.PlaceManagerImpl::selectWorkbenchPartEvent = value;
-  }-*/;
-
   native static PanelManager PlaceManagerImpl_PanelManager_panelManager(PlaceManagerImpl instance) /*-{
     return instance.@org.uberfire.client.mvp.PlaceManagerImpl::panelManager;
   }-*/;
@@ -588,20 +576,20 @@ public class Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Defa
     instance.@org.uberfire.client.mvp.PlaceManagerImpl::panelManager = value;
   }-*/;
 
+  native static Event PlaceManagerImpl_Event_selectWorkbenchPartEvent(PlaceManagerImpl instance) /*-{
+    return instance.@org.uberfire.client.mvp.PlaceManagerImpl::selectWorkbenchPartEvent;
+  }-*/;
+
+  native static void PlaceManagerImpl_Event_selectWorkbenchPartEvent(PlaceManagerImpl instance, Event<SelectPlaceEvent> value) /*-{
+    instance.@org.uberfire.client.mvp.PlaceManagerImpl::selectWorkbenchPartEvent = value;
+  }-*/;
+
   native static Event PlaceManagerImpl_Event_workbenchPartCloseEvent(PlaceManagerImpl instance) /*-{
     return instance.@org.uberfire.client.mvp.PlaceManagerImpl::workbenchPartCloseEvent;
   }-*/;
 
   native static void PlaceManagerImpl_Event_workbenchPartCloseEvent(PlaceManagerImpl instance, Event<ClosePlaceEvent> value) /*-{
     instance.@org.uberfire.client.mvp.PlaceManagerImpl::workbenchPartCloseEvent = value;
-  }-*/;
-
-  native static ExperimentalActivitiesAuthorizationManager PlaceManagerImpl_ExperimentalActivitiesAuthorizationManager_activitiesAuthorizationManager(PlaceManagerImpl instance) /*-{
-    return instance.@org.uberfire.client.mvp.PlaceManagerImpl::activitiesAuthorizationManager;
-  }-*/;
-
-  native static void PlaceManagerImpl_ExperimentalActivitiesAuthorizationManager_activitiesAuthorizationManager(PlaceManagerImpl instance, ExperimentalActivitiesAuthorizationManager value) /*-{
-    instance.@org.uberfire.client.mvp.PlaceManagerImpl::activitiesAuthorizationManager = value;
   }-*/;
 
   native static Event PlaceManagerImpl_Event_newSplashScreenActiveEvent(PlaceManagerImpl instance) /*-{

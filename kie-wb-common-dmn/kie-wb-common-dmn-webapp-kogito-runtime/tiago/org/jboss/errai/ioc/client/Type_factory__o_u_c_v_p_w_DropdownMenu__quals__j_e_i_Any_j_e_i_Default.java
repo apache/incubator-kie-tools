@@ -36,12 +36,12 @@ public class Type_factory__o_u_c_v_p_w_DropdownMenu__quals__j_e_i_Any_j_e_i_Defa
   public DropdownMenu createInstance(final ContextManager contextManager) {
     final DropdownMenu instance = new DropdownMenu();
     setIncompleteInstance(instance);
-    final HTMLDivElement DropdownMenu_dropdown = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, DropdownMenu_dropdown);
-    DropdownMenu_HTMLDivElement_dropdown(instance, DropdownMenu_dropdown);
     final HTMLUListElement DropdownMenu_dropdownMenu = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DropdownMenu_dropdownMenu);
     DropdownMenu_HTMLUListElement_dropdownMenu(instance, DropdownMenu_dropdownMenu);
+    final HTMLDivElement DropdownMenu_dropdown = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, DropdownMenu_dropdown);
+    DropdownMenu_HTMLDivElement_dropdown(instance, DropdownMenu_dropdown);
     final HTMLElement DropdownMenu_text = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;

@@ -43,21 +43,21 @@ public class Type_factory__o_u_e_p_c_c_t_TreeHierarchyStructurePresenter__quals_
 
   public TreeHierarchyStructurePresenter createInstance(final ContextManager contextManager) {
     final PreferenceFormBeansInfo _preferenceFormBeansInfo_8 = (PreferenceFormBeansInfo) contextManager.getInstance("Type_factory__o_u_e_p_c_u_PreferenceFormBeansInfo__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_0 = (TreeHierarchyStructureView) contextManager.getInstance("Type_factory__o_u_e_p_c_c_t_TreeHierarchyStructureView__quals__j_e_i_Any_j_e_i_Default");
+    final PreferenceBeanStore _store_6 = (PreferenceBeanStoreClientImpl) contextManager.getInstance("Type_factory__o_u_p_c_s_PreferenceBeanStoreClientImpl__quals__j_e_i_Any_j_e_i_Default");
+    final Caller<PreferenceBeanServerStore> _preferenceBeanServerStoreCaller_1 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { PreferenceBeanServerStore.class }, new Annotation[] { });
     final ManagedInstance<TreeHierarchyInternalItemPresenter> _treeHierarchyInternalItemPresenterProvider_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeHierarchyInternalItemPresenter.class }, new Annotation[] { });
     final PlaceManager _placeManager_5 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<TreeHierarchyLeafItemPresenter> _treeHierarchyLeafItemPresenterProvider_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeHierarchyLeafItemPresenter.class }, new Annotation[] { });
-    final Caller<PreferenceBeanServerStore> _preferenceBeanServerStoreCaller_1 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { PreferenceBeanServerStore.class }, new Annotation[] { });
-    final Event<NotificationEvent> _notification_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
-    final View _view_0 = (TreeHierarchyStructureView) contextManager.getInstance("Type_factory__o_u_e_p_c_c_t_TreeHierarchyStructureView__quals__j_e_i_Any_j_e_i_Default");
     final Event<HierarchyItemFormInitializationEvent> _hierarchyItemFormInitializationEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { HierarchyItemFormInitializationEvent.class }, new Annotation[] { });
-    final PreferenceBeanStore _store_6 = (PreferenceBeanStoreClientImpl) contextManager.getInstance("Type_factory__o_u_p_c_s_PreferenceBeanStoreClientImpl__quals__j_e_i_Any_j_e_i_Default");
+    final Event<NotificationEvent> _notification_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
+    final ManagedInstance<TreeHierarchyLeafItemPresenter> _treeHierarchyLeafItemPresenterProvider_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeHierarchyLeafItemPresenter.class }, new Annotation[] { });
     final TreeHierarchyStructurePresenter instance = new TreeHierarchyStructurePresenter(_view_0, _preferenceBeanServerStoreCaller_1, _treeHierarchyInternalItemPresenterProvider_2, _treeHierarchyLeafItemPresenterProvider_3, _hierarchyItemFormInitializationEvent_4, _placeManager_5, _store_6, _notification_7, _preferenceFormBeansInfo_8);
-    registerDependentScopedReference(instance, _treeHierarchyInternalItemPresenterProvider_2);
-    registerDependentScopedReference(instance, _treeHierarchyLeafItemPresenterProvider_3);
-    registerDependentScopedReference(instance, _preferenceBeanServerStoreCaller_1);
-    registerDependentScopedReference(instance, _notification_7);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _preferenceBeanServerStoreCaller_1);
+    registerDependentScopedReference(instance, _treeHierarchyInternalItemPresenterProvider_2);
     registerDependentScopedReference(instance, _hierarchyItemFormInitializationEvent_4);
+    registerDependentScopedReference(instance, _notification_7);
+    registerDependentScopedReference(instance, _treeHierarchyLeafItemPresenterProvider_3);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "saveEventSubscription", CDI.subscribeLocal("org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent", new AbstractCDIEventCallback<PreferencesCentralSaveEvent>() {
       public void fireEvent(final PreferencesCentralSaveEvent event) {

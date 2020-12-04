@@ -152,20 +152,20 @@ public class Type_factory__o_k_w_c_d_c_e_d_DRDNameChangerView__quals__j_e_i_Any_
   }
 
   public DRDNameChangerView createInstance(final ContextManager contextManager) {
-    final Span _drdName_5 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_h_Span__quals__j_e_i_Any_j_e_i_Default");
-    final DivElement _editMode_3 = (DivElement) contextManager.getInstance("ExtensionProvided_factory__c_g_g_d_c_DivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final InputElement _drdNameInput_6 = (InputElement) contextManager.getInstance("ExtensionProvided_factory__c_g_g_d_c_InputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final DMNDiagramsSession _dmnDiagramsSession_0 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
-    final Event<DMNDiagramSelected> _selectedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DMNDiagramSelected.class }, new Annotation[] { });
-    final HTMLAnchorElement _returnToDRG_4 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DivElement _viewMode_2 = (DivElement) contextManager.getInstance("ExtensionProvided_factory__c_g_g_d_c_DivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final DMNDiagramsSession _dmnDiagramsSession_0 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
+    final InputElement _drdNameInput_6 = (InputElement) contextManager.getInstance("ExtensionProvided_factory__c_g_g_d_c_InputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Event<DMNDiagramSelected> _selectedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DMNDiagramSelected.class }, new Annotation[] { });
+    final Span _drdName_5 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_h_Span__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLAnchorElement _returnToDRG_4 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final DivElement _editMode_3 = (DivElement) contextManager.getInstance("ExtensionProvided_factory__c_g_g_d_c_DivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DRDNameChangerView instance = new DRDNameChangerView(_dmnDiagramsSession_0, _selectedEvent_1, _viewMode_2, _editMode_3, _returnToDRG_4, _drdName_5, _drdNameInput_6);
-    registerDependentScopedReference(instance, _drdName_5);
-    registerDependentScopedReference(instance, _editMode_3);
+    registerDependentScopedReference(instance, _viewMode_2);
     registerDependentScopedReference(instance, _drdNameInput_6);
     registerDependentScopedReference(instance, _selectedEvent_1);
+    registerDependentScopedReference(instance, _drdName_5);
     registerDependentScopedReference(instance, _returnToDRG_4);
-    registerDependentScopedReference(instance, _viewMode_2);
+    registerDependentScopedReference(instance, _editMode_3);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_d_DRDNameChangerViewTemplateResource templateForDRDNameChangerView = GWT.create(o_k_w_c_d_c_e_d_DRDNameChangerViewTemplateResource.class);
     Element parentElementForTemplateOfDRDNameChangerView = TemplateUtil.getRootTemplateParentElement(templateForDRDNameChangerView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/drd/DRDNameChangerView.html", "");

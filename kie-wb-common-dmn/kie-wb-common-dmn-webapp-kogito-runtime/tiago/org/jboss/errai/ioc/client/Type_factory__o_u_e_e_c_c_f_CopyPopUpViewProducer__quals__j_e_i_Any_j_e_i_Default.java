@@ -19,6 +19,9 @@ public class Type_factory__o_u_e_e_c_c_f_CopyPopUpViewProducer__quals__j_e_i_Any
   public CopyPopUpViewProducer createInstance(final ContextManager contextManager) {
     final CopyPopUpViewProducer instance = new CopyPopUpViewProducer();
     setIncompleteInstance(instance);
+    final ManagedInstance CopyPopUpViewProducer_copyPopUpViewInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { View.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, CopyPopUpViewProducer_copyPopUpViewInstance);
+    CopyPopUpViewProducer_ManagedInstance_copyPopUpViewInstance(instance, CopyPopUpViewProducer_copyPopUpViewInstance);
     final ManagedInstance CopyPopUpViewProducer_fallbackCopyPopUpViewInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CopyPopUpView.class }, new Annotation[] { new FallbackImplementation() {
         public Class annotationType() {
           return FallbackImplementation.class;
@@ -29,9 +32,6 @@ public class Type_factory__o_u_e_e_c_c_f_CopyPopUpViewProducer__quals__j_e_i_Any
     } });
     registerDependentScopedReference(instance, CopyPopUpViewProducer_fallbackCopyPopUpViewInstance);
     CopyPopUpViewProducer_ManagedInstance_fallbackCopyPopUpViewInstance(instance, CopyPopUpViewProducer_fallbackCopyPopUpViewInstance);
-    final ManagedInstance CopyPopUpViewProducer_copyPopUpViewInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { View.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, CopyPopUpViewProducer_copyPopUpViewInstance);
-    CopyPopUpViewProducer_ManagedInstance_copyPopUpViewInstance(instance, CopyPopUpViewProducer_copyPopUpViewInstance);
     setIncompleteInstance(null);
     return instance;
   }

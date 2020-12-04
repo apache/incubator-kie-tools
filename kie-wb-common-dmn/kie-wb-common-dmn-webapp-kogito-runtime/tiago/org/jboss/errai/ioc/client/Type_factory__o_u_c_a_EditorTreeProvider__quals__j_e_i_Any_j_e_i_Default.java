@@ -118,9 +118,9 @@ public class Type_factory__o_u_c_a_EditorTreeProvider__quals__j_e_i_Any_j_e_i_De
   }
 
   public EditorTreeProvider createInstance(final ContextManager contextManager) {
+    final PermissionTreeI18n _i18n_3 = (PermissionTreeI18NImpl) contextManager.getInstance("Type_factory__o_u_c_r_i_PermissionTreeI18NImpl__quals__j_e_i_Any_j_e_i_Default");
     final ActivityBeansCache _activityBeansCache_0 = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _iocManager_1 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
-    final PermissionTreeI18n _i18n_3 = (PermissionTreeI18NImpl) contextManager.getInstance("Type_factory__o_u_c_r_i_PermissionTreeI18NImpl__quals__j_e_i_Any_j_e_i_Default");
     final PermissionManager _permissionManager_2 = (DefaultPermissionManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultPermissionManager__quals__j_e_i_Any_j_e_i_Default");
     final EditorTreeProvider instance = new EditorTreeProvider(_activityBeansCache_0, _iocManager_1, _permissionManager_2, _i18n_3);
     registerDependentScopedReference(instance, _iocManager_1);

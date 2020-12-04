@@ -42,12 +42,12 @@ public class Type_factory__o_k_w_c_w_c_a_d_KieAssetsDropdownView__quals__j_e_i_A
 
   public KieAssetsDropdownView createInstance(final ContextManager contextManager) {
     final HTMLOptionElement _htmlOptionElement_1 = (HTMLOptionElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOptionElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final HTMLSelectElement _nativeSelect_0 = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final KieAssetsDropdownView instance = new KieAssetsDropdownView(_nativeSelect_0, _htmlOptionElement_1, _translationService_2);
     registerDependentScopedReference(instance, _htmlOptionElement_1);
-    registerDependentScopedReference(instance, _translationService_2);
     registerDependentScopedReference(instance, _nativeSelect_0);
+    registerDependentScopedReference(instance, _translationService_2);
     setIncompleteInstance(instance);
     o_k_w_c_w_c_a_d_KieAssetsDropdownViewTemplateResource templateForKieAssetsDropdownView = GWT.create(o_k_w_c_w_c_a_d_KieAssetsDropdownViewTemplateResource.class);
     Element parentElementForTemplateOfKieAssetsDropdownView = TemplateUtil.getRootTemplateParentElement(templateForKieAssetsDropdownView.getContents().getText(), "org/kie/workbench/common/widgets/client/assets/dropdown/KieAssetsDropdownView.html", "");

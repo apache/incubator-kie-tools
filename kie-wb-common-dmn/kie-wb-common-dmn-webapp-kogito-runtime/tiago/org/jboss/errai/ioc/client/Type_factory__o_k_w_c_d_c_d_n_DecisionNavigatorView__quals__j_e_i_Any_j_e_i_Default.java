@@ -39,13 +39,13 @@ public class Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorView__quals__j_e_i_A
   }
 
   public DecisionNavigatorView createInstance(final ContextManager contextManager) {
-    final HTMLDivElement _decisionComponents_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _mainTree_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _decisionComponentsContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _decisionComponents_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DecisionNavigatorView instance = new DecisionNavigatorView(_mainTree_0, _decisionComponentsContainer_1, _decisionComponents_2);
-    registerDependentScopedReference(instance, _decisionComponents_2);
     registerDependentScopedReference(instance, _mainTree_0);
     registerDependentScopedReference(instance, _decisionComponentsContainer_1);
+    registerDependentScopedReference(instance, _decisionComponents_2);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_d_n_DecisionNavigatorViewTemplateResource templateForDecisionNavigatorView = GWT.create(o_k_w_c_d_c_d_n_DecisionNavigatorViewTemplateResource.class);
     Element parentElementForTemplateOfDecisionNavigatorView = TemplateUtil.getRootTemplateParentElement(templateForDecisionNavigatorView.getContents().getText(), "org/kie/workbench/common/dmn/client/docks/navigator/DecisionNavigatorView.html", "");

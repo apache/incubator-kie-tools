@@ -35,22 +35,22 @@ public class _TextAnnotationValidatorImpl extends com.google.gwt.validation.clie
           "backgroundSet",
           org.kie.workbench.common.dmn.api.property.background.BackgroundSet.class,
           true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "description",
-          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "id",
           org.kie.workbench.common.dmn.api.property.dmn.Id.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "description",
+          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.TextAnnotation> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.TextAnnotation.class)
           .setConstrained(false)
           .put("backgroundSet", backgroundSet_pd)
-          .put("description", description_pd)
           .put("id", id_pd)
+          .put("description", description_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -149,8 +149,8 @@ public class _TextAnnotationValidatorImpl extends com.google.gwt.validation.clie
     if (propertyName.equals("backgroundSet")) {
       validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), false, groups);
       validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), false, groups);
-    } else if (propertyName.equals("description")) {
     } else if (propertyName.equals("id")) {
+    } else if (propertyName.equals("description")) {
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.TextAnnotation");
     }
@@ -176,9 +176,9 @@ public class _TextAnnotationValidatorImpl extends com.google.gwt.validation.clie
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
       }
-    } else if (propertyName.equals("description")) {
-      boolean valueTypeMatches = false;
     } else if (propertyName.equals("id")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("description")) {
       boolean valueTypeMatches = false;
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.TextAnnotation");

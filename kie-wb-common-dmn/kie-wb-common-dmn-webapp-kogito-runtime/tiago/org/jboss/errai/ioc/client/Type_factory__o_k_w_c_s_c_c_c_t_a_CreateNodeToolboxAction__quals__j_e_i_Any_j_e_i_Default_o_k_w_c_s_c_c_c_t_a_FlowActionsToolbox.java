@@ -32,8 +32,7 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_CreateNodeToolboxAction__quals__j
   }
 
   public CreateNodeToolboxAction createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_1 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final NodeProxy _nodeProxy_4 = (NodeProxy) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_p_NodeProxy__quals__j_e_i_Any_j_e_i_Default");
+    final ClientFactoryManager _clientFactoryManager_3 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<GeneralCreateNodeAction> _createNodeActions_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { GeneralCreateNodeAction.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -42,11 +41,12 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_CreateNodeToolboxAction__quals__j
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final ClientFactoryManager _clientFactoryManager_3 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_1 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final NodeProxy _nodeProxy_4 = (NodeProxy) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_p_NodeProxy__quals__j_e_i_Any_j_e_i_Default");
     final CreateNodeToolboxAction instance = new CreateNodeToolboxAction(_createNodeActions_0, _definitionUtils_1, _translationService_2, _clientFactoryManager_3, _nodeProxy_4);
-    registerDependentScopedReference(instance, _nodeProxy_4);
     registerDependentScopedReference(instance, _createNodeActions_0);
+    registerDependentScopedReference(instance, _nodeProxy_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -106,8 +106,8 @@ public class Type_factory__o_k_w_c_d_c_c_c_a_TextAnnotationTextPropertyProviderI
   }
 
   public TextAnnotationTextPropertyProviderImpl createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_1 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final DefaultCanvasCommandFactory _canvasCommandFactory_0 = (DefaultCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_f_DefaultCanvasCommandFactory__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final DefinitionUtils _definitionUtils_1 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final TextAnnotationTextPropertyProviderImpl instance = new TextAnnotationTextPropertyProviderImpl(_canvasCommandFactory_0, _definitionUtils_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

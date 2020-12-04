@@ -43,11 +43,11 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_DefaultCardComponentContentView__qu
   }
 
   public DefaultCardComponentContentView createInstance(final ContextManager contextManager) {
-    final HTMLParagraphElement _path_0 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _removeButton_1 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLParagraphElement _path_0 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DefaultCardComponentContentView instance = new DefaultCardComponentContentView(_path_0, _removeButton_1);
-    registerDependentScopedReference(instance, _path_0);
     registerDependentScopedReference(instance, _removeButton_1);
+    registerDependentScopedReference(instance, _path_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_i_g_DefaultCardComponentContentViewTemplateResource templateForDefaultCardComponentContentView = GWT.create(o_k_w_c_d_c_e_i_g_DefaultCardComponentContentViewTemplateResource.class);
     Element parentElementForTemplateOfDefaultCardComponentContentView = TemplateUtil.getRootTemplateParentElement(templateForDefaultCardComponentContentView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/included/grid/DefaultCardComponentContentView.html", "");

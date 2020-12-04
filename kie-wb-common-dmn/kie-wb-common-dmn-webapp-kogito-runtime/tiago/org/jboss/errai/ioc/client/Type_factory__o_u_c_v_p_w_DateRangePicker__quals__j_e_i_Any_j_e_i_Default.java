@@ -19,26 +19,18 @@ public class Type_factory__o_u_c_v_p_w_DateRangePicker__quals__j_e_i_Any_j_e_i_D
   public DateRangePicker createInstance(final ContextManager contextManager) {
     final DateRangePicker instance = new DateRangePicker();
     setIncompleteInstance(instance);
-    final JQuery DateRangePicker_jQuery = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, DateRangePicker_jQuery);
-    DateRangePicker_JQuery_jQuery(instance, DateRangePicker_jQuery);
     final TextInput DateRangePicker_input = (TextInput) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_TextInput__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DateRangePicker_input);
     DateRangePicker_TextInput_input(instance, DateRangePicker_input);
     final TranslationService DateRangePicker_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DateRangePicker_translationService);
     DateRangePicker_TranslationService_translationService(instance, DateRangePicker_translationService);
+    final JQuery DateRangePicker_jQuery = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, DateRangePicker_jQuery);
+    DateRangePicker_JQuery_jQuery(instance, DateRangePicker_jQuery);
     setIncompleteInstance(null);
     return instance;
   }
-
-  native static JQuery DateRangePicker_JQuery_jQuery(DateRangePicker instance) /*-{
-    return instance.@org.uberfire.client.views.pfly.widgets.DateRangePicker::jQuery;
-  }-*/;
-
-  native static void DateRangePicker_JQuery_jQuery(DateRangePicker instance, JQuery<JQueryDateRangePickerElement> value) /*-{
-    instance.@org.uberfire.client.views.pfly.widgets.DateRangePicker::jQuery = value;
-  }-*/;
 
   native static TranslationService DateRangePicker_TranslationService_translationService(DateRangePicker instance) /*-{
     return instance.@org.uberfire.client.views.pfly.widgets.DateRangePicker::translationService;
@@ -46,6 +38,14 @@ public class Type_factory__o_u_c_v_p_w_DateRangePicker__quals__j_e_i_Any_j_e_i_D
 
   native static void DateRangePicker_TranslationService_translationService(DateRangePicker instance, TranslationService value) /*-{
     instance.@org.uberfire.client.views.pfly.widgets.DateRangePicker::translationService = value;
+  }-*/;
+
+  native static JQuery DateRangePicker_JQuery_jQuery(DateRangePicker instance) /*-{
+    return instance.@org.uberfire.client.views.pfly.widgets.DateRangePicker::jQuery;
+  }-*/;
+
+  native static void DateRangePicker_JQuery_jQuery(DateRangePicker instance, JQuery<JQueryDateRangePickerElement> value) /*-{
+    instance.@org.uberfire.client.views.pfly.widgets.DateRangePicker::jQuery = value;
   }-*/;
 
   native static TextInput DateRangePicker_TextInput_input(DateRangePicker instance) /*-{

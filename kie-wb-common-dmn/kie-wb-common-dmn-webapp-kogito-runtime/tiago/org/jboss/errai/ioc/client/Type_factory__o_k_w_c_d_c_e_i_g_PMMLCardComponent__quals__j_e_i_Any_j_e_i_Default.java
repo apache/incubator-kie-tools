@@ -19,11 +19,11 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_PMMLCardComponent__quals__j_e_i_Any
   }
 
   public PMMLCardComponent createInstance(final ContextManager contextManager) {
-    final Event<RefreshDecisionComponents> _refreshDecisionComponentsEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshDecisionComponents.class }, new Annotation[] { });
     final ContentView _contentView_0 = (PMMLCardComponentContentView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_g_PMMLCardComponentContentView__quals__j_e_i_Any_o_k_w_c_d_c_e_i_g_PMMLCard");
+    final Event<RefreshDecisionComponents> _refreshDecisionComponentsEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshDecisionComponents.class }, new Annotation[] { });
     final PMMLCardComponent instance = new PMMLCardComponent(_contentView_0, _refreshDecisionComponentsEvent_1);
-    registerDependentScopedReference(instance, _refreshDecisionComponentsEvent_1);
     registerDependentScopedReference(instance, _contentView_0);
+    registerDependentScopedReference(instance, _refreshDecisionComponentsEvent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

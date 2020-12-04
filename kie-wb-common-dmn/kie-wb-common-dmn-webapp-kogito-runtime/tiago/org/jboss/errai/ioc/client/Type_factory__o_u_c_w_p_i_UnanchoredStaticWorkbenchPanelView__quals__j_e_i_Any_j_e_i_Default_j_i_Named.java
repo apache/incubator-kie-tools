@@ -37,15 +37,15 @@ public class Type_factory__o_u_c_w_p_i_UnanchoredStaticWorkbenchPanelView__quals
   public UnanchoredStaticWorkbenchPanelView createInstance(final ContextManager contextManager) {
     final UnanchoredStaticWorkbenchPanelView instance = new UnanchoredStaticWorkbenchPanelView();
     setIncompleteInstance(instance);
-    final PanelManagerImpl AbstractWorkbenchPanelView_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    AbstractWorkbenchPanelView_PanelManager_panelManager(instance, AbstractWorkbenchPanelView_panelManager);
     final PlaceManagerImpl UnanchoredStaticWorkbenchPanelView_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     UnanchoredStaticWorkbenchPanelView_PlaceManager_placeManager(instance, UnanchoredStaticWorkbenchPanelView_placeManager);
-    final LayoutSelection AbstractWorkbenchPanelView_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
-    AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(instance, AbstractWorkbenchPanelView_layoutSelection);
     final StaticFocusedResizePanel UnanchoredStaticWorkbenchPanelView_panel = (StaticFocusedResizePanel) contextManager.getInstance("ExtensionProvided_factory__o_u_c_w_w_p_StaticFocusedResizePanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, UnanchoredStaticWorkbenchPanelView_panel);
     UnanchoredStaticWorkbenchPanelView_StaticFocusedResizePanel_panel(instance, UnanchoredStaticWorkbenchPanelView_panel);
+    final PanelManagerImpl AbstractWorkbenchPanelView_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    AbstractWorkbenchPanelView_PanelManager_panelManager(instance, AbstractWorkbenchPanelView_panelManager);
+    final LayoutSelection AbstractWorkbenchPanelView_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
+    AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(instance, AbstractWorkbenchPanelView_layoutSelection);
     setIncompleteInstance(null);
     return instance;
   }

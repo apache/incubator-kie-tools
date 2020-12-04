@@ -24,13 +24,13 @@ public class Type_factory__o_u_e_p_c_c_s_PreferencesRootScreen__quals__j_e_i_Any
   }
 
   public PreferencesRootScreen createInstance(final ContextManager contextManager) {
-    final PreferenceFormBeansInfo _preferenceFormBeansInfo_2 = (PreferenceFormBeansInfo) contextManager.getInstance("Type_factory__o_u_e_p_c_u_PreferenceFormBeansInfo__quals__j_e_i_Any_j_e_i_Default");
-    final Event<HierarchyItemFormInitializationEvent> _hierarchyItemFormInitializationEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { HierarchyItemFormInitializationEvent.class }, new Annotation[] { });
-    final View _view_0 = (PreferencesRootView) contextManager.getInstance("Type_factory__o_u_e_p_c_c_s_PreferencesRootView__quals__j_e_i_Any_j_e_i_Default");
     final PlaceManager _placeManager_1 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final PreferenceFormBeansInfo _preferenceFormBeansInfo_2 = (PreferenceFormBeansInfo) contextManager.getInstance("Type_factory__o_u_e_p_c_u_PreferenceFormBeansInfo__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_0 = (PreferencesRootView) contextManager.getInstance("Type_factory__o_u_e_p_c_c_s_PreferencesRootView__quals__j_e_i_Any_j_e_i_Default");
+    final Event<HierarchyItemFormInitializationEvent> _hierarchyItemFormInitializationEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { HierarchyItemFormInitializationEvent.class }, new Annotation[] { });
     final PreferencesRootScreen instance = new PreferencesRootScreen(_view_0, _placeManager_1, _preferenceFormBeansInfo_2, _hierarchyItemFormInitializationEvent_3);
-    registerDependentScopedReference(instance, _hierarchyItemFormInitializationEvent_3);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _hierarchyItemFormInitializationEvent_3);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "hierarchyItemSelectedEventSubscription", CDI.subscribeLocal("org.uberfire.ext.preferences.client.event.HierarchyItemSelectedEvent", new AbstractCDIEventCallback<HierarchyItemSelectedEvent>() {
       public void fireEvent(final HierarchyItemSelectedEvent event) {

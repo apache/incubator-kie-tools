@@ -18,11 +18,11 @@ public class Type_factory__o_u_e_l_e_c_g_BootstrapLayoutGenerator__quals__j_e_i_
   public BootstrapLayoutGenerator createInstance(final ContextManager contextManager) {
     final BootstrapLayoutGenerator instance = new BootstrapLayoutGenerator();
     setIncompleteInstance(instance);
+    final LayoutEditorCssHelper AbstractLayoutGenerator_cssPropertiesHelper = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
+    AbstractLayoutGenerator_LayoutEditorCssHelper_cssPropertiesHelper(instance, AbstractLayoutGenerator_cssPropertiesHelper);
     final BootstrapLayoutGeneratorDriver BootstrapLayoutGenerator_bootstrapDriver = (BootstrapLayoutGeneratorDriver) contextManager.getInstance("Type_factory__o_u_e_l_e_c_g_BootstrapLayoutGeneratorDriver__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, BootstrapLayoutGenerator_bootstrapDriver);
     BootstrapLayoutGenerator_BootstrapLayoutGeneratorDriver_bootstrapDriver(instance, BootstrapLayoutGenerator_bootstrapDriver);
-    final LayoutEditorCssHelper AbstractLayoutGenerator_cssPropertiesHelper = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
-    AbstractLayoutGenerator_LayoutEditorCssHelper_cssPropertiesHelper(instance, AbstractLayoutGenerator_cssPropertiesHelper);
     setIncompleteInstance(null);
     return instance;
   }

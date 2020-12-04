@@ -345,12 +345,12 @@ public class Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_An
   }
 
   public DMNDiagramsSession createInstance(final ContextManager contextManager) {
-    final DMNDiagramUtils _dmnDiagramUtils_2 = (DMNDiagramUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_a_g_DMNDiagramUtils__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DMNDiagramsSessionState> _dmnDiagramsSessionStates_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DMNDiagramsSessionState.class }, new Annotation[] { });
+    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramUtils _dmnDiagramUtils_2 = (DMNDiagramUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_a_g_DMNDiagramUtils__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession instance = new DMNDiagramsSession(_dmnDiagramsSessionStates_0, _sessionManager_1, _dmnDiagramUtils_2);
-    registerDependentScopedReference(instance, _dmnDiagramUtils_2);
     registerDependentScopedReference(instance, _dmnDiagramsSessionStates_0);
+    registerDependentScopedReference(instance, _dmnDiagramUtils_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

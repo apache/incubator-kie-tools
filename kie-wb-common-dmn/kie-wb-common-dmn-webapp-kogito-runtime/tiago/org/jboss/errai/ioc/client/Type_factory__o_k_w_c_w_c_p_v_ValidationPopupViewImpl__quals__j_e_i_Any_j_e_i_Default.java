@@ -39,15 +39,15 @@ public class Type_factory__o_k_w_c_w_c_p_v_ValidationPopupViewImpl__quals__j_e_i
   }
 
   public ValidationPopupViewImpl createInstance(final ContextManager contextManager) {
-    final Button _cancelButton_2 = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Div _view_0 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Button _yesButton_1 = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final Div _view_0 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Button _cancelButton_2 = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Button _yesButton_1 = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ValidationPopupViewImpl instance = new ValidationPopupViewImpl(_view_0, _yesButton_1, _cancelButton_2, _translationService_3);
-    registerDependentScopedReference(instance, _cancelButton_2);
-    registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _yesButton_1);
     registerDependentScopedReference(instance, _translationService_3);
+    registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _cancelButton_2);
+    registerDependentScopedReference(instance, _yesButton_1);
     setIncompleteInstance(instance);
     o_k_w_c_w_c_p_v_ValidationPopupViewImplTemplateResource templateForValidationPopupViewImpl = GWT.create(o_k_w_c_w_c_p_v_ValidationPopupViewImplTemplateResource.class);
     Element parentElementForTemplateOfValidationPopupViewImpl = TemplateUtil.getRootTemplateParentElement(templateForValidationPopupViewImpl.getContents().getText(), "org/kie/workbench/common/widgets/client/popups/validation/ValidationPopupViewImpl.html", "");

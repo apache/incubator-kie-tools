@@ -55,19 +55,6 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_DMNCardComponentContentView__quals_
   }
 
   public DMNCardComponentContentView createInstance(final ContextManager contextManager) {
-    final HTMLButtonElement _removeButton_3 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLParagraphElement _path_0 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _dataTypesCount_1 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=span)";
-        }
-        public String value() {
-          return "span";
-        }
-    } });
     final HTMLElement _drgElementsCount_2 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -79,11 +66,24 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_DMNCardComponentContentView__quals_
           return "span";
         }
     } });
+    final HTMLElement _dataTypesCount_1 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=span)";
+        }
+        public String value() {
+          return "span";
+        }
+    } });
+    final HTMLButtonElement _removeButton_3 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLParagraphElement _path_0 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DMNCardComponentContentView instance = new DMNCardComponentContentView(_path_0, _dataTypesCount_1, _drgElementsCount_2, _removeButton_3);
+    registerDependentScopedReference(instance, _drgElementsCount_2);
+    registerDependentScopedReference(instance, _dataTypesCount_1);
     registerDependentScopedReference(instance, _removeButton_3);
     registerDependentScopedReference(instance, _path_0);
-    registerDependentScopedReference(instance, _dataTypesCount_1);
-    registerDependentScopedReference(instance, _drgElementsCount_2);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_i_g_DMNCardComponentContentViewTemplateResource templateForDMNCardComponentContentView = GWT.create(o_k_w_c_d_c_e_i_g_DMNCardComponentContentViewTemplateResource.class);
     Element parentElementForTemplateOfDMNCardComponentContentView = TemplateUtil.getRootTemplateParentElement(templateForDMNCardComponentContentView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/included/grid/DMNCardComponentContentView.html", "");

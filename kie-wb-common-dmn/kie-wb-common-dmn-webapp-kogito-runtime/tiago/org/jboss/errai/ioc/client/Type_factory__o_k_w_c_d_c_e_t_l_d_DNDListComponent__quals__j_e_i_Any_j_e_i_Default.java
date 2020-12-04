@@ -15,8 +15,8 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_d_DNDListComponent__quals__j_e_i_An
   }
 
   public DNDListComponent createInstance(final ContextManager contextManager) {
-    final DataTypeList _dataTypeList_1 = (DataTypeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeList__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DNDListComponentView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_d_DNDListComponentView__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeList _dataTypeList_1 = (DataTypeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeList__quals__j_e_i_Any_j_e_i_Default");
     final DNDListComponent instance = new DNDListComponent(_view_0, _dataTypeList_1);
     registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);

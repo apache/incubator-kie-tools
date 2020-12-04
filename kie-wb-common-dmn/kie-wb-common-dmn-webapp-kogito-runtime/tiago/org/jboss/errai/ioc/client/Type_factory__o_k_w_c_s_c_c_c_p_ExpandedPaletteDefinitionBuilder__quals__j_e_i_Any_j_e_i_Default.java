@@ -19,10 +19,10 @@ public class Type_factory__o_k_w_c_s_c_c_c_p_ExpandedPaletteDefinitionBuilder__q
   }
 
   public ExpandedPaletteDefinitionBuilder createInstance(final ContextManager contextManager) {
-    final DomainProfileManager _profileManager_1 = (DomainProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_DomainProfileManager__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionsCacheRegistry _definitionsRegistry_2 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final StunnerTranslationService _translationService_3 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DomainProfileManager _profileManager_1 = (DomainProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_DomainProfileManager__quals__j_e_i_Any_j_e_i_Default");
     final ExpandedPaletteDefinitionBuilder instance = new ExpandedPaletteDefinitionBuilder(_definitionUtils_0, _profileManager_1, _definitionsRegistry_2, _translationService_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

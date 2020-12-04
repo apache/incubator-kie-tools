@@ -113,12 +113,12 @@ public class Type_factory__o_k_w_c_s_c_c_e_s_ScreenEventPublisher__quals__j_e_i_
   }
 
   public ScreenEventPublisher createInstance(final ContextManager contextManager) {
+    final Event<ScreenMaximizedEvent> _diagramEditorMaximizedEventEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ScreenMaximizedEvent.class }, new Annotation[] { });
     final Event<ScreenMinimizedEvent> _diagramEditorMinimizedEventEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ScreenMinimizedEvent.class }, new Annotation[] { });
     final ActivityBeansCache _activityBeansCache_2 = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
-    final Event<ScreenMaximizedEvent> _diagramEditorMaximizedEventEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ScreenMaximizedEvent.class }, new Annotation[] { });
     final ScreenEventPublisher instance = new ScreenEventPublisher(_diagramEditorMaximizedEventEvent_0, _diagramEditorMinimizedEventEvent_1, _activityBeansCache_2);
-    registerDependentScopedReference(instance, _diagramEditorMinimizedEventEvent_1);
     registerDependentScopedReference(instance, _diagramEditorMaximizedEventEvent_0);
+    registerDependentScopedReference(instance, _diagramEditorMinimizedEventEvent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

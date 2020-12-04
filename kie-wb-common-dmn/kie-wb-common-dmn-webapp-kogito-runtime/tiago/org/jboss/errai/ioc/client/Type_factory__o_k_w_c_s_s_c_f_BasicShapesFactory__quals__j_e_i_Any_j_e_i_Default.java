@@ -15,11 +15,11 @@ public class Type_factory__o_k_w_c_s_s_c_f_BasicShapesFactory__quals__j_e_i_Any_
   }
 
   public BasicShapesFactory createInstance(final ContextManager contextManager) {
-    final ShapeDefFunctionalFactory _functionalFactory_0 = (ShapeDefFunctionalFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_f_ShapeDefFunctionalFactory__quals__j_e_i_Any_j_e_i_Default");
     final ShapeViewFactory _shapeViewFactory_1 = (ShapeViewFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_s_c_v_ShapeViewFactory__quals__j_e_i_Any_j_e_i_Default");
+    final ShapeDefFunctionalFactory _functionalFactory_0 = (ShapeDefFunctionalFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_f_ShapeDefFunctionalFactory__quals__j_e_i_Any_j_e_i_Default");
     final BasicShapesFactory instance = new BasicShapesFactory(_functionalFactory_0, _shapeViewFactory_1);
-    registerDependentScopedReference(instance, _functionalFactory_0);
     registerDependentScopedReference(instance, _shapeViewFactory_1);
+    registerDependentScopedReference(instance, _functionalFactory_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

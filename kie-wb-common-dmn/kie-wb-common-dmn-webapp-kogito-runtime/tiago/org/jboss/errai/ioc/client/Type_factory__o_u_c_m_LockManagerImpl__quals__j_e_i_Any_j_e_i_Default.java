@@ -33,24 +33,24 @@ public class Type_factory__o_u_c_m_LockManagerImpl__quals__j_e_i_Any_j_e_i_Defau
   public LockManagerImpl createInstance(final ContextManager contextManager) {
     final LockManagerImpl instance = new LockManagerImpl();
     setIncompleteInstance(instance);
-    final User LockManagerImpl_user = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, LockManagerImpl_user);
-    LockManagerImpl_User_user(instance, LockManagerImpl_user);
-    final Event LockManagerImpl_updatedLockStatusEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { UpdatedLockStatusEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, LockManagerImpl_updatedLockStatusEvent);
-    LockManagerImpl_Event_updatedLockStatusEvent(instance, LockManagerImpl_updatedLockStatusEvent);
+    final LockDemandDetector LockManagerImpl_lockDemandDetector = (LockDemandDetector) contextManager.getInstance("Type_factory__o_u_c_m_LockDemandDetector__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, LockManagerImpl_lockDemandDetector);
+    LockManagerImpl_LockDemandDetector_lockDemandDetector(instance, LockManagerImpl_lockDemandDetector);
     final VFSLockServiceProxyClientImpl LockManagerImpl_lockService = (VFSLockServiceProxyClientImpl) contextManager.getInstance("Type_factory__o_u_c_w_VFSLockServiceProxyClientImpl__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, LockManagerImpl_lockService);
     LockManagerImpl_VFSLockServiceProxy_lockService(instance, LockManagerImpl_lockService);
     final Event LockManagerImpl_changeTitleEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, LockManagerImpl_changeTitleEvent);
     LockManagerImpl_Event_changeTitleEvent(instance, LockManagerImpl_changeTitleEvent);
+    final Event LockManagerImpl_updatedLockStatusEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { UpdatedLockStatusEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, LockManagerImpl_updatedLockStatusEvent);
+    LockManagerImpl_Event_updatedLockStatusEvent(instance, LockManagerImpl_updatedLockStatusEvent);
+    final User LockManagerImpl_user = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, LockManagerImpl_user);
+    LockManagerImpl_User_user(instance, LockManagerImpl_user);
     final Event LockManagerImpl_lockNotification = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, LockManagerImpl_lockNotification);
     LockManagerImpl_Event_lockNotification(instance, LockManagerImpl_lockNotification);
-    final LockDemandDetector LockManagerImpl_lockDemandDetector = (LockDemandDetector) contextManager.getInstance("Type_factory__o_u_c_m_LockDemandDetector__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, LockManagerImpl_lockDemandDetector);
-    LockManagerImpl_LockDemandDetector_lockDemandDetector(instance, LockManagerImpl_lockDemandDetector);
     thisInstance.setReference(instance, "updateLockInfoSubscription", CDI.subscribeLocal("org.uberfire.backend.vfs.impl.LockInfo", new AbstractCDIEventCallback<LockInfo>() {
       public void fireEvent(final LockInfo event) {
         LockManagerImpl_updateLockInfo_LockInfo(instance, event);
@@ -116,14 +116,6 @@ public class Type_factory__o_u_c_m_LockManagerImpl__quals__j_e_i_Any_j_e_i_Defau
     ((Subscription) thisInstance.getReferenceAs(instance, "onLockRequiredSubscription", Subscription.class)).remove();
   }
 
-  native static Event LockManagerImpl_Event_updatedLockStatusEvent(LockManagerImpl instance) /*-{
-    return instance.@org.uberfire.client.mvp.LockManagerImpl::updatedLockStatusEvent;
-  }-*/;
-
-  native static void LockManagerImpl_Event_updatedLockStatusEvent(LockManagerImpl instance, Event<UpdatedLockStatusEvent> value) /*-{
-    instance.@org.uberfire.client.mvp.LockManagerImpl::updatedLockStatusEvent = value;
-  }-*/;
-
   native static VFSLockServiceProxy LockManagerImpl_VFSLockServiceProxy_lockService(LockManagerImpl instance) /*-{
     return instance.@org.uberfire.client.mvp.LockManagerImpl::lockService;
   }-*/;
@@ -140,6 +132,14 @@ public class Type_factory__o_u_c_m_LockManagerImpl__quals__j_e_i_Any_j_e_i_Defau
     instance.@org.uberfire.client.mvp.LockManagerImpl::changeTitleEvent = value;
   }-*/;
 
+  native static Event LockManagerImpl_Event_updatedLockStatusEvent(LockManagerImpl instance) /*-{
+    return instance.@org.uberfire.client.mvp.LockManagerImpl::updatedLockStatusEvent;
+  }-*/;
+
+  native static void LockManagerImpl_Event_updatedLockStatusEvent(LockManagerImpl instance, Event<UpdatedLockStatusEvent> value) /*-{
+    instance.@org.uberfire.client.mvp.LockManagerImpl::updatedLockStatusEvent = value;
+  }-*/;
+
   native static User LockManagerImpl_User_user(LockManagerImpl instance) /*-{
     return instance.@org.uberfire.client.mvp.LockManagerImpl::user;
   }-*/;
@@ -148,20 +148,20 @@ public class Type_factory__o_u_c_m_LockManagerImpl__quals__j_e_i_Any_j_e_i_Defau
     instance.@org.uberfire.client.mvp.LockManagerImpl::user = value;
   }-*/;
 
-  native static Event LockManagerImpl_Event_lockNotification(LockManagerImpl instance) /*-{
-    return instance.@org.uberfire.client.mvp.LockManagerImpl::lockNotification;
-  }-*/;
-
-  native static void LockManagerImpl_Event_lockNotification(LockManagerImpl instance, Event<NotificationEvent> value) /*-{
-    instance.@org.uberfire.client.mvp.LockManagerImpl::lockNotification = value;
-  }-*/;
-
   native static LockDemandDetector LockManagerImpl_LockDemandDetector_lockDemandDetector(LockManagerImpl instance) /*-{
     return instance.@org.uberfire.client.mvp.LockManagerImpl::lockDemandDetector;
   }-*/;
 
   native static void LockManagerImpl_LockDemandDetector_lockDemandDetector(LockManagerImpl instance, LockDemandDetector value) /*-{
     instance.@org.uberfire.client.mvp.LockManagerImpl::lockDemandDetector = value;
+  }-*/;
+
+  native static Event LockManagerImpl_Event_lockNotification(LockManagerImpl instance) /*-{
+    return instance.@org.uberfire.client.mvp.LockManagerImpl::lockNotification;
+  }-*/;
+
+  native static void LockManagerImpl_Event_lockNotification(LockManagerImpl instance, Event<NotificationEvent> value) /*-{
+    instance.@org.uberfire.client.mvp.LockManagerImpl::lockNotification = value;
   }-*/;
 
   public native static void LockManagerImpl_onResourceUpdated_ResourceUpdatedEvent(LockManagerImpl instance, ResourceUpdatedEvent a0) /*-{

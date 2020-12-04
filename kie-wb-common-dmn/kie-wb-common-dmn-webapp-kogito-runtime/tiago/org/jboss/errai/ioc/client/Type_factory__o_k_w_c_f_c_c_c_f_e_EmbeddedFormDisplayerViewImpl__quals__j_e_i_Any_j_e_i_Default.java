@@ -47,12 +47,12 @@ public class Type_factory__o_k_w_c_f_c_c_c_f_e_EmbeddedFormDisplayerViewImpl__qu
     final EmbeddedFormDisplayerViewImpl instance = new EmbeddedFormDisplayerViewImpl(_translationService_0);
     registerDependentScopedReference(instance, _translationService_0);
     setIncompleteInstance(instance);
-    final Button EmbeddedFormDisplayerViewImpl_cancel = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, EmbeddedFormDisplayerViewImpl_cancel);
-    EmbeddedFormDisplayerViewImpl_Button_cancel(instance, EmbeddedFormDisplayerViewImpl_cancel);
     final Button EmbeddedFormDisplayerViewImpl_accept = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, EmbeddedFormDisplayerViewImpl_accept);
     EmbeddedFormDisplayerViewImpl_Button_accept(instance, EmbeddedFormDisplayerViewImpl_accept);
+    final Button EmbeddedFormDisplayerViewImpl_cancel = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, EmbeddedFormDisplayerViewImpl_cancel);
+    EmbeddedFormDisplayerViewImpl_Button_cancel(instance, EmbeddedFormDisplayerViewImpl_cancel);
     o_k_w_c_f_c_c_c_f_e_EmbeddedFormDisplayerViewImplTemplateResource templateForEmbeddedFormDisplayerViewImpl = GWT.create(o_k_w_c_f_c_c_c_f_e_EmbeddedFormDisplayerViewImplTemplateResource.class);
     Element parentElementForTemplateOfEmbeddedFormDisplayerViewImpl = TemplateUtil.getRootTemplateParentElement(templateForEmbeddedFormDisplayerViewImpl.getContents().getText(), "org/kie/workbench/common/forms/crud/client/component/formDisplay/embedded/EmbeddedFormDisplayerViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/crud/client/component/formDisplay/embedded/EmbeddedFormDisplayerViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfEmbeddedFormDisplayerViewImpl));

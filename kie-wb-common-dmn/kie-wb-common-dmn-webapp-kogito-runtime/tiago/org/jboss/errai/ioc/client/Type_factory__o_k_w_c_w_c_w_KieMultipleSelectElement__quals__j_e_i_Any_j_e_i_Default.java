@@ -17,13 +17,13 @@ public class Type_factory__o_k_w_c_w_c_w_KieMultipleSelectElement__quals__j_e_i_
   }
 
   public KieMultipleSelectElement createInstance(final ContextManager contextManager) {
-    final Elemental2DomUtil _elemental2DomUtil_2 = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (KieMultipleSelectElementView) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KieMultipleSelectElementView__quals__j_e_i_Any_j_e_i_Default");
     final KieSelectOptionsListPresenter _optionsListPresenter_1 = (KieSelectOptionsListPresenter) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KieSelectOptionsListPresenter__quals__j_e_i_Any_j_e_i_Default");
+    final Elemental2DomUtil _elemental2DomUtil_2 = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
     final KieMultipleSelectElement instance = new KieMultipleSelectElement(_view_0, _optionsListPresenter_1, _elemental2DomUtil_2);
-    registerDependentScopedReference(instance, _elemental2DomUtil_2);
     registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _optionsListPresenter_1);
+    registerDependentScopedReference(instance, _elemental2DomUtil_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -141,8 +141,8 @@ public class Type_factory__o_k_w_c_s_c_r_e_i_ConnectorParentsMatchContainmentHan
   }
 
   public ConnectorParentsMatchContainmentHandler createInstance(final ContextManager contextManager) {
-    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final TreeWalkTraverseProcessor _treeWalkTraverseProcessor_1 = (TreeWalkTraverseProcessorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_t_t_TreeWalkTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final ConnectorParentsMatchContainmentHandler instance = new ConnectorParentsMatchContainmentHandler(_definitionManager_0, _treeWalkTraverseProcessor_1);
     registerDependentScopedReference(instance, _treeWalkTraverseProcessor_1);
     setIncompleteInstance(instance);

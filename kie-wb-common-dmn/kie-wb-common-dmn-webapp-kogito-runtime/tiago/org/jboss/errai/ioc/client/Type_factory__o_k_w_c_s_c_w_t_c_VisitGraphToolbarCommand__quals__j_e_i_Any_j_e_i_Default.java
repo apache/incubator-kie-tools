@@ -28,8 +28,8 @@ public class Type_factory__o_k_w_c_s_c_w_t_c_VisitGraphToolbarCommand__quals__j_
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final VisitGraphToolbarCommand instance = new VisitGraphToolbarCommand(_definitionUtils_0, _command_1, _translationService_2);
     registerDependentScopedReference(instance, _command_1);
     setIncompleteInstance(instance);

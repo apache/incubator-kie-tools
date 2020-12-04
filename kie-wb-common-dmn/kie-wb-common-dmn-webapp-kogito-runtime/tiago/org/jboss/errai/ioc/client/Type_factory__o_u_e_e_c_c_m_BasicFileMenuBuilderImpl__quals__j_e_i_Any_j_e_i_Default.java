@@ -28,15 +28,15 @@ public class Type_factory__o_u_e_e_c_c_m_BasicFileMenuBuilderImpl__quals__j_e_i_
   public BasicFileMenuBuilderImpl createInstance(final ContextManager contextManager) {
     final DeletePopUpPresenter _deletePopUpPresenter_0 = (DeletePopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_DeletePopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
     final CopyPopUpPresenter _copyPopUpPresenter_1 = (CopyPopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_CopyPopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
-    final Event<NotificationEvent> _notification_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
-    final RenamePopUpPresenter _renamePopUpPresenter_2 = (RenamePopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_RenamePopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
     final RestoreVersionCommandProvider _restoreVersionCommandProvider_5 = (RestoreVersionCommandProvider) contextManager.getInstance("Type_factory__o_u_e_e_c_c_m_RestoreVersionCommandProvider__quals__j_e_i_Any_j_e_i_Default");
+    final RenamePopUpPresenter _renamePopUpPresenter_2 = (RenamePopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_RenamePopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
+    final Event<NotificationEvent> _notification_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     final BusyIndicatorView _busyIndicatorView_3 = (BusyIndicatorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_c_BusyIndicatorView__quals__j_e_i_Any_j_e_i_Default");
     final BasicFileMenuBuilderImpl instance = new BasicFileMenuBuilderImpl(_deletePopUpPresenter_0, _copyPopUpPresenter_1, _renamePopUpPresenter_2, _busyIndicatorView_3, _notification_4, _restoreVersionCommandProvider_5);
     registerDependentScopedReference(instance, _copyPopUpPresenter_1);
-    registerDependentScopedReference(instance, _notification_4);
-    registerDependentScopedReference(instance, _renamePopUpPresenter_2);
     registerDependentScopedReference(instance, _restoreVersionCommandProvider_5);
+    registerDependentScopedReference(instance, _renamePopUpPresenter_2);
+    registerDependentScopedReference(instance, _notification_4);
     registerDependentScopedReference(instance, _busyIndicatorView_3);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onEditorLockInfoSubscription", CDI.subscribeLocal("org.uberfire.client.mvp.UpdatedLockStatusEvent", new AbstractCDIEventCallback<UpdatedLockStatusEvent>() {

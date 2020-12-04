@@ -30,15 +30,15 @@ public class _DefinitionsValidatorImpl extends com.google.gwt.validation.client.
           org.kie.workbench.common.dmn.api.definition.model.Definitions.class,
           javax.validation.groups.Default.class);
   
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "description",
-          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "id",
           org.kie.workbench.common.dmn.api.property.dmn.Id.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "description",
+          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
           true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
@@ -48,8 +48,8 @@ public class _DefinitionsValidatorImpl extends com.google.gwt.validation.client.
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.Definitions> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.Definitions.class)
           .setConstrained(false)
-          .put("description", description_pd)
           .put("id", id_pd)
+          .put("description", description_pd)
           .put("nameHolder", nameHolder_pd)
           .setBeanMetadata(beanMetadata)
           .build();
@@ -146,8 +146,8 @@ public class _DefinitionsValidatorImpl extends com.google.gwt.validation.client.
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("description")) {
-    } else if (propertyName.equals("id")) {
+    if (propertyName.equals("id")) {
+    } else if (propertyName.equals("description")) {
     } else if (propertyName.equals("nameHolder")) {
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.Definitions");
@@ -161,9 +161,9 @@ public class _DefinitionsValidatorImpl extends com.google.gwt.validation.client.
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("description")) {
+    if (propertyName.equals("id")) {
       boolean valueTypeMatches = false;
-    } else if (propertyName.equals("id")) {
+    } else if (propertyName.equals("description")) {
       boolean valueTypeMatches = false;
     } else if (propertyName.equals("nameHolder")) {
       boolean valueTypeMatches = false;

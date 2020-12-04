@@ -125,10 +125,10 @@ public class Type_factory__o_u_c_w_w_d_WorkbenchDragAndDropManager__quals__j_e_i
   public WorkbenchDragAndDropManager createInstance(final ContextManager contextManager) {
     final WorkbenchDragAndDropManager instance = new WorkbenchDragAndDropManager();
     setIncompleteInstance(instance);
-    final WorkbenchPickupDragController WorkbenchDragAndDropManager_dragController = (WorkbenchPickupDragController) contextManager.getInstance("Type_factory__o_u_c_w_w_d_WorkbenchPickupDragController__quals__j_e_i_Any_j_e_i_Default");
-    WorkbenchDragAndDropManager_WorkbenchPickupDragController_dragController(instance, WorkbenchDragAndDropManager_dragController);
     final DefaultBeanFactory WorkbenchDragAndDropManager_factory = (DefaultBeanFactory) contextManager.getInstance("Type_factory__o_u_c_w_DefaultBeanFactory__quals__j_e_i_Any_j_e_i_Default");
     WorkbenchDragAndDropManager_BeanFactory_factory(instance, WorkbenchDragAndDropManager_factory);
+    final WorkbenchPickupDragController WorkbenchDragAndDropManager_dragController = (WorkbenchPickupDragController) contextManager.getInstance("Type_factory__o_u_c_w_w_d_WorkbenchPickupDragController__quals__j_e_i_Any_j_e_i_Default");
+    WorkbenchDragAndDropManager_WorkbenchPickupDragController_dragController(instance, WorkbenchDragAndDropManager_dragController);
     setIncompleteInstance(null);
     return instance;
   }

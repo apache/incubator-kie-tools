@@ -37,15 +37,15 @@ public class Type_factory__o_u_c_w_p_i_ImmutableWorkbenchPanelView__quals__j_e_i
   public ImmutableWorkbenchPanelView createInstance(final ContextManager contextManager) {
     final ImmutableWorkbenchPanelView instance = new ImmutableWorkbenchPanelView();
     setIncompleteInstance(instance);
-    final PlaceManagerImpl ImmutableWorkbenchPanelView_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    ImmutableWorkbenchPanelView_PlaceManager_placeManager(instance, ImmutableWorkbenchPanelView_placeManager);
-    final PanelManagerImpl AbstractWorkbenchPanelView_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    AbstractWorkbenchPanelView_PanelManager_panelManager(instance, AbstractWorkbenchPanelView_panelManager);
     final StaticFocusedResizePanel ImmutableWorkbenchPanelView_panel = (StaticFocusedResizePanel) contextManager.getInstance("ExtensionProvided_factory__o_u_c_w_w_p_StaticFocusedResizePanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ImmutableWorkbenchPanelView_panel);
     ImmutableWorkbenchPanelView_StaticFocusedResizePanel_panel(instance, ImmutableWorkbenchPanelView_panel);
     final LayoutSelection AbstractWorkbenchPanelView_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
     AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(instance, AbstractWorkbenchPanelView_layoutSelection);
+    final PanelManagerImpl AbstractWorkbenchPanelView_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    AbstractWorkbenchPanelView_PanelManager_panelManager(instance, AbstractWorkbenchPanelView_panelManager);
+    final PlaceManagerImpl ImmutableWorkbenchPanelView_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    ImmutableWorkbenchPanelView_PlaceManager_placeManager(instance, ImmutableWorkbenchPanelView_placeManager);
     setIncompleteInstance(null);
     return instance;
   }

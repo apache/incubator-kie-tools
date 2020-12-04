@@ -137,19 +137,19 @@ public class Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_An
   }
 
   public ClientFactoryManager createInstance(final ContextManager contextManager) {
-    final ManagedInstance<DefinitionFactory> _definitionFactoryInstances_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefinitionFactory.class }, new Annotation[] { });
     final DefinitionManager _definitionManager_1 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DiagramFactory> _diagramFactoryInstances_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DiagramFactory.class }, new Annotation[] { });
-    final RegistryFactory _registryFactory_0 = (ClientRegistryFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_i_ClientRegistryFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<EdgeFactory> _edgeFactoryInstances_6 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { EdgeFactory.class }, new Annotation[] { });
-    final ManagedInstance<GraphFactory> _graphFactoryInstances_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { GraphFactory.class }, new Annotation[] { });
     final ManagedInstance<NodeFactory> _nodeFactoryInstances_5 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { NodeFactory.class }, new Annotation[] { });
+    final ManagedInstance<GraphFactory> _graphFactoryInstances_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { GraphFactory.class }, new Annotation[] { });
+    final RegistryFactory _registryFactory_0 = (ClientRegistryFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_i_ClientRegistryFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<DefinitionFactory> _definitionFactoryInstances_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefinitionFactory.class }, new Annotation[] { });
+    final ManagedInstance<EdgeFactory> _edgeFactoryInstances_6 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { EdgeFactory.class }, new Annotation[] { });
     final ClientFactoryManager instance = new ClientFactoryManager(_registryFactory_0, _definitionManager_1, _definitionFactoryInstances_2, _diagramFactoryInstances_3, _graphFactoryInstances_4, _nodeFactoryInstances_5, _edgeFactoryInstances_6);
-    registerDependentScopedReference(instance, _definitionFactoryInstances_2);
     registerDependentScopedReference(instance, _diagramFactoryInstances_3);
-    registerDependentScopedReference(instance, _edgeFactoryInstances_6);
-    registerDependentScopedReference(instance, _graphFactoryInstances_4);
     registerDependentScopedReference(instance, _nodeFactoryInstances_5);
+    registerDependentScopedReference(instance, _graphFactoryInstances_4);
+    registerDependentScopedReference(instance, _definitionFactoryInstances_2);
+    registerDependentScopedReference(instance, _edgeFactoryInstances_6);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

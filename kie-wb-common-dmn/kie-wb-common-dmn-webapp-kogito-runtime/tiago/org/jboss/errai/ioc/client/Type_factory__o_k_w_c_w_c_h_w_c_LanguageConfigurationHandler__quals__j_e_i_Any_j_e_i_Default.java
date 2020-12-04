@@ -175,12 +175,12 @@ public class Type_factory__o_k_w_c_w_c_h_w_c_LanguageConfigurationHandler__quals
   public LanguageConfigurationHandler createInstance(final ContextManager contextManager) {
     final LanguageConfigurationHandler instance = new LanguageConfigurationHandler();
     setIncompleteInstance(instance);
-    final ConfigurationComboBoxItemWidget LanguageConfigurationHandler_languageItem = (ConfigurationComboBoxItemWidget) contextManager.getInstance("Type_factory__o_k_w_c_w_c_h_w_c_ConfigurationComboBoxItemWidget__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, LanguageConfigurationHandler_languageItem);
-    LanguageConfigurationHandler_ConfigurationComboBoxItemWidget_languageItem(instance, LanguageConfigurationHandler_languageItem);
     final Caller WorkbenchConfigurationHandler_preferencesService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { UserPreferencesService.class }, new Annotation[] { });
     registerDependentScopedReference(instance, WorkbenchConfigurationHandler_preferencesService);
     WorkbenchConfigurationHandler_Caller_preferencesService(instance, WorkbenchConfigurationHandler_preferencesService);
+    final ConfigurationComboBoxItemWidget LanguageConfigurationHandler_languageItem = (ConfigurationComboBoxItemWidget) contextManager.getInstance("Type_factory__o_k_w_c_w_c_h_w_c_ConfigurationComboBoxItemWidget__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, LanguageConfigurationHandler_languageItem);
+    LanguageConfigurationHandler_ConfigurationComboBoxItemWidget_languageItem(instance, LanguageConfigurationHandler_languageItem);
     setIncompleteInstance(null);
     return instance;
   }

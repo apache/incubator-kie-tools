@@ -51,15 +51,15 @@ public class Type_factory__o_k_w_c_w_c_p_l_AppLauncherView__quals__j_e_i_Any_j_e
   public AppLauncherView createInstance(final ContextManager contextManager) {
     final AppLauncherView instance = new AppLauncherView();
     setIncompleteInstance(instance);
+    final Div AppLauncherView_rightColumn = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, AppLauncherView_rightColumn);
+    AppLauncherView_Div_rightColumn(instance, AppLauncherView_rightColumn);
     final ManagedInstance AppLauncherView_appLauncherItemViews = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AppLauncherItemView.class }, new Annotation[] { });
     registerDependentScopedReference(instance, AppLauncherView_appLauncherItemViews);
     AppLauncherView_ManagedInstance_appLauncherItemViews(instance, AppLauncherView_appLauncherItemViews);
     final Div AppLauncherView_leftColumn = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, AppLauncherView_leftColumn);
     AppLauncherView_Div_leftColumn(instance, AppLauncherView_leftColumn);
-    final Div AppLauncherView_rightColumn = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, AppLauncherView_rightColumn);
-    AppLauncherView_Div_rightColumn(instance, AppLauncherView_rightColumn);
     o_k_w_c_w_c_p_l_AppLauncherViewTemplateResource templateForAppLauncherView = GWT.create(o_k_w_c_w_c_p_l_AppLauncherViewTemplateResource.class);
     Element parentElementForTemplateOfAppLauncherView = TemplateUtil.getRootTemplateParentElement(templateForAppLauncherView.getContents().getText(), "org/kie/workbench/common/widgets/client/popups/launcher/AppLauncherView.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/widgets/client/popups/launcher/AppLauncherView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfAppLauncherView));

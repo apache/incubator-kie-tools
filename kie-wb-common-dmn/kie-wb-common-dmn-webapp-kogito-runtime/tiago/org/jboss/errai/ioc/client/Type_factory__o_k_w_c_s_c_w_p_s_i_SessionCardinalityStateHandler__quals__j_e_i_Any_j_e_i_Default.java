@@ -19,8 +19,8 @@ public class Type_factory__o_k_w_c_s_c_w_p_s_i_SessionCardinalityStateHandler__q
   }
 
   public SessionCardinalityStateHandler createInstance(final ContextManager contextManager) {
-    final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final EmptyStateView _emptyStateView_1 = (EmptyStateView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_s_EmptyStateView__quals__j_e_i_Any_j_e_i_Default");
+    final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final SessionCardinalityStateHandler instance = new SessionCardinalityStateHandler(_translationService_0, _emptyStateView_1);
     registerDependentScopedReference(instance, _emptyStateView_1);
     setIncompleteInstance(instance);

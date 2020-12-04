@@ -400,14 +400,6 @@ public class Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__
   }
 
   public LienzoCanvasCommandFactory createInstance(final ContextManager contextManager) {
-    final ManagedInstance<ChildrenTraverseProcessor> _childrenTraverseProcessors_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ChildrenTraverseProcessor.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
     final ManagedInstance<ViewTraverseProcessor> _viewTraverseProcessors_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ViewTraverseProcessor.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -416,9 +408,17 @@ public class Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final ManagedInstance<ChildrenTraverseProcessor> _childrenTraverseProcessors_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ChildrenTraverseProcessor.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
     final LienzoCanvasCommandFactory instance = new LienzoCanvasCommandFactory(_childrenTraverseProcessors_0, _viewTraverseProcessors_1);
-    registerDependentScopedReference(instance, _childrenTraverseProcessors_0);
     registerDependentScopedReference(instance, _viewTraverseProcessors_1);
+    registerDependentScopedReference(instance, _childrenTraverseProcessors_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

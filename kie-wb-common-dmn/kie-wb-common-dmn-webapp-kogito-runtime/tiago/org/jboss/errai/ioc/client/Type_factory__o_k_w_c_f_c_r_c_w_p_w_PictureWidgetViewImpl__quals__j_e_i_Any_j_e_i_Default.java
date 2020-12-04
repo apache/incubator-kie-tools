@@ -54,12 +54,12 @@ public class Type_factory__o_k_w_c_f_c_r_c_w_p_w_PictureWidgetViewImpl__quals__j
   public PictureWidgetViewImpl createInstance(final ContextManager contextManager) {
     final PictureWidgetViewImpl instance = new PictureWidgetViewImpl();
     setIncompleteInstance(instance);
-    final Button PictureWidgetViewImpl_takeAnotherPicture = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, PictureWidgetViewImpl_takeAnotherPicture);
-    PictureWidgetViewImpl_Button_takeAnotherPicture(instance, PictureWidgetViewImpl_takeAnotherPicture);
     final Button PictureWidgetViewImpl_takePicture = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, PictureWidgetViewImpl_takePicture);
     PictureWidgetViewImpl_Button_takePicture(instance, PictureWidgetViewImpl_takePicture);
+    final Button PictureWidgetViewImpl_takeAnotherPicture = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, PictureWidgetViewImpl_takeAnotherPicture);
+    PictureWidgetViewImpl_Button_takeAnotherPicture(instance, PictureWidgetViewImpl_takeAnotherPicture);
     o_k_w_c_f_c_r_c_w_p_w_PictureWidgetViewImplTemplateResource templateForPictureWidgetViewImpl = GWT.create(o_k_w_c_f_c_r_c_w_p_w_PictureWidgetViewImplTemplateResource.class);
     Element parentElementForTemplateOfPictureWidgetViewImpl = TemplateUtil.getRootTemplateParentElement(templateForPictureWidgetViewImpl.getContents().getText(), "org/kie/workbench/common/forms/common/rendering/client/widgets/picture/widget/PictureWidgetViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/common/rendering/client/widgets/picture/widget/PictureWidgetViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfPictureWidgetViewImpl));
