@@ -55,8 +55,10 @@ public class KogitoEditorDockTest {
 
     @Mock
     private UberfireDocks uberfireDocks;
+
     @Mock
     private PlaceRequest placeRequest;
+
     @Mock
     private ManagedInstance<WorkbenchDocksHandler> handlers;
 
@@ -111,7 +113,7 @@ public class KogitoEditorDockTest {
         assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
         verify(uberfireDocks, never()).remove(any());
         verify(uberfireDocks, times(1)).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST),eq(AUTHORING_PERSPECTIVE));
+        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
         verify(uberfireDocks, never()).hide(any(), any());
     }
 
@@ -123,9 +125,9 @@ public class KogitoEditorDockTest {
         assertSame(kogitoEditorDockSpy.activeHandler, handler);
         verify(handler, atLeastOnce()).provideDocks(eq(AUTHORING_PERSPECTIVE));
         assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
-        verify(uberfireDocks, never()).remove(any());
+        verify(uberfireDocks, atLeastOnce()).remove(any());
         verify(uberfireDocks, atLeastOnce()).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, atLeastOnce()).show(eq(UberfireDockPosition.EAST),eq(AUTHORING_PERSPECTIVE));
+        verify(uberfireDocks, atLeastOnce()).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
         verify(uberfireDocks, never()).hide(any(), any());
     }
 
@@ -152,7 +154,7 @@ public class KogitoEditorDockTest {
         assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
         verify(uberfireDocks, times(1)).remove(eq(activeDock));
         verify(uberfireDocks, times(1)).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST),eq(AUTHORING_PERSPECTIVE));
+        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
         verify(uberfireDocks, never()).hide(any(), any());
     }
 
@@ -201,5 +203,4 @@ public class KogitoEditorDockTest {
                          shouldDisable);
         }
     }
-
 }
