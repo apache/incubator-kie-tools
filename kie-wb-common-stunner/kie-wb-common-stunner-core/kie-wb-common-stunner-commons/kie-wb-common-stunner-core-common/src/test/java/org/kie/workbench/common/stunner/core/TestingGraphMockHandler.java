@@ -60,7 +60,7 @@ import org.kie.workbench.common.stunner.core.rule.handler.impl.NodeDockingEvalua
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
