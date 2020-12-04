@@ -14,8 +14,8 @@ public class Type_factory__o_k_w_c_d_c_e_i_i_p_DefinitionsHandler__quals__j_e_i_
   }
 
   public DefinitionsHandler createInstance(final ContextManager contextManager) {
-    final DMNGraphUtils _dmnGraphUtils_1 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelsPageStateProviderImpl _stateProvider_0 = (IncludedModelsPageStateProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_i_IncludedModelsPageStateProviderImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DMNGraphUtils _dmnGraphUtils_1 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionsHandler instance = new DefinitionsHandler(_stateProvider_0, _dmnGraphUtils_1);
     registerDependentScopedReference(instance, _dmnGraphUtils_1);
     setIncompleteInstance(instance);

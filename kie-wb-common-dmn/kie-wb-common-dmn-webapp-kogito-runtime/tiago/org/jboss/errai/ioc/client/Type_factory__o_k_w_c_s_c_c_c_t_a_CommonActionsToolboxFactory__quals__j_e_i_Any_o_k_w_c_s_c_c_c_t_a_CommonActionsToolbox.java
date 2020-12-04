@@ -43,8 +43,8 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_CommonActionsToolboxFactory__qual
           return "@javax.enterprise.inject.Default()";
         }
     } });
-    final CanvasCommandManager<AbstractCanvasHandler> _commandManager_0 = (CanvasCommandManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_CanvasCommandManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final CanvasCommandFactory<AbstractCanvasHandler> _commandFactory_1 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
+    final CanvasCommandManager<AbstractCanvasHandler> _commandManager_0 = (CanvasCommandManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_CanvasCommandManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<ActionsToolboxView> _views_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxView.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;

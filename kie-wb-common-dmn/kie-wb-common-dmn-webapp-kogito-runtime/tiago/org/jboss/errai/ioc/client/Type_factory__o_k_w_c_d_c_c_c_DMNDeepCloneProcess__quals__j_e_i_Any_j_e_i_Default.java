@@ -102,10 +102,10 @@ public class Type_factory__o_k_w_c_d_c_c_c_DMNDeepCloneProcess__quals__j_e_i_Any
   }
 
   public DMNDeepCloneProcess createInstance(final ContextManager contextManager) {
-    final FactoryManager _factoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
+    final ClassUtils _classUtils_2 = (ClassUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_ClassUtils__quals__j_e_i_Any_j_e_i_Default");
     final AdapterManager _adapterManager_1 = (AdapterManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_a_AdapterManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final SessionManager _sessionManager_3 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
-    final ClassUtils _classUtils_2 = (ClassUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_ClassUtils__quals__j_e_i_Any_j_e_i_Default");
+    final FactoryManager _factoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNDeepCloneProcess instance = new DMNDeepCloneProcess(_factoryManager_0, _adapterManager_1, _classUtils_2, _sessionManager_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

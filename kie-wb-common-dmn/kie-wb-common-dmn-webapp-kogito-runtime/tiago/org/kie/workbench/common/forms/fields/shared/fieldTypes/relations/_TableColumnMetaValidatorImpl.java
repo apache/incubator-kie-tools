@@ -53,7 +53,30 @@ public class _TableColumnMetaValidatorImpl extends com.google.gwt.validation.cli
           .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
           .build();
   
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Size> label_c1_0  = 
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> label_c1_0  = 
+      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
+          .setAnnotation( 
+              new javax.validation.constraints.NotNull(){
+                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
+                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
+                  public java.lang.Class[] groups() { return new java.lang.Class[] {javax.validation.groups.Default.class};}
+                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
+              }
+              )
+          .setAttributes(attributeBuilder()
+            .put("message", "{javax.validation.constraints.NotNull.message}")
+            .put("payload", new java.lang.Class[] {})
+            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
+            .build())
+          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
+          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
+          .setPayload(new java.lang.Class[] {})
+          .setReportAsSingleViolation(false)
+          .setElementType(java.lang.annotation.ElementType.FIELD)
+          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
+          .build();
+  
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Size> label_c1_1  = 
       com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.Size> builder()
           .setAnnotation( 
               new javax.validation.constraints.Size(){
@@ -73,29 +96,6 @@ public class _TableColumnMetaValidatorImpl extends com.google.gwt.validation.cli
             .put("max", 2147483647)
             .build())
           .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.SizeValidatorForString.class,org.hibernate.validator.constraints.impl.SizeValidatorForCollection.class,org.hibernate.validator.constraints.impl.SizeValidatorForArray.class,org.hibernate.validator.constraints.impl.SizeValidatorForMap.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfBoolean.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfByte.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfChar.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfDouble.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfFloat.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfInt.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfLong.class})
-          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
-          .setPayload(new java.lang.Class[] {})
-          .setReportAsSingleViolation(false)
-          .setElementType(java.lang.annotation.ElementType.FIELD)
-          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
-          .build();
-  
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> label_c1_1  = 
-      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
-          .setAnnotation( 
-              new javax.validation.constraints.NotNull(){
-                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
-                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
-                  public java.lang.Class[] groups() { return new java.lang.Class[] {javax.validation.groups.Default.class};}
-                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
-              }
-              )
-          .setAttributes(attributeBuilder()
-            .put("message", "{javax.validation.constraints.NotNull.message}")
-            .put("payload", new java.lang.Class[] {})
-            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
-            .build())
-          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
           .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
           .setPayload(new java.lang.Class[] {})
           .setReportAsSingleViolation(false)
@@ -158,30 +158,7 @@ public class _TableColumnMetaValidatorImpl extends com.google.gwt.validation.cli
           .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
           .build();
   
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> property_c1_0  = 
-      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
-          .setAnnotation( 
-              new javax.validation.constraints.NotNull(){
-                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
-                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
-                  public java.lang.Class[] groups() { return new java.lang.Class[] {javax.validation.groups.Default.class};}
-                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
-              }
-              )
-          .setAttributes(attributeBuilder()
-            .put("message", "{javax.validation.constraints.NotNull.message}")
-            .put("payload", new java.lang.Class[] {})
-            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
-            .build())
-          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
-          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
-          .setPayload(new java.lang.Class[] {})
-          .setReportAsSingleViolation(false)
-          .setElementType(java.lang.annotation.ElementType.FIELD)
-          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
-          .build();
-  
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Size> property_c1_1  = 
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Size> property_c1_0  = 
       com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.Size> builder()
           .setAnnotation( 
               new javax.validation.constraints.Size(){
@@ -201,6 +178,29 @@ public class _TableColumnMetaValidatorImpl extends com.google.gwt.validation.cli
             .put("max", 2147483647)
             .build())
           .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.SizeValidatorForString.class,org.hibernate.validator.constraints.impl.SizeValidatorForCollection.class,org.hibernate.validator.constraints.impl.SizeValidatorForArray.class,org.hibernate.validator.constraints.impl.SizeValidatorForMap.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfBoolean.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfByte.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfChar.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfDouble.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfFloat.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfInt.class,org.hibernate.validator.constraints.impl.SizeValidatorForArraysOfLong.class})
+          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
+          .setPayload(new java.lang.Class[] {})
+          .setReportAsSingleViolation(false)
+          .setElementType(java.lang.annotation.ElementType.FIELD)
+          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
+          .build();
+  
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> property_c1_1  = 
+      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
+          .setAnnotation( 
+              new javax.validation.constraints.NotNull(){
+                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
+                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
+                  public java.lang.Class[] groups() { return new java.lang.Class[] {javax.validation.groups.Default.class};}
+                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
+              }
+              )
+          .setAttributes(attributeBuilder()
+            .put("message", "{javax.validation.constraints.NotNull.message}")
+            .put("payload", new java.lang.Class[] {})
+            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
+            .build())
+          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
           .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
           .setPayload(new java.lang.Class[] {})
           .setReportAsSingleViolation(false)
@@ -419,8 +419,8 @@ public class _TableColumnMetaValidatorImpl extends com.google.gwt.validation.cli
       // Report org.hibernate.validator.constraints.NotEmpty as Single Violation
       Set<ConstraintViolation<T>> label_c1_violations = 
           new HashSet<ConstraintViolation<T>>();
-      if (validate(myContext, label_c1_violations, object, value, new org.hibernate.validator.constraints.impl.SizeValidatorForString(), label_c1_0, groups) ||
-          validate(myContext, label_c1_violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), label_c1_1, groups) ||
+      if (validate(myContext, label_c1_violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), label_c1_0, groups) ||
+          validate(myContext, label_c1_violations, object, value, new org.hibernate.validator.constraints.impl.SizeValidatorForString(), label_c1_1, groups) ||
           false ) {
         addSingleViolation(myContext, violations, object, value, label_c1);
       }
@@ -457,8 +457,8 @@ public class _TableColumnMetaValidatorImpl extends com.google.gwt.validation.cli
       // Report org.hibernate.validator.constraints.NotEmpty as Single Violation
       Set<ConstraintViolation<T>> property_c1_violations = 
           new HashSet<ConstraintViolation<T>>();
-      if (validate(myContext, property_c1_violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), property_c1_0, groups) ||
-          validate(myContext, property_c1_violations, object, value, new org.hibernate.validator.constraints.impl.SizeValidatorForString(), property_c1_1, groups) ||
+      if (validate(myContext, property_c1_violations, object, value, new org.hibernate.validator.constraints.impl.SizeValidatorForString(), property_c1_0, groups) ||
+          validate(myContext, property_c1_violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), property_c1_1, groups) ||
           false ) {
         addSingleViolation(myContext, violations, object, value, property_c1);
       }

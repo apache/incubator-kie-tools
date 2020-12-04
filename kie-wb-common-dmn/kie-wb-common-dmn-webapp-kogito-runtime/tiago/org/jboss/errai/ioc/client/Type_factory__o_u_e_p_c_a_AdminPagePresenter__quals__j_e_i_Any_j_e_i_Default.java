@@ -21,14 +21,14 @@ public class Type_factory__o_u_e_p_c_a_AdminPagePresenter__quals__j_e_i_Any_j_e_
   }
 
   public AdminPagePresenter createInstance(final ContextManager contextManager) {
-    final ManagedInstance<AdminPageCategoryPresenter> _categoryPresenterProvider_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AdminPageCategoryPresenter.class }, new Annotation[] { });
     final AdminPage _adminPage_1 = (AdminPageImpl) contextManager.getInstance("Type_factory__o_u_e_p_c_a_p_AdminPageImpl__quals__j_e_i_Any_j_e_i_Default");
-    final View _view_0 = (AdminPageView) contextManager.getInstance("Type_factory__o_u_e_p_c_a_AdminPageView__quals__j_e_i_Any_j_e_i_Default");
     final Event<NotificationEvent> _notification_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
+    final View _view_0 = (AdminPageView) contextManager.getInstance("Type_factory__o_u_e_p_c_a_AdminPageView__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<AdminPageCategoryPresenter> _categoryPresenterProvider_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AdminPageCategoryPresenter.class }, new Annotation[] { });
     final AdminPagePresenter instance = new AdminPagePresenter(_view_0, _adminPage_1, _categoryPresenterProvider_2, _notification_3);
-    registerDependentScopedReference(instance, _categoryPresenterProvider_2);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _notification_3);
+    registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _categoryPresenterProvider_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

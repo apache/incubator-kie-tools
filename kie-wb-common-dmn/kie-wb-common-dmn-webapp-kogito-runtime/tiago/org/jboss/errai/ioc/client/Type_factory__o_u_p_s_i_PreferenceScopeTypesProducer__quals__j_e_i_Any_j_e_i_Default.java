@@ -78,13 +78,13 @@ public class Type_factory__o_u_p_s_i_PreferenceScopeTypesProducer__quals__j_e_i_
   public PreferenceScopeTypesProducer createInstance(final ContextManager contextManager) {
     final PreferenceScopeTypesProducer instance = new PreferenceScopeTypesProducer();
     setIncompleteInstance(instance);
+    final DefaultPreferenceScopeTypes PreferenceScopeTypesProducer_defaultPreferenceScopeTypes = (DefaultPreferenceScopeTypes) contextManager.getInstance("Type_factory__o_u_p_s_i_DefaultPreferenceScopeTypes__quals__j_e_i_Any_o_u_a_FallbackImplementation");
+    PreferenceScopeTypesProducer_PreferenceScopeTypes_defaultPreferenceScopeTypes(instance, PreferenceScopeTypesProducer_defaultPreferenceScopeTypes);
     final Instance PreferenceScopeTypesProducer_preferenceScopeTypes = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { PreferenceScopeTypes.class }, new Annotation[] { });
     registerDependentScopedReference(instance, PreferenceScopeTypesProducer_preferenceScopeTypes);
     PreferenceScopeTypesProducer_Instance_preferenceScopeTypes(instance, PreferenceScopeTypesProducer_preferenceScopeTypes);
     final SessionInfo PreferenceScopeTypesProducer_sessionInfo = (SessionInfo) contextManager.getInstance("Producer_factory__o_u_r_SessionInfo__quals__j_e_i_Any_j_e_i_Default");
     PreferenceScopeTypesProducer_SessionInfo_sessionInfo(instance, PreferenceScopeTypesProducer_sessionInfo);
-    final DefaultPreferenceScopeTypes PreferenceScopeTypesProducer_defaultPreferenceScopeTypes = (DefaultPreferenceScopeTypes) contextManager.getInstance("Type_factory__o_u_p_s_i_DefaultPreferenceScopeTypes__quals__j_e_i_Any_o_u_a_FallbackImplementation");
-    PreferenceScopeTypesProducer_PreferenceScopeTypes_defaultPreferenceScopeTypes(instance, PreferenceScopeTypesProducer_defaultPreferenceScopeTypes);
     setIncompleteInstance(null);
     return instance;
   }

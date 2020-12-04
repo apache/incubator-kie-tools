@@ -17,11 +17,11 @@ public class Type_factory__o_k_w_c_f_d_c_r_FieldLayoutComponent__quals__j_e_i_An
   }
 
   public FieldLayoutComponent createInstance(final ContextManager contextManager) {
-    final FieldRendererManager _fieldRendererManager_0 = (FieldRendererManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_FieldRendererManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final FieldRendererManager _fieldRendererManager_0 = (FieldRendererManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_FieldRendererManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final FieldLayoutComponent instance = new FieldLayoutComponent(_fieldRendererManager_0, _translationService_1);
-    registerDependentScopedReference(instance, _fieldRendererManager_0);
     registerDependentScopedReference(instance, _translationService_1);
+    registerDependentScopedReference(instance, _fieldRendererManager_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

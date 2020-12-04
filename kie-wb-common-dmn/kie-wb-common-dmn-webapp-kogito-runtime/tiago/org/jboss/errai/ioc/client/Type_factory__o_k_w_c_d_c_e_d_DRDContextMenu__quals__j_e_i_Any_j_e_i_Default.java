@@ -120,9 +120,9 @@ public class Type_factory__o_k_w_c_d_c_e_d_DRDContextMenu__quals__j_e_i_Any_j_e_
 
   public DRDContextMenu createInstance(final ContextManager contextManager) {
     final ClientTranslationService _translationService_1 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DRDContextMenuService _drdContextMenuService_2 = (DRDContextMenuService) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_DRDContextMenuService__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession _dmnDiagramsSession_3 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final ContextMenu _contextMenu_0 = (ContextMenu) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_c_ContextMenu__quals__j_e_i_Any_j_e_i_Default");
-    final DRDContextMenuService _drdContextMenuService_2 = (DRDContextMenuService) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_DRDContextMenuService__quals__j_e_i_Any_j_e_i_Default");
     final DRDContextMenu instance = new DRDContextMenu(_contextMenu_0, _translationService_1, _drdContextMenuService_2, _dmnDiagramsSession_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

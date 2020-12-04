@@ -131,18 +131,18 @@ public class Type_factory__o_k_w_c_s_c_c_c_u_CanvasFileExport__quals__j_e_i_Any_
   }
 
   public CanvasFileExport createInstance(final ContextManager contextManager) {
+    final FileExportsPreferences _preferences_3 = (FileExportsPreferencesBeanGeneratedImpl) contextManager.getInstance("Type_factory__o_u_e_e_c_f_e_FileExportsPreferencesBeanGeneratedImpl__quals__j_e_i_Any_j_e_i_Default");
     final SvgFileExport _svgFileExport_4 = (SvgFileExport) contextManager.getInstance("Producer_factory__o_u_e_e_c_c_f_e_s_SvgFileExport__quals__j_e_i_Any_j_e_i_Default");
     final CanvasExport<AbstractCanvasHandler> _canvasExport_0 = (LienzoCanvasExport) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_e_LienzoCanvasExport__quals__j_e_i_Any_j_e_i_Default");
+    final FileExport<ImageDataUriContent> _imageFileExport_1 = (ImageFileExport) contextManager.getInstance("Producer_factory__o_u_e_e_c_c_f_e_ImageFileExport__quals__j_e_i_Any_j_e_i_Default");
     final FileExport<PdfDocument> _pdfFileExport_2 = (PdfFileExport) contextManager.getInstance("Producer_factory__o_u_e_e_c_c_f_e_PdfFileExport__quals__j_e_i_Any_j_e_i_Default");
     final Event<CanvasClearSelectionEvent> _clearSelectionEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
-    final FileExport<ImageDataUriContent> _imageFileExport_1 = (ImageFileExport) contextManager.getInstance("Producer_factory__o_u_e_e_c_c_f_e_ImageFileExport__quals__j_e_i_Any_j_e_i_Default");
-    final FileExportsPreferences _preferences_3 = (FileExportsPreferencesBeanGeneratedImpl) contextManager.getInstance("Type_factory__o_u_e_e_c_f_e_FileExportsPreferencesBeanGeneratedImpl__quals__j_e_i_Any_j_e_i_Default");
     final CanvasFileExport instance = new CanvasFileExport(_canvasExport_0, _imageFileExport_1, _pdfFileExport_2, _preferences_3, _svgFileExport_4, _clearSelectionEvent_5);
+    registerDependentScopedReference(instance, _preferences_3);
     registerDependentScopedReference(instance, _svgFileExport_4);
+    registerDependentScopedReference(instance, _imageFileExport_1);
     registerDependentScopedReference(instance, _pdfFileExport_2);
     registerDependentScopedReference(instance, _clearSelectionEvent_5);
-    registerDependentScopedReference(instance, _imageFileExport_1);
-    registerDependentScopedReference(instance, _preferences_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

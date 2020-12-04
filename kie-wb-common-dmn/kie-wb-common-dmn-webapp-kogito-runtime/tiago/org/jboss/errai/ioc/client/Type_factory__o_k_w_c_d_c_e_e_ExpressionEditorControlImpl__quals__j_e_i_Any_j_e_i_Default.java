@@ -30,16 +30,16 @@ public class Type_factory__o_k_w_c_d_c_e_e_ExpressionEditorControlImpl__quals__j
   }
 
   public ExpressionEditorControlImpl createInstance(final ContextManager contextManager) {
-    final DecisionNavigatorPresenter _decisionNavigator_1 = (DecisionNavigatorPresenter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorPresenter__quals__j_e_i_Any_j_e_i_Default");
     final Event<CanvasElementUpdatedEvent> _canvasElementUpdatedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementUpdatedEvent.class }, new Annotation[] { });
     final DRDNameChanger _drdNameChanger_5 = (DRDNameChangerView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_DRDNameChangerView__quals__j_e_i_Any_j_e_i_Default");
-    final DMNGraphUtils _dmnGraphUtils_2 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DecisionNavigatorPresenter _decisionNavigator_1 = (DecisionNavigatorPresenter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorPresenter__quals__j_e_i_Any_j_e_i_Default");
     final ExpressionEditorView _view_0 = (ExpressionEditorViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_ExpressionEditorViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DMNGraphUtils _dmnGraphUtils_2 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession _dmnDiagramsSession_3 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final ExpressionEditorControlImpl instance = new ExpressionEditorControlImpl(_view_0, _decisionNavigator_1, _dmnGraphUtils_2, _dmnDiagramsSession_3, _canvasElementUpdatedEvent_4, _drdNameChanger_5);
     registerDependentScopedReference(instance, _canvasElementUpdatedEvent_4);
-    registerDependentScopedReference(instance, _dmnGraphUtils_2);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _dmnGraphUtils_2);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onCanvasFocusedSelectionEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent", new AbstractCDIEventCallback<CanvasSelectionEvent>() {
       public void fireEvent(final CanvasSelectionEvent event) {

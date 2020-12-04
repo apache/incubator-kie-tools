@@ -14,11 +14,11 @@ public class Type_factory__o_k_w_c_d_w_k_c_c_e_DMNEditorMenuSessionItems__quals_
   }
 
   public DMNEditorMenuSessionItems createInstance(final ContextManager contextManager) {
-    final DMNEditorMenuItemsBuilder _itemsBuilder_0 = (DMNEditorMenuItemsBuilder) contextManager.getInstance("Type_factory__o_k_w_c_d_w_k_c_c_e_DMNEditorMenuItemsBuilder__quals__j_e_i_Any_j_e_i_Default");
     final DMNEditorSessionCommands _sessionCommands_1 = (DMNEditorSessionCommands) contextManager.getInstance("Type_factory__o_k_w_c_d_w_k_c_c_s_DMNEditorSessionCommands__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final DMNEditorMenuItemsBuilder _itemsBuilder_0 = (DMNEditorMenuItemsBuilder) contextManager.getInstance("Type_factory__o_k_w_c_d_w_k_c_c_e_DMNEditorMenuItemsBuilder__quals__j_e_i_Any_j_e_i_Default");
     final DMNEditorMenuSessionItems instance = new DMNEditorMenuSessionItems(_itemsBuilder_0, _sessionCommands_1);
-    registerDependentScopedReference(instance, _itemsBuilder_0);
     registerDependentScopedReference(instance, _sessionCommands_1);
+    registerDependentScopedReference(instance, _itemsBuilder_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

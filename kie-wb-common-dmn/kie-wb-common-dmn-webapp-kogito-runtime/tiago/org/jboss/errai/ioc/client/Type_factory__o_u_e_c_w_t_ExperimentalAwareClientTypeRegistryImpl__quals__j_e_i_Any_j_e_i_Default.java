@@ -122,8 +122,8 @@ public class Type_factory__o_u_e_c_w_t_ExperimentalAwareClientTypeRegistryImpl__
   }
 
   public ExperimentalAwareClientTypeRegistryImpl createInstance(final ContextManager contextManager) {
-    final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final ClientExperimentalFeaturesRegistryService _registryService_1 = (ClientExperimentalFeaturesRegistryServiceImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryServiceImpl__quals__j_e_i_Any_j_e_i_Default");
+    final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final ExperimentalAwareClientTypeRegistryImpl instance = new ExperimentalAwareClientTypeRegistryImpl(_iocManager_0, _registryService_1);
     registerDependentScopedReference(instance, _iocManager_0);
     setIncompleteInstance(instance);

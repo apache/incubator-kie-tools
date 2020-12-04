@@ -145,11 +145,11 @@ public class Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryService
   }
 
   public ClientExperimentalFeaturesRegistryServiceImpl createInstance(final ContextManager contextManager) {
-    final Caller<BackendExperimentalFeaturesRegistryService> _backendService_0 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { BackendExperimentalFeaturesRegistryService.class }, new Annotation[] { });
     final Event<NonPortableExperimentalFeatureModifiedEvent> _event_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NonPortableExperimentalFeatureModifiedEvent.class }, new Annotation[] { });
+    final Caller<BackendExperimentalFeaturesRegistryService> _backendService_0 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { BackendExperimentalFeaturesRegistryService.class }, new Annotation[] { });
     final ClientExperimentalFeaturesRegistryServiceImpl instance = new ClientExperimentalFeaturesRegistryServiceImpl(_backendService_0, _event_1);
-    registerDependentScopedReference(instance, _backendService_0);
     registerDependentScopedReference(instance, _event_1);
+    registerDependentScopedReference(instance, _backendService_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

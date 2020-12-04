@@ -47,15 +47,15 @@ public class Type_factory__o_g_m_c_c_w_b_ViewHideAlertsButtonView__quals__j_e_i_
   public ViewHideAlertsButtonView createInstance(final ContextManager contextManager) {
     final ViewHideAlertsButtonView instance = new ViewHideAlertsButtonView();
     setIncompleteInstance(instance);
-    final HTMLButtonElement ViewHideAlertsButtonView_hideAlerts = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ViewHideAlertsButtonView_hideAlerts);
-    ViewHideAlertsButtonView_HTMLButtonElement_hideAlerts(instance, ViewHideAlertsButtonView_hideAlerts);
     final TranslationService ViewHideAlertsButtonView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ViewHideAlertsButtonView_translationService);
     ViewHideAlertsButtonView_TranslationService_translationService(instance, ViewHideAlertsButtonView_translationService);
     final HTMLButtonElement ViewHideAlertsButtonView_viewAlerts = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ViewHideAlertsButtonView_viewAlerts);
     ViewHideAlertsButtonView_HTMLButtonElement_viewAlerts(instance, ViewHideAlertsButtonView_viewAlerts);
+    final HTMLButtonElement ViewHideAlertsButtonView_hideAlerts = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ViewHideAlertsButtonView_hideAlerts);
+    ViewHideAlertsButtonView_HTMLButtonElement_hideAlerts(instance, ViewHideAlertsButtonView_hideAlerts);
     o_g_m_c_c_w_b_ViewHideAlertsButtonViewTemplateResource templateForViewHideAlertsButtonView = GWT.create(o_g_m_c_c_w_b_ViewHideAlertsButtonViewTemplateResource.class);
     Element parentElementForTemplateOfViewHideAlertsButtonView = TemplateUtil.getRootTemplateParentElement(templateForViewHideAlertsButtonView.getContents().getText(), "org/guvnor/messageconsole/client/console/widget/button/ViewHideAlertsButtonView.html", "");
     TemplateUtil.translateTemplate("org/guvnor/messageconsole/client/console/widget/button/ViewHideAlertsButtonView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfViewHideAlertsButtonView));

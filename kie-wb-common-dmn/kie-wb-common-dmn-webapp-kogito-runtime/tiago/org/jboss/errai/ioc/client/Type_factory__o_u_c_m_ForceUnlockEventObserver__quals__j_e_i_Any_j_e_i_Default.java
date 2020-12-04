@@ -81,11 +81,11 @@ public class Type_factory__o_u_c_m_ForceUnlockEventObserver__quals__j_e_i_Any_j_
   public ForceUnlockEventObserver createInstance(final ContextManager contextManager) {
     final ForceUnlockEventObserver instance = new ForceUnlockEventObserver();
     setIncompleteInstance(instance);
+    final ErrorPopupPresenter ForceUnlockEventObserver_errorPopupPresenter = (ErrorPopupPresenter) contextManager.getInstance("Type_factory__o_u_c_w_w_c_ErrorPopupPresenter__quals__j_e_i_Any_j_e_i_Default");
+    ForceUnlockEventObserver_ErrorPopupPresenter_errorPopupPresenter(instance, ForceUnlockEventObserver_errorPopupPresenter);
     final VFSLockServiceProxyClientImpl ForceUnlockEventObserver_lockService = (VFSLockServiceProxyClientImpl) contextManager.getInstance("Type_factory__o_u_c_w_VFSLockServiceProxyClientImpl__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ForceUnlockEventObserver_lockService);
     ForceUnlockEventObserver_VFSLockServiceProxy_lockService(instance, ForceUnlockEventObserver_lockService);
-    final ErrorPopupPresenter ForceUnlockEventObserver_errorPopupPresenter = (ErrorPopupPresenter) contextManager.getInstance("Type_factory__o_u_c_w_w_c_ErrorPopupPresenter__quals__j_e_i_Any_j_e_i_Default");
-    ForceUnlockEventObserver_ErrorPopupPresenter_errorPopupPresenter(instance, ForceUnlockEventObserver_errorPopupPresenter);
     setIncompleteInstance(null);
     return instance;
   }

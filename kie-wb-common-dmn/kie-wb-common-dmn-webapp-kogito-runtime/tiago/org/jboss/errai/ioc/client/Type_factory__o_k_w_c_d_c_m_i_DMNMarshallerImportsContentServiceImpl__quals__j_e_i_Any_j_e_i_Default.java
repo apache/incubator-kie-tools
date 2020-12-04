@@ -123,11 +123,11 @@ public class Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsContentServiceImp
 
   public DMNMarshallerImportsContentServiceImpl createInstance(final ContextManager contextManager) {
     final WorkspaceProjectContext _projectContext_2 = (WorkspaceProjectContext) contextManager.getInstance("Type_factory__o_g_c_s_p_c_c_WorkspaceProjectContext__quals__j_e_i_Any_j_e_i_Default");
-    final Caller<DMNContentService> _dmnContentServiceCaller_0 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { DMNContentService.class }, new Annotation[] { });
     final Promises _promises_1 = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
+    final Caller<DMNContentService> _dmnContentServiceCaller_0 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { DMNContentService.class }, new Annotation[] { });
     final DMNMarshallerImportsContentServiceImpl instance = new DMNMarshallerImportsContentServiceImpl(_dmnContentServiceCaller_0, _promises_1, _projectContext_2);
-    registerDependentScopedReference(instance, _dmnContentServiceCaller_0);
     registerDependentScopedReference(instance, _promises_1);
+    registerDependentScopedReference(instance, _dmnContentServiceCaller_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -1,4 +1,4 @@
-// .ui.xml template last modified: 1607092931441
+// .ui.xml template last modified: 1607096090194
 package org.uberfire.client.views.pfly.listbar;
 
 import com.google.gwt.core.client.GWT;

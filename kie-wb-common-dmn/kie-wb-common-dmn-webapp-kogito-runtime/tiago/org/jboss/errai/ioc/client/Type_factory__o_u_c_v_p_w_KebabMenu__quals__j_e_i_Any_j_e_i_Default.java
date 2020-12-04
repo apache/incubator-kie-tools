@@ -34,15 +34,15 @@ public class Type_factory__o_u_c_v_p_w_KebabMenu__quals__j_e_i_Any_j_e_i_Default
   public KebabMenu createInstance(final ContextManager contextManager) {
     final KebabMenu instance = new KebabMenu();
     setIncompleteInstance(instance);
-    final HTMLUListElement KebabMenu_dropdownMenu = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, KebabMenu_dropdownMenu);
-    KebabMenu_HTMLUListElement_dropdownMenu(instance, KebabMenu_dropdownMenu);
     final HTMLDivElement KebabMenu_kebab = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, KebabMenu_kebab);
     KebabMenu_HTMLDivElement_kebab(instance, KebabMenu_kebab);
     final HTMLDocument KebabMenu_document = (HTMLDocument) contextManager.getInstance("Producer_factory__e_d_HTMLDocument__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, KebabMenu_document);
     KebabMenu_HTMLDocument_document(instance, KebabMenu_document);
+    final HTMLUListElement KebabMenu_dropdownMenu = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, KebabMenu_dropdownMenu);
+    KebabMenu_HTMLUListElement_dropdownMenu(instance, KebabMenu_dropdownMenu);
     o_u_c_v_p_w_KebabMenuTemplateResource templateForKebabMenu = GWT.create(o_u_c_v_p_w_KebabMenuTemplateResource.class);
     Element parentElementForTemplateOfKebabMenu = TemplateUtil.getRootTemplateParentElement(templateForKebabMenu.getContents().getText(), "org/uberfire/client/views/pfly/widgets/KebabMenu.html", "");
     TemplateUtil.translateTemplate("org/uberfire/client/views/pfly/widgets/KebabMenu.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfKebabMenu));

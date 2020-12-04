@@ -21,18 +21,18 @@ public class Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponents__quals__j_e_i_
   }
 
   public DecisionComponents createInstance(final ContextManager contextManager) {
-    final DMNIncludeModelsClient _client_1 = (DMNIncludeModelsClient) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_i_l_DMNIncludeModelsClient__quals__j_e_i_Any_j_e_i_Default");
-    final DecisionComponentFilter _filter_3 = (DecisionComponentFilter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponentFilter__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDiagramsSession _dmnDiagramsSession_4 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
-    final DMNGraphUtils _dmnGraphUtils_5 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<DecisionComponentsItem> _itemManagedInstance_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DecisionComponentsItem.class }, new Annotation[] { });
     final View _view_0 = (DecisionComponentsView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponentsView__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramsSession _dmnDiagramsSession_4 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
+    final DecisionComponentFilter _filter_3 = (DecisionComponentFilter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponentFilter__quals__j_e_i_Any_j_e_i_Default");
+    final DMNGraphUtils _dmnGraphUtils_5 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DMNIncludeModelsClient _client_1 = (DMNIncludeModelsClient) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_i_l_DMNIncludeModelsClient__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<DecisionComponentsItem> _itemManagedInstance_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DecisionComponentsItem.class }, new Annotation[] { });
     final DecisionComponents instance = new DecisionComponents(_view_0, _client_1, _itemManagedInstance_2, _filter_3, _dmnDiagramsSession_4, _dmnGraphUtils_5);
-    registerDependentScopedReference(instance, _client_1);
+    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _filter_3);
     registerDependentScopedReference(instance, _dmnGraphUtils_5);
+    registerDependentScopedReference(instance, _client_1);
     registerDependentScopedReference(instance, _itemManagedInstance_2);
-    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

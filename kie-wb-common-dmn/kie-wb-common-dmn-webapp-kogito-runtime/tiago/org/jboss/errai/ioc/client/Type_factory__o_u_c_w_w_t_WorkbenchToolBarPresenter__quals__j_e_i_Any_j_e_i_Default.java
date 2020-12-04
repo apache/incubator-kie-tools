@@ -178,11 +178,11 @@ public class Type_factory__o_u_c_w_w_t_WorkbenchToolBarPresenter__quals__j_e_i_A
   public WorkbenchToolBarPresenter createInstance(final ContextManager contextManager) {
     final WorkbenchToolBarPresenter instance = new WorkbenchToolBarPresenter();
     setIncompleteInstance(instance);
-    final PlaceManagerImpl WorkbenchToolBarPresenter_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    WorkbenchToolBarPresenter_PlaceManager_placeManager(instance, WorkbenchToolBarPresenter_placeManager);
     final WorkbenchToolBarView WorkbenchToolBarPresenter_view = (WorkbenchToolBarView) contextManager.getInstance("Type_factory__o_u_c_v_p_t_WorkbenchToolBarView__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, WorkbenchToolBarPresenter_view);
     WorkbenchToolBarPresenter_View_view(instance, WorkbenchToolBarPresenter_view);
+    final PlaceManagerImpl WorkbenchToolBarPresenter_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    WorkbenchToolBarPresenter_PlaceManager_placeManager(instance, WorkbenchToolBarPresenter_placeManager);
     setIncompleteInstance(null);
     return instance;
   }

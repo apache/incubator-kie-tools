@@ -29,11 +29,11 @@ public class Type_factory__o_u_e_c_d_s_DisabledFeatureActivity__quals__j_e_i_Any
 
   public DisabledFeatureActivity createInstance(final ContextManager contextManager) {
     final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final DisabledFeatureComponent _component_1 = (DisabledFeatureComponent) contextManager.getInstance("Type_factory__o_u_e_c_d_c_DisabledFeatureComponent__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DisabledFeatureComponent _component_1 = (DisabledFeatureComponent) contextManager.getInstance("Type_factory__o_u_e_c_d_c_DisabledFeatureComponent__quals__j_e_i_Any_j_e_i_Default");
     final DisabledFeatureActivity instance = new DisabledFeatureActivity(_placeManager_0, _component_1, _translationService_2);
-    registerDependentScopedReference(instance, _component_1);
     registerDependentScopedReference(instance, _translationService_2);
+    registerDependentScopedReference(instance, _component_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

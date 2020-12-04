@@ -27,12 +27,12 @@ public class Type_factory__o_u_c_v_p_s_SplashViewImpl__quals__j_e_i_Any_j_e_i_De
   public SplashViewImpl createInstance(final ContextManager contextManager) {
     final SplashViewImpl instance = new SplashViewImpl();
     setIncompleteInstance(instance);
-    final SplashModalFooter SplashViewImpl_footer = (SplashModalFooter) contextManager.getInstance("Type_factory__o_u_c_v_p_s_SplashModalFooter__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, SplashViewImpl_footer);
-    SplashViewImpl_SplashModalFooter_footer(instance, SplashViewImpl_footer);
     final Bs3Modal SplashViewImpl_modal = (Bs3Modal) contextManager.getInstance("Type_factory__o_u_c_v_p_m_Bs3Modal__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, SplashViewImpl_modal);
     SplashViewImpl_Bs3Modal_modal(instance, SplashViewImpl_modal);
+    final SplashModalFooter SplashViewImpl_footer = (SplashModalFooter) contextManager.getInstance("Type_factory__o_u_c_v_p_s_SplashModalFooter__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, SplashViewImpl_footer);
+    SplashViewImpl_SplashModalFooter_footer(instance, SplashViewImpl_footer);
     setIncompleteInstance(null);
     return instance;
   }

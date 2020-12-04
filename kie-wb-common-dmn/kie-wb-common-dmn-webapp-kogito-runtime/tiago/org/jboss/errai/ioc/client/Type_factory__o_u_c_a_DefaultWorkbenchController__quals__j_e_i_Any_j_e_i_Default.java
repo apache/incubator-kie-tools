@@ -237,8 +237,8 @@ public class Type_factory__o_u_c_a_DefaultWorkbenchController__quals__j_e_i_Any_
   }
 
   public DefaultWorkbenchController createInstance(final ContextManager contextManager) {
-    final User _user_1 = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
     final AuthorizationManager _authorizationManager_0 = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
+    final User _user_1 = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
     final DefaultWorkbenchController instance = new DefaultWorkbenchController(_authorizationManager_0, _user_1);
     registerDependentScopedReference(instance, _user_1);
     setIncompleteInstance(instance);

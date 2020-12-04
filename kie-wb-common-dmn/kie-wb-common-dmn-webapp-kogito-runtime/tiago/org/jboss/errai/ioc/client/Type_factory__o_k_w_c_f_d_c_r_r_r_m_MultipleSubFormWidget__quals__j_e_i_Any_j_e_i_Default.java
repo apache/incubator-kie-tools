@@ -42,14 +42,14 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_r_m_MultipleSubFormWidget__quals__j
   }
 
   public MultipleSubFormWidget createInstance(final ContextManager contextManager) {
-    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final DynamicFormRenderer _formRenderer_1 = (DynamicFormRenderer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_DynamicFormRenderer__quals__j_e_i_Any_j_e_i_Default");
     final ColumnGeneratorManager _columnGeneratorManager_0 = (ColumnGeneratorManager) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_r_m_ColumnGeneratorManager__quals__j_e_i_Any_j_e_i_Default");
     final CrudComponent _crudComponent_2 = (CrudComponent) contextManager.getInstance("Type_factory__o_k_w_c_f_c_c_c_CrudComponent__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DynamicFormRenderer _formRenderer_1 = (DynamicFormRenderer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_DynamicFormRenderer__quals__j_e_i_Any_j_e_i_Default");
     final MultipleSubFormWidget instance = new MultipleSubFormWidget(_columnGeneratorManager_0, _formRenderer_1, _crudComponent_2, _translationService_3);
+    registerDependentScopedReference(instance, _crudComponent_2);
     registerDependentScopedReference(instance, _translationService_3);
     registerDependentScopedReference(instance, _formRenderer_1);
-    registerDependentScopedReference(instance, _crudComponent_2);
     setIncompleteInstance(instance);
     final FlowPanel MultipleSubFormWidget_content = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, MultipleSubFormWidget_content);

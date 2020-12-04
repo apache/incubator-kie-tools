@@ -14,11 +14,11 @@ public class Type_factory__o_k_w_c_s_c_l_c_m_LienzoPanelMediators__quals__j_e_i_
   }
 
   public LienzoPanelMediators createInstance(final ContextManager contextManager) {
-    final ZoomLevelSelectorPresenter _selector_1 = (ZoomLevelSelectorPresenter) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelectorPresenter__quals__j_e_i_Any_j_e_i_Default");
     final LienzoCanvasMediators _mediators_0 = (LienzoCanvasMediators) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_m_LienzoCanvasMediators__quals__j_e_i_Any_j_e_i_Default");
+    final ZoomLevelSelectorPresenter _selector_1 = (ZoomLevelSelectorPresenter) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelectorPresenter__quals__j_e_i_Any_j_e_i_Default");
     final LienzoPanelMediators instance = new LienzoPanelMediators(_mediators_0, _selector_1);
-    registerDependentScopedReference(instance, _selector_1);
     registerDependentScopedReference(instance, _mediators_0);
+    registerDependentScopedReference(instance, _selector_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

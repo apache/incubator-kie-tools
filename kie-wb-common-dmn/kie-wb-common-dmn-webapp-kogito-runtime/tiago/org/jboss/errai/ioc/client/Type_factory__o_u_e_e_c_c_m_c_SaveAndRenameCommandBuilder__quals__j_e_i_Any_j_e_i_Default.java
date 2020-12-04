@@ -18,15 +18,15 @@ public class Type_factory__o_u_e_e_c_c_m_c_SaveAndRenameCommandBuilder__quals__j
   }
 
   public SaveAndRenameCommandBuilder createInstance(final ContextManager contextManager) {
-    final Event<RenameInProgressEvent> _renameInProgressEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RenameInProgressEvent.class }, new Annotation[] { });
     final RenamePopUpPresenter _renamePopUpPresenter_0 = (RenamePopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_RenamePopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
-    final Event<NotificationEvent> _notification_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     final BusyIndicatorView _busyIndicatorView_1 = (BusyIndicatorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_c_BusyIndicatorView__quals__j_e_i_Any_j_e_i_Default");
+    final Event<NotificationEvent> _notification_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
+    final Event<RenameInProgressEvent> _renameInProgressEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RenameInProgressEvent.class }, new Annotation[] { });
     final SaveAndRenameCommandBuilder instance = new SaveAndRenameCommandBuilder(_renamePopUpPresenter_0, _busyIndicatorView_1, _notification_2, _renameInProgressEvent_3);
-    registerDependentScopedReference(instance, _renameInProgressEvent_3);
     registerDependentScopedReference(instance, _renamePopUpPresenter_0);
-    registerDependentScopedReference(instance, _notification_2);
     registerDependentScopedReference(instance, _busyIndicatorView_1);
+    registerDependentScopedReference(instance, _notification_2);
+    registerDependentScopedReference(instance, _renameInProgressEvent_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

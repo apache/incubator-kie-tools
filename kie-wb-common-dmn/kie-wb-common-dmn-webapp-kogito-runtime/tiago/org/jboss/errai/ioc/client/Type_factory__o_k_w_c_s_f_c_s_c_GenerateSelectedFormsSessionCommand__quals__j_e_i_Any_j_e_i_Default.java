@@ -18,9 +18,9 @@ public class Type_factory__o_k_w_c_s_f_c_s_c_GenerateSelectedFormsSessionCommand
   }
 
   public GenerateSelectedFormsSessionCommand createInstance(final ContextManager contextManager) {
-    final FormGenerationNotifier _formGenerationNotifier_1 = (FormGenerationNotifier) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_n_FormGenerationNotifier__quals__j_e_i_Any_j_e_i_Default");
-    final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ClientFormGenerationManager _formGenerationManager_0 = (ClientFormGenerationManager) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_g_ClientFormGenerationManager__quals__j_e_i_Any_j_e_i_Default");
+    final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final FormGenerationNotifier _formGenerationNotifier_1 = (FormGenerationNotifier) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_n_FormGenerationNotifier__quals__j_e_i_Any_j_e_i_Default");
     final GenerateSelectedFormsSessionCommand instance = new GenerateSelectedFormsSessionCommand(_formGenerationManager_0, _formGenerationNotifier_1, _translationService_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

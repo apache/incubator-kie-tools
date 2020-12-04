@@ -18,11 +18,11 @@ public class Type_factory__o_k_w_c_d_c_e_i_m_d_DMNAssetsDropdown__quals__j_e_i_A
   }
 
   public DMNAssetsDropdown createInstance(final ContextManager contextManager) {
-    final DMNAssetsDropdownItemsProvider _dataProvider_1 = (DMNAssetsDropdownItemsProvider) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_m_d_DMNAssetsDropdownItemsProvider__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (KogitoKieAssetsDropdownView) contextManager.getInstance("Type_factory__o_k_w_c_w_c_a_d_KogitoKieAssetsDropdownView__quals__j_e_i_Any_j_e_i_Default");
+    final DMNAssetsDropdownItemsProvider _dataProvider_1 = (DMNAssetsDropdownItemsProvider) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_m_d_DMNAssetsDropdownItemsProvider__quals__j_e_i_Any_j_e_i_Default");
     final DMNAssetsDropdown instance = new DMNAssetsDropdown(_view_0, _dataProvider_1);
-    registerDependentScopedReference(instance, _dataProvider_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _dataProvider_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -17,12 +17,12 @@ public class Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelectorPresenter__quals__
   }
 
   public ZoomLevelSelectorPresenter createInstance(final ContextManager contextManager) {
+    final ZoomLevelSelector _selector_2 = (ZoomLevelSelector) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelector__quals__j_e_i_Any_j_e_i_Default");
     final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final FloatingView<IsWidget> _floatingView_1 = (AnimatedFloatingWidgetView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_AnimatedFloatingWidgetView__quals__j_e_i_Any_j_e_i_Default");
-    final ZoomLevelSelector _selector_2 = (ZoomLevelSelector) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelector__quals__j_e_i_Any_j_e_i_Default");
     final ZoomLevelSelectorPresenter instance = new ZoomLevelSelectorPresenter(_translationService_0, _floatingView_1, _selector_2);
-    registerDependentScopedReference(instance, _floatingView_1);
     registerDependentScopedReference(instance, _selector_2);
+    registerDependentScopedReference(instance, _floatingView_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

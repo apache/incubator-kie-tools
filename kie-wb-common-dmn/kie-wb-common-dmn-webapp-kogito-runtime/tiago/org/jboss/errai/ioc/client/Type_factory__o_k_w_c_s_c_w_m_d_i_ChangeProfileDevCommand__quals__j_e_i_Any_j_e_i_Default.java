@@ -20,12 +20,12 @@ public class Type_factory__o_k_w_c_s_c_w_m_d_i_ChangeProfileDevCommand__quals__j
   }
 
   public ChangeProfileDevCommand createInstance(final ContextManager contextManager) {
-    final Instance<Bs3Modal> _modalFactory_1 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { Bs3Modal.class }, new Annotation[] { });
-    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final ProfileSelector _profileSelector_2 = (ProfileSelector) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_ProfileSelector__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Instance<Bs3Modal> _modalFactory_1 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { Bs3Modal.class }, new Annotation[] { });
     final ChangeProfileDevCommand instance = new ChangeProfileDevCommand(_sessionManager_0, _modalFactory_1, _profileSelector_2);
-    registerDependentScopedReference(instance, _modalFactory_1);
     registerDependentScopedReference(instance, _profileSelector_2);
+    registerDependentScopedReference(instance, _modalFactory_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

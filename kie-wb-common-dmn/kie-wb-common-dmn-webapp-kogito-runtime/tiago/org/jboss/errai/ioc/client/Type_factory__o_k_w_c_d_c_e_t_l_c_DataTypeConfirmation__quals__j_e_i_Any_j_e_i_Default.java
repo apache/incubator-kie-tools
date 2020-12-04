@@ -20,16 +20,16 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConfirmation__quals__j_e_
   }
 
   public DataTypeConfirmation createInstance(final ContextManager contextManager) {
-    final DataTypeStore _dataTypeStore_0 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeHasFieldsWarningMessage _dataTypeHasFieldsWarningMessage_3 = (DataTypeHasFieldsWarningMessage) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeHasFieldsWarningMessage__quals__j_e_i_Any_j_e_i_Default");
-    final TranslationService _translationService_5 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ReferencedDataTypeWarningMessage _referencedDataTypeWarningMessage_4 = (ReferencedDataTypeWarningMessage) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_ReferencedDataTypeWarningMessage__quals__j_e_i_Any_j_e_i_Default");
-    final ItemDefinitionStore _itemDefinitionStore_1 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_5 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeHasFieldsWarningMessage _dataTypeHasFieldsWarningMessage_3 = (DataTypeHasFieldsWarningMessage) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeHasFieldsWarningMessage__quals__j_e_i_Any_j_e_i_Default");
     final Event<FlashMessage> _flashMessageEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { FlashMessage.class }, new Annotation[] { });
+    final ItemDefinitionStore _itemDefinitionStore_1 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeStore _dataTypeStore_0 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConfirmation instance = new DataTypeConfirmation(_dataTypeStore_0, _itemDefinitionStore_1, _flashMessageEvent_2, _dataTypeHasFieldsWarningMessage_3, _referencedDataTypeWarningMessage_4, _translationService_5);
-    registerDependentScopedReference(instance, _dataTypeHasFieldsWarningMessage_3);
-    registerDependentScopedReference(instance, _translationService_5);
     registerDependentScopedReference(instance, _referencedDataTypeWarningMessage_4);
+    registerDependentScopedReference(instance, _translationService_5);
+    registerDependentScopedReference(instance, _dataTypeHasFieldsWarningMessage_3);
     registerDependentScopedReference(instance, _flashMessageEvent_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

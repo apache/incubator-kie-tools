@@ -163,19 +163,19 @@ public class Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_
   public PerspectiveManagerImpl createInstance(final ContextManager contextManager) {
     final PerspectiveManagerImpl instance = new PerspectiveManagerImpl();
     setIncompleteInstance(instance);
-    final PanelManagerImpl PerspectiveManagerImpl_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    PerspectiveManagerImpl_PanelManager_panelManager(instance, PerspectiveManagerImpl_panelManager);
     final ActivityBeansCache PerspectiveManagerImpl_activityBeansCache = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
     PerspectiveManagerImpl_ActivityBeansCache_activityBeansCache(instance, PerspectiveManagerImpl_activityBeansCache);
-    final SyncBeanManager PerspectiveManagerImpl_iocManager = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, PerspectiveManagerImpl_iocManager);
-    PerspectiveManagerImpl_SyncBeanManager_iocManager(instance, PerspectiveManagerImpl_iocManager);
     final WorkbenchServicesProxyClientImpl PerspectiveManagerImpl_wbServices = (WorkbenchServicesProxyClientImpl) contextManager.getInstance("Type_factory__o_u_c_w_WorkbenchServicesProxyClientImpl__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, PerspectiveManagerImpl_wbServices);
     PerspectiveManagerImpl_WorkbenchServicesProxy_wbServices(instance, PerspectiveManagerImpl_wbServices);
+    final PanelManagerImpl PerspectiveManagerImpl_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    PerspectiveManagerImpl_PanelManager_panelManager(instance, PerspectiveManagerImpl_panelManager);
     final Event PerspectiveManagerImpl_perspectiveChangeEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PerspectiveChange.class }, new Annotation[] { });
     registerDependentScopedReference(instance, PerspectiveManagerImpl_perspectiveChangeEvent);
     PerspectiveManagerImpl_Event_perspectiveChangeEvent(instance, PerspectiveManagerImpl_perspectiveChangeEvent);
+    final SyncBeanManager PerspectiveManagerImpl_iocManager = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, PerspectiveManagerImpl_iocManager);
+    PerspectiveManagerImpl_SyncBeanManager_iocManager(instance, PerspectiveManagerImpl_iocManager);
     setIncompleteInstance(null);
     return instance;
   }
@@ -202,20 +202,20 @@ public class Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_
     instance.@org.uberfire.client.mvp.PerspectiveManagerImpl::wbServices = value;
   }-*/;
 
-  native static SyncBeanManager PerspectiveManagerImpl_SyncBeanManager_iocManager(PerspectiveManagerImpl instance) /*-{
-    return instance.@org.uberfire.client.mvp.PerspectiveManagerImpl::iocManager;
-  }-*/;
-
-  native static void PerspectiveManagerImpl_SyncBeanManager_iocManager(PerspectiveManagerImpl instance, SyncBeanManager value) /*-{
-    instance.@org.uberfire.client.mvp.PerspectiveManagerImpl::iocManager = value;
-  }-*/;
-
   native static Event PerspectiveManagerImpl_Event_perspectiveChangeEvent(PerspectiveManagerImpl instance) /*-{
     return instance.@org.uberfire.client.mvp.PerspectiveManagerImpl::perspectiveChangeEvent;
   }-*/;
 
   native static void PerspectiveManagerImpl_Event_perspectiveChangeEvent(PerspectiveManagerImpl instance, Event<PerspectiveChange> value) /*-{
     instance.@org.uberfire.client.mvp.PerspectiveManagerImpl::perspectiveChangeEvent = value;
+  }-*/;
+
+  native static SyncBeanManager PerspectiveManagerImpl_SyncBeanManager_iocManager(PerspectiveManagerImpl instance) /*-{
+    return instance.@org.uberfire.client.mvp.PerspectiveManagerImpl::iocManager;
+  }-*/;
+
+  native static void PerspectiveManagerImpl_SyncBeanManager_iocManager(PerspectiveManagerImpl instance, SyncBeanManager value) /*-{
+    instance.@org.uberfire.client.mvp.PerspectiveManagerImpl::iocManager = value;
   }-*/;
 
   native static PanelManager PerspectiveManagerImpl_PanelManager_panelManager(PerspectiveManagerImpl instance) /*-{

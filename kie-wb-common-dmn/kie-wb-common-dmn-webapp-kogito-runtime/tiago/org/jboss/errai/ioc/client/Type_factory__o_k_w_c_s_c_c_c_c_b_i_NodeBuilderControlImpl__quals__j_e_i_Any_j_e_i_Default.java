@@ -23,9 +23,9 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_b_i_NodeBuilderControlImpl__quals__
   }
 
   public NodeBuilderControlImpl createInstance(final ContextManager contextManager) {
-    final ClientDefinitionManager _clientDefinitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final CanvasCommandFactory<AbstractCanvasHandler> _commandFactory_1 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final AbstractElementBuilderControl _elementBuilderControl_2 = (ElementBuilderControlImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_c_b_i_ElementBuilderControlImpl__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_s_c_c_c_c_b_i_Element");
+    final ClientDefinitionManager _clientDefinitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final NodeBuilderControlImpl instance = new NodeBuilderControlImpl(_clientDefinitionManager_0, _commandFactory_1, _elementBuilderControl_2);
     registerDependentScopedReference(instance, _elementBuilderControl_2);
     setIncompleteInstance(instance);

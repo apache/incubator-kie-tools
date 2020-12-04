@@ -107,8 +107,8 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_a_DefaultTextPropertyProviderImpl__
   }
 
   public DefaultTextPropertyProviderImpl createInstance(final ContextManager contextManager) {
-    final CanvasCommandFactory<AbstractCanvasHandler> _canvasCommandFactory_1 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final CanvasCommandFactory<AbstractCanvasHandler> _canvasCommandFactory_1 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final DefaultTextPropertyProviderImpl instance = new DefaultTextPropertyProviderImpl(_definitionUtils_0, _canvasCommandFactory_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

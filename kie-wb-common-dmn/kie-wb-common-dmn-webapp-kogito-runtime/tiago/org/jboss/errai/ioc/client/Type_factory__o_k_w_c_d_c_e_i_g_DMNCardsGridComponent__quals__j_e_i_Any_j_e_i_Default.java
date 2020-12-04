@@ -20,18 +20,18 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_DMNCardsGridComponent__quals__j_e_i
   }
 
   public DMNCardsGridComponent createInstance(final ContextManager contextManager) {
-    final IncludedModelsPageState _pageState_4 = (IncludedModelsPageState) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageState__quals__j_e_i_Any_j_e_i_Default");
-    final DMNCardsEmptyStateView _emptyStateView_5 = (DMNCardsEmptyStateView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_g_e_DMNCardsEmptyStateView__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DMNCardComponent> _dmnCardComponent_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DMNCardComponent.class }, new Annotation[] { });
-    final ManagedInstance<DefaultCardComponent> _defaultCardComponent_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultCardComponent.class }, new Annotation[] { });
-    final CardsGridComponent _cardsGridComponent_3 = (CardsGridComponent) contextManager.getInstance("Type_factory__o_k_w_c_w_c_c_CardsGridComponent__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<PMMLCardComponent> _pmmlCardComponent_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { PMMLCardComponent.class }, new Annotation[] { });
+    final ManagedInstance<DefaultCardComponent> _defaultCardComponent_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultCardComponent.class }, new Annotation[] { });
+    final IncludedModelsPageState _pageState_4 = (IncludedModelsPageState) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageState__quals__j_e_i_Any_j_e_i_Default");
+    final CardsGridComponent _cardsGridComponent_3 = (CardsGridComponent) contextManager.getInstance("Type_factory__o_k_w_c_w_c_c_CardsGridComponent__quals__j_e_i_Any_j_e_i_Default");
+    final DMNCardsEmptyStateView _emptyStateView_5 = (DMNCardsEmptyStateView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_g_e_DMNCardsEmptyStateView__quals__j_e_i_Any_j_e_i_Default");
     final DMNCardsGridComponent instance = new DMNCardsGridComponent(_dmnCardComponent_0, _pmmlCardComponent_1, _defaultCardComponent_2, _cardsGridComponent_3, _pageState_4, _emptyStateView_5);
-    registerDependentScopedReference(instance, _emptyStateView_5);
     registerDependentScopedReference(instance, _dmnCardComponent_0);
+    registerDependentScopedReference(instance, _pmmlCardComponent_1);
     registerDependentScopedReference(instance, _defaultCardComponent_2);
     registerDependentScopedReference(instance, _cardsGridComponent_3);
-    registerDependentScopedReference(instance, _pmmlCardComponent_1);
+    registerDependentScopedReference(instance, _emptyStateView_5);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

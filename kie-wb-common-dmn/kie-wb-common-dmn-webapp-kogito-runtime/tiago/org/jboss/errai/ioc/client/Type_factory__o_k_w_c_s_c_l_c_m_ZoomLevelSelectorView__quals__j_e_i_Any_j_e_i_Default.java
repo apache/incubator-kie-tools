@@ -67,30 +67,29 @@ public class Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelectorView__quals__j_e_i
   public ZoomLevelSelectorView createInstance(final ContextManager contextManager) {
     final ZoomLevelSelectorView instance = new ZoomLevelSelectorView();
     setIncompleteInstance(instance);
-    final Button ZoomLevelSelectorView_dropDownButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownButton);
-    ZoomLevelSelectorView_Button_dropDownButton(instance, ZoomLevelSelectorView_dropDownButton);
+    final ClientTranslationService ZoomLevelSelectorView_translationService = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    ZoomLevelSelectorView_ClientTranslationService_translationService(instance, ZoomLevelSelectorView_translationService);
     final UnorderedList ZoomLevelSelectorView_dropDownMenu = (UnorderedList) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_UnorderedList__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownMenu);
     ZoomLevelSelectorView_UnorderedList_dropDownMenu(instance, ZoomLevelSelectorView_dropDownMenu);
-    final Button ZoomLevelSelectorView_resetButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ZoomLevelSelectorView_resetButton);
-    ZoomLevelSelectorView_Button_resetButton(instance, ZoomLevelSelectorView_resetButton);
-    final Div ZoomLevelSelectorView_dropDownPanel = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownPanel);
-    ZoomLevelSelectorView_Div_dropDownPanel(instance, ZoomLevelSelectorView_dropDownPanel);
     final Div ZoomLevelSelectorView_dropDownPanelGroup = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownPanelGroup);
     ZoomLevelSelectorView_Div_dropDownPanelGroup(instance, ZoomLevelSelectorView_dropDownPanelGroup);
-    final Span ZoomLevelSelectorView_dropDownText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownText);
-    ZoomLevelSelectorView_Span_dropDownText(instance, ZoomLevelSelectorView_dropDownText);
+    final Div ZoomLevelSelectorView_dropDownPanel = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownPanel);
+    ZoomLevelSelectorView_Div_dropDownPanel(instance, ZoomLevelSelectorView_dropDownPanel);
     final Button ZoomLevelSelectorView_decreaseButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ZoomLevelSelectorView_decreaseButton);
     ZoomLevelSelectorView_Button_decreaseButton(instance, ZoomLevelSelectorView_decreaseButton);
     final Button ZoomLevelSelectorView_increaseButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ZoomLevelSelectorView_increaseButton);
     ZoomLevelSelectorView_Button_increaseButton(instance, ZoomLevelSelectorView_increaseButton);
+    final Button ZoomLevelSelectorView_resetButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ZoomLevelSelectorView_resetButton);
+    ZoomLevelSelectorView_Button_resetButton(instance, ZoomLevelSelectorView_resetButton);
+    final Button ZoomLevelSelectorView_dropDownButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownButton);
+    ZoomLevelSelectorView_Button_dropDownButton(instance, ZoomLevelSelectorView_dropDownButton);
     final ManagedInstance ZoomLevelSelectorView_items = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ZoomLevelSelectorItem.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -101,8 +100,9 @@ public class Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelectorView__quals__j_e_i
     } });
     registerDependentScopedReference(instance, ZoomLevelSelectorView_items);
     ZoomLevelSelectorView_ManagedInstance_items(instance, ZoomLevelSelectorView_items);
-    final ClientTranslationService ZoomLevelSelectorView_translationService = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
-    ZoomLevelSelectorView_ClientTranslationService_translationService(instance, ZoomLevelSelectorView_translationService);
+    final Span ZoomLevelSelectorView_dropDownText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ZoomLevelSelectorView_dropDownText);
+    ZoomLevelSelectorView_Span_dropDownText(instance, ZoomLevelSelectorView_dropDownText);
     o_k_w_c_s_c_l_c_m_ZoomLevelSelectorViewTemplateResource templateForZoomLevelSelectorView = GWT.create(o_k_w_c_s_c_l_c_m_ZoomLevelSelectorViewTemplateResource.class);
     Element parentElementForTemplateOfZoomLevelSelectorView = TemplateUtil.getRootTemplateParentElement(templateForZoomLevelSelectorView.getContents().getText(), "org/kie/workbench/common/stunner/client/lienzo/components/mediators/ZoomLevelSelectorView.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/client/lienzo/components/mediators/ZoomLevelSelectorView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfZoomLevelSelectorView));

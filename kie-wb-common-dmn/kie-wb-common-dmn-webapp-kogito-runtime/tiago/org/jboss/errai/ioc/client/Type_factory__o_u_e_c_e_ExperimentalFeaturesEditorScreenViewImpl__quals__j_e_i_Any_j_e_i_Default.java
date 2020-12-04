@@ -45,12 +45,12 @@ public class Type_factory__o_u_e_c_e_ExperimentalFeaturesEditorScreenViewImpl__q
   public ExperimentalFeaturesEditorScreenViewImpl createInstance(final ContextManager contextManager) {
     final ExperimentalFeaturesEditorScreenViewImpl instance = new ExperimentalFeaturesEditorScreenViewImpl();
     setIncompleteInstance(instance);
-    final HTMLDivElement ExperimentalFeaturesEditorScreenViewImpl_container = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ExperimentalFeaturesEditorScreenViewImpl_container);
-    ExperimentalFeaturesEditorScreenViewImpl_HTMLDivElement_container(instance, ExperimentalFeaturesEditorScreenViewImpl_container);
     final Elemental2DomUtil ExperimentalFeaturesEditorScreenViewImpl_util = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ExperimentalFeaturesEditorScreenViewImpl_util);
     ExperimentalFeaturesEditorScreenViewImpl_Elemental2DomUtil_util(instance, ExperimentalFeaturesEditorScreenViewImpl_util);
+    final HTMLDivElement ExperimentalFeaturesEditorScreenViewImpl_container = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ExperimentalFeaturesEditorScreenViewImpl_container);
+    ExperimentalFeaturesEditorScreenViewImpl_HTMLDivElement_container(instance, ExperimentalFeaturesEditorScreenViewImpl_container);
     o_u_e_c_e_ExperimentalFeaturesEditorScreenViewImplTemplateResource templateForExperimentalFeaturesEditorScreenViewImpl = GWT.create(o_u_e_c_e_ExperimentalFeaturesEditorScreenViewImplTemplateResource.class);
     Element parentElementForTemplateOfExperimentalFeaturesEditorScreenViewImpl = TemplateUtil.getRootTemplateParentElement(templateForExperimentalFeaturesEditorScreenViewImpl.getContents().getText(), "org/uberfire/experimental/client/editor/ExperimentalFeaturesEditorScreenViewImpl.html", "");
     TemplateUtil.translateTemplate("org/uberfire/experimental/client/editor/ExperimentalFeaturesEditorScreenViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfExperimentalFeaturesEditorScreenViewImpl));

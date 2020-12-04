@@ -23,11 +23,11 @@ public class Type_factory__o_u_c_v_p_n_NotificationPopupsManagerView__quals__j_e
     setIncompleteInstance(instance);
     final DefaultAuthorizationManager NotificationPopupsManagerView_authorizationManager = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
     NotificationPopupsManagerView_AuthorizationManager_authorizationManager(instance, NotificationPopupsManagerView_authorizationManager);
+    final ActivityBeansCache NotificationPopupsManagerView_activityBeansCache = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
+    NotificationPopupsManagerView_ActivityBeansCache_activityBeansCache(instance, NotificationPopupsManagerView_activityBeansCache);
     final User NotificationPopupsManagerView_user = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, NotificationPopupsManagerView_user);
     NotificationPopupsManagerView_User_user(instance, NotificationPopupsManagerView_user);
-    final ActivityBeansCache NotificationPopupsManagerView_activityBeansCache = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
-    NotificationPopupsManagerView_ActivityBeansCache_activityBeansCache(instance, NotificationPopupsManagerView_activityBeansCache);
     final PlaceManagerImpl NotificationPopupsManagerView_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     NotificationPopupsManagerView_PlaceManager_placeManager(instance, NotificationPopupsManagerView_placeManager);
     setIncompleteInstance(null);

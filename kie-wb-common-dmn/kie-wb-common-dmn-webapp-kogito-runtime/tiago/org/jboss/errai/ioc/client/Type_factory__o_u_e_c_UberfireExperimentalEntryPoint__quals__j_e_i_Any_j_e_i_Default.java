@@ -18,8 +18,8 @@ public class Type_factory__o_u_e_c_UberfireExperimentalEntryPoint__quals__j_e_i_
   }
 
   public UberfireExperimentalEntryPoint createInstance(final ContextManager contextManager) {
-    final ClientExperimentalFeaturesRegistryService _registryService_0 = (ClientExperimentalFeaturesRegistryServiceImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final ExperimentalActivitiesAuthorizationManager _activitiesAuthorizationManager_2 = (ExperimentalActivitiesAuthorizationManagerImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_a_ExperimentalActivitiesAuthorizationManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final ClientExperimentalFeaturesRegistryService _registryService_0 = (ClientExperimentalFeaturesRegistryServiceImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final ClientExperimentalFeaturesDefRegistry _defRegistry_1 = (CDIClientFeatureDefRegistry) contextManager.getInstance("Type_factory__o_u_e_c_s_i_CDIClientFeatureDefRegistry__quals__j_e_i_Any_j_e_i_Default");
     final UberfireExperimentalEntryPoint instance = new UberfireExperimentalEntryPoint(_registryService_0, _defRegistry_1, _activitiesAuthorizationManager_2);
     setIncompleteInstance(instance);

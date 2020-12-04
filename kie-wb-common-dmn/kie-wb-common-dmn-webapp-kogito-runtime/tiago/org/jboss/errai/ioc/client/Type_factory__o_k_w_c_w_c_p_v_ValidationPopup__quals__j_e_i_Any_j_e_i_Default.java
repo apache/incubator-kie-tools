@@ -20,13 +20,13 @@ public class Type_factory__o_k_w_c_w_c_p_v_ValidationPopup__quals__j_e_i_Any_j_e
   }
 
   public ValidationPopup createInstance(final ContextManager contextManager) {
-    final ValidationMessageTranslatorUtils _validationMessageTranslatorUtils_1 = (ValidationMessageTranslatorUtils) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_v_ValidationMessageTranslatorUtils__quals__j_e_i_Any_j_e_i_Default");
-    final ValidationPopupView _view_0 = (ValidationPopupViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_v_ValidationPopupViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final Event<NotificationEvent> _notificationEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
+    final ValidationPopupView _view_0 = (ValidationPopupViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_v_ValidationPopupViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final ValidationMessageTranslatorUtils _validationMessageTranslatorUtils_1 = (ValidationMessageTranslatorUtils) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_v_ValidationMessageTranslatorUtils__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ValidationPopup instance = new ValidationPopup(_view_0, _validationMessageTranslatorUtils_1, _translationService_2, _notificationEvent_3);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _notificationEvent_3);
+    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _translationService_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

@@ -23,8 +23,8 @@ public class Type_factory__o_k_w_c_s_c_c_s_c_i_PerformAutomaticLayoutCommand__qu
 
   public PerformAutomaticLayoutCommand createInstance(final ContextManager contextManager) {
     final LayoutHelper _layoutHelper_0 = (LayoutHelper) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_l_LayoutHelper__quals__j_e_i_Any_j_e_i_Default");
-    final Event<LockRequiredEvent> _locker_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LockRequiredEvent.class }, new Annotation[] { });
     final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<LockRequiredEvent> _locker_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LockRequiredEvent.class }, new Annotation[] { });
     final PerformAutomaticLayoutCommand instance = new PerformAutomaticLayoutCommand(_layoutHelper_0, _sessionCommandManager_1, _locker_2);
     registerDependentScopedReference(instance, _layoutHelper_0);
     registerDependentScopedReference(instance, _locker_2);

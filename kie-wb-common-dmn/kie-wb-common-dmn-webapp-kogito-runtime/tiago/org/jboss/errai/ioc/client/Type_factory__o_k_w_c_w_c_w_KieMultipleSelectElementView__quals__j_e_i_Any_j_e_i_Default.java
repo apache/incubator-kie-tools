@@ -38,12 +38,12 @@ public class Type_factory__o_k_w_c_w_c_w_KieMultipleSelectElementView__quals__j_
   public KieMultipleSelectElementView createInstance(final ContextManager contextManager) {
     final KieMultipleSelectElementView instance = new KieMultipleSelectElementView();
     setIncompleteInstance(instance);
-    final HTMLSelectElement KieMultipleSelectElementView_select = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, KieMultipleSelectElementView_select);
-    KieMultipleSelectElementView_HTMLSelectElement_select(instance, KieMultipleSelectElementView_select);
     final HTMLDivElement KieMultipleSelectElementView_root = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, KieMultipleSelectElementView_root);
     KieMultipleSelectElementView_HTMLDivElement_root(instance, KieMultipleSelectElementView_root);
+    final HTMLSelectElement KieMultipleSelectElementView_select = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, KieMultipleSelectElementView_select);
+    KieMultipleSelectElementView_HTMLSelectElement_select(instance, KieMultipleSelectElementView_select);
     o_k_w_c_w_c_w_KieMultipleSelectElementViewTemplateResource templateForKieMultipleSelectElementView = GWT.create(o_k_w_c_w_c_w_KieMultipleSelectElementViewTemplateResource.class);
     Element parentElementForTemplateOfKieMultipleSelectElementView = TemplateUtil.getRootTemplateParentElement(templateForKieMultipleSelectElementView.getContents().getText(), "org/kie/workbench/common/widgets/client/widget/KieMultipleSelectElementView.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/widgets/client/widget/KieMultipleSelectElementView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfKieMultipleSelectElementView));

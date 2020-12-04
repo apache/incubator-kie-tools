@@ -51,17 +51,6 @@ public class Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeView_TreeItem_
           return "span";
         }
     } });
-    final HTMLElement _remove_6 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=i)";
-        }
-        public String value() {
-          return "i";
-        }
-    } });
     final HTMLElement _save_4 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -74,17 +63,6 @@ public class Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeView_TreeItem_
         }
     } });
     final HTMLInputElement _inputText_1 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _edit_5 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=i)";
-        }
-        public String value() {
-          return "i";
-        }
-    } });
     final HTMLElement _icon_2 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -97,14 +75,36 @@ public class Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeView_TreeItem_
         }
     } });
     final HTMLUListElement _subItems_3 = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLElement _edit_5 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=i)";
+        }
+        public String value() {
+          return "i";
+        }
+    } });
+    final HTMLElement _remove_6 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=i)";
+        }
+        public String value() {
+          return "i";
+        }
+    } });
     final TreeItem instance = new TreeItem(_textContent_0, _inputText_1, _icon_2, _subItems_3, _save_4, _edit_5, _remove_6);
     registerDependentScopedReference(instance, _textContent_0);
-    registerDependentScopedReference(instance, _remove_6);
     registerDependentScopedReference(instance, _save_4);
     registerDependentScopedReference(instance, _inputText_1);
-    registerDependentScopedReference(instance, _edit_5);
     registerDependentScopedReference(instance, _icon_2);
     registerDependentScopedReference(instance, _subItems_3);
+    registerDependentScopedReference(instance, _edit_5);
+    registerDependentScopedReference(instance, _remove_6);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeView_TreeItemTemplateResource templateForTreeItem = GWT.create(o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeView_TreeItemTemplateResource.class);
     Element parentElementForTemplateOfTreeItem = TemplateUtil.getRootTemplateParentElement(templateForTreeItem.getContents().getText(), "org/kie/workbench/common/dmn/client/docks/navigator/tree/DecisionNavigatorTreeView.html", "item");

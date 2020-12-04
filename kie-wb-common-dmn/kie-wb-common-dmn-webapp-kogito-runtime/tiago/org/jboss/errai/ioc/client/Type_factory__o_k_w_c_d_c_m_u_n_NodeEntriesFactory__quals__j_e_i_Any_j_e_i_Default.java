@@ -16,12 +16,12 @@ public class Type_factory__o_k_w_c_d_c_m_u_n_NodeEntriesFactory__quals__j_e_i_An
 
   public NodeEntriesFactory createInstance(final ContextManager contextManager) {
     final StunnerConverter _nodeFactory_0 = (StunnerConverter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_u_n_StunnerConverter__quals__j_e_i_Any_j_e_i_Default");
-    final NodeConnector _nodeConnector_1 = (NodeConnector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_u_n_NodeConnector__quals__j_e_i_Any_j_e_i_Default");
     final DMNMarshallerImportsClientHelper _dmnMarshallerImportsHelper_2 = (DMNMarshallerImportsClientHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsClientHelper__quals__j_e_i_Any_j_e_i_Default");
+    final NodeConnector _nodeConnector_1 = (NodeConnector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_u_n_NodeConnector__quals__j_e_i_Any_j_e_i_Default");
     final NodeEntriesFactory instance = new NodeEntriesFactory(_nodeFactory_0, _nodeConnector_1, _dmnMarshallerImportsHelper_2);
     registerDependentScopedReference(instance, _nodeFactory_0);
-    registerDependentScopedReference(instance, _nodeConnector_1);
     registerDependentScopedReference(instance, _dmnMarshallerImportsHelper_2);
+    registerDependentScopedReference(instance, _nodeConnector_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

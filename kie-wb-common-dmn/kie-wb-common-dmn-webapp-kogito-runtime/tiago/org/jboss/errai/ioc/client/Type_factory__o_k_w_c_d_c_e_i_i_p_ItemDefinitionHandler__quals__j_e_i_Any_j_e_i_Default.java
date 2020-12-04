@@ -19,8 +19,8 @@ public class Type_factory__o_k_w_c_d_c_e_i_i_p_ItemDefinitionHandler__quals__j_e
 
   public ItemDefinitionHandler createInstance(final ContextManager contextManager) {
     final ItemDefinitionUtils _itemDefinitionUtils_0 = (ItemDefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_ItemDefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final PropertiesPanelNotifier _panelNotifier_2 = (PropertiesPanelNotifier) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals__j_e_i_Any_j_e_i_Default");
     final Event<RefreshDataTypesListEvent> _refreshDataTypesListEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshDataTypesListEvent.class }, new Annotation[] { });
+    final PropertiesPanelNotifier _panelNotifier_2 = (PropertiesPanelNotifier) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals__j_e_i_Any_j_e_i_Default");
     final ItemDefinitionHandler instance = new ItemDefinitionHandler(_itemDefinitionUtils_0, _refreshDataTypesListEvent_1, _panelNotifier_2);
     registerDependentScopedReference(instance, _itemDefinitionUtils_0);
     registerDependentScopedReference(instance, _refreshDataTypesListEvent_1);

@@ -36,12 +36,12 @@ public class Type_factory__o_k_w_c_s_c_w_v_SelectorView__quals__j_e_i_Any_j_e_i_
   public SelectorView createInstance(final ContextManager contextManager) {
     final SelectorView instance = new SelectorView();
     setIncompleteInstance(instance);
-    final Div SelectorView_selectorContainer = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, SelectorView_selectorContainer);
-    SelectorView_Div_selectorContainer(instance, SelectorView_selectorContainer);
     final Select SelectorView_selectorInput = (Select) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Select__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, SelectorView_selectorInput);
     SelectorView_Select_selectorInput(instance, SelectorView_selectorInput);
+    final Div SelectorView_selectorContainer = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, SelectorView_selectorContainer);
+    SelectorView_Div_selectorContainer(instance, SelectorView_selectorContainer);
     o_k_w_c_s_c_w_v_SelectorViewTemplateResource templateForSelectorView = GWT.create(o_k_w_c_s_c_w_v_SelectorViewTemplateResource.class);
     Element parentElementForTemplateOfSelectorView = TemplateUtil.getRootTemplateParentElement(templateForSelectorView.getContents().getText(), "org/kie/workbench/common/stunner/client/widgets/views/SelectorView.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/client/widgets/views/SelectorView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfSelectorView));

@@ -198,6 +198,7 @@ public class Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBarView__quals__j_e_i
 
   public DataTypeSearchBarView createInstance(final ContextManager contextManager) {
     final HTMLButtonElement _closeSearch_2 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final HTMLInputElement _searchBar_0 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _searchIcon_1 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
@@ -210,12 +211,11 @@ public class Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBarView__quals__j_e_i
           return "span";
         }
     } });
-    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeSearchBarView instance = new DataTypeSearchBarView(_searchBar_0, _searchIcon_1, _closeSearch_2, _translationService_3);
     registerDependentScopedReference(instance, _closeSearch_2);
+    registerDependentScopedReference(instance, _translationService_3);
     registerDependentScopedReference(instance, _searchBar_0);
     registerDependentScopedReference(instance, _searchIcon_1);
-    registerDependentScopedReference(instance, _translationService_3);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_s_DataTypeSearchBarViewTemplateResource templateForDataTypeSearchBarView = GWT.create(o_k_w_c_d_c_e_t_s_DataTypeSearchBarViewTemplateResource.class);
     Element parentElementForTemplateOfDataTypeSearchBarView = TemplateUtil.getRootTemplateParentElement(templateForDataTypeSearchBarView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/search/DataTypeSearchBarView.html", "");

@@ -17,11 +17,11 @@ public class Type_factory__o_k_w_c_s_c_l_c_v_LienzoCanvasNotificationView__quals
   }
 
   public LienzoCanvasNotificationView createInstance(final ContextManager contextManager) {
-    final AlertView _alertView_1 = (AlertView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_v_AlertView__quals__j_e_i_Any_j_e_i_Default");
     final FloatingView<IsWidget> _floatingView_0 = (AnimatedFloatingWidgetView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_AnimatedFloatingWidgetView__quals__j_e_i_Any_j_e_i_Default");
+    final AlertView _alertView_1 = (AlertView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_v_AlertView__quals__j_e_i_Any_j_e_i_Default");
     final LienzoCanvasNotificationView instance = new LienzoCanvasNotificationView(_floatingView_0, _alertView_1);
-    registerDependentScopedReference(instance, _alertView_1);
     registerDependentScopedReference(instance, _floatingView_0);
+    registerDependentScopedReference(instance, _alertView_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

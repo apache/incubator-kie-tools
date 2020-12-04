@@ -16,11 +16,11 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeSelector__quals__j
   }
 
   public DayTimeSelector createInstance(final ContextManager contextManager) {
-    final DayTimeValueConverter _converter_1 = (DayTimeValueConverter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeValueConverter__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DayTimeSelectorView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeSelectorView__quals__j_e_i_Any_j_e_i_Default");
+    final DayTimeValueConverter _converter_1 = (DayTimeValueConverter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeValueConverter__quals__j_e_i_Any_j_e_i_Default");
     final DayTimeSelector instance = new DayTimeSelector(_view_0, _converter_1);
-    registerDependentScopedReference(instance, _converter_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _converter_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

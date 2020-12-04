@@ -37,12 +37,12 @@ public class Type_factory__o_k_w_c_s_c_w_p_c_g_DefinitionPaletteGroupWidgetViewI
   public DefinitionPaletteGroupWidgetViewImpl createInstance(final ContextManager contextManager) {
     final DefinitionPaletteGroupWidgetViewImpl instance = new DefinitionPaletteGroupWidgetViewImpl();
     setIncompleteInstance(instance);
-    final ListItem DefinitionPaletteGroupWidgetViewImpl_moreAnchor = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, DefinitionPaletteGroupWidgetViewImpl_moreAnchor);
-    DefinitionPaletteGroupWidgetViewImpl_ListItem_moreAnchor(instance, DefinitionPaletteGroupWidgetViewImpl_moreAnchor);
     final ListItem DefinitionPaletteGroupWidgetViewImpl_lessAnchor = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DefinitionPaletteGroupWidgetViewImpl_lessAnchor);
     DefinitionPaletteGroupWidgetViewImpl_ListItem_lessAnchor(instance, DefinitionPaletteGroupWidgetViewImpl_lessAnchor);
+    final ListItem DefinitionPaletteGroupWidgetViewImpl_moreAnchor = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, DefinitionPaletteGroupWidgetViewImpl_moreAnchor);
+    DefinitionPaletteGroupWidgetViewImpl_ListItem_moreAnchor(instance, DefinitionPaletteGroupWidgetViewImpl_moreAnchor);
     o_k_w_c_s_c_w_p_c_g_DefinitionPaletteGroupWidgetViewImplTemplateResource templateForDefinitionPaletteGroupWidgetViewImpl = GWT.create(o_k_w_c_s_c_w_p_c_g_DefinitionPaletteGroupWidgetViewImplTemplateResource.class);
     Element parentElementForTemplateOfDefinitionPaletteGroupWidgetViewImpl = TemplateUtil.getRootTemplateParentElement(templateForDefinitionPaletteGroupWidgetViewImpl.getContents().getText(), "org/kie/workbench/common/stunner/client/widgets/palette/categories/group/DefinitionPaletteGroupWidgetViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/client/widgets/palette/categories/group/DefinitionPaletteGroupWidgetViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfDefinitionPaletteGroupWidgetViewImpl));

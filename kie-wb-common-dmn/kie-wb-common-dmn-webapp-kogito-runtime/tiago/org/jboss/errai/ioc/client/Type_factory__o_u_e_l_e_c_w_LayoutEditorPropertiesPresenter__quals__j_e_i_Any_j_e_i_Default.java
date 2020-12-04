@@ -269,12 +269,12 @@ public class Type_factory__o_u_e_l_e_c_w_LayoutEditorPropertiesPresenter__quals_
   }
 
   public LayoutEditorPropertiesPresenter createInstance(final ContextManager contextManager) {
-    final LiveSearchDropDown _elementSelector_2 = (LiveSearchDropDown) contextManager.getInstance("Type_factory__o_u_e_w_c_c_d_LiveSearchDropDown__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (LayoutEditorPropertiesView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_w_LayoutEditorPropertiesView__quals__j_e_i_Any_j_e_i_Default");
+    final LiveSearchDropDown _elementSelector_2 = (LiveSearchDropDown) contextManager.getInstance("Type_factory__o_u_e_w_c_c_d_LiveSearchDropDown__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<LayoutElementPropertiesPresenter> _layoutElementPropertiesPresenterInstance_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { LayoutElementPropertiesPresenter.class }, new Annotation[] { });
     final LayoutEditorPropertiesPresenter instance = new LayoutEditorPropertiesPresenter(_view_0, _layoutElementPropertiesPresenterInstance_1, _elementSelector_2);
-    registerDependentScopedReference(instance, _elementSelector_2);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _elementSelector_2);
     registerDependentScopedReference(instance, _layoutElementPropertiesPresenterInstance_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

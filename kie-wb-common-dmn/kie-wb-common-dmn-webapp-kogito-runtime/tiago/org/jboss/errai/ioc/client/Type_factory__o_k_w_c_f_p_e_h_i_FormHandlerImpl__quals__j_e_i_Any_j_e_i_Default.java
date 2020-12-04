@@ -17,11 +17,11 @@ public class Type_factory__o_k_w_c_f_p_e_h_i_FormHandlerImpl__quals__j_e_i_Any_j
   }
 
   public FormHandlerImpl createInstance(final ContextManager contextManager) {
-    final FieldChangeHandlerManager _fieldChangeManager_1 = (FieldChangeHandlerManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_p_e_h_i_FieldChangeHandlerManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final FormValidator _validator_0 = (FormValidatorImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_p_e_h_i_FormValidatorImpl__quals__j_e_i_Any_j_e_i_Default");
+    final FieldChangeHandlerManager _fieldChangeManager_1 = (FieldChangeHandlerManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_p_e_h_i_FieldChangeHandlerManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final FormHandlerImpl instance = new FormHandlerImpl(_validator_0, _fieldChangeManager_1);
-    registerDependentScopedReference(instance, _fieldChangeManager_1);
     registerDependentScopedReference(instance, _validator_0);
+    registerDependentScopedReference(instance, _fieldChangeManager_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

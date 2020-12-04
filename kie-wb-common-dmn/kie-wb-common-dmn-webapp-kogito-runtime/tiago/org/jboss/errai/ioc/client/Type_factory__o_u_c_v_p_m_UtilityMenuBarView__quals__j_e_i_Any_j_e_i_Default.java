@@ -904,11 +904,11 @@ public class Type_factory__o_u_c_v_p_m_UtilityMenuBarView__quals__j_e_i_Any_j_e_
   public UtilityMenuBarView createInstance(final ContextManager contextManager) {
     final UtilityMenuBarView instance = new UtilityMenuBarView();
     setIncompleteInstance(instance);
-    final DefaultAuthorizationManager UtilityMenuBarView_authzManager = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
-    UtilityMenuBarView_AuthorizationManager_authzManager(instance, UtilityMenuBarView_authzManager);
     final User UtilityMenuBarView_identity = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, UtilityMenuBarView_identity);
     UtilityMenuBarView_User_identity(instance, UtilityMenuBarView_identity);
+    final DefaultAuthorizationManager UtilityMenuBarView_authzManager = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
+    UtilityMenuBarView_AuthorizationManager_authzManager(instance, UtilityMenuBarView_authzManager);
     setIncompleteInstance(null);
     return instance;
   }

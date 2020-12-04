@@ -45,8 +45,8 @@ public class Type_factory__o_k_w_c_s_c_w_p_c_CollapsedDefinitionPaletteItemWidge
   }
 
   public CollapsedDefinitionPaletteItemWidgetViewImpl createInstance(final ContextManager contextManager) {
-    final DOMGlyphRenderers _domGlyphRenderers_1 = (DOMGlyphRenderers) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_c_g_DOMGlyphRenderers__quals__j_e_i_Any_j_e_i_Default");
     final Button _icon_0 = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final DOMGlyphRenderers _domGlyphRenderers_1 = (DOMGlyphRenderers) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_c_g_DOMGlyphRenderers__quals__j_e_i_Any_j_e_i_Default");
     final CollapsedDefinitionPaletteItemWidgetViewImpl instance = new CollapsedDefinitionPaletteItemWidgetViewImpl(_icon_0, _domGlyphRenderers_1);
     registerDependentScopedReference(instance, _icon_0);
     setIncompleteInstance(instance);

@@ -30,6 +30,11 @@ public class _NamedElementValidatorImpl extends com.google.gwt.validation.client
           org.kie.workbench.common.dmn.api.definition.model.NamedElement.class,
           javax.validation.groups.Default.class);
   
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "nameHolder",
+          org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "id",
@@ -40,17 +45,12 @@ public class _NamedElementValidatorImpl extends com.google.gwt.validation.client
           "description",
           org.kie.workbench.common.dmn.api.property.dmn.Description.class,
           true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "nameHolder",
-          org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.NamedElement> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.NamedElement.class)
           .setConstrained(false)
+          .put("nameHolder", nameHolder_pd)
           .put("id", id_pd)
           .put("description", description_pd)
-          .put("nameHolder", nameHolder_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -146,11 +146,11 @@ public class _NamedElementValidatorImpl extends com.google.gwt.validation.client
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("id")) {
-    } else if (propertyName.equals("description")) {
-    } else if (propertyName.equals("nameHolder")) {
+    if (propertyName.equals("nameHolder")) {
       validateProperty_getnameHolder(context, violations, object, object.getNameHolder(), false, groups);
       validateProperty_nameHolder(context, violations, object, _nameHolder(object), false, groups);
+    } else if (propertyName.equals("id")) {
+    } else if (propertyName.equals("description")) {
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.NamedElement");
     }
@@ -163,11 +163,7 @@ public class _NamedElementValidatorImpl extends com.google.gwt.validation.client
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("id")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("description")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("nameHolder")) {
+    if (propertyName.equals("nameHolder")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.NameHolder) {
         valueTypeMatches = true;
@@ -180,6 +176,10 @@ public class _NamedElementValidatorImpl extends com.google.gwt.validation.client
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
       }
+    } else if (propertyName.equals("id")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("description")) {
+      boolean valueTypeMatches = false;
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.NamedElement");
     }

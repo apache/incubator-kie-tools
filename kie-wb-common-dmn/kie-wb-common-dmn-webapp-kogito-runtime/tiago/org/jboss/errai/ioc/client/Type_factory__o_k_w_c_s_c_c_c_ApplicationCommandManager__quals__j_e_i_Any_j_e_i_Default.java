@@ -206,6 +206,7 @@ public class Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e
   }
 
   public ApplicationCommandManager createInstance(final ContextManager contextManager) {
+    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final MouseRequestLifecycle _lifecycle_1 = (MouseRequestLifecycle) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_MouseRequestLifecycle__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<RegistryAwareCommandManager> _commandManagerInstances_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { RegistryAwareCommandManager.class }, new Annotation[] { new Any() {
         public Class annotationType() {
@@ -215,7 +216,6 @@ public class Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final ApplicationCommandManager instance = new ApplicationCommandManager(_sessionManager_0, _lifecycle_1, _commandManagerInstances_2);
     registerDependentScopedReference(instance, _lifecycle_1);
     registerDependentScopedReference(instance, _commandManagerInstances_2);

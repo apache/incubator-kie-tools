@@ -126,8 +126,8 @@ public class Type_factory__o_k_w_c_d_c_DMNShapeSet__quals__j_e_i_Any_j_e_i_Defau
   }
 
   public DMNShapeSet createInstance(final ContextManager contextManager) {
-    final DMNShapeFactory _factory_1 = (DMNShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_f_DMNShapeFactory__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final DMNShapeFactory _factory_1 = (DMNShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_f_DMNShapeFactory__quals__j_e_i_Any_j_e_i_Default");
     final DMNShapeSet instance = new DMNShapeSet(_definitionManager_0, _factory_1);
     registerDependentScopedReference(instance, _factory_1);
     setIncompleteInstance(instance);

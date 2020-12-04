@@ -27,8 +27,8 @@ public class Type_factory__o_k_w_c_s_c_c_s_c_i_CutSelectionSessionCommand__quals
   }
 
   public CutSelectionSessionCommand createInstance(final ContextManager contextManager) {
-    final Event<CutSelectionSessionCommandExecutedEvent> _commandExecutedEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CutSelectionSessionCommandExecutedEvent.class }, new Annotation[] { });
     final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CutSelectionSessionCommandExecutedEvent> _commandExecutedEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CutSelectionSessionCommandExecutedEvent.class }, new Annotation[] { });
     final CutSelectionSessionCommand instance = new CutSelectionSessionCommand(_commandExecutedEvent_0, _sessionManager_1);
     registerDependentScopedReference(instance, _commandExecutedEvent_0);
     setIncompleteInstance(instance);

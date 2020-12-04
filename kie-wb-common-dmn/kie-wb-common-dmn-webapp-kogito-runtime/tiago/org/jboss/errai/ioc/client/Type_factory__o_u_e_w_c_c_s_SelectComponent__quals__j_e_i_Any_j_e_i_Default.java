@@ -17,11 +17,11 @@ public class Type_factory__o_u_e_w_c_c_s_SelectComponent__quals__j_e_i_Any_j_e_i
   }
 
   public SelectComponent createInstance(final ContextManager contextManager) {
-    final ManagedInstance<SelectOptionComponent> _selectOptionComponent_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { SelectOptionComponent.class }, new Annotation[] { });
     final View _view_0 = (SelectView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_s_SelectView__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<SelectOptionComponent> _selectOptionComponent_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { SelectOptionComponent.class }, new Annotation[] { });
     final SelectComponent instance = new SelectComponent(_view_0, _selectOptionComponent_1);
-    registerDependentScopedReference(instance, _selectOptionComponent_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _selectOptionComponent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

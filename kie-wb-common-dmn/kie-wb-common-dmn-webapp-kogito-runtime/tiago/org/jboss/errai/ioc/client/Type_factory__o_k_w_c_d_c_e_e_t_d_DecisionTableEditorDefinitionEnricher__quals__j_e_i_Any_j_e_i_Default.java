@@ -77,8 +77,8 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_d_DecisionTableEditorDefinitionEnri
   }
 
   public DecisionTableEditorDefinitionEnricher createInstance(final ContextManager contextManager) {
-    final DMNGraphUtils _dmnGraphUtils_1 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final DMNGraphUtils _dmnGraphUtils_1 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final ItemDefinitionUtils _itemDefinitionUtils_2 = (ItemDefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_ItemDefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final DecisionTableEditorDefinitionEnricher instance = new DecisionTableEditorDefinitionEnricher(_sessionManager_0, _dmnGraphUtils_1, _itemDefinitionUtils_2);
     registerDependentScopedReference(instance, _dmnGraphUtils_1);

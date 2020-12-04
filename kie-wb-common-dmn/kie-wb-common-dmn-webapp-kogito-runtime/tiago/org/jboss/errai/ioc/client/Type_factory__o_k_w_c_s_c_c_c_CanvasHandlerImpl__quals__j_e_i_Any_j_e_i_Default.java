@@ -35,24 +35,24 @@ public class Type_factory__o_k_w_c_s_c_c_c_CanvasHandlerImpl__quals__j_e_i_Any_j
   }
 
   public CanvasHandlerImpl createInstance(final ContextManager contextManager) {
-    final CanvasCommandFactory<AbstractCanvasHandler> _commandFactory_1 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final TextPropertyProviderFactory _textPropertyProviderFactory_6 = (TextPropertyProviderFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_c_a_TextPropertyProviderFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasElementsClearEvent> _canvasElementsClearEvent_10 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementsClearEvent.class }, new Annotation[] { });
+    final Event<CanvasElementAddedEvent> _canvasElementAddedEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementAddedEvent.class }, new Annotation[] { });
+    final ClientDefinitionManager _clientDefinitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ShapeManager _shapeManager_5 = (ShapeManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final RuleManager _ruleManager_2 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
     final GraphIndexBuilder _indexBuilder_4 = (MapIndexBuilder) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_i_m_MapIndexBuilder__quals__j_e_i_Any_j_e_i_Default");
     final Event<CanvasElementUpdatedEvent> _canvasElementUpdatedEvent_9 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementUpdatedEvent.class }, new Annotation[] { });
-    final ClientDefinitionManager _clientDefinitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasElementAddedEvent> _canvasElementAddedEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementAddedEvent.class }, new Annotation[] { });
-    final ShapeManager _shapeManager_5 = (ShapeManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final GraphUtils _graphUtils_3 = (GraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_u_GraphUtils__quals__j_e_i_Any_j_e_i_Default");
+    final CanvasCommandFactory<AbstractCanvasHandler> _commandFactory_1 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final Event<CanvasElementRemovedEvent> _canvasElementRemovedEvent_8 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementRemovedEvent.class }, new Annotation[] { });
-    final Event<CanvasElementsClearEvent> _canvasElementsClearEvent_10 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementsClearEvent.class }, new Annotation[] { });
     final CanvasHandlerImpl instance = new CanvasHandlerImpl(_clientDefinitionManager_0, _commandFactory_1, _ruleManager_2, _graphUtils_3, _indexBuilder_4, _shapeManager_5, _textPropertyProviderFactory_6, _canvasElementAddedEvent_7, _canvasElementRemovedEvent_8, _canvasElementUpdatedEvent_9, _canvasElementsClearEvent_10);
+    registerDependentScopedReference(instance, _canvasElementsClearEvent_10);
+    registerDependentScopedReference(instance, _canvasElementAddedEvent_7);
     registerDependentScopedReference(instance, _indexBuilder_4);
     registerDependentScopedReference(instance, _canvasElementUpdatedEvent_9);
-    registerDependentScopedReference(instance, _canvasElementAddedEvent_7);
     registerDependentScopedReference(instance, _graphUtils_3);
     registerDependentScopedReference(instance, _canvasElementRemovedEvent_8);
-    registerDependentScopedReference(instance, _canvasElementsClearEvent_10);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

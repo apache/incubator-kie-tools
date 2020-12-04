@@ -105,9 +105,9 @@ public class Type_factory__o_k_w_c_w_c_h_NewResourcesMenu__quals__j_e_i_Any_j_e_
   }
 
   public NewResourcesMenu createInstance(final ContextManager contextManager) {
-    final NewResourcePresenter _newResourcePresenter_1 = (NewResourcePresenter) contextManager.getInstance("Type_factory__o_k_w_c_w_c_h_NewResourcePresenter__quals__j_e_i_Any_j_e_i_Default");
-    final WorkspaceProjectContext _projectContext_2 = (WorkspaceProjectContext) contextManager.getInstance("Type_factory__o_g_c_s_p_c_c_WorkspaceProjectContext__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _iocBeanManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
+    final WorkspaceProjectContext _projectContext_2 = (WorkspaceProjectContext) contextManager.getInstance("Type_factory__o_g_c_s_p_c_c_WorkspaceProjectContext__quals__j_e_i_Any_j_e_i_Default");
+    final NewResourcePresenter _newResourcePresenter_1 = (NewResourcePresenter) contextManager.getInstance("Type_factory__o_k_w_c_w_c_h_NewResourcePresenter__quals__j_e_i_Any_j_e_i_Default");
     final NewResourcesMenu instance = new NewResourcesMenu(_iocBeanManager_0, _newResourcePresenter_1, _projectContext_2);
     registerDependentScopedReference(instance, _iocBeanManager_0);
     setIncompleteInstance(instance);

@@ -30,21 +30,21 @@ public class _BackgroundSetValidatorImpl extends com.google.gwt.validation.clien
           org.kie.workbench.common.dmn.api.property.background.BackgroundSet.class,
           javax.validation.groups.Default.class);
   
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl borderColour_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "borderColour",
-          org.kie.workbench.common.dmn.api.property.background.BorderColour.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl bgColour_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "bgColour",
           org.kie.workbench.common.dmn.api.property.background.BgColour.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl borderColour_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "borderColour",
+          org.kie.workbench.common.dmn.api.property.background.BorderColour.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.property.background.BackgroundSet> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.property.background.BackgroundSet.class)
           .setConstrained(false)
-          .put("borderColour", borderColour_pd)
           .put("bgColour", bgColour_pd)
+          .put("borderColour", borderColour_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -140,12 +140,12 @@ public class _BackgroundSetValidatorImpl extends com.google.gwt.validation.clien
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("borderColour")) {
-      validateProperty_getborderColour(context, violations, object, object.getBorderColour(), false, groups);
-      validateProperty_borderColour(context, violations, object, _borderColour(object), false, groups);
-    } else if (propertyName.equals("bgColour")) {
+    if (propertyName.equals("bgColour")) {
       validateProperty_getbgColour(context, violations, object, object.getBgColour(), false, groups);
       validateProperty_bgColour(context, violations, object, _bgColour(object), false, groups);
+    } else if (propertyName.equals("borderColour")) {
+      validateProperty_getborderColour(context, violations, object, object.getBorderColour(), false, groups);
+      validateProperty_borderColour(context, violations, object, _borderColour(object), false, groups);
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.property.background.BackgroundSet");
     }
@@ -158,20 +158,7 @@ public class _BackgroundSetValidatorImpl extends com.google.gwt.validation.clien
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("borderColour")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BorderColour) {
-        valueTypeMatches = true;
-        validateProperty_getborderColour(context, violations, null, (org.kie.workbench.common.dmn.api.property.background.BorderColour) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BorderColour) {
-        valueTypeMatches = true;
-        validateProperty_borderColour(context, violations, null, (org.kie.workbench.common.dmn.api.property.background.BorderColour) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
-    } else if (propertyName.equals("bgColour")) {
+    if (propertyName.equals("bgColour")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BgColour) {
         valueTypeMatches = true;
@@ -180,6 +167,19 @@ public class _BackgroundSetValidatorImpl extends com.google.gwt.validation.clien
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BgColour) {
         valueTypeMatches = true;
         validateProperty_bgColour(context, violations, null, (org.kie.workbench.common.dmn.api.property.background.BgColour) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
+    } else if (propertyName.equals("borderColour")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BorderColour) {
+        valueTypeMatches = true;
+        validateProperty_getborderColour(context, violations, null, (org.kie.workbench.common.dmn.api.property.background.BorderColour) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BorderColour) {
+        valueTypeMatches = true;
+        validateProperty_borderColour(context, violations, null, (org.kie.workbench.common.dmn.api.property.background.BorderColour) value, false, groups);
       }
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
@@ -196,48 +196,6 @@ public class _BackgroundSetValidatorImpl extends com.google.gwt.validation.clien
   public GwtBeanDescriptor<org.kie.workbench.common.dmn.api.property.background.BackgroundSet> getConstraints(ValidationGroupsMetadata validationGroupsMetadata) {
     beanDescriptor.setValidationGroupsMetadata(validationGroupsMetadata);
     return beanDescriptor;
-  }
-  
-  private final <T> void validateProperty_borderColour(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.property.background.BackgroundSet object,
-      final org.kie.workbench.common.dmn.api.property.background.BorderColour value,
-      boolean honorValid,
-      Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("borderColour");
-    Node leafNode = myContext.getPath().getLeafNode();
-    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
-    boolean isReachable;
-    try {
-      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-    } catch (Exception e) {
-      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
-    }
-    if (isReachable) {
-      if (honorValid && value != null) {
-        boolean isCascadable;
-        try {
-          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-        } catch (Exception e) {
-          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
-        }
-        if (isCascadable) {
-           if (!context.alreadyValidated(value)) {
-            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
-          }
-        }
-      }
-    }
-  }
-  
-  private final <T> void validateProperty_getborderColour(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.property.background.BackgroundSet object,
-      final org.kie.workbench.common.dmn.api.property.background.BorderColour value,
-      boolean honorValid,
-      Class<?>... groups) {
   }
   
   private final <T> void validateProperty_bgColour(
@@ -282,25 +240,67 @@ public class _BackgroundSetValidatorImpl extends com.google.gwt.validation.clien
       Class<?>... groups) {
   }
   
+  private final <T> void validateProperty_borderColour(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.property.background.BackgroundSet object,
+      final org.kie.workbench.common.dmn.api.property.background.BorderColour value,
+      boolean honorValid,
+      Class<?>... groups) {
+    final GwtValidationContext<T> myContext = context.append("borderColour");
+    Node leafNode = myContext.getPath().getLeafNode();
+    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
+    boolean isReachable;
+    try {
+      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+    } catch (Exception e) {
+      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
+    }
+    if (isReachable) {
+      if (honorValid && value != null) {
+        boolean isCascadable;
+        try {
+          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+        } catch (Exception e) {
+          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
+        }
+        if (isCascadable) {
+           if (!context.alreadyValidated(value)) {
+            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
+          }
+        }
+      }
+    }
+  }
+  
+  private final <T> void validateProperty_getborderColour(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.property.background.BackgroundSet object,
+      final org.kie.workbench.common.dmn.api.property.background.BorderColour value,
+      boolean honorValid,
+      Class<?>... groups) {
+  }
+  
   
   private <T> void validateAllNonInheritedProperties(
       GwtValidationContext<T> context,
       org.kie.workbench.common.dmn.api.property.background.BackgroundSet object,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    validateProperty_getborderColour(context, violations, object, object.getBorderColour(), true, groups);
-    validateProperty_borderColour(context, violations, object, _borderColour(object), true, groups);
     validateProperty_getbgColour(context, violations, object, object.getBgColour(), true, groups);
     validateProperty_bgColour(context, violations, object, _bgColour(object), true, groups);
+    validateProperty_getborderColour(context, violations, object, object.getBorderColour(), true, groups);
+    validateProperty_borderColour(context, violations, object, _borderColour(object), true, groups);
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.property.background.BorderColour _borderColour(org.kie.workbench.common.dmn.api.property.background.BackgroundSet object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.property.background.BackgroundSet::borderColour;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.property.background.BgColour _bgColour(org.kie.workbench.common.dmn.api.property.background.BackgroundSet object) /*-{
     return object.@org.kie.workbench.common.dmn.api.property.background.BackgroundSet::bgColour;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.property.background.BorderColour _borderColour(org.kie.workbench.common.dmn.api.property.background.BackgroundSet object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.property.background.BackgroundSet::borderColour;
   }-*/;
   
   

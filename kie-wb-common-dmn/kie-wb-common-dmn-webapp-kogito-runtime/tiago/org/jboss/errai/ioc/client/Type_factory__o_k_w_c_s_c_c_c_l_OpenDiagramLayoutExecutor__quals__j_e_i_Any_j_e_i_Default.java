@@ -19,11 +19,11 @@ public class Type_factory__o_k_w_c_s_c_c_c_l_OpenDiagramLayoutExecutor__quals__j
   public OpenDiagramLayoutExecutor createInstance(final ContextManager contextManager) {
     final OpenDiagramLayoutExecutor instance = new OpenDiagramLayoutExecutor();
     setIncompleteInstance(instance);
-    final ClientTranslationService OpenDiagramLayoutExecutor_translationService = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
-    OpenDiagramLayoutExecutor_ClientTranslationService_translationService(instance, OpenDiagramLayoutExecutor_translationService);
     final Event OpenDiagramLayoutExecutor_event = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, OpenDiagramLayoutExecutor_event);
     OpenDiagramLayoutExecutor_Event_event(instance, OpenDiagramLayoutExecutor_event);
+    final ClientTranslationService OpenDiagramLayoutExecutor_translationService = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    OpenDiagramLayoutExecutor_ClientTranslationService_translationService(instance, OpenDiagramLayoutExecutor_translationService);
     setIncompleteInstance(null);
     return instance;
   }

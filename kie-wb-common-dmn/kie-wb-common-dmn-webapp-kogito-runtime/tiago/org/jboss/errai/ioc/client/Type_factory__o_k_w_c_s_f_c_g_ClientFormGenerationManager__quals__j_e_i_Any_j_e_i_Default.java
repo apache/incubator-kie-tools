@@ -101,8 +101,8 @@ public class Type_factory__o_k_w_c_s_f_c_g_ClientFormGenerationManager__quals__j
   }
 
   public ClientFormGenerationManager createInstance(final ContextManager contextManager) {
-    final FormGenerationNotifier _formGenerationNotifier_1 = (FormGenerationNotifier) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_n_FormGenerationNotifier__quals__j_e_i_Any_j_e_i_Default");
     final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final FormGenerationNotifier _formGenerationNotifier_1 = (FormGenerationNotifier) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_n_FormGenerationNotifier__quals__j_e_i_Any_j_e_i_Default");
     final Caller<FormGenerationService> _formGenerationService_2 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { FormGenerationService.class }, new Annotation[] { });
     final ClientFormGenerationManager instance = new ClientFormGenerationManager(_translationService_0, _formGenerationNotifier_1, _formGenerationService_2);
     registerDependentScopedReference(instance, _formGenerationService_2);

@@ -787,15 +787,15 @@ public class Type_factory__o_u_c_v_p_m_WorkbenchMenuBarView__quals__j_e_i_Any_j_
   public WorkbenchMenuBarView createInstance(final ContextManager contextManager) {
     final WorkbenchMenuBarView instance = new WorkbenchMenuBarView();
     setIncompleteInstance(instance);
-    final Instance WorkbenchMenuBarView_menuBarBrand = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { MainBrand.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, WorkbenchMenuBarView_menuBarBrand);
-    WorkbenchMenuBarView_Instance_menuBarBrand(instance, WorkbenchMenuBarView_menuBarBrand);
+    final WorkbenchMenuStandardNavBarView WorkbenchMenuBarView_workbenchMenuStandardNavBarView = (WorkbenchMenuStandardNavBarView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_WorkbenchMenuStandardNavBarView__quals__j_e_i_Any_j_e_i_Default");
+    WorkbenchMenuBarView_WorkbenchMenuStandardNavBarView_workbenchMenuStandardNavBarView(instance, WorkbenchMenuBarView_workbenchMenuStandardNavBarView);
     final UtilityMenuBarView WorkbenchMenuBarView_utilityMenuBarView = (UtilityMenuBarView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_UtilityMenuBarView__quals__j_e_i_Any_j_e_i_Default");
     WorkbenchMenuBarView_UtilityMenuBarView_utilityMenuBarView(instance, WorkbenchMenuBarView_utilityMenuBarView);
     final WorkbenchMenuCompactNavBarView WorkbenchMenuBarView_workbenchMenuCompactNavBarView = (WorkbenchMenuCompactNavBarView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_WorkbenchMenuCompactNavBarView__quals__j_e_i_Any_j_e_i_Default");
     WorkbenchMenuBarView_WorkbenchMenuCompactNavBarView_workbenchMenuCompactNavBarView(instance, WorkbenchMenuBarView_workbenchMenuCompactNavBarView);
-    final WorkbenchMenuStandardNavBarView WorkbenchMenuBarView_workbenchMenuStandardNavBarView = (WorkbenchMenuStandardNavBarView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_WorkbenchMenuStandardNavBarView__quals__j_e_i_Any_j_e_i_Default");
-    WorkbenchMenuBarView_WorkbenchMenuStandardNavBarView_workbenchMenuStandardNavBarView(instance, WorkbenchMenuBarView_workbenchMenuStandardNavBarView);
+    final Instance WorkbenchMenuBarView_menuBarBrand = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { MainBrand.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, WorkbenchMenuBarView_menuBarBrand);
+    WorkbenchMenuBarView_Instance_menuBarBrand(instance, WorkbenchMenuBarView_menuBarBrand);
     setIncompleteInstance(null);
     return instance;
   }

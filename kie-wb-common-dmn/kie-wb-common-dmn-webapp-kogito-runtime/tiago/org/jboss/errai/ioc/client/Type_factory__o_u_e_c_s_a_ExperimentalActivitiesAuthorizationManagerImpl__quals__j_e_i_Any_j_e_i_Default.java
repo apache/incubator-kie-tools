@@ -45,9 +45,9 @@ public class Type_factory__o_u_e_c_s_a_ExperimentalActivitiesAuthorizationManage
   }
 
   public ExperimentalActivitiesAuthorizationManagerImpl createInstance(final ContextManager contextManager) {
+    final ClientExperimentalFeaturesRegistryService _experimentalFeaturesRegistryService_1 = (ClientExperimentalFeaturesRegistryServiceImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final Event<PerspectiveVisibiltiyChangeEvent> _perspectiveVisibleEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PerspectiveVisibiltiyChangeEvent.class }, new Annotation[] { });
-    final ClientExperimentalFeaturesRegistryService _experimentalFeaturesRegistryService_1 = (ClientExperimentalFeaturesRegistryServiceImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final ExperimentalActivitiesAuthorizationManagerImpl instance = new ExperimentalActivitiesAuthorizationManagerImpl(_iocManager_0, _experimentalFeaturesRegistryService_1, _perspectiveVisibleEvent_2);
     registerDependentScopedReference(instance, _iocManager_0);
     registerDependentScopedReference(instance, _perspectiveVisibleEvent_2);

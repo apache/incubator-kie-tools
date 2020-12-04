@@ -43,21 +43,21 @@ public class Type_factory__o_k_w_c_w_c_w_KSessionSelectorViewImpl__quals__j_e_i_
 
   public KSessionSelectorViewImpl createInstance(final ContextManager contextManager) {
     final HTMLLabelElement _warningLabel_3 = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDocument _document_0 = (HTMLDocument) contextManager.getInstance("Producer_factory__e_d_HTMLDocument__quals__j_e_i_Any_j_e_i_Default");
     final KieSelectElement _kbaseSelect_1 = (KieSelectElement) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KieSelectElement__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLDocument _document_0 = (HTMLDocument) contextManager.getInstance("Producer_factory__e_d_HTMLDocument__quals__j_e_i_Any_j_e_i_Default");
     final KieSelectElement _ksessionSelect_2 = (KieSelectElement) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KieSelectElement__quals__j_e_i_Any_j_e_i_Default");
     final KSessionSelectorViewImpl instance = new KSessionSelectorViewImpl(_document_0, _kbaseSelect_1, _ksessionSelect_2, _warningLabel_3);
     registerDependentScopedReference(instance, _warningLabel_3);
-    registerDependentScopedReference(instance, _document_0);
     registerDependentScopedReference(instance, _kbaseSelect_1);
+    registerDependentScopedReference(instance, _document_0);
     registerDependentScopedReference(instance, _ksessionSelect_2);
     setIncompleteInstance(instance);
-    final KieSelectElement KSessionSelectorViewImpl_ksessionSelect = (KieSelectElement) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KieSelectElement__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, KSessionSelectorViewImpl_ksessionSelect);
-    KSessionSelectorViewImpl_KieSelectElement_ksessionSelect(instance, KSessionSelectorViewImpl_ksessionSelect);
     final HTMLLabelElement KSessionSelectorViewImpl_warningLabel = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, KSessionSelectorViewImpl_warningLabel);
     KSessionSelectorViewImpl_HTMLLabelElement_warningLabel(instance, KSessionSelectorViewImpl_warningLabel);
+    final KieSelectElement KSessionSelectorViewImpl_ksessionSelect = (KieSelectElement) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KieSelectElement__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, KSessionSelectorViewImpl_ksessionSelect);
+    KSessionSelectorViewImpl_KieSelectElement_ksessionSelect(instance, KSessionSelectorViewImpl_ksessionSelect);
     o_k_w_c_w_c_w_KSessionSelectorViewImplTemplateResource templateForKSessionSelectorViewImpl = GWT.create(o_k_w_c_w_c_w_KSessionSelectorViewImplTemplateResource.class);
     Element parentElementForTemplateOfKSessionSelectorViewImpl = TemplateUtil.getRootTemplateParentElement(templateForKSessionSelectorViewImpl.getContents().getText(), "org/kie/workbench/common/widgets/client/widget/KSessionSelectorViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/widgets/client/widget/KSessionSelectorViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfKSessionSelectorViewImpl));

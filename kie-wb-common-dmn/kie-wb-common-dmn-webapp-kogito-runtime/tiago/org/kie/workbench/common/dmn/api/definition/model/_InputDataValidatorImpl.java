@@ -45,15 +45,15 @@ public class _InputDataValidatorImpl extends com.google.gwt.validation.client.im
           "description",
           org.kie.workbench.common.dmn.api.property.dmn.Description.class,
           true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "nameHolder",
-          org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl linksHolder_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "linksHolder",
           org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "nameHolder",
+          org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
           true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl backgroundSet_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
@@ -71,8 +71,8 @@ public class _InputDataValidatorImpl extends com.google.gwt.validation.client.im
           .put("variable", variable_pd)
           .put("fontSet", fontSet_pd)
           .put("description", description_pd)
-          .put("nameHolder", nameHolder_pd)
           .put("linksHolder", linksHolder_pd)
+          .put("nameHolder", nameHolder_pd)
           .put("backgroundSet", backgroundSet_pd)
           .put("id", id_pd)
           .setBeanMetadata(beanMetadata)
@@ -177,8 +177,8 @@ public class _InputDataValidatorImpl extends com.google.gwt.validation.client.im
       validateProperty_getfontSet(context, violations, object, object.getFontSet(), false, groups);
       validateProperty_fontSet(context, violations, object, _fontSet(object), false, groups);
     } else if (propertyName.equals("description")) {
-    } else if (propertyName.equals("nameHolder")) {
     } else if (propertyName.equals("linksHolder")) {
+    } else if (propertyName.equals("nameHolder")) {
     } else if (propertyName.equals("backgroundSet")) {
       validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), false, groups);
       validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), false, groups);
@@ -223,9 +223,9 @@ public class _InputDataValidatorImpl extends com.google.gwt.validation.client.im
       }
     } else if (propertyName.equals("description")) {
       boolean valueTypeMatches = false;
-    } else if (propertyName.equals("nameHolder")) {
-      boolean valueTypeMatches = false;
     } else if (propertyName.equals("linksHolder")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("nameHolder")) {
       boolean valueTypeMatches = false;
     } else if (propertyName.equals("backgroundSet")) {
       boolean valueTypeMatches = false;
@@ -397,12 +397,12 @@ public class _InputDataValidatorImpl extends com.google.gwt.validation.client.im
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.property.font.FontSet _fontSet(org.kie.workbench.common.dmn.api.definition.model.InputData object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.InputData::fontSet;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.property.background.BackgroundSet _backgroundSet(org.kie.workbench.common.dmn.api.definition.model.InputData object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.InputData::backgroundSet;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.property.font.FontSet _fontSet(org.kie.workbench.common.dmn.api.definition.model.InputData object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.InputData::fontSet;
   }-*/;
   
   private native org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary _variable(org.kie.workbench.common.dmn.api.definition.model.InputData object) /*-{

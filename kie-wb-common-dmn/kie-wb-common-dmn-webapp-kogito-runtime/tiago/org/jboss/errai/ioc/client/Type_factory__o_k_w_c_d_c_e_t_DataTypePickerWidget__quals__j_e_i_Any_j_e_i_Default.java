@@ -65,24 +65,24 @@ public class Type_factory__o_k_w_c_d_c_e_t_DataTypePickerWidget__quals__j_e_i_An
   }
 
   public DataTypePickerWidget createInstance(final ContextManager contextManager) {
-    final Div _manageContainer_1 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Span _manageLabel_2 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final QNameConverter _qNameConverter_4 = (QNameConverter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_QNameConverter__quals__j_e_i_Any_j_e_i_Default");
+    final Anchor _typeButton_0 = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final ItemDefinitionUtils _itemDefinitionUtils_7 = (ItemDefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_ItemDefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DMNGraphUtils _dmnGraphUtils_5 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ReadOnlyProvider _readOnlyProvider_8 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
-    final ItemDefinitionUtils _itemDefinitionUtils_7 = (ItemDefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_ItemDefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final Span _manageLabel_2 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Div _manageContainer_1 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final Event<DataTypePageTabActiveEvent> _dataTypePageActiveEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DataTypePageTabActiveEvent.class }, new Annotation[] { });
-    final Anchor _typeButton_0 = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final QNameConverter _qNameConverter_4 = (QNameConverter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_QNameConverter__quals__j_e_i_Any_j_e_i_Default");
-    final DMNGraphUtils _dmnGraphUtils_5 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final DataTypePickerWidget instance = new DataTypePickerWidget(_typeButton_0, _manageContainer_1, _manageLabel_2, _translationService_3, _qNameConverter_4, _dmnGraphUtils_5, _dataTypePageActiveEvent_6, _itemDefinitionUtils_7, _readOnlyProvider_8);
-    registerDependentScopedReference(instance, _manageContainer_1);
-    registerDependentScopedReference(instance, _manageLabel_2);
-    registerDependentScopedReference(instance, _translationService_3);
-    registerDependentScopedReference(instance, _itemDefinitionUtils_7);
-    registerDependentScopedReference(instance, _dataTypePageActiveEvent_6);
-    registerDependentScopedReference(instance, _typeButton_0);
     registerDependentScopedReference(instance, _qNameConverter_4);
+    registerDependentScopedReference(instance, _typeButton_0);
+    registerDependentScopedReference(instance, _itemDefinitionUtils_7);
     registerDependentScopedReference(instance, _dmnGraphUtils_5);
+    registerDependentScopedReference(instance, _translationService_3);
+    registerDependentScopedReference(instance, _manageLabel_2);
+    registerDependentScopedReference(instance, _manageContainer_1);
+    registerDependentScopedReference(instance, _dataTypePageActiveEvent_6);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onDataTypePageNavTabActiveEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent", new AbstractCDIEventCallback<DataTypeChangedEvent>() {
       public void fireEvent(final DataTypeChangedEvent event) {

@@ -24,13 +24,13 @@ public class Type_factory__o_u_e_e_c_c_h_VersionHistoryPresenter__quals__j_e_i_A
   }
 
   public VersionHistoryPresenter createInstance(final ContextManager contextManager) {
+    final Caller<VersionService> _versionService_1 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { VersionService.class }, new Annotation[] { });
     final VersionHistoryPresenterView _view_0 = (VersionHistoryPresenterViewImpl) contextManager.getInstance("Type_factory__o_u_e_e_c_c_h_VersionHistoryPresenterViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final Event<VersionSelectedEvent> _versionSelectedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { VersionSelectedEvent.class }, new Annotation[] { });
-    final Caller<VersionService> _versionService_1 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { VersionService.class }, new Annotation[] { });
     final VersionHistoryPresenter instance = new VersionHistoryPresenter(_view_0, _versionService_1, _versionSelectedEvent_2);
+    registerDependentScopedReference(instance, _versionService_1);
     registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _versionSelectedEvent_2);
-    registerDependentScopedReference(instance, _versionService_1);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onVersionChangeSubscription", CDI.subscribeLocal("org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent", new AbstractCDIEventCallback<VersionSelectedEvent>() {
       public void fireEvent(final VersionSelectedEvent event) {

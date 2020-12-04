@@ -208,18 +208,18 @@ public class Type_factory__o_u_c_w_WorkbenchLayoutImpl__quals__j_e_i_Any_j_e_i_D
   }
 
   public WorkbenchLayoutImpl createInstance(final ContextManager contextManager) {
+    final HeaderPanel _root_1 = (HeaderPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_HeaderPanel__quals__j_e_i_Any_j_e_i_Default");
     final UberfireDocksContainer _uberfireDocksContainer_3 = (UberfireDocksContainer) contextManager.getInstance("Type_factory__o_u_c_w_d_UberfireDocksContainer__quals__j_e_i_Any_j_e_i_Default");
+    final Div _footerPanel_6 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final WorkbenchDragAndDropManager _dndManager_2 = (WorkbenchDragAndDropManager) contextManager.getInstance("Type_factory__o_u_c_w_w_d_WorkbenchDragAndDropManager__quals__j_e_i_Any_j_e_i_Default");
     final Div _headerPanel_5 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Div _footerPanel_6 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HeaderPanel _root_1 = (HeaderPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_HeaderPanel__quals__j_e_i_Any_j_e_i_Default");
     final WorkbenchPickupDragController _dragController_4 = (WorkbenchPickupDragController) contextManager.getInstance("Type_factory__o_u_c_w_w_d_WorkbenchPickupDragController__quals__j_e_i_Any_j_e_i_Default");
     final WorkbenchLayoutImpl instance = new WorkbenchLayoutImpl(_iocManager_0, _root_1, _dndManager_2, _uberfireDocksContainer_3, _dragController_4, _headerPanel_5, _footerPanel_6);
+    registerDependentScopedReference(instance, _root_1);
+    registerDependentScopedReference(instance, _footerPanel_6);
     registerDependentScopedReference(instance, _iocManager_0);
     registerDependentScopedReference(instance, _headerPanel_5);
-    registerDependentScopedReference(instance, _footerPanel_6);
-    registerDependentScopedReference(instance, _root_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

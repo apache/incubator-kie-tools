@@ -295,12 +295,12 @@ public class _DMNDiagramValidatorImpl extends com.google.gwt.validation.client.i
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.property.dmn.Id _id(org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.DMNDiagram::id;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.definition.model.Definitions _definitions(org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.DMNDiagram::definitions;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.property.dmn.Id _id(org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.DMNDiagram::id;
   }-*/;
   
   

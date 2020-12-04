@@ -36,12 +36,12 @@ public class Type_factory__o_u_c_v_p_w_KebabMenuItem__quals__j_e_i_Any_j_e_i_Def
   public KebabMenuItem createInstance(final ContextManager contextManager) {
     final KebabMenuItem instance = new KebabMenuItem();
     setIncompleteInstance(instance);
-    final HTMLLIElement KebabMenuItem_item = (HTMLLIElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLIElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, KebabMenuItem_item);
-    KebabMenuItem_HTMLLIElement_item(instance, KebabMenuItem_item);
     final HTMLAnchorElement KebabMenuItem_anchor = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, KebabMenuItem_anchor);
     KebabMenuItem_HTMLAnchorElement_anchor(instance, KebabMenuItem_anchor);
+    final HTMLLIElement KebabMenuItem_item = (HTMLLIElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLIElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, KebabMenuItem_item);
+    KebabMenuItem_HTMLLIElement_item(instance, KebabMenuItem_item);
     o_u_c_v_p_w_KebabMenuItemTemplateResource templateForKebabMenuItem = GWT.create(o_u_c_v_p_w_KebabMenuItemTemplateResource.class);
     Element parentElementForTemplateOfKebabMenuItem = TemplateUtil.getRootTemplateParentElement(templateForKebabMenuItem.getContents().getText(), "org/uberfire/client/views/pfly/widgets/KebabMenuItem.html", "");
     TemplateUtil.translateTemplate("org/uberfire/client/views/pfly/widgets/KebabMenuItem.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfKebabMenuItem));

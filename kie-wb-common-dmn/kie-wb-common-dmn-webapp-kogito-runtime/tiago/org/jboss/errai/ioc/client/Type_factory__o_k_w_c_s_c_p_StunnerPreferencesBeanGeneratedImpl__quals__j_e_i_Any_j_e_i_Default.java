@@ -20,8 +20,8 @@ public class Type_factory__o_k_w_c_s_c_p_StunnerPreferencesBeanGeneratedImpl__qu
   }
 
   public StunnerPreferencesBeanGeneratedImpl createInstance(final ContextManager contextManager) {
-    final PreferenceBeanStore _store_0 = (PreferenceBeanStoreClientImpl) contextManager.getInstance("Type_factory__o_u_p_c_s_PreferenceBeanStoreClientImpl__quals__j_e_i_Any_j_e_i_Default");
     final PreferenceScopeResolutionStrategy _resolutionStrategy_1 = (PreferenceScopeResolutionStrategyMock) contextManager.getInstance("Type_factory__o_k_w_c_k_w_b_s_PreferenceScopeResolutionStrategyMock__quals__j_e_i_Any_o_u_a_Customizable");
+    final PreferenceBeanStore _store_0 = (PreferenceBeanStoreClientImpl) contextManager.getInstance("Type_factory__o_u_p_c_s_PreferenceBeanStoreClientImpl__quals__j_e_i_Any_j_e_i_Default");
     final StunnerPreferencesBeanGeneratedImpl instance = new StunnerPreferencesBeanGeneratedImpl(_store_0, _resolutionStrategy_1);
     registerDependentScopedReference(instance, _resolutionStrategy_1);
     setIncompleteInstance(instance);

@@ -55,12 +55,12 @@ public class Type_factory__o_u_e_e_c_c_h_HtmlEditorActivity__quals__j_e_i_Any_j_
     final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final HtmlEditorActivity instance = new HtmlEditorActivity(_placeManager_0);
     setIncompleteInstance(instance);
-    final HtmlEditor HtmlEditorActivity_realPresenter = (HtmlEditor) contextManager.getInstance("Type_factory__o_u_e_e_c_c_h_HtmlEditor__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, HtmlEditorActivity_realPresenter);
-    HtmlEditorActivity_HtmlEditor_realPresenter(instance, HtmlEditorActivity_realPresenter);
     final Instance AbstractWorkbenchEditorActivity_lockManagerProvider = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { LockManager.class }, new Annotation[] { });
     registerDependentScopedReference(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
     AbstractWorkbenchEditorActivity_Instance_lockManagerProvider(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
+    final HtmlEditor HtmlEditorActivity_realPresenter = (HtmlEditor) contextManager.getInstance("Type_factory__o_u_e_e_c_c_h_HtmlEditor__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, HtmlEditorActivity_realPresenter);
+    HtmlEditorActivity_HtmlEditor_realPresenter(instance, HtmlEditorActivity_realPresenter);
     setIncompleteInstance(null);
     return instance;
   }

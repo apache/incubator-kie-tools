@@ -50,12 +50,12 @@ public class Type_factory__o_u_c_v_p_m_MultiScreenPartWidget__quals__j_e_i_Any_j
   public MultiScreenPartWidget createInstance(final ContextManager contextManager) {
     final MultiScreenPartWidget instance = new MultiScreenPartWidget();
     setIncompleteInstance(instance);
-    final MultiScreenMenuBuilder MultiScreenPartWidget_menuBuilder = (MultiScreenMenuBuilder) contextManager.getInstance("Type_factory__o_u_c_v_p_m_MultiScreenMenuBuilder__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, MultiScreenPartWidget_menuBuilder);
-    MultiScreenPartWidget_MultiScreenMenuBuilder_menuBuilder(instance, MultiScreenPartWidget_menuBuilder);
     final HTMLDivElement MultiScreenPartWidget_content = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, MultiScreenPartWidget_content);
     MultiScreenPartWidget_HTMLDivElement_content(instance, MultiScreenPartWidget_content);
+    final MultiScreenMenuBuilder MultiScreenPartWidget_menuBuilder = (MultiScreenMenuBuilder) contextManager.getInstance("Type_factory__o_u_c_v_p_m_MultiScreenMenuBuilder__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, MultiScreenPartWidget_menuBuilder);
+    MultiScreenPartWidget_MultiScreenMenuBuilder_menuBuilder(instance, MultiScreenPartWidget_menuBuilder);
     final ManagedInstance MultiScreenPartWidget_multiScreenViews = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { MultiScreenView.class }, new Annotation[] { });
     registerDependentScopedReference(instance, MultiScreenPartWidget_multiScreenViews);
     MultiScreenPartWidget_ManagedInstance_multiScreenViews(instance, MultiScreenPartWidget_multiScreenViews);

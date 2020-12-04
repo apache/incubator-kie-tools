@@ -19,6 +19,7 @@ public class Type_factory__o_k_w_c_s_c_w_c_g_SvgElementGlyphRenderer__quals__j_e
   }
 
   public SvgElementGlyphRenderer createInstance(final ContextManager contextManager) {
+    final SvgDataUriGenerator _svgDataUriUtil_0 = (SvgDataUriGenerator) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_u_SvgDataUriGenerator__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<ImageElementRendererView> _viewInstances_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ImageElementRendererView.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -27,7 +28,6 @@ public class Type_factory__o_k_w_c_s_c_w_c_g_SvgElementGlyphRenderer__quals__j_e
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final SvgDataUriGenerator _svgDataUriUtil_0 = (SvgDataUriGenerator) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_u_SvgDataUriGenerator__quals__j_e_i_Any_j_e_i_Default");
     final SvgElementGlyphRenderer instance = new SvgElementGlyphRenderer(_svgDataUriUtil_0, _viewInstances_1);
     registerDependentScopedReference(instance, _viewInstances_1);
     setIncompleteInstance(instance);

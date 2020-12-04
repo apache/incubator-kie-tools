@@ -643,11 +643,11 @@ public class Type_factory__o_g_m_c_c_MessageConsoleViewImpl__quals__j_e_i_Any_j_
     setIncompleteInstance(instance);
     final PlaceManagerImpl MessageConsoleViewImpl_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     MessageConsoleViewImpl_PlaceManager_placeManager(instance, MessageConsoleViewImpl_placeManager);
+    final MessageConsoleService MessageConsoleViewImpl_consoleService = (MessageConsoleService) contextManager.getInstance("Type_factory__o_g_m_c_c_MessageConsoleService__quals__j_e_i_Any_j_e_i_Default");
+    MessageConsoleViewImpl_MessageConsoleService_consoleService(instance, MessageConsoleViewImpl_consoleService);
     final TranslationService MessageConsoleViewImpl_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, MessageConsoleViewImpl_translationService);
     MessageConsoleViewImpl_TranslationService_translationService(instance, MessageConsoleViewImpl_translationService);
-    final MessageConsoleService MessageConsoleViewImpl_consoleService = (MessageConsoleService) contextManager.getInstance("Type_factory__o_g_m_c_c_MessageConsoleService__quals__j_e_i_Any_j_e_i_Default");
-    MessageConsoleViewImpl_MessageConsoleService_consoleService(instance, MessageConsoleViewImpl_consoleService);
     final Clipboard MessageConsoleViewImpl_clipboard = (Clipboard) contextManager.getInstance("Type_factory__o_u_c_u_Clipboard__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, MessageConsoleViewImpl_clipboard);
     MessageConsoleViewImpl_Clipboard_clipboard(instance, MessageConsoleViewImpl_clipboard);

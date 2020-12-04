@@ -185,6 +185,8 @@ public class Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_D
   public ActivityManagerImpl createInstance(final ContextManager contextManager) {
     final ActivityManagerImpl instance = new ActivityManagerImpl();
     setIncompleteInstance(instance);
+    final ExperimentalActivitiesAuthorizationManagerImpl ActivityManagerImpl_activitiesAuthorizationManager = (ExperimentalActivitiesAuthorizationManagerImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_a_ExperimentalActivitiesAuthorizationManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    ActivityManagerImpl_ExperimentalActivitiesAuthorizationManager_activitiesAuthorizationManager(instance, ActivityManagerImpl_activitiesAuthorizationManager);
     final SyncBeanManager ActivityManagerImpl_iocManager = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ActivityManagerImpl_iocManager);
     ActivityManagerImpl_SyncBeanManager_iocManager(instance, ActivityManagerImpl_iocManager);
@@ -195,8 +197,6 @@ public class Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_D
     final User ActivityManagerImpl_identity = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ActivityManagerImpl_identity);
     ActivityManagerImpl_User_identity(instance, ActivityManagerImpl_identity);
-    final ExperimentalActivitiesAuthorizationManagerImpl ActivityManagerImpl_activitiesAuthorizationManager = (ExperimentalActivitiesAuthorizationManagerImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_a_ExperimentalActivitiesAuthorizationManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    ActivityManagerImpl_ExperimentalActivitiesAuthorizationManager_activitiesAuthorizationManager(instance, ActivityManagerImpl_activitiesAuthorizationManager);
     final ActivityLifecycleErrorHandler ActivityManagerImpl_lifecycleErrorHandler = (ActivityLifecycleErrorHandler) contextManager.getInstance("Type_factory__o_u_c_m_ActivityLifecycleErrorHandler__quals__j_e_i_Any_j_e_i_Default");
     ActivityManagerImpl_ActivityLifecycleErrorHandler_lifecycleErrorHandler(instance, ActivityManagerImpl_lifecycleErrorHandler);
     setIncompleteInstance(null);

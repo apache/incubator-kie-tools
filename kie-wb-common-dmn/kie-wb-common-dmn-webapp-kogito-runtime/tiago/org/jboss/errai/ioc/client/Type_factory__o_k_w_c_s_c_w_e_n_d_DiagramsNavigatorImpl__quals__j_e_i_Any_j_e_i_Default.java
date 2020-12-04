@@ -27,10 +27,10 @@ public class Type_factory__o_k_w_c_s_c_w_e_n_d_DiagramsNavigatorImpl__quals__j_e
   }
 
   public DiagramsNavigatorImpl createInstance(final ContextManager contextManager) {
+    final ErrorPopupPresenter _errorPopupPresenter_5 = (ErrorPopupPresenter) contextManager.getInstance("Type_factory__o_u_c_w_w_c_ErrorPopupPresenter__quals__j_e_i_Any_j_e_i_Default");
+    final ClientDiagramService _clientDiagramServices_0 = (ClientDiagramServiceImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ClientDiagramServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final NavigatorView _view_3 = (BootstrapNavigatorView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_e_n_v_BootstrapNavigatorView__quals__j_e_i_Any_j_e_i_Default");
     final Event<LoadDiagramEvent> _loadDiagramEventEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LoadDiagramEvent.class }, new Annotation[] { });
-    final DiagramClientErrorHandler _diagramClientErrorHandler_4 = (DiagramClientErrorHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_e_DiagramClientErrorHandler__quals__j_e_i_Any_j_e_i_Default");
-    final ClientDiagramService _clientDiagramServices_0 = (ClientDiagramServiceImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ClientDiagramServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DiagramNavigatorItem> _navigatorItemInstances_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DiagramNavigatorItem.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -39,13 +39,13 @@ public class Type_factory__o_k_w_c_s_c_w_e_n_d_DiagramsNavigatorImpl__quals__j_e
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final ErrorPopupPresenter _errorPopupPresenter_5 = (ErrorPopupPresenter) contextManager.getInstance("Type_factory__o_u_c_w_w_c_ErrorPopupPresenter__quals__j_e_i_Any_j_e_i_Default");
+    final DiagramClientErrorHandler _diagramClientErrorHandler_4 = (DiagramClientErrorHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_e_DiagramClientErrorHandler__quals__j_e_i_Any_j_e_i_Default");
     final DiagramsNavigatorImpl instance = new DiagramsNavigatorImpl(_clientDiagramServices_0, _navigatorItemInstances_1, _loadDiagramEventEvent_2, _view_3, _diagramClientErrorHandler_4, _errorPopupPresenter_5);
+    registerDependentScopedReference(instance, _clientDiagramServices_0);
     registerDependentScopedReference(instance, _view_3);
     registerDependentScopedReference(instance, _loadDiagramEventEvent_2);
-    registerDependentScopedReference(instance, _diagramClientErrorHandler_4);
-    registerDependentScopedReference(instance, _clientDiagramServices_0);
     registerDependentScopedReference(instance, _navigatorItemInstances_1);
+    registerDependentScopedReference(instance, _diagramClientErrorHandler_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

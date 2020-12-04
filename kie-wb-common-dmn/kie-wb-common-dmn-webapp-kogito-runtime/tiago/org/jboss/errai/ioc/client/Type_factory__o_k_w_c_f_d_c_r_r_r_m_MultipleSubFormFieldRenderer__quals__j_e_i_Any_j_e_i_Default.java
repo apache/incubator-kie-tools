@@ -22,12 +22,12 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_r_m_MultipleSubFormFieldRenderer__q
   public MultipleSubFormFieldRenderer createInstance(final ContextManager contextManager) {
     final MultipleSubFormFieldRenderer instance = new MultipleSubFormFieldRenderer();
     setIncompleteInstance(instance);
-    final MultipleSubFormWidget MultipleSubFormFieldRenderer_multipleSubFormWidget = (MultipleSubFormWidget) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_r_m_MultipleSubFormWidget__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, MultipleSubFormFieldRenderer_multipleSubFormWidget);
-    MultipleSubFormFieldRenderer_MultipleSubFormWidget_multipleSubFormWidget(instance, MultipleSubFormFieldRenderer_multipleSubFormWidget);
     final ManagedInstance FieldRenderer_formGroupsInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { FieldSetFormGroup.class }, new Annotation[] { });
     registerDependentScopedReference(instance, FieldRenderer_formGroupsInstance);
     FieldRenderer_ManagedInstance_formGroupsInstance(instance, FieldRenderer_formGroupsInstance);
+    final MultipleSubFormWidget MultipleSubFormFieldRenderer_multipleSubFormWidget = (MultipleSubFormWidget) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_r_m_MultipleSubFormWidget__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, MultipleSubFormFieldRenderer_multipleSubFormWidget);
+    MultipleSubFormFieldRenderer_MultipleSubFormWidget_multipleSubFormWidget(instance, MultipleSubFormFieldRenderer_multipleSubFormWidget);
     final ConfigErrorDisplayer FieldRenderer_errorDisplayer = (ConfigErrorDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_i_c_ConfigErrorDisplayer__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, FieldRenderer_errorDisplayer);
     FieldRenderer_ConfigErrorDisplayer_errorDisplayer(instance, FieldRenderer_errorDisplayer);

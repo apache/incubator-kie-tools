@@ -24,15 +24,15 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_r_s_SubFormFieldRenderer__quals__j_
     setIncompleteInstance(instance);
     final FormsElementWrapperWidgetUtilImpl FieldRenderer_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
     FieldRenderer_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, FieldRenderer_wrapperWidgetUtil);
+    final ConfigErrorDisplayer FieldRenderer_errorDisplayer = (ConfigErrorDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_i_c_ConfigErrorDisplayer__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, FieldRenderer_errorDisplayer);
+    FieldRenderer_ConfigErrorDisplayer_errorDisplayer(instance, FieldRenderer_errorDisplayer);
     final ManagedInstance FieldRenderer_formGroupsInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AbstractNestedFormFormGroup.class }, new Annotation[] { });
     registerDependentScopedReference(instance, FieldRenderer_formGroupsInstance);
     FieldRenderer_ManagedInstance_formGroupsInstance(instance, FieldRenderer_formGroupsInstance);
     final SubFormWidget SubFormFieldRenderer_subFormWidget = (SubFormWidget) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidget__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, SubFormFieldRenderer_subFormWidget);
     SubFormFieldRenderer_SubFormWidget_subFormWidget(instance, SubFormFieldRenderer_subFormWidget);
-    final ConfigErrorDisplayer FieldRenderer_errorDisplayer = (ConfigErrorDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_i_c_ConfigErrorDisplayer__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, FieldRenderer_errorDisplayer);
-    FieldRenderer_ConfigErrorDisplayer_errorDisplayer(instance, FieldRenderer_errorDisplayer);
     setIncompleteInstance(null);
     return instance;
   }

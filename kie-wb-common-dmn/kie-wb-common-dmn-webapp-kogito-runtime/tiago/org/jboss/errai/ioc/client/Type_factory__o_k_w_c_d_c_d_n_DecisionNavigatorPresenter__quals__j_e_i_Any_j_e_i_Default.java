@@ -212,19 +212,19 @@ public class Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorPresenter__quals__j_
   }
 
   public DecisionNavigatorPresenter createInstance(final ContextManager contextManager) {
-    final DecisionNavigatorTreePresenter _treePresenter_1 = (DecisionNavigatorTreePresenter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreePresenter__quals__j_e_i_Any_j_e_i_Default");
-    final DecisionComponents _decisionComponents_2 = (DecisionComponents) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponents__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_4 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDiagramsSession _dmnDiagramsSession_7 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
-    final IncludedModelsContext _includedModelContext_5 = (IncludedModelsContext) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_c_IncludedModelsContext__quals__j_e_i_Any_j_e_i_Default");
     final DecisionNavigatorObserver _decisionNavigatorObserver_3 = (DecisionNavigatorObserver) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorObserver__quals__j_e_i_Any_j_e_i_Default");
-    final DecisionNavigatorItemsProvider _navigatorItemsProvider_6 = (DecisionNavigatorItemsProvider) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorItemsProvider__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DecisionNavigatorView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorView__quals__j_e_i_Any_j_e_i_Default");
+    final DecisionComponents _decisionComponents_2 = (DecisionComponents) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponents__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramsSession _dmnDiagramsSession_7 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
+    final DecisionNavigatorTreePresenter _treePresenter_1 = (DecisionNavigatorTreePresenter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreePresenter__quals__j_e_i_Any_j_e_i_Default");
+    final IncludedModelsContext _includedModelContext_5 = (IncludedModelsContext) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_c_IncludedModelsContext__quals__j_e_i_Any_j_e_i_Default");
+    final DecisionNavigatorItemsProvider _navigatorItemsProvider_6 = (DecisionNavigatorItemsProvider) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorItemsProvider__quals__j_e_i_Any_j_e_i_Default");
     final DecisionNavigatorPresenter instance = new DecisionNavigatorPresenter(_view_0, _treePresenter_1, _decisionComponents_2, _decisionNavigatorObserver_3, _translationService_4, _includedModelContext_5, _navigatorItemsProvider_6, _dmnDiagramsSession_7);
-    registerDependentScopedReference(instance, _treePresenter_1);
-    registerDependentScopedReference(instance, _decisionComponents_2);
     registerDependentScopedReference(instance, _translationService_4);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _decisionComponents_2);
+    registerDependentScopedReference(instance, _treePresenter_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

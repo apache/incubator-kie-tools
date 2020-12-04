@@ -104,13 +104,13 @@ public class Type_factory__o_k_w_c_w_c_m_RepositoryMenu__quals__j_e_i_Any_j_e_i_
   public RepositoryMenu createInstance(final ContextManager contextManager) {
     final RepositoryMenu instance = new RepositoryMenu();
     setIncompleteInstance(instance);
+    final WorkspaceProjectContext RepositoryMenu_context = (WorkspaceProjectContext) contextManager.getInstance("Type_factory__o_g_c_s_p_c_c_WorkspaceProjectContext__quals__j_e_i_Any_j_e_i_Default");
+    RepositoryMenu_WorkspaceProjectContext_context(instance, RepositoryMenu_context);
     final Caller RepositoryMenu_moduleService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { KieModuleService.class }, new Annotation[] { });
     registerDependentScopedReference(instance, RepositoryMenu_moduleService);
     RepositoryMenu_Caller_moduleService(instance, RepositoryMenu_moduleService);
     final PlaceManagerImpl RepositoryMenu_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     RepositoryMenu_PlaceManager_placeManager(instance, RepositoryMenu_placeManager);
-    final WorkspaceProjectContext RepositoryMenu_context = (WorkspaceProjectContext) contextManager.getInstance("Type_factory__o_g_c_s_p_c_c_WorkspaceProjectContext__quals__j_e_i_Any_j_e_i_Default");
-    RepositoryMenu_WorkspaceProjectContext_context(instance, RepositoryMenu_context);
     setIncompleteInstance(null);
     return instance;
   }

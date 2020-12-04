@@ -36,12 +36,12 @@ public class Type_factory__o_u_c_v_p_w_DropdownMenuItem__quals__j_e_i_Any_j_e_i_
   public DropdownMenuItem createInstance(final ContextManager contextManager) {
     final DropdownMenuItem instance = new DropdownMenuItem();
     setIncompleteInstance(instance);
-    final HTMLAnchorElement DropdownMenuItem_anchor = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, DropdownMenuItem_anchor);
-    DropdownMenuItem_HTMLAnchorElement_anchor(instance, DropdownMenuItem_anchor);
     final HTMLLIElement DropdownMenuItem_item = (HTMLLIElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLIElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DropdownMenuItem_item);
     DropdownMenuItem_HTMLLIElement_item(instance, DropdownMenuItem_item);
+    final HTMLAnchorElement DropdownMenuItem_anchor = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, DropdownMenuItem_anchor);
+    DropdownMenuItem_HTMLAnchorElement_anchor(instance, DropdownMenuItem_anchor);
     o_u_c_v_p_w_DropdownMenuItemTemplateResource templateForDropdownMenuItem = GWT.create(o_u_c_v_p_w_DropdownMenuItemTemplateResource.class);
     Element parentElementForTemplateOfDropdownMenuItem = TemplateUtil.getRootTemplateParentElement(templateForDropdownMenuItem.getContents().getText(), "org/uberfire/client/views/pfly/widgets/DropdownMenuItem.html", "");
     TemplateUtil.translateTemplate("org/uberfire/client/views/pfly/widgets/DropdownMenuItem.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfDropdownMenuItem));

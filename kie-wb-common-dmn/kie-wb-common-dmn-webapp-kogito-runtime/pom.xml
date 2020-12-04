@@ -290,11 +290,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-cdi</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -598,7 +593,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
@@ -625,7 +619,6 @@
                 <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
 
                 <!-- UF-ext -->
-                <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>

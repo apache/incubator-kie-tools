@@ -15,8 +15,8 @@ public class Type_factory__o_k_w_c_d_c_e_d_c_DMNDocumentationDRDsFactory__quals_
   }
 
   public DMNDocumentationDRDsFactory createInstance(final ContextManager contextManager) {
-    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final BoxedExpressionHelper _expressionHelper_1 = (BoxedExpressionHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_BoxedExpressionHelper__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNDocumentationDRDsFactory instance = new DMNDocumentationDRDsFactory(_sessionManager_0, _expressionHelper_1);
     registerDependentScopedReference(instance, _expressionHelper_1);
     setIncompleteInstance(instance);

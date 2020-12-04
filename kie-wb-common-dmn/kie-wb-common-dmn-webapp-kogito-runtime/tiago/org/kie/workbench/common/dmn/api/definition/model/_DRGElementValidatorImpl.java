@@ -35,6 +35,11 @@ public class _DRGElementValidatorImpl extends com.google.gwt.validation.client.i
           "description",
           org.kie.workbench.common.dmn.api.property.dmn.Description.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "nameHolder",
+          org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl linksHolder_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "linksHolder",
@@ -45,18 +50,13 @@ public class _DRGElementValidatorImpl extends com.google.gwt.validation.client.i
           "id",
           org.kie.workbench.common.dmn.api.property.dmn.Id.class,
           true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "nameHolder",
-          org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.DRGElement> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.DRGElement.class)
           .setConstrained(false)
           .put("description", description_pd)
+          .put("nameHolder", nameHolder_pd)
           .put("linksHolder", linksHolder_pd)
           .put("id", id_pd)
-          .put("nameHolder", nameHolder_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -153,11 +153,11 @@ public class _DRGElementValidatorImpl extends com.google.gwt.validation.client.i
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
     if (propertyName.equals("description")) {
+    } else if (propertyName.equals("nameHolder")) {
     } else if (propertyName.equals("linksHolder")) {
       validateProperty_getlinksHolder(context, violations, object, object.getLinksHolder(), false, groups);
       validateProperty_linksHolder(context, violations, object, _linksHolder(object), false, groups);
     } else if (propertyName.equals("id")) {
-    } else if (propertyName.equals("nameHolder")) {
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.DRGElement");
     }
@@ -171,6 +171,8 @@ public class _DRGElementValidatorImpl extends com.google.gwt.validation.client.i
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
     if (propertyName.equals("description")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("nameHolder")) {
       boolean valueTypeMatches = false;
     } else if (propertyName.equals("linksHolder")) {
       boolean valueTypeMatches = false;
@@ -186,8 +188,6 @@ public class _DRGElementValidatorImpl extends com.google.gwt.validation.client.i
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
       }
     } else if (propertyName.equals("id")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("nameHolder")) {
       boolean valueTypeMatches = false;
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.DRGElement");

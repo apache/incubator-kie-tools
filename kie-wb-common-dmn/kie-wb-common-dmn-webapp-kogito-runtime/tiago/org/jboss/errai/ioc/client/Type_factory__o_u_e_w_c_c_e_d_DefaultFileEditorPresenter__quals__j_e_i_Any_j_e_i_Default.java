@@ -18,12 +18,12 @@ public class Type_factory__o_u_e_w_c_c_e_d_DefaultFileEditorPresenter__quals__j_
   public DefaultFileEditorPresenter createInstance(final ContextManager contextManager) {
     final DefaultFileEditorPresenter instance = new DefaultFileEditorPresenter();
     setIncompleteInstance(instance);
-    final DefaultFileEditorView DefaultFileEditorPresenter_view = (DefaultFileEditorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_e_d_DefaultFileEditorView__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, DefaultFileEditorPresenter_view);
-    instance.view = DefaultFileEditorPresenter_view;
     final Caller DefaultFileEditorPresenter_vfsServices = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { VFSService.class }, new Annotation[] { });
     registerDependentScopedReference(instance, DefaultFileEditorPresenter_vfsServices);
     DefaultFileEditorPresenter_Caller_vfsServices(instance, DefaultFileEditorPresenter_vfsServices);
+    final DefaultFileEditorView DefaultFileEditorPresenter_view = (DefaultFileEditorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_e_d_DefaultFileEditorView__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, DefaultFileEditorPresenter_view);
+    instance.view = DefaultFileEditorPresenter_view;
     setIncompleteInstance(null);
     return instance;
   }

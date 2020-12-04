@@ -96,11 +96,11 @@ public class Type_factory__o_k_w_c_w_c_h_w_c_WorkbenchConfigurationMenu__quals__
   public WorkbenchConfigurationMenu createInstance(final ContextManager contextManager) {
     final WorkbenchConfigurationMenu instance = new WorkbenchConfigurationMenu();
     setIncompleteInstance(instance);
-    final WorkbenchConfigurationPresenter WorkbenchConfigurationMenu_newResourcePresenter = (WorkbenchConfigurationPresenter) contextManager.getInstance("Type_factory__o_k_w_c_w_c_h_w_c_WorkbenchConfigurationPresenter__quals__j_e_i_Any_j_e_i_Default");
-    WorkbenchConfigurationMenu_WorkbenchConfigurationPresenter_newResourcePresenter(instance, WorkbenchConfigurationMenu_newResourcePresenter);
     final SyncBeanManager WorkbenchConfigurationMenu_iocBeanManager = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, WorkbenchConfigurationMenu_iocBeanManager);
     WorkbenchConfigurationMenu_SyncBeanManager_iocBeanManager(instance, WorkbenchConfigurationMenu_iocBeanManager);
+    final WorkbenchConfigurationPresenter WorkbenchConfigurationMenu_newResourcePresenter = (WorkbenchConfigurationPresenter) contextManager.getInstance("Type_factory__o_k_w_c_w_c_h_w_c_WorkbenchConfigurationPresenter__quals__j_e_i_Any_j_e_i_Default");
+    WorkbenchConfigurationMenu_WorkbenchConfigurationPresenter_newResourcePresenter(instance, WorkbenchConfigurationMenu_newResourcePresenter);
     setIncompleteInstance(null);
     return instance;
   }

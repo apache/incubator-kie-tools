@@ -41,19 +41,19 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_r_DataTypeConstraintRangeView__qu
   }
 
   public DataTypeConstraintRangeView createInstance(final ContextManager contextManager) {
-    final TypedValueComponentSelector _startValueComponentSelector_4 = (TypedValueComponentSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_TypedValueComponentSelector__quals__j_e_i_Any_j_e_i_Default");
     final HTMLDivElement _startValueContainer_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLInputElement _includeStartValue_2 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TypedValueComponentSelector _startValueComponentSelector_4 = (TypedValueComponentSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_TypedValueComponentSelector__quals__j_e_i_Any_j_e_i_Default");
     final HTMLInputElement _includeEndValue_3 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final TypedValueComponentSelector _endValueComponentSelector_5 = (TypedValueComponentSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_TypedValueComponentSelector__quals__j_e_i_Any_j_e_i_Default");
     final HTMLDivElement _endValueContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TypedValueComponentSelector _endValueComponentSelector_5 = (TypedValueComponentSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_TypedValueComponentSelector__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConstraintRangeView instance = new DataTypeConstraintRangeView(_startValueContainer_0, _endValueContainer_1, _includeStartValue_2, _includeEndValue_3, _startValueComponentSelector_4, _endValueComponentSelector_5);
-    registerDependentScopedReference(instance, _startValueComponentSelector_4);
     registerDependentScopedReference(instance, _startValueContainer_0);
     registerDependentScopedReference(instance, _includeStartValue_2);
+    registerDependentScopedReference(instance, _startValueComponentSelector_4);
     registerDependentScopedReference(instance, _includeEndValue_3);
-    registerDependentScopedReference(instance, _endValueComponentSelector_5);
     registerDependentScopedReference(instance, _endValueContainer_1);
+    registerDependentScopedReference(instance, _endValueComponentSelector_5);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_c_r_DataTypeConstraintRangeViewTemplateResource templateForDataTypeConstraintRangeView = GWT.create(o_k_w_c_d_c_e_t_l_c_r_DataTypeConstraintRangeViewTemplateResource.class);
     Element parentElementForTemplateOfDataTypeConstraintRangeView = TemplateUtil.getRootTemplateParentElement(templateForDataTypeConstraintRangeView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/constraint/range/DataTypeConstraintRangeView.html", "");

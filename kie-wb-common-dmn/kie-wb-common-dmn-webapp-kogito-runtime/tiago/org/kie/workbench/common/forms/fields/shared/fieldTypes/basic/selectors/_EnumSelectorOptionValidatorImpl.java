@@ -30,6 +30,35 @@ public class _EnumSelectorOptionValidatorImpl extends com.google.gwt.validation.
           org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption.class,
           javax.validation.groups.Default.class);
   
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> value_c0  = 
+      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
+          .setAnnotation( 
+              new javax.validation.constraints.NotNull(){
+                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
+                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
+                  public java.lang.Class[] groups() { return new java.lang.Class[] {};}
+                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
+              }
+              )
+          .setAttributes(attributeBuilder()
+            .put("message", "{javax.validation.constraints.NotNull.message}")
+            .put("payload", new java.lang.Class[] {})
+            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
+            .build())
+          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
+          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
+          .setPayload(new java.lang.Class[] {})
+          .setReportAsSingleViolation(false)
+          .setElementType(java.lang.annotation.ElementType.FIELD)
+          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
+          .build();
+  
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl value_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "value",
+          java.lang.Enum.class,
+          false,beanMetadata,
+          value_c0);
   private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> text_c0_0  = 
       com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
           .setAnnotation( 
@@ -135,40 +164,11 @@ public class _EnumSelectorOptionValidatorImpl extends com.google.gwt.validation.
           false,beanMetadata,
           text_c0,
           text_c1);
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> value_c0  = 
-      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
-          .setAnnotation( 
-              new javax.validation.constraints.NotNull(){
-                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
-                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
-                  public java.lang.Class[] groups() { return new java.lang.Class[] {};}
-                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
-              }
-              )
-          .setAttributes(attributeBuilder()
-            .put("message", "{javax.validation.constraints.NotNull.message}")
-            .put("payload", new java.lang.Class[] {})
-            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
-            .build())
-          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
-          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
-          .setPayload(new java.lang.Class[] {})
-          .setReportAsSingleViolation(false)
-          .setElementType(java.lang.annotation.ElementType.FIELD)
-          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
-          .build();
-  
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl value_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "value",
-          java.lang.Enum.class,
-          false,beanMetadata,
-          value_c0);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption.class)
           .setConstrained(true)
-          .put("text", text_pd)
           .put("value", value_pd)
+          .put("text", text_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -264,12 +264,12 @@ public class _EnumSelectorOptionValidatorImpl extends com.google.gwt.validation.
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("text")) {
-      validateProperty_gettext(context, violations, object, object.getText(), false, groups);
-      validateProperty_text(context, violations, object, _text(object), false, groups);
-    } else if (propertyName.equals("value")) {
+    if (propertyName.equals("value")) {
       validateProperty_getvalue(context, violations, object, object.getValue(), false, groups);
       validateProperty_value(context, violations, object, _value(object), false, groups);
+    } else if (propertyName.equals("text")) {
+      validateProperty_gettext(context, violations, object, object.getText(), false, groups);
+      validateProperty_text(context, violations, object, _text(object), false, groups);
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption");
     }
@@ -282,20 +282,7 @@ public class _EnumSelectorOptionValidatorImpl extends com.google.gwt.validation.
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("text")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof java.lang.String) {
-        valueTypeMatches = true;
-        validateProperty_gettext(context, violations, null, (java.lang.String) value, false, groups);
-      }
-      if ( value == null || value instanceof java.lang.String) {
-        valueTypeMatches = true;
-        validateProperty_text(context, violations, null, (java.lang.String) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
-    } else if (propertyName.equals("value")) {
+    if (propertyName.equals("value")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof java.lang.Enum) {
         valueTypeMatches = true;
@@ -304,6 +291,19 @@ public class _EnumSelectorOptionValidatorImpl extends com.google.gwt.validation.
       if ( value == null || value instanceof java.lang.Enum) {
         valueTypeMatches = true;
         validateProperty_value(context, violations, null, (java.lang.Enum) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
+    } else if (propertyName.equals("text")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof java.lang.String) {
+        valueTypeMatches = true;
+        validateProperty_gettext(context, violations, null, (java.lang.String) value, false, groups);
+      }
+      if ( value == null || value instanceof java.lang.String) {
+        valueTypeMatches = true;
+        validateProperty_text(context, violations, null, (java.lang.String) value, false, groups);
       }
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
@@ -320,6 +320,36 @@ public class _EnumSelectorOptionValidatorImpl extends com.google.gwt.validation.
   public GwtBeanDescriptor<org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption> getConstraints(ValidationGroupsMetadata validationGroupsMetadata) {
     beanDescriptor.setValidationGroupsMetadata(validationGroupsMetadata);
     return beanDescriptor;
+  }
+  
+  private final <T> void validateProperty_value(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object,
+      final java.lang.Enum value,
+      boolean honorValid,
+      Class<?>... groups) {
+    final GwtValidationContext<T> myContext = context.append("value");
+    Node leafNode = myContext.getPath().getLeafNode();
+    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
+    boolean isReachable;
+    try {
+      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+    } catch (Exception e) {
+      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
+    }
+    if (isReachable) {
+      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), value_c0, groups);
+    }
+  }
+  
+  private final <T> void validateProperty_getvalue(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object,
+      final java.lang.Enum value,
+      boolean honorValid,
+      Class<?>... groups) {
   }
   
   private final <T> void validateProperty_text(
@@ -360,55 +390,25 @@ public class _EnumSelectorOptionValidatorImpl extends com.google.gwt.validation.
       Class<?>... groups) {
   }
   
-  private final <T> void validateProperty_value(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object,
-      final java.lang.Enum value,
-      boolean honorValid,
-      Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("value");
-    Node leafNode = myContext.getPath().getLeafNode();
-    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
-    boolean isReachable;
-    try {
-      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-    } catch (Exception e) {
-      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
-    }
-    if (isReachable) {
-      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), value_c0, groups);
-    }
-  }
-  
-  private final <T> void validateProperty_getvalue(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object,
-      final java.lang.Enum value,
-      boolean honorValid,
-      Class<?>... groups) {
-  }
-  
   
   private <T> void validateAllNonInheritedProperties(
       GwtValidationContext<T> context,
       org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    validateProperty_gettext(context, violations, object, object.getText(), true, groups);
-    validateProperty_text(context, violations, object, _text(object), true, groups);
     validateProperty_getvalue(context, violations, object, object.getValue(), true, groups);
     validateProperty_value(context, violations, object, _value(object), true, groups);
+    validateProperty_gettext(context, violations, object, object.getText(), true, groups);
+    validateProperty_text(context, violations, object, _text(object), true, groups);
   }
   
   // Write the wrappers after we know which are needed
-  private native java.lang.String _text(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object) /*-{
-    return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption::text;
-  }-*/;
-  
   private native java.lang.Enum _value(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object) /*-{
     return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption::value;
+  }-*/;
+  
+  private native java.lang.String _text(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption object) /*-{
+    return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption::text;
   }-*/;
   
   

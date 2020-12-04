@@ -150,9 +150,9 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_d_h_HitPolicyPopoverImpl__quals__j_
   }
 
   public HitPolicyPopoverImpl createInstance(final ContextManager contextManager) {
+    final BuiltinAggregatorUtils _builtinAggregatorUtils_2 = (BuiltinAggregatorUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_h_BuiltinAggregatorUtils__quals__j_e_i_Any_j_e_i_Default");
     final HitPolicyPopoverView _view_0 = (HitPolicyPopoverViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_h_HitPolicyPopoverViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final BuiltinAggregatorUtils _builtinAggregatorUtils_2 = (BuiltinAggregatorUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_h_BuiltinAggregatorUtils__quals__j_e_i_Any_j_e_i_Default");
     final HitPolicyPopoverImpl instance = new HitPolicyPopoverImpl(_view_0, _translationService_1, _builtinAggregatorUtils_2);
     registerDependentScopedReference(instance, _translationService_1);
     setIncompleteInstance(instance);

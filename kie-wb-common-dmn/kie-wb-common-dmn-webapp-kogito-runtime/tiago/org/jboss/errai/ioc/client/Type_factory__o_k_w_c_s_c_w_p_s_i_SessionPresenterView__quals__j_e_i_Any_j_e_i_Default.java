@@ -60,24 +60,24 @@ public class Type_factory__o_k_w_c_s_c_w_p_s_i_SessionPresenterView__quals__j_e_
     final Label SessionPresenterView_loadingPanel = (Label) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_Label__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, SessionPresenterView_loadingPanel);
     SessionPresenterView_Label_loadingPanel(instance, SessionPresenterView_loadingPanel);
-    final ResizeFlowPanel SessionPresenterView_canvasPanel = (ResizeFlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_u_c_w_w_l_ResizeFlowPanel__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, SessionPresenterView_canvasPanel);
-    SessionPresenterView_ResizeFlowPanel_canvasPanel(instance, SessionPresenterView_canvasPanel);
-    final TranslationService SessionPresenterView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, SessionPresenterView_translationService);
-    SessionPresenterView_TranslationService_translationService(instance, SessionPresenterView_translationService);
-    final FlowPanel SessionPresenterView_toolbarPanel = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_g_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, SessionPresenterView_toolbarPanel);
-    SessionPresenterView_FlowPanel_toolbarPanel(instance, SessionPresenterView_toolbarPanel);
-    final SessionContainer SessionPresenterView_sessionContainer = (SessionContainer) contextManager.getInstance("ExtensionProvided_factory__o_k_w_c_s_c_w_p_s_i_SessionContainer__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, SessionPresenterView_sessionContainer);
-    SessionPresenterView_SessionContainer_sessionContainer(instance, SessionPresenterView_sessionContainer);
     final FlowPanel SessionPresenterView_palettePanel = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_g_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, SessionPresenterView_palettePanel);
     SessionPresenterView_FlowPanel_palettePanel(instance, SessionPresenterView_palettePanel);
     final FlowPanel SessionPresenterView_sessionHeaderContainer = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_g_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, SessionPresenterView_sessionHeaderContainer);
     SessionPresenterView_FlowPanel_sessionHeaderContainer(instance, SessionPresenterView_sessionHeaderContainer);
+    final FlowPanel SessionPresenterView_toolbarPanel = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_g_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, SessionPresenterView_toolbarPanel);
+    SessionPresenterView_FlowPanel_toolbarPanel(instance, SessionPresenterView_toolbarPanel);
+    final TranslationService SessionPresenterView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, SessionPresenterView_translationService);
+    SessionPresenterView_TranslationService_translationService(instance, SessionPresenterView_translationService);
+    final SessionContainer SessionPresenterView_sessionContainer = (SessionContainer) contextManager.getInstance("ExtensionProvided_factory__o_k_w_c_s_c_w_p_s_i_SessionContainer__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, SessionPresenterView_sessionContainer);
+    SessionPresenterView_SessionContainer_sessionContainer(instance, SessionPresenterView_sessionContainer);
+    final ResizeFlowPanel SessionPresenterView_canvasPanel = (ResizeFlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_u_c_w_w_l_ResizeFlowPanel__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, SessionPresenterView_canvasPanel);
+    SessionPresenterView_ResizeFlowPanel_canvasPanel(instance, SessionPresenterView_canvasPanel);
     thisInstance.setReference(instance, "onCanvasFocusedSelectionEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent", new AbstractCDIEventCallback<CanvasFocusedShapeEvent>() {
       public void fireEvent(final CanvasFocusedShapeEvent event) {
         SessionPresenterView_onCanvasFocusedSelectionEvent_CanvasFocusedShapeEvent(instance, event);

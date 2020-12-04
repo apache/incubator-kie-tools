@@ -30,29 +30,33 @@ public class QualifierEqualityFactoryImpl implements QualifierEqualityFactory {
         return hash;
       }
     });
-    comparatorMap.put("javax.inject.Named", new AnnotationComparator<Named>() {
-      @Override public boolean isEqual(Named a1, Named a2) {
+    comparatorMap.put("org.jboss.errai.ioc.client.api.ToSubject", new AnnotationComparator<ToSubject>() {
+      @Override public boolean isEqual(ToSubject a1, ToSubject a2) {
         if (!a1.value().equals(a2.value())) {
           return false;
         }
         return true;
       }
-      public int hashCodeOf(Named a1) {
+      public int hashCodeOf(ToSubject a1) {
         int hash = a1.annotationType().hashCode();
         hash = (31 * hash) + QualifierUtil.hashValueFor(a1.value());
         return hash;
       }
     });
-    comparatorMap.put("org.uberfire.ext.preferences.client.annotations.PreferenceForm", new AnnotationComparator<PreferenceForm>() {
-      @Override public boolean isEqual(PreferenceForm a1, PreferenceForm a2) {
-        if (!a1.value().equals(a2.value())) {
+    comparatorMap.put("org.uberfire.preferences.shared.annotations.WorkbenchPreference", new AnnotationComparator<WorkbenchPreference>() {
+      @Override public boolean isEqual(WorkbenchPreference a1, WorkbenchPreference a2) {
+        if (!a1.identifier().equals(a2.identifier())) {
+          return false;
+        }
+        if (!a1.bundleKey().equals(a2.bundleKey())) {
           return false;
         }
         return true;
       }
-      public int hashCodeOf(PreferenceForm a1) {
+      public int hashCodeOf(WorkbenchPreference a1) {
         int hash = a1.annotationType().hashCode();
-        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.value());
+        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.identifier());
+        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.bundleKey());
         return hash;
       }
     });
@@ -82,27 +86,14 @@ public class QualifierEqualityFactoryImpl implements QualifierEqualityFactory {
         return hash;
       }
     });
-    comparatorMap.put("org.jboss.errai.ioc.client.api.ReplyTo", new AnnotationComparator<ReplyTo>() {
-      @Override public boolean isEqual(ReplyTo a1, ReplyTo a2) {
+    comparatorMap.put("javax.inject.Named", new AnnotationComparator<Named>() {
+      @Override public boolean isEqual(Named a1, Named a2) {
         if (!a1.value().equals(a2.value())) {
           return false;
         }
         return true;
       }
-      public int hashCodeOf(ReplyTo a1) {
-        int hash = a1.annotationType().hashCode();
-        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.value());
-        return hash;
-      }
-    });
-    comparatorMap.put("org.uberfire.preferences.client.annotations.ComponentKey", new AnnotationComparator<ComponentKey>() {
-      @Override public boolean isEqual(ComponentKey a1, ComponentKey a2) {
-        if (!a1.value().equals(a2.value())) {
-          return false;
-        }
-        return true;
-      }
-      public int hashCodeOf(ComponentKey a1) {
+      public int hashCodeOf(Named a1) {
         int hash = a1.annotationType().hashCode();
         hash = (31 * hash) + QualifierUtil.hashValueFor(a1.value());
         return hash;
@@ -121,33 +112,42 @@ public class QualifierEqualityFactoryImpl implements QualifierEqualityFactory {
         return hash;
       }
     });
-    comparatorMap.put("org.jboss.errai.ioc.client.api.ToSubject", new AnnotationComparator<ToSubject>() {
-      @Override public boolean isEqual(ToSubject a1, ToSubject a2) {
+    comparatorMap.put("org.uberfire.ext.preferences.client.annotations.PreferenceForm", new AnnotationComparator<PreferenceForm>() {
+      @Override public boolean isEqual(PreferenceForm a1, PreferenceForm a2) {
         if (!a1.value().equals(a2.value())) {
           return false;
         }
         return true;
       }
-      public int hashCodeOf(ToSubject a1) {
+      public int hashCodeOf(PreferenceForm a1) {
         int hash = a1.annotationType().hashCode();
         hash = (31 * hash) + QualifierUtil.hashValueFor(a1.value());
         return hash;
       }
     });
-    comparatorMap.put("org.uberfire.preferences.shared.annotations.WorkbenchPreference", new AnnotationComparator<WorkbenchPreference>() {
-      @Override public boolean isEqual(WorkbenchPreference a1, WorkbenchPreference a2) {
-        if (!a1.identifier().equals(a2.identifier())) {
-          return false;
-        }
-        if (!a1.bundleKey().equals(a2.bundleKey())) {
+    comparatorMap.put("org.uberfire.preferences.client.annotations.ComponentKey", new AnnotationComparator<ComponentKey>() {
+      @Override public boolean isEqual(ComponentKey a1, ComponentKey a2) {
+        if (!a1.value().equals(a2.value())) {
           return false;
         }
         return true;
       }
-      public int hashCodeOf(WorkbenchPreference a1) {
+      public int hashCodeOf(ComponentKey a1) {
         int hash = a1.annotationType().hashCode();
-        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.identifier());
-        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.bundleKey());
+        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.value());
+        return hash;
+      }
+    });
+    comparatorMap.put("org.jboss.errai.ioc.client.api.ReplyTo", new AnnotationComparator<ReplyTo>() {
+      @Override public boolean isEqual(ReplyTo a1, ReplyTo a2) {
+        if (!a1.value().equals(a2.value())) {
+          return false;
+        }
+        return true;
+      }
+      public int hashCodeOf(ReplyTo a1) {
+        int hash = a1.annotationType().hashCode();
+        hash = (31 * hash) + QualifierUtil.hashValueFor(a1.value());
         return hash;
       }
     });

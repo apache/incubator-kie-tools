@@ -21,12 +21,12 @@ public class Type_factory__o_u_e_c_e_g_ExperimentalFeaturesGroup__quals__j_e_i_A
 
   public ExperimentalFeaturesGroup createInstance(final ContextManager contextManager) {
     final ExperimentalFeaturesGroupView _view_0 = (ExperimentalFeaturesGroupViewImpl) contextManager.getInstance("Type_factory__o_u_e_c_e_g_ExperimentalFeaturesGroupViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<ExperimentalFeatureEditor> _editorInstance_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ExperimentalFeatureEditor.class }, new Annotation[] { });
+    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ExperimentalFeaturesGroup instance = new ExperimentalFeaturesGroup(_view_0, _translationService_1, _editorInstance_2);
     registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _translationService_1);
     registerDependentScopedReference(instance, _editorInstance_2);
+    registerDependentScopedReference(instance, _translationService_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

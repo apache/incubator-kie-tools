@@ -53,24 +53,24 @@ public class Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponentsItemView__quals
   }
 
   public DecisionComponentsItemView createInstance(final ContextManager contextManager) {
-    final HTMLHeadingElement _name_1 = (HTMLHeadingElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLHeadingElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named_1");
-    final HTMLParagraphElement _file_2 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLImageElement _icon_0 = (HTMLImageElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLImageElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final ClientTranslationService _clientTranslationService_9 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final HTMLDivElement _decisionComponentItem_7 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final ShapeGlyphDragHandler _shapeGlyphDragHandler_5 = (ShapeGlyphDragHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_g_ShapeGlyphDragHandler__quals__j_e_i_Any_j_e_i_Default");
-    final Event<BuildCanvasShapeEvent> _buildCanvasShapeEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { BuildCanvasShapeEvent.class }, new Annotation[] { });
+    final ClientTranslationService _clientTranslationService_9 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DMNShapeSet _dmnShapeSet_3 = (DMNShapeSet) contextManager.getInstance("Type_factory__o_k_w_c_d_c_DMNShapeSet__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _sessionManager_4 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final Event<NotificationEvent> _notificationEvent_8 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
+    final HTMLImageElement _icon_0 = (HTMLImageElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLImageElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLHeadingElement _name_1 = (HTMLHeadingElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLHeadingElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named_1");
+    final SessionManager _sessionManager_4 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ShapeGlyphDragHandler _shapeGlyphDragHandler_5 = (ShapeGlyphDragHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_g_ShapeGlyphDragHandler__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLParagraphElement _file_2 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Event<BuildCanvasShapeEvent> _buildCanvasShapeEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { BuildCanvasShapeEvent.class }, new Annotation[] { });
     final DecisionComponentsItemView instance = new DecisionComponentsItemView(_icon_0, _name_1, _file_2, _dmnShapeSet_3, _sessionManager_4, _shapeGlyphDragHandler_5, _buildCanvasShapeEvent_6, _decisionComponentItem_7, _notificationEvent_8, _clientTranslationService_9);
-    registerDependentScopedReference(instance, _name_1);
-    registerDependentScopedReference(instance, _file_2);
-    registerDependentScopedReference(instance, _icon_0);
     registerDependentScopedReference(instance, _decisionComponentItem_7);
-    registerDependentScopedReference(instance, _shapeGlyphDragHandler_5);
-    registerDependentScopedReference(instance, _buildCanvasShapeEvent_6);
     registerDependentScopedReference(instance, _notificationEvent_8);
+    registerDependentScopedReference(instance, _icon_0);
+    registerDependentScopedReference(instance, _name_1);
+    registerDependentScopedReference(instance, _shapeGlyphDragHandler_5);
+    registerDependentScopedReference(instance, _file_2);
+    registerDependentScopedReference(instance, _buildCanvasShapeEvent_6);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_d_n_i_c_DecisionComponentsItemViewTemplateResource templateForDecisionComponentsItemView = GWT.create(o_k_w_c_d_c_d_n_i_c_DecisionComponentsItemViewTemplateResource.class);
     Element parentElementForTemplateOfDecisionComponentsItemView = TemplateUtil.getRootTemplateParentElement(templateForDecisionComponentsItemView.getContents().getText(), "org/kie/workbench/common/dmn/client/docks/navigator/included/components/DecisionComponentsItemView.html", "");

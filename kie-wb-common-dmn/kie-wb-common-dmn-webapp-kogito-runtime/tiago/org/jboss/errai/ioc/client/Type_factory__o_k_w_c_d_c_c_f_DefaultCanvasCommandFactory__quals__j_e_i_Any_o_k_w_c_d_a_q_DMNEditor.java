@@ -411,8 +411,8 @@ public class Type_factory__o_k_w_c_d_c_c_f_DefaultCanvasCommandFactory__quals__j
 
   public DefaultCanvasCommandFactory createInstance(final ContextManager contextManager) {
     final ManagedInstance<ChildrenTraverseProcessor> _childrenTraverseProcessors_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ChildrenTraverseProcessor.class }, new Annotation[] { });
-    final GraphsProvider _graphsProvider_2 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<ViewTraverseProcessor> _viewTraverseProcessors_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ViewTraverseProcessor.class }, new Annotation[] { });
+    final GraphsProvider _graphsProvider_2 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final DefaultCanvasCommandFactory instance = new DefaultCanvasCommandFactory(_childrenTraverseProcessors_0, _viewTraverseProcessors_1, _graphsProvider_2);
     registerDependentScopedReference(instance, _childrenTraverseProcessors_0);
     registerDependentScopedReference(instance, _viewTraverseProcessors_1);

@@ -15,8 +15,8 @@ public class Type_factory__o_k_w_c_s_c_w_m_MarshallingResponsePopup__quals__j_e_
   }
 
   public MarshallingResponsePopup createInstance(final ContextManager contextManager) {
-    final ClientTranslationService _translationService_1 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (MarshallingResponsePopupView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_m_MarshallingResponsePopupView__quals__j_e_i_Any_j_e_i_Default");
+    final ClientTranslationService _translationService_1 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final MarshallingResponsePopup instance = new MarshallingResponsePopup(_view_0, _translationService_1);
     registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);

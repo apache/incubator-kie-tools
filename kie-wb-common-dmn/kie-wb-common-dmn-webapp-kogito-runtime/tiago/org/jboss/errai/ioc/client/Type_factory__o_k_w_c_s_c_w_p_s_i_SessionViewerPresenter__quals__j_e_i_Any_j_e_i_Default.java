@@ -32,12 +32,7 @@ public class Type_factory__o_k_w_c_s_c_w_p_s_i_SessionViewerPresenter__quals__j_
   }
 
   public SessionViewerPresenter createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final SessionViewerImpl _viewer_2 = (SessionViewerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionViewerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final Event<SessionFocusedEvent> _sessionFocusedEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionFocusedEvent.class }, new Annotation[] { });
-    final Event<CanvasLostFocusEvent> _canvasLostFocusEventEvent_8 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasLostFocusEvent.class }, new Annotation[] { });
-    final View _view_9 = (SessionPresenterView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionPresenterView__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<SessionDiagramOpenedEvent> _sessionDiagramOpenedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionDiagramOpenedEvent.class }, new Annotation[] { });
     final ManagedInstance<ViewerToolbar> _toolbars_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ViewerToolbar.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -46,18 +41,23 @@ public class Type_factory__o_k_w_c_s_c_w_p_s_i_SessionViewerPresenter__quals__j_
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final Event<SessionDiagramOpenedEvent> _sessionDiagramOpenedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionDiagramOpenedEvent.class }, new Annotation[] { });
-    final NotificationsObserver _notificationsObserver_5 = (NotificationsObserver) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_n_NotificationsObserver__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<SessionFocusedEvent> _sessionFocusedEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionFocusedEvent.class }, new Annotation[] { });
     final Event<SessionLostFocusEvent> _sessionLostFocusEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionLostFocusEvent.class }, new Annotation[] { });
+    final View _view_9 = (SessionPresenterView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionPresenterView__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final NotificationsObserver _notificationsObserver_5 = (NotificationsObserver) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_n_NotificationsObserver__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasLostFocusEvent> _canvasLostFocusEventEvent_8 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasLostFocusEvent.class }, new Annotation[] { });
+    final SessionViewerImpl _viewer_2 = (SessionViewerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_s_i_SessionViewerImpl__quals__j_e_i_Any_j_e_i_Default");
     final SessionViewerPresenter instance = new SessionViewerPresenter(_definitionUtils_0, _sessionManager_1, _viewer_2, _toolbars_3, _sessionDiagramOpenedEvent_4, _notificationsObserver_5, _sessionFocusedEvent_6, _sessionLostFocusEvent_7, _canvasLostFocusEventEvent_8, _view_9);
-    registerDependentScopedReference(instance, _viewer_2);
-    registerDependentScopedReference(instance, _sessionFocusedEvent_6);
-    registerDependentScopedReference(instance, _canvasLostFocusEventEvent_8);
-    registerDependentScopedReference(instance, _view_9);
-    registerDependentScopedReference(instance, _toolbars_3);
     registerDependentScopedReference(instance, _sessionDiagramOpenedEvent_4);
-    registerDependentScopedReference(instance, _notificationsObserver_5);
+    registerDependentScopedReference(instance, _toolbars_3);
+    registerDependentScopedReference(instance, _sessionFocusedEvent_6);
     registerDependentScopedReference(instance, _sessionLostFocusEvent_7);
+    registerDependentScopedReference(instance, _view_9);
+    registerDependentScopedReference(instance, _notificationsObserver_5);
+    registerDependentScopedReference(instance, _canvasLostFocusEventEvent_8);
+    registerDependentScopedReference(instance, _viewer_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;
