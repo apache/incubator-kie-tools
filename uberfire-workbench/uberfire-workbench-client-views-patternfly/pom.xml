@@ -182,20 +182,6 @@
       <scope>test</scope>
     </dependency>
 
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-api</artifactId>
-      <classifier>sources</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-client</artifactId>
-      <classifier>sources</classifier>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 

@@ -27,7 +27,6 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuPresenter;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuView;
 import org.uberfire.client.workbench.widgets.menu.events.PerspectiveVisibiltiyChangeEvent;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
 public abstract class AbstractWorkbenchMenuProducer<PRESENTER extends WorkbenchBaseMenuPresenter, VIEW extends WorkbenchBaseMenuView> {
@@ -37,7 +36,6 @@ public abstract class AbstractWorkbenchMenuProducer<PRESENTER extends WorkbenchB
     protected PlaceManager placeManager;
     protected ActivityManager activityManager;
     protected User identity;
-    protected ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
     protected VIEW view;
     protected PRESENTER instance = null;
@@ -45,13 +43,12 @@ public abstract class AbstractWorkbenchMenuProducer<PRESENTER extends WorkbenchB
     public AbstractWorkbenchMenuProducer() {
     }
 
-    public AbstractWorkbenchMenuProducer(final AuthorizationManager authzManager, final PerspectiveManager perspectiveManager, final PlaceManager placeManager, final ActivityManager activityManager, final User identity, final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager, VIEW view) {
+    public AbstractWorkbenchMenuProducer(final AuthorizationManager authzManager, final PerspectiveManager perspectiveManager, final PlaceManager placeManager, final ActivityManager activityManager, final User identity, VIEW view) {
         this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.placeManager = placeManager;
         this.activityManager = activityManager;
         this.identity = identity;
-        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
         this.view = view;
     }
 

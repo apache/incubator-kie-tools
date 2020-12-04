@@ -42,7 +42,6 @@ import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 
 /**
  *
@@ -67,7 +66,6 @@ public class ActivityBeansCache {
     private Event<NewPerspectiveEvent> newPerspectiveEventEvent;
     private Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent;
     protected ResourceTypeManagerCache resourceTypeManagerCache;
-    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
     private GWTEditorNativeRegister gwtEditorNativeRegister;
 
     public ActivityBeansCache() {
@@ -78,13 +76,11 @@ public class ActivityBeansCache {
                               Event<NewPerspectiveEvent> newPerspectiveEventEvent,
                               Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent,
                               ResourceTypeManagerCache resourceTypeManagerCache,
-                              ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager,
                               GWTEditorNativeRegister gwtEditorNativeRegister) {
         this.iocManager = iocManager;
         this.newPerspectiveEventEvent = newPerspectiveEventEvent;
         this.newWorkbenchScreenEventEvent = newWorkbenchScreenEventEvent;
         this.resourceTypeManagerCache = resourceTypeManagerCache;
-        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
         this.gwtEditorNativeRegister = gwtEditorNativeRegister;
     }
 
@@ -293,16 +289,9 @@ public class ActivityBeansCache {
     }
 
     private boolean activitySupportsPath(ActivityAndMetaInfo activity, Path path) {
-
-        // Check if the editor activity is experimental && enabled
-        if (experimentalActivitiesAuthorizationManager.authorizeActivityClass(activity.getActivityBean().getBeanClass())) {
-
-            // Check if the editor resources types support the given path
-            return Stream.of(activity.getResourceTypes())
-                    .anyMatch(clientResourceType -> clientResourceType.accept(path));
-        }
-
-        return false;
+        // Check if the editor resources types support the given path
+        return Stream.of(activity.getResourceTypes())
+                .anyMatch(clientResourceType -> clientResourceType.accept(path));
     }
 
     public List<SyncBeanDef<Activity>> getPerspectiveActivities() {

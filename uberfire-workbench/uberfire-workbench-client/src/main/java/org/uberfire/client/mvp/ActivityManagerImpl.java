@@ -34,7 +34,6 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -66,8 +65,6 @@ public class ActivityManagerImpl implements ActivityManager {
     private User identity;
     @Inject
     private ActivityLifecycleErrorHandler lifecycleErrorHandler;
-    @Inject
-    private ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
 
     @Override
     public <T extends Activity> Set<T> getActivities(final Class<T> clazz) {
@@ -247,7 +244,7 @@ public class ActivityManagerImpl implements ActivityManager {
                 continue;
             }
             final T instance = activityBean.getInstance();
-            if (!protectedAccess || authzManager.authorize(instance, identity) && activitiesAuthorizationManager.authorizeActivity(instance)) {
+            if (!protectedAccess || authzManager.authorize(instance, identity)) {
                 activities.add(instance);
             } else {
                 // Since user does not have permission, destroy bean to avoid memory leak

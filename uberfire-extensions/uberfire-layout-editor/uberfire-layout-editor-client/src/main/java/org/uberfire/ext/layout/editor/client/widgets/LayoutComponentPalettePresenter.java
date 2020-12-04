@@ -29,7 +29,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.Factory;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
@@ -46,7 +45,6 @@ public class LayoutComponentPalettePresenter implements LayoutDragComponentPalet
 
     private View view;
     private ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
-    private ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService;
 
     private Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
 
@@ -54,10 +52,9 @@ public class LayoutComponentPalettePresenter implements LayoutDragComponentPalet
     }
 
     @Inject
-    public LayoutComponentPalettePresenter(View view, ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance, ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService) {
+    public LayoutComponentPalettePresenter(View view, ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance) {
         this.view = view;
         this.layoutDragComponentGroupInstance = layoutDragComponentGroupInstance;
-        this.experimentalFeaturesRegistryService = experimentalFeaturesRegistryService;
         view.init(this);
     }
 
@@ -109,7 +106,7 @@ public class LayoutComponentPalettePresenter implements LayoutDragComponentPalet
     private boolean isEnabled(Object object) {
         object = Factory.maybeUnwrapProxy(object);
 
-        return experimentalFeaturesRegistryService.isFeatureEnabled(object.getClass().getName());
+        return true; //FIXME: Tiago -> experimentalFeaturesRegistryService.isFeatureEnabled(object.getClass().getName());
     }
 
     @Override

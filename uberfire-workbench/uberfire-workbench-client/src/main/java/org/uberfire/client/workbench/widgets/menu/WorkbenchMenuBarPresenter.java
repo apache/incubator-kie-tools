@@ -31,7 +31,6 @@ import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuPresenter;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuView;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -64,22 +63,19 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
     private PlaceManager placeManager;
     private ActivityManager activityManager;
     private View view;
-    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
     WorkbenchMenuBarPresenter(final AuthorizationManager authzManager,
                               final PerspectiveManager perspectiveManager,
                               final PlaceManager placeManager,
                               final ActivityManager activityManager,
                               final User identity,
-                              final View view,
-                              final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
+                              final View view) {
         this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.placeManager = placeManager;
         this.activityManager = activityManager;
         this.identity = identity;
         this.view = view;
-        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
 
         setup();
     }
@@ -325,7 +321,7 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
 
     protected void doSetMenuItemVisible(MenuItemPerspective menuItemPerspective, BiConsumer<String, Boolean> callback) {
         String perspectiveId = menuItemPerspective.getPlaceRequest().getIdentifier();
-        boolean visible = experimentalActivitiesAuthorizationManager.authorizeActivityId(perspectiveId);
+        boolean visible = true; //FIXME: tiago -> Was experimental feature reference
 
         callback.accept(perspectiveId, visible);
 

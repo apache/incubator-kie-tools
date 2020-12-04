@@ -20,7 +20,6 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -31,15 +30,13 @@ public class WorkbenchMenuBarStandalonePresenter extends WorkbenchMenuBarPresent
                                         final PlaceManager placeManager,
                                         final ActivityManager activityManager,
                                         final User identity,
-                                        final View view,
-                                        final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
+                                        final View view) {
         super(authzManager,
               perspectiveManager,
               placeManager,
               activityManager,
               identity,
-              view,
-              experimentalActivitiesAuthorizationManager);
+              view);
     }
 
     @Override

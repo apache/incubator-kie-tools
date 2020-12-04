@@ -32,7 +32,6 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.Child
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -66,9 +65,8 @@ public class WorkbenchMegaMenuProducer extends AbstractWorkbenchMenuProducer<Wor
                                      final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                      final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
                                      final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
-                                     final Workbench workbench,
-                                     final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
-        super(authzManager, perspectiveManager, placeManager, activityManager, identity, experimentalActivitiesAuthorizationManager, view);
+                                     final Workbench workbench) {
+        super(authzManager, perspectiveManager, placeManager, activityManager, identity, view);
         this.authorizationManager = authorizationManager;
         this.megaMenuBrands = megaMenuBrands;
         this.placeManager = placeManager;
@@ -78,7 +76,6 @@ public class WorkbenchMegaMenuProducer extends AbstractWorkbenchMenuProducer<Wor
         this.childContextMenuItemPresenters = childContextMenuItemPresenters;
         this.groupContextMenuItemPresenters = groupContextMenuItemPresenters;
         this.workbench = workbench;
-        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
     }
 
 
@@ -102,8 +99,7 @@ public class WorkbenchMegaMenuProducer extends AbstractWorkbenchMenuProducer<Wor
                                               groupMenuItemPresenters,
                                               childContextMenuItemPresenters,
                                               groupContextMenuItemPresenters,
-                                              workbench,
-                                              experimentalActivitiesAuthorizationManager);
+                                              workbench);
     }
 
     @Override
@@ -121,7 +117,6 @@ public class WorkbenchMegaMenuProducer extends AbstractWorkbenchMenuProducer<Wor
                                                         groupMenuItemPresenters,
                                                         childContextMenuItemPresenters,
                                                         groupContextMenuItemPresenters,
-                                                        workbench,
-                                                        experimentalActivitiesAuthorizationManager);
+                                                        workbench);
     }
 }

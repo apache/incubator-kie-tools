@@ -26,7 +26,6 @@ import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
@@ -42,8 +41,8 @@ public class WorkbenchMenuBarProducer extends AbstractWorkbenchMenuProducer<Work
                                     final PlaceManager placeManager,
                                     final ActivityManager activityManager,
                                     final User identity,
-                                    final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager, final WorkbenchMenuBarPresenter.View view) {
-        super(authzManager, perspectiveManager, placeManager, activityManager, identity, experimentalActivitiesAuthorizationManager, view);
+                                    final WorkbenchMenuBarPresenter.View view) {
+        super(authzManager, perspectiveManager, placeManager, activityManager, identity, view);
     }
 
     @Produces
@@ -58,8 +57,7 @@ public class WorkbenchMenuBarProducer extends AbstractWorkbenchMenuProducer<Work
                                              placeManager,
                                              activityManager,
                                              identity,
-                                             view,
-                                             experimentalActivitiesAuthorizationManager);
+                                             view);
     }
 
     protected WorkbenchMenuBarPresenter makeStandalonePresenter() {
@@ -68,8 +66,7 @@ public class WorkbenchMenuBarProducer extends AbstractWorkbenchMenuProducer<Work
                                                        placeManager,
                                                        activityManager,
                                                        identity,
-                                                       view,
-                                                       experimentalActivitiesAuthorizationManager);
+                                                       view);
     }
 
     protected void onPlaceMinimized(final @Observes PlaceMinimizedEvent event) {

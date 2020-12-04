@@ -30,25 +30,21 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.infra.experimental.DisabledExperimentalLayoutComponent;
 
 @Dependent
 public class LayoutDragComponentHelper {
 
     private SyncBeanManager beanManager;
-    private ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService;
 
     private DndDataJSONConverter converter = new DndDataJSONConverter();
     private List<Object> instances = new ArrayList<>();
 
     @Inject
-    public LayoutDragComponentHelper(SyncBeanManager beanManager, ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService) {
+    public LayoutDragComponentHelper(SyncBeanManager beanManager) {
         this.beanManager = beanManager;
-        this.experimentalFeaturesRegistryService = experimentalFeaturesRegistryService;
     }
 
     @PreDestroy
@@ -73,24 +69,12 @@ public class LayoutDragComponentHelper {
             SyncBeanDef<LayoutDragComponent> beanDef = optional.get();
 
             LayoutDragComponent instance;
-
-            if (isAnEnabledExperimentalFeature(beanDef)) {
-                instance = beanDef.getInstance();
-            } else {
-                DisabledExperimentalLayoutComponent disabled = beanManager.lookupBean(DisabledExperimentalLayoutComponent.class).newInstance();
-                disabled.setFeatureId(beanDef.getBeanClass().getName());
-
-                instance = disabled;
-            }
+            instance = beanDef.getInstance();
             instances.add(instance);
             return instance;
         }
 
         return null;
-    }
-
-    boolean isAnEnabledExperimentalFeature(SyncBeanDef<LayoutDragComponent> beanDef) {
-        return experimentalFeaturesRegistryService.isFeatureEnabled(beanDef.getBeanClass().getName());
     }
 
     Predicate<SyncBeanDef<LayoutDragComponent>> syncBeanDefBeanClassNamePredicate(String dragTypeClassName) {

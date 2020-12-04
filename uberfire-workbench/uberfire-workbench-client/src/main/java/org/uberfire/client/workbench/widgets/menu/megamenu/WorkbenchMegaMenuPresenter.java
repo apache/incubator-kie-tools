@@ -46,7 +46,6 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuIte
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.visitor.WorkbenchMegaMenuContextMenuVisitor;
 import org.uberfire.client.workbench.widgets.menu.megamenu.visitor.WorkbenchMegaMenuVisitor;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
@@ -118,7 +117,6 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
     private ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters;
     private ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters;
     private Workbench workbench;
-    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
     Map<String, Selectable> selectableMenuItemByIdentifier = new HashMap<>();
     Map<String, HasChildren> hasChildrenMenuItemByIdentifier = new HashMap<>();
@@ -138,8 +136,7 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
                                       final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                       final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
                                       final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
-                                      final Workbench workbench,
-                                      final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
+                                      final Workbench workbench) {
         this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.activityManager = activityManager;
@@ -154,7 +151,6 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
         this.childContextMenuItemPresenters = childContextMenuItemPresenters;
         this.groupContextMenuItemPresenters = groupContextMenuItemPresenters;
         this.workbench = workbench;
-        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
 
         setup();
     }
@@ -415,7 +411,7 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
 
     public void setupSetVisibleMenuItem(MenuItemPerspective menuItemPerspective) {
         String perspectiveId = menuItemPerspective.getPlaceRequest().getIdentifier();
-        boolean visible = experimentalActivitiesAuthorizationManager.authorizeActivityId(perspectiveId);
+        boolean visible = true; //FIXME: tiago //experimentalActivitiesAuthorizationManager.authorizeActivityId(perspectiveId);
 
         changeMenuItemVisibility(perspectiveId, visible);
 
