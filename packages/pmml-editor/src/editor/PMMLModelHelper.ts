@@ -242,3 +242,17 @@ export const isSupportedModelType = (model: Model): boolean => {
   }
   return false;
 };
+
+export const findIncrementalName = (name: string, existingNames: string[], startsFrom: number): string => {
+  let newName = "";
+  let counter = startsFrom;
+  do {
+    const potentialName = `${name}${counter !== 1 ? ` ${counter}` : ""}`;
+    const found = existingNames.filter(existingName => existingName === potentialName);
+    if (found.length === 0) {
+      newName = potentialName;
+    }
+    counter++;
+  } while (newName.length === 0);
+  return newName;
+};

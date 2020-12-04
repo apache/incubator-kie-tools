@@ -36,6 +36,7 @@ import OutputsBatchAdd from "./OutputsBatchAdd";
 import { Operation } from "../../EditorScorecard";
 import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import "./OutputsContainer.scss";
+import { findIncrementalName } from "../../../PMMLModelHelper";
 import get = Reflect.get;
 import set = Reflect.set;
 
@@ -98,8 +99,10 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     if (numberOfOutputFields !== undefined) {
       //Index of the new row is equal to the number of existing rows
       setEditItemIndex(numberOfOutputFields);
-      //TODO {manstis} This will need some more magic to ensure the new default does not already exist
-      const newOutputFieldName: FieldName = "New output" as FieldName;
+
+      const existingNames: string[] = output?.OutputField.map(of => of.name.toString()) ?? [];
+      const newOutputFieldName: FieldName = findIncrementalName("New output", existingNames, 1) as FieldName;
+
       commitOutputField(undefined, {
         name: newOutputFieldName,
         dataType: "string",

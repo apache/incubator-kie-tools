@@ -10,6 +10,7 @@ import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";
 import "./DataDictionaryContainer.scss";
 import EmptyDataDictionary from "../EmptyDataDictionary/EmptyDataDictionary";
+import { findIncrementalName } from "../../../PMMLModelHelper";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DataField[];
@@ -42,14 +43,22 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   const handleEmptyFields = () => {
     if (dataTypes[dataTypes.length - 1].name.trim().length === 0) {
       const newDataTypes = dataTypes;
-      newDataTypes[newDataTypes.length - 1].name = findIncrementalName("New Data Type", 1);
+      newDataTypes[newDataTypes.length - 1].name = findIncrementalName(
+        "New Data Type",
+        dataTypes.map(dt => dt.name),
+        1
+      );
       setDataTypes(newDataTypes);
     }
   };
 
   const saveDataType = (dataType: DataField, index: number) => {
     if (!dataTypeNameValidation(dataType.name)) {
-      dataType.name = findIncrementalName(dataType.name, 2);
+      dataType.name = findIncrementalName(
+        dataType.name,
+        dataTypes.map(dt => dt.name),
+        2
+      );
     }
     const newTypes = dataTypes;
     newTypes[index] = { ...newTypes[index], ...dataType };
@@ -138,7 +147,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   };
 
   // TODO {kelvah} rough implementation for demoing purposes. to be done properly.
-  const findIncrementalName = (name: string, startsFrom: number): string => {
+  const findIncrementalName2 = (name: string, startsFrom: number): string => {
     let newName = "";
     let counter = startsFrom;
     do {

@@ -31,6 +31,7 @@ import {
 } from "../molecules";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { isEqual } from "lodash";
+import { findIncrementalName } from "../../../PMMLModelHelper";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -108,8 +109,10 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     if (numberOfCharacteristics !== undefined) {
       //Index of the new row is equal to the number of existing rows
       setSelectedCharacteristicIndex(numberOfCharacteristics);
-      //TODO {manstis} This will need some more magic to ensure the new default does not already exist
-      const newCharacteristicName = "New characteristic";
+
+      const existingNames: string[] = characteristics.map(c => c.name ?? "");
+      const newCharacteristicName = findIncrementalName("New characteristic", existingNames, 1);
+
       commit(undefined, {
         name: newCharacteristicName,
         baselineScore: 0,
