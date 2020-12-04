@@ -28,16 +28,16 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
 
   return (
     <>
-      {activeCharacteristic.reasonCode !== undefined &&
-        CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
-      {activeCharacteristic.baselineScore !== undefined &&
-        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
       {activeCharacteristic.Attribute.length > 0 &&
         CharacteristicLabelAttribute(
           "Attributes",
           attributesToTruncatedText(activeCharacteristic.Attribute, dataFields),
           attributesToFullText(activeCharacteristic.Attribute, dataFields)
         )}
+      {activeCharacteristic.reasonCode !== undefined &&
+        CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
+      {activeCharacteristic.baselineScore !== undefined &&
+        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
     </>
   );
 };

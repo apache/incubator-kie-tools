@@ -14,37 +14,24 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 
 interface AttributesTableProps {
-  modelIndex: number;
-  characteristicIndex: number | undefined;
+  attributes: Attribute[];
   setActiveOperation: (operation: Operation) => void;
   viewAttribute: (index: number | undefined) => void;
   deleteAttribute: (index: number) => void;
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { modelIndex, characteristicIndex, setActiveOperation, viewAttribute, deleteAttribute } = props;
+  const { attributes, setActiveOperation, viewAttribute, deleteAttribute } = props;
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
-  });
-
-  const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
-    const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
-    if (model instanceof Scorecard && characteristicIndex !== undefined) {
-      const scorecard: Scorecard = model as Scorecard;
-      const _characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
-      if (_characteristic) {
-        return _characteristic.Attribute;
-      }
-    }
-    return [];
   });
 
   const onEdit = (index: number | undefined) => {

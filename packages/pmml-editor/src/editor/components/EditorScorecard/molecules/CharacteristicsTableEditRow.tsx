@@ -24,8 +24,8 @@ import { AttributesTable, IndexedCharacteristic } from "../organisms";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
-import { useDispatch } from "react-redux";
-import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { useDispatch, useSelector } from "react-redux";
+import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
@@ -70,6 +70,18 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   const [baselineScore, setBaselineScore] = useState<ValidatedType<number | undefined>>({
     value: undefined,
     valid: true
+  });
+
+  const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
+    const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
+    if (model instanceof Scorecard && characteristicIndex !== undefined) {
+      const scorecard: Scorecard = model as Scorecard;
+      const _characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
+      if (_characteristic) {
+        return _characteristic.Attribute;
+      }
+    }
+    return [];
   });
 
   const ref = useOnclickOutside(
@@ -228,28 +240,29 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             </SplitItem>
           </Split>
         </StackItem>
-        <StackItem>
-          <FormGroup label="Attributes" fieldId="output-labels-helper">
-            <AttributesTable
-              modelIndex={modelIndex}
-              characteristicIndex={characteristicIndex}
-              setActiveOperation={setActiveOperation}
-              viewAttribute={viewAttribute}
-              deleteAttribute={attributeIndex => {
-                if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {
-                  dispatch({
-                    type: Actions.Scorecard_DeleteAttribute,
-                    payload: {
-                      modelIndex: modelIndex,
-                      characteristicIndex: characteristicIndex,
-                      attributeIndex: attributeIndex
-                    }
-                  });
-                }
-              }}
-            />
-          </FormGroup>
-        </StackItem>
+        {attributes.length > 0 && (
+          <StackItem>
+            <FormGroup label="Attributes" fieldId="output-labels-helper">
+              <AttributesTable
+                attributes={attributes}
+                setActiveOperation={setActiveOperation}
+                viewAttribute={viewAttribute}
+                deleteAttribute={attributeIndex => {
+                  if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {
+                    dispatch({
+                      type: Actions.Scorecard_DeleteAttribute,
+                      payload: {
+                        modelIndex: modelIndex,
+                        characteristicIndex: characteristicIndex,
+                        attributeIndex: attributeIndex
+                      }
+                    });
+                  }
+                }}
+              />
+            </FormGroup>
+          </StackItem>
+        )}
       </Stack>
     </article>
   );
