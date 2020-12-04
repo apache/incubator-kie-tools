@@ -18,7 +18,7 @@ jobs:
 
       - run: |
           cd .github/supporting-files/maven-artifacts/dmn-editor-unpacked
-          mvn package -B -Dversion.dmn.webapp=${{ github.event.inputs.mvnVersion }}
+          mvn package -B -ntp -Dversion.dmn.webapp=${{ github.event.inputs.mvnVersion }}
           npm version ${{ github.event.inputs.npmVersion }}
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           npm publish --access public
