@@ -1,4 +1,4 @@
-name: "Maven :: Publish Backend Quarkus Runner unpacked"
+name: "Maven :: Publish Quarkus Runner unpacked"
 
 on:
   workflow_dispatch:
