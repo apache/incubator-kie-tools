@@ -198,15 +198,15 @@ public class Type_factory__o_k_w_c_w_c_h_NewResourceViewImpl__quals__j_e_i_Any_j
     final HelpBlock NewResourceViewImpl_fileNameHelpInline = (HelpBlock) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_HelpBlock__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, NewResourceViewImpl_fileNameHelpInline);
     NewResourceViewImpl_HelpBlock_fileNameHelpInline(instance, NewResourceViewImpl_fileNameHelpInline);
-    final FlowPanel NewResourceViewImpl_handlerExtensions = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, NewResourceViewImpl_handlerExtensions);
-    NewResourceViewImpl_FlowPanel_handlerExtensions(instance, NewResourceViewImpl_handlerExtensions);
     final PackageListBox NewResourceViewImpl_packageListBox = (PackageListBox) contextManager.getInstance("Type_factory__o_k_w_c_w_c_h_PackageListBox__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, NewResourceViewImpl_packageListBox);
     NewResourceViewImpl_PackageListBox_packageListBox(instance, NewResourceViewImpl_packageListBox);
     final HelpBlock NewResourceViewImpl_packageHelpInline = (HelpBlock) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_HelpBlock__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, NewResourceViewImpl_packageHelpInline);
     NewResourceViewImpl_HelpBlock_packageHelpInline(instance, NewResourceViewImpl_packageHelpInline);
+    final FlowPanel NewResourceViewImpl_handlerExtensions = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, NewResourceViewImpl_handlerExtensions);
+    NewResourceViewImpl_FlowPanel_handlerExtensions(instance, NewResourceViewImpl_handlerExtensions);
     o_k_w_c_w_c_h_NewResourceViewImplTemplateResource templateForNewResourceViewImpl = GWT.create(o_k_w_c_w_c_h_NewResourceViewImplTemplateResource.class);
     Element parentElementForTemplateOfNewResourceViewImpl = TemplateUtil.getRootTemplateParentElement(templateForNewResourceViewImpl.getContents().getText(), "org/kie/workbench/common/widgets/client/handlers/NewResourceViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/widgets/client/handlers/NewResourceViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfNewResourceViewImpl));

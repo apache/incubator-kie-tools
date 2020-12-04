@@ -30,63 +30,63 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
           org.kie.workbench.common.dmn.api.definition.model.Decision.class,
           javax.validation.groups.Default.class);
   
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl linksHolder_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "linksHolder",
-          org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl fontSet_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "fontSet",
           org.kie.workbench.common.dmn.api.property.font.FontSet.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "description",
-          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl allowedAnswers_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "allowedAnswers",
-          org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl question_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "question",
-          org.kie.workbench.common.dmn.api.property.dmn.Question.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl variable_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "variable",
-          org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary.class,
           true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl backgroundSet_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "backgroundSet",
           org.kie.workbench.common.dmn.api.property.background.BackgroundSet.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl linksHolder_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "linksHolder",
+          org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl variable_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "variable",
+          org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl nameHolder_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "nameHolder",
           org.kie.workbench.common.dmn.api.property.dmn.NameHolder.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl allowedAnswers_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "allowedAnswers",
+          org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "description",
+          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
           true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "id",
           org.kie.workbench.common.dmn.api.property.dmn.Id.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl question_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "question",
+          org.kie.workbench.common.dmn.api.property.dmn.Question.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.Decision> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.Decision.class)
           .setConstrained(false)
-          .put("linksHolder", linksHolder_pd)
           .put("fontSet", fontSet_pd)
-          .put("description", description_pd)
-          .put("allowedAnswers", allowedAnswers_pd)
-          .put("question", question_pd)
-          .put("variable", variable_pd)
           .put("backgroundSet", backgroundSet_pd)
+          .put("linksHolder", linksHolder_pd)
+          .put("variable", variable_pd)
           .put("nameHolder", nameHolder_pd)
+          .put("allowedAnswers", allowedAnswers_pd)
+          .put("description", description_pd)
           .put("id", id_pd)
+          .put("question", question_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -182,25 +182,25 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("linksHolder")) {
-    } else if (propertyName.equals("fontSet")) {
+    if (propertyName.equals("fontSet")) {
       validateProperty_getfontSet(context, violations, object, object.getFontSet(), false, groups);
       validateProperty_fontSet(context, violations, object, _fontSet(object), false, groups);
-    } else if (propertyName.equals("description")) {
-    } else if (propertyName.equals("allowedAnswers")) {
-      validateProperty_getallowedAnswers(context, violations, object, object.getAllowedAnswers(), false, groups);
-      validateProperty_allowedAnswers(context, violations, object, _allowedAnswers(object), false, groups);
-    } else if (propertyName.equals("question")) {
-      validateProperty_getquestion(context, violations, object, object.getQuestion(), false, groups);
-      validateProperty_question(context, violations, object, _question(object), false, groups);
-    } else if (propertyName.equals("variable")) {
-      validateProperty_getvariable(context, violations, object, object.getVariable(), false, groups);
-      validateProperty_variable(context, violations, object, _variable(object), false, groups);
     } else if (propertyName.equals("backgroundSet")) {
       validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), false, groups);
       validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), false, groups);
+    } else if (propertyName.equals("linksHolder")) {
+    } else if (propertyName.equals("variable")) {
+      validateProperty_getvariable(context, violations, object, object.getVariable(), false, groups);
+      validateProperty_variable(context, violations, object, _variable(object), false, groups);
     } else if (propertyName.equals("nameHolder")) {
+    } else if (propertyName.equals("allowedAnswers")) {
+      validateProperty_getallowedAnswers(context, violations, object, object.getAllowedAnswers(), false, groups);
+      validateProperty_allowedAnswers(context, violations, object, _allowedAnswers(object), false, groups);
+    } else if (propertyName.equals("description")) {
     } else if (propertyName.equals("id")) {
+    } else if (propertyName.equals("question")) {
+      validateProperty_getquestion(context, violations, object, object.getQuestion(), false, groups);
+      validateProperty_question(context, violations, object, _question(object), false, groups);
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.Decision");
     }
@@ -213,9 +213,7 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("linksHolder")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("fontSet")) {
+    if (propertyName.equals("fontSet")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSet) {
         valueTypeMatches = true;
@@ -224,47 +222,6 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSet) {
         valueTypeMatches = true;
         validateProperty_fontSet(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSet) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
-    } else if (propertyName.equals("description")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("allowedAnswers")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) {
-        valueTypeMatches = true;
-        validateProperty_getallowedAnswers(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) {
-        valueTypeMatches = true;
-        validateProperty_allowedAnswers(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
-    } else if (propertyName.equals("question")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.Question) {
-        valueTypeMatches = true;
-        validateProperty_getquestion(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.Question) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.Question) {
-        valueTypeMatches = true;
-        validateProperty_question(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.Question) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
-    } else if (propertyName.equals("variable")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
-        valueTypeMatches = true;
-        validateProperty_getvariable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
-        valueTypeMatches = true;
-        validateProperty_variable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
       }
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
@@ -282,10 +239,53 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
       }
+    } else if (propertyName.equals("linksHolder")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("variable")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
+        valueTypeMatches = true;
+        validateProperty_getvariable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
+        valueTypeMatches = true;
+        validateProperty_variable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
     } else if (propertyName.equals("nameHolder")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("allowedAnswers")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) {
+        valueTypeMatches = true;
+        validateProperty_getallowedAnswers(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) {
+        valueTypeMatches = true;
+        validateProperty_allowedAnswers(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
+    } else if (propertyName.equals("description")) {
       boolean valueTypeMatches = false;
     } else if (propertyName.equals("id")) {
       boolean valueTypeMatches = false;
+    } else if (propertyName.equals("question")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.Question) {
+        valueTypeMatches = true;
+        validateProperty_getquestion(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.Question) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.Question) {
+        valueTypeMatches = true;
+        validateProperty_question(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.Question) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.Decision");
     }
@@ -338,6 +338,90 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
       final Set<ConstraintViolation<T>> violations,
       org.kie.workbench.common.dmn.api.definition.model.Decision object,
       final org.kie.workbench.common.dmn.api.property.font.FontSet value,
+      boolean honorValid,
+      Class<?>... groups) {
+  }
+  
+  private final <T> void validateProperty_backgroundSet(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.definition.model.Decision object,
+      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
+      boolean honorValid,
+      Class<?>... groups) {
+    final GwtValidationContext<T> myContext = context.append("backgroundSet");
+    Node leafNode = myContext.getPath().getLeafNode();
+    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
+    boolean isReachable;
+    try {
+      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+    } catch (Exception e) {
+      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
+    }
+    if (isReachable) {
+      if (honorValid && value != null) {
+        boolean isCascadable;
+        try {
+          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+        } catch (Exception e) {
+          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
+        }
+        if (isCascadable) {
+           if (!context.alreadyValidated(value)) {
+            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
+          }
+        }
+      }
+    }
+  }
+  
+  private final <T> void validateProperty_getbackgroundSet(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.definition.model.Decision object,
+      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
+      boolean honorValid,
+      Class<?>... groups) {
+  }
+  
+  private final <T> void validateProperty_variable(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.definition.model.Decision object,
+      final org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary value,
+      boolean honorValid,
+      Class<?>... groups) {
+    final GwtValidationContext<T> myContext = context.append("variable");
+    Node leafNode = myContext.getPath().getLeafNode();
+    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
+    boolean isReachable;
+    try {
+      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+    } catch (Exception e) {
+      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
+    }
+    if (isReachable) {
+      if (honorValid && value != null) {
+        boolean isCascadable;
+        try {
+          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+        } catch (Exception e) {
+          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
+        }
+        if (isCascadable) {
+           if (!context.alreadyValidated(value)) {
+            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
+          }
+        }
+      }
+    }
+  }
+  
+  private final <T> void validateProperty_getvariable(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.definition.model.Decision object,
+      final org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary value,
       boolean honorValid,
       Class<?>... groups) {
   }
@@ -426,90 +510,6 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
       Class<?>... groups) {
   }
   
-  private final <T> void validateProperty_variable(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.definition.model.Decision object,
-      final org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary value,
-      boolean honorValid,
-      Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("variable");
-    Node leafNode = myContext.getPath().getLeafNode();
-    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
-    boolean isReachable;
-    try {
-      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-    } catch (Exception e) {
-      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
-    }
-    if (isReachable) {
-      if (honorValid && value != null) {
-        boolean isCascadable;
-        try {
-          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-        } catch (Exception e) {
-          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
-        }
-        if (isCascadable) {
-           if (!context.alreadyValidated(value)) {
-            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
-          }
-        }
-      }
-    }
-  }
-  
-  private final <T> void validateProperty_getvariable(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.definition.model.Decision object,
-      final org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary value,
-      boolean honorValid,
-      Class<?>... groups) {
-  }
-  
-  private final <T> void validateProperty_backgroundSet(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.definition.model.Decision object,
-      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
-      boolean honorValid,
-      Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("backgroundSet");
-    Node leafNode = myContext.getPath().getLeafNode();
-    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
-    boolean isReachable;
-    try {
-      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-    } catch (Exception e) {
-      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
-    }
-    if (isReachable) {
-      if (honorValid && value != null) {
-        boolean isCascadable;
-        try {
-          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-        } catch (Exception e) {
-          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
-        }
-        if (isCascadable) {
-           if (!context.alreadyValidated(value)) {
-            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
-          }
-        }
-      }
-    }
-  }
-  
-  private final <T> void validateProperty_getbackgroundSet(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.definition.model.Decision object,
-      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
-      boolean honorValid,
-      Class<?>... groups) {
-  }
-  
   
   private <T> void validateAllNonInheritedProperties(
       GwtValidationContext<T> context,
@@ -518,35 +518,35 @@ public class _DecisionValidatorImpl extends com.google.gwt.validation.client.imp
       Class<?>... groups) {
     validateProperty_getfontSet(context, violations, object, object.getFontSet(), true, groups);
     validateProperty_fontSet(context, violations, object, _fontSet(object), true, groups);
+    validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), true, groups);
+    validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), true, groups);
+    validateProperty_getvariable(context, violations, object, object.getVariable(), true, groups);
+    validateProperty_variable(context, violations, object, _variable(object), true, groups);
     validateProperty_getallowedAnswers(context, violations, object, object.getAllowedAnswers(), true, groups);
     validateProperty_allowedAnswers(context, violations, object, _allowedAnswers(object), true, groups);
     validateProperty_getquestion(context, violations, object, object.getQuestion(), true, groups);
     validateProperty_question(context, violations, object, _question(object), true, groups);
-    validateProperty_getvariable(context, violations, object, object.getVariable(), true, groups);
-    validateProperty_variable(context, violations, object, _variable(object), true, groups);
-    validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), true, groups);
-    validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), true, groups);
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.property.dmn.Question _question(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::question;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.property.background.BackgroundSet _backgroundSet(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::backgroundSet;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary _variable(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::variable;
   }-*/;
   
   private native org.kie.workbench.common.dmn.api.property.font.FontSet _fontSet(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::fontSet;
   }-*/;
   
-  private native org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers _allowedAnswers(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::allowedAnswers;
+  private native org.kie.workbench.common.dmn.api.property.dmn.Question _question(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::question;
   }-*/;
   
-  private native org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary _variable(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::variable;
+  private native org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers _allowedAnswers(org.kie.workbench.common.dmn.api.definition.model.Decision object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.Decision::allowedAnswers;
   }-*/;
   
   

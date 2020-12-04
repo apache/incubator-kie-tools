@@ -295,12 +295,12 @@ public class _DMNElementValidatorImpl extends com.google.gwt.validation.client.i
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.property.dmn.Id _id(org.kie.workbench.common.dmn.api.definition.model.DMNElement object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.DMNElement::id;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.property.dmn.Description _description(org.kie.workbench.common.dmn.api.definition.model.DMNElement object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.DMNElement::description;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.property.dmn.Id _id(org.kie.workbench.common.dmn.api.definition.model.DMNElement object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.DMNElement::id;
   }-*/;
   
   

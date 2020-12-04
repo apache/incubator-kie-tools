@@ -45,8 +45,8 @@ public class Type_factory__o_k_w_c_d_c_e_c_m_FlashMessagesView__quals__j_e_i_Any
   }
 
   public FlashMessagesView createInstance(final ContextManager contextManager) {
-    final HTMLDivElement _warningContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _strongErrorMessage_2 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+    final HTMLDivElement _errorContainer_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLElement _strongWarningMessage_4 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
         }
@@ -57,6 +57,19 @@ public class Type_factory__o_k_w_c_d_c_e_c_m_FlashMessagesView__quals__j_e_i_Any
           return "strong";
         }
     } });
+    final HTMLButtonElement _cancelWarningButton_7 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLElement _strongSuccessMessage_10 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=strong)";
+        }
+        public String value() {
+          return "strong";
+        }
+    } });
+    final HTMLDivElement _warningContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _regularSuccessMessage_11 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -68,8 +81,7 @@ public class Type_factory__o_k_w_c_d_c_e_c_m_FlashMessagesView__quals__j_e_i_Any
           return "span";
         }
     } });
-    final HTMLButtonElement _cancelWarningButton_7 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _strongWarningMessage_4 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+    final HTMLElement _strongErrorMessage_2 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
         }
@@ -78,6 +90,18 @@ public class Type_factory__o_k_w_c_d_c_e_c_m_FlashMessagesView__quals__j_e_i_Any
         }
         public String value() {
           return "strong";
+        }
+    } });
+    final HTMLDivElement _successContainer_9 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLElement _regularErrorMessage_3 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=span)";
+        }
+        public String value() {
+          return "span";
         }
     } });
     final HTMLElement _regularWarningMessage_5 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
@@ -93,43 +117,19 @@ public class Type_factory__o_k_w_c_d_c_e_c_m_FlashMessagesView__quals__j_e_i_Any
     } });
     final HTMLButtonElement _okWarningButton_6 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _closeSuccessButton_8 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _successContainer_9 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _regularErrorMessage_3 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=span)";
-        }
-        public String value() {
-          return "span";
-        }
-    } });
-    final HTMLElement _strongSuccessMessage_10 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=strong)";
-        }
-        public String value() {
-          return "strong";
-        }
-    } });
-    final HTMLDivElement _errorContainer_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final FlashMessagesView instance = new FlashMessagesView(_errorContainer_0, _warningContainer_1, _strongErrorMessage_2, _regularErrorMessage_3, _strongWarningMessage_4, _regularWarningMessage_5, _okWarningButton_6, _cancelWarningButton_7, _closeSuccessButton_8, _successContainer_9, _strongSuccessMessage_10, _regularSuccessMessage_11);
-    registerDependentScopedReference(instance, _warningContainer_1);
-    registerDependentScopedReference(instance, _strongErrorMessage_2);
-    registerDependentScopedReference(instance, _regularSuccessMessage_11);
-    registerDependentScopedReference(instance, _cancelWarningButton_7);
+    registerDependentScopedReference(instance, _errorContainer_0);
     registerDependentScopedReference(instance, _strongWarningMessage_4);
+    registerDependentScopedReference(instance, _cancelWarningButton_7);
+    registerDependentScopedReference(instance, _strongSuccessMessage_10);
+    registerDependentScopedReference(instance, _warningContainer_1);
+    registerDependentScopedReference(instance, _regularSuccessMessage_11);
+    registerDependentScopedReference(instance, _strongErrorMessage_2);
+    registerDependentScopedReference(instance, _successContainer_9);
+    registerDependentScopedReference(instance, _regularErrorMessage_3);
     registerDependentScopedReference(instance, _regularWarningMessage_5);
     registerDependentScopedReference(instance, _okWarningButton_6);
     registerDependentScopedReference(instance, _closeSuccessButton_8);
-    registerDependentScopedReference(instance, _successContainer_9);
-    registerDependentScopedReference(instance, _regularErrorMessage_3);
-    registerDependentScopedReference(instance, _strongSuccessMessage_10);
-    registerDependentScopedReference(instance, _errorContainer_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_c_m_FlashMessagesViewTemplateResource templateForFlashMessagesView = GWT.create(o_k_w_c_d_c_e_c_m_FlashMessagesViewTemplateResource.class);
     Element parentElementForTemplateOfFlashMessagesView = TemplateUtil.getRootTemplateParentElement(templateForFlashMessagesView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/common/messages/FlashMessagesView.html", "");

@@ -93,9 +93,9 @@ public class Type_factory__o_k_w_c_s_c_p_DomainProfileManager__quals__j_e_i_Any_
   }
 
   public DomainProfileManager createInstance(final ContextManager contextManager) {
-    final FullProfile _defaultProfile_2 = (FullProfile) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_FullProfile__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final ProfileManager _profileManager_1 = (ClientProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientProfileManager__quals__j_e_i_Any_j_e_i_Default");
+    final FullProfile _defaultProfile_2 = (FullProfile) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_FullProfile__quals__j_e_i_Any_j_e_i_Default");
     final DomainProfileManager instance = new DomainProfileManager(_definitionManager_0, _profileManager_1, _defaultProfile_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

@@ -18,15 +18,15 @@ public class Type_factory__o_k_w_c_f_c_c_c_CrudComponent__quals__j_e_i_Any_j_e_i
   }
 
   public CrudComponent createInstance(final ContextManager contextManager) {
-    final CrudComponentView _view_0 = (CrudComponentViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_c_c_c_CrudComponentViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ModalFormDisplayer _modalFormDisplayer_2 = (ModalFormDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_c_c_c_f_m_ModalFormDisplayer__quals__j_e_i_Any_j_e_i_Default");
-    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final EmbeddedFormDisplayer _embeddedFormDisplayer_1 = (EmbeddedFormDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_c_c_c_f_e_EmbeddedFormDisplayer__quals__j_e_i_Any_j_e_i_Default");
+    final ModalFormDisplayer _modalFormDisplayer_2 = (ModalFormDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_c_c_c_f_m_ModalFormDisplayer__quals__j_e_i_Any_j_e_i_Default");
+    final CrudComponentView _view_0 = (CrudComponentViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_c_c_c_CrudComponentViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final CrudComponent instance = new CrudComponent(_view_0, _embeddedFormDisplayer_1, _modalFormDisplayer_2, _translationService_3);
-    registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _modalFormDisplayer_2);
-    registerDependentScopedReference(instance, _translationService_3);
     registerDependentScopedReference(instance, _embeddedFormDisplayer_1);
+    registerDependentScopedReference(instance, _modalFormDisplayer_2);
+    registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _translationService_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

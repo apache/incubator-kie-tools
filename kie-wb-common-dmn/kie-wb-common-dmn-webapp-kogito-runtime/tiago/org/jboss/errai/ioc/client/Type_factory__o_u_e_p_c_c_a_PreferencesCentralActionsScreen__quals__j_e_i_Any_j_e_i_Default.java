@@ -26,17 +26,17 @@ public class Type_factory__o_u_e_p_c_c_a_PreferencesCentralActionsScreen__quals_
   }
 
   public PreferencesCentralActionsScreen createInstance(final ContextManager contextManager) {
-    final Event<PreferencesCentralPreSaveEvent> _preSaveEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralPreSaveEvent.class }, new Annotation[] { });
-    final PlaceManager _placeManager_1 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final Event<PreferencesCentralSaveEvent> _saveEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralSaveEvent.class }, new Annotation[] { });
     final View _view_0 = (PreferencesCentralActionsView) contextManager.getInstance("Type_factory__o_u_e_p_c_c_a_PreferencesCentralActionsView__quals__j_e_i_Any_j_e_i_Default");
     final Event<PreferencesCentralUndoChangesEvent> _undoChangesEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralUndoChangesEvent.class }, new Annotation[] { });
+    final Event<PreferencesCentralSaveEvent> _saveEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralSaveEvent.class }, new Annotation[] { });
+    final PlaceManager _placeManager_1 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final Event<PreferencesCentralPreSaveEvent> _preSaveEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralPreSaveEvent.class }, new Annotation[] { });
     final Event<NotificationEvent> _notification_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     final PreferencesCentralActionsScreen instance = new PreferencesCentralActionsScreen(_view_0, _placeManager_1, _preSaveEvent_2, _saveEvent_3, _undoChangesEvent_4, _notification_5);
-    registerDependentScopedReference(instance, _preSaveEvent_2);
-    registerDependentScopedReference(instance, _saveEvent_3);
     registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _undoChangesEvent_4);
+    registerDependentScopedReference(instance, _saveEvent_3);
+    registerDependentScopedReference(instance, _preSaveEvent_2);
     registerDependentScopedReference(instance, _notification_5);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "initEventSubscription", CDI.subscribeLocal("org.uberfire.ext.preferences.client.event.PreferencesCentralActionsConfigurationEvent", new AbstractCDIEventCallback<PreferencesCentralActionsConfigurationEvent>() {

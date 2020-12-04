@@ -101,9 +101,9 @@ public class Type_factory__o_k_w_c_s_c_c_p_StunnerPreferencesRegistryLoader__qua
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final StunnerPreferences _preferences_2 = (StunnerPreferencesBeanGeneratedImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_StunnerPreferencesBeanGeneratedImpl__quals__j_e_i_Any_j_e_i_Default");
     final StunnerTextPreferences _textPreferences_3 = (StunnerTextPreferences) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_p_StunnerTextPreferences__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final StunnerPreferencesRegistryLoader instance = new StunnerPreferencesRegistryLoader(_definitionUtils_0, _preferencesHolders_1, _preferences_2, _textPreferences_3);
     registerDependentScopedReference(instance, _preferencesHolders_1);
     registerDependentScopedReference(instance, _preferences_2);

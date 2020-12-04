@@ -138,18 +138,18 @@ public class Type_factory__o_u_e_c_e_ExperimentalFeaturesEditorScreen__quals__j_
   }
 
   public ExperimentalFeaturesEditorScreen createInstance(final ContextManager contextManager) {
-    final AuthorizationManager _authorizationManager_7 = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
-    final Caller<FeaturesEditorService> _editorService_5 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { FeaturesEditorService.class }, new Annotation[] { });
-    final TranslationService _translationService_0 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final SessionInfo _sessionInfo_6 = (SessionInfo) contextManager.getInstance("Producer_factory__o_u_r_SessionInfo__quals__j_e_i_Any_j_e_i_Default");
     final ExperimentalFeatureDefRegistry _defRegistry_2 = (CDIClientFeatureDefRegistry) contextManager.getInstance("Type_factory__o_u_e_c_s_i_CDIClientFeatureDefRegistry__quals__j_e_i_Any_j_e_i_Default");
-    final ExperimentalFeaturesEditorScreenView _view_3 = (ExperimentalFeaturesEditorScreenViewImpl) contextManager.getInstance("Type_factory__o_u_e_c_e_ExperimentalFeaturesEditorScreenViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<ExperimentalFeaturesGroup> _groupsInstance_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ExperimentalFeaturesGroup.class }, new Annotation[] { });
     final ClientExperimentalFeaturesRegistryService _registryService_1 = (ClientExperimentalFeaturesRegistryServiceImpl) contextManager.getInstance("Type_factory__o_u_e_c_s_i_ClientExperimentalFeaturesRegistryServiceImpl__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_0 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final ExperimentalFeaturesEditorScreenView _view_3 = (ExperimentalFeaturesEditorScreenViewImpl) contextManager.getInstance("Type_factory__o_u_e_c_e_ExperimentalFeaturesEditorScreenViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final Caller<FeaturesEditorService> _editorService_5 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { FeaturesEditorService.class }, new Annotation[] { });
+    final ManagedInstance<ExperimentalFeaturesGroup> _groupsInstance_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ExperimentalFeaturesGroup.class }, new Annotation[] { });
+    final SessionInfo _sessionInfo_6 = (SessionInfo) contextManager.getInstance("Producer_factory__o_u_r_SessionInfo__quals__j_e_i_Any_j_e_i_Default");
+    final AuthorizationManager _authorizationManager_7 = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
     final ExperimentalFeaturesEditorScreen instance = new ExperimentalFeaturesEditorScreen(_translationService_0, _registryService_1, _defRegistry_2, _view_3, _groupsInstance_4, _editorService_5, _sessionInfo_6, _authorizationManager_7);
-    registerDependentScopedReference(instance, _editorService_5);
     registerDependentScopedReference(instance, _translationService_0);
     registerDependentScopedReference(instance, _view_3);
+    registerDependentScopedReference(instance, _editorService_5);
     registerDependentScopedReference(instance, _groupsInstance_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

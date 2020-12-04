@@ -17,8 +17,8 @@ public class Type_factory__o_k_w_c_s_c_c_c_v_CanvasDefinitionTooltip__quals__j_e
   }
 
   public CanvasDefinitionTooltip createInstance(final ContextManager contextManager) {
-    final DefinitionsCacheRegistry _registry_1 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
     final CanvasTooltip<String> _textTooltip_2 = (LienzoTextTooltip) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_v_LienzoTextTooltip__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionsCacheRegistry _registry_1 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final CanvasDefinitionTooltip instance = new CanvasDefinitionTooltip(_definitionManager_0, _registry_1, _textTooltip_2);
     registerDependentScopedReference(instance, _textTooltip_2);

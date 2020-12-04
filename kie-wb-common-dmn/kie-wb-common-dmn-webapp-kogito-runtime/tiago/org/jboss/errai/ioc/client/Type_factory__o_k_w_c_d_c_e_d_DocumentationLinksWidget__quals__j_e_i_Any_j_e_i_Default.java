@@ -64,26 +64,10 @@ public class Type_factory__o_k_w_c_d_c_e_d_DocumentationLinksWidget__quals__j_e_
   }
 
   public DocumentationLinksWidget createInstance(final ContextManager contextManager) {
-    final Presenter _nameAndUrlPopover_5 = (NameAndUriPopoverImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_l_NameAndUriPopoverImpl__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLDivElement _linksContainer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLElement _noLink_8 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=span)";
-        }
-        public String value() {
-          return "span";
-        }
-    } });
-    final ManagedInstance<DocumentationLinkItem> _listItems_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DocumentationLinkItem.class }, new Annotation[] { });
-    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final ReadOnlyProvider _readOnlyProvider_10 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final HTMLAnchorElement _addButton_4 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final CellEditorControlsView _cellEditor_6 = (CellEditorControlsViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_g_c_c_CellEditorControlsViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final Event<LockRequiredEvent> _locker_9 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LockRequiredEvent.class }, new Annotation[] { });
-    final HTMLDivElement _noneContainer_3 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<DocumentationLinkItem> _listItems_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DocumentationLinkItem.class }, new Annotation[] { });
+    final HTMLDivElement _linksContainer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _addLink_7 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -95,15 +79,31 @@ public class Type_factory__o_k_w_c_d_c_e_d_DocumentationLinksWidget__quals__j_e_
           return "span";
         }
     } });
+    final Event<LockRequiredEvent> _locker_9 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LockRequiredEvent.class }, new Annotation[] { });
+    final Presenter _nameAndUrlPopover_5 = (NameAndUriPopoverImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_l_NameAndUriPopoverImpl__quals__j_e_i_Any_j_e_i_Default");
+    final CellEditorControlsView _cellEditor_6 = (CellEditorControlsViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_g_c_c_CellEditorControlsViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLElement _noLink_8 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=span)";
+        }
+        public String value() {
+          return "span";
+        }
+    } });
+    final HTMLDivElement _noneContainer_3 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final ReadOnlyProvider _readOnlyProvider_10 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final DocumentationLinksWidget instance = new DocumentationLinksWidget(_listItems_0, _translationService_1, _linksContainer_2, _noneContainer_3, _addButton_4, _nameAndUrlPopover_5, _cellEditor_6, _addLink_7, _noLink_8, _locker_9, _readOnlyProvider_10);
-    registerDependentScopedReference(instance, _linksContainer_2);
-    registerDependentScopedReference(instance, _noLink_8);
-    registerDependentScopedReference(instance, _listItems_0);
-    registerDependentScopedReference(instance, _translationService_1);
     registerDependentScopedReference(instance, _addButton_4);
-    registerDependentScopedReference(instance, _locker_9);
-    registerDependentScopedReference(instance, _noneContainer_3);
+    registerDependentScopedReference(instance, _translationService_1);
+    registerDependentScopedReference(instance, _listItems_0);
+    registerDependentScopedReference(instance, _linksContainer_2);
     registerDependentScopedReference(instance, _addLink_7);
+    registerDependentScopedReference(instance, _locker_9);
+    registerDependentScopedReference(instance, _noLink_8);
+    registerDependentScopedReference(instance, _noneContainer_3);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_d_DocumentationLinksWidgetTemplateResource templateForDocumentationLinksWidget = GWT.create(o_k_w_c_d_c_e_d_DocumentationLinksWidgetTemplateResource.class);
     Element parentElementForTemplateOfDocumentationLinksWidget = TemplateUtil.getRootTemplateParentElement(templateForDocumentationLinksWidget.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/documentation/DocumentationLinksWidget.html", "");

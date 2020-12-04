@@ -100,6 +100,7 @@ public class Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j
   }
 
   public ClientRuleManager createInstance(final ContextManager contextManager) {
+    final CachedRuleManager _ruleManager_0 = (CachedRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_CachedRuleManager__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<RuleEvaluationHandler> _ruleEvaluationHandlerInstances_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { RuleEvaluationHandler.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -108,10 +109,9 @@ public class Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final CachedRuleManager _ruleManager_0 = (CachedRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_CachedRuleManager__quals__j_e_i_Any_j_e_i_Default");
     final ClientRuleManager instance = new ClientRuleManager(_ruleManager_0, _ruleEvaluationHandlerInstances_1);
-    registerDependentScopedReference(instance, _ruleEvaluationHandlerInstances_1);
     registerDependentScopedReference(instance, _ruleManager_0);
+    registerDependentScopedReference(instance, _ruleEvaluationHandlerInstances_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

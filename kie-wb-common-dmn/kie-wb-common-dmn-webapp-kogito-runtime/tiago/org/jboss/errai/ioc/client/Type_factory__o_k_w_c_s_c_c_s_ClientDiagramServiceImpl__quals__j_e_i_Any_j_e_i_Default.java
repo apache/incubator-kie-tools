@@ -25,14 +25,14 @@ public class Type_factory__o_k_w_c_s_c_c_s_ClientDiagramServiceImpl__quals__j_e_
 
   public ClientDiagramServiceImpl createInstance(final ContextManager contextManager) {
     final Event<SessionDiagramSavedEvent> _saveEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SessionDiagramSavedEvent.class }, new Annotation[] { });
-    final Caller<DiagramService> _diagramServiceCaller_4 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { DiagramService.class }, new Annotation[] { });
-    final ShapeManager _shapeManager_0 = (ShapeManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final Caller<DiagramLookupService> _diagramLookupServiceCaller_2 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { DiagramLookupService.class }, new Annotation[] { });
+    final Caller<DiagramService> _diagramServiceCaller_4 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { DiagramService.class }, new Annotation[] { });
+    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ShapeManager _shapeManager_0 = (ShapeManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final ClientDiagramServiceImpl instance = new ClientDiagramServiceImpl(_shapeManager_0, _sessionManager_1, _diagramLookupServiceCaller_2, _saveEvent_3, _diagramServiceCaller_4);
     registerDependentScopedReference(instance, _saveEvent_3);
-    registerDependentScopedReference(instance, _diagramServiceCaller_4);
     registerDependentScopedReference(instance, _diagramLookupServiceCaller_2);
+    registerDependentScopedReference(instance, _diagramServiceCaller_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

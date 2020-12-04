@@ -44,12 +44,12 @@ public class Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageView__quals__j_e_i_
   }
 
   public IncludedModelsPageView createInstance(final ContextManager contextManager) {
-    final HTMLButtonElement _includeModelButton_1 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final ReadOnlyProvider _readOnlyProvider_2 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final HTMLDivElement _grid_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final ReadOnlyProvider _readOnlyProvider_2 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final HTMLButtonElement _includeModelButton_1 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final IncludedModelsPageView instance = new IncludedModelsPageView(_grid_0, _includeModelButton_1, _readOnlyProvider_2);
-    registerDependentScopedReference(instance, _includeModelButton_1);
     registerDependentScopedReference(instance, _grid_0);
+    registerDependentScopedReference(instance, _includeModelButton_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_i_IncludedModelsPageViewTemplateResource templateForIncludedModelsPageView = GWT.create(o_k_w_c_d_c_e_i_IncludedModelsPageViewTemplateResource.class);
     Element parentElementForTemplateOfIncludedModelsPageView = TemplateUtil.getRootTemplateParentElement(templateForIncludedModelsPageView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/included/IncludedModelsPageView.html", "");

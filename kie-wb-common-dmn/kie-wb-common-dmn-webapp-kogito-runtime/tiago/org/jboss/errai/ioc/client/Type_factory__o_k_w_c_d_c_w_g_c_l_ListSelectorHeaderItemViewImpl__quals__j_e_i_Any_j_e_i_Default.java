@@ -32,11 +32,11 @@ public class Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelectorHeaderItemViewImpl__q
   }
 
   public ListSelectorHeaderItemViewImpl createInstance(final ContextManager contextManager) {
-    final Icon _icon_1 = (Icon) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Icon__quals__j_e_i_Any_j_e_i_Default");
     final Span _text_0 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Icon _icon_1 = (Icon) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Icon__quals__j_e_i_Any_j_e_i_Default");
     final ListSelectorHeaderItemViewImpl instance = new ListSelectorHeaderItemViewImpl(_text_0, _icon_1);
-    registerDependentScopedReference(instance, _icon_1);
     registerDependentScopedReference(instance, _text_0);
+    registerDependentScopedReference(instance, _icon_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_w_g_c_l_ListSelectorHeaderItemViewImplTemplateResource templateForListSelectorHeaderItemViewImpl = GWT.create(o_k_w_c_d_c_w_g_c_l_ListSelectorHeaderItemViewImplTemplateResource.class);
     Element parentElementForTemplateOfListSelectorHeaderItemViewImpl = TemplateUtil.getRootTemplateParentElement(templateForListSelectorHeaderItemViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/widgets/grid/controls/list/ListSelectorHeaderItemViewImpl.html", "");

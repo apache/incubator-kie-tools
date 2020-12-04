@@ -19,12 +19,12 @@ public class Type_factory__o_u_e_p_c_a_i_AdminPageItemPresenter__quals__j_e_i_An
   }
 
   public AdminPageItemPresenter createInstance(final ContextManager contextManager) {
-    final Event<PreferencesCentralActionsConfigurationEvent> _adminPageConfigurationEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralActionsConfigurationEvent.class }, new Annotation[] { });
-    final PlaceManager _placeManager_1 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (AdminPageItemView) contextManager.getInstance("Type_factory__o_u_e_p_c_a_i_AdminPageItemView__quals__j_e_i_Any_j_e_i_Default");
+    final PlaceManager _placeManager_1 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final Event<PreferencesCentralActionsConfigurationEvent> _adminPageConfigurationEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralActionsConfigurationEvent.class }, new Annotation[] { });
     final AdminPageItemPresenter instance = new AdminPageItemPresenter(_view_0, _placeManager_1, _adminPageConfigurationEvent_2);
-    registerDependentScopedReference(instance, _adminPageConfigurationEvent_2);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _adminPageConfigurationEvent_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

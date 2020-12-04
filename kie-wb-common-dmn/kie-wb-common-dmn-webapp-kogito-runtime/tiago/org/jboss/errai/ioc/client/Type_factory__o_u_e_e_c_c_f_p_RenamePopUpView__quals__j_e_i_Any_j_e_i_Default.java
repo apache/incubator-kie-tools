@@ -49,7 +49,15 @@ public class Type_factory__o_u_e_e_c_c_f_p_RenamePopUpView__quals__j_e_i_Any_j_e
   }
 
   public RenamePopUpView createInstance(final ContextManager contextManager) {
+    final HTMLDivElement _error_7 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _body_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _view_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _footer_5 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _saveAndRename_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLInputElement _newNameTextBox_6 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _cancel_2 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _rename_3 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_9 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final HTMLElement _errorMessage_8 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -61,25 +69,17 @@ public class Type_factory__o_u_e_e_c_c_f_p_RenamePopUpView__quals__j_e_i_Any_j_e
           return "span";
         }
     } });
-    final HTMLDivElement _body_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final TranslationService _translationService_9 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLInputElement _newNameTextBox_6 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _rename_3 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _footer_5 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _view_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _error_7 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _saveAndRename_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final RenamePopUpView instance = new RenamePopUpView(_body_0, _view_1, _cancel_2, _rename_3, _saveAndRename_4, _footer_5, _newNameTextBox_6, _error_7, _errorMessage_8, _translationService_9);
-    registerDependentScopedReference(instance, _cancel_2);
-    registerDependentScopedReference(instance, _errorMessage_8);
-    registerDependentScopedReference(instance, _body_0);
-    registerDependentScopedReference(instance, _translationService_9);
-    registerDependentScopedReference(instance, _newNameTextBox_6);
-    registerDependentScopedReference(instance, _rename_3);
-    registerDependentScopedReference(instance, _footer_5);
-    registerDependentScopedReference(instance, _view_1);
     registerDependentScopedReference(instance, _error_7);
+    registerDependentScopedReference(instance, _body_0);
+    registerDependentScopedReference(instance, _view_1);
+    registerDependentScopedReference(instance, _footer_5);
     registerDependentScopedReference(instance, _saveAndRename_4);
+    registerDependentScopedReference(instance, _newNameTextBox_6);
+    registerDependentScopedReference(instance, _cancel_2);
+    registerDependentScopedReference(instance, _rename_3);
+    registerDependentScopedReference(instance, _translationService_9);
+    registerDependentScopedReference(instance, _errorMessage_8);
     setIncompleteInstance(instance);
     o_u_e_e_c_c_f_p_RenamePopUpViewTemplateResource templateForRenamePopUpView = GWT.create(o_u_e_e_c_c_f_p_RenamePopUpViewTemplateResource.class);
     Element parentElementForTemplateOfRenamePopUpView = TemplateUtil.getRootTemplateParentElement(templateForRenamePopUpView.getContents().getText(), "org/uberfire/ext/editor/commons/client/file/popups/RenamePopUpView.html", "");

@@ -48,12 +48,12 @@ public class Type_factory__o_u_e_p_c_c_t_TreeHierarchyLeafItemView__quals__j_e_i
   public TreeHierarchyLeafItemView createInstance(final ContextManager contextManager) {
     final TreeHierarchyLeafItemView instance = new TreeHierarchyLeafItemView();
     setIncompleteInstance(instance);
-    final TranslationService TreeHierarchyLeafItemView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, TreeHierarchyLeafItemView_translationService);
-    TreeHierarchyLeafItemView_TranslationService_translationService(instance, TreeHierarchyLeafItemView_translationService);
     final Div TreeHierarchyLeafItemView_treeNode = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, TreeHierarchyLeafItemView_treeNode);
     TreeHierarchyLeafItemView_Div_treeNode(instance, TreeHierarchyLeafItemView_treeNode);
+    final TranslationService TreeHierarchyLeafItemView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, TreeHierarchyLeafItemView_translationService);
+    TreeHierarchyLeafItemView_TranslationService_translationService(instance, TreeHierarchyLeafItemView_translationService);
     o_u_e_p_c_c_t_TreeHierarchyLeafItemViewTemplateResource templateForTreeHierarchyLeafItemView = GWT.create(o_u_e_p_c_c_t_TreeHierarchyLeafItemViewTemplateResource.class);
     Element parentElementForTemplateOfTreeHierarchyLeafItemView = TemplateUtil.getRootTemplateParentElement(templateForTreeHierarchyLeafItemView.getContents().getText(), "org/uberfire/ext/preferences/client/central/tree/TreeHierarchyLeafItemView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/preferences/client/central/tree/TreeHierarchyLeafItemView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfTreeHierarchyLeafItemView));

@@ -113,8 +113,8 @@ public class Type_factory__o_k_w_c_f_a_e_c_f_ClientFieldElementProcessor__quals_
   }
 
   public ClientFieldElementProcessor createInstance(final ContextManager contextManager) {
-    final FieldManager _fieldManager_0 = (ClientFieldManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_s_ClientFieldManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final PropertyValueExtractor _propertyValueExtractor_1 = (ClientPropertuValueExtractor) contextManager.getInstance("Type_factory__o_k_w_c_f_a_e_c_f_u_ClientPropertuValueExtractor__quals__j_e_i_Any_j_e_i_Default");
+    final FieldManager _fieldManager_0 = (ClientFieldManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_s_ClientFieldManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final ClientFieldElementProcessor instance = new ClientFieldElementProcessor(_fieldManager_0, _propertyValueExtractor_1);
     registerDependentScopedReference(instance, _propertyValueExtractor_1);
     setIncompleteInstance(instance);

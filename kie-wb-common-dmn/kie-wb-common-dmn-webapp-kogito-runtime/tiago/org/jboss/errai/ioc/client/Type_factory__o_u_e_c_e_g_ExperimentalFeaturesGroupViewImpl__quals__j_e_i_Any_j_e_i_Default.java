@@ -55,24 +55,18 @@ public class Type_factory__o_u_e_c_e_g_ExperimentalFeaturesGroupViewImpl__quals_
   public ExperimentalFeaturesGroupViewImpl createInstance(final ContextManager contextManager) {
     final ExperimentalFeaturesGroupViewImpl instance = new ExperimentalFeaturesGroupViewImpl();
     setIncompleteInstance(instance);
-    final HTMLLabelElement ExperimentalFeaturesGroupViewImpl_header = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_header);
-    ExperimentalFeaturesGroupViewImpl_HTMLLabelElement_header(instance, ExperimentalFeaturesGroupViewImpl_header);
-    final Elemental2DomUtil ExperimentalFeaturesGroupViewImpl_util = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_util);
-    ExperimentalFeaturesGroupViewImpl_Elemental2DomUtil_util(instance, ExperimentalFeaturesGroupViewImpl_util);
-    final HTMLUListElement ExperimentalFeaturesGroupViewImpl_featuresContainer = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_featuresContainer);
-    ExperimentalFeaturesGroupViewImpl_HTMLUListElement_featuresContainer(instance, ExperimentalFeaturesGroupViewImpl_featuresContainer);
     final HTMLDocument ExperimentalFeaturesGroupViewImpl_document = (HTMLDocument) contextManager.getInstance("Producer_factory__e_d_HTMLDocument__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_document);
     ExperimentalFeaturesGroupViewImpl_Document_document(instance, ExperimentalFeaturesGroupViewImpl_document);
-    final HTMLAnchorElement ExperimentalFeaturesGroupViewImpl_enableAll = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_enableAll);
-    ExperimentalFeaturesGroupViewImpl_HTMLAnchorElement_enableAll(instance, ExperimentalFeaturesGroupViewImpl_enableAll);
+    final HTMLUListElement ExperimentalFeaturesGroupViewImpl_featuresContainer = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_featuresContainer);
+    ExperimentalFeaturesGroupViewImpl_HTMLUListElement_featuresContainer(instance, ExperimentalFeaturesGroupViewImpl_featuresContainer);
     final HTMLDivElement ExperimentalFeaturesGroupViewImpl_panel = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_panel);
     ExperimentalFeaturesGroupViewImpl_HTMLDivElement_panel(instance, ExperimentalFeaturesGroupViewImpl_panel);
+    final Elemental2DomUtil ExperimentalFeaturesGroupViewImpl_util = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_util);
+    ExperimentalFeaturesGroupViewImpl_Elemental2DomUtil_util(instance, ExperimentalFeaturesGroupViewImpl_util);
     final HTMLElement ExperimentalFeaturesGroupViewImpl_caret = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -86,6 +80,12 @@ public class Type_factory__o_u_e_c_e_g_ExperimentalFeaturesGroupViewImpl__quals_
     } });
     registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_caret);
     ExperimentalFeaturesGroupViewImpl_HTMLElement_caret(instance, ExperimentalFeaturesGroupViewImpl_caret);
+    final HTMLLabelElement ExperimentalFeaturesGroupViewImpl_header = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_header);
+    ExperimentalFeaturesGroupViewImpl_HTMLLabelElement_header(instance, ExperimentalFeaturesGroupViewImpl_header);
+    final HTMLAnchorElement ExperimentalFeaturesGroupViewImpl_enableAll = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ExperimentalFeaturesGroupViewImpl_enableAll);
+    ExperimentalFeaturesGroupViewImpl_HTMLAnchorElement_enableAll(instance, ExperimentalFeaturesGroupViewImpl_enableAll);
     o_u_e_c_e_g_ExperimentalFeaturesGroupViewImplTemplateResource templateForExperimentalFeaturesGroupViewImpl = GWT.create(o_u_e_c_e_g_ExperimentalFeaturesGroupViewImplTemplateResource.class);
     Element parentElementForTemplateOfExperimentalFeaturesGroupViewImpl = TemplateUtil.getRootTemplateParentElement(templateForExperimentalFeaturesGroupViewImpl.getContents().getText(), "org/uberfire/experimental/client/editor/group/ExperimentalFeaturesGroupViewImpl.html", "");
     TemplateUtil.translateTemplate("org/uberfire/experimental/client/editor/group/ExperimentalFeaturesGroupViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfExperimentalFeaturesGroupViewImpl));

@@ -16,13 +16,13 @@ public class Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPagePresenter__quals__j
   }
 
   public IncludedModelsPagePresenter createInstance(final ContextManager contextManager) {
+    final DMNCardsGridComponent _gridComponent_1 = (DMNCardsGridComponent) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_g_DMNCardsGridComponent__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelModal _modal_2 = (IncludedModelModal) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_m_IncludedModelModal__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (IncludedModelsPageView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageView__quals__j_e_i_Any_j_e_i_Default");
-    final DMNCardsGridComponent _gridComponent_1 = (DMNCardsGridComponent) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_g_DMNCardsGridComponent__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelsPagePresenter instance = new IncludedModelsPagePresenter(_view_0, _gridComponent_1, _modal_2);
+    registerDependentScopedReference(instance, _gridComponent_1);
     registerDependentScopedReference(instance, _modal_2);
     registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _gridComponent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

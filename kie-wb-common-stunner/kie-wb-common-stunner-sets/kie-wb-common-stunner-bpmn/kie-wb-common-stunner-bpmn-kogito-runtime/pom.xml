@@ -352,20 +352,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- UberFire Plugins Extension -->
-    <!-- Needed by uberfire-layout-api that is needed by kie-wb-common-dynamic-forms that is needed by stunner -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-runtime-plugins-api</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-layout-editor-backend</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <!-- UberFire Properties Editor -->
     <!-- Needed by uberfire-layout-client -->
     <dependency>
@@ -376,14 +362,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-properties-editor-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- UberFire JS exporter -->
-    <!-- Needed by uberfire-runtime-plugins-client -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-js</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -718,7 +696,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
@@ -742,8 +719,6 @@
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
 
             <!-- UF-ext -->
-            <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
@@ -799,7 +774,6 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-runtime-common</compileSourcesArtifact>
 
             <!-- Appformer -->
-            <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
 

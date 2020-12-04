@@ -16,11 +16,11 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DateTimeSelector__quals__
   }
 
   public DateTimeSelector createInstance(final ContextManager contextManager) {
-    final DateTimeValueConverter _converter_1 = (DateTimeValueConverter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DateTimeValueConverter__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DateTimeSelectorView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DateTimeSelectorView__quals__j_e_i_Any_j_e_i_Default");
+    final DateTimeValueConverter _converter_1 = (DateTimeValueConverter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DateTimeValueConverter__quals__j_e_i_Any_j_e_i_Default");
     final DateTimeSelector instance = new DateTimeSelector(_view_0, _converter_1);
-    registerDependentScopedReference(instance, _converter_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _converter_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

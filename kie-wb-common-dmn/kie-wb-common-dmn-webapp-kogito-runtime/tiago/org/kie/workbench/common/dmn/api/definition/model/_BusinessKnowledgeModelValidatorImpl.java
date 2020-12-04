@@ -30,6 +30,26 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
           org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel.class,
           javax.validation.groups.Default.class);
   
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl fontSet_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "fontSet",
+          org.kie.workbench.common.dmn.api.property.font.FontSet.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "id",
+          org.kie.workbench.common.dmn.api.property.dmn.Id.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl variable_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "variable",
+          org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary.class,
+          true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "description",
+          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl backgroundSet_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "backgroundSet",
@@ -45,36 +65,16 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
           "linksHolder",
           org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder.class,
           true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl description_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "description",
-          org.kie.workbench.common.dmn.api.property.dmn.Description.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "id",
-          org.kie.workbench.common.dmn.api.property.dmn.Id.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl variable_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "variable",
-          org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary.class,
-          true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl fontSet_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "fontSet",
-          org.kie.workbench.common.dmn.api.property.font.FontSet.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel.class)
           .setConstrained(false)
+          .put("fontSet", fontSet_pd)
+          .put("id", id_pd)
+          .put("variable", variable_pd)
+          .put("description", description_pd)
           .put("backgroundSet", backgroundSet_pd)
           .put("nameHolder", nameHolder_pd)
           .put("linksHolder", linksHolder_pd)
-          .put("description", description_pd)
-          .put("id", id_pd)
-          .put("variable", variable_pd)
-          .put("fontSet", fontSet_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -170,19 +170,19 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("backgroundSet")) {
-      validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), false, groups);
-      validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), false, groups);
-    } else if (propertyName.equals("nameHolder")) {
-    } else if (propertyName.equals("linksHolder")) {
-    } else if (propertyName.equals("description")) {
+    if (propertyName.equals("fontSet")) {
+      validateProperty_getfontSet(context, violations, object, object.getFontSet(), false, groups);
+      validateProperty_fontSet(context, violations, object, _fontSet(object), false, groups);
     } else if (propertyName.equals("id")) {
     } else if (propertyName.equals("variable")) {
       validateProperty_getvariable(context, violations, object, object.getVariable(), false, groups);
       validateProperty_variable(context, violations, object, _variable(object), false, groups);
-    } else if (propertyName.equals("fontSet")) {
-      validateProperty_getfontSet(context, violations, object, object.getFontSet(), false, groups);
-      validateProperty_fontSet(context, violations, object, _fontSet(object), false, groups);
+    } else if (propertyName.equals("description")) {
+    } else if (propertyName.equals("backgroundSet")) {
+      validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), false, groups);
+      validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), false, groups);
+    } else if (propertyName.equals("nameHolder")) {
+    } else if (propertyName.equals("linksHolder")) {
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel");
     }
@@ -195,7 +195,37 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("backgroundSet")) {
+    if (propertyName.equals("fontSet")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSet) {
+        valueTypeMatches = true;
+        validateProperty_getfontSet(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSet) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSet) {
+        valueTypeMatches = true;
+        validateProperty_fontSet(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSet) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
+    } else if (propertyName.equals("id")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("variable")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
+        valueTypeMatches = true;
+        validateProperty_getvariable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
+        valueTypeMatches = true;
+        validateProperty_variable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
+    } else if (propertyName.equals("description")) {
+      boolean valueTypeMatches = false;
+    } else if (propertyName.equals("backgroundSet")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.background.BackgroundSet) {
         valueTypeMatches = true;
@@ -212,36 +242,6 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
       boolean valueTypeMatches = false;
     } else if (propertyName.equals("linksHolder")) {
       boolean valueTypeMatches = false;
-    } else if (propertyName.equals("description")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("id")) {
-      boolean valueTypeMatches = false;
-    } else if (propertyName.equals("variable")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
-        valueTypeMatches = true;
-        validateProperty_getvariable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) {
-        valueTypeMatches = true;
-        validateProperty_variable(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
-    } else if (propertyName.equals("fontSet")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSet) {
-        valueTypeMatches = true;
-        validateProperty_getfontSet(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSet) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSet) {
-        valueTypeMatches = true;
-        validateProperty_fontSet(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSet) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel");
     }
@@ -256,14 +256,14 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
     return beanDescriptor;
   }
   
-  private final <T> void validateProperty_backgroundSet(
+  private final <T> void validateProperty_fontSet(
       final GwtValidationContext<T> context,
       final Set<ConstraintViolation<T>> violations,
       org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object,
-      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
+      final org.kie.workbench.common.dmn.api.property.font.FontSet value,
       boolean honorValid,
       Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("backgroundSet");
+    final GwtValidationContext<T> myContext = context.append("fontSet");
     Node leafNode = myContext.getPath().getLeafNode();
     PathImpl path = myContext.getPath().getPathWithoutLeafNode();
     boolean isReachable;
@@ -289,11 +289,11 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
     }
   }
   
-  private final <T> void validateProperty_getbackgroundSet(
+  private final <T> void validateProperty_getfontSet(
       final GwtValidationContext<T> context,
       final Set<ConstraintViolation<T>> violations,
       org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object,
-      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
+      final org.kie.workbench.common.dmn.api.property.font.FontSet value,
       boolean honorValid,
       Class<?>... groups) {
   }
@@ -340,14 +340,14 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
       Class<?>... groups) {
   }
   
-  private final <T> void validateProperty_fontSet(
+  private final <T> void validateProperty_backgroundSet(
       final GwtValidationContext<T> context,
       final Set<ConstraintViolation<T>> violations,
       org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object,
-      final org.kie.workbench.common.dmn.api.property.font.FontSet value,
+      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
       boolean honorValid,
       Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("fontSet");
+    final GwtValidationContext<T> myContext = context.append("backgroundSet");
     Node leafNode = myContext.getPath().getLeafNode();
     PathImpl path = myContext.getPath().getPathWithoutLeafNode();
     boolean isReachable;
@@ -373,11 +373,11 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
     }
   }
   
-  private final <T> void validateProperty_getfontSet(
+  private final <T> void validateProperty_getbackgroundSet(
       final GwtValidationContext<T> context,
       final Set<ConstraintViolation<T>> violations,
       org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object,
-      final org.kie.workbench.common.dmn.api.property.font.FontSet value,
+      final org.kie.workbench.common.dmn.api.property.background.BackgroundSet value,
       boolean honorValid,
       Class<?>... groups) {
   }
@@ -388,21 +388,21 @@ public class _BusinessKnowledgeModelValidatorImpl extends com.google.gwt.validat
       org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), true, groups);
-    validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), true, groups);
-    validateProperty_getvariable(context, violations, object, object.getVariable(), true, groups);
-    validateProperty_variable(context, violations, object, _variable(object), true, groups);
     validateProperty_getfontSet(context, violations, object, object.getFontSet(), true, groups);
     validateProperty_fontSet(context, violations, object, _fontSet(object), true, groups);
+    validateProperty_getvariable(context, violations, object, object.getVariable(), true, groups);
+    validateProperty_variable(context, violations, object, _variable(object), true, groups);
+    validateProperty_getbackgroundSet(context, violations, object, object.getBackgroundSet(), true, groups);
+    validateProperty_backgroundSet(context, violations, object, _backgroundSet(object), true, groups);
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary _variable(org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel::variable;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.property.background.BackgroundSet _backgroundSet(org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel::backgroundSet;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary _variable(org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel::variable;
   }-*/;
   
   private native org.kie.workbench.common.dmn.api.property.font.FontSet _fontSet(org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel object) /*-{

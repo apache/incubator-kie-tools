@@ -37,15 +37,15 @@ public class Type_factory__o_u_c_w_p_i_ImmutableWorkbenchPanelView__quals__j_e_i
   public ImmutableWorkbenchPanelView createInstance(final ContextManager contextManager) {
     final ImmutableWorkbenchPanelView instance = new ImmutableWorkbenchPanelView();
     setIncompleteInstance(instance);
+    final PanelManagerImpl AbstractWorkbenchPanelView_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    AbstractWorkbenchPanelView_PanelManager_panelManager(instance, AbstractWorkbenchPanelView_panelManager);
     final PlaceManagerImpl ImmutableWorkbenchPanelView_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     ImmutableWorkbenchPanelView_PlaceManager_placeManager(instance, ImmutableWorkbenchPanelView_placeManager);
-    final LayoutSelection AbstractWorkbenchPanelView_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
-    AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(instance, AbstractWorkbenchPanelView_layoutSelection);
     final StaticFocusedResizePanel ImmutableWorkbenchPanelView_panel = (StaticFocusedResizePanel) contextManager.getInstance("ExtensionProvided_factory__o_u_c_w_w_p_StaticFocusedResizePanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ImmutableWorkbenchPanelView_panel);
     ImmutableWorkbenchPanelView_StaticFocusedResizePanel_panel(instance, ImmutableWorkbenchPanelView_panel);
-    final PanelManagerImpl AbstractWorkbenchPanelView_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    AbstractWorkbenchPanelView_PanelManager_panelManager(instance, AbstractWorkbenchPanelView_panelManager);
+    final LayoutSelection AbstractWorkbenchPanelView_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
+    AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(instance, AbstractWorkbenchPanelView_layoutSelection);
     setIncompleteInstance(null);
     return instance;
   }
@@ -62,20 +62,20 @@ public class Type_factory__o_u_c_w_p_i_ImmutableWorkbenchPanelView__quals__j_e_i
     instance.@org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView::panelManager = value;
   }-*/;
 
-  native static LayoutSelection AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(AbstractWorkbenchPanelView instance) /*-{
-    return instance.@org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView::layoutSelection;
-  }-*/;
-
-  native static void AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(AbstractWorkbenchPanelView instance, LayoutSelection value) /*-{
-    instance.@org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView::layoutSelection = value;
-  }-*/;
-
   native static StaticFocusedResizePanel ImmutableWorkbenchPanelView_StaticFocusedResizePanel_panel(ImmutableWorkbenchPanelView instance) /*-{
     return instance.@org.uberfire.client.workbench.panels.impl.ImmutableWorkbenchPanelView::panel;
   }-*/;
 
   native static void ImmutableWorkbenchPanelView_StaticFocusedResizePanel_panel(ImmutableWorkbenchPanelView instance, StaticFocusedResizePanel value) /*-{
     instance.@org.uberfire.client.workbench.panels.impl.ImmutableWorkbenchPanelView::panel = value;
+  }-*/;
+
+  native static LayoutSelection AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(AbstractWorkbenchPanelView instance) /*-{
+    return instance.@org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView::layoutSelection;
+  }-*/;
+
+  native static void AbstractWorkbenchPanelView_LayoutSelection_layoutSelection(AbstractWorkbenchPanelView instance, LayoutSelection value) /*-{
+    instance.@org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView::layoutSelection = value;
   }-*/;
 
   native static PlaceManager ImmutableWorkbenchPanelView_PlaceManager_placeManager(ImmutableWorkbenchPanelView instance) /*-{

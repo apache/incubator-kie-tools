@@ -23,17 +23,17 @@ public class Type_factory__o_k_w_c_d_c_d_n_f_DecisionNavigatorNestedItemFactory_
   }
 
   public DecisionNavigatorNestedItemFactory createInstance(final ContextManager contextManager) {
-    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasSelectionEvent> _canvasSelectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
-    final BoxedExpressionHelper _helper_5 = (BoxedExpressionHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_BoxedExpressionHelper__quals__j_e_i_Any_j_e_i_Default");
-    final DMNGraphUtils _dmnGraphUtils_2 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final Supplier<ExpressionEditorDefinitions> _expressionEditorDefinitionsSupplier_3 = (ExpressionEditorDefinitionsProducer) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_ExpressionEditorDefinitionsProducer__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final DMNGraphUtils _dmnGraphUtils_2 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final Event<EditExpressionEvent> _editExpressionEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { EditExpressionEvent.class }, new Annotation[] { });
+    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final BoxedExpressionHelper _helper_5 = (BoxedExpressionHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_BoxedExpressionHelper__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasSelectionEvent> _canvasSelectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
     final DecisionNavigatorNestedItemFactory instance = new DecisionNavigatorNestedItemFactory(_sessionManager_0, _editExpressionEvent_1, _dmnGraphUtils_2, _expressionEditorDefinitionsSupplier_3, _canvasSelectionEvent_4, _helper_5);
-    registerDependentScopedReference(instance, _canvasSelectionEvent_4);
-    registerDependentScopedReference(instance, _helper_5);
     registerDependentScopedReference(instance, _dmnGraphUtils_2);
     registerDependentScopedReference(instance, _editExpressionEvent_1);
+    registerDependentScopedReference(instance, _helper_5);
+    registerDependentScopedReference(instance, _canvasSelectionEvent_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

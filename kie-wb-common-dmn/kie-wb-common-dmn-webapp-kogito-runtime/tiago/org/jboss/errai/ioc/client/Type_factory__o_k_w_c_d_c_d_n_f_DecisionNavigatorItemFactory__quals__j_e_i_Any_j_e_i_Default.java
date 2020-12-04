@@ -17,8 +17,8 @@ public class Type_factory__o_k_w_c_d_c_d_n_f_DecisionNavigatorItemFactory__quals
   }
 
   public DecisionNavigatorItemFactory createInstance(final ContextManager contextManager) {
-    final DMNDiagramsSession _dmnDiagramsSession_2 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final DecisionNavigatorBaseItemFactory _baseItemFactory_0 = (DecisionNavigatorBaseItemFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_f_DecisionNavigatorBaseItemFactory__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramsSession _dmnDiagramsSession_2 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final Event<DMNDiagramSelected> _selectedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DMNDiagramSelected.class }, new Annotation[] { });
     final DecisionNavigatorItemFactory instance = new DecisionNavigatorItemFactory(_baseItemFactory_0, _selectedEvent_1, _dmnDiagramsSession_2);
     registerDependentScopedReference(instance, _baseItemFactory_0);

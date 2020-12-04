@@ -17,11 +17,11 @@ public class Type_factory__o_k_w_c_w_c_p_a_AboutPopup__quals__j_e_i_Any_j_e_i_De
   }
 
   public AboutPopup createInstance(final ContextManager contextManager) {
-    final View _view_0 = (AboutPopupView) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_a_AboutPopupView__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<AboutPopupConfig> _aboutPopupConfigs_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AboutPopupConfig.class }, new Annotation[] { });
+    final View _view_0 = (AboutPopupView) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_a_AboutPopupView__quals__j_e_i_Any_j_e_i_Default");
     final AboutPopup instance = new AboutPopup(_view_0, _aboutPopupConfigs_1);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _aboutPopupConfigs_1);
+    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

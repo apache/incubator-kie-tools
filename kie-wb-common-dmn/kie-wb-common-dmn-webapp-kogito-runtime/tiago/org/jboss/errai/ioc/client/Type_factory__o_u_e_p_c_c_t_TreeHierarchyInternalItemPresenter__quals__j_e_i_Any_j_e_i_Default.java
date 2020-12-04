@@ -24,15 +24,15 @@ public class Type_factory__o_u_e_p_c_c_t_TreeHierarchyInternalItemPresenter__qua
   }
 
   public TreeHierarchyInternalItemPresenter createInstance(final ContextManager contextManager) {
-    final View _view_0 = (TreeHierarchyInternalItemView) contextManager.getInstance("Type_factory__o_u_e_p_c_c_t_TreeHierarchyInternalItemView__quals__j_e_i_Any_j_e_i_Default");
-    final Event<HierarchyItemSelectedEvent> _hierarchyItemSelectedEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { HierarchyItemSelectedEvent.class }, new Annotation[] { });
     final ManagedInstance<TreeHierarchyLeafItemPresenter> _treeHierarchyLeafItemPresenterProvider_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeHierarchyLeafItemPresenter.class }, new Annotation[] { });
+    final View _view_0 = (TreeHierarchyInternalItemView) contextManager.getInstance("Type_factory__o_u_e_p_c_c_t_TreeHierarchyInternalItemView__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<TreeHierarchyInternalItemPresenter> _treeHierarchyInternalItemPresenterProvider_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeHierarchyInternalItemPresenter.class }, new Annotation[] { });
+    final Event<HierarchyItemSelectedEvent> _hierarchyItemSelectedEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { HierarchyItemSelectedEvent.class }, new Annotation[] { });
     final TreeHierarchyInternalItemPresenter instance = new TreeHierarchyInternalItemPresenter(_view_0, _treeHierarchyInternalItemPresenterProvider_1, _treeHierarchyLeafItemPresenterProvider_2, _hierarchyItemSelectedEvent_3);
-    registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _hierarchyItemSelectedEvent_3);
     registerDependentScopedReference(instance, _treeHierarchyLeafItemPresenterProvider_2);
+    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _treeHierarchyInternalItemPresenterProvider_1);
+    registerDependentScopedReference(instance, _hierarchyItemSelectedEvent_3);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "hierarchyItemSelectedEventSubscription", CDI.subscribeLocal("org.uberfire.ext.preferences.client.event.HierarchyItemSelectedEvent", new AbstractCDIEventCallback<HierarchyItemSelectedEvent>() {
       public void fireEvent(final HierarchyItemSelectedEvent event) {

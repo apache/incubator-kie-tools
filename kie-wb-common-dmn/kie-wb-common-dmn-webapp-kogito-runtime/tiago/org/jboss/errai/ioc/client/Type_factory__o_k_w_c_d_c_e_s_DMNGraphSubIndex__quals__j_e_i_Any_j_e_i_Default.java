@@ -94,17 +94,17 @@ public class Type_factory__o_k_w_c_d_c_e_s_DMNGraphSubIndex__quals__j_e_i_Any_j_
   }
 
   public DMNGraphSubIndex createInstance(final ContextManager contextManager) {
-    final Event<CanvasFocusedShapeEvent> _canvasFocusedSelectionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasFocusedShapeEvent.class }, new Annotation[] { });
-    final DMNGraphUtils _graphUtils_0 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasSelectionEvent> _canvasSelectionEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
-    final Event<CanvasClearSelectionEvent> _canvasClearSelectionEventEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
     final Event<DomainObjectSelectionEvent> _domainObjectSelectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DomainObjectSelectionEvent.class }, new Annotation[] { });
+    final Event<CanvasFocusedShapeEvent> _canvasFocusedSelectionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasFocusedShapeEvent.class }, new Annotation[] { });
+    final Event<CanvasClearSelectionEvent> _canvasClearSelectionEventEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
+    final Event<CanvasSelectionEvent> _canvasSelectionEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
+    final DMNGraphUtils _graphUtils_0 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final DMNGraphSubIndex instance = new DMNGraphSubIndex(_graphUtils_0, _canvasSelectionEvent_1, _canvasFocusedSelectionEvent_2, _canvasClearSelectionEventEvent_3, _domainObjectSelectionEvent_4);
-    registerDependentScopedReference(instance, _canvasFocusedSelectionEvent_2);
-    registerDependentScopedReference(instance, _graphUtils_0);
-    registerDependentScopedReference(instance, _canvasSelectionEvent_1);
-    registerDependentScopedReference(instance, _canvasClearSelectionEventEvent_3);
     registerDependentScopedReference(instance, _domainObjectSelectionEvent_4);
+    registerDependentScopedReference(instance, _canvasFocusedSelectionEvent_2);
+    registerDependentScopedReference(instance, _canvasClearSelectionEventEvent_3);
+    registerDependentScopedReference(instance, _canvasSelectionEvent_1);
+    registerDependentScopedReference(instance, _graphUtils_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

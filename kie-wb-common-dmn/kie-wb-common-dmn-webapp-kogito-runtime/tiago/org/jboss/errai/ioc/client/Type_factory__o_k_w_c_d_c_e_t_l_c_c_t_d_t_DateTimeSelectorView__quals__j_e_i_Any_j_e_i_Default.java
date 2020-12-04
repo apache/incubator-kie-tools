@@ -42,15 +42,15 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DateTimeSelectorView__qua
   }
 
   public DateTimeSelectorView createInstance(final ContextManager contextManager) {
-    final DateSelector _dateSelector_2 = (DateSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateSelector__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLDivElement _timeSelectorContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _dateSelectorContainer_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _timeSelectorContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final DateSelector _dateSelector_2 = (DateSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateSelector__quals__j_e_i_Any_j_e_i_Default");
     final TimeSelector _timeSelector_3 = (TimeSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_TimeSelector__quals__j_e_i_Any_j_e_i_Default");
     final ConstraintPlaceholderHelper _placeholderHelper_4 = (ConstraintPlaceholderHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_c_ConstraintPlaceholderHelper__quals__j_e_i_Any_j_e_i_Default");
     final DateTimeSelectorView instance = new DateTimeSelectorView(_dateSelectorContainer_0, _timeSelectorContainer_1, _dateSelector_2, _timeSelector_3, _placeholderHelper_4);
-    registerDependentScopedReference(instance, _dateSelector_2);
-    registerDependentScopedReference(instance, _timeSelectorContainer_1);
     registerDependentScopedReference(instance, _dateSelectorContainer_0);
+    registerDependentScopedReference(instance, _timeSelectorContainer_1);
+    registerDependentScopedReference(instance, _dateSelector_2);
     registerDependentScopedReference(instance, _timeSelector_3);
     registerDependentScopedReference(instance, _placeholderHelper_4);
     setIncompleteInstance(instance);

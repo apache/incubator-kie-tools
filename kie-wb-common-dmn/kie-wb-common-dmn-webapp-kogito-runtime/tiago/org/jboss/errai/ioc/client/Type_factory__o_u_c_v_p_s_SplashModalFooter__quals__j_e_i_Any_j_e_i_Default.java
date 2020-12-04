@@ -42,12 +42,12 @@ public class Type_factory__o_u_c_v_p_s_SplashModalFooter__quals__j_e_i_Any_j_e_i
   public SplashModalFooter createInstance(final ContextManager contextManager) {
     final SplashModalFooter instance = new SplashModalFooter();
     setIncompleteInstance(instance);
-    final Button SplashModalFooter_closeButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, SplashModalFooter_closeButton);
-    SplashModalFooter_Button_closeButton(instance, SplashModalFooter_closeButton);
     final CheckBox SplashModalFooter_show = (CheckBox) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_CheckBox__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, SplashModalFooter_show);
     SplashModalFooter_CheckBox_show(instance, SplashModalFooter_show);
+    final Button SplashModalFooter_closeButton = (Button) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_Button__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, SplashModalFooter_closeButton);
+    SplashModalFooter_Button_closeButton(instance, SplashModalFooter_closeButton);
     o_u_c_v_p_s_SplashModalFooterTemplateResource templateForSplashModalFooter = GWT.create(o_u_c_v_p_s_SplashModalFooterTemplateResource.class);
     Element parentElementForTemplateOfSplashModalFooter = TemplateUtil.getRootTemplateParentElement(templateForSplashModalFooter.getContents().getText(), "org/uberfire/client/views/pfly/splash/SplashModalFooter.html", "");
     TemplateUtil.translateTemplate("org/uberfire/client/views/pfly/splash/SplashModalFooter.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfSplashModalFooter));

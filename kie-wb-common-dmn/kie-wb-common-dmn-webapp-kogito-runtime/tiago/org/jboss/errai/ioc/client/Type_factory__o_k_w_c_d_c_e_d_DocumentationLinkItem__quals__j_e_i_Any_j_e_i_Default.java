@@ -42,12 +42,12 @@ public class Type_factory__o_k_w_c_d_c_e_d_DocumentationLinkItem__quals__j_e_i_A
 
   public DocumentationLinkItem createInstance(final ContextManager contextManager) {
     final HTMLDivElement _item_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLAnchorElement _link_1 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLAnchorElement _deleteLink_2 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _link_1 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DocumentationLinkItem instance = new DocumentationLinkItem(_item_0, _link_1, _deleteLink_2);
     registerDependentScopedReference(instance, _item_0);
-    registerDependentScopedReference(instance, _link_1);
     registerDependentScopedReference(instance, _deleteLink_2);
+    registerDependentScopedReference(instance, _link_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_d_DocumentationLinkItemTemplateResource templateForDocumentationLinkItem = GWT.create(o_k_w_c_d_c_e_d_DocumentationLinkItemTemplateResource.class);
     Element parentElementForTemplateOfDocumentationLinkItem = TemplateUtil.getRootTemplateParentElement(templateForDocumentationLinkItem.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/documentation/DocumentationLinkItem.html", "");

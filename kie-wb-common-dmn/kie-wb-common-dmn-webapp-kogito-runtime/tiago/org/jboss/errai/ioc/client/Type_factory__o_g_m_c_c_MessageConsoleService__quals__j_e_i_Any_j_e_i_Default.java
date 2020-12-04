@@ -161,14 +161,14 @@ public class Type_factory__o_g_m_c_c_MessageConsoleService__quals__j_e_i_Any_j_e
 
   public MessageConsoleService createInstance(final ContextManager contextManager) {
     final User _identity_3 = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
-    final Event<FilteredMessagesEvent> _filteredMessagesEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { FilteredMessagesEvent.class }, new Annotation[] { });
     final SessionInfo _sessionInfo_2 = (SessionInfo) contextManager.getInstance("Producer_factory__o_u_r_SessionInfo__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<FilteredMessagesEvent> _filteredMessagesEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { FilteredMessagesEvent.class }, new Annotation[] { });
     final PlaceManager _placeManager_1 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final MessageConsoleService instance = new MessageConsoleService(_iocManager_0, _placeManager_1, _sessionInfo_2, _identity_3, _filteredMessagesEvent_4);
     registerDependentScopedReference(instance, _identity_3);
-    registerDependentScopedReference(instance, _filteredMessagesEvent_4);
     registerDependentScopedReference(instance, _iocManager_0);
+    registerDependentScopedReference(instance, _filteredMessagesEvent_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

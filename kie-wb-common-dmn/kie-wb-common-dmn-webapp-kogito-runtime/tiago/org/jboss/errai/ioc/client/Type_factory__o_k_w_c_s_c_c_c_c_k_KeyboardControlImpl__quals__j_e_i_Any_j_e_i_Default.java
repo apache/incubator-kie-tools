@@ -20,8 +20,8 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_k_KeyboardControlImpl__quals__j_e_i
   }
 
   public KeyboardControlImpl createInstance(final ContextManager contextManager) {
-    final SessionManager _clientSessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final KeyEventHandler _keyEventHandler_1 = (KogitoKeyEventHandlerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_k_r_c_s_c_i_KogitoKeyEventHandlerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _clientSessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final KeyboardControlImpl instance = new KeyboardControlImpl(_clientSessionManager_0, _keyEventHandler_1);
     registerDependentScopedReference(instance, _keyEventHandler_1);
     setIncompleteInstance(instance);

@@ -107,9 +107,9 @@ public class Type_factory__o_k_w_c_d_c_e_i_i_IncludedModelsPageStateProviderImpl
   }
 
   public IncludedModelsPageStateProviderImpl createInstance(final ContextManager contextManager) {
-    final IncludedModelsFactory _factory_1 = (IncludedModelsFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_i_IncludedModelsFactory__quals__j_e_i_Any_j_e_i_Default");
     final DMNGraphUtils _dmnGraphUtils_0 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession _dmnDiagramsSession_2 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
+    final IncludedModelsFactory _factory_1 = (IncludedModelsFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_i_IncludedModelsFactory__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelsPageStateProviderImpl instance = new IncludedModelsPageStateProviderImpl(_dmnGraphUtils_0, _factory_1, _dmnDiagramsSession_2);
     registerDependentScopedReference(instance, _dmnGraphUtils_0);
     setIncompleteInstance(instance);

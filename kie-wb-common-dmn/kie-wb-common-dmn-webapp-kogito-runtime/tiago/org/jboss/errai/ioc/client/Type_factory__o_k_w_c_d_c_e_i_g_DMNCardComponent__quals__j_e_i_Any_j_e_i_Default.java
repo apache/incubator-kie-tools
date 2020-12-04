@@ -19,11 +19,11 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_DMNCardComponent__quals__j_e_i_Any_
   }
 
   public DMNCardComponent createInstance(final ContextManager contextManager) {
-    final ContentView _contentView_0 = (DMNCardComponentContentView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_g_DMNCardComponentContentView__quals__j_e_i_Any_o_k_w_c_d_c_e_i_g_DMNCard");
     final Event<RefreshDecisionComponents> _refreshDecisionComponentsEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshDecisionComponents.class }, new Annotation[] { });
+    final ContentView _contentView_0 = (DMNCardComponentContentView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_g_DMNCardComponentContentView__quals__j_e_i_Any_o_k_w_c_d_c_e_i_g_DMNCard");
     final DMNCardComponent instance = new DMNCardComponent(_contentView_0, _refreshDecisionComponentsEvent_1);
-    registerDependentScopedReference(instance, _contentView_0);
     registerDependentScopedReference(instance, _refreshDecisionComponentsEvent_1);
+    registerDependentScopedReference(instance, _contentView_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

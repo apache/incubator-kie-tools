@@ -79,13 +79,13 @@ public class Type_factory__o_k_w_c_d_c_d_n_c_CanvasFocusUtils__quals__j_e_i_Any_
   }
 
   public CanvasFocusUtils createInstance(final ContextManager contextManager) {
-    final DMNGraphUtils _dmnGraphUtils_0 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final Event<CanvasFocusedShapeEvent> _canvasFocusedSelectionEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasFocusedShapeEvent.class }, new Annotation[] { });
     final Event<CanvasSelectionEvent> _canvasSelectionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
+    final DMNGraphUtils _dmnGraphUtils_0 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final CanvasFocusUtils instance = new CanvasFocusUtils(_dmnGraphUtils_0, _canvasFocusedSelectionEvent_1, _canvasSelectionEvent_2);
-    registerDependentScopedReference(instance, _dmnGraphUtils_0);
     registerDependentScopedReference(instance, _canvasFocusedSelectionEvent_1);
     registerDependentScopedReference(instance, _canvasSelectionEvent_2);
+    registerDependentScopedReference(instance, _dmnGraphUtils_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

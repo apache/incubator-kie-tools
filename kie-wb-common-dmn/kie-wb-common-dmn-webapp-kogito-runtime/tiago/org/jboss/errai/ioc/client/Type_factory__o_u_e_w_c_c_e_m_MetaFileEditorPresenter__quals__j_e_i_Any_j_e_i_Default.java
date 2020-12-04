@@ -18,12 +18,12 @@ public class Type_factory__o_u_e_w_c_c_e_m_MetaFileEditorPresenter__quals__j_e_i
   public MetaFileEditorPresenter createInstance(final ContextManager contextManager) {
     final MetaFileEditorPresenter instance = new MetaFileEditorPresenter();
     setIncompleteInstance(instance);
-    final Caller MetaFileEditorPresenter_vfsServices = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { VFSService.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, MetaFileEditorPresenter_vfsServices);
-    MetaFileEditorPresenter_Caller_vfsServices(instance, MetaFileEditorPresenter_vfsServices);
     final TextEditorView MetaFileEditorPresenter_view = (TextEditorView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_e_t_TextEditorView__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, MetaFileEditorPresenter_view);
     instance.view = MetaFileEditorPresenter_view;
+    final Caller MetaFileEditorPresenter_vfsServices = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { VFSService.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, MetaFileEditorPresenter_vfsServices);
+    MetaFileEditorPresenter_Caller_vfsServices(instance, MetaFileEditorPresenter_vfsServices);
     setIncompleteInstance(null);
     return instance;
   }

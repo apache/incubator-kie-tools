@@ -21,13 +21,13 @@ public class Type_factory__o_k_w_c_s_c_w_p_c_DefinitionPaletteCategoryWidget__qu
   }
 
   public DefinitionPaletteCategoryWidget createInstance(final ContextManager contextManager) {
+    final ManagedInstance<DefinitionPaletteItemWidget> _definitionPaletteItemWidgetInstance_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefinitionPaletteItemWidget.class }, new Annotation[] { });
     final ManagedInstance<DefinitionPaletteGroupWidget> _definitionPaletteGroupWidgetInstance_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefinitionPaletteGroupWidget.class }, new Annotation[] { });
     final DefinitionPaletteCategoryWidgetView _view_0 = (DefinitionPaletteCategoryWidgetViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_p_c_DefinitionPaletteCategoryWidgetViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<DefinitionPaletteItemWidget> _definitionPaletteItemWidgetInstance_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefinitionPaletteItemWidget.class }, new Annotation[] { });
     final DefinitionPaletteCategoryWidget instance = new DefinitionPaletteCategoryWidget(_view_0, _definitionPaletteItemWidgetInstance_1, _definitionPaletteGroupWidgetInstance_2);
+    registerDependentScopedReference(instance, _definitionPaletteItemWidgetInstance_1);
     registerDependentScopedReference(instance, _definitionPaletteGroupWidgetInstance_2);
     registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _definitionPaletteItemWidgetInstance_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -77,10 +77,10 @@ public class Type_factory__o_k_w_c_k_w_b_c_p_AuthoringPerspective__quals__j_e_i_
   public AuthoringPerspective createInstance(final ContextManager contextManager) {
     final AuthoringPerspective instance = new AuthoringPerspective();
     setIncompleteInstance(instance);
-    final PerspectiveConfiguration AuthoringPerspective_perspectiveConfiguration = (PerspectiveConfiguration) contextManager.getInstance("Type_factory__o_k_w_c_k_w_b_c_p_PerspectiveConfiguration__quals__j_e_i_Any_j_e_i_Default");
-    AuthoringPerspective_PerspectiveConfiguration_perspectiveConfiguration(instance, AuthoringPerspective_perspectiveConfiguration);
     final DMNDiagramEditor AuthoringPerspective_kogitoScreen = (DMNDiagramEditor) contextManager.getInstance("Type_factory__o_k_w_c_d_s_c_e_DMNDiagramEditor__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_s_c_c_a_DiagramEditor");
     AuthoringPerspective_KogitoScreen_kogitoScreen(instance, AuthoringPerspective_kogitoScreen);
+    final PerspectiveConfiguration AuthoringPerspective_perspectiveConfiguration = (PerspectiveConfiguration) contextManager.getInstance("Type_factory__o_k_w_c_k_w_b_c_p_PerspectiveConfiguration__quals__j_e_i_Any_j_e_i_Default");
+    AuthoringPerspective_PerspectiveConfiguration_perspectiveConfiguration(instance, AuthoringPerspective_perspectiveConfiguration);
     setIncompleteInstance(null);
     return instance;
   }

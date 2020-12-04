@@ -20,7 +20,6 @@
 <module>
 
   <!-- Uberfire dependencies -->
-  <inherits name="org.uberfire.UberfireJS" />"
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>

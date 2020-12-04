@@ -90,8 +90,8 @@ public class Type_factory__o_k_w_c_s_c_v_i_GraphValidatorImpl__quals__j_e_i_Any_
   }
 
   public GraphValidatorImpl createInstance(final ContextManager contextManager) {
-    final RuleManager _ruleManager_1 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
     final TreeWalkTraverseProcessor _treeWalkTraverseProcessor_2 = (TreeWalkTraverseProcessorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_t_t_TreeWalkTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default");
+    final RuleManager _ruleManager_1 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final GraphValidatorImpl instance = new GraphValidatorImpl(_definitionManager_0, _ruleManager_1, _treeWalkTraverseProcessor_2);
     registerDependentScopedReference(instance, _treeWalkTraverseProcessor_2);

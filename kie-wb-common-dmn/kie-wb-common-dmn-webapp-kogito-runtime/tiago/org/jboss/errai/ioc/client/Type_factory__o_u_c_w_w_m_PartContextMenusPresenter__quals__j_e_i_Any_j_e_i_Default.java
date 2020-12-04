@@ -92,11 +92,11 @@ public class Type_factory__o_u_c_w_w_m_PartContextMenusPresenter__quals__j_e_i_A
   public PartContextMenusPresenter createInstance(final ContextManager contextManager) {
     final PartContextMenusPresenter instance = new PartContextMenusPresenter();
     setIncompleteInstance(instance);
-    final PlaceManagerImpl PartContextMenusPresenter_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    PartContextMenusPresenter_PlaceManager_placeManager(instance, PartContextMenusPresenter_placeManager);
     final PartContextMenusView PartContextMenusPresenter_view = (PartContextMenusView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_PartContextMenusView__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, PartContextMenusPresenter_view);
     PartContextMenusPresenter_View_view(instance, PartContextMenusPresenter_view);
+    final PlaceManagerImpl PartContextMenusPresenter_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    PartContextMenusPresenter_PlaceManager_placeManager(instance, PartContextMenusPresenter_placeManager);
     setIncompleteInstance(null);
     return instance;
   }

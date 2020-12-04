@@ -118,8 +118,8 @@ public class Type_factory__o_k_w_c_k_w_b_c_w_KogitoResourceContentService__quals
   }
 
   public KogitoResourceContentService createInstance(final ContextManager contextManager) {
-    final Promises _promises_1 = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
     final ResourceContentService _resourceContentService_0 = (ResourceContentService) contextManager.getInstance("Producer_factory__o_a_k_b_c_r_ResourceContentService__quals__j_e_i_Any_j_e_i_Default");
+    final Promises _promises_1 = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
     final KogitoResourceContentService instance = new KogitoResourceContentService(_resourceContentService_0, _promises_1);
     registerDependentScopedReference(instance, _promises_1);
     setIncompleteInstance(instance);

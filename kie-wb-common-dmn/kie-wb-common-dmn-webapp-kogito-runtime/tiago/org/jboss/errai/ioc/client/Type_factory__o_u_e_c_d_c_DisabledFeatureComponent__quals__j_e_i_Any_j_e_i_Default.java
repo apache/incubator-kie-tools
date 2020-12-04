@@ -18,12 +18,12 @@ public class Type_factory__o_u_e_c_d_c_DisabledFeatureComponent__quals__j_e_i_An
   }
 
   public DisabledFeatureComponent createInstance(final ContextManager contextManager) {
-    final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final ExperimentalFeatureDefRegistry _defRegistry_1 = (CDIClientFeatureDefRegistry) contextManager.getInstance("Type_factory__o_u_e_c_s_i_CDIClientFeatureDefRegistry__quals__j_e_i_Any_j_e_i_Default");
     final DisabledFeatureComponentView _view_0 = (DisabledFeatureComponentViewImpl) contextManager.getInstance("Type_factory__o_u_e_c_d_c_DisabledFeatureComponentViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final ExperimentalFeatureDefRegistry _defRegistry_1 = (CDIClientFeatureDefRegistry) contextManager.getInstance("Type_factory__o_u_e_c_s_i_CDIClientFeatureDefRegistry__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DisabledFeatureComponent instance = new DisabledFeatureComponent(_view_0, _defRegistry_1, _translationService_2);
-    registerDependentScopedReference(instance, _translationService_2);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _translationService_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

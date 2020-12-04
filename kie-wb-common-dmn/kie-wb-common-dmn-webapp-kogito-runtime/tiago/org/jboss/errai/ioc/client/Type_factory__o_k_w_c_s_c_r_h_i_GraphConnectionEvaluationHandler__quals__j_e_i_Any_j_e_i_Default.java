@@ -108,8 +108,8 @@ public class Type_factory__o_k_w_c_s_c_r_h_i_GraphConnectionEvaluationHandler__q
   }
 
   public GraphConnectionEvaluationHandler createInstance(final ContextManager contextManager) {
-    final ConnectionEvaluationHandler _connectionEvaluationHandler_1 = (ConnectionEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_ConnectionEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ConnectionEvaluationHandler _connectionEvaluationHandler_1 = (ConnectionEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_ConnectionEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final GraphConnectionEvaluationHandler instance = new GraphConnectionEvaluationHandler(_definitionManager_0, _connectionEvaluationHandler_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

@@ -16,9 +16,9 @@ public class Type_factory__o_k_w_c_s_c_l_d_CommonDomainLookups__quals__j_e_i_Any
   }
 
   public CommonDomainLookups createInstance(final ContextManager contextManager) {
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionsCacheRegistry _definitionsRegistry_1 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
     final RuleManager _ruleManager_2 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final CommonDomainLookups instance = new CommonDomainLookups(_definitionUtils_0, _definitionsRegistry_1, _ruleManager_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

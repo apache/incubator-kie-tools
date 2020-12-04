@@ -34,7 +34,10 @@ public class Type_factory__o_k_w_c_s_k_c_s_DiagramEditorExplorerScreen__quals__j
   }
 
   public DiagramEditorExplorerScreen createInstance(final ContextManager contextManager) {
-    final Event<ScreenPreMaximizedStateEvent> _screenStateEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ScreenPreMaximizedStateEvent.class }, new Annotation[] { });
+    final SessionManager _clientSessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_5 = (DiagramEditorExplorerScreenView) contextManager.getInstance("Type_factory__o_k_w_c_s_k_c_s_DiagramEditorExplorerScreenView__quals__j_e_i_Any_j_e_i_Default");
+    final ErrorPopupPresenter _errorPopupPresenter_4 = (ErrorPopupPresenter) contextManager.getInstance("Type_factory__o_u_c_w_w_c_ErrorPopupPresenter__quals__j_e_i_Any_j_e_i_Default");
+    final Event<ChangeTitleWidgetEvent> _changeTitleNotificationEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
     final ManagedInstance<TreeExplorer> _treeExplorers_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeExplorer.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -58,16 +61,13 @@ public class Type_factory__o_k_w_c_s_k_c_s_DiagramEditorExplorerScreen__quals__j
           return "@javax.enterprise.inject.Default()";
         }
     } });
-    final SessionManager _clientSessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
-    final View _view_5 = (DiagramEditorExplorerScreenView) contextManager.getInstance("Type_factory__o_k_w_c_s_k_c_s_DiagramEditorExplorerScreenView__quals__j_e_i_Any_j_e_i_Default");
-    final ErrorPopupPresenter _errorPopupPresenter_4 = (ErrorPopupPresenter) contextManager.getInstance("Type_factory__o_u_c_w_w_c_ErrorPopupPresenter__quals__j_e_i_Any_j_e_i_Default");
-    final Event<ChangeTitleWidgetEvent> _changeTitleNotificationEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
+    final Event<ScreenPreMaximizedStateEvent> _screenStateEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ScreenPreMaximizedStateEvent.class }, new Annotation[] { });
     final DiagramEditorExplorerScreen instance = new DiagramEditorExplorerScreen(_clientSessionManager_0, _treeExplorers_1, _changeTitleNotificationEvent_2, _sessionPreviews_3, _errorPopupPresenter_4, _view_5, _screenStateEvent_6);
-    registerDependentScopedReference(instance, _screenStateEvent_6);
-    registerDependentScopedReference(instance, _treeExplorers_1);
-    registerDependentScopedReference(instance, _sessionPreviews_3);
     registerDependentScopedReference(instance, _view_5);
     registerDependentScopedReference(instance, _changeTitleNotificationEvent_2);
+    registerDependentScopedReference(instance, _treeExplorers_1);
+    registerDependentScopedReference(instance, _sessionPreviews_3);
+    registerDependentScopedReference(instance, _screenStateEvent_6);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onCanvasSessionOpenedSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent", new AbstractCDIEventCallback<SessionOpenedEvent>() {
       public void fireEvent(final SessionOpenedEvent event) {

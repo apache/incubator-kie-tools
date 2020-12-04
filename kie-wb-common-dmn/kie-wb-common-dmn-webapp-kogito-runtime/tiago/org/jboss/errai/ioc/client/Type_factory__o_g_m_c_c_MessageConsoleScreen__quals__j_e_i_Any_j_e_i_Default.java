@@ -172,14 +172,14 @@ public class Type_factory__o_g_m_c_c_MessageConsoleScreen__quals__j_e_i_Any_j_e_
   }
 
   public MessageConsoleScreen createInstance(final ContextManager contextManager) {
-    final Caller<BuildService> _buildService_0 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { BuildService.class }, new Annotation[] { });
-    final Event<NotificationEvent> _workbenchNotification_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     final Event<PublishBatchMessagesEvent> _publishBatchMessagesEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PublishBatchMessagesEvent.class }, new Annotation[] { });
+    final Caller<BuildService> _buildService_0 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { BuildService.class }, new Annotation[] { });
     final MessageConsoleViewImpl _view_2 = (MessageConsoleViewImpl) contextManager.getInstance("Type_factory__o_g_m_c_c_MessageConsoleViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final Event<NotificationEvent> _workbenchNotification_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     final MessageConsoleScreen instance = new MessageConsoleScreen(_buildService_0, _publishBatchMessagesEvent_1, _view_2, _workbenchNotification_3);
+    registerDependentScopedReference(instance, _publishBatchMessagesEvent_1);
     registerDependentScopedReference(instance, _buildService_0);
     registerDependentScopedReference(instance, _workbenchNotification_3);
-    registerDependentScopedReference(instance, _publishBatchMessagesEvent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

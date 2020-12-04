@@ -49,15 +49,15 @@ public class Type_factory__o_u_e_c_e_g_f_ExperimentalFeatureEditorViewImpl__qual
   public ExperimentalFeatureEditorViewImpl createInstance(final ContextManager contextManager) {
     final ExperimentalFeatureEditorViewImpl instance = new ExperimentalFeatureEditorViewImpl();
     setIncompleteInstance(instance);
+    final HTMLLabelElement ExperimentalFeatureEditorViewImpl_name = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ExperimentalFeatureEditorViewImpl_name);
+    ExperimentalFeatureEditorViewImpl_HTMLLabelElement_name(instance, ExperimentalFeatureEditorViewImpl_name);
     final HTMLLabelElement ExperimentalFeatureEditorViewImpl_description = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ExperimentalFeatureEditorViewImpl_description);
     ExperimentalFeatureEditorViewImpl_HTMLLabelElement_description(instance, ExperimentalFeatureEditorViewImpl_description);
     final ToggleSwitch ExperimentalFeatureEditorViewImpl_enabled = (ToggleSwitch) contextManager.getInstance("ExtensionProvided_factory__o_g_e_t_c_u_ToggleSwitch__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ExperimentalFeatureEditorViewImpl_enabled);
     ExperimentalFeatureEditorViewImpl_ToggleSwitch_enabled(instance, ExperimentalFeatureEditorViewImpl_enabled);
-    final HTMLLabelElement ExperimentalFeatureEditorViewImpl_name = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ExperimentalFeatureEditorViewImpl_name);
-    ExperimentalFeatureEditorViewImpl_HTMLLabelElement_name(instance, ExperimentalFeatureEditorViewImpl_name);
     o_u_e_c_e_g_f_ExperimentalFeatureEditorViewImplTemplateResource templateForExperimentalFeatureEditorViewImpl = GWT.create(o_u_e_c_e_g_f_ExperimentalFeatureEditorViewImplTemplateResource.class);
     Element parentElementForTemplateOfExperimentalFeatureEditorViewImpl = TemplateUtil.getRootTemplateParentElement(templateForExperimentalFeatureEditorViewImpl.getContents().getText(), "org/uberfire/experimental/client/editor/group/feature/ExperimentalFeatureEditorViewImpl.html", "");
     TemplateUtil.translateTemplate("org/uberfire/experimental/client/editor/group/feature/ExperimentalFeatureEditorViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfExperimentalFeatureEditorViewImpl));

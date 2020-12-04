@@ -120,8 +120,8 @@ public class Type_factory__o_k_w_c_s_c_d_a_AdapterManagerImpl__quals__j_e_i_Any_
   }
 
   public AdapterManagerImpl createInstance(final ContextManager contextManager) {
-    final BootstrapAdapterFactory _bootstrapAdapterFactory_1 = (BootstrapAdapterFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_a_b_BootstrapAdapterFactory__quals__j_e_i_Any_j_e_i_Default");
     final RegistryFactory _registryFactory_0 = (ClientRegistryFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_i_ClientRegistryFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
+    final BootstrapAdapterFactory _bootstrapAdapterFactory_1 = (BootstrapAdapterFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_a_b_BootstrapAdapterFactory__quals__j_e_i_Any_j_e_i_Default");
     final AdapterManagerImpl instance = new AdapterManagerImpl(_registryFactory_0, _bootstrapAdapterFactory_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

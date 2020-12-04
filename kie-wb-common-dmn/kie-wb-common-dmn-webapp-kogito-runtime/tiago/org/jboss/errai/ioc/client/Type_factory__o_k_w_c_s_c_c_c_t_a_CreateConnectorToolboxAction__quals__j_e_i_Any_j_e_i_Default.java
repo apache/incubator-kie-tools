@@ -19,10 +19,10 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_CreateConnectorToolboxAction__qua
   }
 
   public CreateConnectorToolboxAction createInstance(final ContextManager contextManager) {
+    final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ClientFactoryManager _clientFactoryManager_1 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final ConnectorProxy _connectorProxy_3 = (ConnectorProxy) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_p_ConnectorProxy__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final CreateConnectorToolboxAction instance = new CreateConnectorToolboxAction(_definitionUtils_0, _clientFactoryManager_1, _translationService_2, _connectorProxy_3);
     registerDependentScopedReference(instance, _connectorProxy_3);
     setIncompleteInstance(instance);

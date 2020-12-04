@@ -17,12 +17,12 @@ public class Type_factory__o_u_c_v_p_w_FormLabel__quals__j_e_i_Any_j_e_i_Default
   public FormLabel createInstance(final ContextManager contextManager) {
     final FormLabel instance = new FormLabel();
     setIncompleteInstance(instance);
-    final Document FormLabel_document = (Document) contextManager.getInstance("Producer_factory__o_j_e_c_c_d_Document__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, FormLabel_document);
-    FormLabel_Document_document(instance, FormLabel_document);
     final Label FormLabel_label = (Label) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Label__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, FormLabel_label);
     FormLabel_Label_label(instance, FormLabel_label);
+    final Document FormLabel_document = (Document) contextManager.getInstance("Producer_factory__o_j_e_c_c_d_Document__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, FormLabel_document);
+    FormLabel_Document_document(instance, FormLabel_document);
     setIncompleteInstance(null);
     return instance;
   }

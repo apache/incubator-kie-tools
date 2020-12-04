@@ -79,12 +79,12 @@ public class Type_factory__o_u_c_m_ActivityLifecycleErrorHandler__quals__j_e_i_A
   public ActivityLifecycleErrorHandler createInstance(final ContextManager contextManager) {
     final ActivityLifecycleErrorHandler instance = new ActivityLifecycleErrorHandler();
     setIncompleteInstance(instance);
+    final Logger ActivityLifecycleErrorHandler_logger = (Logger) contextManager.getInstance("ExtensionProvided_factory__o_s_Logger__quals__Universal_2");
+    registerDependentScopedReference(instance, ActivityLifecycleErrorHandler_logger);
+    ActivityLifecycleErrorHandler_Logger_logger(instance, ActivityLifecycleErrorHandler_logger);
     final Event ActivityLifecycleErrorHandler_lifecycleErrorEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ActivityLifecycleError.class }, new Annotation[] { });
     registerDependentScopedReference(instance, ActivityLifecycleErrorHandler_lifecycleErrorEvent);
     ActivityLifecycleErrorHandler_Event_lifecycleErrorEvent(instance, ActivityLifecycleErrorHandler_lifecycleErrorEvent);
-    final Logger ActivityLifecycleErrorHandler_logger = (Logger) contextManager.getInstance("ExtensionProvided_factory__o_s_Logger__quals__Universal_3");
-    registerDependentScopedReference(instance, ActivityLifecycleErrorHandler_logger);
-    ActivityLifecycleErrorHandler_Logger_logger(instance, ActivityLifecycleErrorHandler_logger);
     final NotificationManager ActivityLifecycleErrorHandler_notificationManager = (NotificationManager) contextManager.getInstance("Type_factory__o_u_c_w_w_n_NotificationManager__quals__j_e_i_Any_j_e_i_Default");
     ActivityLifecycleErrorHandler_NotificationManager_notificationManager(instance, ActivityLifecycleErrorHandler_notificationManager);
     setIncompleteInstance(null);

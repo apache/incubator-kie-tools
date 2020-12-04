@@ -149,14 +149,14 @@ public class Type_factory__o_k_w_c_d_a_f_DMNGraphFactoryImpl__quals__j_e_i_Any_j
   }
 
   public DMNGraphFactoryImpl createInstance(final ContextManager contextManager) {
-    final GraphCommandFactory _graphCommandFactory_3 = (GraphCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_c_i_GraphCommandFactory__quals__j_e_i_Any_j_e_i_Default");
-    final GraphIndexBuilder _indexBuilder_4 = (MapIndexBuilder) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_i_m_MapIndexBuilder__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final FactoryManager _factoryManager_1 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final GraphCommandManager _graphCommandManager_2 = (GraphCommandManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_c_GraphCommandManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final GraphIndexBuilder _indexBuilder_4 = (MapIndexBuilder) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_i_m_MapIndexBuilder__quals__j_e_i_Any_j_e_i_Default");
+    final GraphCommandFactory _graphCommandFactory_3 = (GraphCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_c_i_GraphCommandFactory__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNGraphFactoryImpl instance = new DMNGraphFactoryImpl(_definitionManager_0, _factoryManager_1, _graphCommandManager_2, _graphCommandFactory_3, _indexBuilder_4);
-    registerDependentScopedReference(instance, _indexBuilder_4);
     registerDependentScopedReference(instance, _graphCommandManager_2);
+    registerDependentScopedReference(instance, _indexBuilder_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

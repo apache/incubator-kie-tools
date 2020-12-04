@@ -15,11 +15,11 @@ public class Type_factory__o_u_e_l_e_c_c_r_EmptyDropRow__quals__j_e_i_Any_j_e_i_
   }
 
   public EmptyDropRow createInstance(final ContextManager contextManager) {
-    final LayoutDragComponentHelper _layoutDragComponentHelper_1 = (LayoutDragComponentHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutDragComponentHelper__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (EmptyDropRowView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_r_EmptyDropRowView__quals__j_e_i_Any_j_e_i_Default");
+    final LayoutDragComponentHelper _layoutDragComponentHelper_1 = (LayoutDragComponentHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutDragComponentHelper__quals__j_e_i_Any_j_e_i_Default");
     final EmptyDropRow instance = new EmptyDropRow(_view_0, _layoutDragComponentHelper_1);
-    registerDependentScopedReference(instance, _layoutDragComponentHelper_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _layoutDragComponentHelper_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

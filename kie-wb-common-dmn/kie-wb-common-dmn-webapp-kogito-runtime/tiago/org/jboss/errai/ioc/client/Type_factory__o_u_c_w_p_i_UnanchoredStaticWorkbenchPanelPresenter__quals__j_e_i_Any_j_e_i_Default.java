@@ -19,9 +19,9 @@ public class Type_factory__o_u_c_w_p_i_UnanchoredStaticWorkbenchPanelPresenter__
   }
 
   public UnanchoredStaticWorkbenchPanelPresenter createInstance(final ContextManager contextManager) {
-    final UnanchoredStaticWorkbenchPanelView _view_0 = (UnanchoredStaticWorkbenchPanelView) contextManager.getInstance("Type_factory__o_u_c_w_p_i_UnanchoredStaticWorkbenchPanelView__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final PerspectiveManager _perspectiveManager_1 = (PerspectiveManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final PlaceManager _placeManager_2 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final UnanchoredStaticWorkbenchPanelView _view_0 = (UnanchoredStaticWorkbenchPanelView) contextManager.getInstance("Type_factory__o_u_c_w_p_i_UnanchoredStaticWorkbenchPanelView__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final UnanchoredStaticWorkbenchPanelPresenter instance = new UnanchoredStaticWorkbenchPanelPresenter(_view_0, _perspectiveManager_1, _placeManager_2);
     registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);

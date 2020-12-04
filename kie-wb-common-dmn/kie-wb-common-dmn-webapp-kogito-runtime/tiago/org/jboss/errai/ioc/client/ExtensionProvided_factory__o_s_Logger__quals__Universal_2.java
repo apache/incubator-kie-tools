@@ -15,6 +15,6 @@ public class ExtensionProvided_factory__o_s_Logger__quals__Universal_2 extends F
   }
 
   public Logger createInstance(final ContextManager contextManager) {
-    return LoggerFactory.getLogger("org.uberfire.client.plugin.RuntimePluginsServiceProxyClientImpl");
+    return LoggerFactory.getLogger("org.uberfire.client.mvp.ActivityLifecycleErrorHandler");
   }
 }

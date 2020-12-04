@@ -23,10 +23,10 @@ public class Type_factory__o_u_c_w_p_i_LayoutPanelView__quals__j_e_i_Any_j_e_i_D
   public LayoutPanelView createInstance(final ContextManager contextManager) {
     final LayoutPanelView instance = new LayoutPanelView();
     setIncompleteInstance(instance);
-    final PartManager LayoutPanelView_partManager = (PartManager) contextManager.getInstance("Type_factory__o_u_c_w_p_s_PartManager__quals__j_e_i_Any_j_e_i_Default");
-    LayoutPanelView_PartManager_partManager(instance, LayoutPanelView_partManager);
     final LayoutSelection LayoutPanelView_layoutSelection = (LayoutSelection) contextManager.getInstance("Type_factory__o_u_c_w_LayoutSelection__quals__j_e_i_Any_j_e_i_Default");
     LayoutPanelView_LayoutSelection_layoutSelection(instance, LayoutPanelView_layoutSelection);
+    final PartManager LayoutPanelView_partManager = (PartManager) contextManager.getInstance("Type_factory__o_u_c_w_p_s_PartManager__quals__j_e_i_Any_j_e_i_Default");
+    LayoutPanelView_PartManager_partManager(instance, LayoutPanelView_partManager);
     setIncompleteInstance(null);
     return instance;
   }

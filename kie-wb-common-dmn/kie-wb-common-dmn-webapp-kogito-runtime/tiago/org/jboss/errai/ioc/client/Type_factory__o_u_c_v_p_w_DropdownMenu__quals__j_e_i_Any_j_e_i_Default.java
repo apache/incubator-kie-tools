@@ -49,12 +49,12 @@ public class Type_factory__o_u_c_v_p_w_DropdownMenu__quals__j_e_i_Any_j_e_i_Defa
     } });
     registerDependentScopedReference(instance, DropdownMenu_text);
     DropdownMenu_HTMLElement_text(instance, DropdownMenu_text);
-    final HTMLDivElement DropdownMenu_dropdown = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, DropdownMenu_dropdown);
-    DropdownMenu_HTMLDivElement_dropdown(instance, DropdownMenu_dropdown);
     final HTMLUListElement DropdownMenu_dropdownMenu = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DropdownMenu_dropdownMenu);
     DropdownMenu_HTMLUListElement_dropdownMenu(instance, DropdownMenu_dropdownMenu);
+    final HTMLDivElement DropdownMenu_dropdown = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, DropdownMenu_dropdown);
+    DropdownMenu_HTMLDivElement_dropdown(instance, DropdownMenu_dropdown);
     o_u_c_v_p_w_DropdownMenuTemplateResource templateForDropdownMenu = GWT.create(o_u_c_v_p_w_DropdownMenuTemplateResource.class);
     Element parentElementForTemplateOfDropdownMenu = TemplateUtil.getRootTemplateParentElement(templateForDropdownMenu.getContents().getText(), "org/uberfire/client/views/pfly/widgets/DropdownMenu.html", "");
     TemplateUtil.translateTemplate("org/uberfire/client/views/pfly/widgets/DropdownMenu.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfDropdownMenu));

@@ -292,22 +292,7 @@ public class Type_factory__o_k_w_c_d_c_e_d_l_NameAndUrlPopoverViewImpl__quals__j
   }
 
   public NameAndUrlPopoverViewImpl createInstance(final ContextManager contextManager) {
-    final Div _popoverElement_0 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _okButton_5 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final JQuery<Popover> _jQueryPopover_2 = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLInputElement _attachmentNameInput_7 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Div _popoverContentElement_1 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final elemental2.dom.HTMLElement _attachmentName_9 = (elemental2.dom.HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=span)";
-        }
-        public String value() {
-          return "span";
-        }
-    } });
+    final HTMLInputElement _urlInput_6 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final elemental2.dom.HTMLElement _attachmentTip_10 = (elemental2.dom.HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -319,8 +304,23 @@ public class Type_factory__o_k_w_c_d_c_e_d_l_NameAndUrlPopoverViewImpl__quals__j
           return "span";
         }
     } });
-    final HTMLInputElement _urlInput_6 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _okButton_5 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final elemental2.dom.HTMLElement _attachmentName_9 = (elemental2.dom.HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=span)";
+        }
+        public String value() {
+          return "span";
+        }
+    } });
+    final Div _popoverContentElement_1 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _cancelButton_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final JQuery<Popover> _jQueryPopover_2 = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLInputElement _attachmentNameInput_7 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final elemental2.dom.HTMLElement _urlLabel_8 = (elemental2.dom.HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -332,19 +332,19 @@ public class Type_factory__o_k_w_c_d_c_e_d_l_NameAndUrlPopoverViewImpl__quals__j
           return "span";
         }
     } });
-    final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final Div _popoverElement_0 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final NameAndUrlPopoverViewImpl instance = new NameAndUrlPopoverViewImpl(_popoverElement_0, _popoverContentElement_1, _jQueryPopover_2, _translationService_3, _cancelButton_4, _okButton_5, _urlInput_6, _attachmentNameInput_7, _urlLabel_8, _attachmentName_9, _attachmentTip_10);
-    registerDependentScopedReference(instance, _popoverElement_0);
+    registerDependentScopedReference(instance, _urlInput_6);
+    registerDependentScopedReference(instance, _attachmentTip_10);
     registerDependentScopedReference(instance, _okButton_5);
+    registerDependentScopedReference(instance, _attachmentName_9);
+    registerDependentScopedReference(instance, _popoverContentElement_1);
+    registerDependentScopedReference(instance, _cancelButton_4);
+    registerDependentScopedReference(instance, _translationService_3);
     registerDependentScopedReference(instance, _jQueryPopover_2);
     registerDependentScopedReference(instance, _attachmentNameInput_7);
-    registerDependentScopedReference(instance, _popoverContentElement_1);
-    registerDependentScopedReference(instance, _attachmentName_9);
-    registerDependentScopedReference(instance, _attachmentTip_10);
-    registerDependentScopedReference(instance, _urlInput_6);
-    registerDependentScopedReference(instance, _cancelButton_4);
     registerDependentScopedReference(instance, _urlLabel_8);
-    registerDependentScopedReference(instance, _translationService_3);
+    registerDependentScopedReference(instance, _popoverElement_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_d_l_NameAndUrlPopoverViewImplTemplateResource templateForNameAndUrlPopoverViewImpl = GWT.create(o_k_w_c_d_c_e_d_l_NameAndUrlPopoverViewImplTemplateResource.class);
     Element parentElementForTemplateOfNameAndUrlPopoverViewImpl = TemplateUtil.getRootTemplateParentElement(templateForNameAndUrlPopoverViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/documentation/links/NameAndUrlPopoverViewImpl.html", "");

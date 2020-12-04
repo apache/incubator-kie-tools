@@ -1019,23 +1019,12 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.DocksEntryPoint;
-import org.uberfire.client.JSEntryPoint;
 import org.uberfire.client.authz.DefaultWorkbenchController;
 import org.uberfire.client.authz.EditorTreeProvider;
 import org.uberfire.client.authz.PerspectiveTreeProvider;
 import org.uberfire.client.docks.UberfireDocksImpl;
 import org.uberfire.client.docks.view.DocksBars;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
-import org.uberfire.client.editor.JSNativeEditor;
-import org.uberfire.client.editor.type.JSNativeClientResourceType;
-import org.uberfire.client.exporter.EditorJSExporter;
-import org.uberfire.client.exporter.PerspectiveJSExporter;
-import org.uberfire.client.exporter.PlaceManagerJSExporter;
-import org.uberfire.client.exporter.PluginJSExporter;
-import org.uberfire.client.exporter.ResourceTypeDefinitionJSExporter;
-import org.uberfire.client.exporter.SplashScreenJSExporter;
-import org.uberfire.client.exporter.UberfireJSAPIExporter;
-import org.uberfire.client.exporter.VFSJSExporter;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.menu.SplashScreenMenuPresenter;
 import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
@@ -1061,12 +1050,8 @@ import org.uberfire.client.mvp.PlaceRequestHistoryMapperImpl;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.ResourceTypeManagerCache;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.perspective.JSNativePerspective;
-import org.uberfire.client.plugin.RuntimePluginsServiceProxyClientImpl;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.resources.i18n.PermissionTreeI18NImpl;
-import org.uberfire.client.screen.JSNativeScreen;
-import org.uberfire.client.splash.JSNativeSplashScreen;
 import org.uberfire.client.util.Clipboard;
 import org.uberfire.client.util.Cookie;
 import org.uberfire.client.util.GWTEditorNativeRegister;
@@ -1282,7 +1267,6 @@ import org.uberfire.ext.layout.editor.client.widgets.LayoutEditorPropertiesPrese
 import org.uberfire.ext.layout.editor.client.widgets.LayoutEditorPropertiesView;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutElementPropertiesPresenter;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutElementPropertiesView;
-import org.uberfire.ext.plugin.type.DynamicMenuResourceTypeDefinition;
 import org.uberfire.ext.preferences.client.PreferencesEntryPoint;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspectiveActivity;
@@ -1369,12 +1353,6 @@ import org.uberfire.ext.widgets.core.client.workbench.widgets.popups.activities.
 import org.uberfire.ext.widgets.core.client.workbench.widgets.popups.activities.notfound.ActivityNotFoundPresenterActivity;
 import org.uberfire.ext.widgets.core.client.workbench.widgets.popups.activities.notfound.ActivityNotFoundView;
 import org.uberfire.ext.widgets.table.client.TableEntryPoint;
-import org.uberfire.jsbridge.client.AppFormerJsBridge;
-import org.uberfire.jsbridge.client.editor.JsWorkbenchEditorActivity;
-import org.uberfire.jsbridge.client.loading.AppFormerComponentsRegistry;
-import org.uberfire.jsbridge.client.loading.AppFormerJsActivityLoader;
-import org.uberfire.jsbridge.client.loading.LazyLoadingScreen;
-import org.uberfire.jsbridge.client.loading.LazyLoadingScreenActivity;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
@@ -1755,7 +1733,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<Span> { }
   public abstract class ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<HTMLInputElement> { }
   public abstract class Type_factory__o_k_w_c_d_w_k_c_c_s_KogitoDMNCanvasShortcutsControlImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor extends Factory<KogitoDMNCanvasShortcutsControlImpl> { }
-  public abstract class Type_factory__o_u_c_p_RuntimePluginsServiceProxyClientImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<RuntimePluginsServiceProxyClientImpl> { }
   public abstract class Type_factory__o_u_b_v_i_ObservablePathImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<ObservablePathImpl> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_y_m_YearsMonthsSelectorView__quals__j_e_i_Any_j_e_i_Default extends Factory<YearsMonthsSelectorView> { }
   public abstract class Type_factory__o_k_w_c_d_w_k_c_c_s_DMNClientServicesProxyImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNClientServicesProxyImpl> { }
@@ -1768,7 +1745,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_f_d_c_r_f_i_c_CheckBoxFormGroup__quals__j_e_i_Any_j_e_i_Default extends Factory<CheckBoxFormGroup> { }
   public abstract class ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<HTMLButtonElement> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_t_i_ManagedToolbar__quals__j_e_i_Any_j_e_i_Default extends Factory<ManagedToolbar> { }
-  public abstract class Type_factory__o_u_c_s_JSNativeSplashScreen__quals__j_e_i_Any_j_e_i_Default extends Factory<JSNativeSplashScreen> { }
   public abstract class Type_factory__o_k_w_c_d_c_s_DMNPictureProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNPictureProvider> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_e_t_f_s_FunctionSupplementaryGridEditorDefinitionsProducer__quals__j_e_i_Any_o_k_w_c_d_c_e_e_t_f_FunctionGridSupplementaryEditor extends Factory<FunctionSupplementaryGridEditorDefinitionsProducer> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImpl__quals__j_e_i_Any_o_k_w_c_s_c_c_c_c_i_InlineTextEditorBox extends Factory<InlineTextEditorBoxViewImpl> { }
@@ -1793,7 +1769,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_d_c_e_t_c_e_DataTypeNameIsNotUniqueErrorMessage__quals__j_e_i_Any_j_e_i_Default extends Factory<DataTypeNameIsNotUniqueErrorMessage> { }
   public abstract class Type_factory__o_u_e_e_c_c_h_HtmlEditorPresenter__quals__j_e_i_Any_j_e_i_Default extends Factory<HtmlEditorPresenter> { }
   public abstract class Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelector__quals__j_e_i_Any_j_e_i_Default extends Factory<ListSelector> { }
-  public abstract class Type_factory__o_u_c_e_PluginJSExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<PluginJSExporter> { }
   public abstract class Type_factory__o_k_w_c_f_f_s_f_b_c_p_CheckBoxFieldProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<CheckBoxFieldProvider> { }
   public abstract class Type_factory__o_k_w_c_f_d_c_r_r_l_c_MultipleInputFieldRenderer__quals__j_e_i_Any_j_e_i_Default extends Factory<MultipleInputFieldRenderer> { }
   public abstract class Type_factory__o_k_w_c_s_c_f_i_DiagramFactoryImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<DiagramFactoryImpl> { }
@@ -1847,7 +1822,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_s_c_c_s_f_ShapeDefFunctionalFactory__quals__j_e_i_Any_j_e_i_Default extends Factory<ShapeDefFunctionalFactory> { }
   public abstract class ExtensionProvided_factory__o_j_e_c_c_d_Select__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<org.jboss.errai.common.client.dom.Select> { }
   public abstract class Type_factory__o_k_w_c_d_w_k_c_c_t_o_GuidedTourGridObserver__quals__j_e_i_Any_j_e_i_Default extends Factory<GuidedTourGridObserver> { }
-  public abstract class Type_factory__o_u_c_e_t_JSNativeClientResourceType__quals__j_e_i_Any_j_e_i_Default extends Factory<JSNativeClientResourceType> { }
   public abstract class Type_factory__o_u_e_l_e_c_c_c_ComponentColumn__quals__j_e_i_Any_j_e_i_Default extends Factory<ComponentColumn> { }
   public abstract class Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreePresenter__quals__j_e_i_Any_j_e_i_Default extends Factory<DecisionNavigatorTreePresenter> { }
   public abstract class Type_factory__o_k_w_c_s_s_c_ConnectorGlyphLienzoRenderer__quals__j_e_i_Any_j_e_i_Default extends Factory<ConnectorGlyphLienzoRenderer> { }
@@ -1886,7 +1860,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_u_c_a_DefaultWorkbenchController__quals__j_e_i_Any_j_e_i_Default extends Factory<DefaultWorkbenchController> { }
   public abstract class ExtensionProvided_factory__o_s_Logger__quals__Universal_2 extends Factory<Logger> { }
   public abstract class ExtensionProvided_factory__o_s_Logger__quals__Universal_1 extends Factory<Logger> { }
-  public abstract class ExtensionProvided_factory__o_s_Logger__quals__Universal_3 extends Factory<Logger> { }
   public abstract class Type_factory__o_k_w_c_s_c_r_h_i_ConnectorCardinalityEvaluationHandler__quals__j_e_i_Any_j_e_i_Default extends Factory<ConnectorCardinalityEvaluationHandler> { }
   public abstract class Type_factory__o_k_w_c_d_c_r_DMNSVGViewFactoryImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNSVGViewFactoryImpl> { }
   public abstract class JsType_factory__o_u_w_m_m_MenuItemPlain__quals__Universal extends Factory<MenuItemPlain> { }
@@ -1958,10 +1931,8 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_u_c_v_p_w_KebabMenu__quals__j_e_i_Any_j_e_i_Default extends Factory<KebabMenu> { }
   public abstract class Type_factory__o_k_w_c_s_c_StunnerCoreEntryPoint__quals__j_e_i_Any_j_e_i_Default extends Factory<StunnerCoreEntryPoint> { }
   public abstract class Type_factory__o_u_e_p_c_c_a_PreferencesCentralActionsScreen__quals__j_e_i_Any_j_e_i_Default extends Factory<PreferencesCentralActionsScreen> { }
-  public abstract class Type_factory__o_u_c_e_JSNativeEditor__quals__j_e_i_Any_j_e_i_Default extends Factory<JSNativeEditor> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_p_h_ItemDefinitionCreateHandler__quals__j_e_i_Any_j_e_i_Default extends Factory<ItemDefinitionCreateHandler> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_m_d_i_LogBoundsDevCommand__quals__j_e_i_Any_j_e_i_Default extends Factory<LogBoundsDevCommand> { }
-  public abstract class Type_factory__o_u_j_c_e_JsWorkbenchEditorActivity__quals__j_e_i_Any_o_u_j_c_l_AppFormerJsActivityLoader_Shadowed extends Factory<JsWorkbenchEditorActivity> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListItemView__quals__j_e_i_Any_j_e_i_Default extends Factory<DataTypeListItemView> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_l_DataTypeSelectView__quals__j_e_i_Any_j_e_i_Default extends Factory<DataTypeSelectView> { }
   public abstract class Type_factory__o_k_w_c_s_s_m_MessageConsoleWhiteListImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<MessageConsoleWhiteListImpl> { }
@@ -2085,7 +2056,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_g_c_s_p_c_Model__quals__j_e_i_Any_j_e_i_Default extends Factory<Model> { }
   public abstract class Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNGraphUtils> { }
   public abstract class Type_factory__o_k_w_c_f_d_c_r_r_s_r_StringRadioGroupFieldRenderer__quals__j_e_i_Any_j_e_i_Default extends Factory<StringRadioGroupFieldRenderer> { }
-  public abstract class Type_factory__o_u_c_JSEntryPoint__quals__j_e_i_Any_j_e_i_Default extends Factory<JSEntryPoint> { }
   public abstract class Type_factory__o_u_e_p_c_a_AdminPagePresenter__quals__j_e_i_Any_j_e_i_Default extends Factory<AdminPagePresenter> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_c_p_DMNPageView__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNPageView> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_p_ProfileSelector__quals__j_e_i_Any_j_e_i_Default extends Factory<ProfileSelector> { }
@@ -2159,7 +2129,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_d_c_e_i_g_PMMLCardComponentContentView__quals__j_e_i_Any_o_k_w_c_d_c_e_i_g_PMMLCard extends Factory<PMMLCardComponentContentView> { }
   public abstract class Type_factory__o_j_e_u_c_l_s_TranslationServiceProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<TranslationServiceProvider> { }
   public abstract class Type_factory__o_u_p_c_s_ClientUsernameProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<ClientUsernameProvider> { }
-  public abstract class Type_factory__o_u_c_e_VFSJSExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<VFSJSExporter> { }
   public abstract class Type_factory__o_k_w_c_d_c_s_DMNEditorSession__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor extends Factory<DMNEditorSession> { }
   public abstract class Type_factory__o_u_c_w_p_i_AdaptiveWorkbenchPanelPresenter__quals__j_e_i_Any_j_e_i_Default extends Factory<AdaptiveWorkbenchPanelPresenter> { }
   public abstract class Type_factory__o_k_w_c_w_c_w_KieSelectElementView__quals__j_e_i_Any_j_e_i_Default extends Factory<KieSelectElementView> { }
@@ -2218,7 +2187,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_u_e_l_e_c_w_LayoutDragComponentGroupView__quals__j_e_i_Any_j_e_i_Default extends Factory<LayoutDragComponentGroupView> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_p_d_i_DefaultDiagramViewer__quals__j_e_i_Any_j_e_i_Default extends Factory<DefaultDiagramViewer> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_c_ScrollableLienzoPanel__quals__j_e_i_Any_j_e_i_Default extends Factory<ScrollableLienzoPanel> { }
-  public abstract class Type_factory__o_u_j_c_l_AppFormerJsActivityLoader__quals__j_e_i_Any_j_e_i_Default extends Factory<AppFormerJsActivityLoader> { }
   public abstract class Type_factory__o_u_w_m_i_PanelDefinitionImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<PanelDefinitionImpl> { }
   public abstract class Type_factory__o_k_w_c_s_f_c_f_c_ColorPickerFieldRenderer__quals__j_e_i_Any_j_e_i_Default extends Factory<ColorPickerFieldRenderer> { }
   public abstract class Type_factory__o_u_e_e_c_f_e_FileExportsPreferencesBeanGeneratedImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<FileExportsPreferencesBeanGeneratedImpl> { }
@@ -2276,7 +2244,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_u_e_l_e_c_c_r_RowView__quals__j_e_i_Any_j_e_i_Default extends Factory<RowView> { }
   public abstract class Type_factory__o_k_w_c_d_a_d_m_f_p_ModuleFormGenerationResourcesProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<ModuleFormGenerationResourcesProvider> { }
   public abstract class Type_factory__o_k_w_c_d_c_d_n_c_CanvasFocusUtils__quals__j_e_i_Any_j_e_i_Default extends Factory<CanvasFocusUtils> { }
-  public abstract class Type_factory__o_u_c_e_UberfireJSAPIExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<UberfireJSAPIExporter> { }
   public abstract class Type_factory__o_k_w_c_f_c_r_c_w_p_w_PictureWidget__quals__j_e_i_Any_j_e_i_Default extends Factory<PictureWidget> { }
   public abstract class Type_factory__o_k_w_c_w_c_k_IsKogito__quals__j_e_i_Any_j_e_i_Default extends Factory<org.kie.workbench.common.widgets.client.kogito.IsKogito> { }
   public abstract class Type_factory__o_k_w_c_s_c_c_s_c_i_CutSelectionSessionCommand__quals__j_e_i_Any_j_e_i_Default extends Factory<CutSelectionSessionCommand> { }
@@ -2336,7 +2303,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_u_c_v_p_t_WorkbenchToolBarView__quals__j_e_i_Any_j_e_i_Default extends Factory<WorkbenchToolBarView> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintView__quals__j_e_i_Any_j_e_i_Default extends Factory<DataTypeConstraintView> { }
   public abstract class ExtensionProvided_factory__e_d_HTMLOptionElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<HTMLOptionElement> { }
-  public abstract class Type_factory__o_u_j_c_AppFormerJsBridge__quals__j_e_i_Any_j_e_i_Default extends Factory<AppFormerJsBridge> { }
   public abstract class Type_factory__o_k_w_c_f_d_c_r_r_TextBoxFieldRenderer__quals__j_e_i_Any_j_e_i_Default extends Factory<TextBoxFieldRenderer> { }
   public abstract class Type_factory__o_k_w_c_w_c_d_AsyncPackageDataModelOracleImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<AsyncPackageDataModelOracleImpl> { }
   public abstract class Type_factory__o_u_e_w_c_c_t_PagedTable__quals__j_e_i_Any_j_e_i_Default extends Factory<PagedTable> { }
@@ -2351,7 +2317,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_f_d_c_r_f_i_n_c_CollapsibleFormGroup__quals__j_e_i_Any_j_e_i_Default extends Factory<CollapsibleFormGroup> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListView__quals__j_e_i_Any_j_e_i_Default extends Factory<DataTypeListView> { }
   public abstract class Type_factory__o_u_c_v_p_w_KebabMenuItem__quals__j_e_i_Any_j_e_i_Default extends Factory<KebabMenuItem> { }
-  public abstract class Type_factory__o_u_c_e_SplashScreenJSExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<SplashScreenJSExporter> { }
   public abstract class JsType_factory__j_u_Map__quals__Universal extends Factory<Map> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_v_LoadingBox__quals__j_e_i_Any_j_e_i_Default extends Factory<LoadingBox> { }
   public abstract class Type_factory__o_u_e_e_c_c_f_p_c_ToggleCommentView__quals__j_e_i_Any_j_e_i_Default extends Factory<ToggleCommentView> { }
@@ -2467,7 +2432,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_s_c_c_c_l_LayoutHelper__quals__j_e_i_Any_j_e_i_Default extends Factory<LayoutHelper> { }
   public abstract class Type_factory__o_a_k_b_c_g_t_o_GlobalHTMLObserver__quals__j_e_i_Any_j_e_i_Default extends Factory<GlobalHTMLObserver> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals__j_e_i_Any_j_e_i_Default extends Factory<PropertiesPanelNotifier> { }
-  public abstract class Type_factory__o_u_c_e_PlaceManagerJSExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<PlaceManagerJSExporter> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_m_d_i_LogNodeEdgesDevCommand__quals__j_e_i_Any_j_e_i_Default extends Factory<LogNodeEdgesDevCommand> { }
   public abstract class ExtensionProvided_factory__o_j_e_c_c_d_Heading__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<Heading> { }
   public abstract class Type_factory__o_k_w_c_f_d_c_r_f_l_h_FieldHelp__quals__j_e_i_Any_j_e_i_Default extends Factory<FieldHelp> { }
@@ -2561,7 +2525,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_w_c_d_DockPlaceHolderActivity__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<DockPlaceHolderActivity> { }
   public abstract class Type_factory__o_u_c_w_t_AnyResourceType__quals__j_e_i_Any_j_e_i_Default extends Factory<AnyResourceType> { }
   public abstract class Type_factory__o_k_w_c_f_c_r_c_FormWidgetsEntryPoint__quals__j_e_i_Any_j_e_i_Default extends Factory<FormWidgetsEntryPoint> { }
-  public abstract class Type_factory__o_u_j_c_l_AppFormerComponentsRegistry__quals__j_e_i_Any_j_e_i_Default extends Factory<AppFormerComponentsRegistry> { }
   public abstract class Type_factory__o_k_w_c_d_c_p_d_ModuleFieldRendererTypesProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<org.kie.workbench.common.dmn.client.property.dmn.ModuleFieldRendererTypesProvider> { }
   public abstract class Type_factory__o_k_w_c_s_c_c_c_u_CanvasHighlight__quals__j_e_i_Any_j_e_i_Default extends Factory<CanvasHighlight> { }
   public abstract class Type_factory__o_u_c_w_w_n_NotificationManager__quals__j_e_i_Any_j_e_i_Default extends Factory<NotificationManager> { }
@@ -2590,7 +2553,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_s_c_l_c_g_LienzoSvgDataUriGlyphRenderer__quals__j_e_i_Any_j_e_i_Default extends Factory<LienzoSvgDataUriGlyphRenderer> { }
   public abstract class Type_factory__o_k_w_c_s_k_c_s_DiagramEditorPropertiesScreen__quals__j_e_i_Any_j_e_i_Default extends Factory<DiagramEditorPropertiesScreen> { }
   public abstract class Type_factory__o_a_k_b_c_g_t_s_GuidedTourServiceProducer__quals__j_e_i_Any_j_e_i_Default extends Factory<GuidedTourServiceProducer> { }
-  public abstract class Type_factory__o_u_c_p_JSNativePerspective__quals__j_e_i_Any_j_e_i_Default extends Factory<JSNativePerspective> { }
   public abstract class Type_factory__o_u_p_s_i_PreferenceScopeValidatorImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<PreferenceScopeValidatorImpl> { }
   public abstract class Type_factory__o_k_w_c_s_f_c_w_FormsCanvasSessionHandler__quals__j_e_i_Any_j_e_i_Default extends Factory<FormsCanvasSessionHandler> { }
   public abstract class ContextualProvider_factory__o_u_p_s_PreferenceScopeResolutionStrategy__quals__Universal extends Factory<PreferenceScopeResolutionStrategy> { }
@@ -2598,7 +2560,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_d_w_k_c_c_i_DMNMarshallerImportsContentServiceKogitoImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNMarshallerImportsContentServiceKogitoImpl> { }
   public abstract class Type_factory__o_u_e_c_w_t_ExperimentalAwareClientTypeRegistryImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<ExperimentalAwareClientTypeRegistryImpl> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_d_c_DMNDocumentationDRDsFactory__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNDocumentationDRDsFactory> { }
-  public abstract class Type_factory__o_u_c_s_JSNativeScreen__quals__j_e_i_Any_j_e_i_Default extends Factory<JSNativeScreen> { }
   public abstract class Type_factory__o_k_w_c_f_d_c_r_r_d_i_DatePickerWrapperViewImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<DatePickerWrapperViewImpl> { }
   public abstract class Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsContentServiceImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNMarshallerImportsContentServiceImpl> { }
   public abstract class Type_factory__o_u_e_p_c_c_s_PreferencesRootView__quals__j_e_i_Any_j_e_i_Default extends Factory<PreferencesRootView> { }
@@ -2638,7 +2599,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default extends Factory<ApplicationCommandManager> { }
   public abstract class JsType_factory__o_u_w_m_PerspectiveDefinition__quals__Universal extends Factory<PerspectiveDefinition> { }
   public abstract class Type_factory__o_k_w_c_s_c_c_s_c_i_VisitGraphSessionCommand__quals__j_e_i_Any_j_e_i_Default extends Factory<VisitGraphSessionCommand> { }
-  public abstract class Type_factory__o_u_j_c_l_LazyLoadingScreenActivity__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<LazyLoadingScreenActivity> { }
   public abstract class Type_factory__o_k_w_c_s_c_l_d_DefinitionLookupManagerImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<DefinitionLookupManagerImpl> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_p_h_ItemDefinitionUpdateHandler__quals__j_e_i_Any_j_e_i_Default extends Factory<ItemDefinitionUpdateHandler> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_c_m_FlashMessages__quals__j_e_i_Any_j_e_i_Default extends Factory<FlashMessages> { }
@@ -2695,7 +2655,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorPresenter__quals__j_e_i_Any_j_e_i_Default extends Factory<DecisionNavigatorPresenter> { }
   public abstract class Type_factory__o_u_c_d_v_DocksBars__quals__j_e_i_Any_j_e_i_Default extends Factory<DocksBars> { }
   public abstract class Type_factory__o_j_e_i_c_a_b_DisposerProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<DisposerProvider> { }
-  public abstract class Type_factory__o_u_e_p_t_DynamicMenuResourceTypeDefinition__quals__j_e_i_Any_j_e_i_Default extends Factory<DynamicMenuResourceTypeDefinition> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimeValueFormatter__quals__j_e_i_Any_j_e_i_Default extends Factory<TimeValueFormatter> { }
   public abstract class Producer_factory__o_u_e_e_c_c_f_e_PdfFileExport__quals__j_e_i_Any_j_e_i_Default extends Factory<PdfFileExport> { }
   public abstract class ExtensionProvided_factory__o_g_c_u_Icon__quals__j_e_i_Any_j_e_i_Default extends Factory<Icon> { }
@@ -2829,7 +2788,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSessionState__quals__j_e_i_Any_j_e_i_Default extends Factory<DMNDiagramsSessionState> { }
   public abstract class Type_factory__o_k_w_c_s_c_g_p_t_t_TreeWalkTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<TreeWalkTraverseProcessorImpl> { }
   public abstract class Type_factory__o_k_w_c_d_c_c_c_b_ObserverBuilderControl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor_o_k_w_c_s_c_c_c_c_b_i_Observer extends Factory<org.kie.workbench.common.dmn.client.canvas.controls.builder.ObserverBuilderControl> { }
-  public abstract class Type_factory__o_u_c_e_EditorJSExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<EditorJSExporter> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageState__quals__j_e_i_Any_j_e_i_Default extends Factory<IncludedModelsPageState> { }
   public abstract class ExtensionProvided_factory__o_k_w_c_s_c_w_p_s_i_SessionContainer__quals__j_e_i_Any_j_e_i_Default extends Factory<SessionContainer> { }
   public abstract class Type_factory__o_a_k_b_c_s_r_p_CommandRegistryProducer__quals__j_e_i_Any_j_e_i_Default extends Factory<CommandRegistryProducer> { }
@@ -2847,7 +2805,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_s_c_c_c_t_a_MorphNodeToolboxAction__quals__j_e_i_Any_j_e_i_Default extends Factory<MorphNodeToolboxAction> { }
   public abstract class Type_factory__o_k_w_c_s_f_c_s_StunnerFormsHandler__quals__j_e_i_Any_j_e_i_Default extends Factory<StunnerFormsHandler> { }
   public abstract class Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateSelector__quals__j_e_i_Any_j_e_i_Default extends Factory<DateSelector> { }
-  public abstract class Type_factory__o_u_j_c_l_LazyLoadingScreen__quals__j_e_i_Any_j_e_i_Default extends Factory<LazyLoadingScreen> { }
   public abstract class JsType_factory__o_u_w_m_CompassPosition__quals__Universal extends Factory<CompassPosition> { }
   public abstract class Type_factory__o_u_e_c_p_ExperimentalFeaturesPerspectiveActivity__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<ExperimentalFeaturesPerspectiveActivity> { }
   public abstract class Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<ActivityManagerImpl> { }
@@ -2858,7 +2815,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_k_w_c_s_c_w_v_s_ScreenPanelViewImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<ScreenPanelViewImpl> { }
   public abstract class Type_factory__o_u_p_c_s_PreferenceScopeResolutionStrategyIOCProvider__quals__j_e_i_Any_j_e_i_Default extends Factory<PreferenceScopeResolutionStrategyIOCProvider> { }
   public abstract class Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_i_BooleanEditableColumnGenerator__quals__j_e_i_Any_j_e_i_Default extends Factory<BooleanEditableColumnGenerator> { }
-  public abstract class Type_factory__o_u_c_e_PerspectiveJSExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<PerspectiveJSExporter> { }
   public abstract class Type_factory__o_k_w_c_w_c_p_v_ValidationPopupViewImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<ValidationPopupViewImpl> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_m_MarshallingResponsePopupView__quals__j_e_i_Any_j_e_i_Default extends Factory<MarshallingResponsePopupView> { }
   public abstract class Type_factory__o_k_w_c_s_s_p_c_WorkbenchPreferenceScopeResolutionStrategy__quals__j_e_i_Any_j_e_i_Default extends Factory<WorkbenchPreferenceScopeResolutionStrategy> { }
@@ -2887,7 +2843,6 @@ public class BootstrapperImpl implements Bootstrapper {
   public abstract class Type_factory__o_u_e_l_e_c_w_LayoutEditorPropertiesPresenter__quals__j_e_i_Any_j_e_i_Default extends Factory<LayoutEditorPropertiesPresenter> { }
   public abstract class ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named extends Factory<org.jboss.errai.common.client.dom.Button> { }
   public abstract class Type_factory__o_u_e_l_e_c_w_LayoutElementPropertiesView__quals__j_e_i_Any_j_e_i_Default extends Factory<LayoutElementPropertiesView> { }
-  public abstract class Type_factory__o_u_c_e_ResourceTypeDefinitionJSExporter__quals__j_e_i_Any_j_e_i_Default extends Factory<ResourceTypeDefinitionJSExporter> { }
   public abstract class Type_factory__o_k_w_c_d_c_w_l_MousePanMediatorControlImpl__quals__j_e_i_Any_j_e_i_Default extends Factory<MousePanMediatorControlImpl> { }
   public abstract class Type_factory__o_k_w_c_s_c_w_m_d_i_ChangeProfileDevCommand__quals__j_e_i_Any_j_e_i_Default extends Factory<ChangeProfileDevCommand> { }
   public abstract class Type_factory__o_k_w_c_s_c_c_c_u_CanvasFileExport__quals__j_e_i_Any_j_e_i_Default extends Factory<CanvasFileExport> { }
@@ -3223,7 +3178,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Span>) GWT.create(ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<HTMLInputElement>) GWT.create(ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<KogitoDMNCanvasShortcutsControlImpl>) GWT.create(Type_factory__o_k_w_c_d_w_k_c_c_s_KogitoDMNCanvasShortcutsControlImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<RuntimePluginsServiceProxyClientImpl>) GWT.create(Type_factory__o_u_c_p_RuntimePluginsServiceProxyClientImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ObservablePathImpl>) GWT.create(Type_factory__o_u_b_v_i_ObservablePathImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<YearsMonthsSelectorView>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_y_m_YearsMonthsSelectorView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNClientServicesProxyImpl>) GWT.create(Type_factory__o_k_w_c_d_w_k_c_c_s_DMNClientServicesProxyImpl__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3236,7 +3190,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CheckBoxFormGroup>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_f_i_c_CheckBoxFormGroup__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<HTMLButtonElement>) GWT.create(ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ManagedToolbar>) GWT.create(Type_factory__o_k_w_c_s_c_w_t_i_ManagedToolbar__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<JSNativeSplashScreen>) GWT.create(Type_factory__o_u_c_s_JSNativeSplashScreen__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DMNPictureProvider>) GWT.create(Type_factory__o_k_w_c_d_c_s_DMNPictureProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<FunctionSupplementaryGridEditorDefinitionsProducer>) GWT.create(Type_factory__o_k_w_c_d_c_e_e_t_f_s_FunctionSupplementaryGridEditorDefinitionsProducer__quals__j_e_i_Any_o_k_w_c_d_c_e_e_t_f_FunctionGridSupplementaryEditor.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<InlineTextEditorBoxViewImpl>) GWT.create(Type_factory__o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImpl__quals__j_e_i_Any_o_k_w_c_s_c_c_c_c_i_InlineTextEditorBox.class));
@@ -3261,7 +3214,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DataTypeNameIsNotUniqueErrorMessage>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_c_e_DataTypeNameIsNotUniqueErrorMessage__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<HtmlEditorPresenter>) GWT.create(Type_factory__o_u_e_e_c_c_h_HtmlEditorPresenter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ListSelector>) GWT.create(Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelector__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<PluginJSExporter>) GWT.create(Type_factory__o_u_c_e_PluginJSExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CheckBoxFieldProvider>) GWT.create(Type_factory__o_k_w_c_f_f_s_f_b_c_p_CheckBoxFieldProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<MultipleInputFieldRenderer>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_r_l_c_MultipleInputFieldRenderer__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DiagramFactoryImpl>) GWT.create(Type_factory__o_k_w_c_s_c_f_i_DiagramFactoryImpl__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3315,7 +3267,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ShapeDefFunctionalFactory>) GWT.create(Type_factory__o_k_w_c_s_c_c_s_f_ShapeDefFunctionalFactory__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<org.jboss.errai.common.client.dom.Select>) GWT.create(ExtensionProvided_factory__o_j_e_c_c_d_Select__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<GuidedTourGridObserver>) GWT.create(Type_factory__o_k_w_c_d_w_k_c_c_t_o_GuidedTourGridObserver__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<JSNativeClientResourceType>) GWT.create(Type_factory__o_u_c_e_t_JSNativeClientResourceType__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ComponentColumn>) GWT.create(Type_factory__o_u_e_l_e_c_c_c_ComponentColumn__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DecisionNavigatorTreePresenter>) GWT.create(Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreePresenter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ConnectorGlyphLienzoRenderer>) GWT.create(Type_factory__o_k_w_c_s_s_c_ConnectorGlyphLienzoRenderer__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3354,7 +3305,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DefaultWorkbenchController>) GWT.create(Type_factory__o_u_c_a_DefaultWorkbenchController__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Logger>) GWT.create(ExtensionProvided_factory__o_s_Logger__quals__Universal_2.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Logger>) GWT.create(ExtensionProvided_factory__o_s_Logger__quals__Universal_1.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Logger>) GWT.create(ExtensionProvided_factory__o_s_Logger__quals__Universal_3.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<ConnectorCardinalityEvaluationHandler>) GWT.create(Type_factory__o_k_w_c_s_c_r_h_i_ConnectorCardinalityEvaluationHandler__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNSVGViewFactoryImpl>) GWT.create(Type_factory__o_k_w_c_d_c_r_DMNSVGViewFactoryImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<MenuItemPlain>) GWT.create(JsType_factory__o_u_w_m_m_MenuItemPlain__quals__Universal.class));
@@ -3410,14 +3360,14 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DockPlaceHolder>) GWT.create(Type_factory__o_k_w_c_w_c_d_DockPlaceHolder__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<GraphCommandManagerImpl>) GWT.create(Type_factory__o_k_w_c_s_c_g_c_GraphCommandManagerImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DiagramEditorPreviewAndExplorerDock>) GWT.create(Type_factory__o_k_w_c_s_k_c_d_DiagramEditorPreviewAndExplorerDock__quals__j_e_i_Any_j_e_i_Default.class));
-  }
-
-  private void registerFactories1(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DataTypeSelect>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_DataTypeSelect__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DayTimeValueConverter>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_t_DayTimeValueConverter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<CoreEntryPoint>) GWT.create(Type_factory__o_u_e_w_c_c_CoreEntryPoint__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CurrentBranchProducer>) GWT.create(Type_factory__o_u_e_e_c_c_m_c_CurrentBranchProducer__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<SecretTextField>) GWT.create(Type_factory__o_u_e_p_e_c_f_SecretTextField__quals__j_e_i_Any_j_e_i_Default.class));
+  }
+
+  private void registerFactories1(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DataTypeListShortcuts>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_s_DataTypeListShortcuts__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DocumentationLinksWidget>) GWT.create(Type_factory__o_k_w_c_d_c_e_d_DocumentationLinksWidget__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<VersionMenuDropDownButtonViewImpl>) GWT.create(Type_factory__o_u_e_e_c_c_h_VersionMenuDropDownButtonViewImpl__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3429,10 +3379,8 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<KebabMenu>) GWT.create(Type_factory__o_u_c_v_p_w_KebabMenu__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<StunnerCoreEntryPoint>) GWT.create(Type_factory__o_k_w_c_s_c_StunnerCoreEntryPoint__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PreferencesCentralActionsScreen>) GWT.create(Type_factory__o_u_e_p_c_c_a_PreferencesCentralActionsScreen__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<JSNativeEditor>) GWT.create(Type_factory__o_u_c_e_JSNativeEditor__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ItemDefinitionCreateHandler>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_p_h_ItemDefinitionCreateHandler__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LogBoundsDevCommand>) GWT.create(Type_factory__o_k_w_c_s_c_w_m_d_i_LogBoundsDevCommand__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<JsWorkbenchEditorActivity>) GWT.create(Type_factory__o_u_j_c_e_JsWorkbenchEditorActivity__quals__j_e_i_Any_o_u_j_c_l_AppFormerJsActivityLoader_Shadowed.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DataTypeListItemView>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListItemView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DataTypeSelectView>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_DataTypeSelectView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<MessageConsoleWhiteListImpl>) GWT.create(Type_factory__o_k_w_c_s_s_m_MessageConsoleWhiteListImpl__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3556,7 +3504,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<Model>) GWT.create(Type_factory__o_g_c_s_p_c_Model__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNGraphUtils>) GWT.create(Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<StringRadioGroupFieldRenderer>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_r_s_r_StringRadioGroupFieldRenderer__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<JSEntryPoint>) GWT.create(Type_factory__o_u_c_JSEntryPoint__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<AdminPagePresenter>) GWT.create(Type_factory__o_u_e_p_c_a_AdminPagePresenter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNPageView>) GWT.create(Type_factory__o_k_w_c_d_c_e_c_p_DMNPageView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ProfileSelector>) GWT.create(Type_factory__o_k_w_c_s_c_w_p_ProfileSelector__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3630,7 +3577,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PMMLCardComponentContentView>) GWT.create(Type_factory__o_k_w_c_d_c_e_i_g_PMMLCardComponentContentView__quals__j_e_i_Any_o_k_w_c_d_c_e_i_g_PMMLCard.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<TranslationServiceProvider>) GWT.create(Type_factory__o_j_e_u_c_l_s_TranslationServiceProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ClientUsernameProvider>) GWT.create(Type_factory__o_u_p_c_s_ClientUsernameProvider__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<VFSJSExporter>) GWT.create(Type_factory__o_u_c_e_VFSJSExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNEditorSession>) GWT.create(Type_factory__o_k_w_c_d_c_s_DMNEditorSession__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<AdaptiveWorkbenchPanelPresenter>) GWT.create(Type_factory__o_u_c_w_p_i_AdaptiveWorkbenchPanelPresenter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<KieSelectElementView>) GWT.create(Type_factory__o_k_w_c_w_c_w_KieSelectElementView__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3689,7 +3635,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LayoutDragComponentGroupView>) GWT.create(Type_factory__o_u_e_l_e_c_w_LayoutDragComponentGroupView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DefaultDiagramViewer>) GWT.create(Type_factory__o_k_w_c_s_c_w_p_d_i_DefaultDiagramViewer__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ScrollableLienzoPanel>) GWT.create(Type_factory__o_k_w_c_s_c_w_c_ScrollableLienzoPanel__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<AppFormerJsActivityLoader>) GWT.create(Type_factory__o_u_j_c_l_AppFormerJsActivityLoader__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PanelDefinitionImpl>) GWT.create(Type_factory__o_u_w_m_i_PanelDefinitionImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ColorPickerFieldRenderer>) GWT.create(Type_factory__o_k_w_c_s_f_c_f_c_ColorPickerFieldRenderer__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<FileExportsPreferencesBeanGeneratedImpl>) GWT.create(Type_factory__o_u_e_e_c_f_e_FileExportsPreferencesBeanGeneratedImpl__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3747,7 +3692,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<RowView>) GWT.create(Type_factory__o_u_e_l_e_c_c_r_RowView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<ModuleFormGenerationResourcesProvider>) GWT.create(Type_factory__o_k_w_c_d_a_d_m_f_p_ModuleFormGenerationResourcesProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<CanvasFocusUtils>) GWT.create(Type_factory__o_k_w_c_d_c_d_n_c_CanvasFocusUtils__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<UberfireJSAPIExporter>) GWT.create(Type_factory__o_u_c_e_UberfireJSAPIExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PictureWidget>) GWT.create(Type_factory__o_k_w_c_f_c_r_c_w_p_w_PictureWidget__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<org.kie.workbench.common.widgets.client.kogito.IsKogito>) GWT.create(Type_factory__o_k_w_c_w_c_k_IsKogito__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CutSelectionSessionCommand>) GWT.create(Type_factory__o_k_w_c_s_c_c_s_c_i_CutSelectionSessionCommand__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3807,7 +3751,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<WorkbenchToolBarView>) GWT.create(Type_factory__o_u_c_v_p_t_WorkbenchToolBarView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DataTypeConstraintView>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<HTMLOptionElement>) GWT.create(ExtensionProvided_factory__e_d_HTMLOptionElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<AppFormerJsBridge>) GWT.create(Type_factory__o_u_j_c_AppFormerJsBridge__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<TextBoxFieldRenderer>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_r_TextBoxFieldRenderer__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<AsyncPackageDataModelOracleImpl>) GWT.create(Type_factory__o_k_w_c_w_c_d_AsyncPackageDataModelOracleImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PagedTable>) GWT.create(Type_factory__o_u_e_w_c_c_t_PagedTable__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3822,7 +3765,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CollapsibleFormGroup>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_f_i_n_c_CollapsibleFormGroup__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DataTypeListView>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<KebabMenuItem>) GWT.create(Type_factory__o_u_c_v_p_w_KebabMenuItem__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<SplashScreenJSExporter>) GWT.create(Type_factory__o_u_c_e_SplashScreenJSExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Map>) GWT.create(JsType_factory__j_u_Map__quals__Universal.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<LoadingBox>) GWT.create(Type_factory__o_k_w_c_s_c_w_v_LoadingBox__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ToggleCommentView>) GWT.create(Type_factory__o_u_e_e_c_c_f_p_c_ToggleCommentView__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3913,9 +3855,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ToolbarItemView>) GWT.create(Type_factory__o_k_w_c_s_c_w_t_i_ToolbarItemView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ScalableLienzoPanel>) GWT.create(Type_factory__o_k_w_c_s_c_w_c_ScalableLienzoPanel__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ClosableSimpleWorkbenchPanelPresenter>) GWT.create(Type_factory__o_u_c_w_p_i_ClosableSimpleWorkbenchPanelPresenter__quals__j_e_i_Any_j_e_i_Default.class));
-  }
-
-  private void registerFactories2(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<HTMLDivElement>) GWT.create(ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<ItemDefinitionRecordEngine>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionRecordEngine__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ExportToJpgToolbarCommand>) GWT.create(Type_factory__o_k_w_c_s_c_w_t_c_ExportToJpgToolbarCommand__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3929,6 +3868,9 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LiveSearchFooter>) GWT.create(Type_factory__o_u_e_w_c_c_d_f_LiveSearchFooter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<HTMLTextAreaElement>) GWT.create(ExtensionProvided_factory__e_d_HTMLTextAreaElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<WorkbenchMenuBarView>) GWT.create(Type_factory__o_u_c_v_p_m_WorkbenchMenuBarView__quals__j_e_i_Any_j_e_i_Default.class));
+  }
+
+  private void registerFactories2(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<SessionLoader>) GWT.create(Type_factory__o_k_w_c_s_c_c_s_i_SessionLoader__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<EventProvider>) GWT.create(Type_factory__o_j_e_e_c_c_EventProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<WorkbenchPreferenceScopeResolutionStrategiesImpl>) GWT.create(Type_factory__o_k_w_c_s_s_p_c_WorkbenchPreferenceScopeResolutionStrategiesImpl__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3941,7 +3883,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LayoutHelper>) GWT.create(Type_factory__o_k_w_c_s_c_c_c_l_LayoutHelper__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<GlobalHTMLObserver>) GWT.create(Type_factory__o_a_k_b_c_g_t_o_GlobalHTMLObserver__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<PropertiesPanelNotifier>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<PlaceManagerJSExporter>) GWT.create(Type_factory__o_u_c_e_PlaceManagerJSExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LogNodeEdgesDevCommand>) GWT.create(Type_factory__o_k_w_c_s_c_w_m_d_i_LogNodeEdgesDevCommand__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Heading>) GWT.create(ExtensionProvided_factory__o_j_e_c_c_d_Heading__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<FieldHelp>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_f_l_h_FieldHelp__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4035,7 +3976,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DockPlaceHolderActivity>) GWT.create(Type_factory__o_k_w_c_w_c_d_DockPlaceHolderActivity__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<AnyResourceType>) GWT.create(Type_factory__o_u_c_w_t_AnyResourceType__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<FormWidgetsEntryPoint>) GWT.create(Type_factory__o_k_w_c_f_c_r_c_FormWidgetsEntryPoint__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<AppFormerComponentsRegistry>) GWT.create(Type_factory__o_u_j_c_l_AppFormerComponentsRegistry__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<org.kie.workbench.common.dmn.client.property.dmn.ModuleFieldRendererTypesProvider>) GWT.create(Type_factory__o_k_w_c_d_c_p_d_ModuleFieldRendererTypesProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CanvasHighlight>) GWT.create(Type_factory__o_k_w_c_s_c_c_c_u_CanvasHighlight__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<NotificationManager>) GWT.create(Type_factory__o_u_c_w_w_n_NotificationManager__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4064,7 +4004,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LienzoSvgDataUriGlyphRenderer>) GWT.create(Type_factory__o_k_w_c_s_c_l_c_g_LienzoSvgDataUriGlyphRenderer__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DiagramEditorPropertiesScreen>) GWT.create(Type_factory__o_k_w_c_s_k_c_s_DiagramEditorPropertiesScreen__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<GuidedTourServiceProducer>) GWT.create(Type_factory__o_a_k_b_c_g_t_s_GuidedTourServiceProducer__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<JSNativePerspective>) GWT.create(Type_factory__o_u_c_p_JSNativePerspective__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<PreferenceScopeValidatorImpl>) GWT.create(Type_factory__o_u_p_s_i_PreferenceScopeValidatorImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<FormsCanvasSessionHandler>) GWT.create(Type_factory__o_k_w_c_s_f_c_w_FormsCanvasSessionHandler__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PreferenceScopeResolutionStrategy>) GWT.create(ContextualProvider_factory__o_u_p_s_PreferenceScopeResolutionStrategy__quals__Universal.class));
@@ -4072,7 +4011,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNMarshallerImportsContentServiceKogitoImpl>) GWT.create(Type_factory__o_k_w_c_d_w_k_c_c_i_DMNMarshallerImportsContentServiceKogitoImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<ExperimentalAwareClientTypeRegistryImpl>) GWT.create(Type_factory__o_u_e_c_w_t_ExperimentalAwareClientTypeRegistryImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNDocumentationDRDsFactory>) GWT.create(Type_factory__o_k_w_c_d_c_e_d_c_DMNDocumentationDRDsFactory__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<JSNativeScreen>) GWT.create(Type_factory__o_u_c_s_JSNativeScreen__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DatePickerWrapperViewImpl>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_r_d_i_DatePickerWrapperViewImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DMNMarshallerImportsContentServiceImpl>) GWT.create(Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsContentServiceImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PreferencesRootView>) GWT.create(Type_factory__o_u_e_p_c_c_s_PreferencesRootView__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4112,7 +4050,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<ApplicationCommandManager>) GWT.create(Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PerspectiveDefinition>) GWT.create(JsType_factory__o_u_w_m_PerspectiveDefinition__quals__Universal.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<VisitGraphSessionCommand>) GWT.create(Type_factory__o_k_w_c_s_c_c_s_c_i_VisitGraphSessionCommand__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LazyLoadingScreenActivity>) GWT.create(Type_factory__o_u_j_c_l_LazyLoadingScreenActivity__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DefinitionLookupManagerImpl>) GWT.create(Type_factory__o_k_w_c_s_c_l_d_DefinitionLookupManagerImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ItemDefinitionUpdateHandler>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_p_h_ItemDefinitionUpdateHandler__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<FlashMessages>) GWT.create(Type_factory__o_k_w_c_d_c_e_c_m_FlashMessages__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4169,7 +4106,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DecisionNavigatorPresenter>) GWT.create(Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorPresenter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DocksBars>) GWT.create(Type_factory__o_u_c_d_v_DocksBars__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DisposerProvider>) GWT.create(Type_factory__o_j_e_i_c_a_b_DisposerProvider__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DynamicMenuResourceTypeDefinition>) GWT.create(Type_factory__o_u_e_p_t_DynamicMenuResourceTypeDefinition__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<TimeValueFormatter>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_t_p_TimeValueFormatter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PdfFileExport>) GWT.create(Producer_factory__o_u_e_e_c_c_f_e_PdfFileExport__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Icon>) GWT.create(ExtensionProvided_factory__o_g_c_u_Icon__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4303,7 +4239,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DMNDiagramsSessionState>) GWT.create(Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSessionState__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<TreeWalkTraverseProcessorImpl>) GWT.create(Type_factory__o_k_w_c_s_c_g_p_t_t_TreeWalkTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<org.kie.workbench.common.dmn.client.canvas.controls.builder.ObserverBuilderControl>) GWT.create(Type_factory__o_k_w_c_d_c_c_c_b_ObserverBuilderControl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor_o_k_w_c_s_c_c_c_c_b_i_Observer.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<EditorJSExporter>) GWT.create(Type_factory__o_u_c_e_EditorJSExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<IncludedModelsPageState>) GWT.create(Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageState__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<SessionContainer>) GWT.create(ExtensionProvided_factory__o_k_w_c_s_c_w_p_s_i_SessionContainer__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CommandRegistryProducer>) GWT.create(Type_factory__o_a_k_b_c_s_r_p_CommandRegistryProducer__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4321,7 +4256,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<MorphNodeToolboxAction>) GWT.create(Type_factory__o_k_w_c_s_c_c_c_t_a_MorphNodeToolboxAction__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<StunnerFormsHandler>) GWT.create(Type_factory__o_k_w_c_s_f_c_s_StunnerFormsHandler__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DateSelector>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_l_c_c_t_d_DateSelector__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LazyLoadingScreen>) GWT.create(Type_factory__o_u_j_c_l_LazyLoadingScreen__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<CompassPosition>) GWT.create(JsType_factory__o_u_w_m_CompassPosition__quals__Universal.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ExperimentalFeaturesPerspectiveActivity>) GWT.create(Type_factory__o_u_e_c_p_ExperimentalFeaturesPerspectiveActivity__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<ActivityManagerImpl>) GWT.create(Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4332,7 +4266,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ScreenPanelViewImpl>) GWT.create(Type_factory__o_k_w_c_s_c_w_v_s_ScreenPanelViewImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<PreferenceScopeResolutionStrategyIOCProvider>) GWT.create(Type_factory__o_u_p_c_s_PreferenceScopeResolutionStrategyIOCProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<BooleanEditableColumnGenerator>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_i_BooleanEditableColumnGenerator__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<PerspectiveJSExporter>) GWT.create(Type_factory__o_u_c_e_PerspectiveJSExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ValidationPopupViewImpl>) GWT.create(Type_factory__o_k_w_c_w_c_p_v_ValidationPopupViewImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<MarshallingResponsePopupView>) GWT.create(Type_factory__o_k_w_c_s_c_w_m_MarshallingResponsePopupView__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<WorkbenchPreferenceScopeResolutionStrategy>) GWT.create(Type_factory__o_k_w_c_s_s_p_c_WorkbenchPreferenceScopeResolutionStrategy__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4361,7 +4294,6 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<LayoutEditorPropertiesPresenter>) GWT.create(Type_factory__o_u_e_l_e_c_w_LayoutEditorPropertiesPresenter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<org.jboss.errai.common.client.dom.Button>) GWT.create(ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LayoutElementPropertiesView>) GWT.create(Type_factory__o_u_e_l_e_c_w_LayoutElementPropertiesView__quals__j_e_i_Any_j_e_i_Default.class));
-    org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<ResourceTypeDefinitionJSExporter>) GWT.create(Type_factory__o_u_c_e_ResourceTypeDefinitionJSExporter__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<MousePanMediatorControlImpl>) GWT.create(Type_factory__o_k_w_c_d_c_w_l_MousePanMediatorControlImpl__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ChangeProfileDevCommand>) GWT.create(Type_factory__o_k_w_c_s_c_w_m_d_i_ChangeProfileDevCommand__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<CanvasFileExport>) GWT.create(Type_factory__o_k_w_c_s_c_c_c_u_CanvasFileExport__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4386,7 +4318,7 @@ public class BootstrapperImpl implements Bootstrapper {
     logger.debug("Registering factories with contexts.");
     long start = System.currentTimeMillis();
     registerFactories(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, org_jboss_errai_ioc_client_container_DependentScopeContext_context);
-    logger.debug("Registered 1455 factories in {}ms", System.currentTimeMillis() - start);
+    logger.debug("Registered 1432 factories in {}ms", System.currentTimeMillis() - start);
     logger.debug("Adding contexts to context manager...");
     start = System.currentTimeMillis();
     contextManager.addContext(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context);

@@ -90,17 +90,17 @@ public class Type_factory__o_k_w_c_d_c_m_u_DMNUnmarshaller__quals__j_e_i_Any_j_e
   }
 
   public DMNUnmarshaller createInstance(final ContextManager contextManager) {
-    final Promises _promises_2 = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDiagramsSession _dmnDiagramsSession_5 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final FactoryManager _factoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
-    final DMNMarshallerImportsClientHelper _dmnMarshallerImportsHelper_1 = (DMNMarshallerImportsClientHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsClientHelper__quals__j_e_i_Any_j_e_i_Default");
-    final NodeEntriesFactory _modelToStunnerConverter_3 = (NodeEntriesFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_u_n_NodeEntriesFactory__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramElementsUtils _dmnDiagramElementsUtils_4 = (DMNDiagramElementsUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_c_DMNDiagramElementsUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramsSession _dmnDiagramsSession_5 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
+    final DMNMarshallerImportsClientHelper _dmnMarshallerImportsHelper_1 = (DMNMarshallerImportsClientHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_i_DMNMarshallerImportsClientHelper__quals__j_e_i_Any_j_e_i_Default");
+    final Promises _promises_2 = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
+    final NodeEntriesFactory _modelToStunnerConverter_3 = (NodeEntriesFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_u_n_NodeEntriesFactory__quals__j_e_i_Any_j_e_i_Default");
     final DMNUnmarshaller instance = new DMNUnmarshaller(_factoryManager_0, _dmnMarshallerImportsHelper_1, _promises_2, _modelToStunnerConverter_3, _dmnDiagramElementsUtils_4, _dmnDiagramsSession_5);
-    registerDependentScopedReference(instance, _promises_2);
-    registerDependentScopedReference(instance, _dmnMarshallerImportsHelper_1);
-    registerDependentScopedReference(instance, _modelToStunnerConverter_3);
     registerDependentScopedReference(instance, _dmnDiagramElementsUtils_4);
+    registerDependentScopedReference(instance, _dmnMarshallerImportsHelper_1);
+    registerDependentScopedReference(instance, _promises_2);
+    registerDependentScopedReference(instance, _modelToStunnerConverter_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

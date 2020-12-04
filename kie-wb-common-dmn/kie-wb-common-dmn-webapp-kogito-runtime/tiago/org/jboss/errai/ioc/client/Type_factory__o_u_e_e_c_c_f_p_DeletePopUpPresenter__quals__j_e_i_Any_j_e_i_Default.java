@@ -163,11 +163,11 @@ public class Type_factory__o_u_e_e_c_c_f_p_DeletePopUpPresenter__quals__j_e_i_An
   }
 
   public DeletePopUpPresenter createInstance(final ContextManager contextManager) {
-    final ToggleCommentPresenter _toggleCommentPresenter_1 = (ToggleCommentPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_c_ToggleCommentPresenter__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DeletePopUpView) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_DeletePopUpView__quals__j_e_i_Any_j_e_i_Default");
+    final ToggleCommentPresenter _toggleCommentPresenter_1 = (ToggleCommentPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_c_ToggleCommentPresenter__quals__j_e_i_Any_j_e_i_Default");
     final DeletePopUpPresenter instance = new DeletePopUpPresenter(_view_0, _toggleCommentPresenter_1);
-    registerDependentScopedReference(instance, _toggleCommentPresenter_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _toggleCommentPresenter_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

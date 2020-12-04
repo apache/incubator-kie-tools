@@ -46,12 +46,12 @@ public class Type_factory__o_k_w_c_f_d_c_r_f_l_h_FieldHelpViewImpl__quals__j_e_i
   public FieldHelpViewImpl createInstance(final ContextManager contextManager) {
     final FieldHelpViewImpl instance = new FieldHelpViewImpl();
     setIncompleteInstance(instance);
-    final Anchor FieldHelpViewImpl_helpMessage = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, FieldHelpViewImpl_helpMessage);
-    FieldHelpViewImpl_Anchor_helpMessage(instance, FieldHelpViewImpl_helpMessage);
     final JQuery FieldHelpViewImpl_jQueryPopover = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, FieldHelpViewImpl_jQueryPopover);
     FieldHelpViewImpl_JQuery_jQueryPopover(instance, FieldHelpViewImpl_jQueryPopover);
+    final Anchor FieldHelpViewImpl_helpMessage = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, FieldHelpViewImpl_helpMessage);
+    FieldHelpViewImpl_Anchor_helpMessage(instance, FieldHelpViewImpl_helpMessage);
     o_k_w_c_f_d_c_r_f_l_h_FieldHelpViewImplTemplateResource templateForFieldHelpViewImpl = GWT.create(o_k_w_c_f_d_c_r_f_l_h_FieldHelpViewImplTemplateResource.class);
     Element parentElementForTemplateOfFieldHelpViewImpl = TemplateUtil.getRootTemplateParentElement(templateForFieldHelpViewImpl.getContents().getText(), "org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/labels/help/FieldHelpViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/labels/help/FieldHelpViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfFieldHelpViewImpl));

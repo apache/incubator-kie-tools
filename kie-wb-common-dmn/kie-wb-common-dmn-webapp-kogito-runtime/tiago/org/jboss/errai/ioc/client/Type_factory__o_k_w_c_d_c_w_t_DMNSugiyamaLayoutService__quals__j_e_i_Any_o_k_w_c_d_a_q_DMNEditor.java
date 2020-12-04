@@ -35,16 +35,16 @@ public class Type_factory__o_k_w_c_d_c_w_t_DMNSugiyamaLayoutService__quals__j_e_
 
   public DMNSugiyamaLayoutService createInstance(final ContextManager contextManager) {
     final VertexLayerer _vertexLayerer_1 = (LongestPathVertexLayerer) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_LongestPathVertexLayerer__quals__j_e_i_Any_j_e_i_Default");
-    final DMNGraphProcessor _graphProcessor_4 = (DMNGraphProcessor) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_t_DMNGraphProcessor__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final VertexPositioning _vertexPositioning_3 = (DefaultVertexPositioning) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_DefaultVertexPositioning__quals__j_e_i_Any_j_e_i_Default");
-    final CycleBreaker _cycleBreaker_0 = (ReverseEdgesCycleBreaker) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_ReverseEdgesCycleBreaker__quals__j_e_i_Any_j_e_i_Default");
+    final DMNGraphProcessor _graphProcessor_4 = (DMNGraphProcessor) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_t_DMNGraphProcessor__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final VertexOrdering _vertexOrdering_2 = (DefaultVertexOrdering) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_DefaultVertexOrdering__quals__j_e_i_Any_j_e_i_Default");
+    final CycleBreaker _cycleBreaker_0 = (ReverseEdgesCycleBreaker) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_ReverseEdgesCycleBreaker__quals__j_e_i_Any_j_e_i_Default");
     final DMNSugiyamaLayoutService instance = new DMNSugiyamaLayoutService(_cycleBreaker_0, _vertexLayerer_1, _vertexOrdering_2, _vertexPositioning_3, _graphProcessor_4);
     registerDependentScopedReference(instance, _vertexLayerer_1);
-    registerDependentScopedReference(instance, _graphProcessor_4);
     registerDependentScopedReference(instance, _vertexPositioning_3);
-    registerDependentScopedReference(instance, _cycleBreaker_0);
+    registerDependentScopedReference(instance, _graphProcessor_4);
     registerDependentScopedReference(instance, _vertexOrdering_2);
+    registerDependentScopedReference(instance, _cycleBreaker_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

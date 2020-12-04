@@ -641,6 +641,8 @@ public class Type_factory__o_g_m_c_c_MessageConsoleViewImpl__quals__j_e_i_Any_j_
   public MessageConsoleViewImpl createInstance(final ContextManager contextManager) {
     final MessageConsoleViewImpl instance = new MessageConsoleViewImpl();
     setIncompleteInstance(instance);
+    final PlaceManagerImpl MessageConsoleViewImpl_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    MessageConsoleViewImpl_PlaceManager_placeManager(instance, MessageConsoleViewImpl_placeManager);
     final TranslationService MessageConsoleViewImpl_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, MessageConsoleViewImpl_translationService);
     MessageConsoleViewImpl_TranslationService_translationService(instance, MessageConsoleViewImpl_translationService);
@@ -649,8 +651,6 @@ public class Type_factory__o_g_m_c_c_MessageConsoleViewImpl__quals__j_e_i_Any_j_
     final Clipboard MessageConsoleViewImpl_clipboard = (Clipboard) contextManager.getInstance("Type_factory__o_u_c_u_Clipboard__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, MessageConsoleViewImpl_clipboard);
     MessageConsoleViewImpl_Clipboard_clipboard(instance, MessageConsoleViewImpl_clipboard);
-    final PlaceManagerImpl MessageConsoleViewImpl_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    MessageConsoleViewImpl_PlaceManager_placeManager(instance, MessageConsoleViewImpl_placeManager);
     setIncompleteInstance(null);
     return instance;
   }

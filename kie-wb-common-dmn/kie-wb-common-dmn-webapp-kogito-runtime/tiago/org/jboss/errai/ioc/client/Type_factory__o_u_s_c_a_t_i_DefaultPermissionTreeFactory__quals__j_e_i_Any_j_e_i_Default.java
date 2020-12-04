@@ -110,8 +110,8 @@ public class Type_factory__o_u_s_c_a_t_i_DefaultPermissionTreeFactory__quals__j_
   }
 
   public DefaultPermissionTreeFactory createInstance(final ContextManager contextManager) {
-    final SyncBeanManager _beanManager_1 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final PermissionManager _permissionManager_0 = (DefaultPermissionManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultPermissionManager__quals__j_e_i_Any_j_e_i_Default");
+    final SyncBeanManager _beanManager_1 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final DefaultPermissionTreeFactory instance = new DefaultPermissionTreeFactory(_permissionManager_0, _beanManager_1);
     registerDependentScopedReference(instance, _beanManager_1);
     setIncompleteInstance(instance);

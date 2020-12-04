@@ -38,6 +38,9 @@ public class Type_factory__o_u_e_w_c_c_s_SelectView__quals__j_e_i_Any_j_e_i_Defa
   public SelectView createInstance(final ContextManager contextManager) {
     final SelectView instance = new SelectView();
     setIncompleteInstance(instance);
+    final HTMLUListElement SelectView_options = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, SelectView_options);
+    SelectView_HTMLUListElement_options(instance, SelectView_options);
     final HTMLElement SelectView_selected = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -51,9 +54,6 @@ public class Type_factory__o_u_e_w_c_c_s_SelectView__quals__j_e_i_Any_j_e_i_Defa
     } });
     registerDependentScopedReference(instance, SelectView_selected);
     SelectView_HTMLElement_selected(instance, SelectView_selected);
-    final HTMLUListElement SelectView_options = (HTMLUListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLUListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, SelectView_options);
-    SelectView_HTMLUListElement_options(instance, SelectView_options);
     o_u_e_w_c_c_s_SelectViewTemplateResource templateForSelectView = GWT.create(o_u_e_w_c_c_s_SelectViewTemplateResource.class);
     Element parentElementForTemplateOfSelectView = TemplateUtil.getRootTemplateParentElement(templateForSelectView.getContents().getText(), "org/uberfire/ext/widgets/common/client/select/SelectView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/widgets/common/client/select/SelectView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfSelectView));

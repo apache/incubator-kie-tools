@@ -134,14 +134,14 @@ public class Type_factory__o_k_w_c_d_c_g_DMNElementsSynchronizer__quals__j_e_i_A
   }
 
   public DMNElementsSynchronizer createInstance(final ContextManager contextManager) {
-    final Event<RefreshDecisionComponents> _refreshDecisionComponentsEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshDecisionComponents.class }, new Annotation[] { });
+    final NodeTextSetter _nodeTextSetter_3 = (NodeTextSetter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_NodeTextSetter__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession _dmnDiagramsSession_0 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final DMNGraphUtils _graphUtils_2 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
-    final NodeTextSetter _nodeTextSetter_3 = (NodeTextSetter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_NodeTextSetter__quals__j_e_i_Any_j_e_i_Default");
+    final Event<RefreshDecisionComponents> _refreshDecisionComponentsEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshDecisionComponents.class }, new Annotation[] { });
     final DMNElementsSynchronizer instance = new DMNElementsSynchronizer(_dmnDiagramsSession_0, _refreshDecisionComponentsEvent_1, _graphUtils_2, _nodeTextSetter_3);
-    registerDependentScopedReference(instance, _refreshDecisionComponentsEvent_1);
-    registerDependentScopedReference(instance, _graphUtils_2);
     registerDependentScopedReference(instance, _nodeTextSetter_3);
+    registerDependentScopedReference(instance, _graphUtils_2);
+    registerDependentScopedReference(instance, _refreshDecisionComponentsEvent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

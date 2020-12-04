@@ -218,8 +218,8 @@ public class Type_factory__o_u_c_w_w_n_ActivityNotFoundPresenter__quals__j_e_i_A
   }
 
   public ActivityNotFoundPresenter createInstance(final ContextManager contextManager) {
-    final PopupView _popupView_1 = (PopupViewImpl) contextManager.getInstance("Type_factory__o_u_c_v_p_p_PopupViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final PopupView _popupView_1 = (PopupViewImpl) contextManager.getInstance("Type_factory__o_u_c_v_p_p_PopupViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final ActivityNotFoundPresenter instance = new ActivityNotFoundPresenter(_placeManager_0, _popupView_1);
     registerDependentScopedReference(instance, _popupView_1);
     setIncompleteInstance(instance);

@@ -77,11 +77,11 @@ public class Type_factory__o_u_w_m_AppFormerActivitiesProducer__quals__j_e_i_Any
   public AppFormerActivitiesProducer createInstance(final ContextManager contextManager) {
     final AppFormerActivitiesProducer instance = new AppFormerActivitiesProducer();
     setIncompleteInstance(instance);
-    final DefaultAppFormerActivities AppFormerActivitiesProducer_defaultAppFormerActivities = (DefaultAppFormerActivities) contextManager.getInstance("Type_factory__o_u_w_m_DefaultAppFormerActivities__quals__j_e_i_Any_o_u_a_FallbackImplementation");
-    AppFormerActivitiesProducer_AppFormerActivities_defaultAppFormerActivities(instance, AppFormerActivitiesProducer_defaultAppFormerActivities);
     final Instance AppFormerActivitiesProducer_appFormerActivities = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { AppFormerActivities.class }, new Annotation[] { });
     registerDependentScopedReference(instance, AppFormerActivitiesProducer_appFormerActivities);
     AppFormerActivitiesProducer_Instance_appFormerActivities(instance, AppFormerActivitiesProducer_appFormerActivities);
+    final DefaultAppFormerActivities AppFormerActivitiesProducer_defaultAppFormerActivities = (DefaultAppFormerActivities) contextManager.getInstance("Type_factory__o_u_w_m_DefaultAppFormerActivities__quals__j_e_i_Any_o_u_a_FallbackImplementation");
+    AppFormerActivitiesProducer_AppFormerActivities_defaultAppFormerActivities(instance, AppFormerActivitiesProducer_defaultAppFormerActivities);
     setIncompleteInstance(null);
     return instance;
   }

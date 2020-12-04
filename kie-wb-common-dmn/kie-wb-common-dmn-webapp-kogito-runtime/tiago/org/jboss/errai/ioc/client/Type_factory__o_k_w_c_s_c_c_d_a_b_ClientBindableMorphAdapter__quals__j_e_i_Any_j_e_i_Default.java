@@ -22,10 +22,10 @@ public class Type_factory__o_k_w_c_s_c_c_d_a_b_ClientBindableMorphAdapter__quals
   }
 
   public ClientBindableMorphAdapter createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_2 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final FactoryManager _factoryManager_1 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _beanManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
+    final FactoryManager _factoryManager_1 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final CloneManager _cloneManager_3 = (CloneManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_c_CloneManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_2 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ClientBindableMorphAdapter instance = new ClientBindableMorphAdapter(_beanManager_0, _factoryManager_1, _definitionUtils_2, _cloneManager_3);
     registerDependentScopedReference(instance, _beanManager_0);
     setIncompleteInstance(instance);

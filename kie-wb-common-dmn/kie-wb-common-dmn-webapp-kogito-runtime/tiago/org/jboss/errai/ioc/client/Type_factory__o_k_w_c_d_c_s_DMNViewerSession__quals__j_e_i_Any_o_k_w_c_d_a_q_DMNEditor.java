@@ -31,11 +31,11 @@ public class Type_factory__o_k_w_c_d_c_s_DMNViewerSession__quals__j_e_i_Any_o_k_
   }
 
   public DMNViewerSession createInstance(final ContextManager contextManager) {
-    final CanvasCommandManager<AbstractCanvasHandler> _canvasCommandManager_1 = (CanvasCommandManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_CanvasCommandManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final ManagedSession _session_0 = (ManagedSession) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_i_ManagedSession__quals__j_e_i_Any_j_e_i_Default");
+    final CanvasCommandManager<AbstractCanvasHandler> _canvasCommandManager_1 = (CanvasCommandManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_CanvasCommandManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final DMNViewerSession instance = new DMNViewerSession(_session_0, _canvasCommandManager_1);
-    registerDependentScopedReference(instance, _canvasCommandManager_1);
     registerDependentScopedReference(instance, _session_0);
+    registerDependentScopedReference(instance, _canvasCommandManager_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

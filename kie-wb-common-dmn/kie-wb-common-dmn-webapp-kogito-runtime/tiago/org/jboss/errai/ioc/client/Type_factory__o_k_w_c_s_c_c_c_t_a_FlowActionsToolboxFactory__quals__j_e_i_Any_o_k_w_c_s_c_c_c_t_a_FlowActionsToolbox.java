@@ -33,16 +33,8 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_FlowActionsToolboxFactory__quals_
   }
 
   public FlowActionsToolboxFactory createInstance(final ContextManager contextManager) {
+    final DomainProfileManager _profileManager_2 = (DomainProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_DomainProfileManager__quals__j_e_i_Any_j_e_i_Default");
     final ToolboxDomainLookups _toolboxDomainLookups_1 = (ToolboxDomainLookups) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_t_a_ToolboxDomainLookups__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<CreateConnectorToolboxAction> _createConnectorActions_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CreateConnectorToolboxAction.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
     final ManagedInstance<ActionsToolboxView> _views_5 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxView.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -58,6 +50,15 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_FlowActionsToolboxFactory__quals_
           return "@org.kie.workbench.common.stunner.core.client.components.toolbox.actions.FlowActionsToolbox()";
         }
     } });
+    final ManagedInstance<CreateConnectorToolboxAction> _createConnectorActions_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CreateConnectorToolboxAction.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<CreateNodeToolboxAction> _createNodeActions_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CreateNodeToolboxAction.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -73,10 +74,9 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_FlowActionsToolboxFactory__quals_
           return "@org.kie.workbench.common.stunner.core.client.components.toolbox.actions.FlowActionsToolbox()";
         }
     } });
-    final DomainProfileManager _profileManager_2 = (DomainProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_DomainProfileManager__quals__j_e_i_Any_j_e_i_Default");
     final FlowActionsToolboxFactory instance = new FlowActionsToolboxFactory(_definitionUtils_0, _toolboxDomainLookups_1, _profileManager_2, _createConnectorActions_3, _createNodeActions_4, _views_5);
-    registerDependentScopedReference(instance, _createConnectorActions_3);
     registerDependentScopedReference(instance, _views_5);
+    registerDependentScopedReference(instance, _createConnectorActions_3);
     registerDependentScopedReference(instance, _createNodeActions_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

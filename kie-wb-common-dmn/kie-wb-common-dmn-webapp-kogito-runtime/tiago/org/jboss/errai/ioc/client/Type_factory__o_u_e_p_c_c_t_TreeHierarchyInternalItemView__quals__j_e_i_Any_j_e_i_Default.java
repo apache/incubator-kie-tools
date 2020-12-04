@@ -53,12 +53,12 @@ public class Type_factory__o_u_e_p_c_c_t_TreeHierarchyInternalItemView__quals__j
     final Div TreeHierarchyInternalItemView_treeNode = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, TreeHierarchyInternalItemView_treeNode);
     TreeHierarchyInternalItemView_Div_treeNode(instance, TreeHierarchyInternalItemView_treeNode);
-    final Div TreeHierarchyInternalItemView_children = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, TreeHierarchyInternalItemView_children);
-    TreeHierarchyInternalItemView_Div_children(instance, TreeHierarchyInternalItemView_children);
     final TranslationService TreeHierarchyInternalItemView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, TreeHierarchyInternalItemView_translationService);
     TreeHierarchyInternalItemView_TranslationService_translationService(instance, TreeHierarchyInternalItemView_translationService);
+    final Div TreeHierarchyInternalItemView_children = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, TreeHierarchyInternalItemView_children);
+    TreeHierarchyInternalItemView_Div_children(instance, TreeHierarchyInternalItemView_children);
     o_u_e_p_c_c_t_TreeHierarchyInternalItemViewTemplateResource templateForTreeHierarchyInternalItemView = GWT.create(o_u_e_p_c_c_t_TreeHierarchyInternalItemViewTemplateResource.class);
     Element parentElementForTemplateOfTreeHierarchyInternalItemView = TemplateUtil.getRootTemplateParentElement(templateForTreeHierarchyInternalItemView.getContents().getText(), "org/uberfire/ext/preferences/client/central/tree/TreeHierarchyInternalItemView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/preferences/client/central/tree/TreeHierarchyInternalItemView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfTreeHierarchyInternalItemView));

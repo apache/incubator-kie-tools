@@ -42,12 +42,12 @@ public class Type_factory__o_k_w_c_s_c_w_v_ImageElementRendererViewImpl__quals__
   public ImageElementRendererViewImpl createInstance(final ContextManager contextManager) {
     final ImageElementRendererViewImpl instance = new ImageElementRendererViewImpl();
     setIncompleteInstance(instance);
-    final Div ImageElementRendererViewImpl_icon = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ImageElementRendererViewImpl_icon);
-    ImageElementRendererViewImpl_Div_icon(instance, ImageElementRendererViewImpl_icon);
     final Div ImageElementRendererViewImpl_content = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ImageElementRendererViewImpl_content);
     ImageElementRendererViewImpl_Div_content(instance, ImageElementRendererViewImpl_content);
+    final Div ImageElementRendererViewImpl_icon = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ImageElementRendererViewImpl_icon);
+    ImageElementRendererViewImpl_Div_icon(instance, ImageElementRendererViewImpl_icon);
     o_k_w_c_s_c_w_v_ImageElementRendererViewImplTemplateResource templateForImageElementRendererViewImpl = GWT.create(o_k_w_c_s_c_w_v_ImageElementRendererViewImplTemplateResource.class);
     Element parentElementForTemplateOfImageElementRendererViewImpl = TemplateUtil.getRootTemplateParentElement(templateForImageElementRendererViewImpl.getContents().getText(), "org/kie/workbench/common/stunner/client/widgets/views/ImageElementRendererViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/client/widgets/views/ImageElementRendererViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfImageElementRendererViewImpl));

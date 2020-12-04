@@ -43,15 +43,15 @@ public class Type_factory__o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeView__quals__j
   }
 
   public DecisionNavigatorTreeView createInstance(final ContextManager contextManager) {
+    final HTMLDivElement _items_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final ManagedInstance<TreeItem> _managedInstance_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeItem.class }, new Annotation[] { });
     final Elemental2DomUtil _util_3 = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
     final HTMLDivElement _view_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final ManagedInstance<TreeItem> _managedInstance_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeItem.class }, new Annotation[] { });
-    final HTMLDivElement _items_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DecisionNavigatorTreeView instance = new DecisionNavigatorTreeView(_view_0, _items_1, _managedInstance_2, _util_3);
+    registerDependentScopedReference(instance, _items_1);
+    registerDependentScopedReference(instance, _managedInstance_2);
     registerDependentScopedReference(instance, _util_3);
     registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _managedInstance_2);
-    registerDependentScopedReference(instance, _items_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeViewTemplateResource templateForDecisionNavigatorTreeView = GWT.create(o_k_w_c_d_c_d_n_t_DecisionNavigatorTreeViewTemplateResource.class);
     Element parentElementForTemplateOfDecisionNavigatorTreeView = TemplateUtil.getRootTemplateParentElement(templateForDecisionNavigatorTreeView.getContents().getText(), "org/kie/workbench/common/dmn/client/docks/navigator/tree/DecisionNavigatorTreeView.html", "");

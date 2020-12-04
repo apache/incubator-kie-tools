@@ -46,7 +46,7 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintView__quals__j_
   }
 
   public DataTypeConstraintView createInstance(final ContextManager contextManager) {
-    final HTMLDivElement _constraintsLabelContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _constraintsAnchorContainer_0 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _constraintsAnchorText_2 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -58,19 +58,6 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintView__quals__j_
           return "span";
         }
     } });
-    final HTMLElement _constraintsLabelText_3 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
-        public Class annotationType() {
-          return Named.class;
-        }
-        public String toString() {
-          return "@javax.inject.Named(value=span)";
-        }
-        public String value() {
-          return "span";
-        }
-    } });
-    final HTMLAnchorElement _constraintsAnchorContainer_0 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final TranslationService _translationService_5 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final HTMLElement _constraintsTooltip_4 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -82,13 +69,26 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintView__quals__j_
           return "span";
         }
     } });
+    final HTMLDivElement _constraintsLabelContainer_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLElement _constraintsLabelText_3 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
+        public Class annotationType() {
+          return Named.class;
+        }
+        public String toString() {
+          return "@javax.inject.Named(value=span)";
+        }
+        public String value() {
+          return "span";
+        }
+    } });
+    final TranslationService _translationService_5 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConstraintView instance = new DataTypeConstraintView(_constraintsAnchorContainer_0, _constraintsLabelContainer_1, _constraintsAnchorText_2, _constraintsLabelText_3, _constraintsTooltip_4, _translationService_5);
-    registerDependentScopedReference(instance, _constraintsLabelContainer_1);
-    registerDependentScopedReference(instance, _constraintsAnchorText_2);
-    registerDependentScopedReference(instance, _constraintsLabelText_3);
     registerDependentScopedReference(instance, _constraintsAnchorContainer_0);
-    registerDependentScopedReference(instance, _translationService_5);
+    registerDependentScopedReference(instance, _constraintsAnchorText_2);
     registerDependentScopedReference(instance, _constraintsTooltip_4);
+    registerDependentScopedReference(instance, _constraintsLabelContainer_1);
+    registerDependentScopedReference(instance, _constraintsLabelText_3);
+    registerDependentScopedReference(instance, _translationService_5);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_c_DataTypeConstraintViewTemplateResource templateForDataTypeConstraintView = GWT.create(o_k_w_c_d_c_e_t_l_c_DataTypeConstraintViewTemplateResource.class);
     Element parentElementForTemplateOfDataTypeConstraintView = TemplateUtil.getRootTemplateParentElement(templateForDataTypeConstraintView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/constraint/DataTypeConstraintView.html", "");

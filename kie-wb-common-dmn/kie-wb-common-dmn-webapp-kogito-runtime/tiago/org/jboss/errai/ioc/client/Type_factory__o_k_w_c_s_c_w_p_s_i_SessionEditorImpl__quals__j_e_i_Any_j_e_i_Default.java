@@ -23,9 +23,9 @@ public class Type_factory__o_k_w_c_s_c_w_p_s_i_SessionEditorImpl__quals__j_e_i_A
   }
 
   public SessionEditorImpl createInstance(final ContextManager contextManager) {
+    final StunnerPreferencesRegistries _preferencesRegistries_2 = (StunnerPreferencesRegistries) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_p_StunnerPreferencesRegistries__quals__j_e_i_Any_j_e_i_Default");
     final ScrollableLienzoPanel _canvasPanel_1 = (ScrollableLienzoPanel) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_c_ScrollableLienzoPanel__quals__j_e_i_Any_j_e_i_Default");
     final WidgetWrapperView _view_0 = (WidgetWrapperViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_WidgetWrapperViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final StunnerPreferencesRegistries _preferencesRegistries_2 = (StunnerPreferencesRegistries) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_p_StunnerPreferencesRegistries__quals__j_e_i_Any_j_e_i_Default");
     final SessionEditorImpl instance = new SessionEditorImpl(_view_0, _canvasPanel_1, _preferencesRegistries_2);
     registerDependentScopedReference(instance, _canvasPanel_1);
     registerDependentScopedReference(instance, _view_0);

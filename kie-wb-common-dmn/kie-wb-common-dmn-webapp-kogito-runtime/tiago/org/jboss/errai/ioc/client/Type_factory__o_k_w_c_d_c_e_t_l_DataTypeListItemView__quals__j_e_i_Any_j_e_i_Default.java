@@ -42,12 +42,12 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListItemView__quals__j_e_i_
   }
 
   public DataTypeListItemView createInstance(final ContextManager contextManager) {
-    final HTMLDivElement _view_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final ReadOnlyProvider _readOnlyProvider_2 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final ReadOnlyProvider _readOnlyProvider_2 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final HTMLDivElement _view_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DataTypeListItemView instance = new DataTypeListItemView(_view_0, _translationService_1, _readOnlyProvider_2);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _translationService_1);
+    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_DataTypeListItemViewTemplateResource templateForDataTypeListItemView = GWT.create(o_k_w_c_d_c_e_t_l_DataTypeListItemViewTemplateResource.class);
     Element parentElementForTemplateOfDataTypeListItemView = TemplateUtil.getRootTemplateParentElement(templateForDataTypeListItemView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/DataTypeListItemView.html", "");

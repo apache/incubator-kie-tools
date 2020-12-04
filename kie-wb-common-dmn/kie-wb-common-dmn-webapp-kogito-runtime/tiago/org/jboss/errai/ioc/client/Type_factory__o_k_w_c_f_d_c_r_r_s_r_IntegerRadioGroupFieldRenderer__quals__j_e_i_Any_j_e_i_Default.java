@@ -28,16 +28,16 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_s_r_IntegerRadioGroupFieldRenderer_
   public IntegerRadioGroupFieldRenderer createInstance(final ContextManager contextManager) {
     final IntegerRadioGroupFieldRenderer instance = new IntegerRadioGroupFieldRenderer();
     setIncompleteInstance(instance);
+    final ManagedInstance FieldRenderer_formGroupsInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultFormGroup.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, FieldRenderer_formGroupsInstance);
+    FieldRenderer_ManagedInstance_formGroupsInstance(instance, FieldRenderer_formGroupsInstance);
+    final ClientSelectorDataProviderManager SelectorFieldRenderer_clientProviderManager = (ClientSelectorDataProviderManager) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_c_ClientSelectorDataProviderManager__quals__j_e_i_Any_j_e_i_Default");
+    SelectorFieldRenderer_SelectorDataProviderManager_clientProviderManager(instance, SelectorFieldRenderer_clientProviderManager);
     final ConfigErrorDisplayer FieldRenderer_errorDisplayer = (ConfigErrorDisplayer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_i_c_ConfigErrorDisplayer__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, FieldRenderer_errorDisplayer);
     FieldRenderer_ConfigErrorDisplayer_errorDisplayer(instance, FieldRenderer_errorDisplayer);
     final FormsElementWrapperWidgetUtilImpl FieldRenderer_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
     FieldRenderer_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, FieldRenderer_wrapperWidgetUtil);
-    final ClientSelectorDataProviderManager SelectorFieldRenderer_clientProviderManager = (ClientSelectorDataProviderManager) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_c_ClientSelectorDataProviderManager__quals__j_e_i_Any_j_e_i_Default");
-    SelectorFieldRenderer_SelectorDataProviderManager_clientProviderManager(instance, SelectorFieldRenderer_clientProviderManager);
-    final ManagedInstance FieldRenderer_formGroupsInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultFormGroup.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, FieldRenderer_formGroupsInstance);
-    FieldRenderer_ManagedInstance_formGroupsInstance(instance, FieldRenderer_formGroupsInstance);
     final Caller SelectorFieldRenderer_backendSelectorDataProviderService = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { BackendSelectorDataProviderService.class }, new Annotation[] { });
     registerDependentScopedReference(instance, SelectorFieldRenderer_backendSelectorDataProviderService);
     SelectorFieldRenderer_Caller_backendSelectorDataProviderService(instance, SelectorFieldRenderer_backendSelectorDataProviderService);

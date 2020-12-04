@@ -17,11 +17,11 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraint__quals__j_e_i_
   }
 
   public DataTypeConstraint createInstance(final ContextManager contextManager) {
-    final View _view_0 = (DataTypeConstraintView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintView__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DataTypeConstraintModal> _constraintModalManagedInstance_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DataTypeConstraintModal.class }, new Annotation[] { });
+    final View _view_0 = (DataTypeConstraintView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintView__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConstraint instance = new DataTypeConstraint(_view_0, _constraintModalManagedInstance_1);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _constraintModalManagedInstance_1);
+    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

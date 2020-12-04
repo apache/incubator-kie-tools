@@ -379,11 +379,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>appformer-js-bridge</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>appformer-client-api</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -690,7 +685,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
 
                 <!-- Appformer -->
-                <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
               </compileSourcesArtifacts>

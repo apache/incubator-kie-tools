@@ -20,8 +20,8 @@ public class Type_factory__o_k_w_c_s_c_l_c_c_ContainmentAcceptorControlImpl__qua
   }
 
   public ContainmentAcceptorControlImpl createInstance(final ContextManager contextManager) {
-    final CanvasHighlight _canvasHighlight_1 = (CanvasHighlight) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_u_CanvasHighlight__quals__j_e_i_Any_j_e_i_Default");
     final CanvasCommandFactory<AbstractCanvasHandler> _canvasCommandFactory_0 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
+    final CanvasHighlight _canvasHighlight_1 = (CanvasHighlight) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_u_CanvasHighlight__quals__j_e_i_Any_j_e_i_Default");
     final ContainmentAcceptorControlImpl instance = new ContainmentAcceptorControlImpl(_canvasCommandFactory_0, _canvasHighlight_1);
     registerDependentScopedReference(instance, _canvasHighlight_1);
     setIncompleteInstance(instance);

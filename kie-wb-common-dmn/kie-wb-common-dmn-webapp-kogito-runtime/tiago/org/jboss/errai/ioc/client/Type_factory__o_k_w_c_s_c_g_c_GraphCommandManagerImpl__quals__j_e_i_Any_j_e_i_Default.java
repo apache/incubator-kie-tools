@@ -19,13 +19,13 @@ public class Type_factory__o_k_w_c_s_c_g_c_GraphCommandManagerImpl__quals__j_e_i
   }
 
   public GraphCommandManagerImpl createInstance(final ContextManager contextManager) {
-    final Event<CommandExecutedEvent> _commandExecutedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CommandExecutedEvent.class }, new Annotation[] { });
-    final Event<IsCommandAllowedEvent> _isCommandAllowedEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { IsCommandAllowedEvent.class }, new Annotation[] { });
     final Event<CommandUndoExecutedEvent> _commandUndoExecutedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CommandUndoExecutedEvent.class }, new Annotation[] { });
+    final Event<IsCommandAllowedEvent> _isCommandAllowedEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { IsCommandAllowedEvent.class }, new Annotation[] { });
+    final Event<CommandExecutedEvent> _commandExecutedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CommandExecutedEvent.class }, new Annotation[] { });
     final GraphCommandManagerImpl instance = new GraphCommandManagerImpl(_isCommandAllowedEvent_0, _commandExecutedEvent_1, _commandUndoExecutedEvent_2);
-    registerDependentScopedReference(instance, _commandExecutedEvent_1);
-    registerDependentScopedReference(instance, _isCommandAllowedEvent_0);
     registerDependentScopedReference(instance, _commandUndoExecutedEvent_2);
+    registerDependentScopedReference(instance, _isCommandAllowedEvent_0);
+    registerDependentScopedReference(instance, _commandExecutedEvent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

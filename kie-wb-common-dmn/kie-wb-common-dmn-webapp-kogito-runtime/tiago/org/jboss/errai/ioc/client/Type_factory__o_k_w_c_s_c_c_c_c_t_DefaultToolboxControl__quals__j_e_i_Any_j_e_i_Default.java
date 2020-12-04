@@ -29,21 +29,6 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_t_DefaultToolboxControl__quals__j_e
   }
 
   public DefaultToolboxControl createInstance(final ContextManager contextManager) {
-    final ManagedInstance<ActionsToolboxFactory> _morphActionsToolboxFactories_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxFactory.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-      }, new MorphActionsToolbox() {
-        public Class annotationType() {
-          return MorphActionsToolbox.class;
-        }
-        public String toString() {
-          return "@org.kie.workbench.common.stunner.core.client.components.toolbox.actions.MorphActionsToolbox()";
-        }
-    } });
     final ManagedInstance<ActionsToolboxFactory> _flowActionsToolboxFactories_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxFactory.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -74,10 +59,25 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_t_DefaultToolboxControl__quals__j_e
           return "@org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CommonActionsToolbox()";
         }
     } });
+    final ManagedInstance<ActionsToolboxFactory> _morphActionsToolboxFactories_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxFactory.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+      }, new MorphActionsToolbox() {
+        public Class annotationType() {
+          return MorphActionsToolbox.class;
+        }
+        public String toString() {
+          return "@org.kie.workbench.common.stunner.core.client.components.toolbox.actions.MorphActionsToolbox()";
+        }
+    } });
     final DefaultToolboxControl instance = new DefaultToolboxControl(_flowActionsToolboxFactories_0, _morphActionsToolboxFactories_1, _commonActionsToolboxFactories_2);
-    registerDependentScopedReference(instance, _morphActionsToolboxFactories_1);
     registerDependentScopedReference(instance, _flowActionsToolboxFactories_0);
     registerDependentScopedReference(instance, _commonActionsToolboxFactories_2);
+    registerDependentScopedReference(instance, _morphActionsToolboxFactories_1);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onCanvasSelectionEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent", new AbstractCDIEventCallback<CanvasSelectionEvent>() {
       public void fireEvent(final CanvasSelectionEvent event) {

@@ -1,4 +1,4 @@
-// .ui.xml template last modified: 1607021867087
+// .ui.xml template last modified: 1607095267966
 package org.kie.workbench.common.widgets.client.popups.text;
 
 import com.google.gwt.core.client.GWT;

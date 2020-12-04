@@ -27,8 +27,8 @@ public class Type_factory__o_k_w_c_s_c_c_s_c_i_CopySelectionSessionCommand__qual
   }
 
   public CopySelectionSessionCommand createInstance(final ContextManager contextManager) {
-    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final Event<CopySelectionSessionCommandExecutedEvent> _commandExecutedEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CopySelectionSessionCommandExecutedEvent.class }, new Annotation[] { });
+    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final CopySelectionSessionCommand instance = new CopySelectionSessionCommand(_commandExecutedEvent_0, _sessionManager_1);
     registerDependentScopedReference(instance, _commandExecutedEvent_0);
     setIncompleteInstance(instance);

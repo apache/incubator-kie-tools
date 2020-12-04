@@ -33,23 +33,23 @@ public class Type_factory__o_u_e_l_e_c_c_c_Container__quals__j_e_i_Any_j_e_i_Def
   }
 
   public Container createInstance(final ContextManager contextManager) {
-    final Instance<EmptyDropRow> _emptyDropRowInstance_3 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { EmptyDropRow.class }, new Annotation[] { });
-    final View _view_0 = (ContainerView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_c_ContainerView__quals__j_e_i_Any_j_e_i_Default");
     final Event<LockRequiredEvent> _lockRequiredEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LockRequiredEvent.class }, new Annotation[] { });
-    final LayoutEditorCssHelper _layoutCssHelper_1 = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
-    final Event<LayoutEditorElementUnselectEvent> _containerUnselectEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementUnselectEvent.class }, new Annotation[] { });
-    final Instance<Row> _rowInstance_2 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { Row.class }, new Annotation[] { });
     final Event<ComponentDropEvent> _componentDropEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ComponentDropEvent.class }, new Annotation[] { });
-    final Event<LayoutEditorElementSelectEvent> _containerSelectEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementSelectEvent.class }, new Annotation[] { });
-    final LayoutEditorFocusController _layoutEditorFocusController_9 = (LayoutEditorFocusController) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorFocusController__quals__j_e_i_Any_j_e_i_Default");
+    final Instance<EmptyDropRow> _emptyDropRowInstance_3 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { EmptyDropRow.class }, new Annotation[] { });
+    final Event<LayoutEditorElementUnselectEvent> _containerUnselectEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementUnselectEvent.class }, new Annotation[] { });
     final DnDManager _dndManager_8 = (DnDManager) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_DnDManager__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_0 = (ContainerView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_c_ContainerView__quals__j_e_i_Any_j_e_i_Default");
+    final Instance<Row> _rowInstance_2 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { Row.class }, new Annotation[] { });
+    final Event<LayoutEditorElementSelectEvent> _containerSelectEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementSelectEvent.class }, new Annotation[] { });
+    final LayoutEditorCssHelper _layoutCssHelper_1 = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
+    final LayoutEditorFocusController _layoutEditorFocusController_9 = (LayoutEditorFocusController) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorFocusController__quals__j_e_i_Any_j_e_i_Default");
     final Container instance = new Container(_view_0, _layoutCssHelper_1, _rowInstance_2, _emptyDropRowInstance_3, _componentDropEvent_4, _containerSelectEvent_5, _containerUnselectEvent_6, _lockRequiredEvent_7, _dndManager_8, _layoutEditorFocusController_9);
-    registerDependentScopedReference(instance, _emptyDropRowInstance_3);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _lockRequiredEvent_7);
-    registerDependentScopedReference(instance, _containerUnselectEvent_6);
-    registerDependentScopedReference(instance, _rowInstance_2);
     registerDependentScopedReference(instance, _componentDropEvent_4);
+    registerDependentScopedReference(instance, _emptyDropRowInstance_3);
+    registerDependentScopedReference(instance, _containerUnselectEvent_6);
+    registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _rowInstance_2);
     registerDependentScopedReference(instance, _containerSelectEvent_5);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "swapRowsSubscription", CDI.subscribeLocal("org.uberfire.ext.layout.editor.client.components.rows.RowDnDEvent", new AbstractCDIEventCallback<RowDnDEvent>() {

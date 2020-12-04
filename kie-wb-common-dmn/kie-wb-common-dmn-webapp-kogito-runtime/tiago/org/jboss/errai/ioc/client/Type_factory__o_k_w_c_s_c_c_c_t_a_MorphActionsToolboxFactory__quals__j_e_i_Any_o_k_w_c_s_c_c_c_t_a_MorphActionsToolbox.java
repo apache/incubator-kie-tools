@@ -31,6 +31,16 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_MorphActionsToolboxFactory__quals
   }
 
   public MorphActionsToolboxFactory createInstance(final ContextManager contextManager) {
+    final DomainProfileManager _profileManager_1 = (DomainProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_DomainProfileManager__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<MorphNodeToolboxAction> _morphNodeActions_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { MorphNodeToolboxAction.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
     final ManagedInstance<ActionsToolboxView> _views_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxView.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -46,19 +56,9 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_MorphActionsToolboxFactory__quals
           return "@org.kie.workbench.common.stunner.core.client.components.toolbox.actions.MorphActionsToolbox()";
         }
     } });
-    final ManagedInstance<MorphNodeToolboxAction> _morphNodeActions_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { MorphNodeToolboxAction.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
-    final DomainProfileManager _profileManager_1 = (DomainProfileManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_p_DomainProfileManager__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final MorphActionsToolboxFactory instance = new MorphActionsToolboxFactory(_definitionUtils_0, _profileManager_1, _morphNodeActions_2, _views_3);
-    registerDependentScopedReference(instance, _views_3);
     registerDependentScopedReference(instance, _morphNodeActions_2);
+    registerDependentScopedReference(instance, _views_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

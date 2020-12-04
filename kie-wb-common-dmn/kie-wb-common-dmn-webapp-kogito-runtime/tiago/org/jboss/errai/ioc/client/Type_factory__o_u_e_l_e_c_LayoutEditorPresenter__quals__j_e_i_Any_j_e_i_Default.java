@@ -22,12 +22,12 @@ public class Type_factory__o_u_e_l_e_c_LayoutEditorPresenter__quals__j_e_i_Any_j
   }
 
   public LayoutEditorPresenter createInstance(final ContextManager contextManager) {
-    final Container _container_1 = (Container) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_c_Container__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (LayoutEditorView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_LayoutEditorView__quals__j_e_i_Any_j_e_i_Default");
+    final Container _container_1 = (Container) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_c_Container__quals__j_e_i_Any_j_e_i_Default");
     final LayoutGenerator _layoutGenerator_2 = (BootstrapLayoutGenerator) contextManager.getInstance("Type_factory__o_u_e_l_e_c_g_BootstrapLayoutGenerator__quals__j_e_i_Any_j_e_i_Default");
     final LayoutEditorPresenter instance = new LayoutEditorPresenter(_view_0, _container_1, _layoutGenerator_2);
-    registerDependentScopedReference(instance, _container_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _container_1);
     registerDependentScopedReference(instance, _layoutGenerator_2);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onLayoutPropertyChangedEventSubscription", CDI.subscribeLocal("org.uberfire.ext.layout.editor.client.event.LayoutElementPropertyChangedEvent", new AbstractCDIEventCallback<LayoutElementPropertyChangedEvent>() {

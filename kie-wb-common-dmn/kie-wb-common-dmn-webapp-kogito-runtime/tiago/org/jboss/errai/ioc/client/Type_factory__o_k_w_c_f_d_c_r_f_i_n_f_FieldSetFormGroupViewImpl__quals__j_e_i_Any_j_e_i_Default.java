@@ -43,20 +43,6 @@ public class Type_factory__o_k_w_c_f_d_c_r_f_i_n_f_FieldSetFormGroupViewImpl__qu
   public FieldSetFormGroupViewImpl createInstance(final ContextManager contextManager) {
     final FieldSetFormGroupViewImpl instance = new FieldSetFormGroupViewImpl();
     setIncompleteInstance(instance);
-    final FormsElementWrapperWidgetUtilImpl FieldSetFormGroupViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
-    FieldSetFormGroupViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, FieldSetFormGroupViewImpl_wrapperWidgetUtil);
-    final Span FieldSetFormGroupViewImpl_legendText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_legendText);
-    FieldSetFormGroupViewImpl_Span_legendText(instance, FieldSetFormGroupViewImpl_legendText);
-    final Div FieldSetFormGroupViewImpl_formGroup = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_formGroup);
-    FieldSetFormGroupViewImpl_Div_formGroup(instance, FieldSetFormGroupViewImpl_formGroup);
-    final Div FieldSetFormGroupViewImpl_helpBlock = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_helpBlock);
-    FieldSetFormGroupViewImpl_Div_helpBlock(instance, FieldSetFormGroupViewImpl_helpBlock);
-    final FieldRequired FieldSetFormGroupViewImpl_fieldRequired = (FieldRequired) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_r_FieldRequired__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_fieldRequired);
-    FieldSetFormGroupViewImpl_FieldRequired_fieldRequired(instance, FieldSetFormGroupViewImpl_fieldRequired);
     final HTMLElement FieldSetFormGroupViewImpl_legend = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -70,9 +56,23 @@ public class Type_factory__o_k_w_c_f_d_c_r_f_i_n_f_FieldSetFormGroupViewImpl__qu
     } });
     registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_legend);
     FieldSetFormGroupViewImpl_HTMLElement_legend(instance, FieldSetFormGroupViewImpl_legend);
+    final Span FieldSetFormGroupViewImpl_legendText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_legendText);
+    FieldSetFormGroupViewImpl_Span_legendText(instance, FieldSetFormGroupViewImpl_legendText);
+    final Div FieldSetFormGroupViewImpl_helpBlock = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_helpBlock);
+    FieldSetFormGroupViewImpl_Div_helpBlock(instance, FieldSetFormGroupViewImpl_helpBlock);
+    final FormsElementWrapperWidgetUtilImpl FieldSetFormGroupViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
+    FieldSetFormGroupViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, FieldSetFormGroupViewImpl_wrapperWidgetUtil);
     final FieldHelp FieldSetFormGroupViewImpl_fieldHelp = (FieldHelp) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_h_FieldHelp__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_fieldHelp);
     FieldSetFormGroupViewImpl_FieldHelp_fieldHelp(instance, FieldSetFormGroupViewImpl_fieldHelp);
+    final Div FieldSetFormGroupViewImpl_formGroup = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_formGroup);
+    FieldSetFormGroupViewImpl_Div_formGroup(instance, FieldSetFormGroupViewImpl_formGroup);
+    final FieldRequired FieldSetFormGroupViewImpl_fieldRequired = (FieldRequired) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_r_FieldRequired__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, FieldSetFormGroupViewImpl_fieldRequired);
+    FieldSetFormGroupViewImpl_FieldRequired_fieldRequired(instance, FieldSetFormGroupViewImpl_fieldRequired);
     o_k_w_c_f_d_c_r_f_i_n_f_FieldSetFormGroupViewImplTemplateResource templateForFieldSetFormGroupViewImpl = GWT.create(o_k_w_c_f_d_c_r_f_i_n_f_FieldSetFormGroupViewImplTemplateResource.class);
     Element parentElementForTemplateOfFieldSetFormGroupViewImpl = TemplateUtil.getRootTemplateParentElement(templateForFieldSetFormGroupViewImpl.getContents().getText(), "org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/impl/nestedForm/fieldSet/FieldSetFormGroupViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/impl/nestedForm/fieldSet/FieldSetFormGroupViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfFieldSetFormGroupViewImpl));
@@ -145,20 +145,20 @@ public class Type_factory__o_k_w_c_f_d_c_r_f_i_n_f_FieldSetFormGroupViewImpl__qu
     instance.@org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroupViewImpl::legendText = value;
   }-*/;
 
-  native static FieldRequired FieldSetFormGroupViewImpl_FieldRequired_fieldRequired(FieldSetFormGroupViewImpl instance) /*-{
-    return instance.@org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroupViewImpl::fieldRequired;
-  }-*/;
-
-  native static void FieldSetFormGroupViewImpl_FieldRequired_fieldRequired(FieldSetFormGroupViewImpl instance, FieldRequired value) /*-{
-    instance.@org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroupViewImpl::fieldRequired = value;
-  }-*/;
-
   native static FieldHelp FieldSetFormGroupViewImpl_FieldHelp_fieldHelp(FieldSetFormGroupViewImpl instance) /*-{
     return instance.@org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroupViewImpl::fieldHelp;
   }-*/;
 
   native static void FieldSetFormGroupViewImpl_FieldHelp_fieldHelp(FieldSetFormGroupViewImpl instance, FieldHelp value) /*-{
     instance.@org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroupViewImpl::fieldHelp = value;
+  }-*/;
+
+  native static FieldRequired FieldSetFormGroupViewImpl_FieldRequired_fieldRequired(FieldSetFormGroupViewImpl instance) /*-{
+    return instance.@org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroupViewImpl::fieldRequired;
+  }-*/;
+
+  native static void FieldSetFormGroupViewImpl_FieldRequired_fieldRequired(FieldSetFormGroupViewImpl instance, FieldRequired value) /*-{
+    instance.@org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroupViewImpl::fieldRequired = value;
   }-*/;
 
   native static Div FieldSetFormGroupViewImpl_Div_helpBlock(FieldSetFormGroupViewImpl instance) /*-{

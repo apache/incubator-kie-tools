@@ -1,4 +1,4 @@
-// .ui.xml template last modified: 1607021640189
+// .ui.xml template last modified: 1607093019059
 package org.guvnor.messageconsole.client.console;
 
 import com.google.gwt.core.client.GWT;

@@ -143,8 +143,8 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_u_s_UndefinedExpressionSelectorPopo
 
   public UndefinedExpressionSelectorPopoverImpl createInstance(final ContextManager contextManager) {
     final UndefinedExpressionSelectorPopoverView _view_0 = (UndefinedExpressionSelectorPopoverViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_u_s_UndefinedExpressionSelectorPopoverViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final Supplier<ExpressionEditorDefinitions> _expressionEditorDefinitionsSupplier_2 = (ExpressionEditorDefinitionsProducer) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_ExpressionEditorDefinitionsProducer__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final UndefinedExpressionSelectorPopoverImpl instance = new UndefinedExpressionSelectorPopoverImpl(_view_0, _translationService_1, _expressionEditorDefinitionsSupplier_2);
     registerDependentScopedReference(instance, _translationService_1);
     setIncompleteInstance(instance);

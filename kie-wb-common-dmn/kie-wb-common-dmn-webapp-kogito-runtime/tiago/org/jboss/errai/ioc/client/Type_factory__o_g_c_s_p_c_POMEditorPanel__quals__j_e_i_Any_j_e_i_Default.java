@@ -20,14 +20,14 @@ public class Type_factory__o_g_c_s_p_c_POMEditorPanel__quals__j_e_i_Any_j_e_i_De
   }
 
   public POMEditorPanel createInstance(final ContextManager contextManager) {
-    final GAVPreferences _gavPreferences_2 = (GAVPreferencesBeanGeneratedImpl) contextManager.getInstance("Type_factory__o_g_c_s_p_p_GAVPreferencesBeanGeneratedImpl__quals__j_e_i_Any_j_e_i_Default");
+    final ProjectScopedResolutionStrategySupplier _projectScopedResolutionStrategySupplier_3 = (ProjectScopedResolutionStrategySupplier) contextManager.getInstance("Type_factory__o_g_c_s_p_c_p_ProjectScopedResolutionStrategySupplier__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _iocManager_1 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final POMEditorPanelView _view_0 = (POMEditorPanelViewImpl) contextManager.getInstance("Type_factory__o_g_c_s_p_c_POMEditorPanelViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ProjectScopedResolutionStrategySupplier _projectScopedResolutionStrategySupplier_3 = (ProjectScopedResolutionStrategySupplier) contextManager.getInstance("Type_factory__o_g_c_s_p_c_p_ProjectScopedResolutionStrategySupplier__quals__j_e_i_Any_j_e_i_Default");
+    final GAVPreferences _gavPreferences_2 = (GAVPreferencesBeanGeneratedImpl) contextManager.getInstance("Type_factory__o_g_c_s_p_p_GAVPreferencesBeanGeneratedImpl__quals__j_e_i_Any_j_e_i_Default");
     final POMEditorPanel instance = new POMEditorPanel(_view_0, _iocManager_1, _gavPreferences_2, _projectScopedResolutionStrategySupplier_3);
-    registerDependentScopedReference(instance, _gavPreferences_2);
     registerDependentScopedReference(instance, _iocManager_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _gavPreferences_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

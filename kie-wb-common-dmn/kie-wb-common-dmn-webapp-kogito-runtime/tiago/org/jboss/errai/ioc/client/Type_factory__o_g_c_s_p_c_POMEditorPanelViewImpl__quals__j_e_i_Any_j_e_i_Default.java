@@ -27,13 +27,13 @@ public class Type_factory__o_g_c_s_p_c_POMEditorPanelViewImpl__quals__j_e_i_Any_
   }
 
   public POMEditorPanelViewImpl createInstance(final ContextManager contextManager) {
-    final GAVEditor _parentGavEditor_1 = (GAVEditor) contextManager.getInstance("Type_factory__o_g_c_s_p_c_GAVEditor__quals__j_e_i_Any_j_e_i_Default");
-    final GAVEditor _gavEditor_2 = (GAVEditor) contextManager.getInstance("Type_factory__o_g_c_s_p_c_GAVEditor__quals__j_e_i_Any_j_e_i_Default");
     final Event<NotificationEvent> _notificationEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
+    final GAVEditor _gavEditor_2 = (GAVEditor) contextManager.getInstance("Type_factory__o_g_c_s_p_c_GAVEditor__quals__j_e_i_Any_j_e_i_Default");
+    final GAVEditor _parentGavEditor_1 = (GAVEditor) contextManager.getInstance("Type_factory__o_g_c_s_p_c_GAVEditor__quals__j_e_i_Any_j_e_i_Default");
     final POMEditorPanelViewImpl instance = new POMEditorPanelViewImpl(_notificationEvent_0, _parentGavEditor_1, _gavEditor_2);
-    registerDependentScopedReference(instance, _parentGavEditor_1);
-    registerDependentScopedReference(instance, _gavEditor_2);
     registerDependentScopedReference(instance, _notificationEvent_0);
+    registerDependentScopedReference(instance, _gavEditor_2);
+    registerDependentScopedReference(instance, _parentGavEditor_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

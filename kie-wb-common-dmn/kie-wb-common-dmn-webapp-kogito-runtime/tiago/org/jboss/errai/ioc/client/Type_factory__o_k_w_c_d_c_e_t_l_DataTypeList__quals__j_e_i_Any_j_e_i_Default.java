@@ -304,21 +304,21 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_DataTypeList__quals__j_e_i_Any_j_e_
   }
 
   public DataTypeList createInstance(final ContextManager contextManager) {
-    final DNDListComponent _dndListComponent_4 = (DNDListComponent) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_d_DNDListComponent__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeSearchBar _searchBar_3 = (DataTypeSearchBar) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBar__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeListHighlightHelper _highlightHelper_7 = (DataTypeListHighlightHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListHighlightHelper__quals__j_e_i_Any_j_e_i_Default");
-    final org.kie.workbench.common.widgets.client.kogito.IsKogito _isKogito_8 = (IsKogito) contextManager.getInstance("Type_factory__o_k_w_c_k_w_b_c_w_IsKogito__quals__j_e_i_Any_j_e_i_Default");
-    final DNDDataTypesHandler _dndDataTypesHandler_6 = (DNDDataTypesHandler) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_d_DNDDataTypesHandler__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DataTypeListItem> _listItems_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DataTypeListItem.class }, new Annotation[] { });
+    final DataTypeSearchBar _searchBar_3 = (DataTypeSearchBar) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBar__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DataTypeListView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListView__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeManager _dataTypeManager_2 = (DataTypeManager) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManager__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeListHighlightHelper _highlightHelper_7 = (DataTypeListHighlightHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeListHighlightHelper__quals__j_e_i_Any_j_e_i_Default");
+    final DNDListComponent _dndListComponent_4 = (DNDListComponent) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_d_DNDListComponent__quals__j_e_i_Any_j_e_i_Default");
+    final org.kie.workbench.common.widgets.client.kogito.IsKogito _isKogito_8 = (IsKogito) contextManager.getInstance("Type_factory__o_k_w_c_k_w_b_c_w_IsKogito__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeStackHash _dataTypeStackHash_5 = (DataTypeStackHash) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeStackHash__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeManager _dataTypeManager_2 = (DataTypeManager) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManager__quals__j_e_i_Any_j_e_i_Default");
+    final DNDDataTypesHandler _dndDataTypesHandler_6 = (DNDDataTypesHandler) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_d_DNDDataTypesHandler__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeList instance = new DataTypeList(_view_0, _listItems_1, _dataTypeManager_2, _searchBar_3, _dndListComponent_4, _dataTypeStackHash_5, _dndDataTypesHandler_6, _highlightHelper_7, _isKogito_8);
-    registerDependentScopedReference(instance, _dndListComponent_4);
-    registerDependentScopedReference(instance, _highlightHelper_7);
-    registerDependentScopedReference(instance, _dndDataTypesHandler_6);
     registerDependentScopedReference(instance, _listItems_1);
+    registerDependentScopedReference(instance, _highlightHelper_7);
+    registerDependentScopedReference(instance, _dndListComponent_4);
     registerDependentScopedReference(instance, _dataTypeManager_2);
+    registerDependentScopedReference(instance, _dndDataTypesHandler_6);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

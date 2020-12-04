@@ -21,11 +21,11 @@ public class Type_factory__o_k_w_c_s_c_c_v_c_CanvasDiagramValidator__quals__j_e_
 
   public CanvasDiagramValidator createInstance(final ContextManager contextManager) {
     final DiagramValidator<Diagram, RuleViolation> _diagramValidator_0 = (ClientDiagramValidator) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_v_ClientDiagramValidator__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasValidationSuccessEvent> _validationSuccessEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasValidationSuccessEvent.class }, new Annotation[] { });
     final Event<CanvasValidationFailEvent> _validationFailEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasValidationFailEvent.class }, new Annotation[] { });
+    final Event<CanvasValidationSuccessEvent> _validationSuccessEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasValidationSuccessEvent.class }, new Annotation[] { });
     final CanvasDiagramValidator instance = new CanvasDiagramValidator(_diagramValidator_0, _validationSuccessEvent_1, _validationFailEvent_2);
-    registerDependentScopedReference(instance, _validationSuccessEvent_1);
     registerDependentScopedReference(instance, _validationFailEvent_2);
+    registerDependentScopedReference(instance, _validationSuccessEvent_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

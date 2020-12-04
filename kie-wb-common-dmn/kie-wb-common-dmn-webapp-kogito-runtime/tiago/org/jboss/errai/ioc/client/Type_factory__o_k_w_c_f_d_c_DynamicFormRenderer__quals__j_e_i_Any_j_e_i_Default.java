@@ -19,12 +19,12 @@ public class Type_factory__o_k_w_c_f_d_c_DynamicFormRenderer__quals__j_e_i_Any_j
 
   public DynamicFormRenderer createInstance(final ContextManager contextManager) {
     final DynamicFormRendererView _view_0 = (DynamicFormRendererViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_DynamicFormRendererViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final DynamicFormModelGenerator _dynamicFormModelGenerator_2 = (DynamicFormModelGenerator) contextManager.getInstance("Type_factory__o_k_w_c_f_d_s_s_a_DynamicFormModelGenerator__quals__j_e_i_Any_j_e_i_Default");
     final FormHandlerGeneratorManager _formHandlerGenerator_1 = (FormHandlerGeneratorManager) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_i_FormHandlerGeneratorManager__quals__j_e_i_Any_j_e_i_Default");
+    final DynamicFormModelGenerator _dynamicFormModelGenerator_2 = (DynamicFormModelGenerator) contextManager.getInstance("Type_factory__o_k_w_c_f_d_s_s_a_DynamicFormModelGenerator__quals__j_e_i_Any_j_e_i_Default");
     final DynamicFormRenderer instance = new DynamicFormRenderer(_view_0, _formHandlerGenerator_1, _dynamicFormModelGenerator_2);
     registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _dynamicFormModelGenerator_2);
     registerDependentScopedReference(instance, _formHandlerGenerator_1);
+    registerDependentScopedReference(instance, _dynamicFormModelGenerator_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

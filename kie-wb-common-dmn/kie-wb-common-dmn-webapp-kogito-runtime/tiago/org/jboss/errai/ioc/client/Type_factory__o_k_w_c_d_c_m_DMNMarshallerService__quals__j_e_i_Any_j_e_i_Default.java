@@ -28,17 +28,17 @@ public class Type_factory__o_k_w_c_d_c_m_DMNMarshallerService__quals__j_e_i_Any_
   }
 
   public DMNMarshallerService createInstance(final ContextManager contextManager) {
-    final DMNDiagramsSession _dmnDiagramsSession_5 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
-    final WorkspaceProjectContext _projectContext_6 = (WorkspaceProjectContext) contextManager.getInstance("Type_factory__o_g_c_s_p_c_c_WorkspaceProjectContext__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CurrentRegistryChangedEvent> _currentRegistryChangedEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CurrentRegistryChangedEvent.class }, new Annotation[] { });
     final DMNMarshaller _dmnMarshaller_1 = (DMNMarshaller) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_m_DMNMarshaller__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramsSession _dmnDiagramsSession_5 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final DMNUnmarshaller _dmnUnmarshaller_0 = (DMNUnmarshaller) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_u_DMNUnmarshaller__quals__j_e_i_Any_j_e_i_Default");
     final Promises _promises_4 = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDiagramFactory _dmnDiagramFactory_2 = (DMNDiagramFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_a_f_DMNDiagramFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
+    final WorkspaceProjectContext _projectContext_6 = (WorkspaceProjectContext) contextManager.getInstance("Type_factory__o_g_c_s_p_c_c_WorkspaceProjectContext__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_3 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CurrentRegistryChangedEvent> _currentRegistryChangedEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CurrentRegistryChangedEvent.class }, new Annotation[] { });
+    final DMNDiagramFactory _dmnDiagramFactory_2 = (DMNDiagramFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_a_f_DMNDiagramFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
     final DMNMarshallerService instance = new DMNMarshallerService(_dmnUnmarshaller_0, _dmnMarshaller_1, _dmnDiagramFactory_2, _definitionManager_3, _promises_4, _dmnDiagramsSession_5, _projectContext_6, _currentRegistryChangedEvent_7);
-    registerDependentScopedReference(instance, _currentRegistryChangedEvent_7);
     registerDependentScopedReference(instance, _promises_4);
+    registerDependentScopedReference(instance, _currentRegistryChangedEvent_7);
     registerDependentScopedReference(instance, _dmnDiagramFactory_2);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onDiagramSelectedSubscription", CDI.subscribeLocal("org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramSelected", new AbstractCDIEventCallback<DMNDiagramSelected>() {

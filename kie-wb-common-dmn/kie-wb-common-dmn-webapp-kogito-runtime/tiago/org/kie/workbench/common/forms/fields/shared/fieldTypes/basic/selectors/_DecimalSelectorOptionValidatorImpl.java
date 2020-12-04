@@ -59,53 +59,7 @@ public class _DecimalSelectorOptionValidatorImpl extends com.google.gwt.validati
           java.lang.Double.class,
           false,beanMetadata,
           value_c0);
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> text_c0  = 
-      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
-          .setAnnotation( 
-              new javax.validation.constraints.NotNull(){
-                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
-                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
-                  public java.lang.Class[] groups() { return new java.lang.Class[] {};}
-                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
-              }
-              )
-          .setAttributes(attributeBuilder()
-            .put("message", "{javax.validation.constraints.NotNull.message}")
-            .put("payload", new java.lang.Class[] {})
-            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
-            .build())
-          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
-          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
-          .setPayload(new java.lang.Class[] {})
-          .setReportAsSingleViolation(false)
-          .setElementType(java.lang.annotation.ElementType.FIELD)
-          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
-          .build();
-  
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> text_c1_0  = 
-      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
-          .setAnnotation( 
-              new javax.validation.constraints.NotNull(){
-                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
-                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
-                  public java.lang.Class[] groups() { return new java.lang.Class[] {javax.validation.groups.Default.class};}
-                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
-              }
-              )
-          .setAttributes(attributeBuilder()
-            .put("message", "{javax.validation.constraints.NotNull.message}")
-            .put("payload", new java.lang.Class[] {})
-            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
-            .build())
-          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
-          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
-          .setPayload(new java.lang.Class[] {})
-          .setReportAsSingleViolation(false)
-          .setElementType(java.lang.annotation.ElementType.FIELD)
-          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
-          .build();
-  
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Size> text_c1_1  = 
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Size> text_c0_0  = 
       com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.Size> builder()
           .setAnnotation( 
               new javax.validation.constraints.Size(){
@@ -132,7 +86,30 @@ public class _DecimalSelectorOptionValidatorImpl extends com.google.gwt.validati
           .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
           .build();
   
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<org.hibernate.validator.constraints.NotEmpty> text_c1  = 
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> text_c0_1  = 
+      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
+          .setAnnotation( 
+              new javax.validation.constraints.NotNull(){
+                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
+                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
+                  public java.lang.Class[] groups() { return new java.lang.Class[] {javax.validation.groups.Default.class};}
+                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
+              }
+              )
+          .setAttributes(attributeBuilder()
+            .put("message", "{javax.validation.constraints.NotNull.message}")
+            .put("payload", new java.lang.Class[] {})
+            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
+            .build())
+          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
+          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
+          .setPayload(new java.lang.Class[] {})
+          .setReportAsSingleViolation(false)
+          .setElementType(java.lang.annotation.ElementType.FIELD)
+          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
+          .build();
+  
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<org.hibernate.validator.constraints.NotEmpty> text_c0  = 
       com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<org.hibernate.validator.constraints.NotEmpty> builder()
           .setAnnotation( 
               new org.hibernate.validator.constraints.NotEmpty(){
@@ -148,11 +125,34 @@ public class _DecimalSelectorOptionValidatorImpl extends com.google.gwt.validati
             .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
             .build())
           .setConstraintValidatorClasses(new java.lang.Class[] {})
-          .addComposingConstraint(text_c1_0)
-          .addComposingConstraint(text_c1_1)
+          .addComposingConstraint(text_c0_0)
+          .addComposingConstraint(text_c0_1)
           .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
           .setPayload(new java.lang.Class[] {})
           .setReportAsSingleViolation(true)
+          .setElementType(java.lang.annotation.ElementType.FIELD)
+          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
+          .build();
+  
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.NotNull> text_c1  = 
+      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.NotNull> builder()
+          .setAnnotation( 
+              new javax.validation.constraints.NotNull(){
+                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.NotNull.class; }
+                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
+                  public java.lang.Class[] groups() { return new java.lang.Class[] {};}
+                  public java.lang.String message() { return "{javax.validation.constraints.NotNull.message}";}
+              }
+              )
+          .setAttributes(attributeBuilder()
+            .put("message", "{javax.validation.constraints.NotNull.message}")
+            .put("payload", new java.lang.Class[] {})
+            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
+            .build())
+          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.NotNullValidator.class})
+          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
+          .setPayload(new java.lang.Class[] {})
+          .setReportAsSingleViolation(false)
           .setElementType(java.lang.annotation.ElementType.FIELD)
           .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
           .build();
@@ -369,15 +369,15 @@ public class _DecimalSelectorOptionValidatorImpl extends com.google.gwt.validati
       throw new ValidationException("TraversableResolver isReachable caused an exception", e);
     }
     if (isReachable) {
-      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), text_c0, groups);
       // Report org.hibernate.validator.constraints.NotEmpty as Single Violation
-      Set<ConstraintViolation<T>> text_c1_violations = 
+      Set<ConstraintViolation<T>> text_c0_violations = 
           new HashSet<ConstraintViolation<T>>();
-      if (validate(myContext, text_c1_violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), text_c1_0, groups) ||
-          validate(myContext, text_c1_violations, object, value, new org.hibernate.validator.constraints.impl.SizeValidatorForString(), text_c1_1, groups) ||
+      if (validate(myContext, text_c0_violations, object, value, new org.hibernate.validator.constraints.impl.SizeValidatorForString(), text_c0_0, groups) ||
+          validate(myContext, text_c0_violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), text_c0_1, groups) ||
           false ) {
-        addSingleViolation(myContext, violations, object, value, text_c1);
+        addSingleViolation(myContext, violations, object, value, text_c0);
       }
+      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.NotNullValidator(), text_c1, groups);
     }
   }
   
@@ -403,12 +403,12 @@ public class _DecimalSelectorOptionValidatorImpl extends com.google.gwt.validati
   }
   
   // Write the wrappers after we know which are needed
-  private native java.lang.String _text(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption object) /*-{
-    return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption::text;
-  }-*/;
-  
   private native java.lang.Double _value(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption object) /*-{
     return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption::value;
+  }-*/;
+  
+  private native java.lang.String _text(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption object) /*-{
+    return object.@org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption::text;
   }-*/;
   
   

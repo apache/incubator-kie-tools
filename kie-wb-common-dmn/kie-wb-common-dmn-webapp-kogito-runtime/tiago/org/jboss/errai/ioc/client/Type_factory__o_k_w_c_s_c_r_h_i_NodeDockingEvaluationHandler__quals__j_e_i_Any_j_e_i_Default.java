@@ -108,8 +108,8 @@ public class Type_factory__o_k_w_c_s_c_r_h_i_NodeDockingEvaluationHandler__quals
   }
 
   public NodeDockingEvaluationHandler createInstance(final ContextManager contextManager) {
-    final DockingEvaluationHandler _dockingHandler_1 = (DockingEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_DockingEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final DockingEvaluationHandler _dockingHandler_1 = (DockingEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_DockingEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
     final NodeDockingEvaluationHandler instance = new NodeDockingEvaluationHandler(_definitionManager_0, _dockingHandler_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

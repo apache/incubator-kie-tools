@@ -131,12 +131,12 @@ public class Type_factory__o_k_w_c_w_c_p_l_AppLauncherPresenter__quals__j_e_i_An
   public AppLauncherPresenter createInstance(final ContextManager contextManager) {
     final AppLauncherPresenter instance = new AppLauncherPresenter();
     setIncompleteInstance(instance);
-    final AppLauncherView AppLauncherPresenter_view = (AppLauncherView) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_l_AppLauncherView__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, AppLauncherPresenter_view);
-    AppLauncherPresenter_AppLauncherView_view(instance, AppLauncherPresenter_view);
     final Event AppLauncherPresenter_updatedEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { AppLauncherUpdatedEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, AppLauncherPresenter_updatedEvent);
     AppLauncherPresenter_Event_updatedEvent(instance, AppLauncherPresenter_updatedEvent);
+    final AppLauncherView AppLauncherPresenter_view = (AppLauncherView) contextManager.getInstance("Type_factory__o_k_w_c_w_c_p_l_AppLauncherView__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, AppLauncherPresenter_view);
+    AppLauncherPresenter_AppLauncherView_view(instance, AppLauncherPresenter_view);
     setIncompleteInstance(null);
     return instance;
   }

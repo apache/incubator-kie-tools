@@ -14,11 +14,11 @@ public class Type_factory__o_u_e_e_c_c_f_p_CopyPopUpPresenter__quals__j_e_i_Any_
   }
 
   public CopyPopUpPresenter createInstance(final ContextManager contextManager) {
-    final ToggleCommentPresenter _toggleCommentPresenter_1 = (ToggleCommentPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_c_ToggleCommentPresenter__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (View) contextManager.getInstance("Producer_factory__o_u_e_e_c_c_f_p_CopyPopUpPresenter_View__quals__j_e_i_Any_o_u_e_e_c_c_f_Customizable");
+    final ToggleCommentPresenter _toggleCommentPresenter_1 = (ToggleCommentPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_c_ToggleCommentPresenter__quals__j_e_i_Any_j_e_i_Default");
     final CopyPopUpPresenter instance = new CopyPopUpPresenter(_view_0, _toggleCommentPresenter_1);
-    registerDependentScopedReference(instance, _toggleCommentPresenter_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _toggleCommentPresenter_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

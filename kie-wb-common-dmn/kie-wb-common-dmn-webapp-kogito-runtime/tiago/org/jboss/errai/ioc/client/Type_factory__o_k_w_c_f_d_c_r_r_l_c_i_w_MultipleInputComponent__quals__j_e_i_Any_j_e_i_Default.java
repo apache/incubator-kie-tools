@@ -18,8 +18,8 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_MultipleInputComponent__qua
   }
 
   public MultipleInputComponent createInstance(final ContextManager contextManager) {
-    final MultipleInputComponentView _view_0 = (MultipleInputComponentViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_MultipleInputComponentViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final EditableColumnGeneratorManager _columnGeneratorManager_1 = (EditableColumnGeneratorManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_i_EditableColumnGeneratorManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final MultipleInputComponentView _view_0 = (MultipleInputComponentViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_MultipleInputComponentViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final MultipleInputComponent instance = new MultipleInputComponent(_view_0, _columnGeneratorManager_1);
     registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);

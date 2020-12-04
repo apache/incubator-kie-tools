@@ -50,15 +50,9 @@ public class Type_factory__o_k_w_c_d_c_e_t_i_ImportDataObjectModalView__quals__j
   }
 
   public ImportDataObjectModalView createInstance(final ContextManager contextManager) {
-    final TreeList _treeList_3 = (TreeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_i_t_TreeList__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLDivElement _body_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _footer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLAnchorElement _clearSelection_7 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ManagedInstance<TreeListItem> _items_8 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { TreeListItem.class }, new Annotation[] { });
     final HTMLButtonElement _buttonImport_9 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLLabelElement _noteLabel_5 = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _warningContainer_11 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _itemsContainer_6 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _clearSelection_7 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _noteText_4 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -70,21 +64,27 @@ public class Type_factory__o_k_w_c_d_c_e_t_i_ImportDataObjectModalView__quals__j
           return "span";
         }
     } });
+    final HTMLDivElement _body_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _warningContainer_11 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _footer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _header_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _itemsContainer_6 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _buttonCancel_10 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TreeList _treeList_3 = (TreeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_i_t_TreeList__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLLabelElement _noteLabel_5 = (HTMLLabelElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLLabelElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ImportDataObjectModalView instance = new ImportDataObjectModalView(_header_0, _body_1, _footer_2, _treeList_3, _noteText_4, _noteLabel_5, _itemsContainer_6, _clearSelection_7, _items_8, _buttonImport_9, _buttonCancel_10, _warningContainer_11);
-    registerDependentScopedReference(instance, _treeList_3);
-    registerDependentScopedReference(instance, _body_1);
-    registerDependentScopedReference(instance, _footer_2);
-    registerDependentScopedReference(instance, _clearSelection_7);
     registerDependentScopedReference(instance, _items_8);
     registerDependentScopedReference(instance, _buttonImport_9);
-    registerDependentScopedReference(instance, _noteLabel_5);
-    registerDependentScopedReference(instance, _warningContainer_11);
-    registerDependentScopedReference(instance, _itemsContainer_6);
+    registerDependentScopedReference(instance, _clearSelection_7);
     registerDependentScopedReference(instance, _noteText_4);
+    registerDependentScopedReference(instance, _body_1);
+    registerDependentScopedReference(instance, _warningContainer_11);
+    registerDependentScopedReference(instance, _footer_2);
     registerDependentScopedReference(instance, _header_0);
+    registerDependentScopedReference(instance, _itemsContainer_6);
     registerDependentScopedReference(instance, _buttonCancel_10);
+    registerDependentScopedReference(instance, _treeList_3);
+    registerDependentScopedReference(instance, _noteLabel_5);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_i_ImportDataObjectModalViewTemplateResource templateForImportDataObjectModalView = GWT.create(o_k_w_c_d_c_e_t_i_ImportDataObjectModalViewTemplateResource.class);
     Element parentElementForTemplateOfImportDataObjectModalView = TemplateUtil.getRootTemplateParentElement(templateForImportDataObjectModalView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/imported/ImportDataObjectModalView.html", "");

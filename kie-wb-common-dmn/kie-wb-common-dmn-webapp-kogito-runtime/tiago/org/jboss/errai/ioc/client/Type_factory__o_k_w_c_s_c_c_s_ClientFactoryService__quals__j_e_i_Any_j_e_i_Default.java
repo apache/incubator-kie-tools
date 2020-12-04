@@ -104,8 +104,8 @@ public class Type_factory__o_k_w_c_s_c_c_s_ClientFactoryService__quals__j_e_i_An
   }
 
   public ClientFactoryService createInstance(final ContextManager contextManager) {
-    final ClientFactoryManager _clientFactoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final Caller<FactoryService> _factoryServiceCaller_1 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { FactoryService.class }, new Annotation[] { });
+    final ClientFactoryManager _clientFactoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final ClientFactoryService instance = new ClientFactoryService(_clientFactoryManager_0, _factoryServiceCaller_1);
     registerDependentScopedReference(instance, _factoryServiceCaller_1);
     setIncompleteInstance(instance);

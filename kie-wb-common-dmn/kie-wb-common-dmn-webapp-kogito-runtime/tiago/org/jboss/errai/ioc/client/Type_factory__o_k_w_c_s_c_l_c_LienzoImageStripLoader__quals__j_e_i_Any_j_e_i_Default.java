@@ -16,9 +16,9 @@ public class Type_factory__o_k_w_c_s_c_l_c_LienzoImageStripLoader__quals__j_e_i_
   }
 
   public LienzoImageStripLoader createInstance(final ContextManager contextManager) {
+    final ImageStripRegistry _stripRegistry_1 = (ImageStripRegistry) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ImageStripRegistry__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final LienzoImageStrips _lienzoImageStrips_2 = (LienzoImageStrips) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_LienzoImageStrips__quals__j_e_i_Any_j_e_i_Default");
-    final ImageStripRegistry _stripRegistry_1 = (ImageStripRegistry) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ImageStripRegistry__quals__j_e_i_Any_j_e_i_Default");
     final LienzoImageStripLoader instance = new LienzoImageStripLoader(_definitionUtils_0, _stripRegistry_1, _lienzoImageStrips_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

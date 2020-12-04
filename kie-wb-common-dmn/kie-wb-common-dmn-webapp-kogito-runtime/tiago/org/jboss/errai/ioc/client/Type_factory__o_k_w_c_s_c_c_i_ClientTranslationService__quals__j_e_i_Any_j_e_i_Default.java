@@ -21,13 +21,13 @@ public class Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_
   }
 
   public ClientTranslationService createInstance(final ContextManager contextManager) {
-    final TranslationService _erraiTranslationService_0 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DiagramElementNameProvider> _elementNameProviders_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DiagramElementNameProvider.class }, new Annotation[] { });
+    final TranslationService _erraiTranslationService_0 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final SessionManager _sessionManager_2 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ClientTranslationService instance = new ClientTranslationService(_erraiTranslationService_0, _elementNameProviders_1, _sessionManager_2, _definitionUtils_3);
-    registerDependentScopedReference(instance, _erraiTranslationService_0);
     registerDependentScopedReference(instance, _elementNameProviders_1);
+    registerDependentScopedReference(instance, _erraiTranslationService_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

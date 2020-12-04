@@ -89,9 +89,9 @@ public class Type_factory__o_k_w_c_s_c_d_c_DeepCloneProcess__quals__j_e_i_Any_j_
   }
 
   public DeepCloneProcess createInstance(final ContextManager contextManager) {
-    final AdapterManager _adapterManager_1 = (AdapterManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_a_AdapterManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ClassUtils _classUtils_2 = (ClassUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_ClassUtils__quals__j_e_i_Any_j_e_i_Default");
     final FactoryManager _factoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
+    final ClassUtils _classUtils_2 = (ClassUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_ClassUtils__quals__j_e_i_Any_j_e_i_Default");
+    final AdapterManager _adapterManager_1 = (AdapterManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_a_AdapterManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final DeepCloneProcess instance = new DeepCloneProcess(_factoryManager_0, _adapterManager_1, _classUtils_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
