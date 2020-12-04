@@ -55,12 +55,12 @@ public class Type_factory__o_u_e_w_c_c_e_d_DefaultFileEditorPresenterActivity__q
     final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final DefaultFileEditorPresenterActivity instance = new DefaultFileEditorPresenterActivity(_placeManager_0);
     setIncompleteInstance(instance);
-    final Instance AbstractWorkbenchEditorActivity_lockManagerProvider = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { LockManager.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
-    AbstractWorkbenchEditorActivity_Instance_lockManagerProvider(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
     final DefaultFileEditorPresenter DefaultFileEditorPresenterActivity_realPresenter = (DefaultFileEditorPresenter) contextManager.getInstance("Type_factory__o_u_e_w_c_c_e_d_DefaultFileEditorPresenter__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DefaultFileEditorPresenterActivity_realPresenter);
     DefaultFileEditorPresenterActivity_DefaultFileEditorPresenter_realPresenter(instance, DefaultFileEditorPresenterActivity_realPresenter);
+    final Instance AbstractWorkbenchEditorActivity_lockManagerProvider = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { LockManager.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
+    AbstractWorkbenchEditorActivity_Instance_lockManagerProvider(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
     setIncompleteInstance(null);
     return instance;
   }

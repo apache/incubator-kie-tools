@@ -1,4 +1,4 @@
-// .ui.xml template last modified: 1607097915143
+// .ui.xml template last modified: 1607102287392
 package org.kie.workbench.common.stunner.client.widgets.explorer.navigator.item;
 
 import com.google.gwt.core.client.GWT;

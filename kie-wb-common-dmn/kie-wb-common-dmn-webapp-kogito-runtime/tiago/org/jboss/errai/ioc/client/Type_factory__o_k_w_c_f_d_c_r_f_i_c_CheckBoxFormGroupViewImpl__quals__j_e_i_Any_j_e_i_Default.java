@@ -38,14 +38,14 @@ public class Type_factory__o_k_w_c_f_d_c_r_f_i_c_CheckBoxFormGroupViewImpl__qual
   public CheckBoxFormGroupViewImpl createInstance(final ContextManager contextManager) {
     final CheckBoxFormGroupViewImpl instance = new CheckBoxFormGroupViewImpl();
     setIncompleteInstance(instance);
-    final FormsElementWrapperWidgetUtilImpl CheckBoxFormGroupViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
-    CheckBoxFormGroupViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, CheckBoxFormGroupViewImpl_wrapperWidgetUtil);
-    final FieldLabel CheckBoxFormGroupViewImpl_fieldLabel = (FieldLabel) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_l_FieldLabel__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, CheckBoxFormGroupViewImpl_fieldLabel);
-    CheckBoxFormGroupViewImpl_FieldLabel_fieldLabel(instance, CheckBoxFormGroupViewImpl_fieldLabel);
     final Div CheckBoxFormGroupViewImpl_helpBlock = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, CheckBoxFormGroupViewImpl_helpBlock);
     CheckBoxFormGroupViewImpl_Div_helpBlock(instance, CheckBoxFormGroupViewImpl_helpBlock);
+    final FieldLabel CheckBoxFormGroupViewImpl_fieldLabel = (FieldLabel) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_f_l_l_FieldLabel__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, CheckBoxFormGroupViewImpl_fieldLabel);
+    CheckBoxFormGroupViewImpl_FieldLabel_fieldLabel(instance, CheckBoxFormGroupViewImpl_fieldLabel);
+    final FormsElementWrapperWidgetUtilImpl CheckBoxFormGroupViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
+    CheckBoxFormGroupViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, CheckBoxFormGroupViewImpl_wrapperWidgetUtil);
     o_k_w_c_f_d_c_r_f_i_c_CheckBoxFormGroupViewImplTemplateResource templateForCheckBoxFormGroupViewImpl = GWT.create(o_k_w_c_f_d_c_r_f_i_c_CheckBoxFormGroupViewImplTemplateResource.class);
     Element parentElementForTemplateOfCheckBoxFormGroupViewImpl = TemplateUtil.getRootTemplateParentElement(templateForCheckBoxFormGroupViewImpl.getContents().getText(), "org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/impl/checkbox/CheckBoxFormGroupViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/dynamic/client/rendering/formGroups/impl/checkbox/CheckBoxFormGroupViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfCheckBoxFormGroupViewImpl));

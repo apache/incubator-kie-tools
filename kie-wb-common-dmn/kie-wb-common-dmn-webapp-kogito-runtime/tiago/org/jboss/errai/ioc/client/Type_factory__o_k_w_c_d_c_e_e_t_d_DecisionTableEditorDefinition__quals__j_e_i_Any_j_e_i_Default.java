@@ -182,26 +182,26 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_d_DecisionTableEditorDefinition__qu
   }
 
   public DecisionTableEditorDefinition createInstance(final ContextManager contextManager) {
-    final org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView.Presenter _listSelector_7 = (ListSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelector__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView.Presenter> _headerEditors_10 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView.Presenter.class }, new Annotation[] { });
-    final Event<ExpressionEditorChanged> _editorSelectedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ExpressionEditorChanged.class }, new Annotation[] { });
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_8 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final ReadOnlyProvider _readOnlyProvider_12 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
-    final Event<RefreshFormPropertiesEvent> _refreshFormPropertiesEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
-    final DecisionTableEditorDefinitionEnricher _enricher_11 = (DecisionTableEditorDefinitionEnricher) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_DecisionTableEditorDefinitionEnricher__quals__j_e_i_Any_j_e_i_Default");
-    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_2 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
-    final org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView.Presenter _hitPolicyEditor_9 = (HitPolicyPopoverImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_h_HitPolicyPopoverImpl__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final DefaultCanvasCommandFactory _canvasCommandFactory_3 = (DefaultCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_f_DefaultCanvasCommandFactory__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final SessionManager _sessionManager_1 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<RefreshFormPropertiesEvent> _refreshFormPropertiesEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_2 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<ExpressionEditorChanged> _editorSelectedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ExpressionEditorChanged.class }, new Annotation[] { });
+    final org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView.Presenter _listSelector_7 = (ListSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelector__quals__j_e_i_Any_j_e_i_Default");
     final Event<DomainObjectSelectionEvent> _domainObjectSelectionEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DomainObjectSelectionEvent.class }, new Annotation[] { });
+    final ReadOnlyProvider _readOnlyProvider_12 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final ManagedInstance<org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView.Presenter> _headerEditors_10 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView.Presenter.class }, new Annotation[] { });
+    final org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView.Presenter _hitPolicyEditor_9 = (HitPolicyPopoverImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_h_HitPolicyPopoverImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DecisionTableEditorDefinitionEnricher _enricher_11 = (DecisionTableEditorDefinitionEnricher) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_DecisionTableEditorDefinitionEnricher__quals__j_e_i_Any_j_e_i_Default");
     final DecisionTableEditorDefinition instance = new DecisionTableEditorDefinition(_definitionUtils_0, _sessionManager_1, _sessionCommandManager_2, _canvasCommandFactory_3, _editorSelectedEvent_4, _refreshFormPropertiesEvent_5, _domainObjectSelectionEvent_6, _listSelector_7, _translationService_8, _hitPolicyEditor_9, _headerEditors_10, _enricher_11, _readOnlyProvider_12);
-    registerDependentScopedReference(instance, _listSelector_7);
-    registerDependentScopedReference(instance, _headerEditors_10);
-    registerDependentScopedReference(instance, _editorSelectedEvent_4);
     registerDependentScopedReference(instance, _translationService_8);
     registerDependentScopedReference(instance, _refreshFormPropertiesEvent_5);
+    registerDependentScopedReference(instance, _editorSelectedEvent_4);
+    registerDependentScopedReference(instance, _listSelector_7);
     registerDependentScopedReference(instance, _domainObjectSelectionEvent_6);
+    registerDependentScopedReference(instance, _headerEditors_10);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

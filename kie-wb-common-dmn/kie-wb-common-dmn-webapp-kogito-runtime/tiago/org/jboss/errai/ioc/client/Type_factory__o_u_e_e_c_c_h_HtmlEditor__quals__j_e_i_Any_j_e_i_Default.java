@@ -48,45 +48,45 @@ public class Type_factory__o_u_e_e_c_c_h_HtmlEditor__quals__j_e_i_Any_j_e_i_Defa
     registerDependentScopedReference(instance, _editor_1);
     registerDependentScopedReference(instance, _htmlEditorService_2);
     setIncompleteInstance(instance);
-    final DefaultFileNameValidator BaseEditor_fileNameValidator = (DefaultFileNameValidator) contextManager.getInstance("Type_factory__o_u_e_e_c_c_v_DefaultFileNameValidator__quals__j_e_i_Any_j_e_i_Default");
-    BaseEditor_DefaultFileNameValidator_fileNameValidator(instance, BaseEditor_fileNameValidator);
-    final SaveAndRenameCommandBuilder BaseEditor_saveAndRenameCommandBuilder = (SaveAndRenameCommandBuilder) contextManager.getInstance("Type_factory__o_u_e_e_c_c_m_c_SaveAndRenameCommandBuilder__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, BaseEditor_saveAndRenameCommandBuilder);
-    BaseEditor_SaveAndRenameCommandBuilder_saveAndRenameCommandBuilder(instance, BaseEditor_saveAndRenameCommandBuilder);
-    final Event BaseEditor_concurrentDeleteIgnoredEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ConcurrentDeleteIgnoredEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, BaseEditor_concurrentDeleteIgnoredEvent);
-    BaseEditor_Event_concurrentDeleteIgnoredEvent(instance, BaseEditor_concurrentDeleteIgnoredEvent);
-    final DownloadMenuItemBuilder BaseEditor_downloadMenuItemBuilder = (DownloadMenuItemBuilder) contextManager.getInstance("Type_factory__o_u_e_e_c_c_m_DownloadMenuItemBuilder__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, BaseEditor_downloadMenuItemBuilder);
-    BaseEditor_DownloadMenuItemBuilder_downloadMenuItemBuilder(instance, BaseEditor_downloadMenuItemBuilder);
-    final DeletePopUpPresenter BaseEditor_deletePopUpPresenter = (DeletePopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_DeletePopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
-    BaseEditor_DeletePopUpPresenter_deletePopUpPresenter(instance, BaseEditor_deletePopUpPresenter);
-    final Event BaseEditor_concurrentRenameIgnoredEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ConcurrentRenameIgnoredEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, BaseEditor_concurrentRenameIgnoredEvent);
-    BaseEditor_Event_concurrentRenameIgnoredEvent(instance, BaseEditor_concurrentRenameIgnoredEvent);
-    final ManagedInstance BaseEditor_menuBuilderManagedInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { BasicFileMenuBuilder.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, BaseEditor_menuBuilderManagedInstance);
-    BaseEditor_ManagedInstance_menuBuilderManagedInstance(instance, BaseEditor_menuBuilderManagedInstance);
+    final Event BaseEditor_changeTitleNotification = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, BaseEditor_changeTitleNotification);
+    BaseEditor_Event_changeTitleNotification(instance, BaseEditor_changeTitleNotification);
     final Event BaseEditor_concurrentDeleteAcceptedEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ConcurrentDeleteAcceptedEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, BaseEditor_concurrentDeleteAcceptedEvent);
     BaseEditor_Event_concurrentDeleteAcceptedEvent(instance, BaseEditor_concurrentDeleteAcceptedEvent);
     final Event BaseEditor_concurrentRenameAcceptedEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ConcurrentRenameAcceptedEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, BaseEditor_concurrentRenameAcceptedEvent);
     BaseEditor_Event_concurrentRenameAcceptedEvent(instance, BaseEditor_concurrentRenameAcceptedEvent);
+    final SaveAndRenameCommandBuilder BaseEditor_saveAndRenameCommandBuilder = (SaveAndRenameCommandBuilder) contextManager.getInstance("Type_factory__o_u_e_e_c_c_m_c_SaveAndRenameCommandBuilder__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, BaseEditor_saveAndRenameCommandBuilder);
+    BaseEditor_SaveAndRenameCommandBuilder_saveAndRenameCommandBuilder(instance, BaseEditor_saveAndRenameCommandBuilder);
+    final DownloadMenuItemBuilder BaseEditor_downloadMenuItemBuilder = (DownloadMenuItemBuilder) contextManager.getInstance("Type_factory__o_u_e_e_c_c_m_DownloadMenuItemBuilder__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, BaseEditor_downloadMenuItemBuilder);
+    BaseEditor_DownloadMenuItemBuilder_downloadMenuItemBuilder(instance, BaseEditor_downloadMenuItemBuilder);
     final Promises BaseEditor_promises = (Promises) contextManager.getInstance("Type_factory__o_u_c_p_Promises__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, BaseEditor_promises);
     BaseEditor_Promises_promises(instance, BaseEditor_promises);
+    final ManagedInstance BaseEditor_menuBuilderManagedInstance = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { BasicFileMenuBuilder.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, BaseEditor_menuBuilderManagedInstance);
+    BaseEditor_ManagedInstance_menuBuilderManagedInstance(instance, BaseEditor_menuBuilderManagedInstance);
     final BasicFileMenuBuilderImpl BaseEditor_menuBuilder = (BasicFileMenuBuilderImpl) contextManager.getInstance("Type_factory__o_u_e_e_c_c_m_BasicFileMenuBuilderImpl__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, BaseEditor_menuBuilder);
     BaseEditor_BasicFileMenuBuilder_menuBuilder(instance, BaseEditor_menuBuilder);
-    final PlaceManagerImpl BaseEditor_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    BaseEditor_PlaceManager_placeManager(instance, BaseEditor_placeManager);
-    final Event BaseEditor_changeTitleNotification = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ChangeTitleWidgetEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, BaseEditor_changeTitleNotification);
-    BaseEditor_Event_changeTitleNotification(instance, BaseEditor_changeTitleNotification);
+    final Event BaseEditor_concurrentDeleteIgnoredEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ConcurrentDeleteIgnoredEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, BaseEditor_concurrentDeleteIgnoredEvent);
+    BaseEditor_Event_concurrentDeleteIgnoredEvent(instance, BaseEditor_concurrentDeleteIgnoredEvent);
     final VersionRecordManager BaseEditor_versionRecordManager = (VersionRecordManager) contextManager.getInstance("Type_factory__o_u_e_e_c_c_h_VersionRecordManager__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, BaseEditor_versionRecordManager);
     BaseEditor_VersionRecordManager_versionRecordManager(instance, BaseEditor_versionRecordManager);
+    final PlaceManagerImpl BaseEditor_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    BaseEditor_PlaceManager_placeManager(instance, BaseEditor_placeManager);
+    final Event BaseEditor_concurrentRenameIgnoredEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ConcurrentRenameIgnoredEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, BaseEditor_concurrentRenameIgnoredEvent);
+    BaseEditor_Event_concurrentRenameIgnoredEvent(instance, BaseEditor_concurrentRenameIgnoredEvent);
+    final DeletePopUpPresenter BaseEditor_deletePopUpPresenter = (DeletePopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_DeletePopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
+    BaseEditor_DeletePopUpPresenter_deletePopUpPresenter(instance, BaseEditor_deletePopUpPresenter);
+    final DefaultFileNameValidator BaseEditor_fileNameValidator = (DefaultFileNameValidator) contextManager.getInstance("Type_factory__o_u_e_e_c_c_v_DefaultFileNameValidator__quals__j_e_i_Any_j_e_i_Default");
+    BaseEditor_DefaultFileNameValidator_fileNameValidator(instance, BaseEditor_fileNameValidator);
     final Event BaseEditor_notification = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { NotificationEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, BaseEditor_notification);
     BaseEditor_Event_notification(instance, BaseEditor_notification);
@@ -194,6 +194,14 @@ public class Type_factory__o_u_e_e_c_c_h_HtmlEditor__quals__j_e_i_Any_j_e_i_Defa
     instance.@org.uberfire.ext.editor.commons.client.BaseEditor::concurrentRenameIgnoredEvent = value;
   }-*/;
 
+  native static VersionRecordManager BaseEditor_VersionRecordManager_versionRecordManager(BaseEditor instance) /*-{
+    return instance.@org.uberfire.ext.editor.commons.client.BaseEditor::versionRecordManager;
+  }-*/;
+
+  native static void BaseEditor_VersionRecordManager_versionRecordManager(BaseEditor instance, VersionRecordManager value) /*-{
+    instance.@org.uberfire.ext.editor.commons.client.BaseEditor::versionRecordManager = value;
+  }-*/;
+
   native static DefaultFileNameValidator BaseEditor_DefaultFileNameValidator_fileNameValidator(BaseEditor instance) /*-{
     return instance.@org.uberfire.ext.editor.commons.client.BaseEditor::fileNameValidator;
   }-*/;
@@ -202,12 +210,12 @@ public class Type_factory__o_u_e_e_c_c_h_HtmlEditor__quals__j_e_i_Any_j_e_i_Defa
     instance.@org.uberfire.ext.editor.commons.client.BaseEditor::fileNameValidator = value;
   }-*/;
 
-  native static VersionRecordManager BaseEditor_VersionRecordManager_versionRecordManager(BaseEditor instance) /*-{
-    return instance.@org.uberfire.ext.editor.commons.client.BaseEditor::versionRecordManager;
+  native static Event BaseEditor_Event_changeTitleNotification(BaseEditor instance) /*-{
+    return instance.@org.uberfire.ext.editor.commons.client.BaseEditor::changeTitleNotification;
   }-*/;
 
-  native static void BaseEditor_VersionRecordManager_versionRecordManager(BaseEditor instance, VersionRecordManager value) /*-{
-    instance.@org.uberfire.ext.editor.commons.client.BaseEditor::versionRecordManager = value;
+  native static void BaseEditor_Event_changeTitleNotification(BaseEditor instance, Event<ChangeTitleWidgetEvent> value) /*-{
+    instance.@org.uberfire.ext.editor.commons.client.BaseEditor::changeTitleNotification = value;
   }-*/;
 
   native static Event BaseEditor_Event_concurrentRenameAcceptedEvent(BaseEditor instance) /*-{
@@ -224,13 +232,5 @@ public class Type_factory__o_u_e_e_c_c_h_HtmlEditor__quals__j_e_i_Any_j_e_i_Defa
 
   native static void BaseEditor_Promises_promises(BaseEditor instance, Promises value) /*-{
     instance.@org.uberfire.ext.editor.commons.client.BaseEditor::promises = value;
-  }-*/;
-
-  native static Event BaseEditor_Event_changeTitleNotification(BaseEditor instance) /*-{
-    return instance.@org.uberfire.ext.editor.commons.client.BaseEditor::changeTitleNotification;
-  }-*/;
-
-  native static void BaseEditor_Event_changeTitleNotification(BaseEditor instance, Event<ChangeTitleWidgetEvent> value) /*-{
-    instance.@org.uberfire.ext.editor.commons.client.BaseEditor::changeTitleNotification = value;
   }-*/;
 }

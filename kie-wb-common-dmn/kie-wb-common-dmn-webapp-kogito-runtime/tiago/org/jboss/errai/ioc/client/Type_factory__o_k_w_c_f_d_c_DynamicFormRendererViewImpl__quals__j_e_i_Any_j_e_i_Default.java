@@ -45,11 +45,11 @@ public class Type_factory__o_k_w_c_f_d_c_DynamicFormRendererViewImpl__quals__j_e
     final FormLayoutGenerator DynamicFormRendererViewImpl_layoutGenerator = (FormLayoutGenerator) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_FormLayoutGenerator__quals__j_e_i_Any");
     registerDependentScopedReference(instance, DynamicFormRendererViewImpl_layoutGenerator);
     DynamicFormRendererViewImpl_FormLayoutGenerator_layoutGenerator(instance, DynamicFormRendererViewImpl_layoutGenerator);
-    final FormsElementWrapperWidgetUtilImpl DynamicFormRendererViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
-    DynamicFormRendererViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, DynamicFormRendererViewImpl_wrapperWidgetUtil);
     final FlowPanel DynamicFormRendererViewImpl_formContent = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DynamicFormRendererViewImpl_formContent);
     DynamicFormRendererViewImpl_FlowPanel_formContent(instance, DynamicFormRendererViewImpl_formContent);
+    final FormsElementWrapperWidgetUtilImpl DynamicFormRendererViewImpl_wrapperWidgetUtil = (FormsElementWrapperWidgetUtilImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_u_i_FormsElementWrapperWidgetUtilImpl__quals__j_e_i_Any_j_e_i_Default");
+    DynamicFormRendererViewImpl_FormsElementWrapperWidgetUtil_wrapperWidgetUtil(instance, DynamicFormRendererViewImpl_wrapperWidgetUtil);
     o_k_w_c_f_d_c_DynamicFormRendererViewImplTemplateResource templateForDynamicFormRendererViewImpl = GWT.create(o_k_w_c_f_d_c_DynamicFormRendererViewImplTemplateResource.class);
     Element parentElementForTemplateOfDynamicFormRendererViewImpl = TemplateUtil.getRootTemplateParentElement(templateForDynamicFormRendererViewImpl.getContents().getText(), "org/kie/workbench/common/forms/dynamic/client/DynamicFormRendererViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/dynamic/client/DynamicFormRendererViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfDynamicFormRendererViewImpl));

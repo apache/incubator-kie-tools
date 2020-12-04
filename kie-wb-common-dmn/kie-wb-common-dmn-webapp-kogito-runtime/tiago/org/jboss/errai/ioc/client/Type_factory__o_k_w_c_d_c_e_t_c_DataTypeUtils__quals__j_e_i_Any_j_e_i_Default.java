@@ -14,8 +14,8 @@ public class Type_factory__o_k_w_c_d_c_e_t_c_DataTypeUtils__quals__j_e_i_Any_j_e
   }
 
   public DataTypeUtils createInstance(final ContextManager contextManager) {
-    final DataTypeStore _dataTypeStore_0 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeManager _dataTypeManager_1 = (DataTypeManager) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManager__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeStore _dataTypeStore_0 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeUtils instance = new DataTypeUtils(_dataTypeStore_0, _dataTypeManager_1);
     registerDependentScopedReference(instance, _dataTypeManager_1);
     setIncompleteInstance(instance);

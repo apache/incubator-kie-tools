@@ -129,8 +129,8 @@ public class Type_factory__o_k_w_c_s_c_r_e_i_ConnectorParentsMatchHandler__quals
 
   public ConnectorParentsMatchHandler createInstance(final ContextManager contextManager) {
     final ConnectorParentsMatchConnectionHandler _connectionHandler_0 = (ConnectorParentsMatchConnectionHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_e_i_ConnectorParentsMatchConnectionHandler__quals__j_e_i_Any_j_e_i_Default");
-    final ConnectorParentsMatchContainmentHandler _containmentHandler_1 = (ConnectorParentsMatchContainmentHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_e_i_ConnectorParentsMatchContainmentHandler__quals__j_e_i_Any_j_e_i_Default");
     final RuleExtensionMultiHandler _multiHandler_2 = (RuleExtensionMultiHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_e_RuleExtensionMultiHandler__quals__j_e_i_Any_j_e_i_Default");
+    final ConnectorParentsMatchContainmentHandler _containmentHandler_1 = (ConnectorParentsMatchContainmentHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_e_i_ConnectorParentsMatchContainmentHandler__quals__j_e_i_Any_j_e_i_Default");
     final ConnectorParentsMatchHandler instance = new ConnectorParentsMatchHandler(_connectionHandler_0, _containmentHandler_1, _multiHandler_2);
     registerDependentScopedReference(instance, _multiHandler_2);
     setIncompleteInstance(instance);

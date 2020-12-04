@@ -129,10 +129,10 @@ public class Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i
   }
 
   public ClientDefinitionManager createInstance(final ContextManager contextManager) {
-    final CloneManager _cloneManager_3 = (CloneManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_c_CloneManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final SyncBeanManager _beanManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
-    final RegistryFactory _registryFactory_1 = (ClientRegistryFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_i_ClientRegistryFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
     final AdapterManager _adapterManager_2 = (AdapterManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_a_AdapterManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final CloneManager _cloneManager_3 = (CloneManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_d_c_CloneManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final RegistryFactory _registryFactory_1 = (ClientRegistryFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_i_ClientRegistryFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
     final ClientDefinitionManager instance = new ClientDefinitionManager(_beanManager_0, _registryFactory_1, _adapterManager_2, _cloneManager_3);
     registerDependentScopedReference(instance, _beanManager_0);
     setIncompleteInstance(instance);

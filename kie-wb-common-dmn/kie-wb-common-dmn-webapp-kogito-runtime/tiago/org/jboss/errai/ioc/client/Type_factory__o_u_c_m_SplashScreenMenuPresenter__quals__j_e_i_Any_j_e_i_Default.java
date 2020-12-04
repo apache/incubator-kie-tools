@@ -92,8 +92,8 @@ public class Type_factory__o_u_c_m_SplashScreenMenuPresenter__quals__j_e_i_Any_j
   }
 
   public SplashScreenMenuPresenter createInstance(final ContextManager contextManager) {
-    final View _view_1 = (SplashScreenMenuView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_SplashScreenMenuView__quals__j_e_i_Any_j_e_i_Default");
     final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_1 = (SplashScreenMenuView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_SplashScreenMenuView__quals__j_e_i_Any_j_e_i_Default");
     final SplashScreenMenuPresenter instance = new SplashScreenMenuPresenter(_placeManager_0, _view_1);
     registerDependentScopedReference(instance, _view_1);
     setIncompleteInstance(instance);

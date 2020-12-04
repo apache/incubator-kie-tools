@@ -46,12 +46,12 @@ public class Type_factory__o_k_w_c_d_c_c_c_s_DomainObjectAwareLienzoMultipleSele
   }
 
   public DomainObjectAwareLienzoMultipleSelectionControl createInstance(final ContextManager contextManager) {
-    final Event<CanvasSelectionEvent> _canvasSelectionEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
     final Event<CanvasClearSelectionEvent> _clearSelectionEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
     final DRDContextMenu _drdContextMenu_2 = (DRDContextMenu) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_d_DRDContextMenu__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasSelectionEvent> _canvasSelectionEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
     final DomainObjectAwareLienzoMultipleSelectionControl instance = new DomainObjectAwareLienzoMultipleSelectionControl(_canvasSelectionEvent_0, _clearSelectionEvent_1, _drdContextMenu_2);
-    registerDependentScopedReference(instance, _canvasSelectionEvent_0);
     registerDependentScopedReference(instance, _clearSelectionEvent_1);
+    registerDependentScopedReference(instance, _canvasSelectionEvent_0);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "handleDomainObjectSelectedEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent", new AbstractCDIEventCallback<DomainObjectSelectionEvent>() {
       public void fireEvent(final DomainObjectSelectionEvent event) {

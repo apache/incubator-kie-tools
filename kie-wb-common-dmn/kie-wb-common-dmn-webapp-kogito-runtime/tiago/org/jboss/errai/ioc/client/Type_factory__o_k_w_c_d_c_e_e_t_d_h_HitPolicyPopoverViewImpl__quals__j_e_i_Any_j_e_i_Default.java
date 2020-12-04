@@ -300,24 +300,24 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_d_h_HitPolicyPopoverViewImpl__quals
   }
 
   public HitPolicyPopoverViewImpl createInstance(final ContextManager contextManager) {
+    final Div _popoverContentElement_4 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Div _popoverElement_3 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final JQuery<Popover> _jQueryPopover_7 = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
     final Select _lstHitPolicies_0 = (Select) contextManager.getInstance("Type_factory__o_u_c_v_p_w_Select__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_8 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final JQuery<Popover> _jQueryPopover_7 = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
-    final Select _lstBuiltinAggregator_1 = (Select) contextManager.getInstance("Type_factory__o_u_c_v_p_w_Select__quals__j_e_i_Any_j_e_i_Default");
     final BuiltinAggregatorUtils _builtinAggregatorUtils_2 = (BuiltinAggregatorUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_d_h_BuiltinAggregatorUtils__quals__j_e_i_Any_j_e_i_Default");
     final Span _hitPolicyLabel_5 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final Span _builtinAggregatorLabel_6 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Div _popoverElement_3 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Div _popoverContentElement_4 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Select _lstBuiltinAggregator_1 = (Select) contextManager.getInstance("Type_factory__o_u_c_v_p_w_Select__quals__j_e_i_Any_j_e_i_Default");
     final HitPolicyPopoverViewImpl instance = new HitPolicyPopoverViewImpl(_lstHitPolicies_0, _lstBuiltinAggregator_1, _builtinAggregatorUtils_2, _popoverElement_3, _popoverContentElement_4, _hitPolicyLabel_5, _builtinAggregatorLabel_6, _jQueryPopover_7, _translationService_8);
+    registerDependentScopedReference(instance, _popoverContentElement_4);
+    registerDependentScopedReference(instance, _popoverElement_3);
+    registerDependentScopedReference(instance, _jQueryPopover_7);
     registerDependentScopedReference(instance, _lstHitPolicies_0);
     registerDependentScopedReference(instance, _translationService_8);
-    registerDependentScopedReference(instance, _jQueryPopover_7);
-    registerDependentScopedReference(instance, _lstBuiltinAggregator_1);
     registerDependentScopedReference(instance, _hitPolicyLabel_5);
     registerDependentScopedReference(instance, _builtinAggregatorLabel_6);
-    registerDependentScopedReference(instance, _popoverElement_3);
-    registerDependentScopedReference(instance, _popoverContentElement_4);
+    registerDependentScopedReference(instance, _lstBuiltinAggregator_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_e_t_d_h_HitPolicyPopoverViewImplTemplateResource templateForHitPolicyPopoverViewImpl = GWT.create(o_k_w_c_d_c_e_e_t_d_h_HitPolicyPopoverViewImplTemplateResource.class);
     Element parentElementForTemplateOfHitPolicyPopoverViewImpl = TemplateUtil.getRootTemplateParentElement(templateForHitPolicyPopoverViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/expressions/types/dtable/hitpolicy/HitPolicyPopoverViewImpl.html", "");

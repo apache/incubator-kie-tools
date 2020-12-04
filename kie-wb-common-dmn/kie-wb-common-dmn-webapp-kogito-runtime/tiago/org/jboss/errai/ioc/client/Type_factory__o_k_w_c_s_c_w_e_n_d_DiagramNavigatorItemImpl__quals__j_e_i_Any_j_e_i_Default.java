@@ -19,8 +19,8 @@ public class Type_factory__o_k_w_c_s_c_w_e_n_d_DiagramNavigatorItemImpl__quals__
   }
 
   public DiagramNavigatorItemImpl createInstance(final ContextManager contextManager) {
-    final NavigatorItemView<NavigatorItem> _view_1 = (NavigatorThumbnailItemView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_e_n_i_NavigatorThumbnailItemView__quals__j_e_i_Any_j_e_i_Default");
     final ShapeManager _shapeManager_0 = (ShapeManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final NavigatorItemView<NavigatorItem> _view_1 = (NavigatorThumbnailItemView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_e_n_i_NavigatorThumbnailItemView__quals__j_e_i_Any_j_e_i_Default");
     final DiagramNavigatorItemImpl instance = new DiagramNavigatorItemImpl(_shapeManager_0, _view_1);
     registerDependentScopedReference(instance, _view_1);
     setIncompleteInstance(instance);

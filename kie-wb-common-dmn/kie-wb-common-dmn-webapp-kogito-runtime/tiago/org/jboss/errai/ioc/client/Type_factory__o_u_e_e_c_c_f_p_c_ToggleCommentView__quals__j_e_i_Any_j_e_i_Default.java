@@ -38,15 +38,15 @@ public class Type_factory__o_u_e_e_c_c_f_p_c_ToggleCommentView__quals__j_e_i_Any
   }
 
   public ToggleCommentView createInstance(final ContextManager contextManager) {
-    final HTMLAnchorElement _addComment_1 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TextBox _commentTextBox_2 = (TextBox) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_TextBox__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_3 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final HTMLDivElement _view_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _addComment_1 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ToggleCommentView instance = new ToggleCommentView(_view_0, _addComment_1, _commentTextBox_2, _translationService_3);
-    registerDependentScopedReference(instance, _addComment_1);
     registerDependentScopedReference(instance, _commentTextBox_2);
     registerDependentScopedReference(instance, _translationService_3);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _addComment_1);
     setIncompleteInstance(instance);
     o_u_e_e_c_c_f_p_c_ToggleCommentViewTemplateResource templateForToggleCommentView = GWT.create(o_u_e_e_c_c_f_p_c_ToggleCommentViewTemplateResource.class);
     Element parentElementForTemplateOfToggleCommentView = TemplateUtil.getRootTemplateParentElement(templateForToggleCommentView.getContents().getText(), "org/uberfire/ext/editor/commons/client/file/popups/commons/ToggleCommentView.html", "");

@@ -56,12 +56,12 @@ public class Type_factory__o_u_e_w_c_c_e_t_TextEditorWorkbenchEditorActivity__qu
     final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final TextEditorWorkbenchEditorActivity instance = new TextEditorWorkbenchEditorActivity(_placeManager_0);
     setIncompleteInstance(instance);
-    final TextEditorWorkbenchEditor TextEditorWorkbenchEditorActivity_realPresenter = (TextEditorWorkbenchEditor) contextManager.getInstance("Type_factory__o_u_e_w_c_c_e_t_TextEditorWorkbenchEditor__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, TextEditorWorkbenchEditorActivity_realPresenter);
-    TextEditorWorkbenchEditorActivity_TextEditorWorkbenchEditor_realPresenter(instance, TextEditorWorkbenchEditorActivity_realPresenter);
     final Instance AbstractWorkbenchEditorActivity_lockManagerProvider = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { LockManager.class }, new Annotation[] { });
     registerDependentScopedReference(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
     AbstractWorkbenchEditorActivity_Instance_lockManagerProvider(instance, AbstractWorkbenchEditorActivity_lockManagerProvider);
+    final TextEditorWorkbenchEditor TextEditorWorkbenchEditorActivity_realPresenter = (TextEditorWorkbenchEditor) contextManager.getInstance("Type_factory__o_u_e_w_c_c_e_t_TextEditorWorkbenchEditor__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, TextEditorWorkbenchEditorActivity_realPresenter);
+    TextEditorWorkbenchEditorActivity_TextEditorWorkbenchEditor_realPresenter(instance, TextEditorWorkbenchEditorActivity_realPresenter);
     setIncompleteInstance(null);
     return instance;
   }

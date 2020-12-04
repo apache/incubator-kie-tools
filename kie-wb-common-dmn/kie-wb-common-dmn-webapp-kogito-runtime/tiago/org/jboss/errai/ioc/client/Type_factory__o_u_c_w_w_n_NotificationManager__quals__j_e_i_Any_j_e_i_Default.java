@@ -128,8 +128,8 @@ public class Type_factory__o_u_c_w_w_n_NotificationManager__quals__j_e_i_Any_j_e
   }
 
   public NotificationManager createInstance(final ContextManager contextManager) {
-    final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final WorkbenchLayoutInfo _workbenchLayoutInfo_2 = (WorkbenchLayoutInfoImpl) contextManager.getInstance("Type_factory__o_u_c_w_WorkbenchLayoutInfoImpl__quals__j_e_i_Any_j_e_i_Default");
+    final SyncBeanManager _iocManager_0 = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     final PlaceManager _placeManager_1 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final NotificationManager instance = new NotificationManager(_iocManager_0, _placeManager_1, _workbenchLayoutInfo_2);
     registerDependentScopedReference(instance, _iocManager_0);

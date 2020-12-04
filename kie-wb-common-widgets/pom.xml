@@ -18,9 +18,6 @@
 
   <modules>
     <module>kie-wb-common-ui</module>
-    <module>kie-wb-config-resource-widget</module>
-    <module>kie-wb-decorated-grid-widget</module>
-    <module>kie-wb-metadata-widget</module>
   </modules>
 
 </project>

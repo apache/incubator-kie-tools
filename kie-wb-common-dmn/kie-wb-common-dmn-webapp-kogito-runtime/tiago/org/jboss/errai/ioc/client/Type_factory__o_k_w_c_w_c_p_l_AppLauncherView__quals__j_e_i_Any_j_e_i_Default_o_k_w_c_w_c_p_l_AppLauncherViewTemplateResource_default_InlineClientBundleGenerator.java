@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_w_c_p_l_AppLauncherView__quals__j_e_i_Any_j_e
   private static Type_factory__o_k_w_c_w_c_p_l_AppLauncherView__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_w_c_p_l_AppLauncherViewTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_w_c_p_l_AppLauncherView__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_w_c_p_l_AppLauncherViewTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/widgets/kie-wb-common-ui/7.47.0-SNAPSHOT/kie-wb-common-ui-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/widgets/client/popups/launcher/AppLauncherView.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-widgets/kie-wb-common-ui/target/kie-wb-common-ui-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/widgets/client/popups/launcher/AppLauncherView.html
       public String getText() {
         return "<!DOCTYPE html>\n<div class=\"dropdown-menu infotip bottom-right kie-launcher\">\n    <div class=\"arrow\"></div>\n    <div class=\"container-fluid\">\n        <div class=\"row\">\n            <div data-field=\"left-column\" class=\"col-sm-6\"></div>\n            <div data-field=\"right-column\" class=\"col-sm-6\"></div>\n        </div>\n    </div>\n</div>";
       }

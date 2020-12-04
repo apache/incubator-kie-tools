@@ -49,10 +49,10 @@ public class Type_factory__o_k_w_c_w_c_c_f_CardFrameComponentView__quals__j_e_i_
   }
 
   public CardFrameComponentView createInstance(final ContextManager contextManager) {
-    final HTMLButtonElement _okButton_6 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _closeButton_7 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _view_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLInputElement _titleInput_3 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _view_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _inputCloseButton_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _content_8 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _icon_1 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -64,20 +64,20 @@ public class Type_factory__o_k_w_c_w_c_c_f_CardFrameComponentView__quals__j_e_i_
           return "span";
         }
     } });
-    final HTMLDivElement _editMode_5 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _inputCloseButton_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLHeadingElement _titleText_2 = (HTMLHeadingElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLHeadingElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _content_8 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _editMode_5 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _closeButton_7 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _okButton_6 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final CardFrameComponentView instance = new CardFrameComponentView(_view_0, _icon_1, _titleText_2, _titleInput_3, _inputCloseButton_4, _editMode_5, _okButton_6, _closeButton_7, _content_8);
-    registerDependentScopedReference(instance, _okButton_6);
-    registerDependentScopedReference(instance, _closeButton_7);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _titleInput_3);
-    registerDependentScopedReference(instance, _icon_1);
-    registerDependentScopedReference(instance, _editMode_5);
+    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _inputCloseButton_4);
-    registerDependentScopedReference(instance, _titleText_2);
     registerDependentScopedReference(instance, _content_8);
+    registerDependentScopedReference(instance, _icon_1);
+    registerDependentScopedReference(instance, _titleText_2);
+    registerDependentScopedReference(instance, _editMode_5);
+    registerDependentScopedReference(instance, _closeButton_7);
+    registerDependentScopedReference(instance, _okButton_6);
     setIncompleteInstance(instance);
     o_k_w_c_w_c_c_f_CardFrameComponentViewTemplateResource templateForCardFrameComponentView = GWT.create(o_k_w_c_w_c_c_f_CardFrameComponentViewTemplateResource.class);
     Element parentElementForTemplateOfCardFrameComponentView = TemplateUtil.getRootTemplateParentElement(templateForCardFrameComponentView.getContents().getText(), "org/kie/workbench/common/widgets/client/cards/frame/CardFrameComponentView.html", "");

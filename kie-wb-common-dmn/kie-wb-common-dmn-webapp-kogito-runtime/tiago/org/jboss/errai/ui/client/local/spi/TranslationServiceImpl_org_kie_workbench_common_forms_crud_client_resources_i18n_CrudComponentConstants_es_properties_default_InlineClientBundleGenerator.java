@@ -7,7 +7,7 @@ public class TranslationServiceImpl_org_kie_workbench_common_forms_crud_client_r
   private static TranslationServiceImpl_org_kie_workbench_common_forms_crud_client_resources_i18n_CrudComponentConstants_es_properties_default_InlineClientBundleGenerator _instance0 = new TranslationServiceImpl_org_kie_workbench_common_forms_crud_client_resources_i18n_CrudComponentConstants_es_properties_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/forms/kie-wb-common-forms-crud-component/7.47.0-SNAPSHOT/kie-wb-common-forms-crud-component-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/forms/crud/client/resources/i18n/CrudComponentConstants_es.properties
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-forms/kie-wb-common-forms-commons/kie-wb-common-forms-crud-component/target/kie-wb-common-forms-crud-component-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/forms/crud/client/resources/i18n/CrudComponentConstants_es.properties
       public String getText() {
         return "CrudComponentViewImpl.newInstanceButton=Nueva instancia\nCrudComponentViewImpl.newInstanceTitle=Crear nueva instancia\nCrudComponentViewImpl.editInstanceButton=Editar\nCrudComponentViewImpl.editInstanceTitle=Editar instancia\nCrudComponentViewImpl.deleteInstance=Eliminar\nCrudComponentViewImpl.deleteBody=¿Está seguro?\n\nModalFormDisplayerViewImpl.accept=Aceptar\nModalFormDisplayerViewImpl.cancel=Cancelar\n\n";
       }

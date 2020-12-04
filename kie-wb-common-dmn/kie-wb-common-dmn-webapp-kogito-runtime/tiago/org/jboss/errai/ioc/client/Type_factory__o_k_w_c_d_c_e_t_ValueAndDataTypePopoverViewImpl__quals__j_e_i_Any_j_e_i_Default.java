@@ -52,23 +52,23 @@ public class Type_factory__o_k_w_c_d_c_e_t_ValueAndDataTypePopoverViewImpl__qual
   }
 
   public ValueAndDataTypePopoverViewImpl createInstance(final ContextManager contextManager) {
-    final Input _valueEditor_0 = (Input) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Input__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final JQuery<Popover> _jQueryPopover_6 = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
-    final Div _popoverContentElement_3 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final TranslationService _translationService_7 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final Span _dataTypeLabel_5 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Span _valueLabel_4 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final DataTypePickerWidget _typeRefEditor_1 = (DataTypePickerWidget) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_DataTypePickerWidget__quals__j_e_i_Any_j_e_i_Default");
     final Div _popoverElement_2 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_7 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypePickerWidget _typeRefEditor_1 = (DataTypePickerWidget) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_DataTypePickerWidget__quals__j_e_i_Any_j_e_i_Default");
+    final Span _valueLabel_4 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final JQuery<Popover> _jQueryPopover_6 = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
+    final Input _valueEditor_0 = (Input) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Input__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Span _dataTypeLabel_5 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Div _popoverContentElement_3 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ValueAndDataTypePopoverViewImpl instance = new ValueAndDataTypePopoverViewImpl(_valueEditor_0, _typeRefEditor_1, _popoverElement_2, _popoverContentElement_3, _valueLabel_4, _dataTypeLabel_5, _jQueryPopover_6, _translationService_7);
-    registerDependentScopedReference(instance, _valueEditor_0);
-    registerDependentScopedReference(instance, _jQueryPopover_6);
-    registerDependentScopedReference(instance, _popoverContentElement_3);
-    registerDependentScopedReference(instance, _translationService_7);
-    registerDependentScopedReference(instance, _dataTypeLabel_5);
-    registerDependentScopedReference(instance, _valueLabel_4);
-    registerDependentScopedReference(instance, _typeRefEditor_1);
     registerDependentScopedReference(instance, _popoverElement_2);
+    registerDependentScopedReference(instance, _translationService_7);
+    registerDependentScopedReference(instance, _typeRefEditor_1);
+    registerDependentScopedReference(instance, _valueLabel_4);
+    registerDependentScopedReference(instance, _jQueryPopover_6);
+    registerDependentScopedReference(instance, _valueEditor_0);
+    registerDependentScopedReference(instance, _dataTypeLabel_5);
+    registerDependentScopedReference(instance, _popoverContentElement_3);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_ValueAndDataTypePopoverViewImplTemplateResource templateForValueAndDataTypePopoverViewImpl = GWT.create(o_k_w_c_d_c_e_t_ValueAndDataTypePopoverViewImplTemplateResource.class);
     Element parentElementForTemplateOfValueAndDataTypePopoverViewImpl = TemplateUtil.getRootTemplateParentElement(templateForValueAndDataTypePopoverViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/ValueAndDataTypePopoverViewImpl.html", "");

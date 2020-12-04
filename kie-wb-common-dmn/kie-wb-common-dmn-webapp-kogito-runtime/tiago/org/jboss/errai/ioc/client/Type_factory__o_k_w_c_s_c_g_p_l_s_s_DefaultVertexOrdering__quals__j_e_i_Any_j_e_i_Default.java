@@ -18,12 +18,12 @@ public class Type_factory__o_k_w_c_s_c_g_p_l_s_s_DefaultVertexOrdering__quals__j
 
   public DefaultVertexOrdering createInstance(final ContextManager contextManager) {
     final VertexLayerPositioning _vertexPositioning_0 = (MedianVertexLayerPositioning) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_MedianVertexLayerPositioning__quals__j_e_i_Any_j_e_i_Default");
-    final LayerCrossingCount _crossingCount_1 = (LayerCrossingCount) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_LayerCrossingCount__quals__j_e_i_Any_j_e_i_Default");
     final VerticesTransposer _verticesTransposer_2 = (VerticesTransposer) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_VerticesTransposer__quals__j_e_i_Any_j_e_i_Default");
+    final LayerCrossingCount _crossingCount_1 = (LayerCrossingCount) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_LayerCrossingCount__quals__j_e_i_Any_j_e_i_Default");
     final DefaultVertexOrdering instance = new DefaultVertexOrdering(_vertexPositioning_0, _crossingCount_1, _verticesTransposer_2);
     registerDependentScopedReference(instance, _vertexPositioning_0);
-    registerDependentScopedReference(instance, _crossingCount_1);
     registerDependentScopedReference(instance, _verticesTransposer_2);
+    registerDependentScopedReference(instance, _crossingCount_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

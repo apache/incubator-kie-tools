@@ -24,17 +24,17 @@ public class Type_factory__o_k_w_c_s_c_g_p_l_s_SugiyamaLayoutService__quals__j_e
   }
 
   public SugiyamaLayoutService createInstance(final ContextManager contextManager) {
-    final VertexLayerer _vertexLayerer_1 = (LongestPathVertexLayerer) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_LongestPathVertexLayerer__quals__j_e_i_Any_j_e_i_Default");
-    final VertexOrdering _vertexOrdering_2 = (DefaultVertexOrdering) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_DefaultVertexOrdering__quals__j_e_i_Any_j_e_i_Default");
-    final CycleBreaker _cycleBreaker_0 = (ReverseEdgesCycleBreaker) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_ReverseEdgesCycleBreaker__quals__j_e_i_Any_j_e_i_Default");
     final GraphProcessor _graphProcessor_4 = (GraphProcessorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_GraphProcessorImpl__quals__j_e_i_Any_j_e_i_Default");
+    final CycleBreaker _cycleBreaker_0 = (ReverseEdgesCycleBreaker) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_ReverseEdgesCycleBreaker__quals__j_e_i_Any_j_e_i_Default");
+    final VertexOrdering _vertexOrdering_2 = (DefaultVertexOrdering) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_DefaultVertexOrdering__quals__j_e_i_Any_j_e_i_Default");
     final VertexPositioning _vertexPositioning_3 = (DefaultVertexPositioning) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_DefaultVertexPositioning__quals__j_e_i_Any_j_e_i_Default");
+    final VertexLayerer _vertexLayerer_1 = (LongestPathVertexLayerer) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_l_s_s_LongestPathVertexLayerer__quals__j_e_i_Any_j_e_i_Default");
     final SugiyamaLayoutService instance = new SugiyamaLayoutService(_cycleBreaker_0, _vertexLayerer_1, _vertexOrdering_2, _vertexPositioning_3, _graphProcessor_4);
-    registerDependentScopedReference(instance, _vertexLayerer_1);
-    registerDependentScopedReference(instance, _vertexOrdering_2);
-    registerDependentScopedReference(instance, _cycleBreaker_0);
     registerDependentScopedReference(instance, _graphProcessor_4);
+    registerDependentScopedReference(instance, _cycleBreaker_0);
+    registerDependentScopedReference(instance, _vertexOrdering_2);
     registerDependentScopedReference(instance, _vertexPositioning_3);
+    registerDependentScopedReference(instance, _vertexLayerer_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

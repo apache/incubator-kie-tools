@@ -22,16 +22,16 @@ public class Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPage__quals__j_e_i_Any_
   }
 
   public IncludedModelsPage createInstance(final ContextManager contextManager) {
+    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLDivElement _pageView_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final IncludedModelsPageState _pageState_4 = (IncludedModelsPageState) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageState__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelsPageStateProvider _stateProvider_5 = (IncludedModelsPageStateProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_i_IncludedModelsPageStateProviderImpl__quals__j_e_i_Any_j_e_i_Default");
     final FlashMessages _flashMessages_2 = (FlashMessages) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_c_m_FlashMessages__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLDivElement _pageView_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final TranslationService _translationService_1 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelsPagePresenter _includedModelsPresenter_3 = (IncludedModelsPagePresenter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPagePresenter__quals__j_e_i_Any_j_e_i_Default");
-    final IncludedModelsPageState _pageState_4 = (IncludedModelsPageState) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageState__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelsPage instance = new IncludedModelsPage(_pageView_0, _translationService_1, _flashMessages_2, _includedModelsPresenter_3, _pageState_4, _stateProvider_5);
-    registerDependentScopedReference(instance, _flashMessages_2);
-    registerDependentScopedReference(instance, _pageView_0);
     registerDependentScopedReference(instance, _translationService_1);
+    registerDependentScopedReference(instance, _pageView_0);
+    registerDependentScopedReference(instance, _flashMessages_2);
     registerDependentScopedReference(instance, _includedModelsPresenter_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

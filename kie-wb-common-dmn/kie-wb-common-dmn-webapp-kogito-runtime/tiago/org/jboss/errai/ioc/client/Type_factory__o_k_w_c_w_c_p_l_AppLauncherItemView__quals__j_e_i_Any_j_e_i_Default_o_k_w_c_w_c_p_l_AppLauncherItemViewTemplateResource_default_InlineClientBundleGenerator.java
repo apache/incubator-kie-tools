@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_w_c_p_l_AppLauncherItemView__quals__j_e_i_Any
   private static Type_factory__o_k_w_c_w_c_p_l_AppLauncherItemView__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_w_c_p_l_AppLauncherItemViewTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_w_c_p_l_AppLauncherItemView__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_w_c_p_l_AppLauncherItemViewTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/widgets/kie-wb-common-ui/7.47.0-SNAPSHOT/kie-wb-common-ui-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/widgets/client/popups/launcher/AppLauncherItemView.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-widgets/kie-wb-common-ui/target/kie-wb-common-ui-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/widgets/client/popups/launcher/AppLauncherItemView.html
       public String getText() {
         return "<!DOCTYPE html>\n<a class=\"btn btn-link btn-lg text-center kie-app-launcher\" target=\"_blank\">\n    <span class=\"fa fa-3x\"></span><br>\n    <span class=\"kie-app-launcher-text\" data-field=\"text\"></span>\n</a>";
       }

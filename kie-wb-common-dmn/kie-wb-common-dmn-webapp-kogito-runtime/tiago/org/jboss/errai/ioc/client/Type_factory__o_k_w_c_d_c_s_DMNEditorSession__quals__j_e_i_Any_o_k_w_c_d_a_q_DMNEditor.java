@@ -39,16 +39,16 @@ public class Type_factory__o_k_w_c_d_c_s_DMNEditorSession__quals__j_e_i_Any_o_k_
   }
 
   public DMNEditorSession createInstance(final ContextManager contextManager) {
-    final ManagedSession _session_0 = (ManagedSession) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_i_ManagedSession__quals__j_e_i_Any_j_e_i_Default");
-    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_2 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
     final Event<RegisterChangedEvent> _registerChangedEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RegisterChangedEvent.class }, new Annotation[] { });
     final RegistryProvider _registryProvider_5 = (RegistryProvider) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_RegistryProvider__quals__j_e_i_Any_j_e_i_Default");
     final Registry<Command<AbstractCanvasHandler, CanvasViolation>> _commandRegistry_3 = (Registry) contextManager.getInstance("Producer_factory__o_a_c_s_r_Registry__quals__j_e_i_Any_j_e_i_Default");
+    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_2 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedSession _session_0 = (ManagedSession) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_i_ManagedSession__quals__j_e_i_Any_j_e_i_Default");
     final CanvasCommandManager<AbstractCanvasHandler> _canvasCommandManager_1 = (CanvasCommandManagerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_CanvasCommandManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final DMNEditorSession instance = new DMNEditorSession(_session_0, _canvasCommandManager_1, _sessionCommandManager_2, _commandRegistry_3, _registerChangedEvent_4, _registryProvider_5);
-    registerDependentScopedReference(instance, _session_0);
     registerDependentScopedReference(instance, _registerChangedEvent_4);
     registerDependentScopedReference(instance, _commandRegistry_3);
+    registerDependentScopedReference(instance, _session_0);
     registerDependentScopedReference(instance, _canvasCommandManager_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

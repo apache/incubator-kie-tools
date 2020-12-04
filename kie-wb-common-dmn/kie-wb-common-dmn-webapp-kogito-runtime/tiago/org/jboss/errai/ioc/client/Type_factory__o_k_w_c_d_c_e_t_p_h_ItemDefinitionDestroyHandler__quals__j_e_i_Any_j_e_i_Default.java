@@ -15,8 +15,8 @@ public class Type_factory__o_k_w_c_d_c_e_t_p_h_ItemDefinitionDestroyHandler__qua
   }
 
   public ItemDefinitionDestroyHandler createInstance(final ContextManager contextManager) {
-    final PropertiesPanelNotifier _panelNotifier_2 = (PropertiesPanelNotifier) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals__j_e_i_Any_j_e_i_Default");
     final ItemDefinitionStore _itemDefinitionStore_0 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
+    final PropertiesPanelNotifier _panelNotifier_2 = (PropertiesPanelNotifier) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals__j_e_i_Any_j_e_i_Default");
     final DMNGraphUtils _dmnGraphUtils_1 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
     final ItemDefinitionDestroyHandler instance = new ItemDefinitionDestroyHandler(_itemDefinitionStore_0, _dmnGraphUtils_1, _panelNotifier_2);
     registerDependentScopedReference(instance, _dmnGraphUtils_1);

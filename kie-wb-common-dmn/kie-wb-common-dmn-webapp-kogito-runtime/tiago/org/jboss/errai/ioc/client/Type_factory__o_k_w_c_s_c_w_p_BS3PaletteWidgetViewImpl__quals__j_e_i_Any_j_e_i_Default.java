@@ -45,12 +45,12 @@ public class Type_factory__o_k_w_c_s_c_w_p_BS3PaletteWidgetViewImpl__quals__j_e_
   public BS3PaletteWidgetViewImpl createInstance(final ContextManager contextManager) {
     final BS3PaletteWidgetViewImpl instance = new BS3PaletteWidgetViewImpl();
     setIncompleteInstance(instance);
-    final UnorderedList BS3PaletteWidgetViewImpl_ul = (UnorderedList) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_UnorderedList__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, BS3PaletteWidgetViewImpl_ul);
-    BS3PaletteWidgetViewImpl_UnorderedList_ul(instance, BS3PaletteWidgetViewImpl_ul);
     final Div BS3PaletteWidgetViewImpl_palette = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, BS3PaletteWidgetViewImpl_palette);
     BS3PaletteWidgetViewImpl_Div_palette(instance, BS3PaletteWidgetViewImpl_palette);
+    final UnorderedList BS3PaletteWidgetViewImpl_ul = (UnorderedList) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_UnorderedList__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, BS3PaletteWidgetViewImpl_ul);
+    BS3PaletteWidgetViewImpl_UnorderedList_ul(instance, BS3PaletteWidgetViewImpl_ul);
     o_k_w_c_s_c_w_p_BS3PaletteWidgetViewImplTemplateResource templateForBS3PaletteWidgetViewImpl = GWT.create(o_k_w_c_s_c_w_p_BS3PaletteWidgetViewImplTemplateResource.class);
     Element parentElementForTemplateOfBS3PaletteWidgetViewImpl = TemplateUtil.getRootTemplateParentElement(templateForBS3PaletteWidgetViewImpl.getContents().getText(), "org/kie/workbench/common/stunner/client/widgets/palette/BS3PaletteWidgetViewImpl.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/client/widgets/palette/BS3PaletteWidgetViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfBS3PaletteWidgetViewImpl));

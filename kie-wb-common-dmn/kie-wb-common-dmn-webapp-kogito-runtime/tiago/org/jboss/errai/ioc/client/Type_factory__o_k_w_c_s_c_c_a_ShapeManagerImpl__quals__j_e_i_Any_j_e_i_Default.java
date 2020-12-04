@@ -118,14 +118,6 @@ public class Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_
   }
 
   public ShapeManagerImpl createInstance(final ContextManager contextManager) {
-    final ManagedInstance<ShapeSet> _shapeSetsInstances_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ShapeSet.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
     final ManagedInstance<ShapeSetThumbProvider> _thumbProvidersInstances_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ShapeSetThumbProvider.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -134,9 +126,17 @@ public class Type_factory__o_k_w_c_s_c_c_a_ShapeManagerImpl__quals__j_e_i_Any_j_
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final ManagedInstance<ShapeSet> _shapeSetsInstances_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ShapeSet.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
     final ShapeManagerImpl instance = new ShapeManagerImpl(_shapeSetsInstances_0, _thumbProvidersInstances_1);
-    registerDependentScopedReference(instance, _shapeSetsInstances_0);
     registerDependentScopedReference(instance, _thumbProvidersInstances_1);
+    registerDependentScopedReference(instance, _shapeSetsInstances_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

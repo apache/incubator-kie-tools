@@ -180,14 +180,14 @@ public class Type_factory__o_u_e_p_c_a_p_AdminPageImpl__quals__j_e_i_Any_j_e_i_D
   }
 
   public AdminPageImpl createInstance(final ContextManager contextManager) {
+    final PreferenceScopeResolutionStrategy _resolutionStrategy_2 = (PreferenceScopeResolutionStrategyMock) contextManager.getInstance("Type_factory__o_k_w_c_k_w_b_s_PreferenceScopeResolutionStrategyMock__quals__j_e_i_Any_o_u_a_Customizable");
+    final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final UberfireBreadcrumbs _breadcrumbs_3 = (UberfireBreadcrumbs) contextManager.getInstance("Type_factory__o_u_e_w_c_c_b_UberfireBreadcrumbs__quals__j_e_i_Any_j_e_i_Default");
     final Event<PreferencesCentralInitializationEvent> _preferencesCentralInitializationEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { PreferencesCentralInitializationEvent.class }, new Annotation[] { });
-    final PlaceManager _placeManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final PreferenceScopeResolutionStrategy _resolutionStrategy_2 = (PreferenceScopeResolutionStrategyMock) contextManager.getInstance("Type_factory__o_k_w_c_k_w_b_s_PreferenceScopeResolutionStrategyMock__quals__j_e_i_Any_o_u_a_Customizable");
     final TranslationService _translationService_4 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final AdminPageImpl instance = new AdminPageImpl(_placeManager_0, _preferencesCentralInitializationEvent_1, _resolutionStrategy_2, _breadcrumbs_3, _translationService_4);
-    registerDependentScopedReference(instance, _preferencesCentralInitializationEvent_1);
     registerDependentScopedReference(instance, _resolutionStrategy_2);
+    registerDependentScopedReference(instance, _preferencesCentralInitializationEvent_1);
     registerDependentScopedReference(instance, _translationService_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

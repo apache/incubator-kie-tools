@@ -21,15 +21,15 @@ public class Type_factory__o_u_e_l_e_c_LayoutEditorPluginImpl__quals__j_e_i_Any_
   public LayoutEditorPluginImpl createInstance(final ContextManager contextManager) {
     final LayoutEditorPluginImpl instance = new LayoutEditorPluginImpl();
     setIncompleteInstance(instance);
+    final LayoutEditorPresenter LayoutEditorPluginImpl_layoutEditorPresenter = (LayoutEditorPresenter) contextManager.getInstance("Type_factory__o_u_e_l_e_c_LayoutEditorPresenter__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, LayoutEditorPluginImpl_layoutEditorPresenter);
+    LayoutEditorPluginImpl_LayoutEditorPresenter_layoutEditorPresenter(instance, LayoutEditorPluginImpl_layoutEditorPresenter);
     final Caller LayoutEditorPluginImpl_perspectiveServices = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { PerspectiveServices.class }, new Annotation[] { });
     registerDependentScopedReference(instance, LayoutEditorPluginImpl_perspectiveServices);
     LayoutEditorPluginImpl_Caller_perspectiveServices(instance, LayoutEditorPluginImpl_perspectiveServices);
     final SavePopUpPresenter LayoutEditorPluginImpl_savePopUpPresenter = (SavePopUpPresenter) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_SavePopUpPresenter__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, LayoutEditorPluginImpl_savePopUpPresenter);
     LayoutEditorPluginImpl_SavePopUpPresenter_savePopUpPresenter(instance, LayoutEditorPluginImpl_savePopUpPresenter);
-    final LayoutEditorPresenter LayoutEditorPluginImpl_layoutEditorPresenter = (LayoutEditorPresenter) contextManager.getInstance("Type_factory__o_u_e_l_e_c_LayoutEditorPresenter__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, LayoutEditorPluginImpl_layoutEditorPresenter);
-    LayoutEditorPluginImpl_LayoutEditorPresenter_layoutEditorPresenter(instance, LayoutEditorPluginImpl_layoutEditorPresenter);
     setIncompleteInstance(null);
     return instance;
   }

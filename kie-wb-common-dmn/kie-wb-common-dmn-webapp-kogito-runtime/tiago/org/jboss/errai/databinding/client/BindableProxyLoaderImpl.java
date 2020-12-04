@@ -582,224 +582,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
         return new org_kie_workbench_common_dmn_api_property_background_BackgroundSetProxy();
       }
     });
-    class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy extends CheckBoxFieldDefinition implements BindableProxy {
-      private BindableProxyAgent<CheckBoxFieldDefinition> agent;
-      private CheckBoxFieldDefinition target;
-      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy() {
-        this(new CheckBoxFieldDefinition());
-      }
-
-      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy(CheckBoxFieldDefinition targetVal) {
-        agent = new BindableProxyAgent<CheckBoxFieldDefinition>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("validateOnChange", new PropertyType(Boolean.class, false, false));
-        p.put("name", new PropertyType(String.class, false, false));
-        p.put("binding", new PropertyType(String.class, false, false));
-        p.put("readOnly", new PropertyType(Boolean.class, false, false));
-        p.put("standaloneClassName", new PropertyType(String.class, false, false));
-        p.put("fieldTypeInfo", new PropertyType(TypeInfo.class, false, false));
-        p.put("id", new PropertyType(String.class, false, false));
-        p.put("label", new PropertyType(String.class, false, false));
-        p.put("fieldType", new PropertyType(CheckBoxFieldType.class, false, false));
-        p.put("required", new PropertyType(Boolean.class, false, false));
-        p.put("helpMessage", new PropertyType(String.class, false, false));
-        p.put("this", new PropertyType(CheckBoxFieldDefinition.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public CheckBoxFieldDefinition unwrap() {
-        return target;
-      }
-
-      public CheckBoxFieldDefinition deepUnwrap() {
-        final CheckBoxFieldDefinition clone = new CheckBoxFieldDefinition();
-        final CheckBoxFieldDefinition t = unwrap();
-        clone.setValidateOnChange(t.getValidateOnChange());
-        clone.setName(t.getName());
-        clone.setBinding(t.getBinding());
-        clone.setReadOnly(t.getReadOnly());
-        clone.setStandaloneClassName(t.getStandaloneClassName());
-        clone.setId(t.getId());
-        clone.setLabel(t.getLabel());
-        clone.setRequired(t.getRequired());
-        clone.setHelpMessage(t.getHelpMessage());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy) {
-          obj = ((org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public Boolean getValidateOnChange() {
-        return target.getValidateOnChange();
-      }
-
-      public void setValidateOnChange(Boolean validateOnChange) {
-        changeAndFire("validateOnChange", validateOnChange);
-      }
-
-      public String getName() {
-        return target.getName();
-      }
-
-      public void setName(String name) {
-        changeAndFire("name", name);
-      }
-
-      public String getBinding() {
-        return target.getBinding();
-      }
-
-      public void setBinding(String binding) {
-        changeAndFire("binding", binding);
-      }
-
-      public Boolean getReadOnly() {
-        return target.getReadOnly();
-      }
-
-      public void setReadOnly(Boolean readOnly) {
-        changeAndFire("readOnly", readOnly);
-      }
-
-      public String getStandaloneClassName() {
-        return target.getStandaloneClassName();
-      }
-
-      public void setStandaloneClassName(String standaloneClassName) {
-        changeAndFire("standaloneClassName", standaloneClassName);
-      }
-
-      public TypeInfo getFieldTypeInfo() {
-        return target.getFieldTypeInfo();
-      }
-
-      public String getId() {
-        return target.getId();
-      }
-
-      public void setId(String id) {
-        changeAndFire("id", id);
-      }
-
-      public String getLabel() {
-        return target.getLabel();
-      }
-
-      public void setLabel(String label) {
-        changeAndFire("label", label);
-      }
-
-      public CheckBoxFieldType getFieldType() {
-        return target.getFieldType();
-      }
-
-      public Boolean getRequired() {
-        return target.getRequired();
-      }
-
-      public void setRequired(Boolean required) {
-        changeAndFire("required", required);
-      }
-
-      public String getHelpMessage() {
-        return target.getHelpMessage();
-      }
-
-      public void setHelpMessage(String helpMessage) {
-        changeAndFire("helpMessage", helpMessage);
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "validateOnChange": return getValidateOnChange();
-          case "name": return getName();
-          case "binding": return getBinding();
-          case "readOnly": return getReadOnly();
-          case "standaloneClassName": return getStandaloneClassName();
-          case "fieldTypeInfo": return getFieldTypeInfo();
-          case "id": return getId();
-          case "label": return getLabel();
-          case "fieldType": return getFieldType();
-          case "required": return getRequired();
-          case "helpMessage": return getHelpMessage();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("CheckBoxFieldDefinition", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "validateOnChange": target.setValidateOnChange((Boolean) value);
-          break;
-          case "name": target.setName((String) value);
-          break;
-          case "binding": target.setBinding((String) value);
-          break;
-          case "readOnly": target.setReadOnly((Boolean) value);
-          break;
-          case "standaloneClassName": target.setStandaloneClassName((String) value);
-          break;
-          case "id": target.setId((String) value);
-          break;
-          case "label": target.setLabel((String) value);
-          break;
-          case "required": target.setRequired((Boolean) value);
-          break;
-          case "helpMessage": target.setHelpMessage((String) value);
-          break;
-          case "this": target = (CheckBoxFieldDefinition) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("CheckBoxFieldDefinition", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-
-      public void copyFrom(FieldDefinition a0) {
-        target.copyFrom(a0);
-        agent.updateWidgetsAndFireEvents();
-      }
-    }
-    BindableProxyFactory.addBindableProxy(CheckBoxFieldDefinition.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy((CheckBoxFieldDefinition) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy();
-      }
-    });
     class org_kie_workbench_common_dmn_api_definition_model_UnaryTestsProxy extends UnaryTests implements BindableProxy {
       private BindableProxyAgent<UnaryTests> agent;
       private UnaryTests target;
@@ -1323,6 +1105,224 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_lists_input_impl_DateMultipleInputFieldDefinitionProxy();
+      }
+    });
+    class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy extends CheckBoxFieldDefinition implements BindableProxy {
+      private BindableProxyAgent<CheckBoxFieldDefinition> agent;
+      private CheckBoxFieldDefinition target;
+      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy() {
+        this(new CheckBoxFieldDefinition());
+      }
+
+      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy(CheckBoxFieldDefinition targetVal) {
+        agent = new BindableProxyAgent<CheckBoxFieldDefinition>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("validateOnChange", new PropertyType(Boolean.class, false, false));
+        p.put("name", new PropertyType(String.class, false, false));
+        p.put("binding", new PropertyType(String.class, false, false));
+        p.put("readOnly", new PropertyType(Boolean.class, false, false));
+        p.put("standaloneClassName", new PropertyType(String.class, false, false));
+        p.put("fieldTypeInfo", new PropertyType(TypeInfo.class, false, false));
+        p.put("id", new PropertyType(String.class, false, false));
+        p.put("label", new PropertyType(String.class, false, false));
+        p.put("fieldType", new PropertyType(CheckBoxFieldType.class, false, false));
+        p.put("required", new PropertyType(Boolean.class, false, false));
+        p.put("helpMessage", new PropertyType(String.class, false, false));
+        p.put("this", new PropertyType(CheckBoxFieldDefinition.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public CheckBoxFieldDefinition unwrap() {
+        return target;
+      }
+
+      public CheckBoxFieldDefinition deepUnwrap() {
+        final CheckBoxFieldDefinition clone = new CheckBoxFieldDefinition();
+        final CheckBoxFieldDefinition t = unwrap();
+        clone.setValidateOnChange(t.getValidateOnChange());
+        clone.setName(t.getName());
+        clone.setBinding(t.getBinding());
+        clone.setReadOnly(t.getReadOnly());
+        clone.setStandaloneClassName(t.getStandaloneClassName());
+        clone.setId(t.getId());
+        clone.setLabel(t.getLabel());
+        clone.setRequired(t.getRequired());
+        clone.setHelpMessage(t.getHelpMessage());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy) {
+          obj = ((org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public Boolean getValidateOnChange() {
+        return target.getValidateOnChange();
+      }
+
+      public void setValidateOnChange(Boolean validateOnChange) {
+        changeAndFire("validateOnChange", validateOnChange);
+      }
+
+      public String getName() {
+        return target.getName();
+      }
+
+      public void setName(String name) {
+        changeAndFire("name", name);
+      }
+
+      public String getBinding() {
+        return target.getBinding();
+      }
+
+      public void setBinding(String binding) {
+        changeAndFire("binding", binding);
+      }
+
+      public Boolean getReadOnly() {
+        return target.getReadOnly();
+      }
+
+      public void setReadOnly(Boolean readOnly) {
+        changeAndFire("readOnly", readOnly);
+      }
+
+      public String getStandaloneClassName() {
+        return target.getStandaloneClassName();
+      }
+
+      public void setStandaloneClassName(String standaloneClassName) {
+        changeAndFire("standaloneClassName", standaloneClassName);
+      }
+
+      public TypeInfo getFieldTypeInfo() {
+        return target.getFieldTypeInfo();
+      }
+
+      public String getId() {
+        return target.getId();
+      }
+
+      public void setId(String id) {
+        changeAndFire("id", id);
+      }
+
+      public String getLabel() {
+        return target.getLabel();
+      }
+
+      public void setLabel(String label) {
+        changeAndFire("label", label);
+      }
+
+      public CheckBoxFieldType getFieldType() {
+        return target.getFieldType();
+      }
+
+      public Boolean getRequired() {
+        return target.getRequired();
+      }
+
+      public void setRequired(Boolean required) {
+        changeAndFire("required", required);
+      }
+
+      public String getHelpMessage() {
+        return target.getHelpMessage();
+      }
+
+      public void setHelpMessage(String helpMessage) {
+        changeAndFire("helpMessage", helpMessage);
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "validateOnChange": return getValidateOnChange();
+          case "name": return getName();
+          case "binding": return getBinding();
+          case "readOnly": return getReadOnly();
+          case "standaloneClassName": return getStandaloneClassName();
+          case "fieldTypeInfo": return getFieldTypeInfo();
+          case "id": return getId();
+          case "label": return getLabel();
+          case "fieldType": return getFieldType();
+          case "required": return getRequired();
+          case "helpMessage": return getHelpMessage();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("CheckBoxFieldDefinition", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "validateOnChange": target.setValidateOnChange((Boolean) value);
+          break;
+          case "name": target.setName((String) value);
+          break;
+          case "binding": target.setBinding((String) value);
+          break;
+          case "readOnly": target.setReadOnly((Boolean) value);
+          break;
+          case "standaloneClassName": target.setStandaloneClassName((String) value);
+          break;
+          case "id": target.setId((String) value);
+          break;
+          case "label": target.setLabel((String) value);
+          break;
+          case "required": target.setRequired((Boolean) value);
+          break;
+          case "helpMessage": target.setHelpMessage((String) value);
+          break;
+          case "this": target = (CheckBoxFieldDefinition) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("CheckBoxFieldDefinition", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+
+      public void copyFrom(FieldDefinition a0) {
+        target.copyFrom(a0);
+        agent.updateWidgetsAndFireEvents();
+      }
+    }
+    BindableProxyFactory.addBindableProxy(CheckBoxFieldDefinition.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy((CheckBoxFieldDefinition) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_checkBox_definition_CheckBoxFieldDefinitionProxy();
       }
     });
     class org_kie_workbench_common_dmn_api_definition_model_OutputClauseLiteralExpressionProxy extends OutputClauseLiteralExpression implements BindableProxy {
@@ -2788,6 +2788,302 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_textBox_definition_CharacterBoxFieldDefinitionProxy();
       }
     });
+    class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy extends DecimalRadioGroupFieldDefinition implements BindableProxy {
+      private BindableProxyAgent<DecimalRadioGroupFieldDefinition> agent;
+      private DecimalRadioGroupFieldDefinition target;
+      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy() {
+        this(new DecimalRadioGroupFieldDefinition());
+      }
+
+      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy(DecimalRadioGroupFieldDefinition targetVal) {
+        agent = new BindableProxyAgent<DecimalRadioGroupFieldDefinition>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("relatedField", new PropertyType(String.class, false, false));
+        p.put("validateOnChange", new PropertyType(Boolean.class, false, false));
+        p.put("defaultValue", new PropertyType(Double.class, false, false));
+        p.put("binding", new PropertyType(String.class, false, false));
+        p.put("readOnly", new PropertyType(Boolean.class, false, false));
+        p.put("standaloneClassName", new PropertyType(String.class, false, false));
+        p.put("fieldTypeInfo", new PropertyType(TypeInfo.class, false, false));
+        p.put("label", new PropertyType(String.class, false, false));
+        p.put("required", new PropertyType(Boolean.class, false, false));
+        p.put("helpMessage", new PropertyType(String.class, false, false));
+        p.put("inline", new PropertyType(Boolean.class, false, false));
+        p.put("options", new PropertyType(List.class, false, true));
+        p.put("name", new PropertyType(String.class, false, false));
+        p.put("dataProvider", new PropertyType(String.class, false, false));
+        p.put("id", new PropertyType(String.class, false, false));
+        p.put("fieldType", new PropertyType(RadioGroupFieldType.class, false, false));
+        p.put("this", new PropertyType(DecimalRadioGroupFieldDefinition.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public DecimalRadioGroupFieldDefinition unwrap() {
+        return target;
+      }
+
+      public DecimalRadioGroupFieldDefinition deepUnwrap() {
+        final DecimalRadioGroupFieldDefinition clone = new DecimalRadioGroupFieldDefinition();
+        final DecimalRadioGroupFieldDefinition t = unwrap();
+        clone.setRelatedField(t.getRelatedField());
+        clone.setValidateOnChange(t.getValidateOnChange());
+        clone.setDefaultValue(t.getDefaultValue());
+        clone.setBinding(t.getBinding());
+        clone.setReadOnly(t.getReadOnly());
+        clone.setStandaloneClassName(t.getStandaloneClassName());
+        clone.setLabel(t.getLabel());
+        clone.setRequired(t.getRequired());
+        clone.setHelpMessage(t.getHelpMessage());
+        clone.setInline(t.getInline());
+        if (t.getOptions() != null) {
+          final List optionsClone = new ArrayList();
+          for (Object optionsElem : t.getOptions()) {
+            if (optionsElem instanceof BindableProxy) {
+              optionsClone.add(((BindableProxy) optionsElem).deepUnwrap());
+            } else {
+              optionsClone.add(optionsElem);
+            }
+          }
+          clone.setOptions(optionsClone);
+        }
+        clone.setName(t.getName());
+        clone.setDataProvider(t.getDataProvider());
+        clone.setId(t.getId());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy) {
+          obj = ((org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public String getRelatedField() {
+        return target.getRelatedField();
+      }
+
+      public void setRelatedField(String relatedField) {
+        changeAndFire("relatedField", relatedField);
+      }
+
+      public Boolean getValidateOnChange() {
+        return target.getValidateOnChange();
+      }
+
+      public void setValidateOnChange(Boolean validateOnChange) {
+        changeAndFire("validateOnChange", validateOnChange);
+      }
+
+      public Double getDefaultValue() {
+        return target.getDefaultValue();
+      }
+
+      public void setDefaultValue(Double defaultValue) {
+        changeAndFire("defaultValue", defaultValue);
+      }
+
+      public String getBinding() {
+        return target.getBinding();
+      }
+
+      public void setBinding(String binding) {
+        changeAndFire("binding", binding);
+      }
+
+      public Boolean getReadOnly() {
+        return target.getReadOnly();
+      }
+
+      public void setReadOnly(Boolean readOnly) {
+        changeAndFire("readOnly", readOnly);
+      }
+
+      public String getStandaloneClassName() {
+        return target.getStandaloneClassName();
+      }
+
+      public void setStandaloneClassName(String standaloneClassName) {
+        changeAndFire("standaloneClassName", standaloneClassName);
+      }
+
+      public TypeInfo getFieldTypeInfo() {
+        return target.getFieldTypeInfo();
+      }
+
+      public String getLabel() {
+        return target.getLabel();
+      }
+
+      public void setLabel(String label) {
+        changeAndFire("label", label);
+      }
+
+      public Boolean getRequired() {
+        return target.getRequired();
+      }
+
+      public void setRequired(Boolean required) {
+        changeAndFire("required", required);
+      }
+
+      public String getHelpMessage() {
+        return target.getHelpMessage();
+      }
+
+      public void setHelpMessage(String helpMessage) {
+        changeAndFire("helpMessage", helpMessage);
+      }
+
+      public Boolean getInline() {
+        return target.getInline();
+      }
+
+      public void setInline(Boolean inline) {
+        changeAndFire("inline", inline);
+      }
+
+      public List getOptions() {
+        return target.getOptions();
+      }
+
+      public void setOptions(List<DecimalSelectorOption> options) {
+        List<DecimalSelectorOption> oldValue = target.getOptions();
+        options = agent.ensureBoundListIsProxied("options", options);
+        target.setOptions(options);
+        agent.updateWidgetsAndFireEvent(true, "options", oldValue, options);
+      }
+
+      public String getName() {
+        return target.getName();
+      }
+
+      public void setName(String name) {
+        changeAndFire("name", name);
+      }
+
+      public String getDataProvider() {
+        return target.getDataProvider();
+      }
+
+      public void setDataProvider(String dataProvider) {
+        changeAndFire("dataProvider", dataProvider);
+      }
+
+      public String getId() {
+        return target.getId();
+      }
+
+      public void setId(String id) {
+        changeAndFire("id", id);
+      }
+
+      public RadioGroupFieldType getFieldType() {
+        return target.getFieldType();
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "relatedField": return getRelatedField();
+          case "validateOnChange": return getValidateOnChange();
+          case "defaultValue": return getDefaultValue();
+          case "binding": return getBinding();
+          case "readOnly": return getReadOnly();
+          case "standaloneClassName": return getStandaloneClassName();
+          case "fieldTypeInfo": return getFieldTypeInfo();
+          case "label": return getLabel();
+          case "required": return getRequired();
+          case "helpMessage": return getHelpMessage();
+          case "inline": return getInline();
+          case "options": return getOptions();
+          case "name": return getName();
+          case "dataProvider": return getDataProvider();
+          case "id": return getId();
+          case "fieldType": return getFieldType();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("DecimalRadioGroupFieldDefinition", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "relatedField": target.setRelatedField((String) value);
+          break;
+          case "validateOnChange": target.setValidateOnChange((Boolean) value);
+          break;
+          case "defaultValue": target.setDefaultValue((Double) value);
+          break;
+          case "binding": target.setBinding((String) value);
+          break;
+          case "readOnly": target.setReadOnly((Boolean) value);
+          break;
+          case "standaloneClassName": target.setStandaloneClassName((String) value);
+          break;
+          case "label": target.setLabel((String) value);
+          break;
+          case "required": target.setRequired((Boolean) value);
+          break;
+          case "helpMessage": target.setHelpMessage((String) value);
+          break;
+          case "inline": target.setInline((Boolean) value);
+          break;
+          case "options": target.setOptions((List<DecimalSelectorOption>) value);
+          break;
+          case "name": target.setName((String) value);
+          break;
+          case "dataProvider": target.setDataProvider((String) value);
+          break;
+          case "id": target.setId((String) value);
+          break;
+          case "this": target = (DecimalRadioGroupFieldDefinition) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("DecimalRadioGroupFieldDefinition", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+
+      public void copyFrom(FieldDefinition a0) {
+        target.copyFrom(a0);
+        agent.updateWidgetsAndFireEvents();
+      }
+    }
+    BindableProxyFactory.addBindableProxy(DecimalRadioGroupFieldDefinition.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy((DecimalRadioGroupFieldDefinition) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy();
+      }
+    });
     class org_kie_workbench_common_dmn_api_definition_model_DecisionServiceProxy extends DecisionService implements BindableProxy {
       private BindableProxyAgent<DecisionService> agent;
       private DecisionService target;
@@ -3250,302 +3546,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_dmn_api_definition_model_DecisionServiceProxy();
-      }
-    });
-    class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy extends DecimalRadioGroupFieldDefinition implements BindableProxy {
-      private BindableProxyAgent<DecimalRadioGroupFieldDefinition> agent;
-      private DecimalRadioGroupFieldDefinition target;
-      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy() {
-        this(new DecimalRadioGroupFieldDefinition());
-      }
-
-      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy(DecimalRadioGroupFieldDefinition targetVal) {
-        agent = new BindableProxyAgent<DecimalRadioGroupFieldDefinition>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("relatedField", new PropertyType(String.class, false, false));
-        p.put("validateOnChange", new PropertyType(Boolean.class, false, false));
-        p.put("defaultValue", new PropertyType(Double.class, false, false));
-        p.put("binding", new PropertyType(String.class, false, false));
-        p.put("readOnly", new PropertyType(Boolean.class, false, false));
-        p.put("standaloneClassName", new PropertyType(String.class, false, false));
-        p.put("fieldTypeInfo", new PropertyType(TypeInfo.class, false, false));
-        p.put("label", new PropertyType(String.class, false, false));
-        p.put("required", new PropertyType(Boolean.class, false, false));
-        p.put("helpMessage", new PropertyType(String.class, false, false));
-        p.put("inline", new PropertyType(Boolean.class, false, false));
-        p.put("options", new PropertyType(List.class, false, true));
-        p.put("name", new PropertyType(String.class, false, false));
-        p.put("dataProvider", new PropertyType(String.class, false, false));
-        p.put("id", new PropertyType(String.class, false, false));
-        p.put("fieldType", new PropertyType(RadioGroupFieldType.class, false, false));
-        p.put("this", new PropertyType(DecimalRadioGroupFieldDefinition.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public DecimalRadioGroupFieldDefinition unwrap() {
-        return target;
-      }
-
-      public DecimalRadioGroupFieldDefinition deepUnwrap() {
-        final DecimalRadioGroupFieldDefinition clone = new DecimalRadioGroupFieldDefinition();
-        final DecimalRadioGroupFieldDefinition t = unwrap();
-        clone.setRelatedField(t.getRelatedField());
-        clone.setValidateOnChange(t.getValidateOnChange());
-        clone.setDefaultValue(t.getDefaultValue());
-        clone.setBinding(t.getBinding());
-        clone.setReadOnly(t.getReadOnly());
-        clone.setStandaloneClassName(t.getStandaloneClassName());
-        clone.setLabel(t.getLabel());
-        clone.setRequired(t.getRequired());
-        clone.setHelpMessage(t.getHelpMessage());
-        clone.setInline(t.getInline());
-        if (t.getOptions() != null) {
-          final List optionsClone = new ArrayList();
-          for (Object optionsElem : t.getOptions()) {
-            if (optionsElem instanceof BindableProxy) {
-              optionsClone.add(((BindableProxy) optionsElem).deepUnwrap());
-            } else {
-              optionsClone.add(optionsElem);
-            }
-          }
-          clone.setOptions(optionsClone);
-        }
-        clone.setName(t.getName());
-        clone.setDataProvider(t.getDataProvider());
-        clone.setId(t.getId());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy) {
-          obj = ((org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public String getRelatedField() {
-        return target.getRelatedField();
-      }
-
-      public void setRelatedField(String relatedField) {
-        changeAndFire("relatedField", relatedField);
-      }
-
-      public Boolean getValidateOnChange() {
-        return target.getValidateOnChange();
-      }
-
-      public void setValidateOnChange(Boolean validateOnChange) {
-        changeAndFire("validateOnChange", validateOnChange);
-      }
-
-      public Double getDefaultValue() {
-        return target.getDefaultValue();
-      }
-
-      public void setDefaultValue(Double defaultValue) {
-        changeAndFire("defaultValue", defaultValue);
-      }
-
-      public String getBinding() {
-        return target.getBinding();
-      }
-
-      public void setBinding(String binding) {
-        changeAndFire("binding", binding);
-      }
-
-      public Boolean getReadOnly() {
-        return target.getReadOnly();
-      }
-
-      public void setReadOnly(Boolean readOnly) {
-        changeAndFire("readOnly", readOnly);
-      }
-
-      public String getStandaloneClassName() {
-        return target.getStandaloneClassName();
-      }
-
-      public void setStandaloneClassName(String standaloneClassName) {
-        changeAndFire("standaloneClassName", standaloneClassName);
-      }
-
-      public TypeInfo getFieldTypeInfo() {
-        return target.getFieldTypeInfo();
-      }
-
-      public String getLabel() {
-        return target.getLabel();
-      }
-
-      public void setLabel(String label) {
-        changeAndFire("label", label);
-      }
-
-      public Boolean getRequired() {
-        return target.getRequired();
-      }
-
-      public void setRequired(Boolean required) {
-        changeAndFire("required", required);
-      }
-
-      public String getHelpMessage() {
-        return target.getHelpMessage();
-      }
-
-      public void setHelpMessage(String helpMessage) {
-        changeAndFire("helpMessage", helpMessage);
-      }
-
-      public Boolean getInline() {
-        return target.getInline();
-      }
-
-      public void setInline(Boolean inline) {
-        changeAndFire("inline", inline);
-      }
-
-      public List getOptions() {
-        return target.getOptions();
-      }
-
-      public void setOptions(List<DecimalSelectorOption> options) {
-        List<DecimalSelectorOption> oldValue = target.getOptions();
-        options = agent.ensureBoundListIsProxied("options", options);
-        target.setOptions(options);
-        agent.updateWidgetsAndFireEvent(true, "options", oldValue, options);
-      }
-
-      public String getName() {
-        return target.getName();
-      }
-
-      public void setName(String name) {
-        changeAndFire("name", name);
-      }
-
-      public String getDataProvider() {
-        return target.getDataProvider();
-      }
-
-      public void setDataProvider(String dataProvider) {
-        changeAndFire("dataProvider", dataProvider);
-      }
-
-      public String getId() {
-        return target.getId();
-      }
-
-      public void setId(String id) {
-        changeAndFire("id", id);
-      }
-
-      public RadioGroupFieldType getFieldType() {
-        return target.getFieldType();
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "relatedField": return getRelatedField();
-          case "validateOnChange": return getValidateOnChange();
-          case "defaultValue": return getDefaultValue();
-          case "binding": return getBinding();
-          case "readOnly": return getReadOnly();
-          case "standaloneClassName": return getStandaloneClassName();
-          case "fieldTypeInfo": return getFieldTypeInfo();
-          case "label": return getLabel();
-          case "required": return getRequired();
-          case "helpMessage": return getHelpMessage();
-          case "inline": return getInline();
-          case "options": return getOptions();
-          case "name": return getName();
-          case "dataProvider": return getDataProvider();
-          case "id": return getId();
-          case "fieldType": return getFieldType();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("DecimalRadioGroupFieldDefinition", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "relatedField": target.setRelatedField((String) value);
-          break;
-          case "validateOnChange": target.setValidateOnChange((Boolean) value);
-          break;
-          case "defaultValue": target.setDefaultValue((Double) value);
-          break;
-          case "binding": target.setBinding((String) value);
-          break;
-          case "readOnly": target.setReadOnly((Boolean) value);
-          break;
-          case "standaloneClassName": target.setStandaloneClassName((String) value);
-          break;
-          case "label": target.setLabel((String) value);
-          break;
-          case "required": target.setRequired((Boolean) value);
-          break;
-          case "helpMessage": target.setHelpMessage((String) value);
-          break;
-          case "inline": target.setInline((Boolean) value);
-          break;
-          case "options": target.setOptions((List<DecimalSelectorOption>) value);
-          break;
-          case "name": target.setName((String) value);
-          break;
-          case "dataProvider": target.setDataProvider((String) value);
-          break;
-          case "id": target.setId((String) value);
-          break;
-          case "this": target = (DecimalRadioGroupFieldDefinition) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("DecimalRadioGroupFieldDefinition", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-
-      public void copyFrom(FieldDefinition a0) {
-        target.copyFrom(a0);
-        agent.updateWidgetsAndFireEvents();
-      }
-    }
-    BindableProxyFactory.addBindableProxy(DecimalRadioGroupFieldDefinition.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy((DecimalRadioGroupFieldDefinition) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_DecimalRadioGroupFieldDefinitionProxy();
       }
     });
     class org_kie_workbench_common_dmn_client_property_dmn_QNameFieldDefinitionProxy extends QNameFieldDefinition implements BindableProxy {
@@ -6858,6 +6858,190 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_lists_input_impl_CharacterMultipleInputFieldDefinitionProxy();
       }
     });
+    class org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy extends DMNDiagram implements BindableProxy {
+      private BindableProxyAgent<DMNDiagram> agent;
+      private DMNDiagram target;
+      public org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy() {
+        this(new DMNDiagram());
+      }
+
+      public org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy(DMNDiagram targetVal) {
+        agent = new BindableProxyAgent<DMNDiagram>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("parent", new PropertyType(DMNModelInstrumentedBase.class, false, false));
+        p.put("defaultNamespace", new PropertyType(String.class, false, false));
+        p.put("stunnerCategory", new PropertyType(String.class, false, false));
+        p.put("nsContext", new PropertyType(Map.class, false, false));
+        p.put("stunnerLabels", new PropertyType(Set.class, false, false));
+        p.put("id", new PropertyType(Id.class, true, false));
+        p.put("definitions", new PropertyType(Definitions.class, true, false));
+        p.put("additionalAttributes", new PropertyType(Map.class, false, false));
+        p.put("this", new PropertyType(DMNDiagram.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public DMNDiagram unwrap() {
+        return target;
+      }
+
+      public DMNDiagram deepUnwrap() {
+        final DMNDiagram clone = new DMNDiagram();
+        final DMNDiagram t = unwrap();
+        clone.setParent(t.getParent());
+        if (t.getId() instanceof BindableProxy) {
+          clone.setId((Id) ((BindableProxy) getId()).deepUnwrap());
+        } else if (BindableProxyFactory.isBindableType(t.getId())) {
+          clone.setId((Id) ((BindableProxy) BindableProxyFactory.getBindableProxy(t.getId())).deepUnwrap());
+        } else {
+          clone.setId(t.getId());
+        }
+        if (t.getDefinitions() instanceof BindableProxy) {
+          clone.setDefinitions((Definitions) ((BindableProxy) getDefinitions()).deepUnwrap());
+        } else if (BindableProxyFactory.isBindableType(t.getDefinitions())) {
+          clone.setDefinitions((Definitions) ((BindableProxy) BindableProxyFactory.getBindableProxy(t.getDefinitions())).deepUnwrap());
+        } else {
+          clone.setDefinitions(t.getDefinitions());
+        }
+        clone.setAdditionalAttributes(t.getAdditionalAttributes());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy) {
+          obj = ((org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public DMNModelInstrumentedBase getParent() {
+        return target.getParent();
+      }
+
+      public void setParent(DMNModelInstrumentedBase parent) {
+        changeAndFire("parent", parent);
+      }
+
+      public String getDefaultNamespace() {
+        return target.getDefaultNamespace();
+      }
+
+      public String getStunnerCategory() {
+        return target.getStunnerCategory();
+      }
+
+      public Map getNsContext() {
+        return target.getNsContext();
+      }
+
+      public Set getStunnerLabels() {
+        return target.getStunnerLabels();
+      }
+
+      public Id getId() {
+        return target.getId();
+      }
+
+      public void setId(Id id) {
+        if (agent.binders.containsKey("id")) {
+          id = (Id) agent.binders.get("id").setModel(id, StateSync.FROM_MODEL, true);
+        }
+        changeAndFire("id", id);
+      }
+
+      public Definitions getDefinitions() {
+        return target.getDefinitions();
+      }
+
+      public void setDefinitions(Definitions definitions) {
+        if (agent.binders.containsKey("definitions")) {
+          definitions = (Definitions) agent.binders.get("definitions").setModel(definitions, StateSync.FROM_MODEL, true);
+        }
+        changeAndFire("definitions", definitions);
+      }
+
+      public Map getAdditionalAttributes() {
+        return target.getAdditionalAttributes();
+      }
+
+      public void setAdditionalAttributes(Map<QName, String> additionalAttributes) {
+        changeAndFire("additionalAttributes", additionalAttributes);
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "parent": return getParent();
+          case "defaultNamespace": return getDefaultNamespace();
+          case "stunnerCategory": return getStunnerCategory();
+          case "nsContext": return getNsContext();
+          case "stunnerLabels": return getStunnerLabels();
+          case "id": return getId();
+          case "definitions": return getDefinitions();
+          case "additionalAttributes": return getAdditionalAttributes();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("DMNDiagram", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "parent": target.setParent((DMNModelInstrumentedBase) value);
+          break;
+          case "id": target.setId((Id) value);
+          break;
+          case "definitions": target.setDefinitions((Definitions) value);
+          break;
+          case "additionalAttributes": target.setAdditionalAttributes((Map<QName, String>) value);
+          break;
+          case "this": target = (DMNDiagram) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("DMNDiagram", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+
+      public Optional getPrefixForNamespaceURI(String a0) {
+        final Optional returnValue = target.getPrefixForNamespaceURI(a0);
+        agent.updateWidgetsAndFireEvents();
+        return returnValue;
+      }
+    }
+    BindableProxyFactory.addBindableProxy(DMNDiagram.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy((DMNDiagram) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy();
+      }
+    });
     class org_kie_workbench_common_dmn_api_definition_model_TextAnnotationProxy extends TextAnnotation implements BindableProxy {
       private BindableProxyAgent<TextAnnotation> agent;
       private TextAnnotation target;
@@ -7230,190 +7414,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_dmn_api_definition_model_TextAnnotationProxy();
-      }
-    });
-    class org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy extends DMNDiagram implements BindableProxy {
-      private BindableProxyAgent<DMNDiagram> agent;
-      private DMNDiagram target;
-      public org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy() {
-        this(new DMNDiagram());
-      }
-
-      public org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy(DMNDiagram targetVal) {
-        agent = new BindableProxyAgent<DMNDiagram>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("parent", new PropertyType(DMNModelInstrumentedBase.class, false, false));
-        p.put("defaultNamespace", new PropertyType(String.class, false, false));
-        p.put("stunnerCategory", new PropertyType(String.class, false, false));
-        p.put("nsContext", new PropertyType(Map.class, false, false));
-        p.put("stunnerLabels", new PropertyType(Set.class, false, false));
-        p.put("id", new PropertyType(Id.class, true, false));
-        p.put("definitions", new PropertyType(Definitions.class, true, false));
-        p.put("additionalAttributes", new PropertyType(Map.class, false, false));
-        p.put("this", new PropertyType(DMNDiagram.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public DMNDiagram unwrap() {
-        return target;
-      }
-
-      public DMNDiagram deepUnwrap() {
-        final DMNDiagram clone = new DMNDiagram();
-        final DMNDiagram t = unwrap();
-        clone.setParent(t.getParent());
-        if (t.getId() instanceof BindableProxy) {
-          clone.setId((Id) ((BindableProxy) getId()).deepUnwrap());
-        } else if (BindableProxyFactory.isBindableType(t.getId())) {
-          clone.setId((Id) ((BindableProxy) BindableProxyFactory.getBindableProxy(t.getId())).deepUnwrap());
-        } else {
-          clone.setId(t.getId());
-        }
-        if (t.getDefinitions() instanceof BindableProxy) {
-          clone.setDefinitions((Definitions) ((BindableProxy) getDefinitions()).deepUnwrap());
-        } else if (BindableProxyFactory.isBindableType(t.getDefinitions())) {
-          clone.setDefinitions((Definitions) ((BindableProxy) BindableProxyFactory.getBindableProxy(t.getDefinitions())).deepUnwrap());
-        } else {
-          clone.setDefinitions(t.getDefinitions());
-        }
-        clone.setAdditionalAttributes(t.getAdditionalAttributes());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy) {
-          obj = ((org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public DMNModelInstrumentedBase getParent() {
-        return target.getParent();
-      }
-
-      public void setParent(DMNModelInstrumentedBase parent) {
-        changeAndFire("parent", parent);
-      }
-
-      public String getDefaultNamespace() {
-        return target.getDefaultNamespace();
-      }
-
-      public String getStunnerCategory() {
-        return target.getStunnerCategory();
-      }
-
-      public Map getNsContext() {
-        return target.getNsContext();
-      }
-
-      public Set getStunnerLabels() {
-        return target.getStunnerLabels();
-      }
-
-      public Id getId() {
-        return target.getId();
-      }
-
-      public void setId(Id id) {
-        if (agent.binders.containsKey("id")) {
-          id = (Id) agent.binders.get("id").setModel(id, StateSync.FROM_MODEL, true);
-        }
-        changeAndFire("id", id);
-      }
-
-      public Definitions getDefinitions() {
-        return target.getDefinitions();
-      }
-
-      public void setDefinitions(Definitions definitions) {
-        if (agent.binders.containsKey("definitions")) {
-          definitions = (Definitions) agent.binders.get("definitions").setModel(definitions, StateSync.FROM_MODEL, true);
-        }
-        changeAndFire("definitions", definitions);
-      }
-
-      public Map getAdditionalAttributes() {
-        return target.getAdditionalAttributes();
-      }
-
-      public void setAdditionalAttributes(Map<QName, String> additionalAttributes) {
-        changeAndFire("additionalAttributes", additionalAttributes);
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "parent": return getParent();
-          case "defaultNamespace": return getDefaultNamespace();
-          case "stunnerCategory": return getStunnerCategory();
-          case "nsContext": return getNsContext();
-          case "stunnerLabels": return getStunnerLabels();
-          case "id": return getId();
-          case "definitions": return getDefinitions();
-          case "additionalAttributes": return getAdditionalAttributes();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("DMNDiagram", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "parent": target.setParent((DMNModelInstrumentedBase) value);
-          break;
-          case "id": target.setId((Id) value);
-          break;
-          case "definitions": target.setDefinitions((Definitions) value);
-          break;
-          case "additionalAttributes": target.setAdditionalAttributes((Map<QName, String>) value);
-          break;
-          case "this": target = (DMNDiagram) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("DMNDiagram", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-
-      public Optional getPrefixForNamespaceURI(String a0) {
-        final Optional returnValue = target.getPrefixForNamespaceURI(a0);
-        agent.updateWidgetsAndFireEvents();
-        return returnValue;
-      }
-    }
-    BindableProxyFactory.addBindableProxy(DMNDiagram.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy((DMNDiagram) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_dmn_api_definition_model_DMNDiagramProxy();
       }
     });
     class org_kie_workbench_common_dmn_api_definition_model_LiteralExpressionPMMLDocumentModelProxy extends LiteralExpressionPMMLDocumentModel implements BindableProxy {
@@ -12015,109 +12015,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
         return new org_kie_workbench_common_dmn_api_property_dimensions_HeightProxy();
       }
     });
-    class org_kie_workbench_common_dmn_api_property_background_BgColourProxy extends BgColour implements BindableProxy {
-      private BindableProxyAgent<BgColour> agent;
-      private BgColour target;
-      public org_kie_workbench_common_dmn_api_property_background_BgColourProxy() {
-        this(new BgColour());
-      }
-
-      public org_kie_workbench_common_dmn_api_property_background_BgColourProxy(BgColour targetVal) {
-        agent = new BindableProxyAgent<BgColour>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("type", new PropertyType(org.kie.workbench.common.stunner.core.definition.property.PropertyType.class, false, false));
-        p.put("value", new PropertyType(String.class, false, false));
-        p.put("this", new PropertyType(BgColour.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public BgColour unwrap() {
-        return target;
-      }
-
-      public BgColour deepUnwrap() {
-        final BgColour clone = new BgColour();
-        final BgColour t = unwrap();
-        clone.setValue(t.getValue());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_dmn_api_property_background_BgColourProxy) {
-          obj = ((org_kie_workbench_common_dmn_api_property_background_BgColourProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public org.kie.workbench.common.stunner.core.definition.property.PropertyType getType() {
-        return target.getType();
-      }
-
-      public String getValue() {
-        return target.getValue();
-      }
-
-      public void setValue(String value) {
-        changeAndFire("value", value);
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "type": return getType();
-          case "value": return getValue();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("BgColour", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "value": target.setValue((String) value);
-          break;
-          case "this": target = (BgColour) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("BgColour", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-    }
-    BindableProxyFactory.addBindableProxy(BgColour.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_dmn_api_property_background_BgColourProxy((BgColour) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_dmn_api_property_background_BgColourProxy();
-      }
-    });
     class org_kie_workbench_common_forms_fields_shared_fieldTypes_relations_TableColumnMetaProxy extends TableColumnMeta implements BindableProxy {
       private BindableProxyAgent<TableColumnMeta> agent;
       private TableColumnMeta target;
@@ -12226,6 +12123,109 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_relations_TableColumnMetaProxy();
+      }
+    });
+    class org_kie_workbench_common_dmn_api_property_background_BgColourProxy extends BgColour implements BindableProxy {
+      private BindableProxyAgent<BgColour> agent;
+      private BgColour target;
+      public org_kie_workbench_common_dmn_api_property_background_BgColourProxy() {
+        this(new BgColour());
+      }
+
+      public org_kie_workbench_common_dmn_api_property_background_BgColourProxy(BgColour targetVal) {
+        agent = new BindableProxyAgent<BgColour>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("type", new PropertyType(org.kie.workbench.common.stunner.core.definition.property.PropertyType.class, false, false));
+        p.put("value", new PropertyType(String.class, false, false));
+        p.put("this", new PropertyType(BgColour.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public BgColour unwrap() {
+        return target;
+      }
+
+      public BgColour deepUnwrap() {
+        final BgColour clone = new BgColour();
+        final BgColour t = unwrap();
+        clone.setValue(t.getValue());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_dmn_api_property_background_BgColourProxy) {
+          obj = ((org_kie_workbench_common_dmn_api_property_background_BgColourProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public org.kie.workbench.common.stunner.core.definition.property.PropertyType getType() {
+        return target.getType();
+      }
+
+      public String getValue() {
+        return target.getValue();
+      }
+
+      public void setValue(String value) {
+        changeAndFire("value", value);
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "type": return getType();
+          case "value": return getValue();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("BgColour", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "value": target.setValue((String) value);
+          break;
+          case "this": target = (BgColour) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("BgColour", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+    }
+    BindableProxyFactory.addBindableProxy(BgColour.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_dmn_api_property_background_BgColourProxy((BgColour) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_dmn_api_property_background_BgColourProxy();
       }
     });
     class org_kie_workbench_common_forms_fields_shared_fieldTypes_relations_subForm_definition_SubFormFieldDefinitionProxy extends SubFormFieldDefinition implements BindableProxy {
@@ -12470,6 +12470,109 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_relations_subForm_definition_SubFormFieldDefinitionProxy();
+      }
+    });
+    class org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy extends ExpressionLanguage implements BindableProxy {
+      private BindableProxyAgent<ExpressionLanguage> agent;
+      private ExpressionLanguage target;
+      public org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy() {
+        this(new ExpressionLanguage());
+      }
+
+      public org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy(ExpressionLanguage targetVal) {
+        agent = new BindableProxyAgent<ExpressionLanguage>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("value", new PropertyType(String.class, false, false));
+        p.put("this", new PropertyType(ExpressionLanguage.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public ExpressionLanguage unwrap() {
+        return target;
+      }
+
+      public ExpressionLanguage deepUnwrap() {
+        final ExpressionLanguage clone = new ExpressionLanguage();
+        final ExpressionLanguage t = unwrap();
+        clone.setValue(t.getValue());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy) {
+          obj = ((org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public String getValue() {
+        return target.getValue();
+      }
+
+      public void setValue(String value) {
+        changeAndFire("value", value);
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "value": return getValue();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("ExpressionLanguage", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "value": target.setValue((String) value);
+          break;
+          case "this": target = (ExpressionLanguage) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("ExpressionLanguage", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+
+      public ExpressionLanguage copy() {
+        final ExpressionLanguage returnValue = target.copy();
+        agent.updateWidgetsAndFireEvents();
+        return returnValue;
+      }
+    }
+    BindableProxyFactory.addBindableProxy(ExpressionLanguage.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy((ExpressionLanguage) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy();
       }
     });
     class org_kie_workbench_common_dmn_api_definition_model_LiteralExpressionProxy extends LiteralExpression implements BindableProxy {
@@ -12810,109 +12913,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_dmn_api_definition_model_LiteralExpressionProxy();
-      }
-    });
-    class org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy extends ExpressionLanguage implements BindableProxy {
-      private BindableProxyAgent<ExpressionLanguage> agent;
-      private ExpressionLanguage target;
-      public org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy() {
-        this(new ExpressionLanguage());
-      }
-
-      public org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy(ExpressionLanguage targetVal) {
-        agent = new BindableProxyAgent<ExpressionLanguage>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("value", new PropertyType(String.class, false, false));
-        p.put("this", new PropertyType(ExpressionLanguage.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public ExpressionLanguage unwrap() {
-        return target;
-      }
-
-      public ExpressionLanguage deepUnwrap() {
-        final ExpressionLanguage clone = new ExpressionLanguage();
-        final ExpressionLanguage t = unwrap();
-        clone.setValue(t.getValue());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy) {
-          obj = ((org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public String getValue() {
-        return target.getValue();
-      }
-
-      public void setValue(String value) {
-        changeAndFire("value", value);
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "value": return getValue();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("ExpressionLanguage", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "value": target.setValue((String) value);
-          break;
-          case "this": target = (ExpressionLanguage) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("ExpressionLanguage", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-
-      public ExpressionLanguage copy() {
-        final ExpressionLanguage returnValue = target.copy();
-        agent.updateWidgetsAndFireEvents();
-        return returnValue;
-      }
-    }
-    BindableProxyFactory.addBindableProxy(ExpressionLanguage.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy((ExpressionLanguage) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_dmn_api_property_dmn_ExpressionLanguageProxy();
       }
     });
     class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_lists_input_impl_BooleanMultipleInputFieldDefinitionProxy extends BooleanMultipleInputFieldDefinition implements BindableProxy {
@@ -14377,6 +14377,116 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_decimalBox_definition_DecimalBoxFieldDefinitionProxy();
       }
     });
+    class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy extends DefaultSelectorOption implements BindableProxy {
+      private BindableProxyAgent<DefaultSelectorOption> agent;
+      private DefaultSelectorOption target;
+      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy() {
+        this(new DefaultSelectorOption());
+      }
+
+      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy(DefaultSelectorOption targetVal) {
+        agent = new BindableProxyAgent<DefaultSelectorOption>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("text", new PropertyType(String.class, false, false));
+        p.put("value", new PropertyType(Object.class, false, false));
+        p.put("this", new PropertyType(DefaultSelectorOption.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public DefaultSelectorOption unwrap() {
+        return target;
+      }
+
+      public DefaultSelectorOption deepUnwrap() {
+        final DefaultSelectorOption clone = new DefaultSelectorOption();
+        final DefaultSelectorOption t = unwrap();
+        clone.setText(t.getText());
+        clone.setValue(t.getValue());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy) {
+          obj = ((org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public String getText() {
+        return target.getText();
+      }
+
+      public void setText(String text) {
+        changeAndFire("text", text);
+      }
+
+      public Object getValue() {
+        return target.getValue();
+      }
+
+      public void setValue(Object value) {
+        changeAndFire("value", value);
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "text": return getText();
+          case "value": return getValue();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("DefaultSelectorOption", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "text": target.setText((String) value);
+          break;
+          case "value": target.setValue(value);
+          break;
+          case "this": target = (DefaultSelectorOption) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("DefaultSelectorOption", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+    }
+    BindableProxyFactory.addBindableProxy(DefaultSelectorOption.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy((DefaultSelectorOption) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy();
+      }
+    });
     class org_kie_workbench_common_dmn_api_definition_model_AuthorityRequirementProxy extends AuthorityRequirement implements BindableProxy {
       private BindableProxyAgent<AuthorityRequirement> agent;
       private AuthorityRequirement target;
@@ -14515,116 +14625,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_dmn_api_definition_model_AuthorityRequirementProxy();
-      }
-    });
-    class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy extends DefaultSelectorOption implements BindableProxy {
-      private BindableProxyAgent<DefaultSelectorOption> agent;
-      private DefaultSelectorOption target;
-      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy() {
-        this(new DefaultSelectorOption());
-      }
-
-      public org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy(DefaultSelectorOption targetVal) {
-        agent = new BindableProxyAgent<DefaultSelectorOption>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("text", new PropertyType(String.class, false, false));
-        p.put("value", new PropertyType(Object.class, false, false));
-        p.put("this", new PropertyType(DefaultSelectorOption.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public DefaultSelectorOption unwrap() {
-        return target;
-      }
-
-      public DefaultSelectorOption deepUnwrap() {
-        final DefaultSelectorOption clone = new DefaultSelectorOption();
-        final DefaultSelectorOption t = unwrap();
-        clone.setText(t.getText());
-        clone.setValue(t.getValue());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy) {
-          obj = ((org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public String getText() {
-        return target.getText();
-      }
-
-      public void setText(String text) {
-        changeAndFire("text", text);
-      }
-
-      public Object getValue() {
-        return target.getValue();
-      }
-
-      public void setValue(Object value) {
-        changeAndFire("value", value);
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "text": return getText();
-          case "value": return getValue();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("DefaultSelectorOption", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "text": target.setText((String) value);
-          break;
-          case "value": target.setValue(value);
-          break;
-          case "this": target = (DefaultSelectorOption) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("DefaultSelectorOption", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-    }
-    BindableProxyFactory.addBindableProxy(DefaultSelectorOption.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy((DefaultSelectorOption) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_DefaultSelectorOptionProxy();
       }
     });
     class org_kie_workbench_common_dmn_api_definition_model_BusinessKnowledgeModelProxy extends BusinessKnowledgeModel implements BindableProxy {
@@ -18185,109 +18185,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
         return new org_kie_workbench_common_dmn_api_definition_model_DecisionProxy();
       }
     });
-    class org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy extends NameHolder implements BindableProxy {
-      private BindableProxyAgent<NameHolder> agent;
-      private NameHolder target;
-      public org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy() {
-        this(new NameHolder());
-      }
-
-      public org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy(NameHolder targetVal) {
-        agent = new BindableProxyAgent<NameHolder>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("value", new PropertyType(Name.class, false, false));
-        p.put("this", new PropertyType(NameHolder.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public NameHolder unwrap() {
-        return target;
-      }
-
-      public NameHolder deepUnwrap() {
-        final NameHolder clone = new NameHolder();
-        final NameHolder t = unwrap();
-        clone.setValue(t.getValue());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy) {
-          obj = ((org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public Name getValue() {
-        return target.getValue();
-      }
-
-      public void setValue(Name value) {
-        changeAndFire("value", value);
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "value": return getValue();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("NameHolder", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "value": target.setValue((Name) value);
-          break;
-          case "this": target = (NameHolder) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("NameHolder", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-
-      public NameHolder copy() {
-        final NameHolder returnValue = target.copy();
-        agent.updateWidgetsAndFireEvents();
-        return returnValue;
-      }
-    }
-    BindableProxyFactory.addBindableProxy(NameHolder.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy((NameHolder) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy();
-      }
-    });
     class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_lists_selector_impl_DecimalMultipleSelectorFieldDefinitionProxy extends DecimalMultipleSelectorFieldDefinition implements BindableProxy {
       private BindableProxyAgent<DecimalMultipleSelectorFieldDefinition> agent;
       private DecimalMultipleSelectorFieldDefinition target;
@@ -18582,6 +18479,109 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_lists_selector_impl_DecimalMultipleSelectorFieldDefinitionProxy();
+      }
+    });
+    class org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy extends NameHolder implements BindableProxy {
+      private BindableProxyAgent<NameHolder> agent;
+      private NameHolder target;
+      public org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy() {
+        this(new NameHolder());
+      }
+
+      public org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy(NameHolder targetVal) {
+        agent = new BindableProxyAgent<NameHolder>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("value", new PropertyType(Name.class, false, false));
+        p.put("this", new PropertyType(NameHolder.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public NameHolder unwrap() {
+        return target;
+      }
+
+      public NameHolder deepUnwrap() {
+        final NameHolder clone = new NameHolder();
+        final NameHolder t = unwrap();
+        clone.setValue(t.getValue());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy) {
+          obj = ((org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public Name getValue() {
+        return target.getValue();
+      }
+
+      public void setValue(Name value) {
+        changeAndFire("value", value);
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "value": return getValue();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("NameHolder", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "value": target.setValue((Name) value);
+          break;
+          case "this": target = (NameHolder) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("NameHolder", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+
+      public NameHolder copy() {
+        final NameHolder returnValue = target.copy();
+        agent.updateWidgetsAndFireEvents();
+        return returnValue;
+      }
+    }
+    BindableProxyFactory.addBindableProxy(NameHolder.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy((NameHolder) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_dmn_api_property_dmn_NameHolderProxy();
       }
     });
     class org_kie_workbench_common_dmn_api_property_dimensions_GeneralRectangleDimensionsSetProxy extends GeneralRectangleDimensionsSet implements BindableProxy {
@@ -19032,6 +19032,103 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
         return new org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_selectors_radioGroup_definition_StringRadioGroupFieldDefinitionProxy();
       }
     });
+    class org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy extends DecisionServiceDividerLineY implements BindableProxy {
+      private BindableProxyAgent<DecisionServiceDividerLineY> agent;
+      private DecisionServiceDividerLineY target;
+      public org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy() {
+        this(new DecisionServiceDividerLineY());
+      }
+
+      public org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy(DecisionServiceDividerLineY targetVal) {
+        agent = new BindableProxyAgent<DecisionServiceDividerLineY>(this, targetVal);
+        target = targetVal;
+        final Map<String, PropertyType> p = agent.propertyTypes;
+        p.put("value", new PropertyType(Double.class, false, false));
+        p.put("this", new PropertyType(DecisionServiceDividerLineY.class, true, false));
+        agent.copyValues();
+      }
+
+      public BindableProxyAgent getBindableProxyAgent() {
+        return agent;
+      }
+
+      public void updateWidgets() {
+        agent.updateWidgetsAndFireEvents();
+      }
+
+      public DecisionServiceDividerLineY unwrap() {
+        return target;
+      }
+
+      public DecisionServiceDividerLineY deepUnwrap() {
+        final DecisionServiceDividerLineY clone = new DecisionServiceDividerLineY();
+        final DecisionServiceDividerLineY t = unwrap();
+        clone.setValue(t.getValue());
+        return clone;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj instanceof org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy) {
+          obj = ((org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy) obj).unwrap();
+        }
+        return target.equals(obj);
+      }
+
+      public int hashCode() {
+        return target.hashCode();
+      }
+
+      public String toString() {
+        return target.toString();
+      }
+
+      private void changeAndFire(String property, Object value) {
+        final Object oldValue = get(property);
+        set(property, value);
+        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
+      }
+
+      public Double getValue() {
+        return target.getValue();
+      }
+
+      public void setValue(Double value) {
+        changeAndFire("value", value);
+      }
+
+      public Object get(String property) {
+        switch (property) {
+          case "value": return getValue();
+          case "this": return target;
+          default: throw new NonExistingPropertyException("DecisionServiceDividerLineY", property);
+        }
+      }
+
+      public void set(String property, Object value) {
+        switch (property) {
+          case "value": target.setValue((Double) value);
+          break;
+          case "this": target = (DecisionServiceDividerLineY) value;
+          agent.target = target;
+          break;
+          default: throw new NonExistingPropertyException("DecisionServiceDividerLineY", property);
+        }
+      }
+
+      public Map getBeanProperties() {
+        final Map props = new HashMap(agent.propertyTypes);
+        props.remove("this");
+        return Collections.unmodifiableMap(props);
+      }
+    }
+    BindableProxyFactory.addBindableProxy(DecisionServiceDividerLineY.class, new BindableProxyProvider() {
+      public BindableProxy getBindableProxy(Object model) {
+        return new org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy((DecisionServiceDividerLineY) model);
+      }
+      public BindableProxy getBindableProxy() {
+        return new org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy();
+      }
+    });
     class org_kie_workbench_common_dmn_api_definition_model_InputDataProxy extends InputData implements BindableProxy {
       private BindableProxyAgent<InputData> agent;
       private InputData target;
@@ -19436,103 +19533,6 @@ public class BindableProxyLoaderImpl implements BindableProxyLoader { public voi
       }
       public BindableProxy getBindableProxy() {
         return new org_kie_workbench_common_dmn_api_definition_model_InputDataProxy();
-      }
-    });
-    class org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy extends DecisionServiceDividerLineY implements BindableProxy {
-      private BindableProxyAgent<DecisionServiceDividerLineY> agent;
-      private DecisionServiceDividerLineY target;
-      public org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy() {
-        this(new DecisionServiceDividerLineY());
-      }
-
-      public org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy(DecisionServiceDividerLineY targetVal) {
-        agent = new BindableProxyAgent<DecisionServiceDividerLineY>(this, targetVal);
-        target = targetVal;
-        final Map<String, PropertyType> p = agent.propertyTypes;
-        p.put("value", new PropertyType(Double.class, false, false));
-        p.put("this", new PropertyType(DecisionServiceDividerLineY.class, true, false));
-        agent.copyValues();
-      }
-
-      public BindableProxyAgent getBindableProxyAgent() {
-        return agent;
-      }
-
-      public void updateWidgets() {
-        agent.updateWidgetsAndFireEvents();
-      }
-
-      public DecisionServiceDividerLineY unwrap() {
-        return target;
-      }
-
-      public DecisionServiceDividerLineY deepUnwrap() {
-        final DecisionServiceDividerLineY clone = new DecisionServiceDividerLineY();
-        final DecisionServiceDividerLineY t = unwrap();
-        clone.setValue(t.getValue());
-        return clone;
-      }
-
-      public boolean equals(Object obj) {
-        if (obj instanceof org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy) {
-          obj = ((org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy) obj).unwrap();
-        }
-        return target.equals(obj);
-      }
-
-      public int hashCode() {
-        return target.hashCode();
-      }
-
-      public String toString() {
-        return target.toString();
-      }
-
-      private void changeAndFire(String property, Object value) {
-        final Object oldValue = get(property);
-        set(property, value);
-        agent.updateWidgetsAndFireEvent(false, property, oldValue, value);
-      }
-
-      public Double getValue() {
-        return target.getValue();
-      }
-
-      public void setValue(Double value) {
-        changeAndFire("value", value);
-      }
-
-      public Object get(String property) {
-        switch (property) {
-          case "value": return getValue();
-          case "this": return target;
-          default: throw new NonExistingPropertyException("DecisionServiceDividerLineY", property);
-        }
-      }
-
-      public void set(String property, Object value) {
-        switch (property) {
-          case "value": target.setValue((Double) value);
-          break;
-          case "this": target = (DecisionServiceDividerLineY) value;
-          agent.target = target;
-          break;
-          default: throw new NonExistingPropertyException("DecisionServiceDividerLineY", property);
-        }
-      }
-
-      public Map getBeanProperties() {
-        final Map props = new HashMap(agent.propertyTypes);
-        props.remove("this");
-        return Collections.unmodifiableMap(props);
-      }
-    }
-    BindableProxyFactory.addBindableProxy(DecisionServiceDividerLineY.class, new BindableProxyProvider() {
-      public BindableProxy getBindableProxy(Object model) {
-        return new org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy((DecisionServiceDividerLineY) model);
-      }
-      public BindableProxy getBindableProxy() {
-        return new org_kie_workbench_common_dmn_api_property_dmn_DecisionServiceDividerLineYProxy();
       }
     });
     class org_kie_workbench_common_forms_fields_shared_fieldTypes_basic_lists_selector_impl_BooleanMultipleSelectorFieldDefinitionProxy extends BooleanMultipleSelectorFieldDefinition implements BindableProxy {

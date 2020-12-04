@@ -16,8 +16,8 @@ public class Type_factory__o_k_w_c_d_c_e_t_p_h_DataTypeUpdateHandler__quals__j_e
   }
 
   public DataTypeUpdateHandler createInstance(final ContextManager contextManager) {
-    final ItemDefinitionStore _itemDefinitionStore_0 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeStore _dataTypeStore_1 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
+    final ItemDefinitionStore _itemDefinitionStore_0 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeManager _dataTypeManager_2 = (DataTypeManager) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManager__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeUpdateHandler instance = new DataTypeUpdateHandler(_itemDefinitionStore_0, _dataTypeStore_1, _dataTypeManager_2);
     registerDependentScopedReference(instance, _dataTypeManager_2);

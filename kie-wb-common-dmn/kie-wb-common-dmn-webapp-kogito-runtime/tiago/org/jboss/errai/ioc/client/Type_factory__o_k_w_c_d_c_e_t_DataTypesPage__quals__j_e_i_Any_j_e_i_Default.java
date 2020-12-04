@@ -33,24 +33,24 @@ public class Type_factory__o_k_w_c_d_c_e_t_DataTypesPage__quals__j_e_i_Any_j_e_i
 
   public DataTypesPage createInstance(final ContextManager contextManager) {
     final DataTypeManager _dataTypeManager_4 = (DataTypeManager) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManager__quals__j_e_i_Any_j_e_i_Default");
-    final FlashMessages _flashMessages_6 = (FlashMessages) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_c_m_FlashMessages__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeSearchBar _searchBar_7 = (DataTypeSearchBar) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBar__quals__j_e_i_Any_j_e_i_Default");
-    final ItemDefinitionUtils _itemDefinitionUtils_1 = (ItemDefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_ItemDefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeManagerStackStore _stackIndex_5 = (DataTypeManagerStackStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManagerStackStore__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeShortcuts _dataTypeShortcuts_10 = (DataTypeShortcuts) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeShortcuts__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeList _treeList_0 = (DataTypeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeList__quals__j_e_i_Any_j_e_i_Default");
-    final ItemDefinitionStore _definitionStore_2 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeStore _dataTypeStore_3 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
     final DMNGraphUtils _dmnGraphUtils_8 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
-    final TranslationService _translationService_9 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeList _treeList_0 = (DataTypeList) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeList__quals__j_e_i_Any_j_e_i_Default");
     final HTMLDivElement _pageView_11 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final DataTypeManagerStackStore _stackIndex_5 = (DataTypeManagerStackStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManagerStackStore__quals__j_e_i_Any_j_e_i_Default");
+    final ItemDefinitionUtils _itemDefinitionUtils_1 = (ItemDefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_ItemDefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeSearchBar _searchBar_7 = (DataTypeSearchBar) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeSearchBar__quals__j_e_i_Any_j_e_i_Default");
+    final ItemDefinitionStore _definitionStore_2 = (ItemDefinitionStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_ItemDefinitionStore__quals__j_e_i_Any_j_e_i_Default");
+    final FlashMessages _flashMessages_6 = (FlashMessages) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_c_m_FlashMessages__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeShortcuts _dataTypeShortcuts_10 = (DataTypeShortcuts) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeShortcuts__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeStore _dataTypeStore_3 = (DataTypeStore) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_p_DataTypeStore__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_9 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DataTypesPage instance = new DataTypesPage(_treeList_0, _itemDefinitionUtils_1, _definitionStore_2, _dataTypeStore_3, _dataTypeManager_4, _stackIndex_5, _flashMessages_6, _searchBar_7, _dmnGraphUtils_8, _translationService_9, _dataTypeShortcuts_10, _pageView_11);
     registerDependentScopedReference(instance, _dataTypeManager_4);
-    registerDependentScopedReference(instance, _flashMessages_6);
-    registerDependentScopedReference(instance, _itemDefinitionUtils_1);
     registerDependentScopedReference(instance, _dmnGraphUtils_8);
-    registerDependentScopedReference(instance, _translationService_9);
     registerDependentScopedReference(instance, _pageView_11);
+    registerDependentScopedReference(instance, _itemDefinitionUtils_1);
+    registerDependentScopedReference(instance, _flashMessages_6);
+    registerDependentScopedReference(instance, _translationService_9);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onRefreshDataTypesListWithNewItemDefinitionsSubscription", CDI.subscribeLocal("org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent", new AbstractCDIEventCallback<RefreshDataTypesListEvent>() {
       public void fireEvent(final RefreshDataTypesListEvent event) {

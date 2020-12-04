@@ -24,8 +24,8 @@ public class Type_factory__o_k_w_c_s_c_l_c_c_ControlPointControlImpl__quals__j_e
   }
 
   public ControlPointControlImpl createInstance(final ContextManager contextManager) {
-    final CanvasCommandFactory<AbstractCanvasHandler> _canvasCommandFactory_0 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final Event<CanvasSelectionEvent> _selectionEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
+    final CanvasCommandFactory<AbstractCanvasHandler> _canvasCommandFactory_0 = (LienzoCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_c_LienzoCanvasCommandFactory__quals__j_e_i_Any_j_e_i_Default");
     final ControlPointControlImpl instance = new ControlPointControlImpl(_canvasCommandFactory_0, _selectionEvent_1);
     registerDependentScopedReference(instance, _selectionEvent_1);
     setIncompleteInstance(instance);

@@ -1,4 +1,4 @@
-// .ui.xml template last modified: 1607097887306
+// .ui.xml template last modified: 1607102263361
 package org.kie.workbench.common.widgets.client.discussion;
 
 import com.google.gwt.core.client.GWT;

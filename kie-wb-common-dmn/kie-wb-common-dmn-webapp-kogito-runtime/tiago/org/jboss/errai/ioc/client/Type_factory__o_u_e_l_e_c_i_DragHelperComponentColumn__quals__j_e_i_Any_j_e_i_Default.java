@@ -17,14 +17,14 @@ public class Type_factory__o_u_e_l_e_c_i_DragHelperComponentColumn__quals__j_e_i
   public DragHelperComponentColumn createInstance(final ContextManager contextManager) {
     final DragHelperComponentColumn instance = new DragHelperComponentColumn();
     setIncompleteInstance(instance);
+    final LayoutEditorCssHelper DragHelperComponentColumn_layoutCssHelper = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
+    DragHelperComponentColumn_LayoutEditorCssHelper_layoutCssHelper(instance, DragHelperComponentColumn_layoutCssHelper);
     final LayoutDragComponentHelper DragHelperComponentColumn_dragHelper = (LayoutDragComponentHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutDragComponentHelper__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DragHelperComponentColumn_dragHelper);
     DragHelperComponentColumn_LayoutDragComponentHelper_dragHelper(instance, DragHelperComponentColumn_dragHelper);
     final Document DragHelperComponentColumn_document = (Document) contextManager.getInstance("Producer_factory__o_j_e_c_c_d_Document__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DragHelperComponentColumn_document);
     DragHelperComponentColumn_Document_document(instance, DragHelperComponentColumn_document);
-    final LayoutEditorCssHelper DragHelperComponentColumn_layoutCssHelper = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
-    DragHelperComponentColumn_LayoutEditorCssHelper_layoutCssHelper(instance, DragHelperComponentColumn_layoutCssHelper);
     setIncompleteInstance(null);
     return instance;
   }

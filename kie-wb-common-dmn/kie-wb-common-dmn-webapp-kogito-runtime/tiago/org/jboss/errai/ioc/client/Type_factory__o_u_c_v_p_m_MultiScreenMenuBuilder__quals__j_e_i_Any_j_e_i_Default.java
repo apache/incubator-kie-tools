@@ -26,21 +26,21 @@ public class Type_factory__o_u_c_v_p_m_MultiScreenMenuBuilder__quals__j_e_i_Any_
     setIncompleteInstance(instance);
     final DefaultAuthorizationManager MultiScreenMenuBuilder_authManager = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
     MultiScreenMenuBuilder_AuthorizationManager_authManager(instance, MultiScreenMenuBuilder_authManager);
-    final ManagedInstance MultiScreenMenuBuilder_buttons = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { Button.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, MultiScreenMenuBuilder_buttons);
-    MultiScreenMenuBuilder_ManagedInstance_buttons(instance, MultiScreenMenuBuilder_buttons);
-    final HTMLDocument MultiScreenMenuBuilder_document = (HTMLDocument) contextManager.getInstance("Producer_factory__e_d_HTMLDocument__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, MultiScreenMenuBuilder_document);
-    MultiScreenMenuBuilder_HTMLDocument_document(instance, MultiScreenMenuBuilder_document);
     final ManagedInstance MultiScreenMenuBuilder_kebabMenuItems = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { KebabMenuItem.class }, new Annotation[] { });
     registerDependentScopedReference(instance, MultiScreenMenuBuilder_kebabMenuItems);
     MultiScreenMenuBuilder_ManagedInstance_kebabMenuItems(instance, MultiScreenMenuBuilder_kebabMenuItems);
-    final User MultiScreenMenuBuilder_identity = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, MultiScreenMenuBuilder_identity);
-    MultiScreenMenuBuilder_User_identity(instance, MultiScreenMenuBuilder_identity);
+    final HTMLDocument MultiScreenMenuBuilder_document = (HTMLDocument) contextManager.getInstance("Producer_factory__e_d_HTMLDocument__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, MultiScreenMenuBuilder_document);
+    MultiScreenMenuBuilder_HTMLDocument_document(instance, MultiScreenMenuBuilder_document);
     final ManagedInstance MultiScreenMenuBuilder_kebabMenus = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { KebabMenu.class }, new Annotation[] { });
     registerDependentScopedReference(instance, MultiScreenMenuBuilder_kebabMenus);
     MultiScreenMenuBuilder_ManagedInstance_kebabMenus(instance, MultiScreenMenuBuilder_kebabMenus);
+    final ManagedInstance MultiScreenMenuBuilder_buttons = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { Button.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, MultiScreenMenuBuilder_buttons);
+    MultiScreenMenuBuilder_ManagedInstance_buttons(instance, MultiScreenMenuBuilder_buttons);
+    final User MultiScreenMenuBuilder_identity = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, MultiScreenMenuBuilder_identity);
+    MultiScreenMenuBuilder_User_identity(instance, MultiScreenMenuBuilder_identity);
     setIncompleteInstance(null);
     return instance;
   }
@@ -53,20 +53,20 @@ public class Type_factory__o_u_c_v_p_m_MultiScreenMenuBuilder__quals__j_e_i_Any_
     instance.@org.uberfire.client.views.pfly.multiscreen.MultiScreenMenuBuilder::kebabMenus = value;
   }-*/;
 
-  native static ManagedInstance MultiScreenMenuBuilder_ManagedInstance_buttons(MultiScreenMenuBuilder instance) /*-{
-    return instance.@org.uberfire.client.views.pfly.multiscreen.MultiScreenMenuBuilder::buttons;
-  }-*/;
-
-  native static void MultiScreenMenuBuilder_ManagedInstance_buttons(MultiScreenMenuBuilder instance, ManagedInstance<Button> value) /*-{
-    instance.@org.uberfire.client.views.pfly.multiscreen.MultiScreenMenuBuilder::buttons = value;
-  }-*/;
-
   native static HTMLDocument MultiScreenMenuBuilder_HTMLDocument_document(MultiScreenMenuBuilder instance) /*-{
     return instance.@org.uberfire.client.views.pfly.multiscreen.MultiScreenMenuBuilder::document;
   }-*/;
 
   native static void MultiScreenMenuBuilder_HTMLDocument_document(MultiScreenMenuBuilder instance, HTMLDocument value) /*-{
     instance.@org.uberfire.client.views.pfly.multiscreen.MultiScreenMenuBuilder::document = value;
+  }-*/;
+
+  native static ManagedInstance MultiScreenMenuBuilder_ManagedInstance_buttons(MultiScreenMenuBuilder instance) /*-{
+    return instance.@org.uberfire.client.views.pfly.multiscreen.MultiScreenMenuBuilder::buttons;
+  }-*/;
+
+  native static void MultiScreenMenuBuilder_ManagedInstance_buttons(MultiScreenMenuBuilder instance, ManagedInstance<Button> value) /*-{
+    instance.@org.uberfire.client.views.pfly.multiscreen.MultiScreenMenuBuilder::buttons = value;
   }-*/;
 
   native static User MultiScreenMenuBuilder_User_identity(MultiScreenMenuBuilder instance) /*-{

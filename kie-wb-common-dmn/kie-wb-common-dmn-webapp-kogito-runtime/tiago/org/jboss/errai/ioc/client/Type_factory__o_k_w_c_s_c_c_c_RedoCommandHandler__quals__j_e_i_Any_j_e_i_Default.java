@@ -17,11 +17,11 @@ public class Type_factory__o_k_w_c_s_c_c_c_RedoCommandHandler__quals__j_e_i_Any_
   }
 
   public RedoCommandHandler createInstance(final ContextManager contextManager) {
-    final DefaultRegistry _registry_0 = (DefaultRegistryImpl) contextManager.getInstance("Type_factory__o_a_c_s_r_i_DefaultRegistryImpl__quals__j_e_i_Any_j_e_i_Default");
     final Event<RegisterChangedEvent> _registerChangedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RegisterChangedEvent.class }, new Annotation[] { });
+    final DefaultRegistry _registry_0 = (DefaultRegistryImpl) contextManager.getInstance("Type_factory__o_a_c_s_r_i_DefaultRegistryImpl__quals__j_e_i_Any_j_e_i_Default");
     final RedoCommandHandler instance = new RedoCommandHandler(_registry_0, _registerChangedEvent_1);
-    registerDependentScopedReference(instance, _registry_0);
     registerDependentScopedReference(instance, _registerChangedEvent_1);
+    registerDependentScopedReference(instance, _registry_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

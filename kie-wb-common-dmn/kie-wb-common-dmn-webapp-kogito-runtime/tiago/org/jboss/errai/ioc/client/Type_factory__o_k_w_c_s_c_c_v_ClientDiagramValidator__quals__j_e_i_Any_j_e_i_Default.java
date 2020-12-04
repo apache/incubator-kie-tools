@@ -86,14 +86,14 @@ public class Type_factory__o_k_w_c_s_c_c_v_ClientDiagramValidator__quals__j_e_i_
   }
 
   public ClientDiagramValidator createInstance(final ContextManager contextManager) {
-    final RuleManager _ruleManager_1 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
-    final TreeWalkTraverseProcessor _treeWalkTraverseProcessor_2 = (TreeWalkTraverseProcessorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_t_t_TreeWalkTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ModelValidator _modelValidator_3 = (ClientModelValidator) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_v_ClientModelValidator__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DomainValidator> _validators_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DomainValidator.class }, new Annotation[] { });
+    final RuleManager _ruleManager_1 = (ClientRuleManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_r_ClientRuleManager__quals__j_e_i_Any_j_e_i_Default");
+    final TreeWalkTraverseProcessor _treeWalkTraverseProcessor_2 = (TreeWalkTraverseProcessorImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_g_p_t_t_TreeWalkTraverseProcessorImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
+    final ModelValidator _modelValidator_3 = (ClientModelValidator) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_v_ClientModelValidator__quals__j_e_i_Any_j_e_i_Default");
     final ClientDiagramValidator instance = new ClientDiagramValidator(_definitionManager_0, _ruleManager_1, _treeWalkTraverseProcessor_2, _modelValidator_3, _validators_4);
-    registerDependentScopedReference(instance, _treeWalkTraverseProcessor_2);
     registerDependentScopedReference(instance, _validators_4);
+    registerDependentScopedReference(instance, _treeWalkTraverseProcessor_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

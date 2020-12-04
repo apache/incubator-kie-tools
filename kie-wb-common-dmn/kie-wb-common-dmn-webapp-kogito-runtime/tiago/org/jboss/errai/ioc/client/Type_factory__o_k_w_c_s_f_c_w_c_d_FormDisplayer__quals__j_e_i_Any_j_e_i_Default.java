@@ -18,12 +18,12 @@ public class Type_factory__o_k_w_c_s_f_c_w_c_d_FormDisplayer__quals__j_e_i_Any_j
   }
 
   public FormDisplayer createInstance(final ContextManager contextManager) {
-    final DynamicFormRenderer _renderer_1 = (DynamicFormRenderer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_DynamicFormRenderer__quals__j_e_i_Any_j_e_i_Default");
     final FormDisplayerView _view_0 = (FormDisplayerViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_w_c_d_FormDisplayerViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DynamicFormRenderer _renderer_1 = (DynamicFormRenderer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_DynamicFormRenderer__quals__j_e_i_Any_j_e_i_Default");
     final DynamicFormModelGenerator _modelGenerator_2 = (DynamicFormModelGenerator) contextManager.getInstance("Type_factory__o_k_w_c_f_d_s_s_a_DynamicFormModelGenerator__quals__j_e_i_Any_j_e_i_Default");
     final FormDisplayer instance = new FormDisplayer(_view_0, _renderer_1, _modelGenerator_2);
-    registerDependentScopedReference(instance, _renderer_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _renderer_1);
     registerDependentScopedReference(instance, _modelGenerator_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

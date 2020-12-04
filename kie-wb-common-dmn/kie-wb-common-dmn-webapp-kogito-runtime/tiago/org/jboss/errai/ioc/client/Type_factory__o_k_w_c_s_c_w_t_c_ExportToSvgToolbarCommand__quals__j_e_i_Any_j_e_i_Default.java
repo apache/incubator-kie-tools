@@ -20,6 +20,7 @@ public class Type_factory__o_k_w_c_s_c_w_t_c_ExportToSvgToolbarCommand__quals__j
   }
 
   public ExportToSvgToolbarCommand createInstance(final ContextManager contextManager) {
+    final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<ExportToSvgSessionCommand> _command_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ExportToSvgSessionCommand.class }, new Annotation[] { new Any() {
         public Class annotationType() {
@@ -29,7 +30,6 @@ public class Type_factory__o_k_w_c_s_c_w_t_c_ExportToSvgToolbarCommand__quals__j
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final ClientTranslationService _translationService_2 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final ExportToSvgToolbarCommand instance = new ExportToSvgToolbarCommand(_definitionUtils_0, _command_1, _translationService_2);
     registerDependentScopedReference(instance, _command_1);
     setIncompleteInstance(instance);

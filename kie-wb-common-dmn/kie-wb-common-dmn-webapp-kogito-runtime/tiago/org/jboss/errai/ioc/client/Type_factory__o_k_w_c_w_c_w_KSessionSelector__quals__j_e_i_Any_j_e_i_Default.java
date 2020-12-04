@@ -19,13 +19,13 @@ public class Type_factory__o_k_w_c_w_c_w_KSessionSelector__quals__j_e_i_Any_j_e_
   }
 
   public KSessionSelector createInstance(final ContextManager contextManager) {
+    final KSessionSelectorView _view_0 = (KSessionSelectorViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KSessionSelectorViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final Caller<KieModuleService> _moduleService_1 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { KieModuleService.class }, new Annotation[] { });
     final Caller<KModuleService> _kModuleService_2 = (Caller) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_c_c_a_Caller__quals__Universal", new Class[] { KModuleService.class }, new Annotation[] { });
-    final KSessionSelectorView _view_0 = (KSessionSelectorViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_w_c_w_KSessionSelectorViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final KSessionSelector instance = new KSessionSelector(_view_0, _moduleService_1, _kModuleService_2);
+    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _moduleService_1);
     registerDependentScopedReference(instance, _kModuleService_2);
-    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

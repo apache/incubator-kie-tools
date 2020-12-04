@@ -50,27 +50,27 @@ public class Type_factory__o_u_e_l_e_c_c_c_ColumnWithComponentsView__quals__j_e_
   public ColumnWithComponentsView createInstance(final ContextManager contextManager) {
     final ColumnWithComponentsView instance = new ColumnWithComponentsView();
     setIncompleteInstance(instance);
-    final Div ColumnWithComponentsView_colWithComponents = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ColumnWithComponentsView_colWithComponents);
-    ColumnWithComponentsView_Div_colWithComponents(instance, ColumnWithComponentsView_colWithComponents);
     final Div ColumnWithComponentsView_content = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ColumnWithComponentsView_content);
     ColumnWithComponentsView_Div_content(instance, ColumnWithComponentsView_content);
-    final Document ColumnWithComponentsView_document = (Document) contextManager.getInstance("Producer_factory__o_j_e_c_c_d_Document__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, ColumnWithComponentsView_document);
-    ColumnWithComponentsView_Document_document(instance, ColumnWithComponentsView_document);
-    final Div ColumnWithComponentsView_innerCol = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ColumnWithComponentsView_innerCol);
-    ColumnWithComponentsView_Div_innerCol(instance, ColumnWithComponentsView_innerCol);
-    final Div ColumnWithComponentsView_right = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ColumnWithComponentsView_right);
-    ColumnWithComponentsView_Div_right(instance, ColumnWithComponentsView_right);
     final Div ColumnWithComponentsView_row = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ColumnWithComponentsView_row);
     ColumnWithComponentsView_Div_row(instance, ColumnWithComponentsView_row);
+    final Div ColumnWithComponentsView_right = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ColumnWithComponentsView_right);
+    ColumnWithComponentsView_Div_right(instance, ColumnWithComponentsView_right);
+    final Div ColumnWithComponentsView_colWithComponents = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ColumnWithComponentsView_colWithComponents);
+    ColumnWithComponentsView_Div_colWithComponents(instance, ColumnWithComponentsView_colWithComponents);
     final Div ColumnWithComponentsView_left = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ColumnWithComponentsView_left);
     ColumnWithComponentsView_Div_left(instance, ColumnWithComponentsView_left);
+    final Div ColumnWithComponentsView_innerCol = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ColumnWithComponentsView_innerCol);
+    ColumnWithComponentsView_Div_innerCol(instance, ColumnWithComponentsView_innerCol);
+    final Document ColumnWithComponentsView_document = (Document) contextManager.getInstance("Producer_factory__o_j_e_c_c_d_Document__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, ColumnWithComponentsView_document);
+    ColumnWithComponentsView_Document_document(instance, ColumnWithComponentsView_document);
     thisInstance.setReference(instance, "dockSelectEventSubscription", CDI.subscribeLocal("org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent", new AbstractCDIEventCallback<UberfireDocksInteractionEvent>() {
       public void fireEvent(final UberfireDocksInteractionEvent event) {
         instance.dockSelectEvent(event);

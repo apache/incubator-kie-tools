@@ -25,14 +25,14 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintModal__quals__j
   public DataTypeConstraintModal createInstance(final ContextManager contextManager) {
     final View _view_0 = (DataTypeConstraintModalView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintModalView__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeShortcuts _dataTypeShortcuts_1 = (DataTypeShortcuts) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_s_DataTypeShortcuts__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeConstraintRange _constraintRange_4 = (DataTypeConstraintRange) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_r_DataTypeConstraintRange__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConstraintExpression _constraintExpression_3 = (DataTypeConstraintExpression) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_e_DataTypeConstraintExpression__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConstraintEnumeration _constraintEnumeration_2 = (DataTypeConstraintEnumeration) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_e_DataTypeConstraintEnumeration__quals__j_e_i_Any_j_e_i_Default");
-    final DataTypeConstraintRange _constraintRange_4 = (DataTypeConstraintRange) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_c_r_DataTypeConstraintRange__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeConstraintModal instance = new DataTypeConstraintModal(_view_0, _dataTypeShortcuts_1, _constraintEnumeration_2, _constraintExpression_3, _constraintRange_4);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _constraintRange_4);
     registerDependentScopedReference(instance, _constraintExpression_3);
     registerDependentScopedReference(instance, _constraintEnumeration_2);
-    registerDependentScopedReference(instance, _constraintRange_4);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onDataTypeConstraintParserWarningEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent", new AbstractCDIEventCallback<DataTypeConstraintParserWarningEvent>() {
       public void fireEvent(final DataTypeConstraintParserWarningEvent event) {

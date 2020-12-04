@@ -31,8 +31,8 @@ public class Type_factory__o_u_c_v_p_t_UberTabPanel__quals__j_e_i_Any_j_e_i_Defa
   }
 
   public UberTabPanel createInstance(final ContextManager contextManager) {
-    final PlaceManager _panelManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final ResizeTabPanel _tabPanel_1 = (ResizeTabPanel) contextManager.getInstance("Type_factory__o_u_c_v_p_t_ResizeTabPanel__quals__j_e_i_Any_o_u_c_v_p_t_Resize");
+    final PlaceManager _panelManager_0 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final UberTabPanel instance = new UberTabPanel(_panelManager_0, _tabPanel_1);
     registerDependentScopedReference(instance, _tabPanel_1);
     setIncompleteInstance(instance);

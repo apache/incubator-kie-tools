@@ -253,17 +253,17 @@ public class Type_factory__o_k_w_c_d_c_e_e_t_u_s_UndefinedExpressionSelectorPopo
   }
 
   public UndefinedExpressionSelectorPopoverViewImpl createInstance(final ContextManager contextManager) {
+    final UnorderedList _definitionsContainer_0 = (UnorderedList) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_UnorderedList__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Div _popoverElement_2 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final ManagedInstance<ListSelectorTextItemView> _listSelectorTextItemViews_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ListSelectorTextItemView.class }, new Annotation[] { });
     final Div _popoverContentElement_3 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Div _popoverElement_2 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final JQuery<Popover> _jQueryPopover_4 = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
-    final UnorderedList _definitionsContainer_0 = (UnorderedList) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_UnorderedList__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final UndefinedExpressionSelectorPopoverViewImpl instance = new UndefinedExpressionSelectorPopoverViewImpl(_definitionsContainer_0, _listSelectorTextItemViews_1, _popoverElement_2, _popoverContentElement_3, _jQueryPopover_4);
+    registerDependentScopedReference(instance, _definitionsContainer_0);
+    registerDependentScopedReference(instance, _popoverElement_2);
     registerDependentScopedReference(instance, _listSelectorTextItemViews_1);
     registerDependentScopedReference(instance, _popoverContentElement_3);
-    registerDependentScopedReference(instance, _popoverElement_2);
     registerDependentScopedReference(instance, _jQueryPopover_4);
-    registerDependentScopedReference(instance, _definitionsContainer_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_e_t_u_s_UndefinedExpressionSelectorPopoverViewImplTemplateResource templateForUndefinedExpressionSelectorPopoverViewImpl = GWT.create(o_k_w_c_d_c_e_e_t_u_s_UndefinedExpressionSelectorPopoverViewImplTemplateResource.class);
     Element parentElementForTemplateOfUndefinedExpressionSelectorPopoverViewImpl = TemplateUtil.getRootTemplateParentElement(templateForUndefinedExpressionSelectorPopoverViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/expressions/types/undefined/selector/UndefinedExpressionSelectorPopoverViewImpl.html", "");

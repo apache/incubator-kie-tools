@@ -28,8 +28,8 @@ public class Type_factory__o_k_w_c_s_k_r_c_s_c_i_KogitoRedoSessionCommand__quals
   }
 
   public KogitoRedoSessionCommand createInstance(final ContextManager contextManager) {
-    final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> _redoCommandHandler_1 = (RedoCommandHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_RedoCommandHandler__quals__j_e_i_Any_j_e_i_Default");
     final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_0 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> _redoCommandHandler_1 = (RedoCommandHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_RedoCommandHandler__quals__j_e_i_Any_j_e_i_Default");
     final KogitoRedoSessionCommand instance = new KogitoRedoSessionCommand(_sessionCommandManager_0, _redoCommandHandler_1);
     registerDependentScopedReference(instance, _redoCommandHandler_1);
     setIncompleteInstance(instance);

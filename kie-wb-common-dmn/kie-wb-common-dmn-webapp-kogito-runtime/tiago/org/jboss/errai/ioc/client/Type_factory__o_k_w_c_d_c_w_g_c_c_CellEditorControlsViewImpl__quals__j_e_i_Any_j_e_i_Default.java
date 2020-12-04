@@ -154,12 +154,12 @@ public class Type_factory__o_k_w_c_d_c_w_g_c_c_CellEditorControlsViewImpl__quals
   }
 
   public CellEditorControlsViewImpl createInstance(final ContextManager contextManager) {
-    final Div _cellEditorControls_1 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final Document _document_0 = (Document) contextManager.getInstance("Producer_factory__o_j_e_c_c_d_Document__quals__j_e_i_Any_j_e_i_Default");
+    final Div _cellEditorControls_1 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final Div _cellEditorControlsContainer_2 = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final CellEditorControlsViewImpl instance = new CellEditorControlsViewImpl(_document_0, _cellEditorControls_1, _cellEditorControlsContainer_2);
-    registerDependentScopedReference(instance, _cellEditorControls_1);
     registerDependentScopedReference(instance, _document_0);
+    registerDependentScopedReference(instance, _cellEditorControls_1);
     registerDependentScopedReference(instance, _cellEditorControlsContainer_2);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_w_g_c_c_CellEditorControlsViewImplTemplateResource templateForCellEditorControlsViewImpl = GWT.create(o_k_w_c_d_c_w_g_c_c_CellEditorControlsViewImplTemplateResource.class);

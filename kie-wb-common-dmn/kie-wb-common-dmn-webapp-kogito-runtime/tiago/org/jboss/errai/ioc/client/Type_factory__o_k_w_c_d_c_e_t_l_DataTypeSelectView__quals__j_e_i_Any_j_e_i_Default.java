@@ -43,19 +43,19 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_DataTypeSelectView__quals__j_e_i_An
   }
 
   public DataTypeSelectView createInstance(final ContextManager contextManager) {
-    final HTMLOptGroupElement _typeSelectStructureOptGroup_4 = (HTMLOptGroupElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOptGroupElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLOptGroupElement _typeSelectOptGroup_2 = (HTMLOptGroupElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOptGroupElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLOptionElement _typeSelectOption_3 = (HTMLOptionElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOptionElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLOptGroupElement _typeSelectStructureOptGroup_4 = (HTMLOptGroupElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOptGroupElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLSelectElement _typeSelect_1 = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _typeText_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TranslationService _translationService_5 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final HTMLOptionElement _typeSelectOption_3 = (HTMLOptionElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOptionElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DataTypeSelectView instance = new DataTypeSelectView(_typeText_0, _typeSelect_1, _typeSelectOptGroup_2, _typeSelectOption_3, _typeSelectStructureOptGroup_4, _translationService_5);
-    registerDependentScopedReference(instance, _typeSelectStructureOptGroup_4);
     registerDependentScopedReference(instance, _typeSelectOptGroup_2);
-    registerDependentScopedReference(instance, _typeSelectOption_3);
+    registerDependentScopedReference(instance, _typeSelectStructureOptGroup_4);
     registerDependentScopedReference(instance, _typeSelect_1);
     registerDependentScopedReference(instance, _typeText_0);
     registerDependentScopedReference(instance, _translationService_5);
+    registerDependentScopedReference(instance, _typeSelectOption_3);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_DataTypeSelectViewTemplateResource templateForDataTypeSelectView = GWT.create(o_k_w_c_d_c_e_t_l_DataTypeSelectViewTemplateResource.class);
     Element parentElementForTemplateOfDataTypeSelectView = TemplateUtil.getRootTemplateParentElement(templateForDataTypeSelectView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/DataTypeSelectView.html", "");

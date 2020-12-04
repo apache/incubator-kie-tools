@@ -18,10 +18,10 @@ public class Type_factory__o_k_w_c_d_c_e_i_m_d_DMNAssetsDropdownItemsProvider__q
   }
 
   public DMNAssetsDropdownItemsProvider createInstance(final ContextManager contextManager) {
-    final IncludedModelsIndex _modelsIndex_2 = (IncludedModelsIndex) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_i_IncludedModelsIndex__quals__j_e_i_Any_j_e_i_Default");
-    final SessionManager _sessionManager_3 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNIncludeModelsClient _client_0 = (DMNIncludeModelsClient) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_i_l_DMNIncludeModelsClient__quals__j_e_i_Any_j_e_i_Default");
     final IncludedModelsPageState _pageState_1 = (IncludedModelsPageState) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_IncludedModelsPageState__quals__j_e_i_Any_j_e_i_Default");
+    final IncludedModelsIndex _modelsIndex_2 = (IncludedModelsIndex) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_i_i_IncludedModelsIndex__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _sessionManager_3 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNAssetsDropdownItemsProvider instance = new DMNAssetsDropdownItemsProvider(_client_0, _pageState_1, _modelsIndex_2, _sessionManager_3);
     registerDependentScopedReference(instance, _client_0);
     setIncompleteInstance(instance);

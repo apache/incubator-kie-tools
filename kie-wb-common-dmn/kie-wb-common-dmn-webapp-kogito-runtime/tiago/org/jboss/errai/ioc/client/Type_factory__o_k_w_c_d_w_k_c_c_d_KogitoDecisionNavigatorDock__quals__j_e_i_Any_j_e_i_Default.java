@@ -215,10 +215,10 @@ public class Type_factory__o_k_w_c_d_w_k_c_c_d_KogitoDecisionNavigatorDock__qual
   }
 
   public KogitoDecisionNavigatorDock createInstance(final ContextManager contextManager) {
-    final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final DecisionNavigatorPresenter _decisionNavigatorPresenter_1 = (DecisionNavigatorPresenter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorPresenter__quals__j_e_i_Any_j_e_i_Default");
     final EditorContextProvider _context_3 = (KogitoEditorContextProviderImpl) contextManager.getInstance("Type_factory__o_a_k_b_c_c_i_KogitoEditorContextProviderImpl__quals__j_e_i_Any_j_e_i_Default");
     final UberfireDocks _uberfireDocks_0 = (UberfireDocksImpl) contextManager.getInstance("Type_factory__o_u_c_d_UberfireDocksImpl__quals__j_e_i_Any_j_e_i_Default");
+    final DecisionNavigatorPresenter _decisionNavigatorPresenter_1 = (DecisionNavigatorPresenter) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorPresenter__quals__j_e_i_Any_j_e_i_Default");
+    final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final KogitoDecisionNavigatorDock instance = new KogitoDecisionNavigatorDock(_uberfireDocks_0, _decisionNavigatorPresenter_1, _translationService_2, _context_3);
     registerDependentScopedReference(instance, _translationService_2);
     setIncompleteInstance(instance);

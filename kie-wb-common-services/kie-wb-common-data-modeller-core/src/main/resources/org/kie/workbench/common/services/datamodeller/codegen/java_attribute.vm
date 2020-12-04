@@ -1,6 +1,0 @@
-#set($fieldAnnotations =  $nameTool.sortedAnnotations($attr))
-
-#foreach($fieldAnnotation in $fieldAnnotations)
-    $engine.generateFieldAnnotation($context, $fieldAnnotation, "java_field_annotation")
-#end
-    private $nameTool.resolveAttributeType( $attr) $nameTool.toJavaVar( $attr.name );

@@ -31,22 +31,22 @@ public class Type_factory__o_u_e_l_e_c_c_c_ComponentColumn__quals__j_e_i_Any_j_e
   }
 
   public ComponentColumn createInstance(final ContextManager contextManager) {
+    final Event<LayoutEditorElementUnselectEvent> _columnUnselectEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementUnselectEvent.class }, new Annotation[] { });
+    final ManagedInstance<ComponentColumnPart> _componentColumnManagedInstance_7 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ComponentColumnPart.class }, new Annotation[] { });
+    final DnDManager _dndManager_1 = (DnDManager) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_DnDManager__quals__j_e_i_Any_j_e_i_Default");
+    final LayoutDragComponentHelper _layoutDragComponentHelper_2 = (LayoutDragComponentHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutDragComponentHelper__quals__j_e_i_Any_j_e_i_Default");
+    final Event<ColumnResizeEvent> _columnResizeEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ColumnResizeEvent.class }, new Annotation[] { });
+    final View _view_0 = (ComponentColumnView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_c_ComponentColumnView__quals__j_e_i_Any_j_e_i_Default");
     final Event<LayoutEditorElementSelectEvent> _columnSelectEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementSelectEvent.class }, new Annotation[] { });
     final Event<LockRequiredEvent> _lockRequiredEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LockRequiredEvent.class }, new Annotation[] { });
-    final DnDManager _dndManager_1 = (DnDManager) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_DnDManager__quals__j_e_i_Any_j_e_i_Default");
-    final Event<ColumnResizeEvent> _columnResizeEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ColumnResizeEvent.class }, new Annotation[] { });
-    final LayoutDragComponentHelper _layoutDragComponentHelper_2 = (LayoutDragComponentHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutDragComponentHelper__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<ComponentColumnPart> _componentColumnManagedInstance_7 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ComponentColumnPart.class }, new Annotation[] { });
-    final Event<LayoutEditorElementUnselectEvent> _columnUnselectEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementUnselectEvent.class }, new Annotation[] { });
-    final View _view_0 = (ComponentColumnView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_c_ComponentColumnView__quals__j_e_i_Any_j_e_i_Default");
     final ComponentColumn instance = new ComponentColumn(_view_0, _dndManager_1, _layoutDragComponentHelper_2, _columnResizeEvent_3, _columnSelectEvent_4, _columnUnselectEvent_5, _lockRequiredEvent_6, _componentColumnManagedInstance_7);
+    registerDependentScopedReference(instance, _columnUnselectEvent_5);
+    registerDependentScopedReference(instance, _componentColumnManagedInstance_7);
+    registerDependentScopedReference(instance, _layoutDragComponentHelper_2);
+    registerDependentScopedReference(instance, _columnResizeEvent_3);
+    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _columnSelectEvent_4);
     registerDependentScopedReference(instance, _lockRequiredEvent_6);
-    registerDependentScopedReference(instance, _columnResizeEvent_3);
-    registerDependentScopedReference(instance, _layoutDragComponentHelper_2);
-    registerDependentScopedReference(instance, _componentColumnManagedInstance_7);
-    registerDependentScopedReference(instance, _columnUnselectEvent_5);
-    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onDragEndSubscription", CDI.subscribeLocal("org.uberfire.ext.layout.editor.client.infra.DragComponentEndEvent", new AbstractCDIEventCallback<DragComponentEndEvent>() {
       public void fireEvent(final DragComponentEndEvent event) {

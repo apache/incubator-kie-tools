@@ -20,13 +20,13 @@ public class Type_factory__o_k_w_c_s_c_c_c_CanvasCommandManagerImpl__quals__j_e_
   }
 
   public CanvasCommandManagerImpl createInstance(final ContextManager contextManager) {
-    final Event<CanvasCommandExecutedEvent> _canvasCommandExecutedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasCommandExecutedEvent.class }, new Annotation[] { });
     final Event<CanvasCommandAllowedEvent> _isCanvasCommandAllowedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasCommandAllowedEvent.class }, new Annotation[] { });
-    final Event<CanvasCommandUndoneEvent> _canvasUndoCommandExecutedEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasCommandUndoneEvent.class }, new Annotation[] { });
+    final Event<CanvasCommandExecutedEvent> _canvasCommandExecutedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasCommandExecutedEvent.class }, new Annotation[] { });
     final ClientFactoryManager _clientFactoryManager_0 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasCommandUndoneEvent> _canvasUndoCommandExecutedEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasCommandUndoneEvent.class }, new Annotation[] { });
     final CanvasCommandManagerImpl instance = new CanvasCommandManagerImpl(_clientFactoryManager_0, _isCanvasCommandAllowedEvent_1, _canvasCommandExecutedEvent_2, _canvasUndoCommandExecutedEvent_3);
-    registerDependentScopedReference(instance, _canvasCommandExecutedEvent_2);
     registerDependentScopedReference(instance, _isCanvasCommandAllowedEvent_1);
+    registerDependentScopedReference(instance, _canvasCommandExecutedEvent_2);
     registerDependentScopedReference(instance, _canvasUndoCommandExecutedEvent_3);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

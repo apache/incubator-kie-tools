@@ -7,7 +7,7 @@ public class TranslationServiceImpl_org_kie_workbench_common_stunner_forms_clien
   private static TranslationServiceImpl_org_kie_workbench_common_stunner_forms_client_resources_i18n_FormsClientConstants_fr_properties_default_InlineClientBundleGenerator _instance0 = new TranslationServiceImpl_org_kie_workbench_common_stunner_forms_client_resources_i18n_FormsClientConstants_fr_properties_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/stunner/kie-wb-common-stunner-forms-client/7.47.0-SNAPSHOT/kie-wb-common-stunner-forms-client-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/stunner/forms/client/resources/i18n/FormsClientConstants_fr.properties
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-extensions/kie-wb-common-stunner-forms/kie-wb-common-stunner-forms-client/target/kie-wb-common-stunner-forms-client-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/stunner/forms/client/resources/i18n/FormsClientConstants_fr.properties
       public String getText() {
         return "forms.notificationTitle=[{0}] Génération de formulaires\nforms.noItemsSelectedForGeneration=Impossible de générer des formulaires, aucun élément n’est sélectionné ou les éléments sélectionnés n’ont aucun rapport avec les formulaires\nforms.generationSuccess=Génération des formulaires effectuée pour [{0}]]\nforms.generationFailure=La génération des formulaires a échoué pour [{0}]\nforms.generateTaskForm=Générer le formulaire de tâches";
       }

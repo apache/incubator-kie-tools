@@ -19,17 +19,17 @@ public class Type_factory__o_k_w_c_s_c_w_c_StunnerLienzoBoundsPanel__quals__j_e_
   }
 
   public StunnerLienzoBoundsPanel createInstance(final ContextManager contextManager) {
+    final Event<KeyPressEvent> _keyPressEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { KeyPressEvent.class }, new Annotation[] { });
     final Event<KeyDownEvent> _keyDownEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { KeyDownEvent.class }, new Annotation[] { });
+    final Event<KeyUpEvent> _keyUpEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { KeyUpEvent.class }, new Annotation[] { });
     final Event<CanvasMouseDownEvent> _mouseDownEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasMouseDownEvent.class }, new Annotation[] { });
     final Event<CanvasMouseUpEvent> _mouseUpEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasMouseUpEvent.class }, new Annotation[] { });
-    final Event<KeyUpEvent> _keyUpEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { KeyUpEvent.class }, new Annotation[] { });
-    final Event<KeyPressEvent> _keyPressEvent_0 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { KeyPressEvent.class }, new Annotation[] { });
     final StunnerLienzoBoundsPanel instance = new StunnerLienzoBoundsPanel(_keyPressEvent_0, _keyDownEvent_1, _keyUpEvent_2, _mouseDownEvent_3, _mouseUpEvent_4);
+    registerDependentScopedReference(instance, _keyPressEvent_0);
     registerDependentScopedReference(instance, _keyDownEvent_1);
+    registerDependentScopedReference(instance, _keyUpEvent_2);
     registerDependentScopedReference(instance, _mouseDownEvent_3);
     registerDependentScopedReference(instance, _mouseUpEvent_4);
-    registerDependentScopedReference(instance, _keyUpEvent_2);
-    registerDependentScopedReference(instance, _keyPressEvent_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

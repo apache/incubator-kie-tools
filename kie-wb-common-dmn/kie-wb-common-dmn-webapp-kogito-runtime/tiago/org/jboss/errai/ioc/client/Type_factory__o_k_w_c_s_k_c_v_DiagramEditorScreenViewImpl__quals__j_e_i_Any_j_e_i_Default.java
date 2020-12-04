@@ -30,11 +30,11 @@ public class Type_factory__o_k_w_c_s_k_c_v_DiagramEditorScreenViewImpl__quals__j
   }
 
   public DiagramEditorScreenViewImpl createInstance(final ContextManager contextManager) {
-    final FlowPanel _widgetPanel_1 = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     final FlowPanel _loadingPanel_0 = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
+    final FlowPanel _widgetPanel_1 = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     final DiagramEditorScreenViewImpl instance = new DiagramEditorScreenViewImpl(_loadingPanel_0, _widgetPanel_1);
-    registerDependentScopedReference(instance, _widgetPanel_1);
     registerDependentScopedReference(instance, _loadingPanel_0);
+    registerDependentScopedReference(instance, _widgetPanel_1);
     setIncompleteInstance(instance);
     o_k_w_c_s_k_c_v_DiagramEditorScreenViewImplTemplateResource templateForDiagramEditorScreenViewImpl = GWT.create(o_k_w_c_s_k_c_v_DiagramEditorScreenViewImplTemplateResource.class);
     Element parentElementForTemplateOfDiagramEditorScreenViewImpl = TemplateUtil.getRootTemplateParentElement(templateForDiagramEditorScreenViewImpl.getContents().getText(), "org/kie/workbench/common/stunner/kogito/client/view/DiagramEditorScreenViewImpl.html", "");

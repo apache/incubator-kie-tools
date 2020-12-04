@@ -17,19 +17,13 @@
   <description>Kie Workbench - Common</description>
 
   <modules>
-    <module>kie-identity-session-provider</module>
     <module>kie-wb-common-profile</module>
     <module>kie-wb-common-widgets</module>
-    <module>kie-wb-testing-utils</module>
     <module>kie-wb-common-screens</module>
     <module>kie-wb-common-services</module>
     <module>kie-wb-common-forms</module>
     <module>kie-wb-common-stunner</module>
     <module>kie-wb-common-dmn</module>
-    <module>kie-wb-common-ala</module>
-    <module>kie-wb-common-cli</module>
-    <module>kie-wb-common-dev</module>
-    <module>kie-wb-common-command-api</module>
     <module>kie-wb-common-kogito</module>
   </modules>
 

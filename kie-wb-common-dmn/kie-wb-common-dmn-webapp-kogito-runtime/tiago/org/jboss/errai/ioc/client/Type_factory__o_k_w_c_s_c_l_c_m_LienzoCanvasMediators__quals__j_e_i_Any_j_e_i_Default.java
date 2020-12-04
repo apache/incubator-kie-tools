@@ -18,13 +18,13 @@ public class Type_factory__o_k_w_c_s_c_l_c_m_LienzoCanvasMediators__quals__j_e_i
   }
 
   public LienzoCanvasMediators createInstance(final ContextManager contextManager) {
+    final LienzoCanvasNotification _notification_2 = (LienzoCanvasNotification) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_v_LienzoCanvasNotification__quals__j_e_i_Any_j_e_i_Default");
     final KeyEventHandler _keyEventHandler_0 = (KogitoKeyEventHandlerImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_k_r_c_s_c_i_KogitoKeyEventHandlerImpl__quals__j_e_i_Any_j_e_i_Default");
     final ClientTranslationService _translationService_1 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final EditorContextProvider _editorContextProvider_3 = (KogitoEditorContextProviderImpl) contextManager.getInstance("Type_factory__o_a_k_b_c_c_i_KogitoEditorContextProviderImpl__quals__j_e_i_Any_j_e_i_Default");
-    final LienzoCanvasNotification _notification_2 = (LienzoCanvasNotification) contextManager.getInstance("Type_factory__o_k_w_c_s_c_l_c_v_LienzoCanvasNotification__quals__j_e_i_Any_j_e_i_Default");
     final LienzoCanvasMediators instance = new LienzoCanvasMediators(_keyEventHandler_0, _translationService_1, _notification_2, _editorContextProvider_3);
-    registerDependentScopedReference(instance, _keyEventHandler_0);
     registerDependentScopedReference(instance, _notification_2);
+    registerDependentScopedReference(instance, _keyEventHandler_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

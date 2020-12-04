@@ -40,10 +40,10 @@ public class Type_factory__o_k_w_c_s_c_c_s_c_i_PasteSelectionSessionCommand__qua
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_0 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasSelectionEvent> _selectionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
     final SessionManager _sessionManager_4 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
+    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_0 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<CanvasSelectionEvent> _selectionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasSelectionEvent.class }, new Annotation[] { });
     final PasteSelectionSessionCommand instance = new PasteSelectionSessionCommand(_sessionCommandManager_0, _canvasCommandFactoryInstance_1, _selectionEvent_2, _definitionUtils_3, _sessionManager_4);
     registerDependentScopedReference(instance, _canvasCommandFactoryInstance_1);
     registerDependentScopedReference(instance, _selectionEvent_2);

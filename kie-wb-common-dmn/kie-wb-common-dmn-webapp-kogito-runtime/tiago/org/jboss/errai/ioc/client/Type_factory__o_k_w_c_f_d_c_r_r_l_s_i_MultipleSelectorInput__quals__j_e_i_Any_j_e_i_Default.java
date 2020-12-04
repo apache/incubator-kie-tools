@@ -21,11 +21,11 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_l_s_i_MultipleSelectorInput__quals_
   }
 
   public MultipleSelectorInput createInstance(final ContextManager contextManager) {
-    final LiveSearchDropDown _selector_1 = (LiveSearchDropDown) contextManager.getInstance("Type_factory__o_u_e_w_c_c_d_LiveSearchDropDown__quals__j_e_i_Any_j_e_i_Default");
     final MultipleSelectorInputView _view_0 = (MultipleSelectorInputViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_r_r_l_s_i_MultipleSelectorInputViewImpl__quals__j_e_i_Any_j_e_i_Default");
+    final LiveSearchDropDown _selector_1 = (LiveSearchDropDown) contextManager.getInstance("Type_factory__o_u_e_w_c_c_d_LiveSearchDropDown__quals__j_e_i_Any_j_e_i_Default");
     final MultipleSelectorInput instance = new MultipleSelectorInput(_view_0, _selector_1);
-    registerDependentScopedReference(instance, _selector_1);
     registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _selector_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

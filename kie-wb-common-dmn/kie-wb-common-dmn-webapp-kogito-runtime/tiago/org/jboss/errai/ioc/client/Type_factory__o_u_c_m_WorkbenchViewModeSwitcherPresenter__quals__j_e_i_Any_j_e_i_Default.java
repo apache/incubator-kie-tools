@@ -23,11 +23,11 @@ public class Type_factory__o_u_c_m_WorkbenchViewModeSwitcherPresenter__quals__j_
   }
 
   public WorkbenchViewModeSwitcherPresenter createInstance(final ContextManager contextManager) {
-    final View _view_0 = (WorkbenchViewModeSwitcherView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_WorkbenchViewModeSwitcherView__quals__j_e_i_Any_j_e_i_Default");
     final WorkbenchMenuBar _menubar_1 = (WorkbenchMenuBarPresenter) contextManager.getInstance("Producer_factory__o_u_c_w_w_m_WorkbenchMenuBarPresenter__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_0 = (WorkbenchViewModeSwitcherView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_WorkbenchViewModeSwitcherView__quals__j_e_i_Any_j_e_i_Default");
     final WorkbenchViewModeSwitcherPresenter instance = new WorkbenchViewModeSwitcherPresenter(_view_0, _menubar_1);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _menubar_1);
+    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onPerspectiveChangeSubscription", CDI.subscribeLocal("org.uberfire.client.workbench.events.PerspectiveChange", new AbstractCDIEventCallback<PerspectiveChange>() {
       public void fireEvent(final PerspectiveChange event) {

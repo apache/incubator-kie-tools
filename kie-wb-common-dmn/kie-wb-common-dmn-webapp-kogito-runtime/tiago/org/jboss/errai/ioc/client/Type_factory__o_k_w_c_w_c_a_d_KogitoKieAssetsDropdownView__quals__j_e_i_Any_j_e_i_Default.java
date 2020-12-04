@@ -42,12 +42,12 @@ public class Type_factory__o_k_w_c_w_c_a_d_KogitoKieAssetsDropdownView__quals__j
   }
 
   public KogitoKieAssetsDropdownView createInstance(final ContextManager contextManager) {
-    final HTMLSelectElement _nativeSelect_0 = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLOptionElement _htmlOptionElement_1 = (HTMLOptionElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOptionElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLSelectElement _nativeSelect_0 = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TranslationService _translationService_2 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final KogitoKieAssetsDropdownView instance = new KogitoKieAssetsDropdownView(_nativeSelect_0, _htmlOptionElement_1, _translationService_2);
-    registerDependentScopedReference(instance, _nativeSelect_0);
     registerDependentScopedReference(instance, _htmlOptionElement_1);
+    registerDependentScopedReference(instance, _nativeSelect_0);
     registerDependentScopedReference(instance, _translationService_2);
     setIncompleteInstance(instance);
     o_k_w_c_w_c_a_d_KogitoKieAssetsDropdownViewTemplateResource templateForKogitoKieAssetsDropdownView = GWT.create(o_k_w_c_w_c_a_d_KogitoKieAssetsDropdownViewTemplateResource.class);

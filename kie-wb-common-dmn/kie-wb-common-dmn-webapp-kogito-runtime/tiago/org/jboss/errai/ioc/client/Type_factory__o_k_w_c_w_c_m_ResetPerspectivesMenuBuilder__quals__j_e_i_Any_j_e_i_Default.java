@@ -88,10 +88,10 @@ public class Type_factory__o_k_w_c_w_c_m_ResetPerspectivesMenuBuilder__quals__j_
   public ResetPerspectivesMenuBuilder createInstance(final ContextManager contextManager) {
     final ResetPerspectivesMenuBuilder instance = new ResetPerspectivesMenuBuilder();
     setIncompleteInstance(instance);
-    final PlaceManagerImpl ResetPerspectivesMenuBuilder_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    ResetPerspectivesMenuBuilder_PlaceManager_placeManager(instance, ResetPerspectivesMenuBuilder_placeManager);
     final PerspectiveManagerImpl ResetPerspectivesMenuBuilder_perspectiveManager = (PerspectiveManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     ResetPerspectivesMenuBuilder_PerspectiveManager_perspectiveManager(instance, ResetPerspectivesMenuBuilder_perspectiveManager);
+    final PlaceManagerImpl ResetPerspectivesMenuBuilder_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    ResetPerspectivesMenuBuilder_PlaceManager_placeManager(instance, ResetPerspectivesMenuBuilder_placeManager);
     setIncompleteInstance(null);
     return instance;
   }

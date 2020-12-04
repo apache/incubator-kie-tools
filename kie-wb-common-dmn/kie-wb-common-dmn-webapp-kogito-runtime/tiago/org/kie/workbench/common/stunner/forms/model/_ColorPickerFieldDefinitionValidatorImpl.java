@@ -35,17 +35,17 @@ public class _ColorPickerFieldDefinitionValidatorImpl extends com.google.gwt.val
           .setAnnotation( 
               new javax.validation.constraints.Pattern(){
                   public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.Pattern.class; }
+                  public java.lang.String regexp() { return "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";}
                   public java.lang.Class[] payload() { return new java.lang.Class[] {};}
                   public java.lang.Class[] groups() { return new java.lang.Class[] {};}
                   public javax.validation.constraints.Pattern.Flag[] flags() { return new javax.validation.constraints.Pattern.Flag[] {};}
                   public java.lang.String message() { return "Invalid color code";}
-                  public java.lang.String regexp() { return "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";}
               }
               )
           .setAttributes(attributeBuilder()
             .put("flags", new javax.validation.constraints.Pattern.Flag[] {})
-            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
             .put("regexp", "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
+            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
             .put("message", "Invalid color code")
             .put("payload", new java.lang.Class[] {})
             .build())

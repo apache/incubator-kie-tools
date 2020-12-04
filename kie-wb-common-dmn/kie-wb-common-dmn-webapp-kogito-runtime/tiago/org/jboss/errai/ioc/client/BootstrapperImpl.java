@@ -2828,7 +2828,7 @@ public class BootstrapperImpl implements Bootstrapper {
     CDIEventTypeLookup.get().addLookup("org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent", "org.uberfire.workbench.events.UberFireEvent");
   }
 
-  private void registerFactories0(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
+  private void registerFactories0(final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context, final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context) {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<MessageConsoleScreen>) GWT.create(Type_factory__o_g_m_c_c_MessageConsoleScreen__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<BigIntegerEditableColumnGenerator>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_r_l_c_i_w_i_n_i_BigIntegerEditableColumnGenerator__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<DataTypePickerWidget>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_DataTypePickerWidget__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3331,7 +3331,7 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DecisionNavigatorObserver>) GWT.create(Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorObserver__quals__j_e_i_Any_j_e_i_Default.class));
   }
 
-  private void registerFactories1(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
+  private void registerFactories1(final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context, final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context) {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<IOCBeanManagerProvider>) GWT.create(Type_factory__o_j_e_i_c_a_b_IOCBeanManagerProvider__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<ResizeFlowPanel>) GWT.create(ExtensionProvided_factory__o_u_c_w_w_l_ResizeFlowPanel__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<KebabMenu>) GWT.create(Type_factory__o_u_c_v_p_w_KebabMenu__quals__j_e_i_Any_j_e_i_Default.class));
@@ -3834,7 +3834,7 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<PropertiesPanelNotifier>) GWT.create(Type_factory__o_k_w_c_d_c_e_t_p_h_c_PropertiesPanelNotifier__quals__j_e_i_Any_j_e_i_Default.class));
   }
 
-  private void registerFactories2(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
+  private void registerFactories2(final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context, final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context) {
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<LogNodeEdgesDevCommand>) GWT.create(Type_factory__o_k_w_c_s_c_w_m_d_i_LogNodeEdgesDevCommand__quals__j_e_i_Any_j_e_i_Default.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<Heading>) GWT.create(ExtensionProvided_factory__o_j_e_c_c_d_Heading__quals__j_e_i_Any_j_e_i_Default_j_i_Named.class));
     org_jboss_errai_ioc_client_container_DependentScopeContext_context.registerFactory((Factory<FieldHelp>) GWT.create(Type_factory__o_k_w_c_f_d_c_r_f_l_h_FieldHelp__quals__j_e_i_Any_j_e_i_Default.class));
@@ -4251,24 +4251,24 @@ public class BootstrapperImpl implements Bootstrapper {
     org_jboss_errai_ioc_client_container_ApplicationScopedContext_context.registerFactory((Factory<DMNDefinitionSetDefinitionAdapterImpl>) GWT.create(Type_factory__o_k_w_c_d_a_d_a_b_DMNDefinitionSetDefinitionAdapterImpl__quals__j_e_i_Any_j_e_i_Default.class));
   }
 
-  private void registerFactories(final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context) {
-    registerFactories0(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, org_jboss_errai_ioc_client_container_DependentScopeContext_context);
-    registerFactories1(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, org_jboss_errai_ioc_client_container_DependentScopeContext_context);
-    registerFactories2(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, org_jboss_errai_ioc_client_container_DependentScopeContext_context);
+  private void registerFactories(final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context, final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context) {
+    registerFactories0(org_jboss_errai_ioc_client_container_DependentScopeContext_context, org_jboss_errai_ioc_client_container_ApplicationScopedContext_context);
+    registerFactories1(org_jboss_errai_ioc_client_container_DependentScopeContext_context, org_jboss_errai_ioc_client_container_ApplicationScopedContext_context);
+    registerFactories2(org_jboss_errai_ioc_client_container_DependentScopeContext_context, org_jboss_errai_ioc_client_container_ApplicationScopedContext_context);
   }
 
   // The main IOC bootstrap method.
   public ContextManager bootstrapContainer() {
-    final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context = new ApplicationScopedContext();
     final Context org_jboss_errai_ioc_client_container_DependentScopeContext_context = new DependentScopeContext();
+    final Context org_jboss_errai_ioc_client_container_ApplicationScopedContext_context = new ApplicationScopedContext();
     logger.debug("Registering factories with contexts.");
     long start = System.currentTimeMillis();
-    registerFactories(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context, org_jboss_errai_ioc_client_container_DependentScopeContext_context);
+    registerFactories(org_jboss_errai_ioc_client_container_DependentScopeContext_context, org_jboss_errai_ioc_client_container_ApplicationScopedContext_context);
     logger.debug("Registered 1414 factories in {}ms", System.currentTimeMillis() - start);
     logger.debug("Adding contexts to context manager...");
     start = System.currentTimeMillis();
-    contextManager.addContext(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context);
     contextManager.addContext(org_jboss_errai_ioc_client_container_DependentScopeContext_context);
+    contextManager.addContext(org_jboss_errai_ioc_client_container_ApplicationScopedContext_context);
     logger.debug("Added 2 contexts in {}ms", System.currentTimeMillis() - start);
     logger.debug("Calling finishInit on ContextManager");
     start = System.currentTimeMillis();

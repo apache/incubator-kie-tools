@@ -20,12 +20,12 @@ public class Type_factory__o_k_w_c_s_c_c_s_c_i_ExportToRawFormatSessionCommand__
   }
 
   public ExportToRawFormatSessionCommand createInstance(final ContextManager contextManager) {
+    final TextFileExport _textFileExport_2 = (TextFileExport) contextManager.getInstance("Producer_factory__o_u_e_e_c_c_f_e_TextFileExport__quals__j_e_i_Any_j_e_i_Default");
     final ClientDiagramService _clientDiagramService_0 = (ClientDiagramServiceImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_ClientDiagramServiceImpl__quals__j_e_i_Any_j_e_i_Default");
     final ErrorPopupPresenter _errorPopupPresenter_1 = (ErrorPopupPresenter) contextManager.getInstance("Type_factory__o_u_c_w_w_c_ErrorPopupPresenter__quals__j_e_i_Any_j_e_i_Default");
-    final TextFileExport _textFileExport_2 = (TextFileExport) contextManager.getInstance("Producer_factory__o_u_e_e_c_c_f_e_TextFileExport__quals__j_e_i_Any_j_e_i_Default");
     final ExportToRawFormatSessionCommand instance = new ExportToRawFormatSessionCommand(_clientDiagramService_0, _errorPopupPresenter_1, _textFileExport_2);
-    registerDependentScopedReference(instance, _clientDiagramService_0);
     registerDependentScopedReference(instance, _textFileExport_2);
+    registerDependentScopedReference(instance, _clientDiagramService_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

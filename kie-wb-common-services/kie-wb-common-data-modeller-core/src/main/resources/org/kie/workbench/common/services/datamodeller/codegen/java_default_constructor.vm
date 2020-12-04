@@ -1,4 +1,0 @@
-##
-## Generate default constructor
-##
-$nameTool.resolveConstructor($currentDataObject, null, "")

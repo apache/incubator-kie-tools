@@ -61,27 +61,27 @@ public class Type_factory__o_k_w_c_d_c_e_e_ExpressionEditorViewImpl__quals__j_e_
   }
 
   public ExpressionEditorViewImpl createInstance(final ContextManager contextManager) {
-    final DMNGridPanelContainer _gridPanelContainer_3 = (DMNGridPanelContainer) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_p_DMNGridPanelContainer__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
-    final DefaultCanvasCommandFactory _canvasCommandFactory_8 = (DefaultCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_f_DefaultCanvasCommandFactory__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final Event<RefreshFormPropertiesEvent> _refreshFormPropertiesEvent_10 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
+    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_7 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
+    final SessionManager _sessionManager_6 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final Supplier<ExpressionEditorDefinitions> _expressionEditorDefinitionsSupplier_9 = (ExpressionEditorDefinitionsProducer) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_e_t_ExpressionEditorDefinitionsProducer__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final Anchor _returnToLink_0 = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final Presenter _listSelector_5 = (ListSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelector__quals__j_e_i_Any_j_e_i_Default");
     final Span _expressionType_2 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final TranslationService _translationService_4 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final Event<DomainObjectSelectionEvent> _domainObjectSelectionEvent_11 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DomainObjectSelectionEvent.class }, new Annotation[] { });
-    final SessionManager _sessionManager_6 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
-    final Anchor _returnToLink_0 = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final Presenter _listSelector_5 = (ListSelector) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_g_c_l_ListSelector__quals__j_e_i_Any_j_e_i_Default");
     final Span _expressionName_1 = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_7 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
-    final Event<RefreshFormPropertiesEvent> _refreshFormPropertiesEvent_10 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RefreshFormPropertiesEvent.class }, new Annotation[] { });
+    final DMNGridPanelContainer _gridPanelContainer_3 = (DMNGridPanelContainer) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_p_DMNGridPanelContainer__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final DefaultCanvasCommandFactory _canvasCommandFactory_8 = (DefaultCanvasCommandFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_f_DefaultCanvasCommandFactory__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
     final ExpressionEditorViewImpl instance = new ExpressionEditorViewImpl(_returnToLink_0, _expressionName_1, _expressionType_2, _gridPanelContainer_3, _translationService_4, _listSelector_5, _sessionManager_6, _sessionCommandManager_7, _canvasCommandFactory_8, _expressionEditorDefinitionsSupplier_9, _refreshFormPropertiesEvent_10, _domainObjectSelectionEvent_11);
-    registerDependentScopedReference(instance, _gridPanelContainer_3);
+    registerDependentScopedReference(instance, _refreshFormPropertiesEvent_10);
+    registerDependentScopedReference(instance, _returnToLink_0);
+    registerDependentScopedReference(instance, _listSelector_5);
     registerDependentScopedReference(instance, _expressionType_2);
     registerDependentScopedReference(instance, _translationService_4);
     registerDependentScopedReference(instance, _domainObjectSelectionEvent_11);
-    registerDependentScopedReference(instance, _returnToLink_0);
-    registerDependentScopedReference(instance, _listSelector_5);
     registerDependentScopedReference(instance, _expressionName_1);
-    registerDependentScopedReference(instance, _refreshFormPropertiesEvent_10);
+    registerDependentScopedReference(instance, _gridPanelContainer_3);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_e_ExpressionEditorViewImplTemplateResource templateForExpressionEditorViewImpl = GWT.create(o_k_w_c_d_c_e_e_ExpressionEditorViewImplTemplateResource.class);
     Element parentElementForTemplateOfExpressionEditorViewImpl = TemplateUtil.getRootTemplateParentElement(templateForExpressionEditorViewImpl.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/expressions/ExpressionEditorViewImpl.html", "");

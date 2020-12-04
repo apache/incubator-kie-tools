@@ -19,8 +19,8 @@ public class Type_factory__o_k_w_c_d_c_s_NodeTextSetter__quals__j_e_i_Any_j_e_i_
 
   public NodeTextSetter createInstance(final ContextManager contextManager) {
     final Event<CanvasElementUpdatedEvent> _canvasElementUpdatedEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasElementUpdatedEvent.class }, new Annotation[] { });
-    final TextPropertyProviderFactory _textPropertyProviderFactory_0 = (TextPropertyProviderFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_c_a_TextPropertyProviderFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
     final DMNGraphUtils _dmnGraphUtils_2 = (DMNGraphUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_g_DMNGraphUtils__quals__j_e_i_Any_j_e_i_Default");
+    final TextPropertyProviderFactory _textPropertyProviderFactory_0 = (TextPropertyProviderFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_c_a_TextPropertyProviderFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
     final NodeTextSetter instance = new NodeTextSetter(_textPropertyProviderFactory_0, _canvasElementUpdatedEvent_1, _dmnGraphUtils_2);
     registerDependentScopedReference(instance, _canvasElementUpdatedEvent_1);
     registerDependentScopedReference(instance, _dmnGraphUtils_2);

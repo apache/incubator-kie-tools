@@ -19,13 +19,13 @@ public class Type_factory__o_k_w_c_d_c_s_f_DMNShapeFactory__quals__j_e_i_Any_j_e
   }
 
   public DMNShapeFactory createInstance(final ContextManager contextManager) {
-    final DelegateShapeFactory<DMNDefinition, Shape> _delegateShapeFactory_3 = (DelegateShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_f_DelegateShapeFactory__quals__j_e_i_Any_j_e_i_Default");
-    final DMNConnectorShapeFactory _dmnConnectorShapeFactory_1 = (DMNConnectorShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_f_DMNConnectorShapeFactory__quals__j_e_i_Any_j_e_i_Default");
     final SVGShapeFactory _svgShapeFactory_0 = (SVGShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_s_c_s_f_SVGShapeFactory__quals__j_e_i_Any_j_e_i_Default");
+    final DMNConnectorShapeFactory _dmnConnectorShapeFactory_1 = (DMNConnectorShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_f_DMNConnectorShapeFactory__quals__j_e_i_Any_j_e_i_Default");
+    final DelegateShapeFactory<DMNDefinition, Shape> _delegateShapeFactory_3 = (DelegateShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_s_f_DelegateShapeFactory__quals__j_e_i_Any_j_e_i_Default");
     final DMNDecisionServiceShapeFactory _dmnDecisionServiceShapeFactory_2 = (DMNDecisionServiceShapeFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_s_f_DMNDecisionServiceShapeFactory__quals__j_e_i_Any_j_e_i_Default");
     final DMNShapeFactory instance = new DMNShapeFactory(_svgShapeFactory_0, _dmnConnectorShapeFactory_1, _dmnDecisionServiceShapeFactory_2, _delegateShapeFactory_3);
-    registerDependentScopedReference(instance, _delegateShapeFactory_3);
     registerDependentScopedReference(instance, _svgShapeFactory_0);
+    registerDependentScopedReference(instance, _delegateShapeFactory_3);
     registerDependentScopedReference(instance, _dmnDecisionServiceShapeFactory_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

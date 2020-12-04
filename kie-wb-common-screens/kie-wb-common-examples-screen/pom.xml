@@ -33,7 +33,6 @@
 
   <modules>
     <module>kie-wb-common-examples-screen-api</module>
-    <module>kie-wb-common-examples-screen-backend</module>
   </modules>
 
 

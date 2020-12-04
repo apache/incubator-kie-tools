@@ -93,8 +93,8 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_c_ClipboardControlCleaner__quals__j
   }
 
   public ClipboardControlCleaner createInstance(final ContextManager contextManager) {
-    final ManagedInstance<ClipboardControl> _clipboardControls_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ClipboardControl.class }, new Annotation[] { });
     final ActivityBeansCache _activityBeansCache_1 = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<ClipboardControl> _clipboardControls_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ClipboardControl.class }, new Annotation[] { });
     final ClipboardControlCleaner instance = new ClipboardControlCleaner(_clipboardControls_0, _activityBeansCache_1);
     registerDependentScopedReference(instance, _clipboardControls_0);
     setIncompleteInstance(instance);

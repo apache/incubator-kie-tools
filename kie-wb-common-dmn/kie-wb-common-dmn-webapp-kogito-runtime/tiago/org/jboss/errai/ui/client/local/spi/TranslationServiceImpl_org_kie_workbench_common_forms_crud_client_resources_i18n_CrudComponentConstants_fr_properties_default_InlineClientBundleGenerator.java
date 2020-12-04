@@ -7,7 +7,7 @@ public class TranslationServiceImpl_org_kie_workbench_common_forms_crud_client_r
   private static TranslationServiceImpl_org_kie_workbench_common_forms_crud_client_resources_i18n_CrudComponentConstants_fr_properties_default_InlineClientBundleGenerator _instance0 = new TranslationServiceImpl_org_kie_workbench_common_forms_crud_client_resources_i18n_CrudComponentConstants_fr_properties_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/forms/kie-wb-common-forms-crud-component/7.47.0-SNAPSHOT/kie-wb-common-forms-crud-component-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/forms/crud/client/resources/i18n/CrudComponentConstants_fr.properties
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-forms/kie-wb-common-forms-commons/kie-wb-common-forms-crud-component/target/kie-wb-common-forms-crud-component-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/forms/crud/client/resources/i18n/CrudComponentConstants_fr.properties
       public String getText() {
         return "CrudComponentViewImpl.newInstanceButton=Nouvelle instance\nCrudComponentViewImpl.newInstanceTitle=Créer une instance\nCrudComponentViewImpl.editInstanceButton=Modifier\nCrudComponentViewImpl.editInstanceTitle=Modifier l’instance\nCrudComponentViewImpl.deleteInstance=Supprimer\nCrudComponentViewImpl.deleteBody=En êtes-vous sûr ?\n\nModalFormDisplayerViewImpl.accept=Accepter\nModalFormDisplayerViewImpl.cancel=Annuler\n\n";
       }

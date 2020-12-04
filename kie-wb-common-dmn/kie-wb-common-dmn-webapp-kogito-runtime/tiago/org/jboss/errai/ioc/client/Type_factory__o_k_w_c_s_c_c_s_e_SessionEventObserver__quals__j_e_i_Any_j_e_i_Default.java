@@ -91,14 +91,6 @@ public class Type_factory__o_k_w_c_s_c_c_s_e_SessionEventObserver__quals__j_e_i_
   }
 
   public SessionEventObserver createInstance(final ContextManager contextManager) {
-    final Instance<SessionDiagramOpenedHandler> _sessionDiagramOpenedHandlersInstance_0 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { SessionDiagramOpenedHandler.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
     final Instance<SessionDiagramSavedHandler> _sessionDiagramSavedHandlersInstance_1 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { SessionDiagramSavedHandler.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -107,9 +99,17 @@ public class Type_factory__o_k_w_c_s_c_c_s_e_SessionEventObserver__quals__j_e_i_
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final Instance<SessionDiagramOpenedHandler> _sessionDiagramOpenedHandlersInstance_0 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { SessionDiagramOpenedHandler.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
     final SessionEventObserver instance = new SessionEventObserver(_sessionDiagramOpenedHandlersInstance_0, _sessionDiagramSavedHandlersInstance_1);
-    registerDependentScopedReference(instance, _sessionDiagramOpenedHandlersInstance_0);
     registerDependentScopedReference(instance, _sessionDiagramSavedHandlersInstance_1);
+    registerDependentScopedReference(instance, _sessionDiagramOpenedHandlersInstance_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

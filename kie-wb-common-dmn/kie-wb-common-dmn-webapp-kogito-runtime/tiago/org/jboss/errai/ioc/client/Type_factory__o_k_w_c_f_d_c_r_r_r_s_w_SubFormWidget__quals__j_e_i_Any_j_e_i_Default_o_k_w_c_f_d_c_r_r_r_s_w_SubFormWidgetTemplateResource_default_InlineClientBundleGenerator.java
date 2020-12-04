@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidget__quals__j_e_i_A
   private static Type_factory__o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidget__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidgetTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidget__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidgetTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/forms/kie-wb-common-dynamic-forms-client/7.47.0-SNAPSHOT/kie-wb-common-dynamic-forms-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/forms/dynamic/client/rendering/renderers/relations/subform/widget/SubFormWidget.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-forms/kie-wb-common-dynamic-forms/kie-wb-common-dynamic-forms-client/target/kie-wb-common-dynamic-forms-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/forms/dynamic/client/rendering/renderers/relations/subform/widget/SubFormWidget.html
       public String getText() {
         return "<div>\n    <div id=\"formContent\"></div>\n</div>\n";
       }

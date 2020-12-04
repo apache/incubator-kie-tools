@@ -1,4 +1,0 @@
-##
-## Generate constructor for @Key marked fields
-##
-$nameTool.resolveKeyFieldsConstructor($currentDataObject)

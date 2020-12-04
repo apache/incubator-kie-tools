@@ -30,6 +30,11 @@ public class _FontSetValidatorImpl extends com.google.gwt.validation.client.impl
           org.kie.workbench.common.dmn.api.property.font.FontSet.class,
           javax.validation.groups.Default.class);
   
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl fontSize_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "fontSize",
+          org.kie.workbench.common.dmn.api.property.font.FontSize.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl fontColour_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "fontColour",
@@ -40,17 +45,12 @@ public class _FontSetValidatorImpl extends com.google.gwt.validation.client.impl
           "fontFamily",
           org.kie.workbench.common.dmn.api.property.font.FontFamily.class,
           true,beanMetadata);
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl fontSize_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "fontSize",
-          org.kie.workbench.common.dmn.api.property.font.FontSize.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.property.font.FontSet> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.property.font.FontSet.class)
           .setConstrained(false)
+          .put("fontSize", fontSize_pd)
           .put("fontColour", fontColour_pd)
           .put("fontFamily", fontFamily_pd)
-          .put("fontSize", fontSize_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -146,15 +146,15 @@ public class _FontSetValidatorImpl extends com.google.gwt.validation.client.impl
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("fontColour")) {
+    if (propertyName.equals("fontSize")) {
+      validateProperty_getfontSize(context, violations, object, object.getFontSize(), false, groups);
+      validateProperty_fontSize(context, violations, object, _fontSize(object), false, groups);
+    } else if (propertyName.equals("fontColour")) {
       validateProperty_getfontColour(context, violations, object, object.getFontColour(), false, groups);
       validateProperty_fontColour(context, violations, object, _fontColour(object), false, groups);
     } else if (propertyName.equals("fontFamily")) {
       validateProperty_getfontFamily(context, violations, object, object.getFontFamily(), false, groups);
       validateProperty_fontFamily(context, violations, object, _fontFamily(object), false, groups);
-    } else if (propertyName.equals("fontSize")) {
-      validateProperty_getfontSize(context, violations, object, object.getFontSize(), false, groups);
-      validateProperty_fontSize(context, violations, object, _fontSize(object), false, groups);
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.property.font.FontSet");
     }
@@ -167,7 +167,20 @@ public class _FontSetValidatorImpl extends com.google.gwt.validation.client.impl
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("fontColour")) {
+    if (propertyName.equals("fontSize")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSize) {
+        valueTypeMatches = true;
+        validateProperty_getfontSize(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSize) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSize) {
+        valueTypeMatches = true;
+        validateProperty_fontSize(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSize) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
+    } else if (propertyName.equals("fontColour")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontColour) {
         valueTypeMatches = true;
@@ -193,19 +206,6 @@ public class _FontSetValidatorImpl extends com.google.gwt.validation.client.impl
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
       }
-    } else if (propertyName.equals("fontSize")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSize) {
-        valueTypeMatches = true;
-        validateProperty_getfontSize(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSize) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.font.FontSize) {
-        valueTypeMatches = true;
-        validateProperty_fontSize(context, violations, null, (org.kie.workbench.common.dmn.api.property.font.FontSize) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.property.font.FontSet");
     }
@@ -218,6 +218,48 @@ public class _FontSetValidatorImpl extends com.google.gwt.validation.client.impl
   public GwtBeanDescriptor<org.kie.workbench.common.dmn.api.property.font.FontSet> getConstraints(ValidationGroupsMetadata validationGroupsMetadata) {
     beanDescriptor.setValidationGroupsMetadata(validationGroupsMetadata);
     return beanDescriptor;
+  }
+  
+  private final <T> void validateProperty_fontSize(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.property.font.FontSet object,
+      final org.kie.workbench.common.dmn.api.property.font.FontSize value,
+      boolean honorValid,
+      Class<?>... groups) {
+    final GwtValidationContext<T> myContext = context.append("fontSize");
+    Node leafNode = myContext.getPath().getLeafNode();
+    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
+    boolean isReachable;
+    try {
+      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+    } catch (Exception e) {
+      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
+    }
+    if (isReachable) {
+      if (honorValid && value != null) {
+        boolean isCascadable;
+        try {
+          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+        } catch (Exception e) {
+          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
+        }
+        if (isCascadable) {
+           if (!context.alreadyValidated(value)) {
+            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
+          }
+        }
+      }
+    }
+  }
+  
+  private final <T> void validateProperty_getfontSize(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.property.font.FontSet object,
+      final org.kie.workbench.common.dmn.api.property.font.FontSize value,
+      boolean honorValid,
+      Class<?>... groups) {
   }
   
   private final <T> void validateProperty_fontColour(
@@ -304,73 +346,31 @@ public class _FontSetValidatorImpl extends com.google.gwt.validation.client.impl
       Class<?>... groups) {
   }
   
-  private final <T> void validateProperty_fontSize(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.property.font.FontSet object,
-      final org.kie.workbench.common.dmn.api.property.font.FontSize value,
-      boolean honorValid,
-      Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("fontSize");
-    Node leafNode = myContext.getPath().getLeafNode();
-    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
-    boolean isReachable;
-    try {
-      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-    } catch (Exception e) {
-      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
-    }
-    if (isReachable) {
-      if (honorValid && value != null) {
-        boolean isCascadable;
-        try {
-          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-        } catch (Exception e) {
-          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
-        }
-        if (isCascadable) {
-           if (!context.alreadyValidated(value)) {
-            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
-          }
-        }
-      }
-    }
-  }
-  
-  private final <T> void validateProperty_getfontSize(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.property.font.FontSet object,
-      final org.kie.workbench.common.dmn.api.property.font.FontSize value,
-      boolean honorValid,
-      Class<?>... groups) {
-  }
-  
   
   private <T> void validateAllNonInheritedProperties(
       GwtValidationContext<T> context,
       org.kie.workbench.common.dmn.api.property.font.FontSet object,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
+    validateProperty_getfontSize(context, violations, object, object.getFontSize(), true, groups);
+    validateProperty_fontSize(context, violations, object, _fontSize(object), true, groups);
     validateProperty_getfontColour(context, violations, object, object.getFontColour(), true, groups);
     validateProperty_fontColour(context, violations, object, _fontColour(object), true, groups);
     validateProperty_getfontFamily(context, violations, object, object.getFontFamily(), true, groups);
     validateProperty_fontFamily(context, violations, object, _fontFamily(object), true, groups);
-    validateProperty_getfontSize(context, violations, object, object.getFontSize(), true, groups);
-    validateProperty_fontSize(context, violations, object, _fontSize(object), true, groups);
   }
   
   // Write the wrappers after we know which are needed
+  private native org.kie.workbench.common.dmn.api.property.font.FontColour _fontColour(org.kie.workbench.common.dmn.api.property.font.FontSet object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.property.font.FontSet::fontColour;
+  }-*/;
+  
   private native org.kie.workbench.common.dmn.api.property.font.FontFamily _fontFamily(org.kie.workbench.common.dmn.api.property.font.FontSet object) /*-{
     return object.@org.kie.workbench.common.dmn.api.property.font.FontSet::fontFamily;
   }-*/;
   
   private native org.kie.workbench.common.dmn.api.property.font.FontSize _fontSize(org.kie.workbench.common.dmn.api.property.font.FontSet object) /*-{
     return object.@org.kie.workbench.common.dmn.api.property.font.FontSet::fontSize;
-  }-*/;
-  
-  private native org.kie.workbench.common.dmn.api.property.font.FontColour _fontColour(org.kie.workbench.common.dmn.api.property.font.FontSet object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.property.font.FontSet::fontColour;
   }-*/;
   
   

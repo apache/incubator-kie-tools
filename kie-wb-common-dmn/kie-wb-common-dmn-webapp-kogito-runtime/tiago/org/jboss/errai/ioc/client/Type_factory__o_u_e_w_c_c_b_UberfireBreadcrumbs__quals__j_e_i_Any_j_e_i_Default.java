@@ -37,9 +37,9 @@ public class Type_factory__o_u_e_w_c_c_b_UberfireBreadcrumbs__quals__j_e_i_Any_j
   }
 
   public UberfireBreadcrumbs createInstance(final ContextManager contextManager) {
+    final ManagedInstance<DefaultBreadcrumbsPresenter> _breadcrumbsPresenters_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultBreadcrumbsPresenter.class }, new Annotation[] { });
     final PlaceManager _placeManager_2 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final UberfireBreadcrumbsContainer _uberfireBreadcrumbsContainer_0 = (UberfireBreadcrumbsContainerImpl) contextManager.getInstance("Type_factory__o_u_e_w_c_c_b_h_UberfireBreadcrumbsContainerImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<DefaultBreadcrumbsPresenter> _breadcrumbsPresenters_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultBreadcrumbsPresenter.class }, new Annotation[] { });
     final View _view_3 = (UberfireBreadcrumbsView) contextManager.getInstance("Type_factory__o_u_e_w_c_c_b_UberfireBreadcrumbsView__quals__j_e_i_Any_j_e_i_Default");
     final UberfireBreadcrumbs instance = new UberfireBreadcrumbs(_uberfireBreadcrumbsContainer_0, _breadcrumbsPresenters_1, _placeManager_2, _view_3);
     registerDependentScopedReference(instance, _breadcrumbsPresenters_1);

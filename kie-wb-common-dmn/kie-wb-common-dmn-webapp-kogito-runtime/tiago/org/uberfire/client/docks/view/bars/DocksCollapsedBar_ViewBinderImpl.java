@@ -1,4 +1,4 @@
-// .ui.xml template last modified: 1607097787707
+// .ui.xml template last modified: 1607100808664
 package org.uberfire.client.docks.view.bars;
 
 import com.google.gwt.core.client.GWT;

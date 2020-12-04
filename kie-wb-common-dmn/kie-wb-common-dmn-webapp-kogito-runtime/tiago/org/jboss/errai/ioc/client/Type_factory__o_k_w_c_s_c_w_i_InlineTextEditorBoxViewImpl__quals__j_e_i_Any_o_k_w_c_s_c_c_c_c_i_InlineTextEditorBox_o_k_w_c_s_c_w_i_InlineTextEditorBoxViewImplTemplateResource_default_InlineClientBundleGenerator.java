@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImpl__quals__j
   private static Type_factory__o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImpl__quals__j_e_i_Any_o_k_w_c_s_c_c_c_c_i_InlineTextEditorBox_o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImplTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImpl__quals__j_e_i_Any_o_k_w_c_s_c_c_c_c_i_InlineTextEditorBox_o_k_w_c_s_c_w_i_InlineTextEditorBoxViewImplTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/stunner/kie-wb-common-stunner-widgets/7.47.0-SNAPSHOT/kie-wb-common-stunner-widgets-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/stunner/client/widgets/inlineeditor/InlineTextEditorBox.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-widgets/target/kie-wb-common-stunner-widgets-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/stunner/client/widgets/inlineeditor/InlineTextEditorBox.html
       public String getText() {
         return "<div data-field=\"editNameBox\" tabindex=\"-1\">\n    <div class=\"inlineNameEditBoxNameBox\" role=\"textbox\" contenteditable=\"true\" data-field=\"nameField\"></div>\n</div>\n";
       }

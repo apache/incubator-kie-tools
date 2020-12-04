@@ -27,12 +27,12 @@ public class Type_factory__o_k_w_c_k_c_e_MultiPageEditorContainerViewImpl__quals
     final MultiPageEditorContainerViewImpl instance = new MultiPageEditorContainerViewImpl(_translationService_0);
     registerDependentScopedReference(instance, _translationService_0);
     setIncompleteInstance(instance);
-    final MultiPageEditorViewImpl MultiPageEditorImpl_view = (MultiPageEditorViewImpl) contextManager.getInstance("Type_factory__o_u_c_v_p_m_MultiPageEditorViewImpl__quals__j_e_i_Any_o_u_c_w_w_m_Multiple");
-    registerDependentScopedReference(instance, MultiPageEditorImpl_view);
-    MultiPageEditorImpl_MultiPageEditorViewImpl_view(instance, MultiPageEditorImpl_view);
     final Event MultiPageEditorImpl_selectedPageEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { MultiPageEditorSelectedPageEvent.class }, new Annotation[] { });
     registerDependentScopedReference(instance, MultiPageEditorImpl_selectedPageEvent);
     MultiPageEditorImpl_Event_selectedPageEvent(instance, MultiPageEditorImpl_selectedPageEvent);
+    final MultiPageEditorViewImpl MultiPageEditorImpl_view = (MultiPageEditorViewImpl) contextManager.getInstance("Type_factory__o_u_c_v_p_m_MultiPageEditorViewImpl__quals__j_e_i_Any_o_u_c_w_w_m_Multiple");
+    registerDependentScopedReference(instance, MultiPageEditorImpl_view);
+    MultiPageEditorImpl_MultiPageEditorViewImpl_view(instance, MultiPageEditorImpl_view);
     setIncompleteInstance(null);
     return instance;
   }

@@ -114,12 +114,12 @@ public class Type_factory__o_k_w_c_d_c_e_d_DRDContextMenuService__quals__j_e_i_A
   }
 
   public DRDContextMenuService createInstance(final ContextManager contextManager) {
-    final Event<DMNDiagramSelected> _selectedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DMNDiagramSelected.class }, new Annotation[] { });
-    final DMNDiagramUtils _dmnDiagramUtils_3 = (DMNDiagramUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_a_g_DMNDiagramUtils__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDeepCloneProcess _dmnDeepCloneProcess_4 = (DMNDeepCloneProcess) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_c_DMNDeepCloneProcess__quals__j_e_i_Any_j_e_i_Default");
     final FactoryManager _factoryManager_1 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDeepCloneProcess _dmnDeepCloneProcess_4 = (DMNDeepCloneProcess) contextManager.getInstance("Type_factory__o_k_w_c_d_c_c_c_DMNDeepCloneProcess__quals__j_e_i_Any_j_e_i_Default");
+    final Event<DMNDiagramSelected> _selectedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DMNDiagramSelected.class }, new Annotation[] { });
     final DMNUnmarshaller _dmnUnmarshaller_5 = (DMNUnmarshaller) contextManager.getInstance("Type_factory__o_k_w_c_d_c_m_u_DMNUnmarshaller__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession _dmnDiagramsSession_0 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramUtils _dmnDiagramUtils_3 = (DMNDiagramUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_a_g_DMNDiagramUtils__quals__j_e_i_Any_j_e_i_Default");
     final DRDContextMenuService instance = new DRDContextMenuService(_dmnDiagramsSession_0, _factoryManager_1, _selectedEvent_2, _dmnDiagramUtils_3, _dmnDeepCloneProcess_4, _dmnUnmarshaller_5);
     registerDependentScopedReference(instance, _selectedEvent_2);
     registerDependentScopedReference(instance, _dmnDiagramUtils_3);

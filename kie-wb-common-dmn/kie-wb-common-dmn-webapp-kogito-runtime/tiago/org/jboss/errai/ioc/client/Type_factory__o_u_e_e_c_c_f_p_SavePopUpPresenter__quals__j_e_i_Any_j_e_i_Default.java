@@ -17,11 +17,11 @@ public class Type_factory__o_u_e_e_c_c_f_p_SavePopUpPresenter__quals__j_e_i_Any_
   }
 
   public SavePopUpPresenter createInstance(final ContextManager contextManager) {
-    final View _view_0 = (SavePopUpView) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_SavePopUpView__quals__j_e_i_Any_j_e_i_Default");
     final Event<SaveInProgressEvent> _saveInProgressEvent_1 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { SaveInProgressEvent.class }, new Annotation[] { });
+    final View _view_0 = (SavePopUpView) contextManager.getInstance("Type_factory__o_u_e_e_c_c_f_p_SavePopUpView__quals__j_e_i_Any_j_e_i_Default");
     final SavePopUpPresenter instance = new SavePopUpPresenter(_view_0, _saveInProgressEvent_1);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _saveInProgressEvent_1);
+    registerDependentScopedReference(instance, _view_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

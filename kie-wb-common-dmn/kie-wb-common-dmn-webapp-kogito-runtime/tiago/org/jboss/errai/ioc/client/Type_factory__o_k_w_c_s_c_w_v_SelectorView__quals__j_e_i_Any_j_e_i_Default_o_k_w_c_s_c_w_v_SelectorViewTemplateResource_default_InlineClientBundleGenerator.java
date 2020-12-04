@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_s_c_w_v_SelectorView__quals__j_e_i_Any_j_e_i_
   private static Type_factory__o_k_w_c_s_c_w_v_SelectorView__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_s_c_w_v_SelectorViewTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_s_c_w_v_SelectorView__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_s_c_w_v_SelectorViewTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/stunner/kie-wb-common-stunner-widgets/7.47.0-SNAPSHOT/kie-wb-common-stunner-widgets-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/stunner/client/widgets/views/SelectorView.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-widgets/target/kie-wb-common-stunner-widgets-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/stunner/client/widgets/views/SelectorView.html
       public String getText() {
         return "<div class=\"row\" data-field=\"selector-root\">\n    <div class=\"col-md-11\">\n        <select class=\"form-control\" data-field=\"selector-input\"></select>\n    </div>\n</div>";
       }

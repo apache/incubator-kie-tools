@@ -23,10 +23,8 @@ public class Type_factory__o_k_w_c_s_c_w_p_DefaultPaletteFactory__quals__j_e_i_A
   }
 
   public DefaultPaletteFactory createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final Event<BuildCanvasShapeEvent> _buildCanvasShapeEvent_3 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { BuildCanvasShapeEvent.class }, new Annotation[] { });
     final Event<CanvasShapeDragStartEvent> _canvasShapeDragStartEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasShapeDragStartEvent.class }, new Annotation[] { });
-    final Event<CanvasShapeDragUpdateEvent> _canvasShapeDragUpdateEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasShapeDragUpdateEvent.class }, new Annotation[] { });
     final ManagedInstance<DefaultPaletteWidget> _palettes_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultPaletteWidget.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -35,6 +33,7 @@ public class Type_factory__o_k_w_c_s_c_w_p_DefaultPaletteFactory__quals__j_e_i_A
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<PaletteDefinitionBuilder> _paletteDefinitionBuilders_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { PaletteDefinitionBuilder.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -43,12 +42,13 @@ public class Type_factory__o_k_w_c_s_c_w_p_DefaultPaletteFactory__quals__j_e_i_A
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final Event<CanvasShapeDragUpdateEvent> _canvasShapeDragUpdateEvent_5 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasShapeDragUpdateEvent.class }, new Annotation[] { });
     final DefaultPaletteFactory instance = new DefaultPaletteFactory(_definitionUtils_0, _paletteDefinitionBuilders_1, _palettes_2, _buildCanvasShapeEvent_3, _canvasShapeDragStartEvent_4, _canvasShapeDragUpdateEvent_5);
     registerDependentScopedReference(instance, _buildCanvasShapeEvent_3);
     registerDependentScopedReference(instance, _canvasShapeDragStartEvent_4);
-    registerDependentScopedReference(instance, _canvasShapeDragUpdateEvent_5);
     registerDependentScopedReference(instance, _palettes_2);
     registerDependentScopedReference(instance, _paletteDefinitionBuilders_1);
+    registerDependentScopedReference(instance, _canvasShapeDragUpdateEvent_5);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

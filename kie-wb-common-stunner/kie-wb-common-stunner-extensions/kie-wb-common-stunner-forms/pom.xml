@@ -32,7 +32,6 @@
 
   <modules>
     <module>kie-wb-common-stunner-forms-api</module>
-    <module>kie-wb-common-stunner-forms-backend</module>
     <module>kie-wb-common-stunner-forms-client</module>
   </modules>
 

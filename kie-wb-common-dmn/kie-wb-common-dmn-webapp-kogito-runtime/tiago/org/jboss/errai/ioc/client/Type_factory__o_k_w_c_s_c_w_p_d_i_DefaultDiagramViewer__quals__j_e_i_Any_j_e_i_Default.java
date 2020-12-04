@@ -31,8 +31,24 @@ public class Type_factory__o_k_w_c_s_c_w_p_d_i_DefaultDiagramViewer__quals__j_e_
   }
 
   public DefaultDiagramViewer createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<MediatorsControl<AbstractCanvas>> _mediatorsControlInstances_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { MediatorsControl.class }, new Annotation[] { new Any() {
+    final ManagedInstance<CanvasPanel> _canvasPanelInstances_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CanvasPanel.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
+    final StunnerPreferencesRegistries _preferencesRegistries_7 = (StunnerPreferencesRegistries) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_p_StunnerPreferencesRegistries__quals__j_e_i_Any_j_e_i_Default");
+    final ManagedInstance<AbstractCanvas> _canvasInstances_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AbstractCanvas.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+    } });
+    final ManagedInstance<AbstractCanvasHandler> _canvasHandlerInstances_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AbstractCanvasHandler.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
         }
@@ -55,8 +71,9 @@ public class Type_factory__o_k_w_c_s_c_w_p_d_i_DefaultDiagramViewer__quals__j_e_
           return "@org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection()";
         }
     } });
+    final DefinitionUtils _definitionUtils_0 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final WidgetWrapperView _view_6 = (WidgetWrapperViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_WidgetWrapperViewImpl__quals__j_e_i_Any_j_e_i_Default");
-    final ManagedInstance<CanvasPanel> _canvasPanelInstances_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CanvasPanel.class }, new Annotation[] { new Any() {
+    final ManagedInstance<MediatorsControl<AbstractCanvas>> _mediatorsControlInstances_4 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { MediatorsControl.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
         }
@@ -64,30 +81,13 @@ public class Type_factory__o_k_w_c_s_c_w_p_d_i_DefaultDiagramViewer__quals__j_e_
           return "@javax.enterprise.inject.Any()";
         }
     } });
-    final ManagedInstance<AbstractCanvas> _canvasInstances_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AbstractCanvas.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
-    final ManagedInstance<AbstractCanvasHandler> _canvasHandlerInstances_3 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { AbstractCanvasHandler.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-    } });
-    final StunnerPreferencesRegistries _preferencesRegistries_7 = (StunnerPreferencesRegistries) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_p_StunnerPreferencesRegistries__quals__j_e_i_Any_j_e_i_Default");
     final DefaultDiagramViewer instance = new DefaultDiagramViewer(_definitionUtils_0, _canvasInstances_1, _canvasPanelInstances_2, _canvasHandlerInstances_3, _mediatorsControlInstances_4, _selectionControlInstances_5, _view_6, _preferencesRegistries_7);
-    registerDependentScopedReference(instance, _mediatorsControlInstances_4);
-    registerDependentScopedReference(instance, _selectionControlInstances_5);
-    registerDependentScopedReference(instance, _view_6);
     registerDependentScopedReference(instance, _canvasPanelInstances_2);
     registerDependentScopedReference(instance, _canvasInstances_1);
     registerDependentScopedReference(instance, _canvasHandlerInstances_3);
+    registerDependentScopedReference(instance, _selectionControlInstances_5);
+    registerDependentScopedReference(instance, _view_6);
+    registerDependentScopedReference(instance, _mediatorsControlInstances_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

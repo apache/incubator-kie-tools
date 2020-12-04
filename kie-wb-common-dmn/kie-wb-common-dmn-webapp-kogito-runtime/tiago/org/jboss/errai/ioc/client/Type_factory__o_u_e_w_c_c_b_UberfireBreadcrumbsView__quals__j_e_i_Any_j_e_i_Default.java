@@ -46,12 +46,12 @@ public class Type_factory__o_u_e_w_c_c_b_UberfireBreadcrumbsView__quals__j_e_i_A
   public UberfireBreadcrumbsView createInstance(final ContextManager contextManager) {
     final UberfireBreadcrumbsView instance = new UberfireBreadcrumbsView();
     setIncompleteInstance(instance);
-    final Elemental2DomUtil UberfireBreadcrumbsView_elemental2DomUtil = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, UberfireBreadcrumbsView_elemental2DomUtil);
-    UberfireBreadcrumbsView_Elemental2DomUtil_elemental2DomUtil(instance, UberfireBreadcrumbsView_elemental2DomUtil);
     final HTMLOListElement UberfireBreadcrumbsView_breadcrumbs = (HTMLOListElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLOListElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, UberfireBreadcrumbsView_breadcrumbs);
     UberfireBreadcrumbsView_HTMLOListElement_breadcrumbs(instance, UberfireBreadcrumbsView_breadcrumbs);
+    final Elemental2DomUtil UberfireBreadcrumbsView_elemental2DomUtil = (Elemental2DomUtil) contextManager.getInstance("Type_factory__o_j_e_c_c_d_e_Elemental2DomUtil__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, UberfireBreadcrumbsView_elemental2DomUtil);
+    UberfireBreadcrumbsView_Elemental2DomUtil_elemental2DomUtil(instance, UberfireBreadcrumbsView_elemental2DomUtil);
     final HTMLDivElement UberfireBreadcrumbsView_breadcrumbsToolbar = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, UberfireBreadcrumbsView_breadcrumbsToolbar);
     UberfireBreadcrumbsView_HTMLDivElement_breadcrumbsToolbar(instance, UberfireBreadcrumbsView_breadcrumbsToolbar);

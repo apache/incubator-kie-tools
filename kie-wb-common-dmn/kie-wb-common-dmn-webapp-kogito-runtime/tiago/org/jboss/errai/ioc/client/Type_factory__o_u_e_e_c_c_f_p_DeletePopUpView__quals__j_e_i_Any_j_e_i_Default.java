@@ -38,15 +38,15 @@ public class Type_factory__o_u_e_e_c_c_f_p_DeletePopUpView__quals__j_e_i_Any_j_e
   public DeletePopUpView createInstance(final ContextManager contextManager) {
     final DeletePopUpView instance = new DeletePopUpView();
     setIncompleteInstance(instance);
-    final TranslationService DeletePopUpView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, DeletePopUpView_translationService);
-    DeletePopUpView_TranslationService_translationService(instance, DeletePopUpView_translationService);
-    final Span DeletePopUpView_errorMessage = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, DeletePopUpView_errorMessage);
-    DeletePopUpView_Span_errorMessage(instance, DeletePopUpView_errorMessage);
     final Div DeletePopUpView_body = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DeletePopUpView_body);
     DeletePopUpView_Div_body(instance, DeletePopUpView_body);
+    final Span DeletePopUpView_errorMessage = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, DeletePopUpView_errorMessage);
+    DeletePopUpView_Span_errorMessage(instance, DeletePopUpView_errorMessage);
+    final TranslationService DeletePopUpView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, DeletePopUpView_translationService);
+    DeletePopUpView_TranslationService_translationService(instance, DeletePopUpView_translationService);
     final Paragraph DeletePopUpView_bodyText = (Paragraph) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Paragraph__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DeletePopUpView_bodyText);
     DeletePopUpView_Paragraph_bodyText(instance, DeletePopUpView_bodyText);

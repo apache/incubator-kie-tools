@@ -97,11 +97,11 @@ public class Type_factory__o_u_e_p_c_a_AdminPagePerspective__quals__j_e_i_Any_j_
   public AdminPagePerspective createInstance(final ContextManager contextManager) {
     final AdminPagePerspective instance = new AdminPagePerspective();
     setIncompleteInstance(instance);
-    final PlaceManagerImpl AdminPagePerspective_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
-    AdminPagePerspective_PlaceManager_placeManager(instance, AdminPagePerspective_placeManager);
     final TranslationService AdminPagePerspective_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, AdminPagePerspective_translationService);
     AdminPagePerspective_TranslationService_translationService(instance, AdminPagePerspective_translationService);
+    final PlaceManagerImpl AdminPagePerspective_placeManager = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    AdminPagePerspective_PlaceManager_placeManager(instance, AdminPagePerspective_placeManager);
     setIncompleteInstance(null);
     return instance;
   }

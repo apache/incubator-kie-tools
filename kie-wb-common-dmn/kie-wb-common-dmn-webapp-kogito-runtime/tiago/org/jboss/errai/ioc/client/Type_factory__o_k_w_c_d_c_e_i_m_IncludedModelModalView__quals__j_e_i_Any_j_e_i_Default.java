@@ -46,20 +46,20 @@ public class Type_factory__o_k_w_c_d_c_e_i_m_IncludedModelModalView__quals__j_e_
 
   public IncludedModelModalView createInstance(final ContextManager contextManager) {
     final HTMLDivElement _header_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _body_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLInputElement _modelNameInput_4 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _cancelButton_6 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _includeButton_5 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _footer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _dropdown_3 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLInputElement _modelNameInput_4 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _includeButton_5 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _body_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final IncludedModelModalView instance = new IncludedModelModalView(_header_0, _body_1, _footer_2, _dropdown_3, _modelNameInput_4, _includeButton_5, _cancelButton_6);
     registerDependentScopedReference(instance, _header_0);
-    registerDependentScopedReference(instance, _body_1);
-    registerDependentScopedReference(instance, _modelNameInput_4);
     registerDependentScopedReference(instance, _cancelButton_6);
-    registerDependentScopedReference(instance, _includeButton_5);
     registerDependentScopedReference(instance, _footer_2);
     registerDependentScopedReference(instance, _dropdown_3);
+    registerDependentScopedReference(instance, _modelNameInput_4);
+    registerDependentScopedReference(instance, _includeButton_5);
+    registerDependentScopedReference(instance, _body_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_i_m_IncludedModelModalViewTemplateResource templateForIncludedModelModalView = GWT.create(o_k_w_c_d_c_e_i_m_IncludedModelModalViewTemplateResource.class);
     Element parentElementForTemplateOfIncludedModelModalView = TemplateUtil.getRootTemplateParentElement(templateForIncludedModelModalView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/included/modal/IncludedModelModalView.html", "");

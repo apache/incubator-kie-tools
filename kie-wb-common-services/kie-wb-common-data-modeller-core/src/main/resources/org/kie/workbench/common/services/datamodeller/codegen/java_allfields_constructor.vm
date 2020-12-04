@@ -1,4 +1,0 @@
-##
-## Generate all fields constructor
-##
-$nameTool.resolveAllFieldsConstructor($currentDataObject)

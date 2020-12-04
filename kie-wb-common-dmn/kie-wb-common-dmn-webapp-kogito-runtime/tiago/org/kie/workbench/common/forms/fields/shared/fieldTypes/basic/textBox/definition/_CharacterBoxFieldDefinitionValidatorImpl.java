@@ -30,32 +30,7 @@ public class _CharacterBoxFieldDefinitionValidatorImpl extends com.google.gwt.va
           org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.CharacterBoxFieldDefinition.class,
           javax.validation.groups.Default.class);
   
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Min> maxLength_c0  = 
-      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.Min> builder()
-          .setAnnotation( 
-              new javax.validation.constraints.Min(){
-                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.Min.class; }
-                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
-                  public java.lang.Class[] groups() { return new java.lang.Class[] {};}
-                  public long value() { return 1L;}
-                  public java.lang.String message() { return "{javax.validation.constraints.Min.message}";}
-              }
-              )
-          .setAttributes(attributeBuilder()
-            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
-            .put("message", "{javax.validation.constraints.Min.message}")
-            .put("payload", new java.lang.Class[] {})
-            .put("value", 1L)
-            .build())
-          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.MinValidatorForNumber.class,org.hibernate.validator.constraints.impl.MinValidatorForString.class})
-          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
-          .setPayload(new java.lang.Class[] {})
-          .setReportAsSingleViolation(false)
-          .setElementType(java.lang.annotation.ElementType.FIELD)
-          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
-          .build();
-  
-  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Max> maxLength_c1  = 
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Max> maxLength_c0  = 
       com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.Max> builder()
           .setAnnotation( 
               new javax.validation.constraints.Max(){
@@ -73,6 +48,31 @@ public class _CharacterBoxFieldDefinitionValidatorImpl extends com.google.gwt.va
             .put("value", 1L)
             .build())
           .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.MaxValidatorForNumber.class,org.hibernate.validator.constraints.impl.MaxValidatorForString.class})
+          .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
+          .setPayload(new java.lang.Class[] {})
+          .setReportAsSingleViolation(false)
+          .setElementType(java.lang.annotation.ElementType.FIELD)
+          .setDefinedOn(com.google.gwt.validation.client.impl.ConstraintOrigin.DEFINED_LOCALLY)
+          .build();
+  
+  private final com.google.gwt.validation.client.impl.ConstraintDescriptorImpl<javax.validation.constraints.Min> maxLength_c1  = 
+      com.google.gwt.validation.client.impl.ConstraintDescriptorImpl.<javax.validation.constraints.Min> builder()
+          .setAnnotation( 
+              new javax.validation.constraints.Min(){
+                  public Class<? extends Annotation> annotationType() {  return javax.validation.constraints.Min.class; }
+                  public java.lang.Class[] payload() { return new java.lang.Class[] {};}
+                  public java.lang.Class[] groups() { return new java.lang.Class[] {};}
+                  public long value() { return 1L;}
+                  public java.lang.String message() { return "{javax.validation.constraints.Min.message}";}
+              }
+              )
+          .setAttributes(attributeBuilder()
+            .put("groups", new java.lang.Class[] {javax.validation.groups.Default.class})
+            .put("message", "{javax.validation.constraints.Min.message}")
+            .put("payload", new java.lang.Class[] {})
+            .put("value", 1L)
+            .build())
+          .setConstraintValidatorClasses(new java.lang.Class[] {org.hibernate.validator.constraints.impl.MinValidatorForNumber.class,org.hibernate.validator.constraints.impl.MinValidatorForString.class})
           .setGroups(new java.lang.Class[] {javax.validation.groups.Default.class})
           .setPayload(new java.lang.Class[] {})
           .setReportAsSingleViolation(false)
@@ -245,8 +245,8 @@ public class _CharacterBoxFieldDefinitionValidatorImpl extends com.google.gwt.va
       throw new ValidationException("TraversableResolver isReachable caused an exception", e);
     }
     if (isReachable) {
-      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.MinValidatorForNumber(), maxLength_c0, groups);
-      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.MaxValidatorForNumber(), maxLength_c1, groups);
+      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.MaxValidatorForNumber(), maxLength_c0, groups);
+      validate(myContext, violations, object, value, new org.hibernate.validator.constraints.impl.MinValidatorForNumber(), maxLength_c1, groups);
     }
   }
   

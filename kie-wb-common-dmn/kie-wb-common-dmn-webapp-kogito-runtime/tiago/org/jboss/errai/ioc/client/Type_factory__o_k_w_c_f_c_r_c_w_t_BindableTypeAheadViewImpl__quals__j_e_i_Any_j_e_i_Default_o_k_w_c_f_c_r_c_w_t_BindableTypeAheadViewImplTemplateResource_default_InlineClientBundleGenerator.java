@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_f_c_r_c_w_t_BindableTypeAheadViewImpl__quals_
   private static Type_factory__o_k_w_c_f_c_r_c_w_t_BindableTypeAheadViewImpl__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_f_c_r_c_w_t_BindableTypeAheadViewImplTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_f_c_r_c_w_t_BindableTypeAheadViewImpl__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_f_c_r_c_w_t_BindableTypeAheadViewImplTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/forms/kie-wb-common-forms-common-rendering-client/7.47.0-SNAPSHOT/kie-wb-common-forms-common-rendering-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/forms/common/rendering/client/widgets/typeahead/BindableTypeAheadViewImpl.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-forms/kie-wb-common-forms-commons/kie-wb-common-forms-common-rendering/kie-wb-common-forms-common-rendering-client/target/kie-wb-common-forms-common-rendering-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/forms/common/rendering/client/widgets/typeahead/BindableTypeAheadViewImpl.html
       public String getText() {
         return "<div>\n    <div data-field=\"content\"></div>\n</div>\n";
       }

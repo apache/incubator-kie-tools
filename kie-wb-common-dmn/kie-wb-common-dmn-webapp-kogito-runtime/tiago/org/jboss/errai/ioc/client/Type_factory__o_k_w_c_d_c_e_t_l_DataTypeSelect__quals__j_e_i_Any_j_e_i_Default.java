@@ -16,13 +16,13 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_DataTypeSelect__quals__j_e_i_Any_j_
   }
 
   public DataTypeSelect createInstance(final ContextManager contextManager) {
-    final DataTypeUtils _dataTypeUtils_1 = (DataTypeUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeUtils__quals__j_e_i_Any_j_e_i_Default");
     final View _view_0 = (DataTypeSelectView) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_l_DataTypeSelectView__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeManager _dataTypeManager_2 = (DataTypeManager) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeManager__quals__j_e_i_Any_j_e_i_Default");
+    final DataTypeUtils _dataTypeUtils_1 = (DataTypeUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_e_t_c_DataTypeUtils__quals__j_e_i_Any_j_e_i_Default");
     final DataTypeSelect instance = new DataTypeSelect(_view_0, _dataTypeUtils_1, _dataTypeManager_2);
-    registerDependentScopedReference(instance, _dataTypeUtils_1);
     registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _dataTypeManager_2);
+    registerDependentScopedReference(instance, _dataTypeUtils_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

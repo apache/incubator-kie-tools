@@ -49,18 +49,18 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_d_i_DatePickerWrapperViewImpl__qual
   public DatePickerWrapperViewImpl createInstance(final ContextManager contextManager) {
     final DatePickerWrapperViewImpl instance = new DatePickerWrapperViewImpl();
     setIncompleteInstance(instance);
-    final Button DatePickerWrapperViewImpl_showCalendarBtn = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, DatePickerWrapperViewImpl_showCalendarBtn);
-    DatePickerWrapperViewImpl_Button_showCalendarBtn(instance, DatePickerWrapperViewImpl_showCalendarBtn);
-    final JQuery DatePickerWrapperViewImpl_jQueryPopover = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, DatePickerWrapperViewImpl_jQueryPopover);
-    DatePickerWrapperViewImpl_JQuery_jQueryPopover(instance, DatePickerWrapperViewImpl_jQueryPopover);
     final TranslationService DatePickerWrapperViewImpl_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DatePickerWrapperViewImpl_translationService);
     DatePickerWrapperViewImpl_TranslationService_translationService(instance, DatePickerWrapperViewImpl_translationService);
     final Span DatePickerWrapperViewImpl_selector = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DatePickerWrapperViewImpl_selector);
     DatePickerWrapperViewImpl_Span_selector(instance, DatePickerWrapperViewImpl_selector);
+    final JQuery DatePickerWrapperViewImpl_jQueryPopover = (JQuery) contextManager.getInstance("Producer_factory__o_u_c_v_p_w_JQueryProducer_JQuery__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, DatePickerWrapperViewImpl_jQueryPopover);
+    DatePickerWrapperViewImpl_JQuery_jQueryPopover(instance, DatePickerWrapperViewImpl_jQueryPopover);
+    final Button DatePickerWrapperViewImpl_showCalendarBtn = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, DatePickerWrapperViewImpl_showCalendarBtn);
+    DatePickerWrapperViewImpl_Button_showCalendarBtn(instance, DatePickerWrapperViewImpl_showCalendarBtn);
     final Button DatePickerWrapperViewImpl_clearBtn = (Button) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Button__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, DatePickerWrapperViewImpl_clearBtn);
     DatePickerWrapperViewImpl_Button_clearBtn(instance, DatePickerWrapperViewImpl_clearBtn);

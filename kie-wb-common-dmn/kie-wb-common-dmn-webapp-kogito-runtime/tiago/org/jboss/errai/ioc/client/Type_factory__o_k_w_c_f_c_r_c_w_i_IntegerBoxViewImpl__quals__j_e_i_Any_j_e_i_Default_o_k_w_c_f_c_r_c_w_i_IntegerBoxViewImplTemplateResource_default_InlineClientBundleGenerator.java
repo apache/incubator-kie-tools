@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_f_c_r_c_w_i_IntegerBoxViewImpl__quals__j_e_i_
   private static Type_factory__o_k_w_c_f_c_r_c_w_i_IntegerBoxViewImpl__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_f_c_r_c_w_i_IntegerBoxViewImplTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_f_c_r_c_w_i_IntegerBoxViewImpl__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_f_c_r_c_w_i_IntegerBoxViewImplTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/forms/kie-wb-common-forms-common-rendering-client/7.47.0-SNAPSHOT/kie-wb-common-forms-common-rendering-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/forms/common/rendering/client/widgets/integerBox/IntegerBoxViewImpl.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-forms/kie-wb-common-forms-commons/kie-wb-common-forms-common-rendering/kie-wb-common-forms-common-rendering-client/target/kie-wb-common-forms-common-rendering-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/forms/common/rendering/client/widgets/integerBox/IntegerBoxViewImpl.html
       public String getText() {
         return "<div>\n    <input type=\"text\"\n           class=\"form-control\"\n           data-field=\"input\"/>\n</div>";
       }

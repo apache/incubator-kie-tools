@@ -19,9 +19,9 @@ public class Type_factory__o_k_w_c_d_c_c_c_t_DMNEditBusinessKnowledgeModelToolbo
   }
 
   public DMNEditBusinessKnowledgeModelToolboxAction createInstance(final ContextManager contextManager) {
+    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final ClientTranslationService _translationService_1 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final Event<EditExpressionEvent> _editExpressionEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { EditExpressionEvent.class }, new Annotation[] { });
-    final SessionManager _sessionManager_0 = (GlobalSessionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_GlobalSessionManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNEditBusinessKnowledgeModelToolboxAction instance = new DMNEditBusinessKnowledgeModelToolboxAction(_sessionManager_0, _translationService_1, _editExpressionEvent_2);
     registerDependentScopedReference(instance, _editExpressionEvent_2);
     setIncompleteInstance(instance);

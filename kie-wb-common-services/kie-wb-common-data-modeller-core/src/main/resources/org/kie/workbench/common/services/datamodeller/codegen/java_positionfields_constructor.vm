@@ -1,4 +1,0 @@
-##
-## Generate constructor for @Position marked fields
-##
-$nameTool.resolvePositionFieldsConstructor($currentDataObject)

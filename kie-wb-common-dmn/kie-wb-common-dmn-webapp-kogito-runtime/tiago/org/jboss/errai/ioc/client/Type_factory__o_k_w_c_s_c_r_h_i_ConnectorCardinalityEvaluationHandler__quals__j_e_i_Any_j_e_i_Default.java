@@ -112,8 +112,8 @@ public class Type_factory__o_k_w_c_s_c_r_h_i_ConnectorCardinalityEvaluationHandl
   }
 
   public ConnectorCardinalityEvaluationHandler createInstance(final ContextManager contextManager) {
-    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final EdgeCardinalityEvaluationHandler _edgeCardinalityEvaluationHandler_1 = (EdgeCardinalityEvaluationHandler) contextManager.getInstance("Type_factory__o_k_w_c_s_c_r_h_i_EdgeCardinalityEvaluationHandler__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final ConnectorCardinalityEvaluationHandler instance = new ConnectorCardinalityEvaluationHandler(_definitionManager_0, _edgeCardinalityEvaluationHandler_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

@@ -146,9 +146,9 @@ public class Type_factory__o_k_w_c_s_c_l_d_DefinitionLookupManagerImpl__quals__j
   }
 
   public DefinitionLookupManagerImpl createInstance(final ContextManager contextManager) {
+    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final FactoryManager _factoryManager_1 = (ClientFactoryManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientFactoryManager__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionsCacheRegistry _registry_2 = (DefinitionsCacheRegistry) contextManager.getInstance("Producer_factory__o_k_w_c_s_c_r_i_DefinitionsCacheRegistry__quals__j_e_i_Any_j_e_i_Default");
-    final DefinitionManager _definitionManager_0 = (ClientDefinitionManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_a_ClientDefinitionManager__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionLookupManagerImpl instance = new DefinitionLookupManagerImpl(_definitionManager_0, _factoryManager_1, _registry_2);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

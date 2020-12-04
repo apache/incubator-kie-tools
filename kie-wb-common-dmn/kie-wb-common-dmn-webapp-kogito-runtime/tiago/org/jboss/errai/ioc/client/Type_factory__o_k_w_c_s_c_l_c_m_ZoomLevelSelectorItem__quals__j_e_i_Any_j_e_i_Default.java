@@ -45,15 +45,15 @@ public class Type_factory__o_k_w_c_s_c_l_c_m_ZoomLevelSelectorItem__quals__j_e_i
   public ZoomLevelSelectorItem createInstance(final ContextManager contextManager) {
     final ZoomLevelSelectorItem instance = new ZoomLevelSelectorItem();
     setIncompleteInstance(instance);
-    final ListItem ZoomLevelSelectorItem_levelItem = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, ZoomLevelSelectorItem_levelItem);
-    ZoomLevelSelectorItem_ListItem_levelItem(instance, ZoomLevelSelectorItem_levelItem);
     final Anchor ZoomLevelSelectorItem_levelItemAnchor = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ZoomLevelSelectorItem_levelItemAnchor);
     ZoomLevelSelectorItem_Anchor_levelItemAnchor(instance, ZoomLevelSelectorItem_levelItemAnchor);
     final Span ZoomLevelSelectorItem_levelItemText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, ZoomLevelSelectorItem_levelItemText);
     ZoomLevelSelectorItem_Span_levelItemText(instance, ZoomLevelSelectorItem_levelItemText);
+    final ListItem ZoomLevelSelectorItem_levelItem = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, ZoomLevelSelectorItem_levelItem);
+    ZoomLevelSelectorItem_ListItem_levelItem(instance, ZoomLevelSelectorItem_levelItem);
     o_k_w_c_s_c_l_c_m_ZoomLevelSelectorItemTemplateResource templateForZoomLevelSelectorItem = GWT.create(o_k_w_c_s_c_l_c_m_ZoomLevelSelectorItemTemplateResource.class);
     Element parentElementForTemplateOfZoomLevelSelectorItem = TemplateUtil.getRootTemplateParentElement(templateForZoomLevelSelectorItem.getContents().getText(), "org/kie/workbench/common/stunner/client/lienzo/components/mediators/ZoomLevelSelectorItem.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/client/lienzo/components/mediators/ZoomLevelSelectorItem.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfZoomLevelSelectorItem));

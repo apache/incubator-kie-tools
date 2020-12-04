@@ -39,21 +39,6 @@ public class Type_factory__o_k_w_c_d_c_c_c_t_DMNToolboxControl__quals__j_e_i_Any
   }
 
   public DMNToolboxControl createInstance(final ContextManager contextManager) {
-    final ManagedInstance<ActionsToolboxFactory> _commonActionsToolboxFactories_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxFactory.class }, new Annotation[] { new Any() {
-        public Class annotationType() {
-          return Any.class;
-        }
-        public String toString() {
-          return "@javax.enterprise.inject.Any()";
-        }
-      }, new DMNCommonActionsToolbox() {
-        public Class annotationType() {
-          return DMNCommonActionsToolbox.class;
-        }
-        public String toString() {
-          return "@org.kie.workbench.common.dmn.client.canvas.controls.toolbox.DMNCommonActionsToolbox()";
-        }
-    } });
     final ManagedInstance<ActionsToolboxFactory> _flowActionsToolboxFactories_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxFactory.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -70,9 +55,24 @@ public class Type_factory__o_k_w_c_d_c_c_c_t_DMNToolboxControl__quals__j_e_i_Any
         }
     } });
     final ReadOnlyProvider _readOnlyProvider_2 = (ReadOnlyProviderImpl) contextManager.getInstance("Type_factory__o_k_w_c_d_c_a_ReadOnlyProviderImpl__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final ManagedInstance<ActionsToolboxFactory> _commonActionsToolboxFactories_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { ActionsToolboxFactory.class }, new Annotation[] { new Any() {
+        public Class annotationType() {
+          return Any.class;
+        }
+        public String toString() {
+          return "@javax.enterprise.inject.Any()";
+        }
+      }, new DMNCommonActionsToolbox() {
+        public Class annotationType() {
+          return DMNCommonActionsToolbox.class;
+        }
+        public String toString() {
+          return "@org.kie.workbench.common.dmn.client.canvas.controls.toolbox.DMNCommonActionsToolbox()";
+        }
+    } });
     final DMNToolboxControl instance = new DMNToolboxControl(_flowActionsToolboxFactories_0, _commonActionsToolboxFactories_1, _readOnlyProvider_2);
-    registerDependentScopedReference(instance, _commonActionsToolboxFactories_1);
     registerDependentScopedReference(instance, _flowActionsToolboxFactories_0);
+    registerDependentScopedReference(instance, _commonActionsToolboxFactories_1);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "onCanvasSelectionEventSubscription", CDI.subscribeLocal("org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent", new AbstractCDIEventCallback<CanvasSelectionEvent>() {
       public void fireEvent(final CanvasSelectionEvent event) {

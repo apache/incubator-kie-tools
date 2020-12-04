@@ -33,8 +33,8 @@ public class Type_factory__o_k_w_c_d_c_w_t_DMNPerformAutomaticLayoutCommand__qua
 
   public DMNPerformAutomaticLayoutCommand createInstance(final ContextManager contextManager) {
     final Event<LockRequiredEvent> _locker_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LockRequiredEvent.class }, new Annotation[] { });
-    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNLayoutHelper _layoutHelper_0 = (DMNLayoutHelper) contextManager.getInstance("Type_factory__o_k_w_c_d_c_w_t_DMNLayoutHelper__quals__j_e_i_Any_o_k_w_c_d_a_q_DMNEditor");
+    final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
     final DMNPerformAutomaticLayoutCommand instance = new DMNPerformAutomaticLayoutCommand(_layoutHelper_0, _sessionCommandManager_1, _locker_2);
     registerDependentScopedReference(instance, _locker_2);
     registerDependentScopedReference(instance, _layoutHelper_0);

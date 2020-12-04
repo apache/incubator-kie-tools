@@ -23,15 +23,15 @@ public class Type_factory__o_u_c_w_w_d_CompassDropController__quals__j_e_i_Any_j
   public CompassDropController createInstance(final ContextManager contextManager) {
     final CompassDropController instance = new CompassDropController();
     setIncompleteInstance(instance);
-    final Event CompassDropController_workbenchPartDroppedEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DropPlaceEvent.class }, new Annotation[] { });
-    registerDependentScopedReference(instance, CompassDropController_workbenchPartDroppedEvent);
-    CompassDropController_Event_workbenchPartDroppedEvent(instance, CompassDropController_workbenchPartDroppedEvent);
     final PanelManagerImpl CompassDropController_panelManager = (PanelManagerImpl) contextManager.getInstance("Type_factory__o_u_c_w_PanelManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     CompassDropController_PanelManager_panelManager(instance, CompassDropController_panelManager);
     final WorkbenchDragAndDropManager CompassDropController_dndManager = (WorkbenchDragAndDropManager) contextManager.getInstance("Type_factory__o_u_c_w_w_d_WorkbenchDragAndDropManager__quals__j_e_i_Any_j_e_i_Default");
     CompassDropController_WorkbenchDragAndDropManager_dndManager(instance, CompassDropController_dndManager);
     final CompassWidgetImpl CompassDropController_compass = (CompassWidgetImpl) contextManager.getInstance("Type_factory__o_u_c_v_p_d_CompassWidgetImpl__quals__j_e_i_Any_j_e_i_Default");
     CompassDropController_CompassWidget_compass(instance, CompassDropController_compass);
+    final Event CompassDropController_workbenchPartDroppedEvent = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DropPlaceEvent.class }, new Annotation[] { });
+    registerDependentScopedReference(instance, CompassDropController_workbenchPartDroppedEvent);
+    CompassDropController_Event_workbenchPartDroppedEvent(instance, CompassDropController_workbenchPartDroppedEvent);
     setIncompleteInstance(null);
     return instance;
   }
@@ -44,20 +44,20 @@ public class Type_factory__o_u_c_w_w_d_CompassDropController__quals__j_e_i_Any_j
     instance.@org.uberfire.client.workbench.widgets.dnd.CompassDropController::dndManager = value;
   }-*/;
 
-  native static Event CompassDropController_Event_workbenchPartDroppedEvent(CompassDropController instance) /*-{
-    return instance.@org.uberfire.client.workbench.widgets.dnd.CompassDropController::workbenchPartDroppedEvent;
-  }-*/;
-
-  native static void CompassDropController_Event_workbenchPartDroppedEvent(CompassDropController instance, Event<DropPlaceEvent> value) /*-{
-    instance.@org.uberfire.client.workbench.widgets.dnd.CompassDropController::workbenchPartDroppedEvent = value;
-  }-*/;
-
   native static PanelManager CompassDropController_PanelManager_panelManager(CompassDropController instance) /*-{
     return instance.@org.uberfire.client.workbench.widgets.dnd.CompassDropController::panelManager;
   }-*/;
 
   native static void CompassDropController_PanelManager_panelManager(CompassDropController instance, PanelManager value) /*-{
     instance.@org.uberfire.client.workbench.widgets.dnd.CompassDropController::panelManager = value;
+  }-*/;
+
+  native static Event CompassDropController_Event_workbenchPartDroppedEvent(CompassDropController instance) /*-{
+    return instance.@org.uberfire.client.workbench.widgets.dnd.CompassDropController::workbenchPartDroppedEvent;
+  }-*/;
+
+  native static void CompassDropController_Event_workbenchPartDroppedEvent(CompassDropController instance, Event<DropPlaceEvent> value) /*-{
+    instance.@org.uberfire.client.workbench.widgets.dnd.CompassDropController::workbenchPartDroppedEvent = value;
   }-*/;
 
   native static CompassWidget CompassDropController_CompassWidget_compass(CompassDropController instance) /*-{

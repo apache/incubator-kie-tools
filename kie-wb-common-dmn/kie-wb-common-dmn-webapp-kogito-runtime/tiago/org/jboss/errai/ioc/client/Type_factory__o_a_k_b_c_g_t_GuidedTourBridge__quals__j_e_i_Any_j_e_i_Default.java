@@ -116,8 +116,8 @@ public class Type_factory__o_a_k_b_c_g_t_GuidedTourBridge__quals__j_e_i_Any_j_e_
   }
 
   public GuidedTourBridge createInstance(final ContextManager contextManager) {
-    final GuidedTourService _guidedTourService_0 = (GuidedTourService) contextManager.getInstance("Producer_factory__o_a_k_b_c_g_t_s_GuidedTourService__quals__j_e_i_Any_j_e_i_Default");
     final GlobalHTMLObserver _globalHTMLObserver_1 = (GlobalHTMLObserver) contextManager.getInstance("Type_factory__o_a_k_b_c_g_t_o_GlobalHTMLObserver__quals__j_e_i_Any_j_e_i_Default");
+    final GuidedTourService _guidedTourService_0 = (GuidedTourService) contextManager.getInstance("Producer_factory__o_a_k_b_c_g_t_s_GuidedTourService__quals__j_e_i_Any_j_e_i_Default");
     final GuidedTourBridge instance = new GuidedTourBridge(_guidedTourService_0, _globalHTMLObserver_1);
     registerDependentScopedReference(instance, _globalHTMLObserver_1);
     setIncompleteInstance(instance);

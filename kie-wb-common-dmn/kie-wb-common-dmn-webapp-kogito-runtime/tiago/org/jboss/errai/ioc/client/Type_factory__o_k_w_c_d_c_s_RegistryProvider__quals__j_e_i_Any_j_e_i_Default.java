@@ -91,8 +91,8 @@ public class Type_factory__o_k_w_c_d_c_s_RegistryProvider__quals__j_e_i_Any_j_e_
   }
 
   public RegistryProvider createInstance(final ContextManager contextManager) {
-    final GraphsProvider _graphsProvider_1 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<CommandRegistryHolder> _registryHolders_0 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { CommandRegistryHolder.class }, new Annotation[] { });
+    final GraphsProvider _graphsProvider_1 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final RegistryProvider instance = new RegistryProvider(_registryHolders_0, _graphsProvider_1);
     registerDependentScopedReference(instance, _registryHolders_0);
     setIncompleteInstance(instance);

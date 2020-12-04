@@ -23,18 +23,18 @@ public class Type_factory__o_k_w_c_d_c_d_n_f_DecisionNavigatorBaseItemFactory__q
   }
 
   public DecisionNavigatorBaseItemFactory createInstance(final ContextManager contextManager) {
-    final LazyCanvasFocusUtils _lazyCanvasFocusUtils_6 = (LazyCanvasFocusUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_c_LazyCanvasFocusUtils__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDiagramsSession _dmnDiagramsSession_5 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final TextPropertyProviderFactory _textPropertyProviderFactory_1 = (TextPropertyProviderFactoryImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_c_a_TextPropertyProviderFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
+    final LazyCanvasFocusUtils _lazyCanvasFocusUtils_6 = (LazyCanvasFocusUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_c_LazyCanvasFocusUtils__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramsSession _dmnDiagramsSession_5 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
     final CanvasFocusUtils _canvasFocusUtils_2 = (CanvasFocusUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_c_CanvasFocusUtils__quals__j_e_i_Any_j_e_i_Default");
     final TranslationService _translationService_4 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final DecisionNavigatorNestedItemFactory _nestedItemFactory_0 = (DecisionNavigatorNestedItemFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_f_DecisionNavigatorNestedItemFactory__quals__j_e_i_Any_j_e_i_Default");
     final Event<DMNDiagramSelected> _selectedEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { DMNDiagramSelected.class }, new Annotation[] { });
+    final DecisionNavigatorNestedItemFactory _nestedItemFactory_0 = (DecisionNavigatorNestedItemFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_f_DecisionNavigatorNestedItemFactory__quals__j_e_i_Any_j_e_i_Default");
     final DecisionNavigatorBaseItemFactory instance = new DecisionNavigatorBaseItemFactory(_nestedItemFactory_0, _textPropertyProviderFactory_1, _canvasFocusUtils_2, _definitionUtils_3, _translationService_4, _dmnDiagramsSession_5, _lazyCanvasFocusUtils_6, _selectedEvent_7);
     registerDependentScopedReference(instance, _translationService_4);
-    registerDependentScopedReference(instance, _nestedItemFactory_0);
     registerDependentScopedReference(instance, _selectedEvent_7);
+    registerDependentScopedReference(instance, _nestedItemFactory_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

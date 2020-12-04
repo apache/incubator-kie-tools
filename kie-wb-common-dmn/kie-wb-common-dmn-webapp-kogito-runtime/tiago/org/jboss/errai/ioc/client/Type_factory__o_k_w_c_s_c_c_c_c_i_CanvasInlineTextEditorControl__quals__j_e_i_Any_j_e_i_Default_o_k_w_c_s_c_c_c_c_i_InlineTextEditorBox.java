@@ -36,11 +36,11 @@ public class Type_factory__o_k_w_c_s_c_c_c_c_i_CanvasInlineTextEditorControl__qu
   }
 
   public CanvasInlineTextEditorControl createInstance(final ContextManager contextManager) {
-    final FloatingView<IsWidget> _floatingView_0 = (AnimatedFloatingWidgetView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_AnimatedFloatingWidgetView__quals__j_e_i_Any_j_e_i_Default");
     final TextEditorBox<AbstractCanvasHandler, Element> _textEditorBox_1 = (InlineTextEditorBoxImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_i_InlineTextEditorBoxImpl__quals__j_e_i_Any_o_k_w_c_s_c_c_c_c_i_InlineTextEditorBox");
+    final FloatingView<IsWidget> _floatingView_0 = (AnimatedFloatingWidgetView) contextManager.getInstance("Type_factory__o_k_w_c_s_c_w_v_AnimatedFloatingWidgetView__quals__j_e_i_Any_j_e_i_Default");
     final CanvasInlineTextEditorControl instance = new CanvasInlineTextEditorControl(_floatingView_0, _textEditorBox_1);
-    registerDependentScopedReference(instance, _floatingView_0);
     registerDependentScopedReference(instance, _textEditorBox_1);
+    registerDependentScopedReference(instance, _floatingView_0);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

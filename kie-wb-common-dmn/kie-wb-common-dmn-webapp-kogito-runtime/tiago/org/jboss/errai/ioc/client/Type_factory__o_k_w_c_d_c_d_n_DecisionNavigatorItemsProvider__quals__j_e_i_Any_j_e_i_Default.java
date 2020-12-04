@@ -80,8 +80,8 @@ public class Type_factory__o_k_w_c_d_c_d_n_DecisionNavigatorItemsProvider__quals
 
   public DecisionNavigatorItemsProvider createInstance(final ContextManager contextManager) {
     final DecisionNavigatorItemFactory _itemFactory_0 = (DecisionNavigatorItemFactory) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_f_DecisionNavigatorItemFactory__quals__j_e_i_Any_j_e_i_Default");
-    final DMNDiagramUtils _dmnDiagramUtils_2 = (DMNDiagramUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_a_g_DMNDiagramUtils__quals__j_e_i_Any_j_e_i_Default");
     final DMNDiagramsSession _dmnDiagramsSession_1 = (DMNDiagramsSession) contextManager.getInstance("Type_factory__o_k_w_c_d_c_d_n_d_DMNDiagramsSession__quals__j_e_i_Any_j_e_i_Default");
+    final DMNDiagramUtils _dmnDiagramUtils_2 = (DMNDiagramUtils) contextManager.getInstance("Type_factory__o_k_w_c_d_a_g_DMNDiagramUtils__quals__j_e_i_Any_j_e_i_Default");
     final DecisionNavigatorItemsProvider instance = new DecisionNavigatorItemsProvider(_itemFactory_0, _dmnDiagramsSession_1, _dmnDiagramUtils_2);
     registerDependentScopedReference(instance, _itemFactory_0);
     registerDependentScopedReference(instance, _dmnDiagramUtils_2);

@@ -1,8 +1,0 @@
-{
-  "uuid": "driver2Id",
-  "name": "Driver2",
-  "groupId": "groupId2",
-  "artifactId": "artifactId2",
-  "version": "version2",
-  "driverClass": "Class2"
-}

@@ -44,21 +44,21 @@ public class Type_factory__o_k_w_c_d_c_d_n_i_c_DecisionComponentsView__quals__j_
   }
 
   public DecisionComponentsView createInstance(final ContextManager contextManager) {
-    final TranslationService _translationService_6 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    final HTMLDivElement _componentsCounter_5 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLSelectElement _drgElementFilter_0 = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLInputElement _termFilter_1 = (HTMLInputElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLInputElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _list_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _emptyState_3 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLSelectElement _drgElementFilter_0 = (HTMLSelectElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLSelectElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _componentsCounter_5 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _loading_4 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final TranslationService _translationService_6 = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
     final DecisionComponentsView instance = new DecisionComponentsView(_drgElementFilter_0, _termFilter_1, _list_2, _emptyState_3, _loading_4, _componentsCounter_5, _translationService_6);
-    registerDependentScopedReference(instance, _translationService_6);
-    registerDependentScopedReference(instance, _componentsCounter_5);
+    registerDependentScopedReference(instance, _drgElementFilter_0);
     registerDependentScopedReference(instance, _termFilter_1);
     registerDependentScopedReference(instance, _list_2);
     registerDependentScopedReference(instance, _emptyState_3);
-    registerDependentScopedReference(instance, _drgElementFilter_0);
+    registerDependentScopedReference(instance, _componentsCounter_5);
     registerDependentScopedReference(instance, _loading_4);
+    registerDependentScopedReference(instance, _translationService_6);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_d_n_i_c_DecisionComponentsViewTemplateResource templateForDecisionComponentsView = GWT.create(o_k_w_c_d_c_d_n_i_c_DecisionComponentsViewTemplateResource.class);
     Element parentElementForTemplateOfDecisionComponentsView = TemplateUtil.getRootTemplateParentElement(templateForDecisionComponentsView.getContents().getText(), "org/kie/workbench/common/dmn/client/docks/navigator/included/components/DecisionComponentsView.html", "");

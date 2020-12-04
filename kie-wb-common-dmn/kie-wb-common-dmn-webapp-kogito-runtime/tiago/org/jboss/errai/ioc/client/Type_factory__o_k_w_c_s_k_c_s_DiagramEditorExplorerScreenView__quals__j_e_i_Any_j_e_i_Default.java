@@ -48,12 +48,12 @@ public class Type_factory__o_k_w_c_s_k_c_s_DiagramEditorExplorerScreenView__qual
   public DiagramEditorExplorerScreenView createInstance(final ContextManager contextManager) {
     final DiagramEditorExplorerScreenView instance = new DiagramEditorExplorerScreenView();
     setIncompleteInstance(instance);
-    final FlowPanel DiagramEditorExplorerScreenView_previewPanelBody = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_g_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, DiagramEditorExplorerScreenView_previewPanelBody);
-    DiagramEditorExplorerScreenView_FlowPanel_previewPanelBody(instance, DiagramEditorExplorerScreenView_previewPanelBody);
     final FlowPanel DiagramEditorExplorerScreenView_explorerPanelBody = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_g_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, DiagramEditorExplorerScreenView_explorerPanelBody);
     DiagramEditorExplorerScreenView_FlowPanel_explorerPanelBody(instance, DiagramEditorExplorerScreenView_explorerPanelBody);
+    final FlowPanel DiagramEditorExplorerScreenView_previewPanelBody = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__o_g_c_u_g_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, DiagramEditorExplorerScreenView_previewPanelBody);
+    DiagramEditorExplorerScreenView_FlowPanel_previewPanelBody(instance, DiagramEditorExplorerScreenView_previewPanelBody);
     o_k_w_c_s_k_c_s_DiagramEditorExplorerScreenViewTemplateResource templateForDiagramEditorExplorerScreenView = GWT.create(o_k_w_c_s_k_c_s_DiagramEditorExplorerScreenViewTemplateResource.class);
     Element parentElementForTemplateOfDiagramEditorExplorerScreenView = TemplateUtil.getRootTemplateParentElement(templateForDiagramEditorExplorerScreenView.getContents().getText(), "org/kie/workbench/common/stunner/kogito/client/screens/DiagramEditorExplorerScreenView.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/stunner/kogito/client/screens/DiagramEditorExplorerScreenView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfDiagramEditorExplorerScreenView));

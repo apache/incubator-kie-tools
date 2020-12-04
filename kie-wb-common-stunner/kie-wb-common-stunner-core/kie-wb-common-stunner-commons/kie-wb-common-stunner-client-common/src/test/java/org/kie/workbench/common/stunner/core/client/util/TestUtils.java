@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.util;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -60,7 +59,7 @@ public class TestUtils {
         doAnswer(new Answer<T>() {
             public T answer(InvocationOnMock invocation) {
                 ErrorCallback callback = (ErrorCallback) invocation.getArguments()[1];
-                callback.error(mock(Message.class),
+                callback.error(mock(Object.class),
                                throwable);
                 return service;
             }

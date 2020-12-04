@@ -30,21 +30,21 @@ public class _DMNDiagramValidatorImpl extends com.google.gwt.validation.client.i
           org.kie.workbench.common.dmn.api.definition.model.DMNDiagram.class,
           javax.validation.groups.Default.class);
   
-  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl definitions_pd =
-      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
-          "definitions",
-          org.kie.workbench.common.dmn.api.definition.model.Definitions.class,
-          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl id_pd =
       new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
           "id",
           org.kie.workbench.common.dmn.api.property.dmn.Id.class,
           true,beanMetadata);
+  private final com.google.gwt.validation.client.impl.PropertyDescriptorImpl definitions_pd =
+      new com.google.gwt.validation.client.impl.PropertyDescriptorImpl(
+          "definitions",
+          org.kie.workbench.common.dmn.api.definition.model.Definitions.class,
+          true,beanMetadata);
   private final com.google.gwt.validation.client.impl.GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.DMNDiagram> beanDescriptor = 
       com.google.gwt.validation.client.impl.GwtBeanDescriptorImpl.builder(org.kie.workbench.common.dmn.api.definition.model.DMNDiagram.class)
           .setConstrained(false)
-          .put("definitions", definitions_pd)
           .put("id", id_pd)
+          .put("definitions", definitions_pd)
           .setBeanMetadata(beanMetadata)
           .build();
   
@@ -140,12 +140,12 @@ public class _DMNDiagramValidatorImpl extends com.google.gwt.validation.client.i
       String propertyName,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) throws ValidationException {
-    if (propertyName.equals("definitions")) {
-      validateProperty_getdefinitions(context, violations, object, object.getDefinitions(), false, groups);
-      validateProperty_definitions(context, violations, object, _definitions(object), false, groups);
-    } else if (propertyName.equals("id")) {
+    if (propertyName.equals("id")) {
       validateProperty_getid(context, violations, object, object.getId(), false, groups);
       validateProperty_id(context, violations, object, _id(object), false, groups);
+    } else if (propertyName.equals("definitions")) {
+      validateProperty_getdefinitions(context, violations, object, object.getDefinitions(), false, groups);
+      validateProperty_definitions(context, violations, object, _definitions(object), false, groups);
     } else  if (!ALL_PROPERTY_NAMES.contains(propertyName)) {
       throw new java.lang.IllegalArgumentException( propertyName +" is not a valid property of org.kie.workbench.common.dmn.api.definition.model.DMNDiagram");
     }
@@ -158,20 +158,7 @@ public class _DMNDiagramValidatorImpl extends com.google.gwt.validation.client.i
       Object value,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    if (propertyName.equals("definitions")) {
-      boolean valueTypeMatches = false;
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.Definitions) {
-        valueTypeMatches = true;
-        validateProperty_getdefinitions(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.Definitions) value, false, groups);
-      }
-      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.Definitions) {
-        valueTypeMatches = true;
-        validateProperty_definitions(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.Definitions) value, false, groups);
-      }
-      if(!valueTypeMatches)  {
-        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
-      }
-    } else if (propertyName.equals("id")) {
+    if (propertyName.equals("id")) {
       boolean valueTypeMatches = false;
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.Id) {
         valueTypeMatches = true;
@@ -180,6 +167,19 @@ public class _DMNDiagramValidatorImpl extends com.google.gwt.validation.client.i
       if ( value == null || value instanceof org.kie.workbench.common.dmn.api.property.dmn.Id) {
         valueTypeMatches = true;
         validateProperty_id(context, violations, null, (org.kie.workbench.common.dmn.api.property.dmn.Id) value, false, groups);
+      }
+      if(!valueTypeMatches)  {
+        throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
+      }
+    } else if (propertyName.equals("definitions")) {
+      boolean valueTypeMatches = false;
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.Definitions) {
+        valueTypeMatches = true;
+        validateProperty_getdefinitions(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.Definitions) value, false, groups);
+      }
+      if ( value == null || value instanceof org.kie.workbench.common.dmn.api.definition.model.Definitions) {
+        valueTypeMatches = true;
+        validateProperty_definitions(context, violations, null, (org.kie.workbench.common.dmn.api.definition.model.Definitions) value, false, groups);
       }
       if(!valueTypeMatches)  {
         throw new ValidationException(value.getClass() +" is not a valid type for "+ propertyName);
@@ -196,48 +196,6 @@ public class _DMNDiagramValidatorImpl extends com.google.gwt.validation.client.i
   public GwtBeanDescriptor<org.kie.workbench.common.dmn.api.definition.model.DMNDiagram> getConstraints(ValidationGroupsMetadata validationGroupsMetadata) {
     beanDescriptor.setValidationGroupsMetadata(validationGroupsMetadata);
     return beanDescriptor;
-  }
-  
-  private final <T> void validateProperty_definitions(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object,
-      final org.kie.workbench.common.dmn.api.definition.model.Definitions value,
-      boolean honorValid,
-      Class<?>... groups) {
-    final GwtValidationContext<T> myContext = context.append("definitions");
-    Node leafNode = myContext.getPath().getLeafNode();
-    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
-    boolean isReachable;
-    try {
-      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-    } catch (Exception e) {
-      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
-    }
-    if (isReachable) {
-      if (honorValid && value != null) {
-        boolean isCascadable;
-        try {
-          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
-        } catch (Exception e) {
-          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
-        }
-        if (isCascadable) {
-           if (!context.alreadyValidated(value)) {
-            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
-          }
-        }
-      }
-    }
-  }
-  
-  private final <T> void validateProperty_getdefinitions(
-      final GwtValidationContext<T> context,
-      final Set<ConstraintViolation<T>> violations,
-      org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object,
-      final org.kie.workbench.common.dmn.api.definition.model.Definitions value,
-      boolean honorValid,
-      Class<?>... groups) {
   }
   
   private final <T> void validateProperty_id(
@@ -282,25 +240,67 @@ public class _DMNDiagramValidatorImpl extends com.google.gwt.validation.client.i
       Class<?>... groups) {
   }
   
+  private final <T> void validateProperty_definitions(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object,
+      final org.kie.workbench.common.dmn.api.definition.model.Definitions value,
+      boolean honorValid,
+      Class<?>... groups) {
+    final GwtValidationContext<T> myContext = context.append("definitions");
+    Node leafNode = myContext.getPath().getLeafNode();
+    PathImpl path = myContext.getPath().getPathWithoutLeafNode();
+    boolean isReachable;
+    try {
+      isReachable = myContext.getTraversableResolver().isReachable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+    } catch (Exception e) {
+      throw new ValidationException("TraversableResolver isReachable caused an exception", e);
+    }
+    if (isReachable) {
+      if (honorValid && value != null) {
+        boolean isCascadable;
+        try {
+          isCascadable = myContext.getTraversableResolver().isCascadable(object, leafNode, myContext.getRootBeanClass(), path, java.lang.annotation.ElementType.FIELD);
+        } catch (Exception e) {
+          throw new ValidationException("TraversableResolver isCascadable caused an exception", e);
+        }
+        if (isCascadable) {
+           if (!context.alreadyValidated(value)) {
+            violations.addAll(myContext.getValidator().validate(myContext, value, groups));
+          }
+        }
+      }
+    }
+  }
+  
+  private final <T> void validateProperty_getdefinitions(
+      final GwtValidationContext<T> context,
+      final Set<ConstraintViolation<T>> violations,
+      org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object,
+      final org.kie.workbench.common.dmn.api.definition.model.Definitions value,
+      boolean honorValid,
+      Class<?>... groups) {
+  }
+  
   
   private <T> void validateAllNonInheritedProperties(
       GwtValidationContext<T> context,
       org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object,
       Set<ConstraintViolation<T>> violations,
       Class<?>... groups) {
-    validateProperty_getdefinitions(context, violations, object, object.getDefinitions(), true, groups);
-    validateProperty_definitions(context, violations, object, _definitions(object), true, groups);
     validateProperty_getid(context, violations, object, object.getId(), true, groups);
     validateProperty_id(context, violations, object, _id(object), true, groups);
+    validateProperty_getdefinitions(context, violations, object, object.getDefinitions(), true, groups);
+    validateProperty_definitions(context, violations, object, _definitions(object), true, groups);
   }
   
   // Write the wrappers after we know which are needed
-  private native org.kie.workbench.common.dmn.api.property.dmn.Id _id(org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object) /*-{
-    return object.@org.kie.workbench.common.dmn.api.definition.model.DMNDiagram::id;
-  }-*/;
-  
   private native org.kie.workbench.common.dmn.api.definition.model.Definitions _definitions(org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object) /*-{
     return object.@org.kie.workbench.common.dmn.api.definition.model.DMNDiagram::definitions;
+  }-*/;
+  
+  private native org.kie.workbench.common.dmn.api.property.dmn.Id _id(org.kie.workbench.common.dmn.api.definition.model.DMNDiagram object) /*-{
+    return object.@org.kie.workbench.common.dmn.api.definition.model.DMNDiagram::id;
   }-*/;
   
   

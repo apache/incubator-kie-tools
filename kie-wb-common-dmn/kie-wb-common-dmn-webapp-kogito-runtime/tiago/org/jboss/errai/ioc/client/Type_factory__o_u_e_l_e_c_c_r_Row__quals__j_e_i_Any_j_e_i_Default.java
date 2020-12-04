@@ -34,27 +34,27 @@ public class Type_factory__o_u_e_l_e_c_c_r_Row__quals__j_e_i_Any_j_e_i_Default e
   }
 
   public Row createInstance(final ContextManager contextManager) {
-    final Event<RowResizeEvent> _rowResizeEvent_8 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RowResizeEvent.class }, new Annotation[] { });
-    final View _view_0 = (RowView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_r_RowView__quals__j_e_i_Any_j_e_i_Default");
-    final LayoutEditorFocusController _layoutEditorFocusController_11 = (LayoutEditorFocusController) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorFocusController__quals__j_e_i_Any_j_e_i_Default");
-    final Event<ComponentDropEvent> _componentDropEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ComponentDropEvent.class }, new Annotation[] { });
-    final Instance<ComponentColumn> _columnInstance_1 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { ComponentColumn.class }, new Annotation[] { });
     final Instance<ColumnWithComponents> _columnWithComponentsInstance_2 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { ColumnWithComponents.class }, new Annotation[] { });
-    final Event<LayoutEditorElementUnselectEvent> _rowUnselectEvent_10 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementUnselectEvent.class }, new Annotation[] { });
-    final Event<ComponentRemovedEvent> _componentRemovedEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ComponentRemovedEvent.class }, new Annotation[] { });
-    final DnDManager _dndManager_3 = (DnDManager) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_DnDManager__quals__j_e_i_Any_j_e_i_Default");
-    final LayoutDragComponentHelper _layoutDragComponentHelper_4 = (LayoutDragComponentHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutDragComponentHelper__quals__j_e_i_Any_j_e_i_Default");
+    final View _view_0 = (RowView) contextManager.getInstance("Type_factory__o_u_e_l_e_c_c_r_RowView__quals__j_e_i_Any_j_e_i_Default");
     final LayoutEditorCssHelper _layoutCssHelper_5 = (LayoutEditorCssHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorCssHelper__quals__j_e_i_Any_j_e_i_Default");
+    final Instance<ComponentColumn> _columnInstance_1 = (Instance) contextManager.getContextualInstance("ContextualProvider_factory__j_e_i_Instance__quals__Universal", new Class[] { ComponentColumn.class }, new Annotation[] { });
+    final LayoutDragComponentHelper _layoutDragComponentHelper_4 = (LayoutDragComponentHelper) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutDragComponentHelper__quals__j_e_i_Any_j_e_i_Default");
+    final Event<ComponentDropEvent> _componentDropEvent_6 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ComponentDropEvent.class }, new Annotation[] { });
+    final DnDManager _dndManager_3 = (DnDManager) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_DnDManager__quals__j_e_i_Any_j_e_i_Default");
+    final Event<LayoutEditorElementUnselectEvent> _rowUnselectEvent_10 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementUnselectEvent.class }, new Annotation[] { });
+    final LayoutEditorFocusController _layoutEditorFocusController_11 = (LayoutEditorFocusController) contextManager.getInstance("Type_factory__o_u_e_l_e_c_i_LayoutEditorFocusController__quals__j_e_i_Any_j_e_i_Default");
+    final Event<RowResizeEvent> _rowResizeEvent_8 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { RowResizeEvent.class }, new Annotation[] { });
+    final Event<ComponentRemovedEvent> _componentRemovedEvent_7 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { ComponentRemovedEvent.class }, new Annotation[] { });
     final Event<LayoutEditorElementSelectEvent> _rowSelectEvent_9 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { LayoutEditorElementSelectEvent.class }, new Annotation[] { });
     final Row instance = new Row(_view_0, _columnInstance_1, _columnWithComponentsInstance_2, _dndManager_3, _layoutDragComponentHelper_4, _layoutCssHelper_5, _componentDropEvent_6, _componentRemovedEvent_7, _rowResizeEvent_8, _rowSelectEvent_9, _rowUnselectEvent_10, _layoutEditorFocusController_11);
-    registerDependentScopedReference(instance, _rowResizeEvent_8);
-    registerDependentScopedReference(instance, _view_0);
-    registerDependentScopedReference(instance, _componentDropEvent_6);
-    registerDependentScopedReference(instance, _columnInstance_1);
     registerDependentScopedReference(instance, _columnWithComponentsInstance_2);
-    registerDependentScopedReference(instance, _rowUnselectEvent_10);
-    registerDependentScopedReference(instance, _componentRemovedEvent_7);
+    registerDependentScopedReference(instance, _view_0);
+    registerDependentScopedReference(instance, _columnInstance_1);
     registerDependentScopedReference(instance, _layoutDragComponentHelper_4);
+    registerDependentScopedReference(instance, _componentDropEvent_6);
+    registerDependentScopedReference(instance, _rowUnselectEvent_10);
+    registerDependentScopedReference(instance, _rowResizeEvent_8);
+    registerDependentScopedReference(instance, _componentRemovedEvent_7);
     registerDependentScopedReference(instance, _rowSelectEvent_9);
     setIncompleteInstance(instance);
     thisInstance.setReference(instance, "resizeColumnsSubscription", CDI.subscribeLocal("org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent", new AbstractCDIEventCallback<ColumnResizeEvent>() {

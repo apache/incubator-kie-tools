@@ -49,12 +49,12 @@ public class Type_factory__o_u_e_p_c_a_AdminPageView__quals__j_e_i_Any_j_e_i_Def
     final Div AdminPageView_content = (Div) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Div__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, AdminPageView_content);
     AdminPageView_Div_content(instance, AdminPageView_content);
-    final TranslationService AdminPageView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, AdminPageView_translationService);
-    AdminPageView_TranslationService_translationService(instance, AdminPageView_translationService);
     final Heading AdminPageView_title = (Heading) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Heading__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, AdminPageView_title);
     AdminPageView_Heading_title(instance, AdminPageView_title);
+    final TranslationService AdminPageView_translationService = (TranslationService) contextManager.getInstance("Provider_factory__o_j_e_u_c_l_s_TranslationService__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, AdminPageView_translationService);
+    AdminPageView_TranslationService_translationService(instance, AdminPageView_translationService);
     o_u_e_p_c_a_AdminPageViewTemplateResource templateForAdminPageView = GWT.create(o_u_e_p_c_a_AdminPageViewTemplateResource.class);
     Element parentElementForTemplateOfAdminPageView = TemplateUtil.getRootTemplateParentElement(templateForAdminPageView.getContents().getText(), "org/uberfire/ext/preferences/client/admin/AdminPageView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/preferences/client/admin/AdminPageView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfAdminPageView));

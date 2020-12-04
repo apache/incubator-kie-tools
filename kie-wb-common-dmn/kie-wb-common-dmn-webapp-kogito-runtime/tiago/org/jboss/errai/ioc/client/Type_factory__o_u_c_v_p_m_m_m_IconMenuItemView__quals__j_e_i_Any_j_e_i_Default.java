@@ -36,12 +36,12 @@ public class Type_factory__o_u_c_v_p_m_m_m_IconMenuItemView__quals__j_e_i_Any_j_
   public IconMenuItemView createInstance(final ContextManager contextManager) {
     final IconMenuItemView instance = new IconMenuItemView();
     setIncompleteInstance(instance);
-    final Anchor IconMenuItemView_item = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, IconMenuItemView_item);
-    IconMenuItemView_Anchor_item(instance, IconMenuItemView_item);
     final Span IconMenuItemView_icon = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, IconMenuItemView_icon);
     IconMenuItemView_Span_icon(instance, IconMenuItemView_icon);
+    final Anchor IconMenuItemView_item = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, IconMenuItemView_item);
+    IconMenuItemView_Anchor_item(instance, IconMenuItemView_item);
     o_u_c_v_p_m_m_m_IconMenuItemViewTemplateResource templateForIconMenuItemView = GWT.create(o_u_c_v_p_m_m_m_IconMenuItemViewTemplateResource.class);
     Element parentElementForTemplateOfIconMenuItemView = TemplateUtil.getRootTemplateParentElement(templateForIconMenuItemView.getContents().getText(), "org/uberfire/client/views/pfly/menu/megamenu/menuitem/IconMenuItemView.html", "");
     TemplateUtil.translateTemplate("org/uberfire/client/views/pfly/menu/megamenu/menuitem/IconMenuItemView.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfIconMenuItemView));

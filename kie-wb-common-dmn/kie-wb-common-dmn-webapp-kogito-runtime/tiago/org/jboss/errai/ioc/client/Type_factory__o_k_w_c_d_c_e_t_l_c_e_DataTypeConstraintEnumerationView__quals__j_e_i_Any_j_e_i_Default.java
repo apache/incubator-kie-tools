@@ -42,12 +42,12 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_e_DataTypeConstraintEnumerationVi
   }
 
   public DataTypeConstraintEnumerationView createInstance(final ContextManager contextManager) {
-    final HTMLAnchorElement _addIcon_1 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _addButtonContainer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _addIcon_1 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _items_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DataTypeConstraintEnumerationView instance = new DataTypeConstraintEnumerationView(_items_0, _addIcon_1, _addButtonContainer_2);
-    registerDependentScopedReference(instance, _addIcon_1);
     registerDependentScopedReference(instance, _addButtonContainer_2);
+    registerDependentScopedReference(instance, _addIcon_1);
     registerDependentScopedReference(instance, _items_0);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_c_e_DataTypeConstraintEnumerationViewTemplateResource templateForDataTypeConstraintEnumerationView = GWT.create(o_k_w_c_d_c_e_t_l_c_e_DataTypeConstraintEnumerationViewTemplateResource.class);

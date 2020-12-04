@@ -1,7 +1,0 @@
-<beans>
-  <alternatives>
-    <class>org.guvnor.test.GuvnorTestAppSetup</class>
-    <class>org.guvnor.test.TestIdentityFactory</class>
-    <class>org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceImplTestUtil</class>
-  </alternatives>
-</beans>

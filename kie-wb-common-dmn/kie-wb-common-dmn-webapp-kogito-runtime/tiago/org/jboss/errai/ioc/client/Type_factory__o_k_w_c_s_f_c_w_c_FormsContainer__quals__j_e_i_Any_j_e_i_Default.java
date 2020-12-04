@@ -21,8 +21,8 @@ public class Type_factory__o_k_w_c_s_f_c_w_c_FormsContainer__quals__j_e_i_Any_j_
   }
 
   public FormsContainer createInstance(final ContextManager contextManager) {
-    final FormsContainerView _view_0 = (FormsContainerViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_w_c_FormsContainerViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final Event<FormFieldChanged> _formFieldChangedEvent_2 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { FormFieldChanged.class }, new Annotation[] { });
+    final FormsContainerView _view_0 = (FormsContainerViewImpl) contextManager.getInstance("Type_factory__o_k_w_c_s_f_c_w_c_FormsContainerViewImpl__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<FormDisplayer> _displayersInstance_1 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { FormDisplayer.class }, new Annotation[] { new Any() {
         public Class annotationType() {
           return Any.class;
@@ -32,8 +32,8 @@ public class Type_factory__o_k_w_c_s_f_c_w_c_FormsContainer__quals__j_e_i_Any_j_
         }
     } });
     final FormsContainer instance = new FormsContainer(_view_0, _displayersInstance_1, _formFieldChangedEvent_2);
-    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _formFieldChangedEvent_2);
+    registerDependentScopedReference(instance, _view_0);
     registerDependentScopedReference(instance, _displayersInstance_1);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);

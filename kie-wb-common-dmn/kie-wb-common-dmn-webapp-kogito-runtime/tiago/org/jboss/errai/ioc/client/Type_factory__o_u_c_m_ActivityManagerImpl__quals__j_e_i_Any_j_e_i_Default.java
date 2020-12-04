@@ -183,18 +183,18 @@ public class Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_D
   public ActivityManagerImpl createInstance(final ContextManager contextManager) {
     final ActivityManagerImpl instance = new ActivityManagerImpl();
     setIncompleteInstance(instance);
-    final ActivityBeansCache ActivityManagerImpl_activityBeansCache = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
-    ActivityManagerImpl_ActivityBeansCache_activityBeansCache(instance, ActivityManagerImpl_activityBeansCache);
     final DefaultAuthorizationManager ActivityManagerImpl_authzManager = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
     ActivityManagerImpl_AuthorizationManager_authzManager(instance, ActivityManagerImpl_authzManager);
     final User ActivityManagerImpl_identity = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ActivityManagerImpl_identity);
     ActivityManagerImpl_User_identity(instance, ActivityManagerImpl_identity);
+    final ActivityLifecycleErrorHandler ActivityManagerImpl_lifecycleErrorHandler = (ActivityLifecycleErrorHandler) contextManager.getInstance("Type_factory__o_u_c_m_ActivityLifecycleErrorHandler__quals__j_e_i_Any_j_e_i_Default");
+    ActivityManagerImpl_ActivityLifecycleErrorHandler_lifecycleErrorHandler(instance, ActivityManagerImpl_lifecycleErrorHandler);
     final SyncBeanManager ActivityManagerImpl_iocManager = (SyncBeanManager) contextManager.getInstance("Producer_factory__o_j_e_i_c_c_SyncBeanManager__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, ActivityManagerImpl_iocManager);
     ActivityManagerImpl_SyncBeanManager_iocManager(instance, ActivityManagerImpl_iocManager);
-    final ActivityLifecycleErrorHandler ActivityManagerImpl_lifecycleErrorHandler = (ActivityLifecycleErrorHandler) contextManager.getInstance("Type_factory__o_u_c_m_ActivityLifecycleErrorHandler__quals__j_e_i_Any_j_e_i_Default");
-    ActivityManagerImpl_ActivityLifecycleErrorHandler_lifecycleErrorHandler(instance, ActivityManagerImpl_lifecycleErrorHandler);
+    final ActivityBeansCache ActivityManagerImpl_activityBeansCache = (ActivityBeansCache) contextManager.getInstance("Type_factory__o_u_c_m_ActivityBeansCache__quals__j_e_i_Any_j_e_i_Default");
+    ActivityManagerImpl_ActivityBeansCache_activityBeansCache(instance, ActivityManagerImpl_activityBeansCache);
     setIncompleteInstance(null);
     return instance;
   }
@@ -221,20 +221,20 @@ public class Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_D
     instance.@org.uberfire.client.mvp.ActivityManagerImpl::lifecycleErrorHandler = value;
   }-*/;
 
-  native static ActivityBeansCache ActivityManagerImpl_ActivityBeansCache_activityBeansCache(ActivityManagerImpl instance) /*-{
-    return instance.@org.uberfire.client.mvp.ActivityManagerImpl::activityBeansCache;
-  }-*/;
-
-  native static void ActivityManagerImpl_ActivityBeansCache_activityBeansCache(ActivityManagerImpl instance, ActivityBeansCache value) /*-{
-    instance.@org.uberfire.client.mvp.ActivityManagerImpl::activityBeansCache = value;
-  }-*/;
-
   native static SyncBeanManager ActivityManagerImpl_SyncBeanManager_iocManager(ActivityManagerImpl instance) /*-{
     return instance.@org.uberfire.client.mvp.ActivityManagerImpl::iocManager;
   }-*/;
 
   native static void ActivityManagerImpl_SyncBeanManager_iocManager(ActivityManagerImpl instance, SyncBeanManager value) /*-{
     instance.@org.uberfire.client.mvp.ActivityManagerImpl::iocManager = value;
+  }-*/;
+
+  native static ActivityBeansCache ActivityManagerImpl_ActivityBeansCache_activityBeansCache(ActivityManagerImpl instance) /*-{
+    return instance.@org.uberfire.client.mvp.ActivityManagerImpl::activityBeansCache;
+  }-*/;
+
+  native static void ActivityManagerImpl_ActivityBeansCache_activityBeansCache(ActivityManagerImpl instance, ActivityBeansCache value) /*-{
+    instance.@org.uberfire.client.mvp.ActivityManagerImpl::activityBeansCache = value;
   }-*/;
 
   native static User ActivityManagerImpl_User_identity(ActivityManagerImpl instance) /*-{

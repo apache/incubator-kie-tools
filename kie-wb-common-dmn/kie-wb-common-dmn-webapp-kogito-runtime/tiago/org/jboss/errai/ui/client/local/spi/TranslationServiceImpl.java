@@ -11,21 +11,21 @@ public class TranslationServiceImpl extends TranslationService { public interfac
   public interface org_uberfire_ext_preferences_client_resources_i18n_Constants_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/ext/preferences/client/resources/i18n/Constants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_crud_client_resources_i18n_CrudComponentConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/crud/client/resources/i18n/CrudComponentConstants_es.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/core/client/preferences/resources/i18n/StunnerPreferencesConstants_es.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/common/rendering/client/resources/i18n/FormWidgetsConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_pt_BR_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/widgets/client/resources/i18n/KieWorkbenchWidgetsConstants_pt_BR.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/common/rendering/client/resources/i18n/FormWidgetsConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/common/rendering/client/resources/i18n/FormWidgetsConstants_ja.properties") public TextResource getContents(); }
   public interface org_uberfire_ext_editor_commons_client_resources_i18n_Constants_fr_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/ext/editor/commons/client/resources/i18n/Constants_fr.properties") public TextResource getContents(); }
   public interface org_uberfire_client_views_pfly_resources_i18n_Constants_fr_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/client/views/pfly/resources/i18n/Constants_fr.properties") public TextResource getContents(); }
   public interface org_uberfire_ext_preferences_client_resources_i18n_Constants_fr_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/ext/preferences/client/resources/i18n/Constants_fr.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/core/client/preferences/resources/i18n/StunnerPreferencesConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_zh_CN_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/widgets/client/resources/i18n/KieWorkbenchWidgetsConstants_zh_CN.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/core/client/preferences/resources/i18n/StunnerPreferencesConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/client/widgets/resources/i18n/StunnerWidgetsConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/core/resources/i18n/StunnerCoreConstants_default.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/common/rendering/client/resources/i18n/FormWidgetsConstants_fr.properties") public TextResource getContents(); }
   public interface org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/guvnor/messageconsole/client/console/resources/i18n/AlertsConstants_default.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/core/resources/i18n/StunnerCoreConstants_es.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/processing/engine/handling/resources/i18n/ProcessingEngineConstants_es.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/widgets/client/resources/i18n/KieWorkbenchWidgetsConstants_fr.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/processing/engine/handling/resources/i18n/ProcessingEngineConstants_es.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/core/resources/i18n/StunnerCoreConstants_es.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/dynamic/client/resources/i18n/FormRenderingConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/widgets/client/resources/i18n/KieWorkbenchWidgetsConstants_ja.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/dynamic/client/resources/i18n/FormRenderingConstants_es.properties") public TextResource getContents(); }
@@ -40,9 +40,9 @@ public class TranslationServiceImpl extends TranslationService { public interfac
   public interface org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/core/resources/i18n/StunnerCoreConstants_ja.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/kogito/client/resources/i18n/KogitoClientConstants_fr.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/kogito/client/resources/i18n/KogitoClientConstants_fr.properties") public TextResource getContents(); }
+  public interface org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/guvnor/messageconsole/client/console/resources/i18n/AlertsConstants_fr.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/kogito/client/resources/i18n/KogitoClientConstants_default.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/kogito/client/resources/i18n/KogitoClientConstants_default.properties") public TextResource getContents(); }
-  public interface org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/guvnor/messageconsole/client/console/resources/i18n/AlertsConstants_fr.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/client/resources/i18n/DMNClientConstants.properties") public TextResource getContents(); }
   public interface org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/guvnor/messageconsole/client/console/resources/i18n/AlertsConstants_ja.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/common/rendering/client/resources/i18n/FormWidgetsConstants_default.properties") public TextResource getContents(); }
@@ -75,18 +75,18 @@ public class TranslationServiceImpl extends TranslationService { public interfac
   public interface org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/client/widgets/resources/i18n/StunnerWidgetsConstants_default.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/kogito/client/resources/i18n/KogitoClientConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/kogito/client/resources/i18n/KogitoClientConstants.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/dynamic/client/resources/i18n/FormRenderingConstants_ja.properties") public TextResource getContents(); }
   public interface org_uberfire_client_views_pfly_resources_i18n_Constants_pt_BR_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/client/views/pfly/resources/i18n/Constants_pt_BR.properties") public TextResource getContents(); }
   public interface org_uberfire_ext_preferences_client_resources_i18n_Constants_pt_BR_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/ext/preferences/client/resources/i18n/Constants_pt_BR.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/dynamic/client/resources/i18n/FormRenderingConstants_ja.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/widgets/client/resources/i18n/KieWorkbenchWidgetsConstants_es.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/client/resources/i18n/DMNClientConstants_es.properties") public TextResource getContents(); }
   public interface org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/guvnor/common/services/project/client/preferences/resources/i18n/ProjectPreferencesConstants_fr.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/api/resources/i18n/DMNAPIConstants_ja.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/client/resources/i18n/DMNClientConstants_es.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/client/widgets/resources/i18n/StunnerWidgetsConstants_fr.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/api/resources/i18n/DMNAPIConstants_ja.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/dynamic/client/resources/i18n/FormRenderingConstants_fr.properties") public TextResource getContents(); }
   public interface org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/guvnor/common/services/project/client/preferences/resources/i18n/ProjectPreferencesConstants_es.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/client/resources/i18n/DMNClientConstants_ja.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/widgets/client/resources/i18n/KieWorkbenchWidgetsConstants_default.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/client/resources/i18n/DMNClientConstants_ja.properties") public TextResource getContents(); }
   public interface org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_properties extends MessageBundle, ClientBundle { @Source("org/guvnor/messageconsole/client/console/resources/i18n/AlertsConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/processing/engine/handling/resources/i18n/ProcessingEngineConstants.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_default_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/forms/dynamic/client/resources/i18n/FormRenderingConstants_default.properties") public TextResource getContents(); }
@@ -95,8 +95,8 @@ public class TranslationServiceImpl extends TranslationService { public interfac
   public interface org_uberfire_ext_editor_commons_client_resources_i18n_Constants_ja_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/ext/editor/commons/client/resources/i18n/Constants_ja.properties") public TextResource getContents(); }
   public interface org_uberfire_ext_preferences_client_resources_i18n_Constants_ja_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/ext/preferences/client/resources/i18n/Constants_ja.properties") public TextResource getContents(); }
   public interface org_uberfire_client_views_pfly_resources_i18n_Constants_ja_properties extends MessageBundle, ClientBundle { @Source("org/uberfire/client/views/pfly/resources/i18n/Constants_ja.properties") public TextResource getContents(); }
-  public interface org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/client/resources/i18n/DMNClientConstants_fr.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/client/widgets/resources/i18n/StunnerWidgetsConstants_ja.properties") public TextResource getContents(); }
+  public interface org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_fr_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/client/resources/i18n/DMNClientConstants_fr.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_es_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/dmn/api/resources/i18n/DMNAPIConstants_es.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_de_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/widgets/client/resources/i18n/KieWorkbenchWidgetsConstants_de.properties") public TextResource getContents(); }
   public interface org_kie_workbench_common_stunner_forms_client_resources_i18n_FormsClientConstants_ja_properties extends MessageBundle, ClientBundle { @Source("org/kie/workbench/common/stunner/forms/client/resources/i18n/FormsClientConstants_ja.properties") public TextResource getContents(); }
@@ -492,10 +492,10 @@ public class TranslationServiceImpl extends TranslationService { public interfac
     registerPropertiesBundle(var3.getContents().getText(), "es");
     org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_es_properties var4 = GWT.create(org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_es_properties.class);
     registerPropertiesBundle(var4.getContents().getText(), "es");
-    org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_properties var5 = GWT.create(org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_properties.class);
-    registerPropertiesBundle(var5.getContents().getText(), null);
-    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_pt_BR_properties var6 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_pt_BR_properties.class);
-    registerPropertiesBundle(var6.getContents().getText(), "pt_BR");
+    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_pt_BR_properties var5 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_pt_BR_properties.class);
+    registerPropertiesBundle(var5.getContents().getText(), "pt_BR");
+    org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_properties var6 = GWT.create(org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_properties.class);
+    registerPropertiesBundle(var6.getContents().getText(), null);
     org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_ja_properties var7 = GWT.create(org_kie_workbench_common_forms_common_rendering_client_resources_i18n_FormWidgetsConstants_ja_properties.class);
     registerPropertiesBundle(var7.getContents().getText(), "ja");
     org_uberfire_ext_editor_commons_client_resources_i18n_Constants_fr_properties var8 = GWT.create(org_uberfire_ext_editor_commons_client_resources_i18n_Constants_fr_properties.class);
@@ -504,10 +504,10 @@ public class TranslationServiceImpl extends TranslationService { public interfac
     registerPropertiesBundle(var9.getContents().getText(), "fr");
     org_uberfire_ext_preferences_client_resources_i18n_Constants_fr_properties var10 = GWT.create(org_uberfire_ext_preferences_client_resources_i18n_Constants_fr_properties.class);
     registerPropertiesBundle(var10.getContents().getText(), "fr");
-    org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_properties var11 = GWT.create(org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_properties.class);
-    registerPropertiesBundle(var11.getContents().getText(), null);
-    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_zh_CN_properties var12 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_zh_CN_properties.class);
-    registerPropertiesBundle(var12.getContents().getText(), "zh_CN");
+    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_zh_CN_properties var11 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_zh_CN_properties.class);
+    registerPropertiesBundle(var11.getContents().getText(), "zh_CN");
+    org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_properties var12 = GWT.create(org_kie_workbench_common_stunner_core_client_preferences_resources_i18n_StunnerPreferencesConstants_properties.class);
+    registerPropertiesBundle(var12.getContents().getText(), null);
     org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_properties var13 = GWT.create(org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_properties.class);
     registerPropertiesBundle(var13.getContents().getText(), null);
     org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_default_properties var14 = GWT.create(org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_default_properties.class);
@@ -516,12 +516,12 @@ public class TranslationServiceImpl extends TranslationService { public interfac
     registerPropertiesBundle(var15.getContents().getText(), "fr");
     org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_default_properties var16 = GWT.create(org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_default_properties.class);
     registerPropertiesBundle(var16.getContents().getText(), null);
-    org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_es_properties var17 = GWT.create(org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_es_properties.class);
-    registerPropertiesBundle(var17.getContents().getText(), "es");
+    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_fr_properties var17 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_fr_properties.class);
+    registerPropertiesBundle(var17.getContents().getText(), "fr");
     org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_es_properties var18 = GWT.create(org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_es_properties.class);
     registerPropertiesBundle(var18.getContents().getText(), "es");
-    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_fr_properties var19 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_fr_properties.class);
-    registerPropertiesBundle(var19.getContents().getText(), "fr");
+    org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_es_properties var19 = GWT.create(org_kie_workbench_common_stunner_core_resources_i18n_StunnerCoreConstants_es_properties.class);
+    registerPropertiesBundle(var19.getContents().getText(), "es");
     org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_properties var20 = GWT.create(org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_properties.class);
     registerPropertiesBundle(var20.getContents().getText(), null);
     org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_ja_properties var21 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_ja_properties.class);
@@ -550,12 +550,12 @@ public class TranslationServiceImpl extends TranslationService { public interfac
     registerPropertiesBundle(var32.getContents().getText(), "fr");
     org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_fr_properties var33 = GWT.create(org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_fr_properties.class);
     registerPropertiesBundle(var33.getContents().getText(), "fr");
-    org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_default_properties var34 = GWT.create(org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_default_properties.class);
-    registerPropertiesBundle(var34.getContents().getText(), null);
-    org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_default_properties var35 = GWT.create(org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_default_properties.class);
+    org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_fr_properties var34 = GWT.create(org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_fr_properties.class);
+    registerPropertiesBundle(var34.getContents().getText(), "fr");
+    org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_default_properties var35 = GWT.create(org_kie_workbench_common_stunner_kogito_client_resources_i18n_KogitoClientConstants_default_properties.class);
     registerPropertiesBundle(var35.getContents().getText(), null);
-    org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_fr_properties var36 = GWT.create(org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_fr_properties.class);
-    registerPropertiesBundle(var36.getContents().getText(), "fr");
+    org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_default_properties var36 = GWT.create(org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_default_properties.class);
+    registerPropertiesBundle(var36.getContents().getText(), null);
     org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_properties var37 = GWT.create(org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_properties.class);
     registerPropertiesBundle(var37.getContents().getText(), null);
     org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_ja_properties var38 = GWT.create(org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_ja_properties.class);
@@ -620,30 +620,30 @@ public class TranslationServiceImpl extends TranslationService { public interfac
     registerPropertiesBundle(var67.getContents().getText(), null);
     org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_properties var68 = GWT.create(org_kie_workbench_common_kogito_client_resources_i18n_KogitoClientConstants_properties.class);
     registerPropertiesBundle(var68.getContents().getText(), null);
-    org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_ja_properties var69 = GWT.create(org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_ja_properties.class);
-    registerPropertiesBundle(var69.getContents().getText(), "ja");
-    org_uberfire_client_views_pfly_resources_i18n_Constants_pt_BR_properties var70 = GWT.create(org_uberfire_client_views_pfly_resources_i18n_Constants_pt_BR_properties.class);
+    org_uberfire_client_views_pfly_resources_i18n_Constants_pt_BR_properties var69 = GWT.create(org_uberfire_client_views_pfly_resources_i18n_Constants_pt_BR_properties.class);
+    registerPropertiesBundle(var69.getContents().getText(), "pt_BR");
+    org_uberfire_ext_preferences_client_resources_i18n_Constants_pt_BR_properties var70 = GWT.create(org_uberfire_ext_preferences_client_resources_i18n_Constants_pt_BR_properties.class);
     registerPropertiesBundle(var70.getContents().getText(), "pt_BR");
-    org_uberfire_ext_preferences_client_resources_i18n_Constants_pt_BR_properties var71 = GWT.create(org_uberfire_ext_preferences_client_resources_i18n_Constants_pt_BR_properties.class);
-    registerPropertiesBundle(var71.getContents().getText(), "pt_BR");
+    org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_ja_properties var71 = GWT.create(org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_ja_properties.class);
+    registerPropertiesBundle(var71.getContents().getText(), "ja");
     org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_es_properties var72 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_es_properties.class);
     registerPropertiesBundle(var72.getContents().getText(), "es");
-    org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_es_properties var73 = GWT.create(org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_es_properties.class);
-    registerPropertiesBundle(var73.getContents().getText(), "es");
-    org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_fr_properties var74 = GWT.create(org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_fr_properties.class);
-    registerPropertiesBundle(var74.getContents().getText(), "fr");
-    org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_ja_properties var75 = GWT.create(org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_ja_properties.class);
-    registerPropertiesBundle(var75.getContents().getText(), "ja");
-    org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_fr_properties var76 = GWT.create(org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_fr_properties.class);
-    registerPropertiesBundle(var76.getContents().getText(), "fr");
+    org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_fr_properties var73 = GWT.create(org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_fr_properties.class);
+    registerPropertiesBundle(var73.getContents().getText(), "fr");
+    org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_es_properties var74 = GWT.create(org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_es_properties.class);
+    registerPropertiesBundle(var74.getContents().getText(), "es");
+    org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_fr_properties var75 = GWT.create(org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_fr_properties.class);
+    registerPropertiesBundle(var75.getContents().getText(), "fr");
+    org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_ja_properties var76 = GWT.create(org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_ja_properties.class);
+    registerPropertiesBundle(var76.getContents().getText(), "ja");
     org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_fr_properties var77 = GWT.create(org_kie_workbench_common_forms_dynamic_client_resources_i18n_FormRenderingConstants_fr_properties.class);
     registerPropertiesBundle(var77.getContents().getText(), "fr");
     org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_es_properties var78 = GWT.create(org_guvnor_common_services_project_client_preferences_resources_i18n_ProjectPreferencesConstants_es_properties.class);
     registerPropertiesBundle(var78.getContents().getText(), "es");
-    org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_ja_properties var79 = GWT.create(org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_ja_properties.class);
-    registerPropertiesBundle(var79.getContents().getText(), "ja");
-    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_default_properties var80 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_default_properties.class);
-    registerPropertiesBundle(var80.getContents().getText(), null);
+    org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_default_properties var79 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_default_properties.class);
+    registerPropertiesBundle(var79.getContents().getText(), null);
+    org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_ja_properties var80 = GWT.create(org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_ja_properties.class);
+    registerPropertiesBundle(var80.getContents().getText(), "ja");
     org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_properties var81 = GWT.create(org_guvnor_messageconsole_client_console_resources_i18n_AlertsConstants_properties.class);
     registerPropertiesBundle(var81.getContents().getText(), null);
     org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_properties var82 = GWT.create(org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_properties.class);
@@ -660,10 +660,10 @@ public class TranslationServiceImpl extends TranslationService { public interfac
     registerPropertiesBundle(var87.getContents().getText(), "ja");
     org_uberfire_client_views_pfly_resources_i18n_Constants_ja_properties var88 = GWT.create(org_uberfire_client_views_pfly_resources_i18n_Constants_ja_properties.class);
     registerPropertiesBundle(var88.getContents().getText(), "ja");
-    org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_fr_properties var89 = GWT.create(org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_fr_properties.class);
-    registerPropertiesBundle(var89.getContents().getText(), "fr");
-    org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_ja_properties var90 = GWT.create(org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_ja_properties.class);
-    registerPropertiesBundle(var90.getContents().getText(), "ja");
+    org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_ja_properties var89 = GWT.create(org_kie_workbench_common_stunner_client_widgets_resources_i18n_StunnerWidgetsConstants_ja_properties.class);
+    registerPropertiesBundle(var89.getContents().getText(), "ja");
+    org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_fr_properties var90 = GWT.create(org_kie_workbench_common_dmn_client_resources_i18n_DMNClientConstants_fr_properties.class);
+    registerPropertiesBundle(var90.getContents().getText(), "fr");
     org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_es_properties var91 = GWT.create(org_kie_workbench_common_dmn_api_resources_i18n_DMNAPIConstants_es_properties.class);
     registerPropertiesBundle(var91.getContents().getText(), "es");
     org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_de_properties var92 = GWT.create(org_kie_workbench_common_widgets_client_resources_i18n_KieWorkbenchWidgetsConstants_de_properties.class);

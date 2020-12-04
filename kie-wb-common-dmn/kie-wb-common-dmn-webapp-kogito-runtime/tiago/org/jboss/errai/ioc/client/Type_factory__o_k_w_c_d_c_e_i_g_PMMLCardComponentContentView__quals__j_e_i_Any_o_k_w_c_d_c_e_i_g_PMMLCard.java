@@ -55,6 +55,8 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_PMMLCardComponentContentView__quals
   }
 
   public PMMLCardComponentContentView createInstance(final ContextManager contextManager) {
+    final HTMLButtonElement _removeButton_2 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLParagraphElement _path_0 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _modelCount_1 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -66,12 +68,10 @@ public class Type_factory__o_k_w_c_d_c_e_i_g_PMMLCardComponentContentView__quals
           return "span";
         }
     } });
-    final HTMLParagraphElement _path_0 = (HTMLParagraphElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLParagraphElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _removeButton_2 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final PMMLCardComponentContentView instance = new PMMLCardComponentContentView(_path_0, _modelCount_1, _removeButton_2);
-    registerDependentScopedReference(instance, _modelCount_1);
-    registerDependentScopedReference(instance, _path_0);
     registerDependentScopedReference(instance, _removeButton_2);
+    registerDependentScopedReference(instance, _path_0);
+    registerDependentScopedReference(instance, _modelCount_1);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_i_g_PMMLCardComponentContentViewTemplateResource templateForPMMLCardComponentContentView = GWT.create(o_k_w_c_d_c_e_i_g_PMMLCardComponentContentViewTemplateResource.class);
     Element parentElementForTemplateOfPMMLCardComponentContentView = TemplateUtil.getRootTemplateParentElement(templateForPMMLCardComponentContentView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/included/grid/PMMLCardComponentContentView.html", "");

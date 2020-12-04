@@ -42,12 +42,12 @@ public class Type_factory__o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidget__quals__j_e_i_A
   public SubFormWidget createInstance(final ContextManager contextManager) {
     final SubFormWidget instance = new SubFormWidget();
     setIncompleteInstance(instance);
-    final DynamicFormRenderer SubFormWidget_formRenderer = (DynamicFormRenderer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_DynamicFormRenderer__quals__j_e_i_Any_j_e_i_Default");
-    registerDependentScopedReference(instance, SubFormWidget_formRenderer);
-    SubFormWidget_DynamicFormRenderer_formRenderer(instance, SubFormWidget_formRenderer);
     final FlowPanel SubFormWidget_formContent = (FlowPanel) contextManager.getInstance("ExtensionProvided_factory__c_g_g_u_c_u_FlowPanel__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, SubFormWidget_formContent);
     SubFormWidget_FlowPanel_formContent(instance, SubFormWidget_formContent);
+    final DynamicFormRenderer SubFormWidget_formRenderer = (DynamicFormRenderer) contextManager.getInstance("Type_factory__o_k_w_c_f_d_c_DynamicFormRenderer__quals__j_e_i_Any_j_e_i_Default");
+    registerDependentScopedReference(instance, SubFormWidget_formRenderer);
+    SubFormWidget_DynamicFormRenderer_formRenderer(instance, SubFormWidget_formRenderer);
     o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidgetTemplateResource templateForSubFormWidget = GWT.create(o_k_w_c_f_d_c_r_r_r_s_w_SubFormWidgetTemplateResource.class);
     Element parentElementForTemplateOfSubFormWidget = TemplateUtil.getRootTemplateParentElement(templateForSubFormWidget.getContents().getText(), "org/kie/workbench/common/forms/dynamic/client/rendering/renderers/relations/subform/widget/SubFormWidget.html", "");
     TemplateUtil.translateTemplate("org/kie/workbench/common/forms/dynamic/client/rendering/renderers/relations/subform/widget/SubFormWidget.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfSubFormWidget));

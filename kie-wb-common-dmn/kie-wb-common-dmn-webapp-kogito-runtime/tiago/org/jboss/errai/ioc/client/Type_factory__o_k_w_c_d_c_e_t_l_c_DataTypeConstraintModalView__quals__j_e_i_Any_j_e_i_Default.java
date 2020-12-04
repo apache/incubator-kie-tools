@@ -46,12 +46,12 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintModalView__qual
   }
 
   public DataTypeConstraintModalView createInstance(final ContextManager contextManager) {
-    final HTMLButtonElement _okButton_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _constraintWarningMessage_9 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _cancelButton_5 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _selectConstraint_8 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLButtonElement _closeConstraintWarningMessage_10 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _header_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLDivElement _body_1 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _footer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLAnchorElement _clearAllAnchor_6 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _componentContainer_3 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final HTMLElement _type_7 = (HTMLElement) contextManager.getContextualInstance("ContextualProvider_factory__e_d_HTMLElement__quals__Universal", new Class[] { }, new Annotation[] { new Named() {
         public Class annotationType() {
           return Named.class;
@@ -63,22 +63,22 @@ public class Type_factory__o_k_w_c_d_c_e_t_l_c_DataTypeConstraintModalView__qual
           return "span";
         }
     } });
-    final HTMLDivElement _constraintWarningMessage_9 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _selectConstraint_8 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLDivElement _header_0 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    final HTMLButtonElement _cancelButton_5 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLButtonElement _okButton_4 = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _footer_2 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLDivElement _componentContainer_3 = (HTMLDivElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLDivElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    final HTMLAnchorElement _clearAllAnchor_6 = (HTMLAnchorElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLAnchorElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     final DataTypeConstraintModalView instance = new DataTypeConstraintModalView(_header_0, _body_1, _footer_2, _componentContainer_3, _okButton_4, _cancelButton_5, _clearAllAnchor_6, _type_7, _selectConstraint_8, _constraintWarningMessage_9, _closeConstraintWarningMessage_10);
-    registerDependentScopedReference(instance, _okButton_4);
-    registerDependentScopedReference(instance, _closeConstraintWarningMessage_10);
-    registerDependentScopedReference(instance, _body_1);
-    registerDependentScopedReference(instance, _footer_2);
-    registerDependentScopedReference(instance, _clearAllAnchor_6);
-    registerDependentScopedReference(instance, _componentContainer_3);
-    registerDependentScopedReference(instance, _type_7);
     registerDependentScopedReference(instance, _constraintWarningMessage_9);
-    registerDependentScopedReference(instance, _selectConstraint_8);
-    registerDependentScopedReference(instance, _header_0);
     registerDependentScopedReference(instance, _cancelButton_5);
+    registerDependentScopedReference(instance, _selectConstraint_8);
+    registerDependentScopedReference(instance, _closeConstraintWarningMessage_10);
+    registerDependentScopedReference(instance, _header_0);
+    registerDependentScopedReference(instance, _body_1);
+    registerDependentScopedReference(instance, _type_7);
+    registerDependentScopedReference(instance, _okButton_4);
+    registerDependentScopedReference(instance, _footer_2);
+    registerDependentScopedReference(instance, _componentContainer_3);
+    registerDependentScopedReference(instance, _clearAllAnchor_6);
     setIncompleteInstance(instance);
     o_k_w_c_d_c_e_t_l_c_DataTypeConstraintModalViewTemplateResource templateForDataTypeConstraintModalView = GWT.create(o_k_w_c_d_c_e_t_l_c_DataTypeConstraintModalViewTemplateResource.class);
     Element parentElementForTemplateOfDataTypeConstraintModalView = TemplateUtil.getRootTemplateParentElement(templateForDataTypeConstraintModalView.getContents().getText(), "org/kie/workbench/common/dmn/client/editors/types/listview/constraint/DataTypeConstraintModalView.html", "");

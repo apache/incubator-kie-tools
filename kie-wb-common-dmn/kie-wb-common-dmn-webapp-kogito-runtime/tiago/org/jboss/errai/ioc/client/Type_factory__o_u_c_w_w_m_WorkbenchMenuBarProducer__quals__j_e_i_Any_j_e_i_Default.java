@@ -205,11 +205,11 @@ public class Type_factory__o_u_c_w_w_m_WorkbenchMenuBarProducer__quals__j_e_i_An
   }
 
   public WorkbenchMenuBarProducer createInstance(final ContextManager contextManager) {
+    final ActivityManager _activityManager_3 = (ActivityManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final AuthorizationManager _authzManager_0 = (DefaultAuthorizationManager) contextManager.getInstance("Type_factory__o_u_s_i_a_DefaultAuthorizationManager__quals__j_e_i_Any_j_e_i_Default");
-    final PerspectiveManager _perspectiveManager_1 = (PerspectiveManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final PlaceManager _placeManager_2 = (PlaceManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PlaceManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final View _view_5 = (WorkbenchMenuBarView) contextManager.getInstance("Type_factory__o_u_c_v_p_m_WorkbenchMenuBarView__quals__j_e_i_Any_j_e_i_Default");
-    final ActivityManager _activityManager_3 = (ActivityManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_ActivityManagerImpl__quals__j_e_i_Any_j_e_i_Default");
+    final PerspectiveManager _perspectiveManager_1 = (PerspectiveManagerImpl) contextManager.getInstance("Type_factory__o_u_c_m_PerspectiveManagerImpl__quals__j_e_i_Any_j_e_i_Default");
     final User _identity_4 = (User) contextManager.getInstance("Producer_factory__o_j_e_s_s_a_i_User__quals__j_e_i_Any_j_e_i_Default");
     final WorkbenchMenuBarProducer instance = new WorkbenchMenuBarProducer(_authzManager_0, _perspectiveManager_1, _placeManager_2, _activityManager_3, _identity_4, _view_5);
     registerDependentScopedReference(instance, _identity_4);

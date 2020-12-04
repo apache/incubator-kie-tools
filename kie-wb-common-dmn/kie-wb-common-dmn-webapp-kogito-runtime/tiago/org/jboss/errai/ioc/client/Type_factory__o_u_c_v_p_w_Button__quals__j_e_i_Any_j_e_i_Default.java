@@ -18,12 +18,12 @@ public class Type_factory__o_u_c_v_p_w_Button__quals__j_e_i_Any_j_e_i_Default ex
   public Button createInstance(final ContextManager contextManager) {
     final Button instance = new Button();
     setIncompleteInstance(instance);
-    final HTMLButtonElement Button_button = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, Button_button);
-    Button_HTMLButtonElement_button(instance, Button_button);
     final HTMLDocument Button_document = (HTMLDocument) contextManager.getInstance("Producer_factory__e_d_HTMLDocument__quals__j_e_i_Any_j_e_i_Default");
     registerDependentScopedReference(instance, Button_document);
     Button_Document_document(instance, Button_document);
+    final HTMLButtonElement Button_button = (HTMLButtonElement) contextManager.getInstance("ExtensionProvided_factory__e_d_HTMLButtonElement__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, Button_button);
+    Button_HTMLButtonElement_button(instance, Button_button);
     setIncompleteInstance(null);
     return instance;
   }

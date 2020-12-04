@@ -7,7 +7,7 @@ public class TranslationServiceImpl_org_kie_workbench_common_forms_processing_en
   private static TranslationServiceImpl_org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_ja_properties_default_InlineClientBundleGenerator _instance0 = new TranslationServiceImpl_org_kie_workbench_common_forms_processing_engine_handling_resources_i18n_ProcessingEngineConstants_ja_properties_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/forms/kie-wb-common-forms-processing-engine/7.47.0-SNAPSHOT/kie-wb-common-forms-processing-engine-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/forms/processing/engine/handling/resources/i18n/ProcessingEngineConstants_ja.properties
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-forms/kie-wb-common-forms-commons/kie-wb-common-forms-processing-engine/target/kie-wb-common-forms-processing-engine-7.47.0-SNAPSHOT.jar!/org/kie/workbench/common/forms/processing/engine/handling/resources/i18n/ProcessingEngineConstants_ja.properties
       public String getText() {
         return "FieldStateValidatorImpl.fieldIsRequired=フィールドが必要です";
       }

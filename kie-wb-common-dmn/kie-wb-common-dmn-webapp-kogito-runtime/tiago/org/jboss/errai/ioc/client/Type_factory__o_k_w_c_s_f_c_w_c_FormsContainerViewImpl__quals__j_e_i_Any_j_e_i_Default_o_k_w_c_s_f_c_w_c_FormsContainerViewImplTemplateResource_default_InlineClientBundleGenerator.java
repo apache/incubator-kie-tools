@@ -7,7 +7,7 @@ public class Type_factory__o_k_w_c_s_f_c_w_c_FormsContainerViewImpl__quals__j_e_
   private static Type_factory__o_k_w_c_s_f_c_w_c_FormsContainerViewImpl__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_s_f_c_w_c_FormsContainerViewImplTemplateResource_default_InlineClientBundleGenerator _instance0 = new Type_factory__o_k_w_c_s_f_c_w_c_FormsContainerViewImpl__quals__j_e_i_Any_j_e_i_Default_o_k_w_c_s_f_c_w_c_FormsContainerViewImplTemplateResource_default_InlineClientBundleGenerator();
   private void getContentsInitializer() {
     getContents = new com.google.gwt.resources.client.TextResource() {
-      // jar:file:/Users/tiagobento/.m2/repository/org/kie/workbench/stunner/kie-wb-common-stunner-forms-client/7.47.0-SNAPSHOT/kie-wb-common-stunner-forms-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/stunner/forms/client/widgets/container/FormsContainerViewImpl.html
+      // jar:file:/Users/tiagobento/redhat/kiegroup-all/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-extensions/kie-wb-common-stunner-forms/kie-wb-common-stunner-forms-client/target/kie-wb-common-stunner-forms-client-7.47.0-SNAPSHOT-sources.jar!/org/kie/workbench/common/stunner/forms/client/widgets/container/FormsContainerViewImpl.html
       public String getText() {
         return "<div data-field=\"content\">\n\n</div>";
       }

@@ -17,8 +17,6 @@
 
   <modules>
     <module>kie-wb-common-project-explorer-api</module>
-    <module>kie-wb-common-project-explorer-client</module>
-    <module>kie-wb-common-project-explorer-backend</module>
   </modules>
 
 </project>

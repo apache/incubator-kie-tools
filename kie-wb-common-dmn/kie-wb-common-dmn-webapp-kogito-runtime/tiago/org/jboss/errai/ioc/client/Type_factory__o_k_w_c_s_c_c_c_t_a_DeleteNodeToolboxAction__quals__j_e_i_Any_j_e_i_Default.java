@@ -24,9 +24,6 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_DeleteNodeToolboxAction__quals__j
   }
 
   public DeleteNodeToolboxAction createInstance(final ContextManager contextManager) {
-    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
-    final Event<CanvasClearSelectionEvent> _clearSelectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
-    final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
     final SessionCommandManager<AbstractCanvasHandler> _sessionCommandManager_1 = (ApplicationCommandManager) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_c_ApplicationCommandManager__quals__j_e_i_Any_j_e_i_Default");
     final ManagedInstance<DefaultCanvasCommandFactory> _commandFactories_2 = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { DefaultCanvasCommandFactory.class }, new Annotation[] { new Any() {
         public Class annotationType() {
@@ -36,9 +33,12 @@ public class Type_factory__o_k_w_c_s_c_c_c_t_a_DeleteNodeToolboxAction__quals__j
           return "@javax.enterprise.inject.Any()";
         }
     } });
+    final Event<CanvasClearSelectionEvent> _clearSelectionEvent_4 = (Event) contextManager.getContextualInstance("ContextualProvider_factory__j_e_e_Event__quals__Universal", new Class[] { CanvasClearSelectionEvent.class }, new Annotation[] { });
+    final ClientTranslationService _translationService_0 = (ClientTranslationService) contextManager.getInstance("Type_factory__o_k_w_c_s_c_c_i_ClientTranslationService__quals__j_e_i_Any_j_e_i_Default");
+    final DefinitionUtils _definitionUtils_3 = (DefinitionUtils) contextManager.getInstance("Type_factory__o_k_w_c_s_c_u_DefinitionUtils__quals__j_e_i_Any_j_e_i_Default");
     final DeleteNodeToolboxAction instance = new DeleteNodeToolboxAction(_translationService_0, _sessionCommandManager_1, _commandFactories_2, _definitionUtils_3, _clearSelectionEvent_4);
-    registerDependentScopedReference(instance, _clearSelectionEvent_4);
     registerDependentScopedReference(instance, _commandFactories_2);
+    registerDependentScopedReference(instance, _clearSelectionEvent_4);
     setIncompleteInstance(instance);
     setIncompleteInstance(null);
     return instance;

@@ -20,11 +20,11 @@ public class Type_factory__o_u_p_c_s_PreferenceScopeResolutionStrategyIOCProvide
   public PreferenceScopeResolutionStrategyIOCProvider createInstance(final ContextManager contextManager) {
     final PreferenceScopeResolutionStrategyIOCProvider instance = new PreferenceScopeResolutionStrategyIOCProvider();
     setIncompleteInstance(instance);
+    final PreferenceScopeFactoryImpl PreferenceScopeResolutionStrategyIOCProvider_scopeFactory = (PreferenceScopeFactoryImpl) contextManager.getInstance("Type_factory__o_u_p_s_i_PreferenceScopeFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
+    PreferenceScopeResolutionStrategyIOCProvider_PreferenceScopeFactory_scopeFactory(instance, PreferenceScopeResolutionStrategyIOCProvider_scopeFactory);
     final ManagedInstance PreferenceScopeResolutionStrategyIOCProvider_scopeResolutionStrategyProvider = (ManagedInstance) contextManager.getContextualInstance("ContextualProvider_factory__o_j_e_i_c_a_ManagedInstance__quals__Universal", new Class[] { PreferenceScopeResolutionStrategy.class }, new Annotation[] { });
     registerDependentScopedReference(instance, PreferenceScopeResolutionStrategyIOCProvider_scopeResolutionStrategyProvider);
     PreferenceScopeResolutionStrategyIOCProvider_ManagedInstance_scopeResolutionStrategyProvider(instance, PreferenceScopeResolutionStrategyIOCProvider_scopeResolutionStrategyProvider);
-    final PreferenceScopeFactoryImpl PreferenceScopeResolutionStrategyIOCProvider_scopeFactory = (PreferenceScopeFactoryImpl) contextManager.getInstance("Type_factory__o_u_p_s_i_PreferenceScopeFactoryImpl__quals__j_e_i_Any_j_e_i_Default");
-    PreferenceScopeResolutionStrategyIOCProvider_PreferenceScopeFactory_scopeFactory(instance, PreferenceScopeResolutionStrategyIOCProvider_scopeFactory);
     setIncompleteInstance(null);
     return instance;
   }

@@ -51,18 +51,18 @@ public class Type_factory__o_u_e_w_c_c_d_i_LiveSearchSelectorDropDownItemViewImp
   public LiveSearchSelectorDropDownItemViewImpl createInstance(final ContextManager contextManager) {
     final LiveSearchSelectorDropDownItemViewImpl instance = new LiveSearchSelectorDropDownItemViewImpl();
     setIncompleteInstance(instance);
-    final Anchor LiveSearchSelectorDropDownItemViewImpl_itemAnchor = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, LiveSearchSelectorDropDownItemViewImpl_itemAnchor);
-    LiveSearchSelectorDropDownItemViewImpl_Anchor_itemAnchor(instance, LiveSearchSelectorDropDownItemViewImpl_itemAnchor);
+    final Span LiveSearchSelectorDropDownItemViewImpl_itemText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, LiveSearchSelectorDropDownItemViewImpl_itemText);
+    LiveSearchSelectorDropDownItemViewImpl_Span_itemText(instance, LiveSearchSelectorDropDownItemViewImpl_itemText);
     final Span LiveSearchSelectorDropDownItemViewImpl_itemIcon = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, LiveSearchSelectorDropDownItemViewImpl_itemIcon);
     LiveSearchSelectorDropDownItemViewImpl_Span_itemIcon(instance, LiveSearchSelectorDropDownItemViewImpl_itemIcon);
     final ListItem LiveSearchSelectorDropDownItemViewImpl_item = (ListItem) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_ListItem__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
     registerDependentScopedReference(instance, LiveSearchSelectorDropDownItemViewImpl_item);
     LiveSearchSelectorDropDownItemViewImpl_ListItem_item(instance, LiveSearchSelectorDropDownItemViewImpl_item);
-    final Span LiveSearchSelectorDropDownItemViewImpl_itemText = (Span) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Span__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
-    registerDependentScopedReference(instance, LiveSearchSelectorDropDownItemViewImpl_itemText);
-    LiveSearchSelectorDropDownItemViewImpl_Span_itemText(instance, LiveSearchSelectorDropDownItemViewImpl_itemText);
+    final Anchor LiveSearchSelectorDropDownItemViewImpl_itemAnchor = (Anchor) contextManager.getInstance("ExtensionProvided_factory__o_j_e_c_c_d_Anchor__quals__j_e_i_Any_j_e_i_Default_j_i_Named");
+    registerDependentScopedReference(instance, LiveSearchSelectorDropDownItemViewImpl_itemAnchor);
+    LiveSearchSelectorDropDownItemViewImpl_Anchor_itemAnchor(instance, LiveSearchSelectorDropDownItemViewImpl_itemAnchor);
     o_u_e_w_c_c_d_i_LiveSearchSelectorDropDownItemViewImplTemplateResource templateForLiveSearchSelectorDropDownItemViewImpl = GWT.create(o_u_e_w_c_c_d_i_LiveSearchSelectorDropDownItemViewImplTemplateResource.class);
     Element parentElementForTemplateOfLiveSearchSelectorDropDownItemViewImpl = TemplateUtil.getRootTemplateParentElement(templateForLiveSearchSelectorDropDownItemViewImpl.getContents().getText(), "org/uberfire/ext/widgets/common/client/dropdown/items/LiveSearchSelectorDropDownItemViewImpl.html", "");
     TemplateUtil.translateTemplate("org/uberfire/ext/widgets/common/client/dropdown/items/LiveSearchSelectorDropDownItemViewImpl.html", TemplateUtil.getRootTemplateElement(parentElementForTemplateOfLiveSearchSelectorDropDownItemViewImpl));
