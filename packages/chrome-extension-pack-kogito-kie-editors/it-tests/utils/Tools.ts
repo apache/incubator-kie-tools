@@ -78,4 +78,8 @@ export default class Tools {
     public static async init(testName: string): Promise<Tools> {
         return new Tools(await Driver.init(), testName);
     }
+
+    public async getCurrentUrl(): Promise<string> {
+        return await this.driver.getCurrentUrl();
+    }
 }

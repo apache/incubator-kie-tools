@@ -44,6 +44,7 @@ test(TEST_NAME, async () => {
             "MyTask",
             "MyEnd"
         ].sort());
+    console.log("Current URL is: " + await tools.getCurrentUrl());
 });
 
 afterEach(async () => {

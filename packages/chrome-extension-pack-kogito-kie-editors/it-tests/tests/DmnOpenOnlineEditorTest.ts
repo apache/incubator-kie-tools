@@ -39,6 +39,7 @@ test(TEST_NAME, async () => {
     const onlineEditorSideBar: DmnSideBar = await onlineEditor.getSideBar();
     const onlineProperties: Properties = await onlineEditorSideBar.openProperties();
     expect((await onlineProperties.getDmnNameFromInput())).toEqual("myDmn");
+    console.log("Current URL is: " + await tools.getCurrentUrl());
 });
 
 afterEach(async () => {
