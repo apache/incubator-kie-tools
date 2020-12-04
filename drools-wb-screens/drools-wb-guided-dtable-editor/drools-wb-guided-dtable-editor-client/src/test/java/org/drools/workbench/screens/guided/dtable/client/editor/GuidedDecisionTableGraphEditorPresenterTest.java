@@ -207,7 +207,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         this.moduleServiceCaller = new CallerMock<>(moduleService);
         this.graphSaveAndRenameServiceCaller = new CallerMock<>(graphSaveAndRenameService);
         when(view.asWidget()).thenReturn(mock(Widget.class));
-        when(moduleService.resolvePackage(any(Path.class))).thenReturn(activePackage);
+        when(moduleService.resolvePackage(any())).thenReturn(activePackage);
         when(activePackage.getPackageMainResourcesPath()).thenReturn(activePackageResourcesPath);
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
 
@@ -505,8 +505,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                        any(PlaceRequest.class),
                                        any(GuidedDecisionTableEditorContent.class),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter);
+                                       any(),
+                                       any())).thenReturn(dtPresenter);
 
         presenter.onStartup(dtGraphPath,
                             dtGraphPlaceRequest);
@@ -668,8 +668,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                        any(PlaceRequest.class),
                                        any(GuidedDecisionTableEditorContent.class),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter);
+                                       any(),
+                                       any())).thenReturn(dtPresenter);
         when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
             add(dtPresenter);
         }});
@@ -827,8 +827,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                        any(PlaceRequest.class),
                                        any(GuidedDecisionTableEditorContent.class),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter);
+                                       any(),
+                                       any())).thenReturn(dtPresenter);
         when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
             add(dtPresenter);
         }});
@@ -922,10 +922,10 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
         when(modeller.addDecisionTable(any(ObservablePath.class),
                                        any(PlaceRequest.class),
-                                       any(GuidedDecisionTableEditorContent.class),
+                                       any(),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter);
+                                       any(),
+                                       any())).thenReturn(dtPresenter);
 
         presenter.onOpenDocumentsInEditor(dtPaths);
 
@@ -1054,8 +1054,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                        any(PlaceRequest.class),
                                        any(GuidedDecisionTableEditorContent.class),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter);
+                                       any(),
+                                       any())).thenReturn(dtPresenter);
         when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
             add(dtPresenter);
         }});
@@ -1103,14 +1103,14 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                        any(PlaceRequest.class),
                                        eq(dtContent1),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter1);
+                                       any(),
+                                       any())).thenReturn(dtPresenter1);
         when(modeller.addDecisionTable(any(ObservablePath.class),
                                        any(PlaceRequest.class),
                                        eq(dtContent2),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter2);
+                                       any(),
+                                       any())).thenReturn(dtPresenter2);
 
         when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
             add(dtPresenter1);
@@ -1137,7 +1137,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         verify(dtGraphService,
                times(1)).save(eq(dtGraphPath),
                               any(GuidedDecisionTableEditorGraphModel.class),
-                              any(Metadata.class),
+                              any(),
                               eq("message"));
         verify(dtService,
                times(1)).save(eq(dtPath2),
@@ -1147,7 +1147,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         verify(dtService,
                times(1)).save(eq(dtPath2),
                               any(GuidedDecisionTable52.class),
-                              any(Metadata.class),
+                              any(),
                               eq("message"));
         verify(notificationEvent,
                times(1)).fire(any(NotificationEvent.class));
@@ -1177,7 +1177,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         presenter.saveDocumentGraphEntries();
 
         verify(savePopUpPresenter,
-               times(1)).show(any(Path.class),
+               times(1)).show(any(ObservablePath.class),
                               commitMessageCommandCaptor.capture());
 
         final ParameterizedCommand<String> commitMessageCommand = commitMessageCommandCaptor.getValue();
@@ -1191,7 +1191,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         verify(dtGraphService,
                times(1)).save(eq(dtGraphPath),
                               any(GuidedDecisionTableEditorGraphModel.class),
-                              any(Metadata.class),
+                              any(),
                               eq("message"));
 
         final ArgumentCaptor<NotificationEvent> notification = ArgumentCaptor.forClass(NotificationEvent.class);
@@ -1273,7 +1273,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                          onFocusCommandCaptor.capture());
         verify(overviewWidget,
                times(2)).setContent(eq(dtGraphContent.getOverview()),
-                                    any(ObservablePath.class));
+                                    any());
 
         verify(kieEditorWrapperView,
                times(1)).addSourcePage(any(ViewDRLSourceWidget.class));
@@ -1354,8 +1354,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                        any(PlaceRequest.class),
                                        any(GuidedDecisionTableEditorContent.class),
                                        any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter);
+                                       any(),
+                                       any())).thenReturn(dtPresenter);
         when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
             add(dtPresenter);
         }});
