@@ -20,6 +20,7 @@
         <dependency>
             <groupId>org.uberfire</groupId>
             <artifactId>appformer-js</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -34,7 +34,8 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>appformer-js</artifactId>
+      <artifactId>appformer-js-monaco</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
