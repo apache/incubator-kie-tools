@@ -134,12 +134,6 @@ public class PlaceManagerImpl implements PlaceManager {
     private LayoutSelection layoutSelection;
     @Inject
     private ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
-    @Inject
-    private AppFormerActivityLoader appFormerActivityLoader;
-
-    public interface AppFormerActivityLoader {
-        boolean triggerLoadOfMatchingEditors(final Path path, final Runnable callback);
-    }
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
@@ -296,6 +290,7 @@ public class PlaceManagerImpl implements PlaceManager {
 
         if (resolved.getActivity() != null) {
             final Activity activity = resolved.getActivity();
+            //FIXME: TIAGO: ARE DOCKS SCREENS?
             if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
 
@@ -303,24 +298,13 @@ public class PlaceManagerImpl implements PlaceManager {
                 if (workbenchActivity.getOwningPlace() != null && getStatus(workbenchActivity.getOwningPlace()) == PlaceStatus.CLOSE) {
                     goTo(workbenchActivity.getOwningPlace(),
                          null,
-                         new Command() {
-                             @Override
-                             public void execute() {
-                                 goTo(place,
-                                      panel,
-                                      doWhenFinished);
-                             }
-                         });
+                         () -> goTo(place, panel, doWhenFinished));
                     return;
                 }
                 launchWorkbenchActivityAtPosition(resolved.getPlaceRequest(),
                                                   workbenchActivity,
                                                   workbenchActivity.getDefaultPosition(),
                                                   panel);
-                doWhenFinished.execute();
-            } else if (activity.isType(ActivityResourceType.POPUP.name())) {
-                launchPopupActivity(resolved.getPlaceRequest(),
-                                    (PopupActivity) activity);
                 doWhenFinished.execute();
             } else if (activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
                 launchPerspectiveActivity(place,
@@ -417,10 +401,6 @@ public class PlaceManagerImpl implements PlaceManager {
 
         if (existingDestination != null) {
             return existingDestination;
-        }
-
-        if (appFormerActivityLoader.triggerLoadOfMatchingEditors(place.getPath(), () -> closeLazyLoadingScreenAndGoToPlace(place))) {
-            return new ResolvedRequest(null, new DefaultPlaceRequest("LazyLoadingScreen"));
         }
 
         final Set<Activity> activities = activityManager.getActivities(resolvedPlaceRequest);
@@ -854,7 +834,7 @@ public class PlaceManagerImpl implements PlaceManager {
         if (_panel != null) {
             panel = _panel;
         } else {
-            panel = panelManager.addWorkbenchPanel(panelManager.getRoot(),
+            panel = panelManager.addWorkbenchPanel(panelManager.getRoot(), //FIXME: TIAGO -> O SEGREDO ALI
                                                    position,
                                                    activity.preferredHeight(),
                                                    activity.preferredWidth(),
@@ -884,6 +864,7 @@ public class PlaceManagerImpl implements PlaceManager {
                                                                  () -> activity.getTitleDecorationElement(),
                                                                  () -> activity.getTitleDecoration());
 
+        //FIXME: TIAGO: Pega o conteúdo do Editor e cria um Widget que vai ser adicionado ao panel.
         final IsWidget widget = maybeWrapExternalWidget(activity,
                                                         () -> activity.getWidgetElement(),
                                                         () -> activity.getWidget());

@@ -224,7 +224,7 @@ public class Workbench {
                 layout.setMarginWidgets(isStandaloneMode, headersToKeep);
                 layout.onBootstrap();
                 addLayoutToRootPanel(layout);
-                placeManager.goTo(new DefaultPlaceRequest(homePerspective.getIdentifier()));
+                placeManager.goTo(new DefaultPlaceRequest(homePerspective.getIdentifier())); //TODO: TIAGO: GRANDE SEGREDO
             } else {
                 activityBeansCache.noOp();
                 logger.warn("No home perspective available!");

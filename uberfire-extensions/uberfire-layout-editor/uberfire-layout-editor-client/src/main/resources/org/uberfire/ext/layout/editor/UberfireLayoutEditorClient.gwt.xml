@@ -28,7 +28,6 @@
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>
   <inherits name="org.uberfire.ext.properties.editor.PropertiesEditorAPI"/>
   <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
-  <inherits name="org.uberfire.ext.plugin.RuntimePluginAPI"/>
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
 
 </module>

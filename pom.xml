@@ -834,7 +834,6 @@
     <module>uberfire-io</module>
     <module>uberfire-server</module>
     <module>uberfire-backend</module>
-    <module>uberfire-js</module>
     <module>uberfire-experimental</module>
     <module>uberfire-workbench</module>
     <module>uberfire-preferences</module>
@@ -846,8 +845,6 @@
     <module>uberfire-structure</module>
     <module>uberfire-workingset</module>
     <module>uberfire-ssh</module>
-    <module>appformer-js-bridge</module>
-    <module>appformer-js</module>
     <module>appformer-client-api</module>
     <module>appformer-kogito-bridge</module>
     <module>appformer-js-monaco</module>

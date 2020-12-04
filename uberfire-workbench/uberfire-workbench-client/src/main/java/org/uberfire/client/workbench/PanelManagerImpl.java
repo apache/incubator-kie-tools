@@ -242,7 +242,7 @@ public class PanelManagerImpl implements PanelManager {
                                                               uiPart.getTitleDecoration(),
                                                               partDef,
                                                               panelPresenter.getPartType());
-            partPresenter.setWrappedWidget(uiPart.getWidget());
+            partPresenter.setWrappedWidget(uiPart.getWidget()); //FIXME: TIAGO: AQUI O ATTACH NO DOM ACONTECE
             partPresenter.setContextId(contextId);
             mapPartDefinitionToPresenter.put(partDef,
                                              partPresenter);
@@ -489,7 +489,7 @@ public class PanelManagerImpl implements PanelManager {
         WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get(targetPanel);
 
         if (targetPanelPresenter == null) {
-            targetPanelPresenter = beanFactory.newWorkbenchPanel(targetPanel);
+            targetPanelPresenter = beanFactory.newWorkbenchPanel(targetPanel); //FIXME: TIAGO -> Aqui só vai precisar do StaticWorkbenchPanelPresenter
             mapPanelDefinitionToPresenter.put(targetPanel,
                                               targetPanelPresenter);
         }
