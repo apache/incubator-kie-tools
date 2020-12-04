@@ -566,7 +566,6 @@
               <runTarget>test.html</runTarget>
               <hostedWebapp>src/main/webapp</hostedWebapp>
               <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
-              <gen>tiago</gen>
               <logLevel>INFO</logLevel>
               <generateJsInteropExports>true</generateJsInteropExports>
 
