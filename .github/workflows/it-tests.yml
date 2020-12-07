@@ -1,4 +1,4 @@
-name: Run integration tests
+name: "CI :: Integration Tests"
 
 on:
   pull_request:

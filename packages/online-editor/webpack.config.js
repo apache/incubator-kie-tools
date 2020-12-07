@@ -19,6 +19,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
+const externalAssets = require("../external-assets-base");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
@@ -69,8 +70,8 @@ module.exports = async (env, argv) => {
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
         { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
-        { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
-        { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
+        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn" },
+        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn" }
       ])
     ],
     module: {

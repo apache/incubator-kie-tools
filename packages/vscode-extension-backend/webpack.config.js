@@ -17,8 +17,9 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
+const externalAssets = require("../external-assets-base")
 
-module.exports = [
+module.exports = async (argv, env) => [
   merge(common, {
     output: {
       library: "AppFormer.VsCodeBackendExtension",
@@ -35,7 +36,7 @@ module.exports = [
     plugins: [
       new CopyWebpackPlugin([
         {
-          from: "../backend-quarkus-runner-unpacked/target/dependencies/kogito-extended-services-quarkus-*-runner.jar",
+          from: externalAssets.quarkusRunnerPath(argv),
           to: "server/quarkus-runner.jar"
         }
       ])

@@ -17,6 +17,7 @@
 import { GwtEditorMapping } from "@kogito-tooling/kie-bc-editors";
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
+import * as externalAssets from "@kogito-tooling/external-assets-base"
 
 export class BpmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
@@ -130,7 +131,7 @@ export class BpmnEditorResources extends BaseEditorResources {
   }
 
   public getEditorResourcesPath() {
-    return "../kie-bc-editors-unpacked/bpmn";
+    return externalAssets.bpmnEditorPath();
   }
 
   public getTemplatePath() {

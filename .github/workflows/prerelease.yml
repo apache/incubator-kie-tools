@@ -1,4 +1,4 @@
-name: Create draft release
+name: "Release :: Draft"
 
 on:
   push:

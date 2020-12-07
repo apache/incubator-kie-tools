@@ -25,7 +25,11 @@ module.exports = [
       "preprocessor/preprocessor": "./src/preprocessor/preprocessor.ts"
     },
     plugins: [new CopyPlugin([{ from: "./resources", to: "./resources" }])],
-    target: "node"
+    target: "node",
+    node: {
+      __dirname: true, //Uses current working dir
+      __filename: true, //Uses current working dir
+    }
   }),
   merge(common, {
     entry: {
