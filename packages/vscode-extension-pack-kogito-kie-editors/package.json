@@ -124,6 +124,7 @@
     "@kogito-tooling/i18n": "0.8.1",
     "@kogito-tooling/kie-bc-editors": "0.8.1",
     "@kogito-tooling/patternfly-base": "0.8.1",
+    "@kogito-tooling/external-assets-base": "0.8.1",
     "@kogito-tooling/vscode-extension": "0.8.1",
     "@kogito-tooling/workspace": "0.8.1"
   }

@@ -17,7 +17,7 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const externalAssets = require("../external-assets-base")
+const externalAssets = require("@kogito-tooling/external-assets-base")
 
 module.exports = async (argv, env) => [
   merge(common, {

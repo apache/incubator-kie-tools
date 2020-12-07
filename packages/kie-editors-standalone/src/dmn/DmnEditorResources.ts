@@ -17,8 +17,7 @@
 import { GwtEditorMapping } from "@kogito-tooling/kie-bc-editors";
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
-import * as externalAssets from "@kogito-tooling/external-assets-base"
-
+import * as externalAssets from "@kogito-tooling/external-assets-base";
 
 export class DmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
@@ -56,9 +55,7 @@ export class DmnEditorResources extends BaseEditorResources {
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
     const gwtJSFile = editorDir.filter(file => file.indexOf(".cache.js") >= 0).pop();
-    return [
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/${gwtJSFile?.split("/").pop()}` }
-    ];
+    return [{ path: `${resourcesPathPrefix}/${gwtModuleName}/${gwtJSFile?.split("/").pop()}` }];
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
