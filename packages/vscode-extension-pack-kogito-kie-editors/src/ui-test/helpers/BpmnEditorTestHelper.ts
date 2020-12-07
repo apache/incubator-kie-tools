@@ -36,15 +36,6 @@ export default class BpmnEditorTestHelper {
     }
 
     /**
-     * Finds button that open BPMN diagram explorer.
-     * 
-     * @returns Promise<WebElement> promise that resolves to BPMN diagram explorer button.
-     */
-    public getDiagramExplorerButton = async (): Promise<WebElement> => {
-        return await this.webview.findWebElement(By.xpath('//button[@data-title=\'Explore Diagram\']'));
-    }
-
-    /**
      * Finds BPMN diagram properties element. Clicking it opens/closes properties panel.
      * 
      * @returns Promise<WebElement> promise that resolves to BPMN diagram properties element. 
