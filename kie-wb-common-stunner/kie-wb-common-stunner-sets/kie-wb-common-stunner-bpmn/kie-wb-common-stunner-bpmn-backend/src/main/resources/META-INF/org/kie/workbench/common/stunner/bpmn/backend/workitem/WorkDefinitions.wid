@@ -1,93 +1,132 @@
 [
-  [
-    "name" : "Email",
-    "parameters" : [
-      "From" : new StringDataType(),
-      "To" : new StringDataType(),
-      "Subject" : new StringDataType(),
-      "Body" : new StringDataType()
-    ],
-    "displayName" : "Email",
-    "icon" : "defaultemailicon.gif"
-  ],
+    [
+        "name" : "BusinessRuleTask",
+        "displayName" : "BusinessRuleTask",
+        "category" : "jbpm-workitems-bpmn2",
+        "description" : "",
+        "defaultHandler" : "mvel: new org.jbpm.process.workitem.bpmn2.BusinessRuleTaskHandler()",
+        "documentation" : "jbpm-workitems-bpmn2/index.html",
+        "icon" : "BusinessRuleTask.png",
 
-  [
-    "name" : "Log",
-    "parameters" : [
-      "Message" : new StringDataType()
+        "parameters" : [
+            "KieSessionName" : new StringDataType(),
+            "KieSessionType" : new StringDataType()
+        ]
     ],
-    "displayName" : "Log",
-    "icon" : "defaultlogicon.gif"
-  ],
 
-  [
-    "name" : "WebService",
-    "parameters" : [
-        "Url" : new StringDataType(),
-         "Namespace" : new StringDataType(),
-         "Interface" : new StringDataType(),
-         "Operation" : new StringDataType(),
-         "Parameter" : new StringDataType(),
-         "Endpoint" : new StringDataType(),
-         "Mode" : new StringDataType()
-    ],
-    "results" : [
-        "Result" : new ObjectDataType(),
-    ],
-    "displayName" : "WS",
-    "icon" : "defaultservicenodeicon.png"
-  ],
+    [
+        "name" : "DecisionTask",
+        "displayName" : "Decision Task",
+        "category" : "jbpm-workitems-bpmn2",
+        "description" : "",
+        "defaultHandler" : "mvel: new org.jbpm.process.workitem.bpmn2.DecisionTaskHandler()",
+        "documentation" : "jbpm-workitems-bpmn2/index.html",
+        "icon" : "DecisionTask.png",
 
-  [
-    "name" : "Rest",
-    "parameters" : [
-        "ContentData" : new StringDataType(),
-        "Url" : new StringDataType(),
-        "Method" : new StringDataType(),
-        "ConnectTimeout" : new StringDataType(),
-        "ReadTimeout" : new StringDataType(),
-        "Username" : new StringDataType(),
-        "Password" : new StringDataType()
+        "parameters" : [
+            "Model" : new StringDataType(),
+            "Namespace" : new StringDataType(),
+            "Decision" : new StringDataType()
+        ]
     ],
-    "results" : [
-        "Result" : new ObjectDataType(),
+
+    [
+        "name" : "Email",
+        "displayName" : "Email",
+        "category" : "jbpm-workitems-email",
+        "description" : "",
+        "defaultHandler" : "mvel: new org.jbpm.process.workitem.email.EmailWorkItemHandler()",
+        "documentation" : "jbpm-workitems-email/index.html",
+        "icon" : "Email.png",
+
+        "parameters" : [
+            "Reply-To" : new StringDataType(),
+            "Cc" : new StringDataType(),
+            "Bcc" : new StringDataType(),
+            "From" : new StringDataType(),
+            "To" : new StringDataType(),
+            "Body" : new StringDataType(),
+            "Attachments" : new StringDataType(),
+            "Subject" : new StringDataType(),
+            "Debug" : new StringDataType(),
+            "Template" : new StringDataType()
+        ]
     ],
-    "displayName" : "REST",
-    "icon" : "defaultservicenodeicon.png"
-  ],
 
-  [
-     "name" : "BusinessRuleTask",
-     "parameters" : [
-       "Language" : new StringDataType(),
-       "KieSessionName" : new StringDataType(),
-       "KieSessionType" : new StringDataType()
-     ],
-     "displayName" : "Business Rule Task",
-     "icon" : "defaultbusinessrulesicon.png",
-     "category" : "Decision tasks"
-   ],
+    [
+        "name" : "Rest",
+        "displayName" : "Rest",
+        "category" : "jbpm-workitems-rest",
+        "description" : "",
+        "defaultHandler" : "mvel: new org.jbpm.process.workitem.rest.RESTWorkItemHandler()",
+        "documentation" : "jbpm-workitems-rest/index.html",
+        "icon" : "Rest.png",
 
-   [
-     "name" : "DecisionTask",
-     "parameters" : [
-       "Language" : new StringDataType(),
-       "Namespace" : new StringDataType(),
-       "Model" : new StringDataType(),
-       "Decision" : new StringDataType()
-     ],
-     "displayName" : "Decision Task",
-     "icon" : "defaultdecisionicon.png",
-     "category" : "Decision tasks"
-   ],
-
-   [
-    "name" : "Milestone",
-    "parameters" : [
-        "Condition" : new StringDataType()
+        "parameters" : [
+            "ConnectTimeout" : new StringDataType(),
+            "ResultClass" : new StringDataType(),
+            "ContentType" : new StringDataType(),
+            "AcceptCharset" : new StringDataType(),
+            "Headers" : new StringDataType(),
+            "AuthUrl" : new StringDataType(),
+            "Method" : new StringDataType(),
+            "ReadTimeout" : new StringDataType(),
+            "Url" : new StringDataType(),
+            "ContentTypeCharset" : new StringDataType(),
+            "HandleResponseErrors" : new StringDataType(),
+            "ContentData" : new StringDataType(),
+            "Username" : new StringDataType(),
+            "Content" : new StringDataType(),
+            "AcceptHeader" : new StringDataType(),
+            "AuthType" : new StringDataType(),
+            "Password" : new StringDataType()
+        ],
+        "results" : [
+            "Result" : new StringDataType()
+        ]
     ],
-    "displayName" : "Milestone",
-    "icon" : "defaultmilestoneicon.png",
-    "category" : "Milestone"
+
+    [
+        "name" : "WebService",
+        "displayName" : "WebService",
+        "category" : "jbpm-workitems-webservice",
+        "description" : "",
+        "defaultHandler" : "mvel: new org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler()",
+        "documentation" : "jbpm-workitems-webservice/index.html",
+        "icon" : "WebService.png",
+
+        "parameters" : [
+            "Endpoint" : new StringDataType(),
+            "Mode" : new StringDataType(),
+            "Parameter" : new StringDataType(),
+            "Operation" : new StringDataType(),
+            "Url" : new StringDataType(),
+            "Namespace" : new StringDataType(),
+            "Interface" : new StringDataType()
+        ],
+        "results" : [
+             "Result" : new StringDataType()
+        ]
+    ],
+
+    [
+        "name" : "Log",
+        "displayName" : "Log",
+        "icon" : "defaultlogicon.gif",
+
+        "parameters" : [
+          "Message" : new StringDataType()
+        ]
+    ],
+
+    [
+        "name" : "Milestone",
+        "displayName" : "Milestone",
+        "category" : "Milestone",
+        "icon" : "defaultmilestoneicon.png",
+
+        "parameters" : [
+            "Condition" : new StringDataType()
+        ]
     ]
 ]
