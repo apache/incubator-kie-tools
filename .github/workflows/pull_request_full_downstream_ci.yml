@@ -284,9 +284,9 @@ jobs:
           cd kogito-online-ci
           rm -rf ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}
           mkdir -p ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/scesim ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
           cp -r ../kogito-tooling/packages/online-editor/dist/* ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/
           git config --global user.email "kietooling@gmail.com"

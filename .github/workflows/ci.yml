@@ -59,20 +59,6 @@ jobs:
         env:
           DISPLAY: ":99.0"
 
-      - name: Upload DMN editor (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: dmn-editor
-          path: packages/kie-bc-editors-unpacked/dmn
-
-      - name: Upload BPMN editor (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: bpmn-editor
-          path: packages/kie-bc-editors-unpacked/bpmn
-
       - name: Upload VSCode Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
