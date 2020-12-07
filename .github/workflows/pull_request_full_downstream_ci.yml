@@ -292,19 +292,28 @@ jobs:
           git push origin gh-pages
           cd -
 
+      # Rebuilds packages, starts and waits for the local servers and runs integration tests for the Chrome plugin
       - name: Run Chrome plugin integration tests
         env:
           DISPLAY: ":99.0"
-        run: cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
+          ROUTER_targetOrigin: "https://localhost:9000"
+          ROUTER_relativePath: ""
+          ONLINEEDITOR_url: "http://localhost:9001"
 
-      - name: Archive it test screenshots	
+        run: |
+          cd packages/online-editor && yarn run build:fast && yarn run start &
+          cd packages/chrome-extension-pack-kogito-kie-editors && yarn run build:fast && yarn run serve-envelope &
+          sleep 20  
+          cd packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
+
+      - name: Archive Chrome plugin integration tests screenshots	
         if: success() || failure()	
         uses: actions/upload-artifact@v1	
         with:	
           name: chrome-extension-it-tests-screenshots-${{ matrix.os }}	
           path: kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/screenshots	
 
-      - name: Archive it test logs	
+      - name: Archive Chrome plugin integration tests logs	
         if: success() || failure()	
         uses: actions/upload-artifact@v1	
         with:	
