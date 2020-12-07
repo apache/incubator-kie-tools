@@ -301,8 +301,8 @@ jobs:
           ONLINEEDITOR_url: "http://localhost:9001"
 
         run: |
-          cd packages/online-editor && yarn run build:fast && yarn run start &
-          cd packages/chrome-extension-pack-kogito-kie-editors && yarn run build:fast && yarn run serve-envelope &
+          cd packages/online-editor && yarn run build:prod && yarn run start &
+          cd packages/chrome-extension-pack-kogito-kie-editors && yarn run build:prod && yarn run serve-envelope &
           sleep 20  
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
