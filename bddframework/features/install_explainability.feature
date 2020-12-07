@@ -64,7 +64,7 @@ Feature: Kogito Explainability service
 
     Then Explainability result for execution "LoanEligibility" in the Trusty service within 3 minutes with saliences:
       | Eligibility  | 
-      | Is Enought?  |
+      | Is Enough?  |
 
 #####
 
@@ -110,4 +110,4 @@ Feature: Kogito Explainability service
 
     Then Explainability result for execution "LoanEligibility" in the Trusty service within 3 minutes with saliences:
       | Eligibility  | 
-      | Is Enought?  |
+      | Is Enough?  |
