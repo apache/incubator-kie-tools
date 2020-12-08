@@ -1746,6 +1746,25 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     }
 
     @Test
+    public void testDecisionServiceWrongLayout_KOGITO2515() throws Exception {
+        final String expected = loadResource("KOGITO-2515 (DMN model with decision services - expected).xml");
+        final String fixture = loadResource("KOGITO-2515 (DMN model with decision services - fixture).xml");
+        final List<String> ignoredAttributes = asList("id", "dmnElementRef", "href");
+
+        setContent(fixture);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .and(expected)
+                .ignoreComments()
+                .ignoreWhitespace()
+                .withAttributeFilter(attr -> !ignoredAttributes.contains(attr.getName()))
+                .areIdentical();
+    }
+
+    @Test
     public void testDecisionTableInputClauseConstraints_KOGITO369() throws Exception {
         final String expected = loadResource("KOGITO-369 (Decision Table Input Clause constraints).xml");
         setContent(expected);

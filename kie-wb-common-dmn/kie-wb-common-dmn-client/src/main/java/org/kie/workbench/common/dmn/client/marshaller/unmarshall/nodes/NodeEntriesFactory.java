@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.di.JSIDiag
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITArtifact;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAssociation;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecisionService;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITImport;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITTextAnnotation;
@@ -75,6 +76,18 @@ public class NodeEntriesFactory {
                 .withDMNDiagrams(dmnDiagrams)
                 .withComponentWidthsConsumer(componentWidthsConsumer)
                 .buildEntries();
+
+        // We need to put all the Decision Services at the begin of the list otherwise the nodes inside
+        // those Decision Services will not be correctly positioned since its parents (the Decision Services nodes)
+        // needs to be positioned first.
+        nodeEntries.sort((n1, n2) -> {
+            if (JSITDecisionService.instanceOf(n1.getDmnElement())) {
+                return -1;
+            } else if (JSITDecisionService.instanceOf(n2.getDmnElement())){
+                return 1;
+            }
+            return 0;
+        });
 
         forEach(dmnDiagrams, dmnDiagram -> {
 
