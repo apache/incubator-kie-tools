@@ -59,7 +59,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const dispatch = useDispatch();
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation } = React.useContext(OperationContext);
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,

@@ -15,28 +15,14 @@
  */
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { Form, FormGroup, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector } from "../../EditorScorecard/atoms";
 
 interface OutputFieldExtendedPropertiesProps {
-  optype: OpType | undefined;
-  setOptype: (optype: OpType | undefined) => void;
-  targetField: FieldName | undefined;
-  setTargetField: (targetField: FieldName | undefined) => void;
-  feature: ResultFeature | undefined;
-  setFeature: (feature: ResultFeature | undefined) => void;
-  value: any | undefined;
-  setValue: (value: any | undefined) => void;
-  rank: number | undefined;
-  setRank: (rank: number | undefined) => void;
-  rankOrder: RankOrder | undefined;
-  setRankOrder: (rankOrder: RankOrder | undefined) => void;
-  segmentId: string | undefined;
-  setSegmentId: (segmentId: string | undefined) => void;
-  isFinalResult: boolean | undefined;
-  setIsFinalResult: (isFinalResult: boolean | undefined) => void;
+  activeOutputField: OutputField | undefined;
   commit: (outputField: Partial<OutputField>) => void;
 }
 
@@ -50,25 +36,30 @@ const GenericSelectorEditor = (
 };
 
 export const OutputFieldExtendedProperties = (props: OutputFieldExtendedPropertiesProps) => {
-  const {
-    optype,
-    setOptype,
-    targetField,
-    setTargetField,
-    feature,
-    setFeature,
-    value,
-    setValue,
-    rank,
-    setRank,
-    rankOrder,
-    setRankOrder,
-    segmentId,
-    setSegmentId,
-    isFinalResult,
-    setIsFinalResult,
-    commit
-  } = props;
+  const { activeOutputField, commit } = props;
+
+  const [optype, setOptype] = useState<OpType | undefined>();
+  const [targetField, setTargetField] = useState<FieldName | undefined>();
+  const [feature, setFeature] = useState<ResultFeature | undefined>();
+  const [value, setValue] = useState<any | undefined>();
+  const [rank, setRank] = useState<number | undefined>();
+  const [rankOrder, setRankOrder] = useState<RankOrder | undefined>();
+  const [segmentId, setSegmentId] = useState<string | undefined>();
+  const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
+
+  useEffect(() => {
+    if (activeOutputField === undefined) {
+      return;
+    }
+    setOptype(activeOutputField.optype);
+    setTargetField(activeOutputField.targetField);
+    setFeature(activeOutputField.feature);
+    setValue(activeOutputField.value);
+    setRank(activeOutputField.rank);
+    setRankOrder(activeOutputField.rankOrder);
+    setSegmentId(activeOutputField.segmentId);
+    setIsFinalResult(activeOutputField.isFinalResult);
+  }, [props]);
 
   const toNumber = (_value: string): number | undefined => {
     if (_value === "") {

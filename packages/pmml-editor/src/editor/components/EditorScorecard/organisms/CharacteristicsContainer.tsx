@@ -65,7 +65,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const dispatch = useDispatch();
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { setActiveOperation } = React.useContext(OperationContext);
 
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);

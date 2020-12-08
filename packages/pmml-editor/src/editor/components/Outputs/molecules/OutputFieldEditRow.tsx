@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FormGroup,
   Select,
@@ -40,29 +40,10 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../../EditorScorecard";
+import { OperationContext } from "../../../PMMLEditor";
 
 interface OutputFieldEditRowProps {
-  activeOperation: Operation;
-  name: ValidatedType<FieldName> | undefined;
-  setName: (name: ValidatedType<FieldName>) => void;
-  dataType: DataType;
-  setDataType: (dataType: DataType) => void;
-  optype: OpType | undefined;
-  setOptype: (optype: OpType | undefined) => void;
-  targetField: FieldName | undefined;
-  setTargetField: (targetField: FieldName | undefined) => void;
-  feature: ResultFeature | undefined;
-  setFeature: (feature: ResultFeature | undefined) => void;
-  value: any | undefined;
-  setValue: (value: any | undefined) => void;
-  rank: number | undefined;
-  setRank: (rank: number | undefined) => void;
-  rankOrder: RankOrder | undefined;
-  setRankOrder: (rankOrder: RankOrder | undefined) => void;
-  segmentId: string | undefined;
-  setSegmentId: (segmentId: string | undefined) => void;
-  isFinalResult: boolean | undefined;
-  setIsFinalResult: (isFinalResult: boolean | undefined) => void;
+  outputField: OutputField | undefined;
   validateOutputName: (name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
   onCommitAndClose: () => void;
@@ -91,34 +72,42 @@ const dataTypes = [
 ];
 
 const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
-  const {
-    activeOperation,
-    name,
-    setName,
-    dataType,
-    setDataType,
-    optype,
-    setOptype,
-    targetField,
-    setTargetField,
-    feature,
-    setFeature,
-    value,
-    setValue,
-    rank,
-    setRank,
-    rankOrder,
-    setRankOrder,
-    segmentId,
-    setSegmentId,
-    isFinalResult,
-    setIsFinalResult,
-    validateOutputName,
-    viewExtendedProperties,
-    onCommitAndClose,
-    onCommit,
-    onCancel
-  } = props;
+  const { outputField, validateOutputName, viewExtendedProperties, onCommitAndClose, onCommit, onCancel } = props;
+
+  const { activeOperation } = React.useContext(OperationContext);
+
+  const [name, setName] = useState<ValidatedType<FieldName | undefined>>({
+    value: undefined,
+    valid: true
+  });
+  const [dataType, setDataType] = useState<DataType>("boolean");
+  const [optype, setOptype] = useState<OpType | undefined>();
+  const [targetField, setTargetField] = useState<FieldName | undefined>();
+  const [feature, setFeature] = useState<ResultFeature | undefined>();
+  const [value, setValue] = useState<any | undefined>();
+  const [rank, setRank] = useState<number | undefined>();
+  const [rankOrder, setRankOrder] = useState<RankOrder | undefined>();
+  const [segmentId, setSegmentId] = useState<string | undefined>();
+  const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
+
+  useEffect(() => {
+    if (outputField === undefined) {
+      return;
+    }
+    setName({
+      value: outputField.name,
+      valid: validateOutputName(outputField.name.toString())
+    });
+    setDataType(outputField.dataType);
+    setOptype(outputField.optype);
+    setTargetField(outputField.targetField);
+    setFeature(outputField.feature);
+    setValue(outputField.value);
+    setRank(outputField.rank);
+    setRankOrder(outputField.rankOrder);
+    setSegmentId(outputField.segmentId);
+    setIsFinalResult(outputField.isFinalResult);
+  }, [props]);
 
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
   const typeToggle = (isOpen: boolean) => {
@@ -176,10 +165,10 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                       valid: validateOutputName(e)
                     });
                   }}
-                  onBlur={() => {
+                  onBlur={e => {
                     if (name?.valid) {
                       onCommit({
-                        name: name?.value as FieldName
+                        name: name.value as FieldName
                       });
                     }
                   }}

@@ -16,50 +16,23 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
-import {
-  DataType,
-  FieldName,
-  OpType,
-  OutputField,
-  RankOrder,
-  ResultFeature
-} from "@kogito-tooling/pmml-editor-marshaller";
+import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./OutputFieldsTable.scss";
 import { Operation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
-import { ValidatedType } from "../../../types";
 import OutputFieldRow from "../molecules/OutputFieldRow";
 import OutputFieldEditRow from "../molecules/OutputFieldEditRow";
+import { OperationContext } from "../../../PMMLEditor";
 
 interface OutputFieldsTableProps {
-  activeOperation: Operation;
-  onAddOutputField: () => void;
-  onEditOutputField: (index: number) => void;
-  onDeleteOutputField: (index: number) => void;
-  activeOutputFieldIndex: number | undefined;
-  name: ValidatedType<FieldName> | undefined;
-  setName: (name: ValidatedType<FieldName>) => void;
-  dataType: DataType;
-  setDataType: (dataType: DataType) => void;
-  optype: OpType | undefined;
-  setOptype: (optype: OpType | undefined) => void;
-  targetField: FieldName | undefined;
-  setTargetField: (targetField: FieldName | undefined) => void;
-  feature: ResultFeature | undefined;
-  setFeature: (feature: ResultFeature | undefined) => void;
-  value: any | undefined;
-  setValue: (value: any | undefined) => void;
-  rank: number | undefined;
-  setRank: (rank: number | undefined) => void;
-  rankOrder: RankOrder | undefined;
-  setRankOrder: (rankOrder: RankOrder | undefined) => void;
-  segmentId: string | undefined;
-  setSegmentId: (segmentId: string | undefined) => void;
-  isFinalResult: boolean | undefined;
-  setIsFinalResult: (isFinalResult: boolean | undefined) => void;
+  modelIndex: number;
   outputs: OutputField[];
+  selectedOutputIndex: number | undefined;
+  setSelectedOutputIndex: (index: number | undefined) => void;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
+  onAddOutputField: () => void;
+  onDeleteOutputField: (index: number) => void;
   onCommitAndClose: () => void;
   onCommit: (partial: Partial<OutputField>) => void;
   onCancel: () => void;
@@ -67,34 +40,13 @@ interface OutputFieldsTableProps {
 
 const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   const {
-    activeOperation,
-    onAddOutputField,
-    onEditOutputField,
-    onDeleteOutputField,
-    activeOutputFieldIndex,
-    name,
-    setName,
-    dataType,
-    setDataType,
-    optype,
-    setOptype,
-    targetField,
-    setTargetField,
-    feature,
-    setFeature,
-    value,
-    setValue,
-    rank,
-    setRank,
-    rankOrder,
-    setRankOrder,
-    segmentId,
-    setSegmentId,
-    isFinalResult,
-    setIsFinalResult,
     outputs,
+    selectedOutputIndex,
+    setSelectedOutputIndex,
     validateOutputFieldName,
     viewExtendedProperties,
+    onAddOutputField,
+    onDeleteOutputField,
     onCommitAndClose,
     onCommit,
     onCancel
@@ -102,11 +54,18 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
 
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
 
+  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+
   useEffect(() => {
     if (activeOperation === Operation.UPDATE_OUTPUT && addOutputRowRef.current) {
       addOutputRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
+
+  const onEdit = (index: number | undefined) => {
+    setSelectedOutputIndex(index);
+    setActiveOperation(Operation.UPDATE_OUTPUT);
+  };
 
   const onDelete = (index: number | undefined) => {
     if (index !== undefined) {
@@ -128,34 +87,14 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
       <section>
         {outputs.map((o, index) => (
           <article
-            className={`editable-item output-item-n${activeOutputFieldIndex} ${
-              activeOutputFieldIndex === index ? "editable-item--editing" : ""
+            className={`editable-item output-item-n${selectedOutputIndex} ${
+              selectedOutputIndex === index ? "editable-item--editing" : ""
             }`}
-            key={o.name as string}
           >
-            {activeOutputFieldIndex === index && (
+            {selectedOutputIndex === index && (
               <OutputFieldEditRow
-                activeOperation={activeOperation}
-                name={name}
-                setName={setName}
-                dataType={dataType}
-                setDataType={setDataType}
-                optype={optype}
-                setOptype={setOptype}
-                targetField={targetField}
-                setTargetField={setTargetField}
-                feature={feature}
-                setFeature={setFeature}
-                value={value}
-                setValue={setValue}
-                rank={rank}
-                setRank={setRank}
-                rankOrder={rankOrder}
-                setRankOrder={setRankOrder}
-                segmentId={segmentId}
-                setSegmentId={setSegmentId}
-                isFinalResult={isFinalResult}
-                setIsFinalResult={setIsFinalResult}
+                key={index}
+                outputField={o}
                 validateOutputName={_name => onValidateOutputFieldName(index, _name)}
                 viewExtendedProperties={viewExtendedProperties}
                 onCommitAndClose={onCommitAndClose}
@@ -163,19 +102,11 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
                 onCancel={onCancel}
               />
             )}
-            {activeOutputFieldIndex !== index && (
+            {selectedOutputIndex !== index && (
               <OutputFieldRow
-                name={o.name}
-                dataType={o.dataType}
-                optype={o.optype}
-                targetField={o.targetField}
-                feature={o.feature}
-                value={o.value}
-                rank={o.rank}
-                rankOrder={o.rankOrder}
-                segmentId={o.segmentId}
-                isFinalResult={o.isFinalResult}
-                onEditOutputField={() => onEditOutputField(index)}
+                key={index}
+                outputField={o}
+                onEditOutputField={() => onEdit(index)}
                 onDeleteOutputField={() => onDelete(index)}
               />
             )}

@@ -14,41 +14,57 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useMemo } from "react";
 import { Label, Split, SplitItem } from "@patternfly/react-core";
-import { DataType, FieldName, OpType, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  DataType,
+  FieldName,
+  OpType,
+  OutputField,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
 
 interface OutputFieldRowProps {
-  name: FieldName | undefined;
-  dataType: DataType;
-  optype: OpType | undefined;
-  targetField: FieldName | undefined;
-  feature: ResultFeature | undefined;
-  value: any | undefined;
-  rank: number | undefined;
-  rankOrder: RankOrder | undefined;
-  segmentId: string | undefined;
-  isFinalResult: boolean | undefined;
+  outputField: OutputField | undefined;
   onEditOutputField: () => void;
   onDeleteOutputField: () => void;
 }
 
+interface Values {
+  name: FieldName | undefined;
+  dataType: DataType | undefined;
+  optype?: OpType;
+  targetField?: FieldName;
+  feature?: ResultFeature;
+  value?: any;
+  rank?: number;
+  rankOrder?: RankOrder;
+  segmentId?: string;
+  isFinalResult?: boolean;
+}
+
 const OutputFieldRow = (props: OutputFieldRowProps) => {
-  const {
-    name,
-    dataType,
-    optype,
-    targetField,
-    feature,
-    value,
-    rank,
-    rankOrder,
-    segmentId,
-    isFinalResult,
-    onEditOutputField,
-    onDeleteOutputField
-  } = props;
+  const { outputField, onEditOutputField, onDeleteOutputField } = props;
+
+  const { name, dataType, optype, targetField, feature, value, rank, rankOrder, segmentId, isFinalResult } = useMemo<
+    Values
+  >(() => {
+    return {
+      name: outputField?.name,
+      dataType: outputField?.dataType,
+      optype: outputField?.optype,
+      targetField: outputField?.targetField,
+      feature: outputField?.feature,
+      value: outputField?.value,
+      rank: outputField?.rank,
+      rankOrder: outputField?.rankOrder,
+      segmentId: outputField?.segmentId,
+      isFinalResult: outputField?.isFinalResult
+    };
+  }, [outputField]);
 
   return (
     <section

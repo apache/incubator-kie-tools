@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
-import {
-  DataType,
-  FieldName,
-  OpType,
-  Output,
-  OutputField,
-  RankOrder,
-  ResultFeature
-} from "@kogito-tooling/pmml-editor-marshaller";
-import { ValidatedType } from "../../../types";
+import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
@@ -54,22 +45,23 @@ type OutputsViewSection = "overview" | "extended-properties" | "batch-add";
 export const OutputsContainer = (props: OutputsContainerProps) => {
   const { modelIndex, output, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
 
-  const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
-  const [name, setName] = useState<ValidatedType<FieldName> | undefined>();
-  const [dataType, setDataType] = useState<DataType>("boolean");
-  const [optype, setOptype] = useState<OpType | undefined>();
-  const [targetField, setTargetField] = useState<FieldName | undefined>();
-  const [feature, setFeature] = useState<ResultFeature | undefined>();
-  const [value, setValue] = useState<any | undefined>();
-  const [rank, setRank] = useState<number | undefined>();
-  const [rankOrder, setRankOrder] = useState<RankOrder | undefined>();
-  const [segmentId, setSegmentId] = useState<string | undefined>();
-  const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
+  const [selectedOutputIndex, setSelectedOutputIndex] = useState<number | undefined>(undefined);
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
   const dispatch = useDispatch();
 
   const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+
+  const editItem: OutputField | undefined = useMemo(() => {
+    if (selectedOutputIndex === undefined) {
+      return undefined;
+    }
+    const outputs = output?.OutputField;
+    if (outputs === undefined) {
+      return undefined;
+    }
+    return outputs[selectedOutputIndex];
+  }, [output, selectedOutputIndex]);
 
   const getTransition = (_viewSection: OutputsViewSection) => {
     let cssClass;
@@ -90,13 +82,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const addOutputField = () => {
     const numberOfOutputFields = output?.OutputField.length;
     if (numberOfOutputFields !== undefined) {
-      //Index of the new row is equal to the number of existing rows
-      setEditItemIndex(numberOfOutputFields);
-
       const existingNames: string[] = output?.OutputField.map(of => of.name.toString()) ?? [];
       const newOutputFieldName: FieldName = findIncrementalName("New output", existingNames, 1) as FieldName;
-
-      commitOutputField(undefined, {
+      const newOutputField: OutputField = {
         name: newOutputFieldName,
         dataType: "string",
         optype: undefined,
@@ -107,35 +95,13 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         rankOrder: undefined,
         segmentId: undefined,
         isFinalResult: undefined
-      });
-      setName({ value: newOutputFieldName, valid: true });
-      setDataType("string");
-      setOptype(undefined);
-      setTargetField(undefined);
-      setFeature(undefined);
-      setValue(undefined);
-      setRank(undefined);
-      setRankOrder(undefined);
-      setSegmentId(undefined);
-      setIsFinalResult(undefined);
-      setActiveOperation(Operation.UPDATE_OUTPUT);
-    }
-  };
+      };
 
-  const onEditOutputField = (index: number) => {
-    setEditItemIndex(index);
-    const outputField: OutputField = (output?.OutputField as OutputField[])[index];
-    setName({ value: outputField.name, valid: true });
-    setDataType(outputField.dataType);
-    setOptype(outputField.optype);
-    setTargetField(outputField.targetField);
-    setFeature(outputField.feature);
-    setValue(outputField.value);
-    setRank(outputField.rank);
-    setRankOrder(outputField.rankOrder);
-    setSegmentId(outputField.segmentId);
-    setIsFinalResult(outputField.isFinalResult);
-    setActiveOperation(Operation.UPDATE_OUTPUT);
+      setSelectedOutputIndex(numberOfOutputFields);
+      setActiveOperation(Operation.UPDATE_OUTPUT);
+
+      commitOutputField(undefined, newOutputField);
+    }
   };
 
   const addBatchOutputs = (outputs: string) => {
@@ -156,19 +122,19 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const onCommit = (partial: Partial<OutputField>) => {
-    if (output !== undefined && editItemIndex !== undefined) {
-      const outputField = output.OutputField[editItemIndex];
+    if (output !== undefined && selectedOutputIndex !== undefined) {
+      const outputField = output.OutputField[selectedOutputIndex];
       const existingPartial: Partial<OutputField> = {};
       Object.keys(partial).forEach(key => set(existingPartial, key, get(outputField, key)));
 
       if (!isEqual(partial, existingPartial)) {
-        commitOutputField(editItemIndex, { ...outputField, ...partial });
+        commitOutputField(selectedOutputIndex, { ...outputField, ...partial });
       }
     }
   };
 
   const onCancel = () => {
-    setEditItemIndex(undefined);
+    setSelectedOutputIndex(undefined);
     setActiveOperation(Operation.NONE);
   };
 
@@ -214,33 +180,13 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 </StackItem>
                 <StackItem className="outputs-container__overview">
                   <OutputFieldsTable
-                    activeOperation={activeOperation}
-                    onEditOutputField={onEditOutputField}
-                    activeOutputFieldIndex={editItemIndex}
-                    name={name}
-                    setName={setName}
-                    dataType={dataType}
-                    setDataType={setDataType}
-                    optype={optype}
-                    setOptype={setOptype}
-                    targetField={targetField}
-                    setTargetField={setTargetField}
-                    feature={feature}
-                    setFeature={setFeature}
-                    value={value}
-                    setValue={setValue}
-                    rank={rank}
-                    setRank={setRank}
-                    rankOrder={rankOrder}
-                    setRankOrder={setRankOrder}
-                    segmentId={segmentId}
-                    setSegmentId={setSegmentId}
-                    isFinalResult={isFinalResult}
-                    setIsFinalResult={setIsFinalResult}
+                    modelIndex={modelIndex}
                     outputs={output?.OutputField as OutputField[]}
-                    onAddOutputField={addOutputField}
+                    selectedOutputIndex={selectedOutputIndex}
+                    setSelectedOutputIndex={setSelectedOutputIndex}
                     validateOutputFieldName={validateOutputFieldName}
                     viewExtendedProperties={() => setViewSection("extended-properties")}
+                    onAddOutputField={addOutputField}
                     onDeleteOutputField={deleteOutputField}
                     onCommitAndClose={onCommitAndClose}
                     onCommit={onCommit}
@@ -254,30 +200,12 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 <StackItem>
                   <TextContent>
                     <Title size="lg" headingLevel="h1">
-                      <a onClick={() => setViewSection("overview")}>{name?.value}</a>&nbsp;/&nbsp;Properties
+                      <a onClick={() => setViewSection("overview")}>{editItem?.name}</a>&nbsp;/&nbsp;Properties
                     </Title>
                   </TextContent>
                 </StackItem>
                 <StackItem className="outputs-container__extended-properties">
-                  <OutputFieldExtendedProperties
-                    optype={optype}
-                    setOptype={setOptype}
-                    targetField={targetField}
-                    setTargetField={setTargetField}
-                    feature={feature}
-                    setFeature={setFeature}
-                    value={value}
-                    setValue={setValue}
-                    rank={rank}
-                    setRank={setRank}
-                    rankOrder={rankOrder}
-                    setRankOrder={setRankOrder}
-                    segmentId={segmentId}
-                    setSegmentId={setSegmentId}
-                    isFinalResult={isFinalResult}
-                    setIsFinalResult={setIsFinalResult}
-                    commit={onCommit}
-                  />
+                  <OutputFieldExtendedProperties activeOutputField={editItem} commit={onCommit} />
                 </StackItem>
                 <StackItem>
                   <Button
