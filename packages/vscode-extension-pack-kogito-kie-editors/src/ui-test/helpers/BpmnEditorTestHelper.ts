@@ -86,7 +86,7 @@ export default class BpmnEditorTestHelper {
      * 
      * Verifies the button is displayed and enabled.
      * Verifies there is an expanded panel element displayed and enabled.
-     * Verifies there is a <h3> element with propert text.
+     * Verifies there is a <h3> element with proper text.
      * 
      * @returns a promise resolving to WebElement of openned panel.
      */
