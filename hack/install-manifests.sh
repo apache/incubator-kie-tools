@@ -17,15 +17,10 @@ declare exit_status=0
 declare file_found=0
 
 shopt -s nullglob
-for yaml in deploy/{crds/*_crd.yaml,role*.yaml,service_account.yaml}; do
+for yaml in deploy/crds/*_crd.yaml; do
   file_found=1
-  if [ -z "${NAMESPACE}" ]; then
-    kubectl apply -f "./${yaml}"
-    exit_status=$?
-  else
-    kubectl apply -f "./${yaml}" -n "${NAMESPACE}"
-    exit_status=$?
-  fi
+  kubectl apply -f "./${yaml}"
+  exit_status=$?
   if [ $exit_status -gt 0 ]; then
     break # Don't try other files if one fails
   fi
