@@ -301,10 +301,10 @@ jobs:
           ONLINEEDITOR_url: "http://localhost:9001"
 
         run: |
-          cd packages/online-editor && yarn run build:prod && yarn run start &
-          cd packages/chrome-extension-pack-kogito-kie-editors && yarn run build:prod && yarn run serve-envelope &
+          cd kogito-tooling/packages/online-editor && yarn run build:prod && yarn run start &
+          cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run build:prod && yarn run serve-envelope &
           sleep 20  
-          cd packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
+          cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
       - name: Archive Chrome plugin integration tests screenshots	
         if: success() || failure()	
