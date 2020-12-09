@@ -93,7 +93,7 @@ module.exports = {
       throw new Error(`External asset :: Quarkus Runner path found multiple matches: ${matches.join(", ")}`);
     }
 
-    console.info(`External asset :: Quarkus Runner path: ${path}`);
+    console.info(`External asset :: Quarkus Runner path: ${matches[0]}`);
 
     return path;
   }
