@@ -18,14 +18,6 @@ import * as React from "react";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { ModelCard } from "../../../../../editor/components/LandingPage/molecules";
 
-// const model: Model = new Scorecard({
-//   modelName: "Name",
-//   Characteristics: { Characteristic: [] },
-//   MiningSchema: { MiningField: [] },
-//   baselineMethod: "max",
-//   functionName: "regression"
-// });
-
 describe("ModelCard", () => {
   test("render::Basics", () => {
     const onClick = jest.fn((index: number) => null);
