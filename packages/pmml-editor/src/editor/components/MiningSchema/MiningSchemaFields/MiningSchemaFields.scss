@@ -1,0 +1,16 @@
+.mining-schema-list {
+  &__item {
+    &__name {
+      display: block;
+      font-weight: bold;
+      // find a better way to vertical align each section of the field
+      margin-top: 2px;
+      word-break: keep-all;
+    }
+    &__edit {
+      margin-top: 2px;
+      margin-left: var(--pf-global--spacer--sm);
+      padding: 0 4px;
+    }
+  }
+}

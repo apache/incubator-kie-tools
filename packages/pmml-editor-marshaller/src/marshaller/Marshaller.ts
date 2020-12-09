@@ -127,6 +127,8 @@ function json2uiFalsePredicateFactory(): False {
 
 export function PMML2XML(pmml: PMML): string {
   const expression: Expression = JSONata(ui2json);
+  expression.registerFunction("singletonArray", singletonArray);
+
   const json: any = expression.evaluate(pmml);
   const xml: string = XMLJS.js2xml(json, { spaces: 2 });
 

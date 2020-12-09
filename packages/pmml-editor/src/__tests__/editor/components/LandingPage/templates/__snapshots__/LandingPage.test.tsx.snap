@@ -8,7 +8,7 @@ exports[`LandingPage render::No Models 1`] = `
     class="pf-c-page__main-section pf-m-light"
   >
     <div
-      class="pf-l-split"
+      class="pf-l-split pf-m-gutter"
     >
       <div
         class="pf-l-split__item pf-m-fill"
@@ -26,46 +26,16 @@ exports[`LandingPage render::No Models 1`] = `
       <div
         class="pf-l-split__item"
       >
-        <div
-          class="pf-c-dropdown pf-m-align-right"
-          data-ouia-component-id="0"
-          data-ouia-component-type="PF4/Dropdown"
+        <button
+          aria-disabled="false"
+          class="pf-c-button pf-m-secondary"
+          data-ouia-component-id="3"
+          data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
-          data-testid="action-selector"
+          type="button"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="pf-c-dropdown__toggle"
-            data-testid="action-selector__toggle"
-            id="action-selector-id"
-            type="button"
-          >
-            <span
-              class="pf-c-dropdown__toggle-text"
-            >
-              Actions
-            </span>
-            <span
-              class="pf-c-dropdown__toggle-icon"
-            >
-              <svg
-                aria-hidden="true"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 320 512"
-                width="1em"
-              >
-                <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                  transform=""
-                />
-              </svg>
-            </span>
-          </button>
-        </div>
+          Set Data Dictionary
+        </button>
       </div>
     </div>
     <div
@@ -212,7 +182,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
     class="pf-c-page__main-section pf-m-light"
   >
     <div
-      class="pf-l-split"
+      class="pf-l-split pf-m-gutter"
     >
       <div
         class="pf-l-split__item pf-m-fill"
@@ -230,46 +200,16 @@ exports[`LandingPage render::With Supported Model 1`] = `
       <div
         class="pf-l-split__item"
       >
-        <div
-          class="pf-c-dropdown pf-m-align-right"
-          data-ouia-component-id="3"
-          data-ouia-component-type="PF4/Dropdown"
+        <button
+          aria-disabled="false"
+          class="pf-c-button pf-m-secondary"
+          data-ouia-component-id="7"
+          data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
-          data-testid="action-selector"
+          type="button"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="pf-c-dropdown__toggle"
-            data-testid="action-selector__toggle"
-            id="action-selector-id"
-            type="button"
-          >
-            <span
-              class="pf-c-dropdown__toggle-text"
-            >
-              Actions
-            </span>
-            <span
-              class="pf-c-dropdown__toggle-icon"
-            >
-              <svg
-                aria-hidden="true"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 320 512"
-                width="1em"
-              >
-                <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                  transform=""
-                />
-              </svg>
-            </span>
-          </button>
-        </div>
+          Set Data Dictionary
+        </button>
       </div>
     </div>
     <div
@@ -308,7 +248,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
                     aria-disabled="false"
                     aria-label="filter button for filter input"
                     class="pf-c-button pf-m-control"
-                    data-ouia-component-id="4"
+                    data-ouia-component-id="5"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     data-testid="landing-page-toolbar__submit"
@@ -407,7 +347,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
               <button
                 aria-disabled="false"
                 class="pf-c-button pf-m-primary"
-                data-ouia-component-id="5"
+                data-ouia-component-id="6"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 data-testid="model-card__delete"

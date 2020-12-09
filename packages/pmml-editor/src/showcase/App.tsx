@@ -22,8 +22,7 @@ import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/com
 import { PMMLEmptyState } from "./EmptyState";
 import { DisplayProperty } from "csstype";
 import { HistoryButtons } from "./HistoryButtons";
-
-const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
+import "./App.scss";
 
 const manager: EnvelopeBusMessageManager<
   KogitoEditorChannelApi,
@@ -54,8 +53,8 @@ export const App = () => {
       {content === undefined && (
         <PMMLEmptyState
           newContent={() => {
-            setContent(EMPTY_PMML);
-            editor.setContent("New document", EMPTY_PMML).finally();
+            setContent("");
+            editor.setContent("New document", "").finally();
           }}
           setContent={(path: string, xml: string) => {
             setContent(xml);
@@ -65,8 +64,9 @@ export const App = () => {
       )}
       <div style={{ display: displayPMMLEditor() }}>
         <HistoryButtons undo={undo} redo={redo} get={() => editor.getContent()} />
-        <hr />
-        <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
+        <div className="editor-container">
+          <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
+        </div>
       </div>
     </div>
   );

@@ -36,7 +36,8 @@ import {
   SCORE_CARD_COMPOUND_PREDICATE,
   SCORE_CARD_NESTED_COMPLEX_PARTIAL_SCORE,
   SCORE_CARD_NESTED_COMPOUND_PREDICATE,
-  SCORE_CARD_SIMPLE_PREDICATE
+  SCORE_CARD_SIMPLE_PREDICATE,
+  SCORE_CARD_SIMPLE_PREDICATE_SINGLE
 } from "./TestData_ScoreCards";
 
 describe("Scorecard tests", () => {
@@ -73,6 +74,15 @@ describe("Scorecard tests", () => {
 
     const model: Model = models[0];
     expect(model).toBeInstanceOf(Scorecard);
+
+    const scorecard: Scorecard = model as Scorecard;
+    expect(scorecard.modelName).toBe("SimpleScorecard");
+    expect(scorecard.functionName).toBe("regression");
+    expect(scorecard.useReasonCodes).toBeTruthy();
+    expect(scorecard.reasonCodeAlgorithm).toBe("pointsBelow");
+    expect(scorecard.initialScore).toBe(5);
+    expect(scorecard.baselineMethod).toBe("other");
+    expect(scorecard.baselineScore).toBe(6);
   });
 
   test("Scorecard::Models::No modelName", () => {
@@ -200,6 +210,27 @@ describe("Scorecard tests", () => {
       operator: "greaterThan",
       value: "-5"
     });
+  });
+
+  test("Scorecard::Characteristics:Attributes::SimplePredicate::Single", () => {
+    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE_SINGLE);
+    const models: Model[] = pmml.models ?? [];
+    const scorecard: Scorecard = models[0] as Scorecard;
+    const characteristics: Characteristic[] = scorecard.Characteristics?.Characteristic as Characteristic[];
+    const characteristic0Attributes: Attribute[] = characteristics[0].Attribute as Attribute[];
+
+    assertSimplePredicate(characteristic0Attributes[0].predicate, {
+      field: "input1" as FieldName,
+      operator: "lessOrEqual",
+      value: "10"
+    });
+
+    //Check round-trip
+    const xml: string = PMML2XML(pmml);
+    expect(xml).not.toBeNull();
+
+    const pmml2: PMML = XML2PMML(xml);
+    expect(pmml).toEqual(pmml2);
   });
 
   test("Scorecard::Characteristics:Attributes::CompoundPredicate", () => {

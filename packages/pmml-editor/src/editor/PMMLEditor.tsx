@@ -19,18 +19,31 @@ import * as React from "react";
 import { Reducer } from "react";
 import { enableAllPlugins } from "immer";
 import { createStore, Store } from "redux";
-import { Actions, AllActions, DataDictionaryReducer, DataFieldReducer, HeaderReducer, PMMLReducer } from "./reducers";
-import { PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Actions,
+  AllActions,
+  DataDictionaryReducer,
+  DataFieldReducer,
+  HeaderReducer,
+  ModelReducer,
+  PMMLReducer
+} from "./reducers";
+import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HistoryService } from "./history";
 import { LandingPage } from "./components/LandingPage/templates";
 import { Page } from "@patternfly/react-core";
 import { HashRouter } from "react-router-dom";
-import { Route, Switch } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
+import { SingleEditorRouter } from "./components/EditorCore/organisms";
+import { PMMLModelMapping, PMMLModels } from "./PMMLModelHelper";
+import { Operation } from "./components/EditorScorecard";
 
-export interface Props {
+const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
+
+interface Props {
   exposing: (s: PMMLEditor) => void;
   channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
 }
@@ -39,7 +52,18 @@ export interface State {
   path: string;
   content: string;
   originalContent: string;
+  activeOperation: Operation;
 }
+
+interface ActiveOperation {
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
+}
+
+export const OperationContext = React.createContext<ActiveOperation>({
+  activeOperation: Operation.NONE,
+  setActiveOperation: (operation: Operation) => null
+});
 
 export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
@@ -52,14 +76,16 @@ export class PMMLEditor extends React.Component<Props, State> {
     this.state = {
       path: "",
       content: "",
-      originalContent: ""
+      originalContent: "",
+      activeOperation: Operation.NONE
     };
 
     enableAllPlugins();
 
     this.reducer = mergeReducers(PMMLReducer(this.service), {
       Header: HeaderReducer(this.service),
-      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) })
+      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) }),
+      models: ModelReducer(this.service)
     });
   }
 
@@ -72,8 +98,27 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   private doSetContent(path: string, content: string): void {
-    this.store = createStore(this.reducer, XML2PMML(content));
-    this.setState({ path: path, content: content, originalContent: content });
+    let pmml: PMML;
+    let _content: string = content;
+
+    if (content === "") {
+      _content = EMPTY_PMML;
+      pmml = XML2PMML(_content);
+
+      //If there is only one supported type of model then create a default entry
+      const supportedModelTypes: Array<PMMLModelMapping<any>> = PMMLModels.filter(m => m.isSupported);
+      if (content === "" && supportedModelTypes.length === 1) {
+        const factory = supportedModelTypes[0].factory;
+        if (factory) {
+          pmml.models = [factory()];
+        }
+      }
+    } else {
+      pmml = XML2PMML(_content);
+    }
+
+    this.store = createStore(this.reducer, pmml);
+    this.setState({ path: path, content: _content, originalContent: _content, activeOperation: Operation.NONE });
   }
 
   public getContent(): Promise<string> {
@@ -113,15 +158,46 @@ export class PMMLEditor extends React.Component<Props, State> {
     }
   }
 
+  private isSingleModel(): boolean {
+    if (!this.store) {
+      return false;
+    }
+    const models: Model[] | undefined = this.store.getState().models;
+    if (models !== undefined) {
+      if (models.length === 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public render() {
+    const isSingleModel: boolean = this.isSingleModel();
+
     if (this.store) {
+      const path: string = this.state.path;
       return (
         <HashRouter>
           <Page>
             <Provider store={this.store}>
               <Switch>
                 <Route exact={true} path={"/"}>
-                  <LandingPage path={this.state.path} />
+                  {!isSingleModel && <LandingPage path={path} />}
+                  {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
+                </Route>
+                <Route exact={true} path={"/editor/:index"}>
+                  <OperationContext.Provider
+                    value={{
+                      activeOperation: this.state.activeOperation,
+                      setActiveOperation: operation =>
+                        this.setState({
+                          ...this.state,
+                          activeOperation: operation
+                        })
+                    }}
+                  >
+                    <SingleEditorRouter path={path} />
+                  </OperationContext.Provider>
                 </Route>
               </Switch>
             </Provider>

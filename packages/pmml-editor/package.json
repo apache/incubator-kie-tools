@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "homepage": "https://manstis.github.io/kogito-tooling",
   "files": [
     "dist"
   ],
@@ -19,12 +20,17 @@
     "@types/lodash": "^4.14.161",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "5.1.1",
+    "@types/react-transition-group": "^4.4.0",
     "@types/uuid": "^8.3.0",
     "combine-reducer": "^1.0.2",
     "immer": "^7.0.8",
     "lodash": "^4.14.2",
+    "react-monaco-editor": "^0.40.0",
+    "react-cool-onclickoutside": "^1.5.7",
     "react-redux": "^7.2.1",
     "react-router-dom": "5.1.1",
+    "react-sortable-hoc": "^1.11.0",
+    "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "uuid": "^8.3.0"
   },
@@ -37,12 +43,17 @@
     "build:prod": "yarn run build --mode production",
     "build:productization": "yarn run build:prod",
     "build:showcase": "yarn run build:fast --mode development",
-    "start": "webpack-dev-server -d --host 0.0.0.0 --mode development"
+    "start": "webpack-dev-server -d --host 0.0.0.0 --mode development",
+    "deploy": "gh-pages -d dist"
   },
   "babel": {
     "presets": [
       "@babel/env",
       "@babel/react"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0",
+    "monaco-editor-webpack-plugin": "^2.0.0"
   }
 }

@@ -16,17 +16,32 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 let config = merge(common, {
   entry: {
-    "editor/index": "./src/editor/index.ts"
+    index: "./src/editor/index.ts"
   },
-  plugins: [new CopyPlugin([{ from: "./static/images", to: "./images" }])],
+  plugins: [
+    new CopyPlugin([
+      {
+        from: "./static/images",
+        to: "./images"
+      }
+    ]),
+    new MonacoWebpackPlugin()
+  ],
   module: {
-    rules: [...pfWebpackOptions.patternflyRules]
+    rules: [
+      {
+        test: /\.ttf$/,
+        use: ["file-loader"]
+      },
+      ...pfWebpackOptions.patternflyRules
+    ]
   }
 });
 
@@ -41,21 +56,21 @@ module.exports = (env, argv) => {
   if (argv.mode === "development") {
     config = merge(config, {
       entry: {
-        "showcase/index": "./src/showcase/index.tsx"
+        index: "./src/showcase/index.tsx"
       },
       plugins: [
         new CopyPlugin([
-          { from: "./src/showcase/static/resources", to: "./showcase/resources" },
-          { from: "./src/showcase/static/index.html", to: "./showcase/index.html" },
-          { from: "./src/showcase/static/favicon.ico", to: "./showcase/favicon.ico" },
-          { from: "./static/images", to: "./showcase/images" }
+          { from: "./src/showcase/static/resources", to: "./resources" },
+          { from: "./src/showcase/static/index.html", to: "./index.html" },
+          { from: "./src/showcase/static/favicon.ico", to: "./favicon.ico" },
+          { from: "./static/images", to: "./images" }
         ])
       ],
       devServer: {
         historyApiFallback: true,
         disableHostCheck: true,
         watchContentBase: true,
-        contentBase: path.join(__dirname, "./dist/showcase"),
+        contentBase: path.join(__dirname),
         compress: true,
         port: 9001,
         open: true,

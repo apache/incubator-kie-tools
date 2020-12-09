@@ -1,0 +1,17 @@
+.constraints-enum {
+  &__list {
+  }
+  &__item {
+    border-top: 1px solid var(--pf-global--disabled-color--200);
+    border-bottom: 1px solid var(--pf-global--disabled-color--200);
+    list-style: none;
+    pointer-events: auto !important;
+    cursor: grab;
+    z-index: 9999;
+    padding: 0.5rem 1rem;
+    margin-top: -1px;
+    &--sort-disabled {
+      cursor: auto;
+    }
+  }
+}

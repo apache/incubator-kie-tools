@@ -56,7 +56,7 @@ const CHARACTERISTIC: string = `[
         "reasonCode": $v.reasonCode,
         "baselineScore": $v.baselineScore
       },
-      "elements": ${ATTRIBUTE}
+      "elements": $singletonArray(${ATTRIBUTE})
     }
   })
 ]`;
@@ -66,7 +66,7 @@ $v.Characteristics ~> $map(function($v, $i) {
   {
     "type": "element",
     "name": "Characteristics",
-    "elements": ${CHARACTERISTIC}
+    "elements": $singletonArray(${CHARACTERISTIC})
   }
 })`;
 

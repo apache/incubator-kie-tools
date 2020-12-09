@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions, PMMLReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
@@ -32,58 +32,6 @@ describe("PMMLReducer::Valid actions", () => {
     });
     expect(updated).not.toEqual(pmml);
     expect(updated.version).toBe("1.0");
-  });
-
-  test("Actions.DeleteModel", () => {
-    const pmmlWithModels: PMML = { ...pmml };
-    const scorecard1: Scorecard = new Scorecard({
-      MiningSchema: { MiningField: [] },
-      functionName: "regression",
-      Characteristics: { Characteristic: [] }
-    });
-    const scorecard2: Scorecard = new Scorecard({
-      MiningSchema: { MiningField: [] },
-      functionName: "classification",
-      Characteristics: { Characteristic: [] }
-    });
-    pmmlWithModels.models = [scorecard1, scorecard2];
-
-    const updated: PMML = reducer(pmmlWithModels, {
-      type: Actions.DeleteModel,
-      payload: {
-        model: scorecard1
-      }
-    });
-    expect(updated).not.toEqual(pmml);
-    const updatedModels: Model[] | undefined = updated.models;
-    expect(updatedModels).not.toBeUndefined();
-    expect(updatedModels?.length).toBe(1);
-    expect(updatedModels?.[0]).toBeInstanceOf(Scorecard);
-    const updatedScorecard: Scorecard = updatedModels?.[0] as Scorecard;
-    expect(updatedScorecard).toBe(scorecard2);
-  });
-
-  test("Actions.DeleteModel::Model not in PMML", () => {
-    const pmmlWithModels: PMML = { ...pmml };
-    const scorecard1: Scorecard = new Scorecard({
-      MiningSchema: { MiningField: [] },
-      functionName: "regression",
-      Characteristics: { Characteristic: [] }
-    });
-    const scorecard2: Scorecard = new Scorecard({
-      MiningSchema: { MiningField: [] },
-      functionName: "classification",
-      Characteristics: { Characteristic: [] }
-    });
-    pmmlWithModels.models = [scorecard1];
-
-    const updated: PMML = reducer(pmmlWithModels, {
-      type: Actions.DeleteModel,
-      payload: {
-        model: scorecard2
-      }
-    });
-    expect(updated).toEqual(pmmlWithModels);
   });
 });
 
