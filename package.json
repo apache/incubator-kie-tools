@@ -19,7 +19,11 @@
   },
   "dependencies": {
     "react": "16.12.0",
-    "react-dom": "16.12.0"
+    "react-dom": "16.12.0",
+    "@kogito-tooling/dmn-editor-unpacked": "7.47.0-Final",
+    "@kogito-tooling/bpmn-editor-unpacked": "7.47.0-Final",
+    "@kogito-tooling/scesim-editor-unpacked": "7.47.0-Final",
+    "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT"
   },
   "devDependencies": {
     "@babel/core": "7.7.2",
@@ -51,7 +55,6 @@
     "glob": "7.1.4",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^25.2.7",
-    "jest-junit": "9.0.0",
     "jest-webextension-mock": "^3.5.0",
     "lerna": "3.18.3",
     "lock-treatment-tool": "^0.4.1",

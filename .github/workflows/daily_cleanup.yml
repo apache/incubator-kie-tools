@@ -1,4 +1,4 @@
-name: Daily cleanup
+name: "CI :: Daily cleanup (kogito-online-ci)"
 
 on:
   schedule:

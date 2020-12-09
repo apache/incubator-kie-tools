@@ -18,8 +18,9 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
+const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = [
+module.exports = async (argv, env) => [
   merge(common, {
     output: {
       library: "AppFormer.VsCodePack",
@@ -54,9 +55,9 @@ module.exports = [
     plugins: [
       new CopyWebpackPlugin([
         { from: "./static", to: "static" },
-        { from: "../kie-bc-editors-unpacked/bpmn", to: "webview/editors/bpmn" },
-        { from: "../kie-bc-editors-unpacked/dmn", to: "webview/editors/dmn" },
-        { from: "../kie-bc-editors-unpacked/scesim", to: "webview/editors/scesim" }
+        { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn" },
+        { from: externalAssets.bpmnEditorPath(argv), to: "webview/editors/bpmn" },
+        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim" }
       ])
     ]
   })

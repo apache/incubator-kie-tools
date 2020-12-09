@@ -1,4 +1,4 @@
-name: Publish release artifacts
+name: "Release :: Publish"
 
 on:
   release:
@@ -64,9 +64,9 @@ jobs:
           ln -s ${{ steps.release-tag.outputs.tag }} ./editors/latest
           rm -rf $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR
           mkdir -p $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/scesim $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_CHROME_EXT_EDITOR_DIR/
           rm $KOGITO_ONLINE_EDITOR_DIR/gwt-editors
           cp -r ../kogito-tooling/packages/online-editor/dist/* $KOGITO_ONLINE_EDITOR_DIR

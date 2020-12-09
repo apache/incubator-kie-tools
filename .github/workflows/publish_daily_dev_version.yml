@@ -1,4 +1,4 @@
-name: Publish daily dev version
+name: "CI :: Daily dev version"
 
 on:
   schedule:
@@ -63,27 +63,6 @@ jobs:
         run: |
           cd kogito-tooling
           yarn run build:prod
-
-      - name: Upload DMN editor (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: dmn-editor
-          path: kogito-tooling/packages/kie-bc-editors-unpacked/dmn
-
-      - name: Upload BPMN editor (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: bpmn-editor
-          path: kogito-tooling/packages/kie-bc-editors-unpacked/bpmn
-
-      - name: Upload SceSim editor (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: scesim-editor
-          path: kogito-tooling/packages/kie-bc-editors-unpacked/scesim
 
       - name: Upload VSCode Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
@@ -163,9 +142,9 @@ jobs:
           cd kogito-online
           rm -rf dev
           mkdir -p dev/editors
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn dev/editors/
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn dev/editors/
-          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/scesim dev/editors/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn dev/editors/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn dev/editors/
+          cp -r ../kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim dev/editors/
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope dev/editors/
           cp -r ../kogito-tooling/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
