@@ -24,7 +24,9 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 // InstallService install the Kogito Service component
@@ -43,7 +45,12 @@ func installOrDeployService(serviceHolder *bddtypes.KogitoServiceHolder, install
 	var err error
 	switch installerType {
 	case CLIInstallerType:
-		err = cliInstall(serviceHolder, cliDeployCommand, cliDeploymentName)
+		if err = cliInstall(serviceHolder, cliDeployCommand, cliDeploymentName); err != nil {
+			return err
+		}
+		if err = patchKogitoProbes(serviceHolder); err != nil {
+			return err
+		}
 	case CRInstallerType:
 		err = crInstall(serviceHolder)
 	default:
@@ -87,6 +94,15 @@ func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName str
 		Image:    NewImageOrDefault(fullImage, defaultImageName),
 		// Sets insecure image registry as service images can be stored in insecure registries
 		InsecureImageRegistry: true,
+		// Extends the probe interval for slow test environment
+		Probes: v1beta1.KogitoProbe{
+			ReadinessProbe: corev1.Probe{
+				FailureThreshold: 12,
+			},
+			LivenessProbe: corev1.Probe{
+				FailureThreshold: 12,
+			},
+		},
 	}
 }
 
@@ -162,4 +178,45 @@ func OnKogitoServiceDeployed(namespace string, service v1beta1.KogitoService) er
 	}
 
 	return nil
+}
+
+// Kogito CLI doesn't contain all the probe configuration options which are needed to alter the deployments for slow environments. Therefore it is needed to patch CRs directly.
+func patchKogitoProbes(serviceHolder *bddtypes.KogitoServiceHolder) error {
+	var patched v1beta1.KogitoService
+	var err error
+	for i := 0; i < 3; i++ {
+		patched, err = newKogitoService(serviceHolder.KogitoService)
+		if err != nil {
+			return err
+		}
+
+		// Fetch deployed service
+		var exists bool
+		if exists, err = kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Namespace: serviceHolder.GetNamespace(), Name: serviceHolder.GetName()}, patched); err != nil {
+			return fmt.Errorf("Error fetching service %s in namespace %s: %v", serviceHolder.GetName(), serviceHolder.GetNamespace(), err)
+		} else if !exists {
+			return fmt.Errorf("Service %s in namespace %s doesn't exist", serviceHolder.GetName(), serviceHolder.GetNamespace())
+		}
+
+		// Set probe configuration
+		patched.GetSpec().SetProbes(serviceHolder.GetSpec().GetProbes())
+
+		// Update deployed service
+		if err = kubernetes.ResourceC(kubeClient).Update(patched); err == nil {
+			return nil
+		}
+	}
+	return fmt.Errorf("Error updating service %s in namespace %s: %v", patched.GetName(), patched.GetNamespace(), err)
+}
+
+// Return new empty KogitoService based on same type as parameter
+func newKogitoService(s v1beta1.KogitoService) (v1beta1.KogitoService, error) {
+	switch v := s.(type) {
+	case *v1beta1.KogitoRuntime:
+		return &v1beta1.KogitoRuntime{}, nil
+	case *v1beta1.KogitoSupportingService:
+		return &v1beta1.KogitoSupportingService{}, nil
+	default:
+		return nil, fmt.Errorf("Type %T not defined", v)
+	}
 }

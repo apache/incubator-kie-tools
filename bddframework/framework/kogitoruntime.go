@@ -17,6 +17,7 @@ package framework
 import (
 	"fmt"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -65,6 +66,15 @@ func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1beta
 				// Use insecure registry flag in tests
 				InsecureImageRegistry: true,
 				Replicas:              &replicas,
+				// Extends the probe interval for slow test environment
+				Probes: v1beta1.KogitoProbe{
+					ReadinessProbe: corev1.Probe{
+						FailureThreshold: 12,
+					},
+					LivenessProbe: corev1.Probe{
+						FailureThreshold: 12,
+					},
+				},
 			},
 		},
 	}
