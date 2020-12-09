@@ -72,6 +72,8 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.util.Cookie;
@@ -106,6 +108,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -116,6 +119,10 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
+
+    public static final String OTHER_PERSPECTIVE = "OtherPerspective";
+    public static final PlaceRequest LIBRARY_PERSPECTIVE_PLACE_REQUEST = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_PERSPECTIVE);
+    public static final PlaceRequest OTHER_PERSPECTIVE_PLACE_REQUEST = new DefaultPlaceRequest(OTHER_PERSPECTIVE);
 
     @Mock
     private UberfireBreadcrumbs breadcrumbs;
@@ -204,6 +211,15 @@ public class LibraryPlacesTest {
     @Mock
     private Cookie cookie;
 
+    @Mock
+    private PerspectiveManager perspectiveManager;
+
+    @Mock
+    private PerspectiveActivity libraryPerspective;
+
+    @Mock
+    private PerspectiveActivity otherPerspective;
+
     private String lastSpaceCookie;
     private String lastProjectCookie;
     private String lastBranchCookie;
@@ -225,6 +241,8 @@ public class LibraryPlacesTest {
     public void setup() {
         when(user.getIdentifier()).thenReturn("user");
         when(sessionInfo.getIdentity()).thenReturn(user);
+        when(libraryPerspective.getPlace()).thenReturn(LIBRARY_PERSPECTIVE_PLACE_REQUEST);
+        when(otherPerspective.getPlace()).thenReturn(OTHER_PERSPECTIVE_PLACE_REQUEST);
 
         windowParameters = new HashMap<>();
         libraryServiceCaller = new CallerMock<>(libraryService);
@@ -261,7 +279,8 @@ public class LibraryPlacesTest {
                                               mock(OrganizationalUnitController.class),
                                               organizationalUnitServiceCaller,
                                               logger,
-                                              cookie) {
+                                              cookie,
+                                              perspectiveManager) {
 
             @Override
             protected Map<String, List<String>> getParameterMap() {
@@ -381,8 +400,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onSelectPlaceOutsideLibraryTest() {
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
+        doReturn(otherPerspective).when(perspectiveManager).getCurrentPerspective();
 
         final PlaceGainFocusEvent placeGainFocusEvent = mock(PlaceGainFocusEvent.class);
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
@@ -393,7 +411,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onSelectAssetTest() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
 
         final ObservablePath path = mock(ObservablePath.class);
         final PathPlaceRequest pathPlaceRequest = mock(PathPlaceRequest.class);
@@ -408,7 +426,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onSelectProjectTest() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
 
         final DefaultPlaceRequest projectSettingsPlaceRequest = new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN);
         final PlaceGainFocusEvent placeGainFocusEvent = mock(PlaceGainFocusEvent.class);
@@ -421,7 +439,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onSelectLibraryTest() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
 
         final DefaultPlaceRequest projectSettingsPlaceRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
         final PlaceGainFocusEvent placeGainFocusEvent = mock(PlaceGainFocusEvent.class);
@@ -434,7 +452,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onPreferencesSaveTest() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
         doNothing().when(libraryPlaces).goToProject();
 
         libraryPlaces.onPreferencesSave(mock(PreferencesCentralSaveEvent.class));
@@ -444,8 +462,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onPreferencesSaveOutsideLibraryTest() {
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
+        doReturn(otherPerspective).when(perspectiveManager).getCurrentPerspective();
 
         libraryPlaces.onPreferencesSave(mock(PreferencesCentralSaveEvent.class));
 
@@ -455,7 +472,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onPreferencesCancelTest() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
         doNothing().when(libraryPlaces).goToProject();
 
         libraryPlaces.onPreferencesCancel(mock(PreferencesCentralUndoChangesEvent.class));
@@ -465,8 +482,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onPreferencesCancelOutsideLibraryTest() {
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
+        doReturn(otherPerspective).when(perspectiveManager).getCurrentPerspective();
 
         libraryPlaces.onPreferencesCancel(mock(PreferencesCentralUndoChangesEvent.class));
 
@@ -901,6 +917,29 @@ public class LibraryPlacesTest {
     }
 
     @Test
+    public void goToProjectUsingValidPath() {
+        final Path projectPath = mock(Path.class);
+
+        doReturn(activeProject).when(projectService).resolveProject(activeSpace, activeBranch);
+        doReturn(activeProject).when(projectService).resolveProject(projectPath);
+
+        libraryPlaces.goToProject(projectPath);
+
+        verify(libraryPlaces).goToProject(activeProject, activeBranch);
+    }
+
+    @Test
+    public void goToProjectUsingInvalidPath() {
+        final Path projectPath = mock(Path.class);
+        doThrow(new RuntimeException()).when(projectService).resolveProject(projectPath);
+
+        libraryPlaces.goToProject(projectPath);
+
+        verify(libraryPlaces, never()).goToProject(any(), any());
+        verify(notificationEvent).fire(any());
+    }
+
+    @Test
     public void placesAreUpdatedWhenActiveModuleIsRenamedTest() {
 
         libraryPlaces.onChange(new WorkspaceProjectContextChangeEvent(mock(WorkspaceProject.class),
@@ -1012,7 +1051,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onOpenedProjectDeleted() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(anyString());
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
 
         libraryPlaces.onProjectDeleted(new RepositoryRemovedEvent(activeRepository));
 
@@ -1025,7 +1064,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onClosedProjectDeleted() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(anyString());
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
 
         final Repository anotherRepository = mock(Repository.class);
         doReturn("anotherRepository").when(anotherRepository).getIdentifier();
@@ -1049,7 +1088,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onOrganizationalUnitRemovedByLoggedUserTest() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
 
         libraryPlaces.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(activeOrganizationalUnit, user.getIdentifier()));
 
@@ -1058,7 +1097,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onOrganizationalUnitRemovedByOtherUserTest() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(libraryPerspective).when(perspectiveManager).getCurrentPerspective();
 
         libraryPlaces.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(activeOrganizationalUnit, "another-user"));
 
@@ -1067,8 +1106,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void onOrganizationalUnitRemovedWithLibraryClosedTest() {
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(anyString());
-        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
+        doReturn(otherPerspective).when(perspectiveManager).getCurrentPerspective();
 
         libraryPlaces.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(activeOrganizationalUnit, "another-user"));
 
