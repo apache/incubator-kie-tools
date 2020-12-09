@@ -123,11 +123,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   };
 
   return (
-    <article
-      ref={ref}
-      className={`characteristic-item characteristic-item-n${characteristicIndex} editable editing`}
-      tabIndex={0}
-    >
+    <article ref={ref} className={"editable-item__inner"} tabIndex={0}>
       <Stack hasGutter={true}>
         <StackItem>
           <Split hasGutter={true}>
