@@ -123,16 +123,6 @@ pipeline {
                         sh 'cat modules/kogito-task-console/module.yaml'
                         sh 'cat modules/kogito-trusty-ui/module.yaml'
 
-                        // Input for checking new artifacts have been set correctly
-                        withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
-                            emailext body: "Images' modules have been set with latest artifacts from JBoss repository.\n" +
-                                    "Please verify in the logs if it has been set correctly: ${env.BUILD_URL}console.\n" +
-                                    "And take your decision here: ${env.BUILD_URL}input",
-                                    subject: "[${getBuildBranch()}] Release Pipeline",
-                                    to: ZULIP_EMAIL
-                        }
-                        input message: 'Are the artifacts set correctly ?', ok: 'Yes'
-
                         try {
                             githubscm.commitChanges('Setup Maven artifacts to released ones')
                             githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())
