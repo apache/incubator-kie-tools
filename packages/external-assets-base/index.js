@@ -16,6 +16,7 @@
  
 const nodePath = require("path");
 const nodeFs = require("fs");
+const glob = require("glob");
 
 /**
  * Two scenarios for nodeModulesDir:
@@ -81,6 +82,16 @@ module.exports = {
         nodeModulesDir +
           "/@kogito-tooling/quarkus-runner-unpacked/target/dependencies/kogito-extended-services-quarkus-*-runner.jar"
       );
+
+    const matches = glob.sync(path);
+
+    console.info(`Found ${matches.length} match(es) for External asset :: Quarkus Runner.`);
+
+    if (matches.length <= 0) {
+      throw new Error(`External asset :: Quarkus Runner path found no matches: ${path}`);
+    } else if (matches.length > 1) {
+      throw new Error(`External asset :: Quarkus Runner path found multiple matches: ${matches.join(", ")}`);
+    }
 
     console.info(`External asset :: Quarkus Runner path: ${path}`);
 
