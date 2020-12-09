@@ -74,6 +74,7 @@ import org.slf4j.Logger;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.promise.Promises;
@@ -187,6 +188,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private Cookie cookie;
 
+    private PerspectiveManager perspectiveManager;
+
     public LibraryPlaces() {
     }
 
@@ -214,7 +217,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                          final OrganizationalUnitController organizationalUnitController,
                          final Caller<OrganizationalUnitService> organizationalUnitService,
                          final Logger logger,
-                         final Cookie cookie) {
+                         final Cookie cookie,
+                         final PerspectiveManager perspectiveManager) {
 
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
@@ -240,6 +244,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         this.organizationalUnitService = organizationalUnitService;
         this.logger = logger;
         this.cookie = cookie;
+        this.perspectiveManager = perspectiveManager;
     }
 
     @PostConstruct
@@ -401,10 +406,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     private boolean isLibraryPerspectiveOpen() {
-        final PlaceStatus statusPerspective = placeManager.getStatus(LIBRARY_PERSPECTIVE);
-        final PlaceStatus statusPerspectiveWithoutRefresh = placeManager.getStatus(getLibraryPlaceRequestWithoutRefresh());
-        return statusPerspective.equals(PlaceStatus.OPEN)
-                || statusPerspectiveWithoutRefresh.equals(PlaceStatus.OPEN);
+        return perspectiveManager.getCurrentPerspective().getPlace().getIdentifier().equals(LIBRARY_PERSPECTIVE);
     }
 
     public void onPreferencesSave(@Observes PreferencesCentralSaveEvent event) {
@@ -417,18 +419,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         if (isLibraryPerspectiveOpen()) {
             goToProject();
         }
-    }
-
-    PlaceRequest getLibraryPlaceRequestWithoutRefresh() {
-        return getPlaceRequestWithoutRefresh(LIBRARY_PERSPECTIVE);
-    }
-
-    private PlaceRequest getPlaceRequestWithoutRefresh(String placeId) {
-        final Map<String, String> params = new HashMap<>();
-        params.put("refresh",
-                   "false");
-        return new DefaultPlaceRequest(placeId,
-                                       params);
     }
 
     public void refresh(final Command callback) {
@@ -550,6 +540,16 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         goToProject(() -> {
             // do nothing.
         });
+    }
+
+    public void goToProject(final Path projectPath) {
+        projectService.call((RemoteCallback<WorkspaceProject>) project -> {
+            goToProject(project, project.getBranch());
+        }, (o, throwable) -> {
+            notificationEvent.fire(new NotificationEvent(ts.format(LibraryConstants.InvalidProjectPath),
+                                                         NotificationEvent.NotificationType.ERROR));
+            return false;
+        }).resolveProject(projectPath);
     }
 
     public void goToProject(final String spaceName, final String projectName, final String branchName) {

@@ -787,4 +787,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String InvalidCommitMessage = "InvalidCommitMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvalidProjectPath = "InvalidProjectPath";
 }

@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -175,7 +176,7 @@ public class ImportRepositoryPopUpPresenterTest {
         verify(view).hideBusyIndicator();
         verify(view).hide();
         verify(notificationEvent).fire(any(NotificationEvent.class));
-        verify(libraryPlaces).goToProject(any());
+        verify(libraryPlaces).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -196,7 +197,7 @@ public class ImportRepositoryPopUpPresenterTest {
         verify(view).hideBusyIndicator();
         verify(view, never()).hide();
         verify(notificationEvent, never()).fire(any(NotificationEvent.class));
-        verify(libraryPlaces, never()).goToProject(any());
+        verify(libraryPlaces, never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
