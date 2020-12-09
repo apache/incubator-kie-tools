@@ -33,8 +33,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 /**
  * - It deploys the default work item definitions that the workbench provides.
  * - It does the deployment in same way as jbpm-designer does, in order to guarantee the
- * compatibility between both designers. This way it provides the same artifacts (and same file names) and
- * uses same FS structure as well for the deployment operation, as the jbpm-designer's ones.
+ * compatibility between both designers. This way it generates WID files on first process creation
+ * uses same FS structure for the deployment operation, as the jbpm-designer's ones.
  */
 @ApplicationScoped
 public class WorkItemDefinitionDefaultDeployService implements WorkItemDefinitionDeployService {
@@ -42,15 +42,19 @@ public class WorkItemDefinitionDefaultDeployService implements WorkItemDefinitio
     static final String DEPLOY_MESSAGE = "Deployment of the default work item definitions";
     static final String ASSETS_ROOT = "/META-INF/org/kie/workbench/common/stunner/bpmn/backend/workitem/";
     static final String WID_FILE = "WorkDefinitions.wid";
-    static final String EMAIL_ICON = "defaultemailicon.gif";
-    static final String BR_ICON = "defaultbusinessrulesicon.png";
-    static final String DECISION_ICON = "defaultdecisionicon.png";
+    static final String REST_ICON = "Rest.png";
+    static final String EMAIL_ICON = "Email.png";
+    static final String WEB_SERVICE_ICON = "WebService.png";
+    static final String BR_ICON = "BusinessRuleTask.png";
+    static final String DECISION_ICON = "DecisionTask.png";
     static final String LOG_ICON = "defaultlogicon.gif";
     static final String SERVICE_NODE_ICON = "defaultservicenodeicon.png";
     static final String MILESTONE_ICON = "defaultmilestoneicon.png";
     static final String[] ASSETS = new String[]{
             WID_FILE,
+            REST_ICON,
             EMAIL_ICON,
+            WEB_SERVICE_ICON,
             BR_ICON,
             DECISION_ICON,
             LOG_ICON,
