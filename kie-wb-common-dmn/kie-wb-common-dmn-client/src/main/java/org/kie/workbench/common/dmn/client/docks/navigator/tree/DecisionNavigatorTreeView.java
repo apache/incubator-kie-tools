@@ -40,8 +40,10 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.uberfire.client.mvp.LockRequiredEvent;
 
 import static java.util.Optional.ofNullable;
@@ -161,6 +163,7 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
     @Templated("DecisionNavigatorTreeView.html#item")
     public static class TreeItem implements IsElement {
 
+        private final ReadOnlyProvider readOnlyProvider;
         @DataField("text-content")
         private HTMLElement textContent;
 
@@ -194,7 +197,8 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
                         final @Named("i") HTMLElement save,
                         final @Named("i") HTMLElement edit,
                         final @Named("i") HTMLElement remove,
-                        final Event<LockRequiredEvent> locker) {
+                        final Event<LockRequiredEvent> locker,
+                        final @DMNEditor ReadOnlyProvider readOnlyProvider) {
             this.textContent = textContent;
             this.inputText = inputText;
             this.icon = icon;
@@ -203,6 +207,7 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
             this.edit = edit;
             this.remove = remove;
             this.locker = locker;
+            this.readOnlyProvider = readOnlyProvider;
         }
 
         @EventHandler("icon")
@@ -282,8 +287,10 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
                 getElement().getClassList().add("parent-node");
             }
 
-            if (getItem().isEditable()) {
-                getElement().getClassList().add("editable");
+            if (!readOnlyProvider.isReadOnlyDiagram()) {
+                if (getItem().isEditable()) {
+                    getElement().getClassList().add("editable");
+                }
             }
         }
 

@@ -23,7 +23,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
@@ -48,14 +50,17 @@ public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanva
     private final SessionManager sessionManager;
     private final ClientTranslationService translationService;
     private final Event<EditExpressionEvent> editExpressionEvent;
+    private final ReadOnlyProvider readOnlyProvider;
 
     @Inject
     public DMNEditDecisionToolboxAction(final SessionManager sessionManager,
                                         final ClientTranslationService translationService,
-                                        final Event<EditExpressionEvent> editExpressionEvent) {
+                                        final Event<EditExpressionEvent> editExpressionEvent,
+                                        final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         this.sessionManager = sessionManager;
         this.translationService = translationService;
         this.editExpressionEvent = editExpressionEvent;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @Override
@@ -82,12 +87,12 @@ public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanva
                                                                                       uuid)
                 .asNode();
         final Decision decision = (Decision) DefinitionUtils.getElementDefinition(decisionNode);
-        final boolean isOnlyVisualChangeAllowed = decision.isAllowOnlyVisualChange();
+        final boolean isReadOnly = decision.isAllowOnlyVisualChange() || readOnlyProvider.isReadOnlyDiagram();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
                                                          uuid,
                                                          decision,
                                                          Optional.of(decision),
-                                                         isOnlyVisualChangeAllowed));
+                                                         isReadOnly));
 
         return this;
     }

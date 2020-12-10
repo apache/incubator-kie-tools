@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -84,6 +85,9 @@ public class DecisionNavigatorNestedItemFactoryTest {
     @Mock
     private BoxedExpressionHelper boxedExpressionHelper;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private DecisionNavigatorNestedItemFactory factory;
 
     @Before
@@ -94,7 +98,8 @@ public class DecisionNavigatorNestedItemFactoryTest {
                                                              dmnGraphUtils,
                                                              expressionEditorDefinitionsSupplier,
                                                              canvasSelectionEvent,
-                                                             boxedExpressionHelper));
+                                                             boxedExpressionHelper,
+                                                             readOnlyProvider));
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(decisionTableEditorDefinition);
@@ -181,6 +186,31 @@ public class DecisionNavigatorNestedItemFactoryTest {
         assertEquals(Optional.of(hasName), expressionEvent.getHasName());
         assertEquals(hasExpression, expressionEvent.getHasExpression());
         assertFalse(expressionEvent.isOnlyVisualChangeAllowed());
+    }
+
+    @Test
+    public void testMakeEditExpressionEventWhenIsReadOnly() {
+
+        final ClientSession currentSession = mock(ClientSession.class);
+        final HasName hasName = mock(HasName.class);
+        final HasExpression hasExpression = mock(HasExpression.class);
+        final View view = mock(View.class);
+        final String uuid = "uuid";
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+        when(node.getUUID()).thenReturn(uuid);
+        when(sessionManager.getCurrentSession()).thenReturn(currentSession);
+        when(node.getContent()).thenReturn(view);
+        when(view.getDefinition()).thenReturn(hasName);
+        when(boxedExpressionHelper.getHasExpression(node)).thenReturn(hasExpression);
+
+        final EditExpressionEvent expressionEvent = factory.makeEditExpressionEvent(node);
+
+        assertEquals(uuid, expressionEvent.getNodeUUID());
+        assertEquals(currentSession, expressionEvent.getSession());
+        assertEquals(Optional.of(hasName), expressionEvent.getHasName());
+        assertEquals(hasExpression, expressionEvent.getHasExpression());
+        assertTrue(expressionEvent.isOnlyVisualChangeAllowed());
     }
 
     @Test
