@@ -295,8 +295,7 @@ jobs:
           git push origin gh-pages
           cd -
 
-      # Rebuilds Chrome plugin to use local servers
-      - name: Rebuild Chrome plugin 
+      - name: Rebuild Chrome Extension to use servers running on localhost
         env:
           DISPLAY: ":99.0"
           EXTERNAL_ASSET__dmnEditorPath: "../../../kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime",
@@ -307,7 +306,7 @@ jobs:
           ONLINEEDITOR_url: "http://localhost:9001"
         run: cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run build:prod && cd -
 
-      - name: Run Chrome plugin integration tests
+      - name: Run Chrome Extension integration tests
         run: |
           cd kogito-tooling/packages/online-editor && yarn run start &
           cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
