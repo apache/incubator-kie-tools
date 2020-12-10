@@ -24,7 +24,7 @@ import org.uberfire.preferences.shared.bean.BasePreference;
 @WorkbenchPreference(identifier = "LibraryPreferences",
         bundleKey = "LibraryPreferences.Label")
 public class LibraryPreferences implements BasePreference<LibraryPreferences> {
-
+    
     @Property(bundleKey = "LibraryPreferences.OrganizationalUnitPreferences")
     LibraryOrganizationalUnitPreferences organizationalUnitPreferences;
 
@@ -45,6 +45,9 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.projectPreferences.version = "1.0.0-SNAPSHOT";
         defaultValue.projectPreferences.description = "";
         defaultValue.projectPreferences.branch = "master";
+        //GWT complains in SuperDevMode if the static constants are used; so we have to use a literal
+        defaultValue.projectPreferences.assetsPerPage = System.getProperty("org.kie.library.assets_per_page",
+                                                                           "15");
 
         return defaultValue;
     }

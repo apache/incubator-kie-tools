@@ -36,6 +36,8 @@ import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryProjectPreferences;
 import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTestBase;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
@@ -54,6 +56,7 @@ import org.uberfire.client.mvp.ResourceTypeManagerCache;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.category.Others;
@@ -116,6 +119,9 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
     @Mock
     private Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
+    
+    @Mock
+    private LibraryPreferences libraryPreferences;
 
     private AssetQueryService assetQueryService;
 
@@ -137,6 +143,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               newResourcePresenter,
                                                               projectController,
                                                               mock(Event.class),
+                                                              libraryPreferences,
                                                               emptyState,
                                                               categoryUtils,
                                                               dateUtils,
@@ -546,5 +553,19 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         this.populatedAssetsScreen.init();
         verify(this.view).enableImportButton(eq(true));
         verify(this.view).enableImportButton(eq(false));
+    }
+    
+    @Test
+    public void testInitializeDefaultPreference() {
+        LibraryPreferences mockLibraryPreferences = mock(LibraryPreferences.class);
+        LibraryProjectPreferences mockLibraryProjectPreferences = mock(LibraryProjectPreferences.class);
+        
+        when(mockLibraryPreferences.getProjectPreferences()).thenReturn(mockLibraryProjectPreferences);
+        when(mockLibraryProjectPreferences.getAssetsPerPage()).thenReturn("15");
+        doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
+        
+        this.populatedAssetsScreen.init();
+        verify(libraryPreferences).load(any(ParameterizedCommand.class),
+                                        any(ParameterizedCommand.class));
     }
 }

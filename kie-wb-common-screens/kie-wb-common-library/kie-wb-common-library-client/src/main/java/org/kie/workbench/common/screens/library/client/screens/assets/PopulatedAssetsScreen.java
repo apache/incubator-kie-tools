@@ -40,6 +40,7 @@ import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.Routed;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
@@ -78,6 +79,7 @@ public class PopulatedAssetsScreen {
     private NewResourcePresenter newResourcePresenter;
     private ProjectController projectController;
     private Event<UpdatedAssetsEvent> updatedAssetsEventEvent;
+    private LibraryPreferences libraryPreferences;
     private EmptyState emptyState;
     private CategoryUtils categoryUtils;
     private DateUtils dateUtils;
@@ -137,6 +139,7 @@ public class PopulatedAssetsScreen {
                                  final NewResourcePresenter newResourcePresenter,
                                  final ProjectController projectController,
                                  final Event<UpdatedAssetsEvent> updatedAssetsEventEvent,
+                                 final LibraryPreferences libraryPreferences,
                                  final EmptyState emptyState,
                                  final CategoryUtils categoryUtils,
                                  final DateUtils dateUtils,
@@ -155,6 +158,7 @@ public class PopulatedAssetsScreen {
         this.newResourcePresenter = newResourcePresenter;
         this.projectController = projectController;
         this.updatedAssetsEventEvent = updatedAssetsEventEvent;
+        this.libraryPreferences = libraryPreferences;
         this.emptyState = emptyState;
         this.categoryUtils = categoryUtils;
         this.dateUtils = dateUtils;
@@ -171,7 +175,7 @@ public class PopulatedAssetsScreen {
         this.view.setCategories(this.categoryUtils.createCategories());
         this.filter = "";
         this.currentPage = 1;
-        this.pageSize = 15;
+        this.setDefaultPageSize();
 
         projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspace()).then(userCanUpdateProject -> {
             this.enableButtons(userCanUpdateProject);
@@ -518,6 +522,15 @@ public class PopulatedAssetsScreen {
                           },
                           new DefaultErrorCallback());
         }
+    }
+    
+    private void setDefaultPageSize() {
+        libraryPreferences.load(loadedLibraryPreferences -> {
+            this.pageSize = Integer.valueOf(loadedLibraryPreferences
+                                                    .getProjectPreferences()
+                                                    .getAssetsPerPage());
+            update();
+        }, error -> {});
     }
 
     private boolean isProjectNull() {
