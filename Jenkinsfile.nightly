@@ -1,0 +1,87 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        label 'image-test'
+    }
+    tools {
+        maven 'kie-maven-3.6.3'
+        jdk 'kie-jdk11'
+    }
+    parameters {
+        booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
+        string(description: 'The product version', name: 'PRODUCT_VERSION', defaultValue: "1.0.0")
+    }
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                sh 'printenv'
+
+            }
+        }
+        stage('Clone build configuration repo') {
+            steps {
+                script {
+                    // def currentBranch = env.BRANCH_NAME ?: env.GIT_BRANCH
+                    def currentBranch = 'BXMSPROD-1128'
+                    println "Checking out ${env.BUILD_CONFIGURATION_REPO_URL}:${currentBranch} into build_config folder"
+                    sh "git clone -b ${currentBranch} --single-branch ${env.BUILD_CONFIGURATION_REPO_URL} build_config"
+                }
+            }
+        }
+        stage('Build Nightly projects') {
+            steps {
+                script {
+                        def projectCollection = ["kiegroup/kogito-tooling"]
+                        println "Project Collection to build ${projectCollection}"
+                        def buildConfigAdditionalVariables = [:]
+                        def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
+
+                        println "[DEBUG] 1"
+                        Map<String, Object> buildConfigMap = getBuildConfigMap(buildConfigPathFolder, buildConfigAdditionalVariables)
+                        println "[DEBUG] 2"
+                        pmebuild.checkoutProjects(projectCollection, buildConfigMap, buildConfigAdditionalVariables)
+                        println "[DEBUG] 3"
+                        projectCollection.each { project -> buildProject(project, buildConfigMap) }
+                }
+            }
+        }
+        stage('Generate Properties Files') {
+            steps {
+                script {
+                    echo "[WARN] TODO"
+                }
+            }
+        }
+        stage ("Send UMB Message to QE.") {
+            steps {
+                script {
+                    echo "[WARN] TODO"
+                }
+            }
+        }
+    }
+    post {
+        cleanup {
+            cleanWs()
+        }
+    }
+}
+
+def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariables){
+  env.DATE_TIME_SUFFIX = env.DATE_TIME_SUFFIX ?: "${new Date().format('yyyyMMdd')}"
+  env.PME_BUILD_VARIABLES = ''
+  def buildConfigContent = readFile "${buildConfigPathFolder}/build-config.yaml"
+  return pmebuild.getBuildConfiguration(buildConfigContent, buildConfigPathFolder, buildConfigAdditionalVariables)
+}
+
+def buildProject(String project, Map<String, Object> buildConfig, String defaultGroup = "kiegroup") {
+    println "[INFO] Building project ${project}"
+    def projectGroupName = util.getProjectGroupName(project, defaultGroup)
+    def group = projectGroupName[0]
+    def name = projectGroupName[1]
+    pmebuild.executeBuildScript("${group}/${name}", buildConfig, null)
+}
