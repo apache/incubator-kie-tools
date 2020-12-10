@@ -63,15 +63,37 @@ export const en: OnlineI18n = {
     }
   },
   editorToolbar: {
+    closeAndReturnHome: "Close and return Home",
+    enterFullScreenView: "Enter full screen view",
+    saveAndDownload: "Save & Download",
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
     setGitHubToken: `Set up your ${en_common.names.github} token`,
     gistIt: "Gist it!",
-    gistItTooltip: `Set up your ${en_common.names.github} token to be able to create gists!`,
-    fileActions: "File actions",
-    updateGist: "Update gist",
-    updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`
+    gistItTooltip: `Set up your ${en_common.names.github} token to be able to create and update gists!`,
+    share: "Share",
+    embed: "Embed"
+  },
+  embedModal: {
+    title: "Embed",
+    description:
+      "Embed the editor and content in your page. Choose the options below and copy the embed code to your clipboard:",
+    copy: "Copy",
+    source: {
+      current: {
+        label: "Current content",
+        description: "The embedded Editor will contain the current content, so it cannot be changed externally."
+      },
+      gist: {
+        tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
+        label: `${en_common.names.github} gist`,
+        description:
+          "The embedded Editor will fetch the content from the open gist. Changes made to this gist will be reflected in the Editor."
+      }
+    },
+    embedCode: "Embed code",
+    copiedToClipboard: "Copied to clipboard"
   },
   githubTokenModal: {
     header: {

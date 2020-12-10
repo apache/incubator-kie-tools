@@ -15,34 +15,28 @@
  */
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import {
-  Gallery,
-  GalleryItem,
-  PageSection,
-  PageSectionVariants,
-  Split,
-  SplitItem,
-  TextContent,
-  Title
-} from "@patternfly/react-core";
-import { EmptyStateNoModels, LandingPageToolbar } from "../organisms";
+import { Gallery, GalleryItem, PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { EmptyStateNoModels } from "../organisms";
 import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
-import { getModelName, isSupportedModelType } from "../../..";
-import { ActionSelector, ModelCard } from "../molecules";
+import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
+import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
+import { useHistory } from "react-router";
 
 interface LandingPageProps {
   path: string;
 }
 
 export const LandingPage = (props: LandingPageProps) => {
-  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
-
+  const history = useHistory();
   const dispatch = useDispatch();
+
   const [filter, setFilter] = useState("");
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);
+
+  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
   const hasUnsupportedModels = useMemo(() => (models ?? []).find(model => !isSupportedModelType(model)) !== undefined, [
     models
   ]);
@@ -61,30 +55,30 @@ export const LandingPage = (props: LandingPageProps) => {
 
   const filteredModels: Model[] = useMemo(() => filterModels(), [filter, showUnsupportedModels, models]);
 
-  const onDelete = useCallback((_model: Model) => {
-    dispatch({
-      type: Actions.DeleteModel,
-      payload: {
-        model: _model
-      }
-    });
+  const goToModel = useCallback(
+    (index: number) => {
+      history.push({
+        pathname: "editor/" + index
+      });
+    },
+    [history]
+  );
+
+  const onDelete = useCallback((index: number, modelName: string) => {
+    if (window.confirm(`Delete Model "${modelName}"?`)) {
+      dispatch({
+        type: Actions.DeleteModel,
+        payload: {
+          modelIndex: index
+        }
+      });
+    }
   }, []);
 
   return (
     <div data-testid="landing-page">
       <PageSection variant={PageSectionVariants.light}>
-        <Split>
-          <SplitItem isFilled={true}>
-            <TextContent>
-              <Title size="3xl" headingLevel="h2">
-                {props.path}
-              </Title>
-            </TextContent>
-          </SplitItem>
-          <SplitItem>
-            <ActionSelector />
-          </SplitItem>
-        </Split>
+        <LandingPageHeader title={props.path} />
         <LandingPageToolbar
           onFilter={setFilter}
           hasUnsupportedModels={hasUnsupportedModels}
@@ -97,11 +91,24 @@ export const LandingPage = (props: LandingPageProps) => {
         <section>
           {filteredModels.length > 0 && (
             <Gallery hasGutter={true}>
-              {filteredModels.map(model => (
-                <GalleryItem key={uuid()} data-testid="landing-page__model-card">
-                  <ModelCard model={model} onDelete={onDelete} />
-                </GalleryItem>
-              ))}
+              {filteredModels.map(model => {
+                //model should always be a member of models at this point.
+                const index: number | undefined = models?.indexOf(model);
+                const modelName: string = getModelName(model);
+                const modelType: ModelType = getModelType(model);
+
+                return (
+                  <GalleryItem key={uuid()} data-testid="landing-page__model-card">
+                    <ModelCard
+                      index={index}
+                      modelName={modelName}
+                      modelType={modelType}
+                      onClick={goToModel}
+                      onDelete={_index => onDelete(_index, modelName)}
+                    />
+                  </GalleryItem>
+                );
+              })}
             </Gallery>
           )}
           {filteredModels.length === 0 && (

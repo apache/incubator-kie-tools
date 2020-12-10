@@ -1,0 +1,27 @@
+.data-type-item {
+  &__sortable {
+    // sorting library is canceling pointer events for some reason
+    // they are needed for setting the cursor while dragging
+    pointer-events: auto !important;
+    cursor: grab;
+    z-index: 9999;
+    list-style: none;
+
+    &--sm-size .editable-item__inner {
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+    }
+    &--md-size .editable-item__inner {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+  }
+}
+
+.data-types-sorting > .data-type-item__sortable:hover {
+  cursor: grab;
+}
+
+body > .data-type-item__sortable:hover {
+  cursor: grabbing;
+}

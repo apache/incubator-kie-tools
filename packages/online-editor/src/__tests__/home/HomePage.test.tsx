@@ -146,7 +146,7 @@ describe("HomePage", () => {
         window.fetch = originalFetch;
       });
 
-      test("should show an invalid gist error", async () => {
+      test("should show an invalid gist error - url", async () => {
         const githubService = new GithubService();
         jest.spyOn(githubService, "getGistRawUrlFromId").mockImplementation((url: string) => Promise.reject());
 
@@ -160,7 +160,7 @@ describe("HomePage", () => {
         expect(await findByText(`Enter a valid gist URL. If you're using a specific gist URL remember its name can't have whitespaces and upper-case letters.`)).toBeTruthy();
       });
 
-      test("should show an invalid gist error", async () => {
+      test("should show an invalid gist error - file type", async () => {
         const githubService = new GithubService();
         jest
           .spyOn(githubService, "getGistRawUrlFromId")

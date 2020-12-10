@@ -1,0 +1,10 @@
+.mining-schema-list {
+  &__item__label {
+    margin-right: var(--pf-global--spacer--sm);
+    margin-bottom: var(--pf-global--spacer--xs);
+    margin-top: var(--pf-global--spacer--xs);
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}

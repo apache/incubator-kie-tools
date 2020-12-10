@@ -15,5 +15,19 @@
  */
 import { Reducer } from "react";
 import { HistoryService } from "./HistoryProvider";
+import { ModelType } from "..";
+import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 
 export type HistoryAwareReducer<S, A> = (service: HistoryService) => Reducer<S, A>;
+
+export interface ModelReducerBinding<S, A> {
+  reducer: Reducer<S, A>;
+  //A Factory is required to instantiate an *Object* as opposed to just *JSON structure* as
+  //instanceof is used to determine whether an editor exists for a specific Model type
+  factory: (data: S) => S;
+}
+
+export type HistoryAwareModelReducer<A> = (
+  service: HistoryService,
+  modelReducers: Map<ModelType, ModelReducerBinding<any, any>>
+) => Reducer<Model[], A>;

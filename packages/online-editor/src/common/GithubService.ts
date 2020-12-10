@@ -90,7 +90,7 @@ export class GithubService {
     const testOctokit = new Octokit({ auth: token });
     return testOctokit.users
       .getAuthenticated()
-      .then(res => this.hasGistScope(res.headers) ? res.data.login : undefined)
+      .then(res => (this.hasGistScope(res.headers) ? res.data.login : undefined))
       .catch(() => undefined);
   }
 
@@ -181,7 +181,7 @@ export class GithubService {
   }
 
   public hasGistScope(headers: any) {
-    return headers["x-oauth-scopes"].split(", ").indexOf("gist") > -1
+    return headers["x-oauth-scopes"].split(", ").indexOf("gist") > -1;
   }
 
   public retrieveFileInfo(fileUrl: string): FileInfo {

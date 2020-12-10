@@ -22,6 +22,13 @@ import { PMML, Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshall
 
 const PATH: string = "path";
 
+jest.mock("react-router", () => ({
+  ...jest.requireActual("react-router"),
+  useHistory: () => ({
+    push: jest.fn()
+  })
+}));
+
 describe("LandingPage", () => {
   test("render::No Models", () => {
     const pmml: PMML = { version: "1.0", DataDictionary: { DataField: [] }, Header: {} };

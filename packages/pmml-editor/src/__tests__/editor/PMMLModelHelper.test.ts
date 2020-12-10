@@ -16,19 +16,19 @@
 import { getModelIconUrlByType, getModelName, getModelType, isCollection, isSupportedModelType } from "../../editor";
 import { Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
 
-describe("PMMLUtils::getModelIconUrl", () => {
-  test("getModelIconUrl::Undefined", () => {
+describe("PMMLModelHelper::getModelIconUrl", () => {
+  test("getModelIconUrlByType::Undefined", () => {
     expect(getModelIconUrlByType("<Unknown>")).toContain("card-icon-default.svg");
   });
 
-  test("getModelIconUrl::Scorecard", () => {
+  test("getModelIconUrlByType::Scorecard", () => {
     expect(getModelIconUrlByType("Scorecard")).toContain("card-icon-scorecard.svg");
   });
 });
 
-describe("PMMLUtils::getModelName", () => {
+describe("PMMLModelHelper::getModelName", () => {
   test("getModelName::No Model Name", () => {
-    expect(getModelName({})).toBeUndefined();
+    expect(getModelName({})).toBe("<Undefined>");
   });
 
   test("getModelName::With Model Name", () => {
@@ -36,7 +36,7 @@ describe("PMMLUtils::getModelName", () => {
   });
 });
 
-describe("PMMLUtils::getModelType", () => {
+describe("PMMLModelHelper::getModelType", () => {
   test("getModelType::Undefined", () => {
     expect(getModelType({})).toBe("<Unknown>");
   });
@@ -68,7 +68,7 @@ describe("PMMLUtils::getModelType", () => {
   });
 });
 
-describe("PMMLUtils::isCollection", () => {
+describe("PMMLModelHelper::isCollection", () => {
   test("isCollection::Undefined value", () => {
     expect(isCollection(undefined)).toBeFalsy();
   });
@@ -82,7 +82,7 @@ describe("PMMLUtils::isCollection", () => {
   });
 });
 
-describe("PMMLUtils::isSupportedModelType", () => {
+describe("PMMLModelHelper::isSupportedModelType", () => {
   test("isSupportedModelType::Undefined", () => {
     expect(isSupportedModelType({})).toBeFalsy();
   });

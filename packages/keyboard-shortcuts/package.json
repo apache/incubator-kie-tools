@@ -28,8 +28,5 @@
       "@babel/env",
       "@babel/react"
     ]
-  },
-  "jest-junit": {
-    "outputDirectory": "./target"
   }
 }

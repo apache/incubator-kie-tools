@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
-import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
@@ -26,12 +23,12 @@ import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
-import { useFileUrl } from "../common/Hooks";
 import { UpdateGistErrors } from "../common/GithubService";
-
-interface Props {
-  onFileNameChanged: (fileName: string, fileExtension: string) => void;
-}
+import { EmbedModal } from "./EmbedModal";
+import { useFileUrl } from "../common/Hooks";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 
 export enum Alerts {
   NONE,
@@ -40,9 +37,18 @@ export enum Alerts {
   SUCCESS_UPDATE_GIST_FILENAME,
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
-  GITHUB_TOKEN_MODAL,
   UNSAVED,
   ERROR
+}
+
+export enum Modal {
+  NONE,
+  GITHUB_TOKEN,
+  EMBED
+}
+
+interface Props {
+  onFileNameChanged: (fileName: string, fileExtension: string) => void;
 }
 
 export function EditorPage(props: Props) {
@@ -56,9 +62,9 @@ export function EditorPage(props: Props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [updateGistFilenameUrl, setUpdateGistFilenameUrl] = useState("");
   const [alert, setAlert] = useState(Alerts.NONE);
+  const [modal, setModal] = useState(Modal.NONE);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
-  const fileUrl = useFileUrl();
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -109,70 +115,86 @@ export function EditorPage(props: Props) {
     });
   }, [editor]);
 
-  const requestSetGitHubToken = useCallback(() => {
-    setAlert(Alerts.GITHUB_TOKEN_MODAL);
-  }, []);
+  const fileUrl = useFileUrl();
 
-  const requestExportGist = useCallback(() => {
-    editor?.getContent().then(content => {
-      context.githubService
-        .createGist({
+  const requestGistIt = useCallback(async () => {
+    if (editor) {
+      const content = await editor.getContent();
+
+      // update gist
+      if (fileUrl && context.githubService.isGist(fileUrl)) {
+        const userLogin = context.githubService.extractUserLoginFromFileUrl(fileUrl);
+        if (userLogin === context.githubService.getLogin()) {
+          try {
+            const filename = `${context.file.fileName}.${context.file.fileExtension}`;
+            const updateResponse = await context.githubService.updateGist({ filename, content });
+
+            if (updateResponse === UpdateGistErrors.INVALID_CURRENT_GIST) {
+              setAlert(Alerts.INVALID_CURRENT_GIST);
+              return;
+            }
+
+            if (updateResponse === UpdateGistErrors.INVALID_GIST_FILENAME) {
+              setAlert(Alerts.INVALID_GIST_FILENAME);
+              return;
+            }
+
+            editor.getStateControl().setSavedCommand();
+            if (filename !== context.githubService.getCurrentGist()?.filename) {
+              // FIXME: KOGITO-1202
+              setUpdateGistFilenameUrl(
+                `${window.location.origin}${window.location.pathname}?file=${updateResponse}#/editor/${fileExtension}`
+              );
+              setAlert(Alerts.SUCCESS_UPDATE_GIST_FILENAME);
+              return;
+            }
+
+            setAlert(Alerts.SUCCESS_UPDATE_GIST);
+            return;
+          } catch (err) {
+            console.error(err);
+            setAlert(Alerts.ERROR);
+            return;
+          }
+        }
+      }
+
+      // create gist
+      try {
+        const newGistUrl = await context.githubService.createGist({
           filename: `${context.file.fileName}.${context.file.fileExtension}`,
           content: content,
           description: `${context.file.fileName}.${context.file.fileExtension}`,
           isPublic: true
-        })
-        .then(gistUrl => {
-          setAlert(Alerts.NONE);
-          // FIXME: KOGITO-1202
-          window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
-        })
-        .catch(err => {
-          console.error(err);
-          setAlert(Alerts.ERROR);
         });
-    });
-  }, [context.file.fileName, editor]);
 
-  const requestUpdateGist = useCallback(() => {
-    editor?.getContent().then(content => {
-      const filename = `${context.file.fileName}.${context.file.fileExtension}`;
-      context.githubService
-        .updateGist({ filename, content })
-        .then((response: string | UpdateGistErrors) => {
-          if (response === UpdateGistErrors.INVALID_CURRENT_GIST) {
-            setAlert(Alerts.INVALID_CURRENT_GIST);
-            return;
-          }
-
-          if (response === UpdateGistErrors.INVALID_GIST_FILENAME) {
-            setAlert(Alerts.INVALID_GIST_FILENAME);
-            return;
-          }
-
-          editor?.getStateControl().setSavedCommand();
-          if (filename !== context.githubService.getCurrentGist()?.filename) {
-            // FIXME: KOGITO-1202
-            setUpdateGistFilenameUrl(
-              `${window.location.origin}${window.location.pathname}?file=${response}#/editor/${fileExtension}`
-            );
-            setAlert(Alerts.SUCCESS_UPDATE_GIST_FILENAME);
-            return;
-          }
-
-          setAlert(Alerts.SUCCESS_UPDATE_GIST);
-          return;
-        })
-        .catch(err => {
-          console.error(err);
-          setAlert(Alerts.ERROR);
-        });
-    });
-  }, [context.file.fileName, editor]);
+        setAlert(Alerts.NONE);
+        // FIXME: KOGITO-1202
+        window.location.href = `?file=${newGistUrl}#/editor/${fileExtension}`;
+        return;
+      } catch (err) {
+        console.error(err);
+        setAlert(Alerts.ERROR);
+        return;
+      }
+    }
+  }, [fileUrl, context, editor]);
 
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
+
+  const requestSetGitHubToken = useCallback(() => {
+    setModal(Modal.GITHUB_TOKEN);
+  }, []);
+
+  const requestEmbed = useCallback(() => {
+    setModal(Modal.EMBED);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModal(Modal.NONE);
+  }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
     editor?.getContent().then(content => {
@@ -251,8 +273,8 @@ export function EditorPage(props: Props) {
           isPageFullscreen={fullscreen}
           onPreview={requestPreview}
           onSetGitHubToken={requestSetGitHubToken}
-          onExportGist={requestExportGist}
-          onUpdateGist={requestUpdateGist}
+          onGistIt={requestGistIt}
+          onEmbed={requestEmbed}
           isEdited={isDirty}
         />
       }
@@ -344,10 +366,13 @@ export function EditorPage(props: Props) {
             </Alert>
           </div>
         )}
-        {!fullscreen && alert === Alerts.GITHUB_TOKEN_MODAL && (
-          <GithubTokenModal
-            isOpen={alert === Alerts.GITHUB_TOKEN_MODAL}
-            onClose={closeAlert}
+        {!fullscreen && <GithubTokenModal isOpen={modal === Modal.GITHUB_TOKEN} onClose={closeModal} />}
+        {!fullscreen && (
+          <EmbedModal
+            isOpen={modal === Modal.EMBED}
+            onClose={closeModal}
+            editor={editor}
+            fileExtension={fileExtension}
           />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}

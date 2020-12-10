@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryService } from "../history/HistoryProvider";
-import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { HistoryAwareReducer, HistoryService } from "../history";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { HistoryAwareReducer } from "../history/HistoryAwareReducer";
 
 interface PMMLPayload {
   [Actions.SetVersion]: {
     readonly version: string;
-  };
-  [Actions.DeleteModel]: {
-    readonly model: Model;
   };
 }
 
@@ -45,18 +41,6 @@ export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
       case Actions.SetVersion:
         return service.mutate(state, null, draft => {
           draft.version = action.payload.version;
-        });
-
-      case Actions.DeleteModel:
-        return service.mutate(state, null, draft => {
-          const model = action.payload.model;
-          if (draft.models) {
-            const models = draft.models;
-            const index = models.indexOf(model);
-            if (index >= 0 && index < models.length) {
-              models.splice(index, 1);
-            }
-          }
         });
 
       case Actions.Undo:

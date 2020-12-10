@@ -16,6 +16,14 @@
 
 .history-buttons {
 
-  padding: 5px;
+  padding: 5px 5px 0 5px;
+  width: 100%;
+  position: fixed;
+  background-color: white;
+  z-index: 999;
+
+  &__divider {
+    margin-top: 5px;
+  }
 
 }
