@@ -295,22 +295,25 @@ jobs:
           git push origin gh-pages
           cd -
 
-      # Rebuilds packages, starts and waits for the local servers and runs integration tests for the Chrome Extension
-      - name: Run Chrome Extension integration tests
+      # Rebuilds Chrome plugin to use local servers
+      - name: Rebuild Chrome plugin 
         env:
           DISPLAY: ":99.0"
-          EXTERNAL_ASSET__dmnEditorPath: "../kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime",
-          EXTERNAL_ASSET__bpmnEditorPath: "../kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime",
-          EXTERNAL_ASSET__scesimEditorPath: "../drools-wb/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime",
+          EXTERNAL_ASSET__dmnEditorPath: "../../../kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime",
+          EXTERNAL_ASSET__bpmnEditorPath: "../../../kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime",
+          EXTERNAL_ASSET__scesimEditorPath: "../../../drools-wb/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime",
           ROUTER_targetOrigin: "https://localhost:9000"
           ROUTER_relativePath: ""
           ONLINEEDITOR_url: "http://localhost:9001"
+        run: cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run build:prod && cd -
 
+      - name: Run Chrome plugin integration tests
         run: |
-          cd kogito-tooling/packages/online-editor && yarn run build:prod && yarn run start &
-          cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run build:prod && yarn run serve-envelope &
-          sleep 20  
+          cd kogito-tooling/packages/online-editor && yarn run start &
+          cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
+          sleep 30
           cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
+          cd -
 
       - name: Archive Chrome Extension integration tests screenshots
         if: success() || failure()	
