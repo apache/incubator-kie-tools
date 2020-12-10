@@ -28,25 +28,34 @@ import org.uberfire.security.client.authz.tree.impl.DefaultLoadOptions;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.ACCESS_DATA_TRANSFER;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_PROFILE_PREFERENCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.GUIDED_DECISION_TABLE_EDIT_COLUMNS;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_PROFILE_PREFERENCES;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.ACCESS_DATA_TRANSFER;
-import static org.mockito.Mockito.*;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.SHOW_CHANGEREQUEST_TAB;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.SHOW_METRICS_TAB;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.SHOW_PROJECT_TOOLBAR;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class WorkbenchTreeProviderTest {
 
     private static final String[] FEATURES_NAMES = {
-        EDIT_SOURCES,
-        PLANNER_AVAILABLE,
-        JAR_DOWNLOAD,
-        EDIT_GLOBAL_PREFERENCES,
-        GUIDED_DECISION_TABLE_EDIT_COLUMNS,
-        EDIT_PROFILE_PREFERENCES,
-        ACCESS_DATA_TRANSFER
+            EDIT_SOURCES,
+            PLANNER_AVAILABLE,
+            JAR_DOWNLOAD,
+            EDIT_GLOBAL_PREFERENCES,
+            GUIDED_DECISION_TABLE_EDIT_COLUMNS,
+            EDIT_PROFILE_PREFERENCES,
+            ACCESS_DATA_TRANSFER,
+            SHOW_CHANGEREQUEST_TAB,
+            SHOW_METRICS_TAB,
+            SHOW_PROJECT_TOOLBAR
     };
 
     private DefaultPermissionManager permissionManager;

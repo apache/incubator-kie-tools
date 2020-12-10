@@ -90,6 +90,10 @@ public class ProjectMainActions implements ProjectMainActionsView.Presenter,
         view.setRedeployEnabled(redeployEnabled);
     }
 
+    public void setViewProjectToolbar(boolean projectToolbarVisible) {
+        view.viewProjectToolbar(projectToolbarVisible);
+    }
+
     public void setViewDeploymentDetailsEnabled(boolean viewDeploymentDetailsEnabled) {
         this.viewDeploymentDetailsEnabled = viewDeploymentDetailsEnabled;
         view.setViewDeploymentDetailsEnabled(viewDeploymentDetailsEnabled);

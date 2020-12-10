@@ -65,6 +65,7 @@ public class ProjectMainActionsTest {
     private BuildExecutor executor;
     @Mock
     private TranslationService ts;
+
     private ProjectMainActions presenter;
 
     @Before
@@ -107,6 +108,13 @@ public class ProjectMainActionsTest {
 
         presenter.triggerBuildAndInstall();
         verify(executor).triggerBuildAndInstall();
+    }
+
+    @Test
+    public void testShowProjectToolbar() {
+        presenter.setViewProjectToolbar(false);
+
+        verify(view).viewProjectToolbar(eq(false));
     }
 
     @Test

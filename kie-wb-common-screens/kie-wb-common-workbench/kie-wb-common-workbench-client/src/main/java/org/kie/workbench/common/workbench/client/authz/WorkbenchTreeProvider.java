@@ -38,6 +38,9 @@ import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_PROFILE_PREFERENCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.ACCESS_DATA_TRANSFER;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.SHOW_CHANGEREQUEST_TAB;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.SHOW_METRICS_TAB;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.SHOW_PROJECT_TOOLBAR;
 
 /**
  * A tree permission provider which add general workbench permissions non tied to any specific resource.
@@ -113,7 +116,15 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
         permissions.add(createPermissionLeafNode(ACCESS_DATA_TRANSFER,
                                                  i18n.AccessDataTransfer(),
                                                  i18n.AccessDataTransferHelp()));
-
+        permissions.add(createPermissionLeafNode(SHOW_CHANGEREQUEST_TAB,
+                                                 i18n.ShowChangeRequestTab(),
+                                                 i18n.ShowChangeRequestTabHelp()));
+        permissions.add(createPermissionLeafNode(SHOW_METRICS_TAB,
+                                                 i18n.ShowMetricsTab(),
+                                                 i18n.ShowMetricsTabHelp()));
+        permissions.add(createPermissionLeafNode(SHOW_PROJECT_TOOLBAR,
+                                                 i18n.ShowProjectToolbar(),
+                                                 i18n.ShowProjectToolbarHelp()));
         return permissions;
     }
 

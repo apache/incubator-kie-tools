@@ -177,6 +177,18 @@ public interface DefaultWorkbenchConstants
 
     String AccessDataTransferHelp();
 
+    String ShowMetricsTab();
+
+    String ShowMetricsTabHelp();
+
+    String ShowChangeRequestTab();
+
+    String ShowChangeRequestTabHelp();
+
+    String ShowProjectToolbar();
+
+    String ShowProjectToolbarHelp();
+
     String DisconnectedFromServer();
 
     String CouldNotConnectToServer();

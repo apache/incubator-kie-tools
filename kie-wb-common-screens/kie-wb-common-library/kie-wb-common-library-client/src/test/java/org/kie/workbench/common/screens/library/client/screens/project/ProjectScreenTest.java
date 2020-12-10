@@ -235,6 +235,33 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     }
 
     @Test
+    public void testShowMetricsTabOnPermissions() {
+        doReturn(true).when(this.projectController).canViewMetricsTab();
+
+        presenter.initialize();
+
+        verify(view).viewMetricsTab(true);
+    }
+
+    @Test
+    public void testShowChangeRequestTabOnPermissions() {
+        doReturn(true).when(this.projectController).canViewChangeRequestTab();
+
+        presenter.initialize();
+
+        verify(view).viewChangeRequestTab(true);
+    }
+
+    @Test
+    public void testShowProjectToolbarOnPermissions() {
+        doReturn(true).when(this.projectController).canViewProjectToolbar();
+
+        presenter.initialize();
+
+        verify(view).viewProjectToolbar(true);
+    }
+
+    @Test
     public void testActionsVisibilityWithPermissionToDeleteProjectOnly() {
         doReturn(true).when(this.presenter).userCanDeleteProject();
 
