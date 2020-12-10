@@ -2,11 +2,11 @@
 
 pipeline {
     agent {
-        label 'kie-rhel7-priority'
+        label 'image-test'
     }
     tools {
         maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk1.8'
+        jdk 'kie-jdk11'
     }
     parameters {
         booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
@@ -35,14 +35,9 @@ pipeline {
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def pipelineHelper = new PipelineHelper(this)
-                    pipelineHelper.retry(
-                    {
-                        def SETTINGS_XML_ID = "5d9884a1-178a-4d67-a3ac-9735d2df2cef"
-                        def projectCollection = ["ginxo/kogito-tooling"]
+                        def projectCollection = ["kiegroup/kogito-tooling"]
                         println "Project Collection to build ${projectCollection}"
                         def buildConfigAdditionalVariables = [:]
-                        def variableVersionsMap = [:]
                         def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
 
                         println "[DEBUG] 1"
@@ -50,10 +45,7 @@ pipeline {
                         println "[DEBUG] 2"
                         pmebuild.checkoutProjects(projectCollection, buildConfigMap, buildConfigAdditionalVariables)
                         println "[DEBUG] 3"
-                        configFileProvider([configFile(fileId: SETTINGS_XML_ID, variable: 'MVN_SETTINGS_PATH')]) {
-                          projectCollection.each { project -> buildProject(project, SETTINGS_XML_ID, buildConfigMap, "${env.PME_CLI_PATH}", [:], variableVersionsMap) }
-                        }
-                    }, 2, 60*60)
+                        projectCollection.each { project -> buildProject(project, buildConfigMap) }
                 }
             }
         }
@@ -86,21 +78,10 @@ def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariab
   return pmebuild.getBuildConfiguration(buildConfigContent, buildConfigPathFolder, buildConfigAdditionalVariables)
 }
 
-def buildProject(String project, String settingsXmlId, Map<String, Object> buildConfig, String pmeCliPath, Map<String, String> projectVariableMap, Map<String, String> variableVersionsMap, String defaultGroup = "kiegroup") {
+def buildProject(String project, Map<String, Object> buildConfig, String defaultGroup = "kiegroup") {
     println "[INFO] Building project ${project}"
     def projectGroupName = util.getProjectGroupName(project, defaultGroup)
     def group = projectGroupName[0]
     def name = projectGroupName[1]
-    def finalProjectName = "${group}/${name}"
-    dir("${env.WORKSPACE}/${group}_${name}") {
-        def projectConfig = pmebuild.getProjectConfiguration(finalProjectName, buildConfig)
-        pmebuild.executePME(finalProjectName, projectConfig, pmeCliPath, settingsXmlId, variableVersionsMap)
-        pmebuild.executeBuildScript(finalProjectName, buildConfig, settingsXmlId)
-
-        if (projectVariableMap.containsKey(group + '_' + name)) {
-            def key = projectVariableMap[group + '_' + name]
-            def pom = readMavenPom file: 'pom.xml'
-            variableVersionsMap << ["${key}": pom.version]
-        }
-    }
+    pmebuild.executeBuildScript("${group}/${name}", buildConfig, null)
 }
