@@ -1,0 +1,12 @@
+{
+  "fixturesFolder": "it-tests/cypress/fixtures",
+  "integrationFolder": "it-tests/cypress/integration",
+  "pluginsFile": "it-tests/cypress/plugins/index.ts",
+  "screenshotsFolder": "it-tests/cypress/screenshots",
+  "videosFolder": "it-tests/cypress/videos",
+  "supportFile": "it-tests/cypress/support/index.ts",
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "it-tests/results/junit-[hash].xml"
+  }
+}

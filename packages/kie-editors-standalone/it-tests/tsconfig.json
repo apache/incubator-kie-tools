@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./it-tests",
+    "module": "ES6",
+    "outDir": "./dist",
+    "jsx": "react",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "strictNullChecks": false,
+    "experimentalDecorators": false,
+    "downlevelIteration": false
+  },
+  "include": ["src"]
+}
