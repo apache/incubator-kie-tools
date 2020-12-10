@@ -15,7 +15,8 @@
     "test:clearCache": "npx lerna run test:clearCache --stream",
     "update-version-to": "node ./update_version_to.js",
     "locktt": "locktt",
-    "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save"
+    "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save",
+    "publish": "npx lerna publish"
   },
   "dependencies": {
     "react": "16.12.0",
