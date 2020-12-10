@@ -78,6 +78,17 @@ Develop
 --------------------
 
 > **NOTE:** We recommend using *LTS* version of Node.js when developing this project. Our CI uses Node `12.16.3` and Yarn `1.19.1`.
+
+> **NOTE:** This repo now consumes NPM packages containing the exploded WARs of the BPMN, DMN, and SceSim Editors. For this reason, if you want to use a local build of one of them during development, you can use some environment variables to point to the exploded WAR directories.
+> - BPMN: `EXTERNAL_RESOURCE_PATH__bpmnEditor`
+> - DMN: `EXTERNAL_RESOURCE_PATH__dmnEditor`
+> - SceSim: `EXTERNAL_RESOURCE_PATH__scesimEditor`
+>
+> **Example:**
+>
+> $ export EXTERNAL_RESOURCE_PATH__bpmnEditor=/Users/tiago/redhat/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime
+>
+> $ yarn run init && yarn run build:prod
     
 ##### VS Code Extension
 1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-pack-kogito-kie-editors` folder on VS Code. Use a new VS Code window so that the `packages/vscode-extension-pack-kogito-kie-editors` folder shows up as root in the VS Code explorer.
