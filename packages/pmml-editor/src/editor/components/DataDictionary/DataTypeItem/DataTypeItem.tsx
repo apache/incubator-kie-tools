@@ -126,7 +126,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
 
   useEffect(() => {
     if (editing === index) {
-      document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`)?.focus();
+      const input = document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`);
+      input?.focus();
+      if (name.startsWith("New Data Type")) {
+        input?.select();
+      }
     }
   }, [editing]);
 

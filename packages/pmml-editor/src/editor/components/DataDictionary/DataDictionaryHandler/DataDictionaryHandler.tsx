@@ -13,10 +13,12 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import { isEqual } from "lodash";
-import { DataDictionary, DataType, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { convertDD2PMML, convertPMML2DD } from "../dataDictionaryUtils";
+import { OperationContext } from "../../../PMMLEditor";
+import { Operation } from "../../EditorScorecard";
 
 const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
@@ -26,20 +28,22 @@ const DataDictionaryHandler = () => {
   const handleDataDictionaryUpdate = (updatedDictionary: DDDataField[]) => {
     setDictionary(updatedDictionary);
   };
+  const { setActiveOperation } = React.useContext(OperationContext);
 
   const handleDataDictionaryToggle = () => {
-    // if (isDataDictionaryOpen) {
-    //   const convertedDataDictionary = convertDD2PMML(dictionary);
-    //   // temporary: checking if they are equals to prevent dispatching actions with no data changes
-    //   if (!isEqual(pmmlDataDictionary?.DataField, convertedDataDictionary)) {
-    //     dispatch({
-    //       type: Actions.SetDataFields,
-    //       payload: {
-    //         dataFields: convertedDataDictionary
-    //       }
-    //     });
-    //   }
-    // }
+    if (isDataDictionaryOpen) {
+      const convertedDataDictionary = convertDD2PMML(dictionary);
+      // temporary: checking if they are equals to prevent dispatching actions with no data changes
+      if (!isEqual(pmmlDataDictionary?.DataField, convertedDataDictionary)) {
+        dispatch({
+          type: Actions.SetDataFields,
+          payload: {
+            dataFields: convertedDataDictionary
+          }
+        });
+      }
+    }
+    setActiveOperation(Operation.NONE);
     setIsDataDictionaryOpen(!isDataDictionaryOpen);
   };
 
@@ -82,6 +86,10 @@ const DataDictionaryHandler = () => {
     });
   };
 
+  const handleEditingPhase = (status: boolean) => {
+    setActiveOperation(status ? Operation.UPDATE_DATA_DICTIONARY : Operation.NONE);
+  };
+
   useEffect(() => {
     setDictionary(convertPMML2DD(pmmlDataDictionary));
   }, [pmmlDataDictionary]);
@@ -122,6 +130,7 @@ const DataDictionaryHandler = () => {
           onEdit={updateField}
           onDelete={deleteField}
           onBatchAdd={addBatchFields}
+          onEditingPhaseChange={handleEditingPhase}
         />
       </Modal>
     </>

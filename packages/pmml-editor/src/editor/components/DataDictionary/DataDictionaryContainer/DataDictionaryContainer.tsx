@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { differenceWith, isEqual, findIndex } from "lodash";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
@@ -19,10 +18,11 @@ interface DataDictionaryContainerProps {
   onEdit: (index: number, field: DDDataField) => void;
   onDelete: (index: number) => void;
   onBatchAdd: (fields: string[]) => void;
+  onEditingPhaseChange: (status: boolean) => void;
 }
 
 const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
-  const { dataDictionary, onUpdate, onAdd, onEdit, onDelete, onBatchAdd } = props;
+  const { dataDictionary, onUpdate, onAdd, onEdit, onDelete, onBatchAdd, onEditingPhaseChange } = props;
   const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
@@ -30,29 +30,21 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
-    // onUpdate(dataTypes);
-    // console.table(dataTypes);
+    onUpdate(dataTypes);
   }, [dataTypes]);
 
   useEffect(() => {
-    // before reflecting datadictionary updates to local state,
-    // let's see if there are changes OUTSIDE of the currently edited item or
-    // if the changes involve deleted new items
-    // console.log("DIFF");
-    // const diff: DDDataField[] = differenceWith(dataTypes, dataDictionary, isEqual);
-    // console.table(diff);
-    // if (diff.length) {
-    //   const position = findIndex(dataTypes, item => item.name === diff[0].name);
-    //   if (position === dataDictionary.length || position !== editing) {
-    //     setEditing(false);
-    //   }
-    // }
+    if (editing === dataDictionary.length) {
+      setEditing(false);
+      onEditingPhaseChange(false);
+    }
     setDataTypes(dataDictionary);
   }, [dataDictionary]);
 
   const handleOutsideClick = () => {
     //handleEmptyFields();
     setEditing(false);
+    onEditingPhaseChange(false);
   };
 
   const addDataType = () => {
@@ -68,6 +60,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       "string"
     );
     setEditing(dataTypes.length);
+    onEditingPhaseChange(true);
   };
 
   const handleEmptyFields = () => {
@@ -112,6 +105,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     console.log("setting editing to " + index);
     // handleEmptyFields();
     setEditing(index);
+    onEditingPhaseChange(true);
   };
 
   const handleMultipleAdd = (fields: string) => {
@@ -129,6 +123,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       saveDataType(dataType, editing);
       setConstraintsEdit(dataType);
       setViewSection("constraints");
+      onEditingPhaseChange(true);
     }
   };
 
