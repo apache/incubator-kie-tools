@@ -18,9 +18,7 @@ package org.uberfire.preferences.shared.impl;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
-import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 
@@ -28,10 +26,11 @@ public class DefaultPreferenceScopeTypesTest {
 
     private DefaultPreferenceScopeTypes defaultPreferenceScopeTypes;
 
+    //TODO
     @Before
     public void setup() {
-        final SessionInfo sessionInfo = new SessionInfoMock();
-        defaultPreferenceScopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(sessionInfo));
+        //final SessionInfo sessionInfo = new SessionInfoMock();
+        defaultPreferenceScopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(null));
     }
 
     @Test

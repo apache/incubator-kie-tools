@@ -17,24 +17,15 @@
 package org.uberfire.client.views.pfly.menu;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.workbench.widgets.menu.PartContextMenusPresenter;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
 public class PartContextMenusView
         extends Composite
         implements PartContextMenusPresenter.View {
-
-    @Inject
-    private AuthorizationManager authzManager;
-
-    @Inject
-    private User identity;
 
     @Override
     public void buildMenu(final Menus menus) {

@@ -21,11 +21,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.api.identity.User.StandardUserProperties;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.workbench.widgets.menu.HasMenus;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
@@ -41,10 +38,6 @@ public class UserMenu implements MenuFactory.CustomMenuBuilder,
 
     @Inject
     private UserMenuView userMenuView;
-    @Inject
-    private User user;
-    @Inject
-    private AuthorizationManager authzManager;
 
     @PostConstruct
     protected void setup() {
@@ -53,29 +46,14 @@ public class UserMenu implements MenuFactory.CustomMenuBuilder,
 
     @Override
     public void addMenus(final Menus menus) {
-        menus.accept(new AuthFilterMenuVisitor(authzManager,
-                                               user,
-                                               new DropdownMenuVisitor(userMenuView)));
+        menus.accept(new AuthFilterMenuVisitor(new DropdownMenuVisitor(userMenuView)));
     }
 
     /**
      * Tries to return the user's first and/or last names. If neither is available, returns the user's ID instead.
      */
     private String formattedUsername() {
-        final StringBuilder sb = new StringBuilder();
-        if (user.getProperty(StandardUserProperties.FIRST_NAME) != null) {
-            sb.append(user.getProperty(StandardUserProperties.FIRST_NAME));
-        }
-        if (user.getProperty(StandardUserProperties.LAST_NAME) != null) {
-            if (sb.length() > 0) {
-                sb.append(" ");
-            }
-            sb.append(user.getProperty(StandardUserProperties.LAST_NAME));
-        }
-        if (sb.length() == 0) {
-            sb.append(user.getIdentifier());
-        }
-        return sb.toString();
+        return "default";
     }
 
     public IsWidget getView() {

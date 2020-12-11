@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
@@ -38,7 +37,6 @@ import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.MenuItemPerspective;
@@ -55,22 +53,16 @@ public class DocksBars {
     private Event<UberfireDocksInteractionEvent> dockInteractionEvent;
     private UberfireDocksContainer uberfireDocksContainer;
     private List<DocksBar> docks = new ArrayList<>();
-    private AuthorizationManager authorizationManager;
-    private User identity;
 
     @Inject
     public DocksBars(PlaceManager placeManager,
                      MenuBuilder menuBuilder,
                      Event<UberfireDocksInteractionEvent> dockInteractionEvent,
-                     UberfireDocksContainer uberfireDocksContainer,
-                     AuthorizationManager authorizationManager,
-                     User identity) {
+                     UberfireDocksContainer uberfireDocksContainer) {
         this.placeManager = placeManager;
         this.menuBuilder = menuBuilder;
         this.dockInteractionEvent = dockInteractionEvent;
         this.uberfireDocksContainer = uberfireDocksContainer;
-        this.authorizationManager = authorizationManager;
-        this.identity = identity;
     }
 
     public void setup() {
@@ -264,8 +256,7 @@ public class DocksBars {
             AbstractWorkbenchScreenActivity screen = (AbstractWorkbenchScreenActivity) activity;
             screen.getMenus(menus -> {
                 if (menus != null) {
-                    menus.accept(new AuthFilterMenuVisitor(authorizationManager,
-                            identity, new BaseMenuVisitor() {
+                    menus.accept(new AuthFilterMenuVisitor(new BaseMenuVisitor() {
 
                                 @Override
                                 public void visit(MenuItemPlain menuItemPlain) {

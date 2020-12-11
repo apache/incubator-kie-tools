@@ -20,13 +20,11 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
-import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
 public class WorkbenchMenuBarProducer extends AbstractWorkbenchMenuProducer<WorkbenchMenuBarPresenter, WorkbenchMenuBarPresenter.View> {
@@ -36,13 +34,11 @@ public class WorkbenchMenuBarProducer extends AbstractWorkbenchMenuProducer<Work
     }
 
     @Inject
-    public WorkbenchMenuBarProducer(final AuthorizationManager authzManager,
-                                    final PerspectiveManager perspectiveManager,
+    public WorkbenchMenuBarProducer(final PerspectiveManager perspectiveManager,
                                     final PlaceManager placeManager,
                                     final ActivityManager activityManager,
-                                    final User identity,
                                     final WorkbenchMenuBarPresenter.View view) {
-        super(authzManager, perspectiveManager, placeManager, activityManager, identity, view);
+        super(perspectiveManager, placeManager, activityManager, view);
     }
 
     @Produces
@@ -52,20 +48,16 @@ public class WorkbenchMenuBarProducer extends AbstractWorkbenchMenuProducer<Work
 
     @Override
     protected WorkbenchMenuBarPresenter makeDefaultPresenter() {
-        return new WorkbenchMenuBarPresenter(authzManager,
-                                             perspectiveManager,
+        return new WorkbenchMenuBarPresenter(perspectiveManager,
                                              placeManager,
                                              activityManager,
-                                             identity,
                                              view);
     }
 
     protected WorkbenchMenuBarPresenter makeStandalonePresenter() {
-        return new WorkbenchMenuBarStandalonePresenter(authzManager,
-                                                       perspectiveManager,
+        return new WorkbenchMenuBarStandalonePresenter(perspectiveManager,
                                                        placeManager,
                                                        activityManager,
-                                                       identity,
                                                        view);
     }
 

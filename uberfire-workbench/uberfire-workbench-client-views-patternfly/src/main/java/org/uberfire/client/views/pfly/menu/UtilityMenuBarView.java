@@ -23,10 +23,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.html.UnorderedList;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBarPresenter;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -37,12 +35,6 @@ import org.uberfire.workbench.model.menu.Menus;
 public class UtilityMenuBarView extends UnorderedList implements UtilityMenuBarPresenter.View,
                                                                  HasMenuItems {
 
-    @Inject
-    private AuthorizationManager authzManager;
-
-    @Inject
-    private User identity;
-
     @PostConstruct
     public void setup() {
         addStyleName(Styles.NAV);
@@ -52,9 +44,7 @@ public class UtilityMenuBarView extends UnorderedList implements UtilityMenuBarP
 
     @Override
     public void addMenus(final Menus menus) {
-        menus.accept(new AuthFilterMenuVisitor(authzManager,
-                                               identity,
-                                               new DropdownMenuVisitor(this)));
+        menus.accept(new AuthFilterMenuVisitor(new DropdownMenuVisitor(this)));
     }
 
     @Override

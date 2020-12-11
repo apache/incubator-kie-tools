@@ -23,7 +23,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.authz.AuthorizationManager;
 
 /**
  * A facility for obtaining references to specific {@link Activity} instances and for enumerating or discovering all

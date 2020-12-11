@@ -21,7 +21,6 @@ import java.util.Map;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -49,7 +48,6 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.visitor.WorkbenchMega
 import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuItemPerspective;
@@ -103,14 +101,11 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
         void setContextMenuActive(boolean active);
     }
 
-    private AuthorizationManager authzManager;
     private PerspectiveManager perspectiveManager;
     private ActivityManager activityManager;
-    private User identity;
     private View view;
     private ManagedInstance<MegaMenuBrand> megaMenuBrands;
     private PlaceManager placeManager;
-    private AuthorizationManager authorizationManager;
     private SessionInfo sessionInfo;
     private ManagedInstance<ChildMenuItemPresenter> childMenuItemPresenters;
     private ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters;
@@ -123,28 +118,22 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
     Map<String, CanBeDisabled> canBeDisabledMenuItemByIdentifier = new HashMap<>();
     Map<String, CanHide> canHideMenuItemByIdentifier = new HashMap<>();
 
-    public WorkbenchMegaMenuPresenter(final AuthorizationManager authzManager,
-                                      final PerspectiveManager perspectiveManager,
+    public WorkbenchMegaMenuPresenter(final PerspectiveManager perspectiveManager,
                                       final ActivityManager activityManager,
-                                      final User identity,
                                       final View view,
                                       final ManagedInstance<MegaMenuBrand> megaMenuBrands,
                                       final PlaceManager placeManager,
-                                      final AuthorizationManager authorizationManager,
                                       final SessionInfo sessionInfo,
                                       final ManagedInstance<ChildMenuItemPresenter> childMenuItemPresenters,
                                       final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                       final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
                                       final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
                                       final Workbench workbench) {
-        this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.activityManager = activityManager;
-        this.identity = identity;
         this.view = view;
         this.megaMenuBrands = megaMenuBrands;
         this.placeManager = placeManager;
-        this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
         this.childMenuItemPresenters = childMenuItemPresenters;
         this.groupMenuItemPresenters = groupMenuItemPresenters;
@@ -172,9 +161,7 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
 
     @Override
     protected void visitMenus(final Menus addedMenu) {
-        addedMenu.accept(new AuthFilterMenuVisitor(authzManager,
-                                                   identity,
-                                                   new WorkbenchMegaMenuVisitor(this,
+        addedMenu.accept(new AuthFilterMenuVisitor(new WorkbenchMegaMenuVisitor(this,
                                                                                 perspectiveManager,
                                                                                 placeManager) {
 
@@ -330,9 +317,7 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
             final String perspectiveId = perspective.getIdentifier();
             view.clearContextMenu();
             if (menus != null) {
-                menus.accept(new AuthFilterMenuVisitor(authzManager,
-                                                       identity,
-                                                       new WorkbenchMegaMenuContextMenuVisitor(this,
+                menus.accept(new AuthFilterMenuVisitor(new WorkbenchMegaMenuContextMenuVisitor(this,
                                                                                                placeManager,
                                                                                                perspectiveId)));
 
@@ -403,10 +388,7 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
     }
 
     boolean hasAccessToPerspective(final String perspectiveId) {
-        ResourceRef resourceRef = new ResourceRef(perspectiveId,
-                                                  ActivityResourceType.PERSPECTIVE);
-        return authorizationManager.authorize(resourceRef,
-                                              sessionInfo.getIdentity());
+        return true;
     }
 
     public void setupSetVisibleMenuItem(MenuItemPerspective menuItemPerspective) {

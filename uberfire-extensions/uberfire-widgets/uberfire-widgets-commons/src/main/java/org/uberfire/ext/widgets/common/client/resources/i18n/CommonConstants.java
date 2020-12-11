@@ -63,15 +63,12 @@ public interface CommonConstants
 
     String ConcurrentIssue();
 
-    String ConcurrentUpdate(String identity,
-                            String pathURI);
+    String ConcurrentUpdate(String pathURI);
 
-    String ConcurrentRename(String identity,
-                            String sourceURI,
+    String ConcurrentRename(String sourceURI,
                             String targetURI);
 
-    String ConcurrentDelete(String identity,
-                            String pathURI);
+    String ConcurrentDelete(String pathURI);
 
     String ChooseFile();
 

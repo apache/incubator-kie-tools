@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
@@ -35,10 +34,11 @@ public class DefaultPreferenceScopeResolutionStrategyTest {
 
     private DefaultPreferenceScopeResolutionStrategy defaultPreferenceScopeResolutionStrategy;
 
+    //TODO
     @Before
     public void setup() {
-        final SessionInfoMock sessionInfo = new SessionInfoMock(DefaultPreferenceScopesForTests.userScopeKey);
-        scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(sessionInfo));
+        //final SessionInfoMock sessionInfo = new SessionInfoMock(DefaultPreferenceScopesForTests.userScopeKey);
+        scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(null));
         scopesBuilder = new PreferenceScopeFactoryImpl(scopeTypes);
 
         defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy(scopesBuilder,

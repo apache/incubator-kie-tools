@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.IsVersioned;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -191,8 +190,7 @@ public class ObservablePathImpl implements ObservablePath,
             } else {
                 executeConcurrentRenameCommand(renamedEvent.getPath(),
                                                renamedEvent.getDestinationPath(),
-                                               renamedEvent.getSessionInfo().getId(),
-                                               renamedEvent.getSessionInfo().getIdentity());
+                                               renamedEvent.getSessionInfo().getId());
             }
         }
     }
@@ -203,8 +201,7 @@ public class ObservablePathImpl implements ObservablePath,
                 executeDeleteCommands();
             } else {
                 executeConcurrentDeleteCommand(deletedEvent.getPath(),
-                                               deletedEvent.getSessionInfo().getId(),
-                                               deletedEvent.getSessionInfo().getIdentity());
+                                               deletedEvent.getSessionInfo().getId());
             }
         }
     }
@@ -215,8 +212,7 @@ public class ObservablePathImpl implements ObservablePath,
                 executeUpdateCommands();
             } else {
                 executeConcurrentUpdateCommand(updatedEvent.getPath(),
-                                               updatedEvent.getSessionInfo().getId(),
-                                               updatedEvent.getSessionInfo().getIdentity());
+                                               updatedEvent.getSessionInfo().getId());
             }
         }
     }
@@ -228,8 +224,7 @@ public class ObservablePathImpl implements ObservablePath,
             } else {
                 executeConcurrentCopyCommand(copiedEvent.getPath(),
                                              copiedEvent.getDestinationPath(),
-                                             copiedEvent.getSessionInfo().getId(),
-                                             copiedEvent.getSessionInfo().getIdentity());
+                                             copiedEvent.getSessionInfo().getId());
             }
         }
     }
@@ -260,25 +255,21 @@ public class ObservablePathImpl implements ObservablePath,
                         case COPY:
                             executeConcurrentCopyCommand(path,
                                                          ((ResourceCopied) change).getDestinationPath(),
-                                                         batchEvent.getSessionInfo().getId(),
-                                                         batchEvent.getSessionInfo().getIdentity());
+                                                         batchEvent.getSessionInfo().getId());
                             break;
                         case DELETE:
                             executeConcurrentDeleteCommand(path,
-                                                           batchEvent.getSessionInfo().getId(),
-                                                           batchEvent.getSessionInfo().getIdentity());
+                                                           batchEvent.getSessionInfo().getId());
                             break;
                         case RENAME:
                             executeConcurrentRenameCommand(path,
                                                            ((ResourceRenamed) change).getDestinationPath(),
-                                                           batchEvent.getSessionInfo().getId(),
-                                                           batchEvent.getSessionInfo().getIdentity());
+                                                           batchEvent.getSessionInfo().getId());
                             path = ((ResourceRenamed) change).getDestinationPath();
                             break;
                         case UPDATE:
                             executeConcurrentUpdateCommand(path,
-                                                           batchEvent.getSessionInfo().getId(),
-                                                           batchEvent.getSessionInfo().getIdentity());
+                                                           batchEvent.getSessionInfo().getId());
                             break;
                     }
                 }
@@ -296,8 +287,7 @@ public class ObservablePathImpl implements ObservablePath,
 
     void executeConcurrentRenameCommand(final Path path,
                                         final Path destinationPath,
-                                        final String sessionId,
-                                        final User identity) {
+                                        final String sessionId) {
         if (!onConcurrentRenameCommand.isEmpty()) {
             for (final ParameterizedCommand<OnConcurrentRenameEvent> command : onConcurrentRenameCommand) {
                 final OnConcurrentRenameEvent event = new OnConcurrentRenameEvent() {
@@ -316,10 +306,6 @@ public class ObservablePathImpl implements ObservablePath,
                         return sessionId;
                     }
 
-                    @Override
-                    public User getIdentity() {
-                        return identity;
-                    }
                 };
                 command.execute(event);
             }
@@ -336,8 +322,7 @@ public class ObservablePathImpl implements ObservablePath,
 
     void executeConcurrentCopyCommand(final Path path,
                                       final Path destinationPath,
-                                      final String sessionId,
-                                      final User identity) {
+                                      final String sessionId) {
         if (!onConcurrentCopyCommand.isEmpty()) {
             final OnConcurrentCopyEvent copyEvent = new OnConcurrentCopyEvent() {
                 @Override
@@ -355,10 +340,6 @@ public class ObservablePathImpl implements ObservablePath,
                     return sessionId;
                 }
 
-                @Override
-                public User getIdentity() {
-                    return identity;
-                }
             };
             for (final ParameterizedCommand<OnConcurrentCopyEvent> command : onConcurrentCopyCommand) {
                 command.execute(copyEvent);
@@ -375,8 +356,7 @@ public class ObservablePathImpl implements ObservablePath,
     }
 
     void executeConcurrentUpdateCommand(final Path path,
-                                        final String sessionId,
-                                        final User identity) {
+                                        final String sessionId) {
         if (!onConcurrentUpdateCommand.isEmpty()) {
             final OnConcurrentUpdateEvent event = new OnConcurrentUpdateEvent() {
                 @Override
@@ -389,10 +369,6 @@ public class ObservablePathImpl implements ObservablePath,
                     return sessionId;
                 }
 
-                @Override
-                public User getIdentity() {
-                    return identity;
-                }
             };
             for (final ParameterizedCommand<OnConcurrentUpdateEvent> command : onConcurrentUpdateCommand) {
                 command.execute(event);
@@ -409,8 +385,7 @@ public class ObservablePathImpl implements ObservablePath,
     }
 
     void executeConcurrentDeleteCommand(final Path path,
-                                        final String sessionId,
-                                        final User identity) {
+                                        final String sessionId) {
         if (!onConcurrentDeleteCommand.isEmpty()) {
             final OnConcurrentDelete event = new OnConcurrentDelete() {
                 @Override
@@ -423,10 +398,6 @@ public class ObservablePathImpl implements ObservablePath,
                     return sessionId;
                 }
 
-                @Override
-                public User getIdentity() {
-                    return identity;
-                }
             };
             for (final ParameterizedCommand<OnConcurrentDelete> command : onConcurrentDeleteCommand) {
                 command.execute(event);

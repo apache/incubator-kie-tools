@@ -26,9 +26,6 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestSta
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestCommentList;
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestList;
 
-import org.uberfire.rpc.SessionInfo;
-import org.jboss.errai.security.shared.api.identity.User;
-
 /**
  * Service that contains the basic mechanism to administrate change requests.
  * Every change request depends on its repository.

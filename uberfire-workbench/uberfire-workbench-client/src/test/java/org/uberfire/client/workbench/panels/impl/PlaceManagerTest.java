@@ -39,7 +39,6 @@ import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.events.*;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -119,10 +118,6 @@ public class PlaceManagerTest {
     WorkbenchLayout workbenchLayout;
     @Mock
     LayoutSelection layoutSelection;
-    @Mock
-    ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
-    @Mock
-    PlaceManagerImpl.AppFormerActivityLoader appFormerActivityLoader;
     /**
      * This is the thing we're testing. Weeee!
      */
@@ -143,8 +138,6 @@ public class PlaceManagerTest {
                 .thenReturn(defaultPerspective);
 
         when(activityManager.getActivities(Mockito.<PlaceRequest>any())).thenReturn(singleton(notFoundActivity));
-
-        doReturn(false).when(appFormerActivityLoader).triggerLoadOfMatchingEditors(any(), any());
 
         // for now (and this will have to change for UF-61), PathPlaceRequest performs an IOC lookup for ObservablePath in its constructor
         // as part of UF-61, we'll need to refactor ObservablePath and PathFactory so they ask for any beans they need as constructor params.
@@ -730,8 +723,6 @@ public class PlaceManagerTest {
         });
 
         placeManager.goTo(mainPlaceRequest);
-
-        verify(activitiesAuthorizationManager).securePart(eq(panelPart), eq(perspectiveDefinition.getRoot()));
 
         verify(panelPlaceRequest).clone();
 

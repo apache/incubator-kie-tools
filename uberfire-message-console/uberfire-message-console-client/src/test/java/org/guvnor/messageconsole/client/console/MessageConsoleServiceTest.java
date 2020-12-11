@@ -31,7 +31,6 @@ import org.guvnor.messageconsole.events.FilteredMessagesEvent;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,9 +54,6 @@ public class MessageConsoleServiceTest {
     private SessionInfo sessionInfo;
 
     @Mock
-    private User identity;
-
-    @Mock
     private StubEventSource<FilteredMessagesEvent> filteredMessagesEvent;
 
     private MessageConsoleService service;
@@ -67,7 +63,6 @@ public class MessageConsoleServiceTest {
         this.service = new MessageConsoleService(iocManager,
                                                  placeManager,
                                                  sessionInfo,
-                                                 identity,
                                                  filteredMessagesEvent);
     }
 

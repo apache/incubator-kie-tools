@@ -20,16 +20,12 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,9 +42,6 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.authz.AuthorizationPolicy;
-import org.uberfire.security.authz.PermissionManager;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -74,21 +67,11 @@ public class WorkbenchStartupTest {
     @Mock
     StubAppReadyEventSource appReadyEvent;
     @Mock
-    User identity;
-    @Mock(extraInterfaces = ClientMessageBus.class)
-    ClientMessageBusImpl bus;
-    @Mock
     WorkbenchLayout layout;
     @Mock
     LayoutSelection layoutSelection;
     @Mock
-    PermissionManager permissionManager;
-    @Mock
     PlaceManager placeManager;
-    @Mock
-    AuthorizationManager authorizationManager;
-    @Mock
-    AuthorizationPolicy authorizationPolicy;
     @Mock
     SyncBeanDef<PerspectiveActivity> perspectiveBean1;
     @Mock
@@ -107,9 +90,6 @@ public class WorkbenchStartupTest {
         when(bm.lookupBeans(any(Class.class))).thenReturn(Collections.emptyList());
         when(dragController.getBoundaryPanel()).thenReturn(new AbsolutePanel());
         doNothing().when(workbench).addLayoutToRootPanel(any(WorkbenchLayout.class));
-        when(permissionManager.getAuthorizationPolicy()).thenReturn(authorizationPolicy);
-        when(authorizationManager.authorize(any(Resource.class),
-                                            any(User.class))).thenReturn(true);
         when(bm.lookupBeans(PerspectiveActivity.class)).thenReturn(Arrays.asList(perspectiveBean1,
                                                                                  perspectiveBean2));
         when(perspectiveBean1.getInstance()).thenReturn(perspectiveActivity1);
@@ -146,7 +126,6 @@ public class WorkbenchStartupTest {
 
     @Test
     public void goToHomePerspective() throws Exception {
-        when(authorizationPolicy.getHomePerspective(identity)).thenReturn("perspective1");
         workbench.startIfNotBlocked();
         verify(placeManager).goTo(new DefaultPlaceRequest(perspectiveActivity1.getIdentifier()));
     }

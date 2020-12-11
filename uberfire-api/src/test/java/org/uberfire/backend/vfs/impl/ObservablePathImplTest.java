@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +74,6 @@ public class ObservablePathImplTest {
     @Mock
     private ParameterizedCommand<ObservablePath.OnConcurrentCopyEvent> onCopy;
 
-    private static final User identityUser = new UserImpl("userName");
     private static final String MESSAGE = "test message",
             ASSET_PATH = "default://project/package/Asset.java",
             OBSERVE_SESSION_ID = "observeSession",
@@ -88,8 +85,7 @@ public class ObservablePathImplTest {
         observablePathImpl.onConcurrentUpdate(onUpdate);
         observablePathImpl.onConcurrentRename(onRename);
         observablePathImpl.onConcurrentCopy(onCopy);
-        observablePathImpl.sessionInfo = new SessionInfoImpl(OBSERVE_SESSION_ID,
-                                                             identityUser);
+        observablePathImpl.sessionInfo = new SessionInfoImpl(OBSERVE_SESSION_ID);
     }
 
     @Test
@@ -101,8 +97,7 @@ public class ObservablePathImplTest {
 
         verify(onDelete).execute(any());
         verify(observablePathImpl).executeConcurrentDeleteCommand(pathPlaceRequest.getPath(),
-                                                                  RESOURCE_SESSION_ID,
-                                                                  identityUser);
+                                                                  RESOURCE_SESSION_ID);
     }
 
     @Test
@@ -114,8 +109,7 @@ public class ObservablePathImplTest {
 
         verify(onUpdate).execute(any());
         verify(observablePathImpl).executeConcurrentUpdateCommand(pathPlaceRequest.getPath(),
-                                                                  RESOURCE_SESSION_ID,
-                                                                  identityUser);
+                                                                  RESOURCE_SESSION_ID);
     }
 
     @Test
@@ -129,8 +123,7 @@ public class ObservablePathImplTest {
         verify(onRename).execute(any());
         verify(observablePathImpl).executeConcurrentRenameCommand(pathPlaceRequest.getPath(),
                                                                   destinationPath,
-                                                                  RESOURCE_SESSION_ID,
-                                                                  identityUser);
+                                                                  RESOURCE_SESSION_ID);
     }
 
     @Test
@@ -144,8 +137,7 @@ public class ObservablePathImplTest {
         verify(onCopy).execute(any());
         verify(observablePathImpl).executeConcurrentCopyCommand(pathPlaceRequest.getPath(),
                                                                 destinationPath,
-                                                                RESOURCE_SESSION_ID,
-                                                                identityUser);
+                                                                RESOURCE_SESSION_ID);
     }
 
     @Test
@@ -175,18 +167,14 @@ public class ObservablePathImplTest {
 
         verify(observablePathImpl).executeConcurrentCopyCommand(pathPlaceRequest.getPath(),
                                                                 destinationPath,
-                                                                RESOURCE_SESSION_ID,
-                                                                identityUser);
+                                                                RESOURCE_SESSION_ID);
         verify(observablePathImpl).executeConcurrentDeleteCommand(pathPlaceRequest.getPath(),
-                                                                  RESOURCE_SESSION_ID,
-                                                                  identityUser);
+                                                                  RESOURCE_SESSION_ID);
         verify(observablePathImpl).executeConcurrentRenameCommand(pathPlaceRequest.getPath(),
                                                                   destinationPath,
-                                                                  RESOURCE_SESSION_ID,
-                                                                  identityUser);
+                                                                  RESOURCE_SESSION_ID);
         verify(observablePathImpl).executeConcurrentUpdateCommand(destinationPath,
-                                                                  RESOURCE_SESSION_ID,
-                                                                  identityUser);
+                                                                  RESOURCE_SESSION_ID);
     }
 
     private ObservablePath createPath() {
@@ -196,7 +184,6 @@ public class ObservablePathImplTest {
     }
 
     private SessionInfoImpl createSessionInfo() {
-        return new SessionInfoImpl("resourceSession",
-                                   identityUser);
+        return new SessionInfoImpl("resourceSession");
     }
 }

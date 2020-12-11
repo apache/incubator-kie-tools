@@ -18,6 +18,7 @@ package org.uberfire.commons.cluster;
 import javax.jms.ConnectionFactory;
 
 import org.junit.runner.RunWith;
+
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)

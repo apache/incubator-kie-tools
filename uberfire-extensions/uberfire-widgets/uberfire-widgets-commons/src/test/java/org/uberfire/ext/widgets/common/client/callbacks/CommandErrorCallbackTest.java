@@ -18,26 +18,12 @@ package org.uberfire.ext.widgets.common.client.callbacks;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.gwtbootstrap3.client.ui.Modal;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.mvp.Command;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({Modal.class})
 public class CommandErrorCallbackTest {
-
-    @Test
-    public void verifyCommandIsRanOnError() throws Exception {
-        final Command command = mock(Command.class);
-
-        new CommandErrorCallback(command).error(mock(Message.class), mock(org.uberfire.java.nio.file.AccessDeniedException.class));
-
-        verify(command).execute();
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void doNotAcceptNulls() throws Exception {

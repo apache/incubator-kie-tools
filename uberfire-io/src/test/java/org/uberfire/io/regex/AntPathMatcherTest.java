@@ -34,7 +34,6 @@ import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.uberfire.io.regex.AntPathMatcher.excludes;
 import static org.uberfire.io.regex.AntPathMatcher.filter;
@@ -60,13 +59,14 @@ public class AntPathMatcherTest {
                                   new HashMap<String, Object>());
     }
 
-    @AfterClass
+    //TODO
+/*    @AfterClass
     public static void cleanup() {
         FileUtils.deleteQuietly(path);
         JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
         gitFsProvider.shutdown();
         FileUtils.deleteQuietly(gitFsProvider.getGitRepoContainerDir());
-    }
+    }*/
 
     @Test
     public void testIncludes() {

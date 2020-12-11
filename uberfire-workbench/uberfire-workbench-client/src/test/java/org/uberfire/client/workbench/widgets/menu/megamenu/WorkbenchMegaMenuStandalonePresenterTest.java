@@ -19,7 +19,6 @@ package org.uberfire.client.workbench.widgets.menu.megamenu;
 import java.util.function.Consumer;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,11 +35,9 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.Child
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -63,16 +60,10 @@ import static org.mockito.Mockito.when;
 public class WorkbenchMegaMenuStandalonePresenterTest {
 
     @Mock
-    protected AuthorizationManager authzManager;
-
-    @Mock
     private PerspectiveManager perspectiveManager;
 
     @Mock
     private ActivityManager activityManager;
-
-    @Mock
-    protected User identity;
 
     @Mock
     private WorkbenchMegaMenuPresenter.View view;
@@ -82,9 +73,6 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
 
     @Mock
     private PlaceManager placeManager;
-
-    @Mock
-    private AuthorizationManager authorizationManager;
 
     @Mock
     private SessionInfo sessionInfo;
@@ -104,29 +92,22 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
     @Mock
     private Workbench workbench;
 
-    @Mock
-    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
-
     private WorkbenchMegaMenuStandalonePresenter presenter;
 
     @Before
     public void setup() {
         doReturn(true).when(megaMenuBrands).isUnsatisfied();
-        presenter = spy(new WorkbenchMegaMenuStandalonePresenter(authzManager,
-                                                                 perspectiveManager,
+        presenter = spy(new WorkbenchMegaMenuStandalonePresenter(perspectiveManager,
                                                                  activityManager,
-                                                                 identity,
                                                                  view,
                                                                  megaMenuBrands,
                                                                  placeManager,
-                                                                 authorizationManager,
                                                                  sessionInfo,
                                                                  childMenuItemPresenters,
                                                                  groupMenuItemPresenters,
                                                                  childContextMenuItemPresenters,
                                                                  groupContextMenuItemPresenters,
-                                                                 workbench,
-                                                                 experimentalActivitiesAuthorizationManager));
+                                                                 workbench));
         doReturn(mock(ChildMenuItemPresenter.class)).when(childMenuItemPresenters).get();
     }
 
@@ -138,9 +119,6 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
 
         presenter.addMenus(menus);
 
-        verify(authzManager,
-               never()).authorize(any(MenuItem.class),
-                                  any(User.class));
         verify(presenter,
                never()).addMenuItem(anyString(),
                                     anyString(),
@@ -162,8 +140,6 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
-        when(authzManager.authorize(contextMenus.getItems().get(0),
-                                    identity)).thenReturn(true);
         when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
         presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
@@ -171,8 +147,6 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
                                                             contextMenus,
                                                             perspectiveId));
 
-        verify(authzManager).authorize(contextMenus.getItems().get(0),
-                                       identity);
         verify(presenter).addMenuItem(anyString(),
                                       eq(contextLabel),
                                       isNull(String.class),

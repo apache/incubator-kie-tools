@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,12 +34,10 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.widgets.menu.events.PerspectiveVisibiltiyChangeEvent;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -71,19 +68,12 @@ public class WorkbenchMenuBarPresenterTest {
     private static final String THIRD_PERSPECTIVE_ID = "thirdPerspectiveId";
 
     @Mock
-    protected AuthorizationManager authzManager;
-    @Mock
-    protected User identity;
-    @Mock
     private PerspectiveManager perspectiveManager;
     @Mock
     private ActivityManager activityManager;
 
     @Mock
     private WorkbenchMenuBarPresenter.View view;
-
-    @Mock
-    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
     @InjectMocks
     private WorkbenchMenuBarPresenter presenter;
@@ -96,8 +86,6 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(perspectiveActivity.getPlace()).thenReturn(placeRequest);
         when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
-        when(authzManager.authorize(any(Resource.class),
-                                    eq(identity))).thenReturn(true);
 
         presenter.addMenus(menus);
         verify(view).selectMenuItem(PERSPECTIVE_ID);
@@ -111,8 +99,6 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(perspectiveActivity.getPlace()).thenReturn(placeRequest);
         when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
-        when(authzManager.authorize(any(Resource.class),
-                                    eq(identity))).thenReturn(true);
 
         presenter.addMenus(menus);
 
@@ -130,9 +116,6 @@ public class WorkbenchMenuBarPresenterTest {
                                                                           null,
                                                                           PERSPECTIVE_ID);
 
-        when(authzManager.authorize(any(Resource.class),
-                                    eq(identity))).thenReturn(true);
-
         presenter.addMenus(menus);
         presenter.onPerspectiveChange(perspectiveChange);
 
@@ -142,13 +125,9 @@ public class WorkbenchMenuBarPresenterTest {
     @Test
     public void testAddMenuWithPermission() {
         final Menus menus = MenuFactory.newSimpleItem(NAME).perspective(PERSPECTIVE_ID).endMenu().build();
-        when(authzManager.authorize(menus.getItems().get(0),
-                                    identity)).thenReturn(true);
 
         presenter.addMenus(menus);
 
-        verify(authzManager).authorize(menus.getItems().get(0),
-                                       identity);
         verify(view).addMenuItem(eq(PERSPECTIVE_ID),
                                  eq(NAME),
                                  isNull(String.class),
@@ -159,13 +138,8 @@ public class WorkbenchMenuBarPresenterTest {
     @Test
     public void testAddMenuWithoutPermission() {
         final Menus menus = MenuFactory.newSimpleItem(NAME).perspective(PERSPECTIVE_ID).endMenu().build();
-        when(authzManager.authorize(menus.getItems().get(0),
-                                    identity)).thenReturn(false);
-
         presenter.addMenus(menus);
 
-        verify(authzManager).authorize(menus.getItems().get(0),
-                                       identity);
         verify(view,
                never()).addMenuItem(eq(PERSPECTIVE_ID),
                                     eq(NAME),
@@ -187,8 +161,6 @@ public class WorkbenchMenuBarPresenterTest {
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
-        when(authzManager.authorize(contextMenus.getItems().get(0),
-                                    identity)).thenReturn(true);
         when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
         presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
@@ -196,8 +168,6 @@ public class WorkbenchMenuBarPresenterTest {
                                                             contextMenus,
                                                             PERSPECTIVE_ID));
 
-        verify(authzManager).authorize(contextMenus.getItems().get(0),
-                                       identity);
         verify(view).clearContextMenu();
         verify(view).addContextMenuItem(eq(PERSPECTIVE_ID),
                                         anyString(),
@@ -219,8 +189,6 @@ public class WorkbenchMenuBarPresenterTest {
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
-        when(authzManager.authorize(contextMenus.getItems().get(0),
-                                    identity)).thenReturn(false);
         when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
         presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
@@ -228,8 +196,6 @@ public class WorkbenchMenuBarPresenterTest {
                                                             contextMenus,
                                                             PERSPECTIVE_ID));
 
-        verify(authzManager).authorize(contextMenus.getItems().get(0),
-                                       identity);
         verify(view).clearContextMenu();
         verify(view,
                never()).addContextMenuItem(anyString(),
@@ -244,9 +210,6 @@ public class WorkbenchMenuBarPresenterTest {
     public void testSetupEnableDisableMenuItemCommand() {
         final Command command = mock(Command.class);
         final Menus menus = MenuFactory.newSimpleItem(NAME).respondsWith(command).endMenu().build();
-
-        when(authzManager.authorize(menus.getItems().get(0),
-                                    identity)).thenReturn(true);
 
         presenter.addMenus(menus);
         verify(view).enableMenuItem(anyString(), eq(true));
@@ -263,9 +226,6 @@ public class WorkbenchMenuBarPresenterTest {
         final PlaceRequest place = mock(PlaceRequest.class);
         final Menus menus = MenuFactory.newSimpleItem(NAME).place(place).endMenu().build();
 
-        when(authzManager.authorize(menus.getItems().get(0),
-                                    identity)).thenReturn(true);
-
         presenter.addMenus(menus);
         verify(view).enableMenuItem(anyString(), eq(true));
 
@@ -279,9 +239,6 @@ public class WorkbenchMenuBarPresenterTest {
     @Test
     public void testSetupEnableDisableMenuItemPerspective() {
         final Menus menus = MenuFactory.newSimpleItem(NAME).perspective(PERSPECTIVE_ID).endMenu().build();
-
-        when(authzManager.authorize(menus.getItems().get(0),
-                                    identity)).thenReturn(true);
 
         presenter.addMenus(menus);
         verify(view).enableMenuItem(anyString(), eq(true));
@@ -305,8 +262,6 @@ public class WorkbenchMenuBarPresenterTest {
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
-        when(authzManager.authorize(contextMenus.getItems().get(0),
-                                    identity)).thenReturn(true);
         when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
         presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
@@ -328,13 +283,6 @@ public class WorkbenchMenuBarPresenterTest {
         final Menus secondMenus = MenuFactory.newSimpleItem(NAME).orderAll(1).perspective(SECOND_PERSPECTIVE_ID).endMenu().build();
         final Menus thirdMenus = MenuFactory.newSimpleItem(NAME).orderAll(2).perspective(THIRD_PERSPECTIVE_ID).endMenu().build();
 
-        when(authzManager.authorize(firstMenus.getItems().get(0),
-                                    identity)).thenReturn(true);
-        when(authzManager.authorize(secondMenus.getItems().get(0),
-                                    identity)).thenReturn(true);
-        when(authzManager.authorize(thirdMenus.getItems().get(0),
-                                    identity)).thenReturn(true);
-
         presenter.addMenus(thirdMenus);
         presenter.addMenus(firstMenus);
         presenter.addMenus(secondMenus);
@@ -352,8 +300,6 @@ public class WorkbenchMenuBarPresenterTest {
     @Test
     public void testAddMenusWithExperimentalPerspective() {
 
-        when(authzManager.authorize(any(MenuItem.class), any())).thenReturn(true);
-
         List<MenuItem> items = new ArrayList<>();
 
         items.add(MenuFactory.newSimpleItem(NAME).perspective(PERSPECTIVE_ID).endMenu().build().getItems().get(0));
@@ -362,12 +308,8 @@ public class WorkbenchMenuBarPresenterTest {
 
         final Menus menus = MenuFactory.newSimpleItem(NAME).withItems(items).endMenu().build();
 
-        when(experimentalActivitiesAuthorizationManager.authorizeActivityId(anyString()))
-                .thenAnswer((Answer<Boolean>) invocationOnMock -> !SECOND_PERSPECTIVE_ID.equals(invocationOnMock.getArguments()[0]));
-
         presenter.addMenus(menus);
 
-        verify(experimentalActivitiesAuthorizationManager, times(3)).authorizeActivityId(anyString());
         verify(view, times(2)).setMenuItemVisible(anyString(), eq(true));
         verify(view).setMenuItemVisible(anyString(), eq(false));
     }

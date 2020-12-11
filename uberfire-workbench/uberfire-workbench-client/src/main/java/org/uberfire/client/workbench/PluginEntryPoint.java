@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
@@ -38,7 +37,7 @@ public class PluginEntryPoint {
 
     @Produces
     @ApplicationScoped
-    private SessionInfo currentSession(User identity) {
-        return new SessionInfoImpl(identity);
+    private SessionInfo currentSession() {
+        return new SessionInfoImpl();
     }
 }

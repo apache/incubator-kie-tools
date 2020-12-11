@@ -829,7 +829,6 @@
     <module>uberfire-commons</module>
     <module>uberfire-api</module>
     <module>uberfire-client-api</module>
-    <module>uberfire-security</module>
     <module>uberfire-nio2-backport</module>
     <module>uberfire-io</module>
     <module>uberfire-backend</module>
@@ -1188,26 +1187,24 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>lienzo-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>7.47.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>lienzo-core</artifactId>
-        <version>${version.org.kie}</version>
+        <version>7.47.0-SNAPSHOT</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>lienzo-tests</artifactId>
-        <version>${version.org.kie}</version>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>lienzo-tests</artifactId>
-        <version>${version.org.kie}</version>
         <classifier>sources</classifier>
       </dependency>
 

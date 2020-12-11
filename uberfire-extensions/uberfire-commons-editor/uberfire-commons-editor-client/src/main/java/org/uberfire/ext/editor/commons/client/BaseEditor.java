@@ -404,7 +404,6 @@ public abstract class BaseEditor<T, M> {
         if (concurrentChangePopup == null) {
             concurrentChangePopup = newConcurrentRename(info.getSource(),
                                                         info.getTarget(),
-                                                        info.getIdentity(),
                                                         onConcurrentRenameIgnoreCommand(path),
                                                         onConcurrentRenameCloseCommand(path));
         }
@@ -431,7 +430,6 @@ public abstract class BaseEditor<T, M> {
         baseView.hideBusyIndicator();
         if (concurrentChangePopup == null) {
             concurrentChangePopup = newConcurrentDelete(info.getPath(),
-                                                        info.getIdentity(),
                                                         onConcurrentDeleteIgnoreCommand(path),
                                                         onConcurrentDeleteCloseCommand(path));
         }
@@ -519,7 +517,6 @@ public abstract class BaseEditor<T, M> {
 
     ConcurrentChangePopup getConcurrentUpdatePopup() {
         return newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
-                                                    concurrentUpdateSessionInfo.getIdentity(),
                                                     new Command() {
                                                         @Override
                                                         public void execute() {

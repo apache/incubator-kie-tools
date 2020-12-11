@@ -23,9 +23,6 @@ import java.util.Set;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.shared.security.AppRoles;
-import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.RoleImpl;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,15 +38,11 @@ public class ConflictingRepositoriesPopupTest {
     @Mock
     ConflictingRepositoriesPopupView view;
 
-    @Mock
-    User user;
-
     private ConflictingRepositoriesPopup presenter;
 
     @Before
     public void setup() {
-        presenter = new ConflictingRepositoriesPopup(user,
-                                                     view);
+        presenter = new ConflictingRepositoriesPopup(view);
     }
 
     @Test
@@ -65,10 +58,6 @@ public class ConflictingRepositoriesPopupTest {
         final Command command = mock(Command.class);
 
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
-        final Set<Role> roles = new HashSet<Role>() {{
-            add(new RoleImpl(AppRoles.ADMIN.getName()));
-        }};
-        when(user.getRoles()).thenReturn(roles);
 
         presenter.setContent(gav, metadata, command);
 
@@ -84,8 +73,6 @@ public class ConflictingRepositoriesPopupTest {
         final Command command = mock(Command.class);
 
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
-        final Set<Role> roles = new HashSet<Role>();
-        when(user.getRoles()).thenReturn(roles);
 
         presenter.setContent(gav,
                              metadata,
@@ -103,11 +90,6 @@ public class ConflictingRepositoriesPopupTest {
         final Command command = mock(Command.class);
 
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
-        final Set<Role> roles = new HashSet<Role>() {{
-            add(new RoleImpl(AppRoles.ADMIN.getName()));
-        }};
-        when(user.getRoles()).thenReturn(roles);
-
         presenter.setContent(gav,
                              metadata,
                              command);
@@ -148,9 +130,6 @@ public class ConflictingRepositoriesPopupTest {
         final GAV gav = mock(GAV.class);
 
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
-        final Set<Role> roles = Collections.singleton(new RoleImpl(AppRoles.ADMIN.getName()));
-
-        when(user.getRoles()).thenReturn(roles);
 
         presenter.setContent(gav, metadata, okCommand, overrideCommand);
 

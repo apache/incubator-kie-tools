@@ -57,7 +57,6 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.util.Layouts;
@@ -72,7 +71,6 @@ import org.uberfire.client.workbench.widgets.listbar.ListbarPreferences;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFocusPanel;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -126,10 +124,6 @@ public class ListBarWidgetImpl
     WorkbenchPanelPresenter presenter;
     LinkedList<PartDefinition> parts = new LinkedList<>();
     Pair<PartDefinition, FlowPanel> currentPart;
-    @Inject
-    private AuthorizationManager authzManager;
-    @Inject
-    private User identity;
 
     @PostConstruct
     void postConstruct() {
@@ -431,9 +425,7 @@ public class ListBarWidgetImpl
                               boolean isRoot) {
 
         Widget[] menuWidget = new Widget[]{null};
-        item.accept(new AuthFilterMenuVisitor(authzManager,
-                                              identity,
-                                              new BaseMenuVisitor() {
+        item.accept(new AuthFilterMenuVisitor(new BaseMenuVisitor() {
 
                                                   @Override
                                                   public boolean visitEnter(MenuGroup menuGroup) {

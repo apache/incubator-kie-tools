@@ -18,8 +18,6 @@ package org.uberfire.client.menu;
 
 import java.util.List;
 
-import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -39,24 +37,14 @@ import static org.uberfire.plugin.PluginUtil.ensureIterable;
  */
 public class AuthFilterMenuVisitor implements MenuVisitor {
 
-    private final AuthorizationManager authzManager;
-    private final User user;
     private final MenuVisitor chainedVisitor;
 
     /**
      * Wraps the given menu visitor, only forwarding calls that represent menu items the given user is allowed to see.
      *
-     * @param authzManager   The authorization manager that decides what is visible. Not null.
-     * @param user           The user who will see the menus being visited. Not null.
      * @param chainedVisitor The menu visitor that receives calls for all authorized parts of the menu tree. Not null.
      */
-    public AuthFilterMenuVisitor(AuthorizationManager authzManager,
-                                 User user,
-                                 MenuVisitor chainedVisitor) {
-        this.authzManager = checkNotNull("authzManager",
-                                         authzManager);
-        this.user = checkNotNull("user",
-                                 user);
+    public AuthFilterMenuVisitor(MenuVisitor chainedVisitor) {
         this.chainedVisitor = checkNotNull("chainedVisitor",
                                            chainedVisitor);
     }
@@ -119,7 +107,7 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
      * then the access is granted provided all those references are also granted.</p>
      */
     public boolean authorize(MenuItem item) {
-        List<ResourceActionRef> actions = item.getResourceActions();
+/*        List<ResourceActionRef> actions = item.getResourceActions();
         if (actions != null && !actions.isEmpty()) {
             for (ResourceActionRef ref : ensureIterable(actions)) {
                 if (!authzManager.authorize(ref.getResource(),
@@ -154,6 +142,7 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
                 }
             }
         }
-        return itemResult && !denied;
+        return itemResult && !denied;*/
+        return true;
     }
 }

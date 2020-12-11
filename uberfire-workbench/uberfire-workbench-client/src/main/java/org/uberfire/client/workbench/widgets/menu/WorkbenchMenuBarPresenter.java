@@ -19,7 +19,6 @@ import java.util.function.BiConsumer;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -33,7 +32,6 @@ import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuPresente
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -55,8 +53,6 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
  */
 public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implements WorkbenchMenuBar {
 
-    protected AuthorizationManager authzManager;
-    protected User identity;
     private boolean useExpandedMode = true;
     private boolean expanded = true;
     private PerspectiveManager perspectiveManager;
@@ -64,17 +60,13 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
     private ActivityManager activityManager;
     private View view;
 
-    WorkbenchMenuBarPresenter(final AuthorizationManager authzManager,
-                              final PerspectiveManager perspectiveManager,
+    WorkbenchMenuBarPresenter(final PerspectiveManager perspectiveManager,
                               final PlaceManager placeManager,
                               final ActivityManager activityManager,
-                              final User identity,
                               final View view) {
-        this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.placeManager = placeManager;
         this.activityManager = activityManager;
-        this.identity = identity;
         this.view = view;
 
         setup();
@@ -106,9 +98,7 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
 
     @Override
     protected void visitMenus(final Menus addedMenu) {
-        addedMenu.accept(new AuthFilterMenuVisitor(authzManager,
-                                                   identity,
-                                                   new BaseMenuVisitor() {
+        addedMenu.accept(new AuthFilterMenuVisitor(new BaseMenuVisitor() {
 
                                                        private String parentId = null;
 
@@ -206,9 +196,7 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
         perspective.getMenus(menus -> {
             view.clearContextMenu();
             if (menus != null) {
-                menus.accept(new AuthFilterMenuVisitor(authzManager,
-                                                       identity,
-                                                       new BaseMenuVisitor() {
+                menus.accept(new AuthFilterMenuVisitor(new BaseMenuVisitor() {
 
                                                            private String parentId = null;
 

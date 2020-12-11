@@ -32,6 +32,6 @@ public class ClientUsernameProvider implements UsernameProvider {
 
     @Override
     public String get() {
-        return sessionInfo.getIdentity().getIdentifier();
+        return "default";
     }
 }

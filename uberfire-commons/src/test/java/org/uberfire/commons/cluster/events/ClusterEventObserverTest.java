@@ -24,7 +24,6 @@ import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -119,7 +118,6 @@ public class ClusterEventObserverTest {
                                                    eventMetadataMock));
     }
 
-    @Portable
     @Clustered
     public static class EventTest {
 

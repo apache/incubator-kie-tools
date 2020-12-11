@@ -36,9 +36,11 @@ public class ExperimentalFeatureProcessorTest extends AbstractProcessorTest {
     private boolean providerGenerated = false;
     private boolean referenceGenerated = false;
 
+    //TODO
     @Override
     protected AbstractErrorAbsorbingProcessor getProcessorUnderTest() {
-        return new ExperimentalFeatureProcessor(code -> {
+        return null;
+/*        return new ExperimentalFeatureProcessor(code -> {
             if (!providerGenerated) {
                 provider.setActualCode(code);
                 providerGenerated = true;
@@ -46,7 +48,7 @@ public class ExperimentalFeatureProcessorTest extends AbstractProcessorTest {
                 reference.setActualCode(code);
                 referenceGenerated = true;
             }
-        });
+        });*/
     }
 
     @Test

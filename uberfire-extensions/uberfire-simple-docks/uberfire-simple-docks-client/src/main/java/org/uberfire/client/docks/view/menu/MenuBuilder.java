@@ -30,8 +30,6 @@ import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.NavbarLink;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -41,19 +39,8 @@ import org.uberfire.workbench.model.menu.MenuItemCommand;
 @ApplicationScoped
 public class MenuBuilder {
 
-    @Inject
-    private AuthorizationManager authzManager;
-
-    @Inject
-    private User identity;
-
     public Widget makeItem(final MenuItem item,
                            boolean isRoot) {
-        if (!authzManager.authorize(item,
-                                    identity)) {
-            return null;
-        }
-
         if (item instanceof MenuItemCommand) {
             final MenuItemCommand cmdItem = (MenuItemCommand) item;
             if (isRoot) {

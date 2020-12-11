@@ -18,7 +18,6 @@ package org.uberfire.preferences.shared.impl;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
@@ -29,10 +28,11 @@ public class PreferenceScopeValidatorImplTest {
 
     private PreferenceScopeValidatorImpl validator;
 
+    //TODO
     @Before
     public void setup() {
-        final SessionInfoMock sessionInfo = new SessionInfoMock("my-user");
-        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(sessionInfo));
+        //final SessionInfoMock sessionInfo = new SessionInfoMock("my-user");
+        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(null));
         final PreferenceScopeFactory scopeFactory = new PreferenceScopeFactoryImpl(scopeTypes);
         final DefaultPreferenceScopeResolutionStrategy scopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy(scopeFactory,
                                                                                                                               null);

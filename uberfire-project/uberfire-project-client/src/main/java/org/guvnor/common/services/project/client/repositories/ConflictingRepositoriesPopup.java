@@ -24,9 +24,6 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.shared.security.AppRoles;
-import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.RoleImpl;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -35,7 +32,6 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class ConflictingRepositoriesPopup
         implements ConflictingRepositoriesPopupView.Presenter {
 
-    private User identity;
     private ConflictingRepositoriesPopupView view;
 
     private Command okCommand;
@@ -45,9 +41,7 @@ public class ConflictingRepositoriesPopup
     }
 
     @Inject
-    public ConflictingRepositoriesPopup(final User identity,
-                                        final ConflictingRepositoriesPopupView view) {
-        this.identity = identity;
+    public ConflictingRepositoriesPopup(final ConflictingRepositoriesPopupView view) {
         this.view = view;
         view.init(this);
     }
@@ -79,8 +73,7 @@ public class ConflictingRepositoriesPopup
     }
 
     private boolean isUserAdministrator() {
-        final Set<Role> roles = identity.getRoles();
-        return roles.contains(new RoleImpl(AppRoles.ADMIN.getName()));
+        return true;
     }
 
     @Override

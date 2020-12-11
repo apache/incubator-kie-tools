@@ -37,7 +37,6 @@ import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.services.shared.preferences.UserPreference;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
-import org.uberfire.mocks.CallerMock;
 
 import static org.jgroups.util.Util.assertFalse;
 import static org.jgroups.util.Util.assertTrue;
@@ -54,14 +53,15 @@ public class PagedTableTest {
     @GwtMock
     Select select;
 
-    protected CallerMock<UserPreferencesService> userPreferencesService;
-
     @Mock
     protected UserPreferencesService userPreferencesServiceMock;
 
+    //TODO
     @Before
     public void setupMocks() {
+/*
         userPreferencesService = new CallerMock<>(userPreferencesServiceMock);
+*/
     }
 
     @Test
@@ -192,7 +192,7 @@ public class PagedTableTest {
         PagedTable pagedTable = new PagedTable();
         GridPreferencesStore gridPreferencesStore = new GridPreferencesStore(new GridGlobalPreferences("key", null, null));
         pagedTable.setGridPreferencesStore(gridPreferencesStore);
-        pagedTable.setPreferencesService(userPreferencesService);
+        //pagedTable.setPreferencesService(userPreferencesService);
 
         when(select.getValue()).thenReturn("20");
 

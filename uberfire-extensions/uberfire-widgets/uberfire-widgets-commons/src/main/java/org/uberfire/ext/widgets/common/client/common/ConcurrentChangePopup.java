@@ -17,7 +17,6 @@
 package org.uberfire.ext.widgets.common.client.common;
 
 import com.google.gwt.http.client.URL;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
@@ -54,13 +53,11 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
     }
 
     public static ConcurrentChangePopup newConcurrentUpdate(final Path path,
-                                                            final User identity,
                                                             final Command onForceSave,
                                                             final Command onCancel,
                                                             final Command onReOpen) {
 
-        final String message = CommonConstants.INSTANCE.ConcurrentUpdate(identity.getIdentifier(),
-                                                                         decode(path));
+        final String message = CommonConstants.INSTANCE.ConcurrentUpdate(decode(path));
         return new ConcurrentChangePopup(message,
                                          onForceSave,
                                          onCancel,
@@ -69,11 +66,9 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
 
     public static ConcurrentChangePopup newConcurrentRename(final Path source,
                                                             final Path target,
-                                                            final User identity,
                                                             final Command onIgnore,
                                                             final Command onReOpen) {
-        final String message = CommonConstants.INSTANCE.ConcurrentRename(identity.getIdentifier(),
-                                                                         decode(source),
+        final String message = CommonConstants.INSTANCE.ConcurrentRename(decode(source),
                                                                          decode(target));
         return new ConcurrentChangePopup(message,
                                          onIgnore,
@@ -81,11 +76,9 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
     }
 
     public static ConcurrentChangePopup newConcurrentDelete(final Path path,
-                                                            final User identity,
                                                             final Command onIgnore,
                                                             final Command onClose) {
-        final String message = CommonConstants.INSTANCE.ConcurrentDelete(identity.getIdentifier(),
-                                                                         decode(path));
+        final String message = CommonConstants.INSTANCE.ConcurrentDelete(decode(path));
         return new ConcurrentChangePopup(message,
                                          onIgnore,
                                          onClose,
