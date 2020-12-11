@@ -1,5 +1,5 @@
 {
-  "name": "kogito-tooling",
+  "name": "@kie/kogito-tooling",
   "version": "0.0.0",
   "license": "Apache-2.0",
   "private": true,
@@ -11,7 +11,7 @@
     "build": "npx lerna run build --stream",
     "build:fast": "npx lerna run build:fast --stream",
     "build:prod": "npx lerna run build:prod --stream",
-    "build:productization": "npx lerna run build:productization --stream",
+    "build:productization": "npx lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-filtered-dependencies --stream",
     "test:clearCache": "npx lerna run test:clearCache --stream",
     "update-version-to": "node ./update_version_to.js",
     "locktt": "locktt",
