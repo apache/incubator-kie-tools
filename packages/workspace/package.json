@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/workspace",
-  "version": "1.0.1",
+  "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -11,7 +11,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/channel-common-api": "^1.0.1"
+    "@kogito-tooling/channel-common-api": "0.8.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
