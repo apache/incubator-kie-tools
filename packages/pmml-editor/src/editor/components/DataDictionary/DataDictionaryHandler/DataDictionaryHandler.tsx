@@ -16,7 +16,7 @@ import { isEqual } from "lodash";
 import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
-import { convertDD2PMML, convertPMML2DD } from "../dataDictionaryUtils";
+import { convertDD2PMML, convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
 import { OperationContext } from "../../../PMMLEditor";
 import { Operation } from "../../EditorScorecard";
 
@@ -80,8 +80,7 @@ const DataDictionaryHandler = () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: index,
-        name: field.name,
-        type: field.type
+        dataField: convertToDataField(field)
       }
     });
   };

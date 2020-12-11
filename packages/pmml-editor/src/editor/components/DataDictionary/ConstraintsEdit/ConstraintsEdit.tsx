@@ -2,12 +2,10 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import {
-  Alert,
   Button,
   Card,
   CardBody,
   CardTitle,
-  Checkbox,
   Form,
   FormGroup,
   Select,
@@ -19,38 +17,35 @@ import {
   StackItem,
   Text,
   TextContent,
-  TextInput,
   TextVariants
 } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
-import { Constraints, DDDataField, EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
+import {
+  Constraints,
+  DDDataField,
+  EnumConstraint,
+  RangeConstraint
+} from "../DataDictionaryContainer/DataDictionaryContainer";
 import { Validated } from "../../../types";
 import "./ConstraintsEdit.scss";
+import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 
 interface ConstraintsEditProps {
   dataType: DDDataField;
-  onAdd: (payload: Constraints) => void;
+  onChange: (payload: DDDataField) => void;
   onDelete: () => void;
+  onClose: () => void;
 }
 
 const ConstraintsEdit = (props: ConstraintsEditProps) => {
-  const { dataType, onAdd, onDelete } = props;
+  const { dataType, onChange, onDelete, onClose } = props;
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeIsOpen, setTypeIsOpen] = useState(false);
   const constraintsTypes = [{ value: "", isPlaceholder: true }, { value: "Range" }, { value: "Enumeration" }];
-  const rangeEmptyValue = {
-    start: {
-      value: "",
-      included: true
-    },
-    end: {
-      value: "",
-      included: true
-    }
-  };
-  const rangeInitialValue = dataType.constraints?.type === "Range" ? dataType.constraints : rangeEmptyValue;
-  const [range, setRange] = useState(rangeInitialValue);
+  const [range, setRange] = useState<RangeConstraint | undefined>(
+    dataType.constraints?.type === "Range" ? dataType.constraints.value : undefined
+  );
   const [enums, setEnums] = useState(
     dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : [{ value: "", id: uuid() }]
   );
@@ -59,10 +54,38 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     fields: { start: "default", end: "default", enums: "default" }
   });
 
+  useEffect(() => {
+    setConstraintType(dataType.constraints?.type ?? "");
+    if (dataType.constraints?.type === "Range") {
+      setRange(dataType.constraints.value);
+    }
+    if (dataType.constraints?.type === "Enumeration") {
+      setEnums(dataType.constraints.value);
+    }
+  }, [dataType.constraints, setConstraintType, setRange, setEnums]);
+
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {
       setConstraintType(value);
       setValidation({ form: "default", fields: { start: "default", end: "default", enums: "default" } });
+      if (value === "Range") {
+        onChange({
+          ...dataType,
+          constraints: {
+            type: "Range",
+            value: {
+              start: {
+                value: "1",
+                included: true
+              },
+              end: {
+                value: "10",
+                included: true
+              }
+            }
+          }
+        });
+      }
     }
     setTypeIsOpen(false);
   };
@@ -71,23 +94,15 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     setTypeIsOpen(!typeIsOpen);
   };
 
-  const handleRangeChange = (value: string | boolean, event: React.FormEvent<HTMLInputElement>) => {
-    switch ((event.target as HTMLInputElement).id) {
-      case "start-value":
-        setRange({ ...range, start: { ...range.start, value: value as string } });
-        break;
-      case "start-included":
-        setRange({ ...range, start: { ...range.start, included: value as boolean } });
-        break;
-      case "end-value":
-        setRange({ ...range, end: { ...range.end, value: value as string } });
-        break;
-      case "end-included":
-        setRange({ ...range, end: { ...range.end, included: value as boolean } });
-        break;
-      default:
-        break;
-    }
+  const handleRangeChange = (rangeValue: RangeConstraint) => {
+    onChange({
+      ...dataType,
+      constraints: {
+        type: "Range",
+        value: rangeValue
+      }
+    });
+    // setRange(rangeValue);
   };
 
   const handleEnumsChange = (value: string, index: number) => {
@@ -117,8 +132,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     const isValid = { ...validation };
     isValid.form = "success";
     if (constraintType === "Range") {
-      isValid.fields.start = range.start.value.trim().length === 0 ? "error" : "success";
-      isValid.fields.end = range.end.value.trim().length === 0 ? "error" : "success";
+      isValid.fields.start = range?.start.value.trim().length === 0 ? "error" : "success";
+      isValid.fields.end = range?.end.value.trim().length === 0 ? "error" : "success";
     }
     if (constraintType === "Enumeration") {
       const oneEnum = enums.find(item => item.value.trim().length > 0);
@@ -136,29 +151,24 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (validateConstraints() === "success") {
-      switch (constraintType) {
-        case "":
-          onDelete();
-          break;
-        case "Range":
-          const rangeData = { ...range, type: "Range" };
-          onAdd(rangeData as Constraints);
-          break;
-        case "Enumeration":
-          onAdd({ type: "Enumeration", value: enums.filter(item => item.value.trim().length > 0) } as Constraints);
-          break;
-      }
+      // switch (constraintType) {
+      //   case "":
+      //     onDelete();
+      //     break;
+      //   case "Range":
+      //     const rangeData = { value: { ...range }, type: "Range" };
+      //     // onAdd(rangeData as Constraints);
+      //     break;
+      //   case "Enumeration":
+      //     // onAdd({ type: "Enumeration", value: enums.filter(item => item.value.trim().length > 0) } as Constraints);
+      //     break;
+      // }
+      onClose();
     }
   };
 
-  useEffect(() => {
-    if (constraintType === "Range") {
-      document.querySelector<HTMLInputElement>(`#start-value`)?.focus();
-    }
-  }, [constraintType]);
-
   const clearConstraints = () => {
-    setRange(rangeEmptyValue);
+    setRange(undefined);
     setConstraintType("");
     setEnums([]);
     setValidation({ form: "default", fields: {} });
@@ -206,77 +216,16 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                 </div>
               </FormGroup>
               {/*range constraints editing to be moved to a dedicated component*/}
-              {constraintType === "Range" && (
+              {constraintType === "Range" && range !== undefined && (
                 <Card isCompact={true}>
                   <CardTitle>Range Constraint</CardTitle>
                   <CardBody>
-                    <Stack hasGutter={true}>
-                      {validation.form === "error" && (
-                        <StackItem>
-                          <Alert variant="danger" isInline={true} title="Please enter both start and end value." />
-                        </StackItem>
-                      )}
-                      <StackItem>
-                        <TextContent>
-                          <Text component={TextVariants.p}>
-                            A range has a start and an end value, both field values are required (*). <br />
-                            The value at each end of the range may be included or excluded from the range definition.
-                            <br />
-                            If the check box is cleared, the start or end value is excluded.
-                          </Text>
-                        </TextContent>
-                      </StackItem>
-                      <StackItem>
-                        <Split hasGutter={true}>
-                          <SplitItem style={{ width: 320 }}>
-                            <FormGroup label="Start Value" fieldId="start-value" isRequired={true}>
-                              <TextInput
-                                type="text"
-                                id="start-value"
-                                name="start-value"
-                                value={range.start.value}
-                                onChange={handleRangeChange}
-                                validated={validation.fields.start as Validated}
-                                tabIndex={20}
-                              />
-                            </FormGroup>
-                            <FormGroup fieldId="start-included" className="constraints__include-range">
-                              <Checkbox
-                                label="Include Start Value"
-                                aria-label="Include Start Value"
-                                id="start-included"
-                                isChecked={range.start.included}
-                                onChange={handleRangeChange}
-                                tabIndex={22}
-                              />
-                            </FormGroup>
-                          </SplitItem>
-                          <SplitItem style={{ width: 320 }}>
-                            <FormGroup label="End Value" fieldId="end-value" isRequired={true}>
-                              <TextInput
-                                type="text"
-                                id="end-value"
-                                name="end-value"
-                                value={range.end.value}
-                                onChange={handleRangeChange}
-                                validated={validation.fields.end as Validated}
-                                tabIndex={21}
-                              />
-                            </FormGroup>
-                            <FormGroup fieldId="end-included" className="constraints__include-range">
-                              <Checkbox
-                                label="Include End Value"
-                                aria-label="Include End Value"
-                                id="end-included"
-                                isChecked={range.end.included}
-                                onChange={handleRangeChange}
-                                tabIndex={23}
-                              />
-                            </FormGroup>
-                          </SplitItem>
-                        </Split>
-                      </StackItem>
-                    </Stack>
+                    <ConstraintsRangeEdit
+                      range={range}
+                      onChange={handleRangeChange}
+                      typeOfData={dataType.type}
+                      validation={validation}
+                    />
                   </CardBody>
                 </Card>
               )}

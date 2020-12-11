@@ -21,8 +21,7 @@ import { Reducer } from "react";
 interface DataDictionaryFieldPayload {
   [Actions.UpdateDataDictionaryField]: {
     readonly dataDictionaryIndex: number;
-    readonly name: FieldName;
-    readonly type: DataType;
+    readonly dataField: DataField;
   };
 }
 
@@ -41,8 +40,7 @@ export const DataDictionaryFieldReducer: HistoryAwareReducer<DataField[], DataDi
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
             draft[dataDictionaryIndex] = {
               ...draft[dataDictionaryIndex],
-              name: action.payload.name,
-              dataType: action.payload.type
+              ...action.payload.dataField
             };
           }
         });

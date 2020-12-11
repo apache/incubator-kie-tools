@@ -23,9 +23,9 @@ const ConstraintsLabel = ({ constraints, onConstraintsDelete }: ConstraintsLabel
 
   switch (constraints.type) {
     case "Range":
-      constraintValue = `${constraints.start.included ? "[" : "("}${constraints.start.value}, ${constraints.end.value}${
-        constraints.end.included ? "]" : ")"
-      }`;
+      constraintValue = `${constraints.value.start.included ? "[" : "("}${constraints.value.start.value}, ${
+        constraints.value.end.value
+      }${constraints.value.end.included ? "]" : ")"}`;
       break;
     case "Enumeration":
       const enums = constraints.value.map(item => `"${item.value}"`);

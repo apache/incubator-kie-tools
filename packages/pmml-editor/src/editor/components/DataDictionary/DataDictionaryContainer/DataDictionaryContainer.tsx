@@ -38,6 +38,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       setEditing(false);
       onEditingPhaseChange(false);
     }
+    if (viewSection === "constraints" && typeof editing === "number") {
+      setConstraintsEdit(dataDictionary[editing]);
+    }
     setDataTypes(dataDictionary);
   }, [dataDictionary]);
 
@@ -120,19 +123,20 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const handleConstraintsEdit = (dataType: DDDataField) => {
     if (typeof editing === "number") {
-      saveDataType(dataType, editing);
+      //saveDataType(dataType, editing);
       setConstraintsEdit(dataType);
       setViewSection("constraints");
       onEditingPhaseChange(true);
     }
   };
 
-  const handleConstraintsSave = (payload: Constraints) => {
-    setViewSection("main");
+  const handleConstraintsSave = (payload: DDDataField) => {
+    // setViewSection("main");
     if (typeof editing === "number") {
-      const newTypes = [...dataTypes];
-      newTypes[editing] = { ...newTypes[editing], constraints: payload };
-      setDataTypes(newTypes);
+      // const newTypes = [...dataTypes];
+      // newTypes[editing] = { ...newTypes[editing], constraints: payload };
+      // setDataTypes(newTypes);
+      onEdit(editing, payload);
     }
   };
   const handleConstraintsDelete = () => {
@@ -143,6 +147,10 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       delete newTypes[editing].constraints;
       setDataTypes(newTypes);
     }
+  };
+
+  const exitFromConstraints = () => {
+    setViewSection("main");
   };
 
   const toggleSorting = () => {
@@ -262,8 +270,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
               {viewSection === "constraints" && (
                 <ConstraintsEdit
                   dataType={constrainsEdit!}
-                  onAdd={handleConstraintsSave}
+                  onChange={handleConstraintsSave}
                   onDelete={handleConstraintsDelete}
+                  onClose={exitFromConstraints}
                 />
               )}
             </>
@@ -289,16 +298,20 @@ type dataDictionarySection = "main" | "batch-add" | "constraints";
 export type Constraints =
   | {
       type: "Range";
-      start: {
-        value: "";
-        included: false;
-      };
-      end: {
-        value: "";
-        included: false;
-      };
+      value: RangeConstraint;
     }
   | { type: "Enumeration"; value: EnumConstraint[] };
+
+export interface RangeConstraint {
+  start: {
+    value: string;
+    included: boolean;
+  };
+  end: {
+    value: string;
+    included: boolean;
+  };
+}
 
 export interface EnumConstraint {
   value: string;
