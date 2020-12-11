@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/guided-tour",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "Guided Tour component",
   "license": "Apache-2.0",
   "source": "src/index.tsx",
@@ -18,9 +18,9 @@
     "react-dom": "16.12.0"
   },
   "dependencies": {
-    "@kogito-tooling/envelope-bus": "^1.0.2",
-    "@kogito-tooling/i18n": "^1.0.2",
-    "@kogito-tooling/i18n-common-dictionary": "^1.0.2"
+    "@kogito-tooling/envelope-bus": "^1.0.1",
+    "@kogito-tooling/i18n": "^1.0.1",
+    "@kogito-tooling/i18n-common-dictionary": "^1.0.1"
   },
   "presets": [
     "@babel/preset-env",
