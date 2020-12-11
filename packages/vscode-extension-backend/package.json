@@ -2,7 +2,7 @@
   "name": "vscode-extension-backend",
   "displayName": "Backend services for BPMN, DMN and Test Scenario Editors",
   "description": "",
-  "version": "1.0.1",
+  "version": null,
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
