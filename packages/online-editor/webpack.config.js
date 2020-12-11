@@ -70,8 +70,8 @@ module.exports = async (env, argv) => {
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
         { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
-        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn" },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn" }
+        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
+        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
       ])
     ],
     module: {
