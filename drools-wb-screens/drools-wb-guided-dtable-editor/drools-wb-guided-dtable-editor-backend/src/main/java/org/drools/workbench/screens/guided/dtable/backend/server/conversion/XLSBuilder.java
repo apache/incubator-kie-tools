@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.backend.server.conversion;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -25,6 +27,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 import org.drools.workbench.screens.guided.dtable.shared.XLSConversionResult;
+import org.drools.workbench.screens.guided.dtable.shared.XLSConversionResultMessage;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
@@ -39,6 +42,8 @@ public class XLSBuilder {
     private final Workbook workbook;
     private final PackageDataModelOracle dmo;
     private final ColumnContext columnContext = new ColumnContext();
+
+    private Set<XLSConversionResultMessage> notifications = new HashSet<>();
 
     public XLSBuilder(final GuidedDecisionTable52 dtable,
                       final PackageDataModelOracle dmo) {
@@ -65,8 +70,12 @@ public class XLSBuilder {
             return new BuildResult(workbook,
                                    new XLSConversionResult(e.toString() + " : " + e.getMessage()));
         }
+        final XLSConversionResult conversionResult = new XLSConversionResult();
+        for (final XLSConversionResultMessage notification : notifications) {
+            conversionResult.addInfoMessage(notification);
+        }
         return new BuildResult(workbook,
-                               new XLSConversionResult());
+                               conversionResult);
     }
 
     private void checkHitPolicy() {
@@ -121,15 +130,15 @@ public class XLSBuilder {
     }
 
     private void makeTableSubHeader() {
-        new SubHeaderBuilder(sheet, dtable, dmo, columnContext).build();
+        new SubHeaderBuilder(sheet, dtable, dmo, columnContext).build(report -> notifications.add(report));
     }
 
     private void makePatternRow() {
-        new PatternRowBuilder(sheet, dtable, columnContext).build();
+        new PatternRowBuilder(sheet, dtable, columnContext).build(report -> notifications.add(report));
     }
 
     private void makeDTableColumns() {
-        new DataBuilder(sheet, dtable, dmo, columnContext).build();
+        new DataBuilder(sheet, dtable, dmo, columnContext).build(report -> notifications.add(report));
     }
 
     class BuildResult {

@@ -395,9 +395,9 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     public void onConvert() {
         service.call((RemoteCallback<XLSConversionResult>) result -> {
             if (result.isConverted()) {
-                view.showConversionSuccess();
+                view.showConversionSuccess(result.getInfoMessages());
             } else {
-                view.showConversionMessage(result.getMessage());
+                view.showConversionErrorMessage(result.getErrorMessage());
             }
         }).convert(versionRecordManager.getCurrentPath());
     }

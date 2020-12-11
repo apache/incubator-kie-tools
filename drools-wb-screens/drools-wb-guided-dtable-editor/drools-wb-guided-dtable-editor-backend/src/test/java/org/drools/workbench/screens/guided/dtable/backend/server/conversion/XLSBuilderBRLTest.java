@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.backend.server.conversion;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -127,7 +128,8 @@ public class XLSBuilderBRLTest
     @Test
     public void content() {
 
-        assertEquals("X", cell(9, 1).getStringCellValue());
+        Cell cell = cell(9, 1);
+        assertEquals("X", cell.getStringCellValue());
         assertEquals("12, false", cell(9, 2).getStringCellValue());
         assertNullCell(9, 3);
         assertEquals("true", cell(9, 4).getStringCellValue());

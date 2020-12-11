@@ -15,32 +15,44 @@
  */
 package org.drools.workbench.screens.guided.dtable.shared;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class XLSConversionResult {
 
-    private String message;
+    private String errorMessage;
+    private Set<XLSConversionResultMessage> infoMessages = new HashSet<>();
 
     public XLSConversionResult() {
-        this.message = "";
+        this.errorMessage = "";
     }
 
-    public XLSConversionResult(final String message) {
-        this.message = message;
+    public XLSConversionResult(final String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public boolean isConverted() {
-        return Objects.equals("", message);
+        return Objects.equals("", errorMessage);
     }
 
-    public String getMessage() {
-        return message;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setMessage(final String message) {
-        this.message = message;
+    public void setErrorMessage(final String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public void addInfoMessage(final XLSConversionResultMessage infoMessage) {
+        this.infoMessages.add(infoMessage);
+    }
+
+    public Set<XLSConversionResultMessage> getInfoMessages() {
+        return Collections.unmodifiableSet(infoMessages);
     }
 }

@@ -16,22 +16,24 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
+import java.util.Set;
+
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.shared.XLSConversionResultMessage;
+import org.kie.workbench.common.widgets.client.popups.list.MessageType;
+import org.kie.workbench.common.widgets.client.popups.list.PopupListWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
-import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Guided Decision Table Editor View implementation
@@ -44,8 +46,9 @@ public class GuidedDecisionTableEditorViewImpl
     private static GuidedDecisionTableEditorViewImplUiBinder uiBinder = GWT.create(GuidedDecisionTableEditorViewImplUiBinder.class);
     @UiField
     SimpleLayoutPanel container;
+
     @Inject
-    private Event<NotificationEvent> notificationEvent;
+    private PopupListWidget popupListWidget;
 
     public GuidedDecisionTableEditorViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -54,13 +57,10 @@ public class GuidedDecisionTableEditorViewImpl
         container.getElement().setAttribute("data-uf-lock",
                                             "false");
 
-        addAttachHandler(new AttachEvent.Handler() {
-            @Override
-            public void onAttachOrDetach(final AttachEvent event) {
-                if (event.isAttached()) {
-                    getElement().getParentElement().getStyle().setHeight(100.0, Style.Unit.PCT);
-                    getElement().getParentElement().getStyle().setWidth(100.0, Style.Unit.PCT);
-                }
+        addAttachHandler(event -> {
+            if (event.isAttached()) {
+                getElement().getParentElement().getStyle().setHeight(100.0, Style.Unit.PCT);
+                getElement().getParentElement().getStyle().setWidth(100.0, Style.Unit.PCT);
             }
         });
     }
@@ -76,13 +76,19 @@ public class GuidedDecisionTableEditorViewImpl
     }
 
     @Override
-    public void showConversionSuccess() {
-        notificationEvent.fire(new NotificationEvent(GuidedDecisionTableConstants.INSTANCE.TableConvertedSuccessfully()));
+    public void showConversionSuccess(final Set<XLSConversionResultMessage> infoMessages) {
+        popupListWidget.clear();
+        popupListWidget.setTitle(GuidedDecisionTableConstants.INSTANCE.TableConvertedSuccessfully());
+        popupListWidget.addListMessage(MessageType.INFO, GuidedDecisionTableConstants.INSTANCE.TableConvertedSuccessfully());
+        for (XLSConversionResultMessage infoMessage : infoMessages) {
+            popupListWidget.addListMessage(MessageType.INFO, ConversionInfoMessageTranslator.translate(infoMessage));
+        }
+        popupListWidget.show();
     }
 
     @Override
-    public void showConversionMessage(final String message) {
-        ErrorPopup.showMessage(message);
+    public void showConversionErrorMessage(final String errorMessage) {
+        ErrorPopup.showMessage(errorMessage);
     }
 
     interface GuidedDecisionTableEditorViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableEditorViewImpl> {
