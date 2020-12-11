@@ -64,8 +64,11 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class IntermediateThrowEventConverter extends AbstractConverter implements NodeConverter<IntermediateThrowEvent> {
 
-    private final TypedFactoryManager factoryManager;
-    private final PropertyReaderFactory propertyReaderFactory;
+    protected static final String NO_DEFINITION = "An intermediate throw event should contain exactly one definition";
+    protected static final String MULTIPLE_DEFINITIONS = "Multiple definitions not supported for intermediate throw event";
+
+    protected final TypedFactoryManager factoryManager;
+    protected final PropertyReaderFactory propertyReaderFactory;
 
     public IntermediateThrowEventConverter(TypedFactoryManager factoryManager,
                                            PropertyReaderFactory propertyReaderFactory,
@@ -80,10 +83,10 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         List<EventDefinition> eventDefinitions = p.getEventDefinitions();
         switch (eventDefinitions.size()) {
             case 0:
-                throw new UnsupportedOperationException("An intermediate throw event should contain exactly one definition");
+                throw new UnsupportedOperationException(NO_DEFINITION);
             case 1:
                 return Match.<EventDefinition, BpmnNode>of()
-                        .<SignalEventDefinition>when(e -> e instanceof SignalEventDefinition, e -> signalEvent(event, e))
+                        .<SignalEventDefinition>when(e -> e instanceof SignalEventDefinition, e -> signalEvent(event))
                         .<LinkEventDefinition>when(e -> e instanceof LinkEventDefinition, e -> linkEvent(event))
                         .<MessageEventDefinition>when(e -> e instanceof MessageEventDefinition, e -> messageEvent(event, e))
                         .<EscalationEventDefinition>when(e -> e instanceof EscalationEventDefinition, e -> escalationEvent(event, e))
@@ -93,11 +96,11 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
                         .mode(getMode())
                         .apply(eventDefinitions.get(0));
             default:
-                throw new UnsupportedOperationException("Multiple definitions not supported for intermediate throw event");
+                throw new UnsupportedOperationException(MULTIPLE_DEFINITIONS);
         }
     }
 
-    private BpmnNode linkEvent(IntermediateThrowEvent event) {
+    protected BpmnNode linkEvent(IntermediateThrowEvent event) {
 
         Node<View<IntermediateLinkEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(), IntermediateLinkEventThrowing.class);
@@ -108,6 +111,10 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
         ));
 
         definition.setExecutionSet(new LinkEventExecutionSet(
@@ -123,8 +130,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode messageEvent(
-            IntermediateThrowEvent event, MessageEventDefinition eventDefinition) {
+    protected BpmnNode messageEvent(IntermediateThrowEvent event, MessageEventDefinition eventDefinition) {
         Node<View<IntermediateMessageEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(), IntermediateMessageEventThrowing.class);
 
@@ -154,9 +160,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode signalEvent(
-            IntermediateThrowEvent event,
-            SignalEventDefinition eventDefinition) {
+    protected BpmnNode signalEvent(IntermediateThrowEvent event) {
 
         Node<View<IntermediateSignalEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(), IntermediateSignalEventThrowing.class);
@@ -187,9 +191,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode escalationEvent(
-            IntermediateThrowEvent event,
-            EscalationEventDefinition eventDefinition) {
+    protected BpmnNode escalationEvent(IntermediateThrowEvent event, EscalationEventDefinition eventDefinition) {
 
         Node<View<IntermediateEscalationEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(),
@@ -220,8 +222,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode compensationEvent(IntermediateThrowEvent event,
-                                       CompensateEventDefinition eventDefinition) {
+    protected BpmnNode compensationEvent(IntermediateThrowEvent event, CompensateEventDefinition eventDefinition) {
 
         Node<View<IntermediateCompensationEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(),
@@ -233,6 +234,10 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
         ));
 
         definition.setExecutionSet(new CompensationEventExecutionSet(

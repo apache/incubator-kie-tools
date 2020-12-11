@@ -58,32 +58,27 @@ public class IntermediateEscalationEvent extends BaseCatchingIntermediateEvent {
     @Valid
     private CancellingEscalationEventExecutionSet executionSet;
 
-    @Property
-    @FormField(afterElement = "executionSet")
-    @Valid
-    private DataIOSet dataIOSet;
-
     public IntermediateEscalationEvent() {
         this(new BPMNGeneralSet(""),
              new BackgroundSet(),
              new FontSet(),
              new CircleDimensionSet(new Radius()),
-             new CancellingEscalationEventExecutionSet(),
-             new DataIOSet());
+             new DataIOSet(),
+             new CancellingEscalationEventExecutionSet());
     }
 
     public IntermediateEscalationEvent(final @MapsTo("general") BPMNGeneralSet general,
                                        final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                        final @MapsTo("fontSet") FontSet fontSet,
                                        final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
-                                       final @MapsTo("executionSet") CancellingEscalationEventExecutionSet executionSet,
-                                       final @MapsTo("dataIOSet") DataIOSet dataIOSet) {
+                                       final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                                       final @MapsTo("executionSet") CancellingEscalationEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
-        this.dataIOSet = dataIOSet;
     }
 
     public CancellingEscalationEventExecutionSet getExecutionSet() {
@@ -94,29 +89,10 @@ public class IntermediateEscalationEvent extends BaseCatchingIntermediateEvent {
         this.executionSet = executionSet;
     }
 
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setDataIOSet(DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return true;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         Objects.hashCode(executionSet),
-                                         Objects.hashCode(dataIOSet));
+                                         Objects.hashCode(executionSet));
     }
 
     @Override
@@ -127,8 +103,7 @@ public class IntermediateEscalationEvent extends BaseCatchingIntermediateEvent {
         if (o instanceof IntermediateEscalationEvent) {
             IntermediateEscalationEvent other = (IntermediateEscalationEvent) o;
             return super.equals(other) &&
-                    Objects.equals(executionSet, other.executionSet) &&
-                    Objects.equals(dataIOSet, other.dataIOSet);
+                    Objects.equals(executionSet, other.executionSet);
         }
         return false;
     }

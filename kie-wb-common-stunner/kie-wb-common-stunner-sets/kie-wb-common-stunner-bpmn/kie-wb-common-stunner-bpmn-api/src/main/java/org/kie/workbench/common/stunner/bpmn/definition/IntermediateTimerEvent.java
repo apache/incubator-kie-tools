@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
@@ -60,6 +61,7 @@ public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
              new BackgroundSet(),
              new FontSet(),
              new CircleDimensionSet(new Radius()),
+             new DataIOSet(),
              new CancellingTimerEventExecutionSet());
     }
 
@@ -67,11 +69,13 @@ public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
                                   final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                   final @MapsTo("fontSet") FontSet fontSet,
                                   final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                                  final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                                   final @MapsTo("executionSet") CancellingTimerEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
     }
 
@@ -87,11 +91,6 @@ public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
 
     public void setExecutionSet(CancellingTimerEventExecutionSet executionSet) {
         this.executionSet = executionSet;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return false;
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkEventExecutionSet;
@@ -58,21 +59,24 @@ public class IntermediateLinkEventThrowing extends BaseThrowingIntermediateEvent
 
     public IntermediateLinkEventThrowing() {
         this(new BPMNGeneralSet(""),
-             new LinkEventExecutionSet(),
              new BackgroundSet(),
              new FontSet(),
-             new CircleDimensionSet(new Radius()));
+             new CircleDimensionSet(new Radius()),
+             new DataIOSet(),
+             new LinkEventExecutionSet());
     }
 
     public IntermediateLinkEventThrowing(final @MapsTo("general") BPMNGeneralSet general,
-                                         final @MapsTo("executionSet") LinkEventExecutionSet executionSet,
                                          final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                          final @MapsTo("fontSet") FontSet fontSet,
-                                         final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+                                         final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                                         final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                                         final @MapsTo("executionSet") LinkEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
     }
 
