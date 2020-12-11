@@ -30,6 +30,8 @@ public interface ProjectMainActionsView extends UberElemental<ProjectMainActions
 
     void showBusyIndicator(String message);
 
+    void viewProjectToolbar(boolean visible);
+
     void hideBusyIndicator();
 
     interface Presenter {

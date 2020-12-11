@@ -21,6 +21,7 @@ import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
 import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
+import org.uberfire.preferences.shared.impl.validation.NumberPropertyValidator;
 
 @WorkbenchPreference(identifier = "LibraryProjectPreferences",
         bundleKey = "LibraryProjectPreferences.Label")
@@ -39,6 +40,11 @@ public class LibraryProjectPreferences implements BasePreference<LibraryProjectP
             helpBundleKey = "LibraryProjectPreferences.Branch.Help",
             formOptions = PropertyFormOptions.DISABLED)
     String branch;
+    
+    @Property(bundleKey = "LibraryProjectPreferences.AssetsPerPage",
+            helpBundleKey = "LibraryProjectPreferences.AssetsPerPage.Help",
+            validators = {NumberPropertyValidator.class})
+    String assetsPerPage;
 
     public String getVersion() {
         return version;
@@ -50,5 +56,9 @@ public class LibraryProjectPreferences implements BasePreference<LibraryProjectP
 
     public String getBranch() {
         return branch;
+    }
+    
+    public String getAssetsPerPage() {
+        return assetsPerPage;
     }
 }

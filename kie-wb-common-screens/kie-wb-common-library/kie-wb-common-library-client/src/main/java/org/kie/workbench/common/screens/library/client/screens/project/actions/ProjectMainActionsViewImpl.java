@@ -46,6 +46,14 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
 
     @Inject
     @DataField
+    private HTMLDivElement deployBtn;
+
+    @Inject
+    @DataField
+    private HTMLDivElement buildBtn;
+
+    @Inject
+    @DataField
     private HTMLButtonElement build;
 
     @Inject
@@ -140,6 +148,13 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
         } else {
             this.viewDeploymentDetailsLI.classList.add(DISABLED_CLASS);
         }
+    }
+
+    @Override
+    public void viewProjectToolbar(boolean visible) {
+            this.runTests.hidden = !visible;
+            this.deployBtn.hidden = !visible;
+            this.buildBtn.hidden = !visible;
     }
 
     @Override

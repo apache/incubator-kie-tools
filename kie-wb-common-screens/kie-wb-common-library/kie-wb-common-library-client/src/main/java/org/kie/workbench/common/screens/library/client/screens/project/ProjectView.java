@@ -31,7 +31,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.screens.project.actions.ProjectMainActions;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Templated
@@ -39,6 +38,7 @@ public class ProjectView implements ProjectScreen.View,
                                     IsElement {
 
     public static final String ACTIVE = "active";
+    private static final String HIDDEN_CLASS = "hidden";
     private ProjectScreen presenter;
 
     @Inject
@@ -210,6 +210,23 @@ public class ProjectView implements ProjectScreen.View,
     @Override
     public void setSubmitChangeRequestVisible(boolean visible) {
         this.submitChangeRequest.hidden = !visible;
+    }
+
+    @Override
+    public void viewMetricsTab(boolean visible) {
+        this.metricsTabItem.hidden = !visible;
+    }
+
+    @Override
+    public void viewChangeRequestTab(boolean visible) {
+        this.changeRequestsTabItem.hidden = !visible;
+    }
+
+    @Override
+    public void viewProjectToolbar(boolean visible) {
+        if (!visible) {
+            this.actionsDropdown.classList.add(HIDDEN_CLASS);
+        }
     }
 
     @Override

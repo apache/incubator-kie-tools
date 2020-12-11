@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
@@ -42,6 +43,7 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -71,6 +73,9 @@ public class DMNEditDecisionToolboxActionTest {
     @Mock
     private EventSourceMock<EditExpressionEvent> editExpressionEvent;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private DMNEditDecisionToolboxAction tested;
     private Decision decision;
     private Node<View<Decision>, Edge> decisionNode;
@@ -90,7 +95,8 @@ public class DMNEditDecisionToolboxActionTest {
 
         this.tested = new DMNEditDecisionToolboxAction(sessionManager,
                                                        translationService,
-                                                       editExpressionEvent);
+                                                       editExpressionEvent,
+                                                       readOnlyProvider);
     }
 
     @Test
@@ -124,5 +130,32 @@ public class DMNEditDecisionToolboxActionTest {
         assertEquals(session,
                      editExprEvent.getSession());
         assertFalse(editExprEvent.isOnlyVisualChangeAllowed());
+    }
+
+    @Test
+    public void testActionWhenIsReadOnlyDiagram() {
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+        final MouseClickEvent event = mock(MouseClickEvent.class);
+        final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler,
+                                                                                 E_UUID,
+                                                                                 event);
+        assertEquals(tested,
+                     cascade);
+
+        final ArgumentCaptor<EditExpressionEvent> eventCaptor = ArgumentCaptor.forClass(EditExpressionEvent.class);
+        verify(editExpressionEvent,
+               times(1)).fire(eventCaptor.capture());
+
+        final EditExpressionEvent editExprEvent = eventCaptor.getValue();
+        assertEquals(E_UUID,
+                     editExprEvent.getNodeUUID());
+        assertEquals(decision,
+                     editExprEvent.getHasExpression());
+        assertEquals(decision,
+                     editExprEvent.getHasName().get());
+        assertEquals(session,
+                     editExprEvent.getSession());
+        assertTrue(editExprEvent.isOnlyVisualChangeAllowed());
     }
 }

@@ -101,6 +101,12 @@ public class ProjectScreen {
 
         void setSubmitChangeRequestVisible(boolean visible);
 
+        void viewMetricsTab(boolean visible);
+
+        void viewChangeRequestTab(boolean visible);
+
+        void viewProjectToolbar(boolean visible);
+
         void setActionsVisible(boolean visible);
 
         String getLoadingMessage();
@@ -214,6 +220,15 @@ public class ProjectScreen {
 
             return promises.resolve();
         });
+
+        final boolean userCanViewMetricsTab = projectController.canViewMetricsTab();
+        final boolean userCanViewChangeRequestTab = projectController.canViewChangeRequestTab();
+        final boolean userCanViewProjectToolbar = projectController.canViewProjectToolbar();
+
+        this.view.viewMetricsTab(userCanViewMetricsTab);
+        this.view.viewChangeRequestTab(userCanViewChangeRequestTab);
+        this.view.viewProjectToolbar(userCanViewProjectToolbar);
+        this.projectMainActions.setViewProjectToolbar(userCanViewProjectToolbar);
 
         final boolean userCanCreateProjects = this.userCanCreateProjects();
         this.view.setDuplicateVisible(userCanCreateProjects);

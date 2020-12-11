@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItemBuilder;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.mocks.EventSourceMock;
@@ -94,6 +95,9 @@ public class DecisionNavigatorTreeViewTest {
     private HTMLUListElement subItems;
 
     @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
+    @Mock
     private EventSourceMock<LockRequiredEvent> locker;
 
     private DecisionNavigatorTreeView treeView;
@@ -103,7 +107,7 @@ public class DecisionNavigatorTreeViewTest {
     @Before
     public void setup() {
         treeView = spy(new DecisionNavigatorTreeView(view, items, managedInstance, util));
-        treeItem = spy(new DecisionNavigatorTreeView.TreeItem(textContent, inputText, icon, subItems, save, edit, remove, locker));
+        treeItem = spy(new DecisionNavigatorTreeView.TreeItem(textContent, inputText, icon, subItems, save, edit, remove, locker, readOnlyProvider));
     }
 
     @Test
@@ -449,6 +453,55 @@ public class DecisionNavigatorTreeViewTest {
         doReturn(cssClass).when(treeItem).getCSSClass(item);
         when(element.getClassList()).thenReturn(classList);
         when(item.isEditable()).thenReturn(false);
+
+        treeItem.updateCSSClass();
+
+        verify(classList).add(cssClass);
+        verify(classList, never()).add("parent-node");
+        verify(classList, never()).add("editable");
+    }
+
+    @Test
+    public void testTreeItemUpdateCSSClassWhenItemHasChildrenAndIsReadOnly() {
+
+        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
+        final DecisionNavigatorItem child = mock(DecisionNavigatorItem.class);
+        final TreeSet<DecisionNavigatorItem> children = new TreeSet<DecisionNavigatorItem>() {{
+            add(child);
+        }};
+        final org.jboss.errai.common.client.dom.DOMTokenList classList = mock(org.jboss.errai.common.client.dom.DOMTokenList.class);
+        final HTMLElement element = mock(HTMLElement.class);
+        final String cssClass = "css-class";
+
+        doReturn(item).when(treeItem).getItem();
+        doReturn(element).when(treeItem).getElement();
+        doReturn(cssClass).when(treeItem).getCSSClass(item);
+        when(element.getClassList()).thenReturn(classList);
+        when(item.getChildren()).thenReturn(children);
+        when(item.isEditable()).thenReturn(true);
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+
+        treeItem.updateCSSClass();
+
+        verify(classList).add(cssClass);
+        verify(classList).add("parent-node");
+        verify(classList, never()).add("editable");
+    }
+
+    @Test
+    public void testTreeItemUpdateCSSClassWhenItemDoesNotHaveChildrenAndIsReadOnly() {
+
+        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
+        final org.jboss.errai.common.client.dom.DOMTokenList classList = mock(org.jboss.errai.common.client.dom.DOMTokenList.class);
+        final HTMLElement element = mock(HTMLElement.class);
+        final String cssClass = "css-class";
+
+        doReturn(item).when(treeItem).getItem();
+        doReturn(element).when(treeItem).getElement();
+        doReturn(cssClass).when(treeItem).getCSSClass(item);
+        when(element.getClassList()).thenReturn(classList);
+        when(item.isEditable()).thenReturn(false);
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
 
         treeItem.updateCSSClass();
 

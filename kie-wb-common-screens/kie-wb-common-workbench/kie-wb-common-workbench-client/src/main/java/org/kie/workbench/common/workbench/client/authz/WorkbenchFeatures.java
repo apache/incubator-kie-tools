@@ -30,4 +30,10 @@ public interface WorkbenchFeatures extends DataModelerFeatures {
     String EDIT_PROFILE_PREFERENCES = "profilepreferences.edit";
 
     String ACCESS_DATA_TRANSFER = "datatransfer.access";
+
+    String SHOW_PROJECT_TOOLBAR = "projecttoolbar.show";
+
+    String SHOW_METRICS_TAB = "metricstab.show";
+
+    String SHOW_CHANGEREQUEST_TAB = "changerequesttab.show";
 }

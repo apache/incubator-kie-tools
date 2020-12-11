@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
@@ -45,6 +46,7 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -76,6 +78,9 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
     @Mock
     private MouseClickEvent mouseClickEvent;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private DMNEditBusinessKnowledgeModelToolboxAction tested;
     private BusinessKnowledgeModel bkm;
     private Node<View<BusinessKnowledgeModel>, Edge> bkmNode;
@@ -95,7 +100,8 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
 
         this.tested = new DMNEditBusinessKnowledgeModelToolboxAction(sessionManager,
                                                                      translationService,
-                                                                     editExpressionEvent);
+                                                                     editExpressionEvent,
+                                                                     readOnlyProvider);
     }
 
     @Test
@@ -132,6 +138,35 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
         assertEquals(session,
                      editExprEvent.getSession());
         assertFalse(editExprEvent.isOnlyVisualChangeAllowed());
+    }
+
+    @Test
+    public void testActionWhenIsReadOnlyDiagram() {
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+        final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler,
+                                                                                 E_UUID,
+                                                                                 mouseClickEvent);
+        assertEquals(tested,
+                     cascade);
+
+        final ArgumentCaptor<EditExpressionEvent> eventCaptor = ArgumentCaptor.forClass(EditExpressionEvent.class);
+        verify(editExpressionEvent,
+               times(1)).fire(eventCaptor.capture());
+
+        final EditExpressionEvent editExprEvent = eventCaptor.getValue();
+        assertEquals(E_UUID,
+                     editExprEvent.getNodeUUID());
+        final HasExpression hasExpression = editExprEvent.getHasExpression();
+        assertEquals(bkm.getEncapsulatedLogic(),
+                     hasExpression.getExpression());
+        assertEquals(bkm,
+                     hasExpression.asDMNModelInstrumentedBase());
+        assertFalse(hasExpression.isClearSupported());
+        assertEquals(bkm,
+                     editExprEvent.getHasName().get());
+        assertEquals(session,
+                     editExprEvent.getSession());
+        assertTrue(editExprEvent.isOnlyVisualChangeAllowed());
     }
 
     @Test

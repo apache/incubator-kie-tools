@@ -23,7 +23,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
@@ -48,14 +50,17 @@ public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction
     private final SessionManager sessionManager;
     private final ClientTranslationService translationService;
     private final Event<EditExpressionEvent> editExpressionEvent;
+    private final ReadOnlyProvider readOnlyProvider;
 
     @Inject
     public DMNEditBusinessKnowledgeModelToolboxAction(final SessionManager sessionManager,
                                                       final ClientTranslationService translationService,
-                                                      final Event<EditExpressionEvent> editExpressionEvent) {
+                                                      final Event<EditExpressionEvent> editExpressionEvent,
+                                                      final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         this.sessionManager = sessionManager;
         this.translationService = translationService;
         this.editExpressionEvent = editExpressionEvent;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @Override
@@ -82,12 +87,12 @@ public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction
                                                                                                     uuid)
                 .asNode();
         final BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) DefinitionUtils.getElementDefinition(bkmNode);
-        final boolean isOnlyVisualChangeAllowed = bkm.isAllowOnlyVisualChange();
+        final boolean isReadOnly = bkm.isAllowOnlyVisualChange() || readOnlyProvider.isReadOnlyDiagram();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
                                                          uuid,
                                                          bkm.asHasExpression(),
                                                          Optional.of(bkm),
-                                                         isOnlyVisualChangeAllowed));
+                                                         isReadOnly));
 
         return this;
     }
