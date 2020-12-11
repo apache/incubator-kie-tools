@@ -62,6 +62,13 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   }, [activeOperation]);
 
+  useEffect(() => {
+    if (selectedOutputIndex === outputs.length) {
+      setSelectedOutputIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [outputs]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedOutputIndex(index);
     setActiveOperation(Operation.UPDATE_OUTPUT);

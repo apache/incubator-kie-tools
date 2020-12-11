@@ -74,6 +74,13 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     }
   }, [activeOperation]);
 
+  useEffect(() => {
+    if (selectedCharacteristicIndex === characteristics.length) {
+      setSelectedCharacteristicIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [characteristics]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedCharacteristicIndex(index);
     setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
