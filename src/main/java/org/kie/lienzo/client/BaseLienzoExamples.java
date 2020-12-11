@@ -7,7 +7,6 @@ import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.google.gwt.dom.client.Style.Display;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 
@@ -134,10 +133,10 @@ public class BaseLienzoExamples {
 
         applyGrid(lienzo);
 
-        DomGlobal.window.addEventListener("resize", (e) ->
-        {
-            test.onResize();
-        });
+//        DomGlobal.window.addEventListener("resize", (e) ->
+//        {
+//            test.onResize();
+//        });
     }
 
     private void applyGrid( final LienzoPanel panel) {
