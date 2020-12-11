@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
+import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceParametersListSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -73,6 +74,11 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
 
     @Property
     @FormField(afterElement = "nameHolder")
+    @Valid
+    protected DecisionServiceParametersListSet decisionServiceParametersList;
+
+    @Property
+    @FormField(afterElement = "decisionServiceParametersList")
     @Valid
     protected InformationItemPrimary variable;
 
@@ -136,6 +142,8 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
         this.dividerLineY = dividerLineY;
+        this.decisionServiceParametersList = new DecisionServiceParametersListSet();
+        this.decisionServiceParametersList.setDecisionService(this);
 
         setVariableParent();
     }
@@ -232,6 +240,14 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         return this.inputData;
     }
 
+    public DecisionServiceParametersListSet getDecisionServiceParametersList() {
+        return decisionServiceParametersList;
+    }
+
+    public void setDecisionServiceParametersList(final DecisionServiceParametersListSet decisionParametersList) {
+        this.decisionServiceParametersList = decisionParametersList;
+    }
+
     // ------------------------------------------------------
     // DomainObject requirements - to use in Properties Panel
     // ------------------------------------------------------
@@ -283,6 +299,9 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         if (linksHolder != null ? !linksHolder.equals(that.linksHolder) : that.linksHolder != null) {
             return false;
         }
+        if (decisionServiceParametersList != null ? !decisionServiceParametersList.equals(that.decisionServiceParametersList) : that.decisionServiceParametersList != null) {
+            return false;
+        }
         return inputData != null ? inputData.equals(that.inputData) : that.inputData == null;
     }
 
@@ -297,7 +316,8 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
                                          encapsulatedDecision != null ? encapsulatedDecision.hashCode() : 0,
                                          inputDecision != null ? inputDecision.hashCode() : 0,
                                          inputData != null ? inputData.hashCode() : 0,
-                                         linksHolder != null ? linksHolder.hashCode() : 0);
+                                         linksHolder != null ? linksHolder.hashCode() : 0,
+                                         decisionServiceParametersList != null ? decisionServiceParametersList.hashCode() : 0);
     }
 
     private void setVariableParent() {

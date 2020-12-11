@@ -495,4 +495,13 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DMNPreviewDiagramDock_Title = "DMNPreviewDiagramDock.Title";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionServiceParameters_Inputs = "DecisionServiceParameters.Inputs";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionServiceParameters_Outputs = "DecisionServiceParameters.Outputs";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionServiceParameters_EncapsulatedDecisions = "DecisionServiceParameters.EncapsulatedDecisions";
 }
