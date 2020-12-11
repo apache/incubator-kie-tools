@@ -2,7 +2,7 @@
   "name": "@kogito-tooling/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
-  "version": null,
+  "version": "0.8.1",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
