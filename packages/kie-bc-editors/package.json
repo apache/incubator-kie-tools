@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-bc-editors",
-  "version": "1.0.1",
+  "version": null,
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
