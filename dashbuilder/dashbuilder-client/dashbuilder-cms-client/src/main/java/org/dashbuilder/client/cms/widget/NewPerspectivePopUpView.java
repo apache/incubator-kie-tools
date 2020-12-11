@@ -19,6 +19,7 @@ package org.dashbuilder.client.cms.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -187,6 +188,16 @@ public class NewPerspectivePopUpView implements NewPerspectivePopUp.View, IsElem
         buttonPressed = ButtonPressed.OK;
         presenter.onOK();
     }
+    
+    @SinkNative(Event.ONMOUSEDOWN)
+    @EventHandler("nameInput")
+    public void nameInputEnter(final Event event) {
+        if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+            buttonPressed = ButtonPressed.OK;
+            presenter.onOK();
+        }
+    }
+
 
     @SinkNative(Event.ONCLICK)
     @EventHandler("cancelButton")

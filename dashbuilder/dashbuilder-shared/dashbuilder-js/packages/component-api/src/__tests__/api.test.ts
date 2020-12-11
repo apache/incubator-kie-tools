@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import * as ComponentAPI from "../controller/api";
-import * as Bus from "../controller/ComponentBus";
+import { ComponentBus } from "../controller";
+import { ComponentApi } from "../ComponentApi";
 import { ColumnType, DataSet, FilterRequest } from "../dataset";
 import { FunctionCallRequest, FunctionResponse, FunctionResultType } from "../function";
 import { ComponentMessage, MessageType } from "../message";
 import { MessageProperty } from "../message/MessageProperty";
+import { DashbuilderComponentController } from "../controller/DashbuilderComponentController";
 
-const controller = ComponentAPI.getComponentController();
+const controller = new ComponentApi().getComponentController() as DashbuilderComponentController;
 
 const sampleDataSet: DataSet = {
   columns: [
@@ -77,12 +77,14 @@ describe("[Controller API] Callbacks", () => {
 
 describe("[Controller API] Sending Requests", () => {
   const bus = mockBus();
+  const componentId = "42";
   beforeAll(() => {
+    const params = new Map<string, any>();
+    params.set(MessageProperty.COMPONENT_ID, componentId);
+    controller.init(params);
     controller.setComponentBus(bus);
   });
-  afterAll(() => {
-    controller.setComponentBus(Bus.INSTANCE);
-  });
+
   it("Configuration Issues", async () => {
     const configIssue = "some configuration issue.";
     const params = new Map<string, any>();
@@ -95,7 +97,7 @@ describe("[Controller API] Sending Requests", () => {
     controller.requireConfigurationFix(configIssue);
     await delay(0);
 
-    expect(bus.send).toBeCalledWith(expected);
+    expect(bus.send).toBeCalledWith(componentId, expected);
   });
 
   it("Configuration Fixed", async () => {
@@ -106,7 +108,7 @@ describe("[Controller API] Sending Requests", () => {
     controller.configurationOk();
     await delay(0);
 
-    expect(bus.send).toBeCalledWith(message);
+    expect(bus.send).toBeCalledWith(componentId, message);
   });
 
   it("Filter", async () => {
@@ -122,7 +124,7 @@ describe("[Controller API] Sending Requests", () => {
       properties: props
     };
     controller.filter(filterRequest);
-    expect(bus.send).toBeCalledWith(message);
+    expect(bus.send).toBeCalledWith(componentId, message);
   });
 });
 
@@ -215,7 +217,7 @@ async function postMessage(message: ComponentMessage) {
   await delay(0);
 }
 
-function mockBus(): Bus.ComponentBus {
+function mockBus(): ComponentBus {
   return {
     destroy: jest.fn(),
     start: jest.fn(),

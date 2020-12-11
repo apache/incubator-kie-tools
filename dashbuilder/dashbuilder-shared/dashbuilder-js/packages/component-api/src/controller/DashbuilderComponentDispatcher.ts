@@ -18,25 +18,22 @@ import { DataSet } from "../dataset";
 import { FunctionResponse } from "../function";
 import { ComponentMessage, MessageType } from "../message";
 import { MessageProperty } from "../message/MessageProperty";
-
-import * as Bus from "./ComponentBus";
+import { ComponentBus } from "./ComponentBus";
 
 import { DashbuilderComponentController } from "./DashbuilderComponentController";
 import { InternalComponentDispatcher } from "./InternalComponentListener";
 
 export class DashbuilderComponentDispatcher implements InternalComponentDispatcher {
-  public readonly componentController: DashbuilderComponentController;
-
   private componentId: string;
 
-  constructor(componentController: DashbuilderComponentController) {
-    this.componentController = componentController;
+  constructor(private readonly bus: ComponentBus, public readonly componentController: DashbuilderComponentController) {
+    // no op
   }
 
   private readonly messageDispatcher = (message: ComponentMessage) => {
     if (message.type === MessageType.INIT) {
       this.componentId = message.properties.get(MessageProperty.COMPONENT_ID);
-      this.componentController.onInit(message.properties);
+      this.componentController.init(message.properties);
     }
 
     if (message.type === MessageType.DATASET) {
@@ -56,8 +53,8 @@ export class DashbuilderComponentDispatcher implements InternalComponentDispatch
   }
 
   public init(): void {
-    Bus.INSTANCE.setListener(this.messageDispatcher);
-    Bus.INSTANCE.start();
+    this.bus.setListener(this.messageDispatcher);
+    this.bus.start();
   }
 
   public sendMessage(componentMessage: ComponentMessage): void {
@@ -66,6 +63,6 @@ export class DashbuilderComponentDispatcher implements InternalComponentDispatch
   }
 
   public stop(): void {
-    Bus.INSTANCE.destroy();
+    this.bus.destroy();
   }
 }

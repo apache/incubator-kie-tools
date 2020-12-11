@@ -52,5 +52,17 @@ public class ComponentServiceImpl implements ComponentService {
                      .filter(c -> componentId.equals(c.getId()))
                      .findFirst();
     }
+    
+    @Override
+    public List<ExternalComponent> listAllComponents() {
+        List<ExternalComponent> allComponents = loader.loadExternal();
+        List<ExternalComponent> provided = loader.loadProvided();
+
+        allComponents.forEach(c -> c.setProvided(false));
+        provided.forEach(c -> c.setProvided(true));
+        allComponents.addAll(provided);
+
+        return allComponents;
+    }
 
 }

@@ -37,8 +37,18 @@ public interface ComponentLoader {
      */
     List<ExternalComponent> loadProvided();
 
+    /**
+     * The filesystem directory for external components.
+     * 
+     * @return
+     */
     String getExternalComponentsDir();
 
+    /**
+     * The internal path for provided components.
+     * 
+     * @return
+     */
     String getProvidedComponentsPath();
 
     boolean isExternalComponentsEnabled();

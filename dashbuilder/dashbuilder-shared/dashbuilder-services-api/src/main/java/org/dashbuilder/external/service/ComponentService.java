@@ -28,7 +28,11 @@ public interface ComponentService {
     List<ExternalComponent> listProvidedComponents();
 
     List<ExternalComponent> listExternalComponents();
+    
+    List<ExternalComponent> listAllComponents();
 
     Optional<ExternalComponent> byId(String componentId);
+    
+    
 
 }

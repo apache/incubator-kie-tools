@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
- 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { App } from "./App";
+import { LogoComponent } from "./LogoComponent";
+import { ComponentApi } from "@dashbuilder-js/component-api";
 
-ReactDOM.render(<App />, document.getElementById("app")!);
+const api = new ComponentApi();
+
+ReactDOM.render(<LogoComponent controller={api.getComponentController()} />, document.getElementById("app")!);

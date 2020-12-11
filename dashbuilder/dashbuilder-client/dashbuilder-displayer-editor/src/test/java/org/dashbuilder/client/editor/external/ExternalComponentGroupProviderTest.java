@@ -50,7 +50,7 @@ public class ExternalComponentGroupProviderTest {
     SyncBeanManager beanManager;
 
     @InjectMocks
-    ExternalComponentGroupProvider externalComponentGroupProvider;
+    ComponentGroupProducer componentGroupProducer;
 
     @Test
     public void testProduceDragComponent() {
@@ -63,8 +63,8 @@ public class ExternalComponentGroupProviderTest {
         when(c1.isNoData()).thenReturn(false);
         when(c2.isNoData()).thenReturn(true);
 
-        externalComponentGroupProvider.produceDragComponent(c1);
-        externalComponentGroupProvider.produceDragComponent(c2);
+        componentGroupProducer.produceDragComponent(c1);
+        componentGroupProducer.produceDragComponent(c2);
 
         verify(beanManager).lookupBean(eq(ExternalDisplayerDragComponent.class));
         verify(beanManager).lookupBean(eq(ExternalDragComponent.class));

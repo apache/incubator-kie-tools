@@ -51,16 +51,17 @@ public class ExternalComponentServlet extends HttpServlet {
     ComponentLoader loader;
 
     String cacheControlHeaderValue = "no-cache";
-    private MimetypesFileTypeMap mimetypesFileTypeMap;
+    private MimetypesFileTypeMap mimeTypes;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        mimetypesFileTypeMap = new MimetypesFileTypeMap();
+        mimeTypes = new MimetypesFileTypeMap();
         String cacheControl = config.getInitParameter(CACHE_CONTROL_PARAM);
         if (cacheControl != null) {
             cacheControlHeaderValue = cacheControl;
         }
+        addAdditionalMimeTypes();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class ExternalComponentServlet extends HttpServlet {
 
         try (InputStream assetStream = assetProvider.openAsset(assetPath)) {
             int size = IOUtils.copy(assetStream, resp.getOutputStream());
-            String mimeType = mimetypesFileTypeMap.getContentType(pathInfo);
+            String mimeType = mimeTypes.getContentType(pathInfo);
             resp.setContentType(mimeType);
             resp.setContentLength(size);
             resp.setHeader(CACHE_CONTROL_PARAM, cacheControlHeaderValue);
@@ -117,6 +118,11 @@ public class ExternalComponentServlet extends HttpServlet {
             logger.error("Error setting \"internal server error\" response.");
             logger.debug("Error setting \"internal server error\" response.", e);
         }
+    }
+
+    private void addAdditionalMimeTypes() {
+        mimeTypes.addMimeTypes("text/javascript js");
+        mimeTypes.addMimeTypes("text/css css");
     }
 
 }

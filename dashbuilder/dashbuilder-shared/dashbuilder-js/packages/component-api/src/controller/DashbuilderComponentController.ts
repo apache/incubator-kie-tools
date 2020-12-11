@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import * as Bus from "./ComponentBus";
 import { DataSet, FilterRequest } from "../dataset";
 import { FunctionCallRequest, FunctionResponse, FunctionResultType } from "../function";
 import { MessageType } from "../message";
 import { MessageProperty } from "../message/MessageProperty";
+import { ComponentBus } from "./ComponentBus";
 import { ComponentController } from "./ComponentController";
 
 interface FunctionCallbacks {
@@ -30,17 +30,24 @@ interface FunctionCallbacks {
 export class DashbuilderComponentController implements ComponentController {
   private callbacks: Map<string, FunctionCallbacks> = new Map();
 
-  private bus = Bus.INSTANCE;
+  constructor(private bus: ComponentBus, private componentId?: string) {
+    // no op
+  }
 
   public onInit: (params: Map<string, any>) => void = p => {
-    console.log("Received INIT.");
-    console.log(p);
+    console.debug("Received INIT.");
+    console.debug(p);
   };
 
   public onDataSet: (dataSet: DataSet, params?: Map<string, any>) => void = ds => {
-    console.log("Received DataSet.");
-    console.log(ds);
+    console.debug("Received DataSet.");
+    console.debug(ds);
   };
+
+  public init(params: Map<string, any>) {
+    this.componentId = params.get(MessageProperty.COMPONENT_ID);
+    this.onInit(params);
+  }
 
   public setOnDataSet(onDataSet: (dataSet: DataSet, params?: Map<string, any>) => void) {
     this.onDataSet = onDataSet;
@@ -57,13 +64,13 @@ export class DashbuilderComponentController implements ComponentController {
   public requireConfigurationFix(message: string): void {
     const props = new Map<MessageProperty, any>();
     props.set(MessageProperty.CONFIGURATION_ISSUE, message);
-    this.bus.send({
+    this.bus.send(this.componentId!, {
       type: MessageType.FIX_CONFIGURATION,
       properties: props
     });
   }
   public configurationOk(): void {
-    this.bus.send({
+    this.bus.send(this.componentId!, {
       type: MessageType.CONFIGURATION_OK,
       properties: new Map()
     });
@@ -72,7 +79,7 @@ export class DashbuilderComponentController implements ComponentController {
   public filter(filterRequest: FilterRequest): void {
     const props = new Map<MessageProperty, any>();
     props.set(MessageProperty.FILTER, filterRequest);
-    this.bus.send({
+    this.bus.send(this.componentId!, {
       type: MessageType.FILTER,
       properties: props
     });
@@ -80,7 +87,7 @@ export class DashbuilderComponentController implements ComponentController {
   public callFunction(functionCallRequest: FunctionCallRequest): Promise<any> {
     const props = new Map<MessageProperty, any>();
     props.set(MessageProperty.FUNCTION_CALL, functionCallRequest);
-    this.bus.send({
+    this.bus.send(this.componentId!, {
       type: MessageType.FUNCTION_CALL,
       properties: props
     });
@@ -111,7 +118,7 @@ export class DashbuilderComponentController implements ComponentController {
     this.callbacks.delete(key);
   }
 
-  public setComponentBus(bus: Bus.ComponentBus) {
+  public setComponentBus(bus: ComponentBus) {
     this.bus = bus;
   }
 

@@ -41,7 +41,7 @@
 
   <properties>
     <!-- Comma separated internal components name -->
-    <dashbuilder.internal.components.list>logo-provided</dashbuilder.internal.components.list>
+    <dashbuilder.internal.components.list>logo-provided,process-heatmap-provided,processes-heatmaps-provided</dashbuilder.internal.components.list>
     <!-- Components base dir -->
     <dashbuilder.internal.components.root>web/dashbuilder/components</dashbuilder.internal.components.root>
   </properties>
@@ -131,7 +131,7 @@
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-resources</id>
+            <id>copy-logo-component</id>
             <phase>prepare-package</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -148,6 +148,44 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-process-heatmap-component</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+
+              <outputDirectory>
+                ${project.build.outputDirectory}/${dashbuilder.internal.components.root}/process-heatmap-provided
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>packages/process-heatmap-component/dist/</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-processes-heatmaps-component</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+
+              <outputDirectory>
+                ${project.build.outputDirectory}/${dashbuilder.internal.components.root}/processes-heatmaps-provided
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>packages/processes-heatmaps-component/dist/</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>          
         </executions>
       </plugin>
     </plugins>

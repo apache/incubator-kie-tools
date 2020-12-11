@@ -96,6 +96,8 @@ public class DataTransferServicesTest {
     DataSetDefJSONMarshaller dataSetDefJSONMarshaller;
     @Mock
     ComponentLoader externalComponentLoader;
+    @Mock
+    LayoutComponentHelper layoutComponentsHelper;
 
     Path componentsDir;
     
@@ -124,7 +126,8 @@ public class DataTransferServicesTest {
                                                             pluginAddedEvent,
                                                             navTreeChangedEvent,
                                                             navTreeStorage,
-                                                            externalComponentLoader);
+                                                            externalComponentLoader,
+                                                            layoutComponentsHelper);
     }
 
     @After
@@ -301,7 +304,7 @@ public class DataTransferServicesTest {
     
     @Test
     public void testDoExportWithComponents() throws Exception {
-        when(externalComponentLoader.loadExternal()).thenReturn(asList(component("c1")));
+        when(layoutComponentsHelper.findComponentsInTemplates((any()))).thenReturn(asList("c1"));
 
         createFile(perspectivesFS, "page1/perspective_layout", "");
         createFile(perspectivesFS, "page1/perspective_layout.plugin", "");
@@ -313,6 +316,13 @@ public class DataTransferServicesTest {
         
         // lost file in component Dir that should be ignored
         createComponentFile("lost", "lostfile", "ignore-me-import");
+        
+        // Other component that is not used so it should not be exported
+        createComponentFile("c2", "manifest.json", "manifest");
+        createComponentFile("c2", "index.html", "html");
+        createComponentFile("c2", "css/style.css", "style");
+        createComponentFile("c2", "js/index.js", "js");
+        
         
         dataTransferServices.doExport(DataTransferExportModel.exportAll());
 

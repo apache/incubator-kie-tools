@@ -1,7 +1,7 @@
 {
   "name": "@dashbuilder-js/component-api",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.2.0",
+  "description": "Dashbuilder API to create external visual components.",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -23,14 +23,16 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class ExternalComponent {
-    
+
     public static final String COMPONENT_ID_KEY = "componentId";
     public static final String COMPONENT_PARTITION_KEY = "componentPartition";
-    
+
     private String id;
     private String name;
     private String icon;
+    private String category;
     private boolean noData;
+    private boolean provided;
     private List<ComponentParameter> parameters;
 
     public ExternalComponent() {
@@ -65,6 +67,10 @@ public class ExternalComponent {
         return icon;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public boolean isNoData() {
         return noData;
     }
@@ -72,5 +78,14 @@ public class ExternalComponent {
     public List<ComponentParameter> getParameters() {
         return parameters;
     }
+    
+    public boolean isProvided() {
+        return provided;
+    }
 
+    
+    public void setProvided(boolean provided) {
+        this.provided = provided;
+    }
+    
 }

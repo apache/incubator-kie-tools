@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
+import { ComponentController } from "@dashbuilder-js/component-api";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Logo, LogoProps } from "./Logo";
-import * as ComponentAPI from "@dashbuilder-js/component-api";
-const DEFAULT_SRC = "./images/dashbuilder-logo.png";
 const SRC_PROP = "src";
 const WIDTH_PROP = "width";
 const HEIGHT_PROP = "height";
 
-export function App() {
+interface Props {
+  controller: ComponentController;
+}
+export function LogoComponent(props: Props) {
   const [logoProps, setLogoProps] = useState<LogoProps>({
-    src: DEFAULT_SRC
+    src: ""
   });
 
-  const handleInit = (componentProps: Map<string, any>) => {
-    setLogoProps({
-      src: (componentProps.get(SRC_PROP) as string) || DEFAULT_SRC,
-      width: componentProps.get(WIDTH_PROP) as string,
-      height: componentProps.get(HEIGHT_PROP) as string
-    });
-  };
-
   useEffect(() => {
-    ComponentAPI.getComponentController(handleInit);
-    return () => {
-      ComponentAPI.destroy();
-    };
+    props.controller.setOnInit(componentProps => {
+      setLogoProps({
+        src: (componentProps.get(SRC_PROP) as string) || "",
+        width: componentProps.get(WIDTH_PROP) as string,
+        height: componentProps.get(HEIGHT_PROP) as string
+      });
+    });
   }, []);
+
   return <Logo {...logoProps} />;
 }

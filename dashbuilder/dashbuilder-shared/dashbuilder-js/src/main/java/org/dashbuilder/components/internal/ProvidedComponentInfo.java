@@ -85,7 +85,7 @@ public class ProvidedComponentInfo {
             logger.warning("Internal components list is empty");
         } else {
             this.internalComponentsList = Arrays.stream(componentsListStr.split("\\,")).collect(Collectors.toList());
-            logger.log(Level.WARNING, () -> "Registered internal dashbuilder components: " + internalComponentsList);
+            logger.log(Level.INFO, () -> "Registered internal dashbuilder components: " + internalComponentsList);
         }
     }
 

@@ -1,7 +1,8 @@
 {
   "name": "Logo",
   "noData": true,
-
+  "category": "Core",
+  "icon": "pficon pficon-messages",
   "parameters": [
     {
       "name": "src",

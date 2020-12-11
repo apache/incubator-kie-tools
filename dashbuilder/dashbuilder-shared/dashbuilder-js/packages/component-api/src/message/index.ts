@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 export * from "./MessageType";
+export * from "./MessageProperty"
 export * from "./ComponentMessage";
