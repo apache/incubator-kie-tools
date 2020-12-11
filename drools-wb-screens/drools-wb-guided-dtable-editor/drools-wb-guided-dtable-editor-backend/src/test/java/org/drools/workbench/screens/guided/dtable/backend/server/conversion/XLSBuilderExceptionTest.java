@@ -31,6 +31,6 @@ public class XLSBuilderExceptionTest
         dtable.getImports().addImport(null);
         final XLSBuilder.BuildResult buildResult = new XLSBuilder(dtable, makeDMO()).build();
         assertFalse(buildResult.getConversionResult().isConverted());
-        assertEquals("java.lang.NullPointerException : null", buildResult.getConversionResult().getMessage());
+        assertEquals("java.lang.NullPointerException : null", buildResult.getConversionResult().getErrorMessage());
     }
 }

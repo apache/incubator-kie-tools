@@ -26,12 +26,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
-import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWidget;
-import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -40,6 +39,8 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.widgets.client.popups.list.MessageType;
+import org.kie.workbench.common.widgets.client.popups.list.PopupListWidget;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -330,11 +331,25 @@ public class DecisionTableXLSEditorPresenter
                 if (response.getMessages().size() > 0) {
                     final PopupListWidget popup = new PopupListWidget();
                     for (ConversionMessage message : response.getMessages()) {
-                        popup.addListItem(new ConversionMessageWidget(message));
+                        popup.addListMessage(convertMessageType(message.getMessageType()),
+                                             message.getMessage());
                     }
                     popup.show();
                 }
             }
         }).convert(versionRecordManager.getCurrentPath());
+    }
+
+    private MessageType convertMessageType(final ConversionMessageType messageType) {
+        switch (messageType){
+            case ERROR:
+                return MessageType.ERROR;
+            case WARNING:
+                return MessageType.WARNING;
+            case INFO:
+            default:
+                return MessageType.INFO;
+
+        }
     }
 }

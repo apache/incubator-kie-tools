@@ -34,6 +34,6 @@ public class XLSBuilderAttributesNegateTest
 
         final XLSBuilder.BuildResult buildResult = new XLSBuilder(dtable, makeDMO()).build();
         assertFalse(buildResult.getConversionResult().isConverted());
-        assertEquals("Conversion of the negate attribute is not supported.", buildResult.getConversionResult().getMessage());
+        assertEquals("Conversion of the negate attribute is not supported.", buildResult.getConversionResult().getErrorMessage());
     }
 }

@@ -63,6 +63,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
@@ -438,8 +439,8 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
 
         presenter.onConvert();
 
-        verify(view).showConversionSuccess();
-        verify(view, never()).showConversionMessage(any());
+        verify(view).showConversionSuccess(anySet());
+        verify(view, never()).showConversionErrorMessage(any());
     }
 
     @Test
@@ -448,7 +449,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
 
         presenter.onConvert();
 
-        verify(view, never()).showConversionSuccess();
-        verify(view).showConversionMessage("failed");
+        verify(view, never()).showConversionSuccess(anySet());
+        verify(view).showConversionErrorMessage("failed");
     }
 }

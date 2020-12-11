@@ -40,10 +40,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.NotificationReporter;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Skipper;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 import static org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint.TYPE_PREDICATE;
@@ -101,7 +102,7 @@ public class SubHeaderBuilder {
         this.headerTitleRow = sheet.createRow(HEADER_TITLE_ROW);
     }
 
-    public void build() {
+    public void build(final NotificationReporter notificationReporter) {
 
         final List<BaseColumn> expandedColumns = dtable.getExpandedColumns();
 
@@ -109,7 +110,10 @@ public class SubHeaderBuilder {
 
             final BaseColumn baseColumn = expandedColumns.get(sourceColumnIndex);
 
-            if (baseColumn instanceof AttributeCol52) {
+            if (Skipper.shouldSkip(notificationReporter, baseColumn)) {
+                // Ignore and do not add to count
+                continue;
+            } else if (baseColumn instanceof AttributeCol52) {
                 addAttribute((AttributeCol52) baseColumn);
             } else if (baseColumn instanceof MetadataCol52) {
                 addMetadata((MetadataCol52) baseColumn);
@@ -125,9 +129,6 @@ public class SubHeaderBuilder {
                 addCondition((ConditionCol52) baseColumn);
             } else if (baseColumn instanceof ActionCol52) {
                 addAction((ActionCol52) baseColumn);
-            } else if (baseColumn instanceof RowNumberCol52 || baseColumn instanceof RuleNameColumn) {
-                // Ignore and do not add to count
-                continue;
             } else if (baseColumn instanceof DescriptionCol52) {
                 // This is actually a column, but header is not written down in XLS
             } else {
@@ -161,7 +162,8 @@ public class SubHeaderBuilder {
             addInsert(baseColumn.getHeader(),
                       ((ActionInsertFactCol52) baseColumn).getBoundName(),
                       ((ActionInsertFactCol52) baseColumn).getFactType(),
-                      ((ActionInsertFactCol52) baseColumn).getFactField());
+                      ((ActionInsertFactCol52) baseColumn).getFactField(),
+                      ((ActionInsertFactCol52) baseColumn).getType());
         } else if (baseColumn instanceof ActionWorkItemCol52) {
             addWorkItem((ActionWorkItemCol52) baseColumn);
         } else if (baseColumn instanceof ActionRetractFactCol52) {
@@ -231,7 +233,8 @@ public class SubHeaderBuilder {
     public boolean addInsert(final String header,
                              final String boundName,
                              final String factType,
-                             final String factField) {
+                             final String factField,
+                             final String valueType) {
         boolean madeInsert = false;
 
         if (columnContext.isBoundNameFree(boundName)) {
@@ -254,14 +257,46 @@ public class SubHeaderBuilder {
 
         fieldRow.createCell(targetColumnIndex).setCellValue(addSetMethod(boundName,
                                                                          factField,
-                                                                         "$param"));
+                                                                         getRHSParamWithWrapper(valueType)));
         return madeInsert;
+    }
+
+    private String getRHSParamWithWrapper(final String valueType) {
+
+        switch (valueType) {
+
+            case DataType.TYPE_NUMERIC_BIGDECIMAL:
+                return "new java.math.BigDecimal(\"$param\")";
+            case DataType.TYPE_NUMERIC_BIGINTEGER:
+                return "new java.math.BigInteger(\"$param\")";
+            case DataType.TYPE_NUMERIC_DOUBLE:
+                return "$paramd";
+            case DataType.TYPE_NUMERIC_FLOAT:
+                return "$paramf";
+            case DataType.TYPE_NUMERIC_LONG:
+                return "$paramL";
+            default:
+                return "$param";
+        }
+    }
+
+    private String getLHSParamWithWrapper(final String type) {
+
+        switch (type) {
+
+            case DataType.TYPE_NUMERIC_BIGDECIMAL:
+                return "$paramB";
+            case DataType.TYPE_NUMERIC_BIGINTEGER:
+                return "$paramI";
+            default:
+                return "$param";
+        }
     }
 
     private void addSetField(final ActionSetFieldCol52 column) {
 
         addSetField(column,
-                    "$param");
+                    getRHSParamWithWrapper(column.getType()));
     }
 
     private void addWorkItemSetField(final ActionWorkItemSetFieldCol52 column) {
@@ -299,7 +334,8 @@ public class SubHeaderBuilder {
                                                                                   "$param"));
             }
         } else if (column.getBinding() == null || column.getBinding().trim().isEmpty()) {
-            fieldRow.createCell(targetColumnIndex).setCellValue(String.format(getTemplate(column.getConstraintValueType()),
+            fieldRow.createCell(targetColumnIndex).setCellValue(String.format(getTemplate(column.getConstraintValueType(),
+                                                                                          column.getFieldType()),
                                                                               column.getFactField(),
                                                                               getOperator(column)));
         } else {
@@ -310,11 +346,12 @@ public class SubHeaderBuilder {
         }
     }
 
-    private String getTemplate(final int constraintValueType) {
+    private String getTemplate(final int constraintValueType,
+                               final String fieldType) {
         if (constraintValueType == TYPE_RET_VALUE) {
-            return "%s %s ( $param )";
+            return "%s %s ( " + getLHSParamWithWrapper(fieldType) + " )";
         } else {
-            return "%s %s $param";
+            return "%s %s " + getLHSParamWithWrapper(fieldType);
         }
     }
 

@@ -84,7 +84,8 @@ public class BRLColumnSubHeaderBuilderByPatterns
         final boolean madeInsert = subHeaderBuilder.addInsert(brlColumn.getHeader(),
                                                               boundName,
                                                               childColumn.getFactType(),
-                                                              childColumn.getFactField());
+                                                              childColumn.getFactField(),
+                                                              "");
         if (madeInsert) {
             addInsertColumn(brlColumn,
                             childColumn);

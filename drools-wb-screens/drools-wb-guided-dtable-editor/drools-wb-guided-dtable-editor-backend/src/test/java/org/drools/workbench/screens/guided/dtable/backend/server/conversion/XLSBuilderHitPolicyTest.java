@@ -34,6 +34,6 @@ public class XLSBuilderHitPolicyTest
 
         final XLSBuilder.BuildResult buildResult = new XLSBuilder(dtable, makeDMO()).build();
         assertFalse(buildResult.getConversionResult().isConverted());
-        assertEquals("Migrating Hit Policies is not supported.", buildResult.getConversionResult().getMessage());
+        assertEquals("Migrating Hit Policies is not supported.", buildResult.getConversionResult().getErrorMessage());
     }
 }

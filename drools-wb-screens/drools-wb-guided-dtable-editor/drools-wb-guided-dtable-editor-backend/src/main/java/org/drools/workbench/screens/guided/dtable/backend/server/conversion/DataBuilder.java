@@ -41,6 +41,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.util.ColumnUtilitiesBase;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.NotificationReporter;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Skipper;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
@@ -76,10 +78,10 @@ public class DataBuilder {
                                                                  false);
     }
 
-    public void build() {
+    public void build(final NotificationReporter notificationReporter) {
 
         for (final List<DTCellValue52> row : dtable.getData()) {
-            new DataRowBuilder(row).build();
+            new DataRowBuilder(row).build(notificationReporter);
         }
     }
 
@@ -116,7 +118,7 @@ public class DataBuilder {
             this.row = row;
         }
 
-        public void build() {
+        public void build(final NotificationReporter notificationReporter) {
 
             for (; sourceColumnIndex < row.size(); sourceColumnIndex++) {
                 final DTCellValue52 cell = row.get(sourceColumnIndex);
@@ -128,7 +130,9 @@ public class DataBuilder {
 
                     final BaseColumn baseColumn = dtable.getExpandedColumns().get(sourceColumnIndex);
 
-                    if (baseColumn instanceof BRLActionVariableColumn) {
+                    if (Skipper.shouldSkip(notificationReporter, baseColumn)) {
+                        continue;
+                    } else if (baseColumn instanceof BRLActionVariableColumn) {
 
                         addBRLActionVariableColumn((BRLActionVariableColumn) baseColumn);
                     } else if (baseColumn instanceof BRLConditionVariableColumn) {
@@ -232,8 +236,8 @@ public class DataBuilder {
             return getValue(newCell,
                             getColumnDataType(sourceColumnIndex),
                             addQuotes); // TODO needed?
-
         }
+
         public String getValue(final List<DTCellValue52> row,
                                final int sourceColumnIndex) {
             final DTCellValue52 newCell = row.get(sourceColumnIndex);

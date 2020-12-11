@@ -31,9 +31,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.NotificationReporter;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Skipper;
 import org.kie.soup.commons.validation.PortablePreconditions;
 
 import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.BRLColumnUtil.canThisColumnBeSplitToMultiple;
@@ -60,7 +60,7 @@ public class PatternRowBuilder {
         this.patternRow = sheet.createRow(PATTERN_ROW);
     }
 
-    public void build() {
+    public void build(final NotificationReporter notificationReporter) {
 
         final List<BaseColumn> expandedColumns = dtable.getExpandedColumns();
 
@@ -68,7 +68,10 @@ public class PatternRowBuilder {
 
             final BaseColumn baseColumn = expandedColumns.get(sourceIndex);
 
-            if (baseColumn instanceof BRLActionVariableColumn) {
+            if (Skipper.shouldSkip(notificationReporter, baseColumn)) {
+                // Ignore row column and do not up the columnIndex
+                continue;
+            } else if (baseColumn instanceof BRLActionVariableColumn) {
 
                 sourceIndex = sourceIndex + dtable.getBRLColumn((BRLActionVariableColumn) baseColumn).getChildColumns().size() - 1;
             } else if (baseColumn instanceof BRLConditionVariableColumn) {
@@ -77,9 +80,6 @@ public class PatternRowBuilder {
             } else if (baseColumn instanceof ConditionCol52) {
 
                 addConditionCol52((ConditionCol52) baseColumn);
-            } else if (baseColumn instanceof RowNumberCol52 || baseColumn instanceof RuleNameColumn) {
-                // Ignore row column and do not up the columnIndex
-                continue;
             }
             columnIndex++;
         }

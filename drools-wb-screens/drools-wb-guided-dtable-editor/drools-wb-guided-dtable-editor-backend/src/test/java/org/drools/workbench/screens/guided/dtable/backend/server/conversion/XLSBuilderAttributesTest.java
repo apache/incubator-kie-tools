@@ -91,8 +91,7 @@ public class XLSBuilderAttributesTest
         assertEquals("AUTO-FOCUS", cell(5, 10).getStringCellValue());
         assertEquals("LOCK-ON-ACTIVE", cell(5, 11).getStringCellValue());
         assertEquals("RULEFLOW-GROUP", cell(5, 12).getStringCellValue());
-        assertEquals("DIALECT", cell(5, 13).getStringCellValue());
-        assertEquals("DURATION", cell(5, 14).getStringCellValue());
+        assertEquals("DURATION", cell(5, 13).getStringCellValue());
     }
 
     @Test
@@ -148,7 +147,6 @@ public class XLSBuilderAttributesTest
         assertEquals("true", cell(9, 10).getStringCellValue());
         assertEquals("true", cell(9, 11).getStringCellValue());
         assertEquals("rule flow group value", cell(9, 12).getStringCellValue());
-        assertEquals("mvel", cell(9, 13).getStringCellValue());
-        assertEquals("0", cell(9, 14).getStringCellValue());
+        assertEquals("0", cell(9, 13).getStringCellValue());
     }
 }
