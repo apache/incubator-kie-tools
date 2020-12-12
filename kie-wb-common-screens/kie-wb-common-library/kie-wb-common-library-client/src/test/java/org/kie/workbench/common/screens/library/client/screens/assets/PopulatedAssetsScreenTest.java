@@ -51,7 +51,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.client.mvp.ResourceTypeManagerCache;
@@ -79,7 +79,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
     private PopulatedAssetsScreen populatedAssetsScreen;
