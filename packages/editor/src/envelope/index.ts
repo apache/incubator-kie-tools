@@ -57,6 +57,8 @@ export function init(args: {
     KogitoEditorEnvelopeContextType
   >(args.bus);
 
+  console.info('oi223445344');
+
   return new KogitoEditorEnvelope(
     args.editorContext,
     kogitoEditorFactory,

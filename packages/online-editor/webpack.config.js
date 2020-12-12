@@ -60,16 +60,17 @@ module.exports = async (env, argv) => {
 
   return merge(common, {
     entry: {
-      index: "./src/index.tsx"
+      index: "./src/index.tsx",
+      "envelope/envelope": "./src/envelope/envelope.ts"
     },
     plugins: [
       new CopyPlugin([
         { from: "./static/resources", to: "./resources" },
+        { from: "./static/envelope", to: "./envelope" },
         { from: "./static/images", to: "./images" },
         { from: "./static/samples", to: "./samples" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn" },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn" }
       ])

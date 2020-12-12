@@ -15,7 +15,7 @@
  */
 
 import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
-import { GwtEditorWrapperFactory } from "..";
+import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import { CompositeEditorFactory } from "@kogito-tooling/editor/dist/envelope";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
