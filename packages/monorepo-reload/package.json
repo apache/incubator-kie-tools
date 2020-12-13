@@ -3,6 +3,9 @@
   "version": "0.8.2",
   "description": "A tool for rebuilding multiple packages after a change on a monorepo using Lerna",
   "license": "Apache-2.0",
+  "files": [
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
