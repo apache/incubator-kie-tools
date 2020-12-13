@@ -11,6 +11,7 @@
     "monorepo-reload": "index.js"
   },
   "dependencies": {
-    "commander": "^6.2.0"
+    "commander": "^6.2.0",
+    "chokidar-cli": "^2.1.0"
   }
 }
