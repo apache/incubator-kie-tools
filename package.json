@@ -11,6 +11,7 @@
     "build": "npx lerna run build --stream",
     "build:fast": "npx lerna run build:fast --stream",
     "build:prod": "npx lerna run build:prod --stream",
+    "dev:online-editor": "monorepo-reload --app-package-name '@kogito-tooling/online-editor' --start-app-cmmd 'cd packages/online-editor && yarn start' --rebuild-packages-cmmd 'yarn build:fast'",
     "test:clearCache": "npx lerna run test:clearCache --stream",
     "update-version-to": "node ./update_version_to.js",
     "locktt": "locktt",

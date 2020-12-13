@@ -1,0 +1,16 @@
+{
+  "name": "@kogito-tooling/monorepo-reload",
+  "version": "0.8.2",
+  "description": "A tool for rebuilding multiple packages after a change on a monorepo using Lerna",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "bin": {
+    "monorepo-reload": "index.js"
+  },
+  "dependencies": {
+    "commander": "^6.2.0"
+  }
+}
