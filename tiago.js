@@ -1,75 +1,61 @@
 const { execSync, spawn } = require("child_process");
 const { existsSync } = require("fs");
 
-// Parameters
-const appPackageName = "@kogito-tooling/online-editor";
-const startAppCommand = "cd packages/online-editor && yarn start";
-const refreshPackageCommand = "yarn build:fast";
+function packageJson(path) {
+  return require(`${path}/package.json`);
+}
 
-// Finds dependency packages of `appPackageName`.
-const packagePaths = execSync(
-  `npx lerna exec "pwd" --scope ${appPackageName} --include-dependencies | grep -v "^lerna"`,
-  {
-    stdio: "pipe"
-  }
-)
-  .toString()
-  .trim()
-  .split("\n");
-
-// Finds all packages.
-const allPackagePaths = execSync(`npx lerna exec "pwd" | grep -v "^lerna"`, {
-  stdio: "pipe"
-})
-  .toString()
-  .trim()
-  .split("\n");
-
-const notPackagePaths = allPackagePaths.filter(path => {
-  if (packagePaths.indexOf(path) === -1) {
-    return true;
-  } else {
-    return false;
-  }
-});
-
-// Filter out the `appPackageName`'s path.
-const dependencyPackagePaths = packagePaths.filter(path => {
-  const packageJson = require(`${path}/package.json`);
-  return packageJson.name !== appPackageName;
-});
-
-// Watches the `src` directory of every dependency package
-dependencyPackagePaths.forEach(packagePath => {
-  const pathToWatch = `${packagePath}/src`;
+function watchSrcDirectoryOfPackage(path) {
+  const pathToWatch = `${path}/src`;
 
   if (!existsSync(pathToWatch)) {
     console.info(`Can't watch ${pathToWatch} because it doesn't exist`);
     return;
   }
 
-  const packageJson = require(`${packagePath}/package.json`);
+  const dependentPackagePaths = execSync(
+    `npx lerna exec "pwd" --scope ${packageJson(path).name} --include-dependents | grep -v "^lerna"`,
+    { stdio: "pipe" }
+  )
+    .toString()
+    .trim()
+    .split("\n");
 
-  const notPackages = notPackagePaths.map(s => {
-    const packageJson = require(s + "/package.json");
-    return packageJson.name;
-  });
+  const packagesToRebuild = dependentPackagePaths
+    .filter(p => appDependencyPackagePaths.indexOf(p) !== -1)
+    .map(p => packageJson(p).name);
 
-  const refreshCommand = `npx lerna exec '${refreshPackageCommand}' --scope ${
-    packageJson.name
-  } --ignore ${appPackageName} ${notPackages.map(path => "--ignore " + path).join(" ")} --include-dependents`;
+  const scopeList = `${packagesToRebuild.map(p => `--scope ${p}`).join(" ")}`;
+  const refreshCommand = `npx lerna exec '${refreshPackageCommand}' ${scopeList} --stream`;
 
-  return spawn(`npx chokidar ${pathToWatch} -c "${refreshCommand}"`, [], {
-    shell: true,
-    stdio: "inherit"
-  });
-});
+  return spawn(`npx chokidar ${pathToWatch} -c "${refreshCommand}"`, [], { shell: true, stdio: "inherit" });
+}
+
+//TODO: Turn these into parameters
+const appPackageName = "@kogito-tooling/online-editor";
+const startAppCommand = "cd packages/online-editor && yarn start";
+const refreshPackageCommand = "yarn build:fast";
+
+//
+// MAIN
+//
+// Finds dependency packages of `appPackageName`; and
+// Filter out the `appPackageName`'s path.
+const appDependencyPackagePaths = execSync(
+  `npx lerna exec "pwd" --scope ${appPackageName} --include-dependencies | grep -v "^lerna"`,
+  { stdio: "pipe" }
+)
+  .toString()
+  .trim()
+  .split("\n")
+  .filter(path => packageJson(path).name !== appPackageName);
+
+appDependencyPackagePaths.forEach(watchSrcDirectoryOfPackage);
 
 // Spawns the webapp
-spawn(startAppCommand, [], {
-  shell: true,
-  stdio: "inherit"
-});
+spawn(startAppCommand, [], { shell: true, stdio: "inherit" });
 
 // Holds the process running
 setInterval(() => {}, 1 << 30);
+
+//TODO: Prevent App from recompiling when all modules are not done rebuilding yet.

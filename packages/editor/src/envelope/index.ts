@@ -57,7 +57,7 @@ export function init(args: {
     KogitoEditorEnvelopeContextType
   >(args.bus);
 
-  console.info('oi223445344');
+  console.info('oi22344534424s2t434225777888999000111222');
 
   return new KogitoEditorEnvelope(
     args.editorContext,
