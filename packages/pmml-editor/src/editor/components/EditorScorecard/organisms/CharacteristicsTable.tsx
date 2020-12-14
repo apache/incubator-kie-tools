@@ -74,6 +74,14 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     }
   }, [activeOperation]);
 
+  //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
+  useEffect(() => {
+    if (selectedCharacteristicIndex === characteristics.length) {
+      setSelectedCharacteristicIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [characteristics, selectedCharacteristicIndex]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedCharacteristicIndex(index);
     setActiveOperation(Operation.UPDATE_CHARACTERISTIC);

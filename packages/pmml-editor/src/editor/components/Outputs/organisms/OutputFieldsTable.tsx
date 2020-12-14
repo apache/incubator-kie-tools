@@ -62,6 +62,14 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   }, [activeOperation]);
 
+  //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
+  useEffect(() => {
+    if (selectedOutputIndex === outputs.length) {
+      setSelectedOutputIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [outputs, selectedOutputIndex]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedOutputIndex(index);
     setActiveOperation(Operation.UPDATE_OUTPUT);
