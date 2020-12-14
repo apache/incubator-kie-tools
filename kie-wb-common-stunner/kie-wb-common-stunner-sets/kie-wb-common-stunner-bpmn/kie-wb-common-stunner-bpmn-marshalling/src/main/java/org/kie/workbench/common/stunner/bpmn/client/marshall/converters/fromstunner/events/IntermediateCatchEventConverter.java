@@ -47,7 +47,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.u
 
 public class IntermediateCatchEventConverter {
 
-    private final PropertyWriterFactory propertyWriterFactory;
+    protected final PropertyWriterFactory propertyWriterFactory;
 
     public IntermediateCatchEventConverter(PropertyWriterFactory propertyWriterFactory) {
         this.propertyWriterFactory = propertyWriterFactory;
@@ -82,11 +82,13 @@ public class IntermediateCatchEventConverter {
         return ConverterUtils.notSupported(def);
     }
 
-    private PropertyWriter errorEvent(Node<View<IntermediateErrorEventCatching>, ?> n) {
+    protected PropertyWriter errorEvent(Node<View<IntermediateErrorEventCatching>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateErrorEventCatching definition = n.getContent().getDefinition();
+
+        p.setAbsoluteBounds(n);
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
@@ -98,47 +100,47 @@ public class IntermediateCatchEventConverter {
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSlaDueDate(executionSet.getSlaDueDate());
 
-        p.setAbsoluteBounds(n);
-
         p.addError(executionSet.getErrorRef());
 
         return p;
     }
 
-    private PropertyWriter signalEvent(Node<View<IntermediateSignalEventCatching>, ?> n) {
+    protected PropertyWriter signalEvent(Node<View<IntermediateSignalEventCatching>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateSignalEventCatching definition = n.getContent().getDefinition();
 
+        p.setAbsoluteBounds(n);
+
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setAssignmentsInfo(
-                definition.getDataIOSet().getAssignmentsinfo());
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         CancellingSignalEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSlaDueDate(executionSet.getSlaDueDate());
-
-        p.setAbsoluteBounds(n);
 
         p.addSignal(definition.getExecutionSet().getSignalRef());
 
         return p;
     }
 
-    private PropertyWriter linkEvent(Node<View<IntermediateLinkEventCatching>, ?> n) {
+    protected PropertyWriter linkEvent(Node<View<IntermediateLinkEventCatching>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
-        p.setAbsoluteBounds(n);
 
         IntermediateLinkEventCatching definition = n.getContent().getDefinition();
+
+        p.setAbsoluteBounds(n);
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         LinkEventExecutionSet executionSet = definition.getExecutionSet();
         p.addLink(executionSet.getLinkRef());
@@ -146,32 +148,35 @@ public class IntermediateCatchEventConverter {
         return p;
     }
 
-    private PropertyWriter timerEvent(Node<View<IntermediateTimerEvent>, ?> n) {
+    protected PropertyWriter timerEvent(Node<View<IntermediateTimerEvent>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateTimerEvent definition = n.getContent().getDefinition();
 
+        p.setAbsoluteBounds(n);
+
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
+
         CancellingTimerEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSlaDueDate(executionSet.getSlaDueDate());
-
-        p.setAbsoluteBounds(n);
-
         p.addTimer(executionSet.getTimerSettings());
 
         return p;
     }
 
-    private PropertyWriter messageEvent(Node<View<IntermediateMessageEventCatching>, ?> n) {
+    protected PropertyWriter messageEvent(Node<View<IntermediateMessageEventCatching>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateMessageEventCatching definition = n.getContent().getDefinition();
+
+        p.setAbsoluteBounds(n);
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
@@ -182,77 +187,77 @@ public class IntermediateCatchEventConverter {
         CancellingMessageEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSlaDueDate(executionSet.getSlaDueDate());
-
-        p.setAbsoluteBounds(n);
-
         p.addMessage(executionSet.getMessageRef());
 
         return p;
     }
 
-    private PropertyWriter conditionalEvent(Node<View<IntermediateConditionalEvent>, ?> n) {
+    protected PropertyWriter conditionalEvent(Node<View<IntermediateConditionalEvent>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateConditionalEvent definition = n.getContent().getDefinition();
 
+        p.setAbsoluteBounds(n);
+
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
+
         CancellingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSlaDueDate(executionSet.getSlaDueDate());
-
-        p.setAbsoluteBounds(n);
-
         p.addCondition(executionSet.getConditionExpression());
+
         return p;
     }
 
-    private PropertyWriter escalationEvent(Node<View<IntermediateEscalationEvent>, ?> n) {
+    protected PropertyWriter escalationEvent(Node<View<IntermediateEscalationEvent>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateEscalationEvent definition = n.getContent().getDefinition();
 
+        p.setAbsoluteBounds(n);
+
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setAssignmentsInfo(
-                definition.getDataIOSet().getAssignmentsinfo());
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         CancellingEscalationEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSlaDueDate(executionSet.getSlaDueDate());
-
-        p.setAbsoluteBounds(n);
-
         p.addEscalation(executionSet.getEscalationRef());
+
         return p;
     }
 
-    private PropertyWriter compensationEvent(Node<View<IntermediateCompensationEvent>, ?> n) {
+    protected PropertyWriter compensationEvent(Node<View<IntermediateCompensationEvent>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateCompensationEvent definition = n.getContent().getDefinition();
 
+        p.setAbsoluteBounds(n);
+
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
+
         BaseCancellingEventExecutionSet executionSet = definition.getExecutionSet();
         p.addSlaDueDate(executionSet.getSlaDueDate());
-        p.setAbsoluteBounds(n);
-
         p.addCompensation();
 
         return p;
     }
 
-    private CatchEventPropertyWriter createCatchEventPropertyWriter(Node<? extends View, ?> n) {
+    protected CatchEventPropertyWriter createCatchEventPropertyWriter(Node<? extends View, ?> n) {
         return getDockSourceNode(n).isPresent() ?
                 propertyWriterFactory.of(bpmn2.createBoundaryEvent()) :
                 propertyWriterFactory.of(bpmn2.createIntermediateCatchEvent());

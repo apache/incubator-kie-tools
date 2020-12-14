@@ -56,11 +56,6 @@ public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEven
     @Valid
     protected CancellingErrorEventExecutionSet executionSet;
 
-    @Property
-    @FormField(afterElement = "executionSet")
-    @Valid
-    protected DataIOSet dataIOSet;
-
     public IntermediateErrorEventCatching() {
         this(new BPMNGeneralSet(""),
              new BackgroundSet(),
@@ -79,8 +74,8 @@ public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEven
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
-        this.dataIOSet = dataIOSet;
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
     }
 
@@ -88,14 +83,6 @@ public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEven
     protected void initLabels() {
         super.initLabels();
         labels.remove("sequence_end");
-    }
-
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setDataIOSet(DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
     }
 
     public CancellingErrorEventExecutionSet getExecutionSet() {
@@ -107,20 +94,9 @@ public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEven
     }
 
     @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return true;
-    }
-
-    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode(),
-                                         dataIOSet.hashCode());
+                                         executionSet.hashCode());
     }
 
     @Override
@@ -128,8 +104,7 @@ public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEven
         if (o instanceof IntermediateErrorEventCatching) {
             IntermediateErrorEventCatching other = (IntermediateErrorEventCatching) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet) &&
-                    dataIOSet.equals(other.dataIOSet);
+                    executionSet.equals(other.executionSet);
         }
         return false;
     }

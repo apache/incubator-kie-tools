@@ -56,11 +56,6 @@ public class IntermediateSignalEventCatching extends BaseCatchingIntermediateEve
     @Valid
     protected CancellingSignalEventExecutionSet executionSet;
 
-    @Property
-    @FormField(afterElement = "executionSet")
-    @Valid
-    protected DataIOSet dataIOSet;
-
     public IntermediateSignalEventCatching() {
         this(new BPMNGeneralSet(""),
              new BackgroundSet(),
@@ -79,8 +74,8 @@ public class IntermediateSignalEventCatching extends BaseCatchingIntermediateEve
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
-        this.dataIOSet = dataIOSet;
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
     }
 
@@ -98,29 +93,10 @@ public class IntermediateSignalEventCatching extends BaseCatchingIntermediateEve
         this.executionSet = executionSet;
     }
 
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setDataIOSet(DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return true;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode(),
-                                         dataIOSet.hashCode());
+                                         executionSet.hashCode());
     }
 
     @Override
@@ -128,8 +104,7 @@ public class IntermediateSignalEventCatching extends BaseCatchingIntermediateEve
         if (o instanceof IntermediateSignalEventCatching) {
             IntermediateSignalEventCatching other = (IntermediateSignalEventCatching) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet) &&
-                    dataIOSet.equals(other.dataIOSet);
+                    executionSet.equals(other.executionSet);
         }
         return false;
     }

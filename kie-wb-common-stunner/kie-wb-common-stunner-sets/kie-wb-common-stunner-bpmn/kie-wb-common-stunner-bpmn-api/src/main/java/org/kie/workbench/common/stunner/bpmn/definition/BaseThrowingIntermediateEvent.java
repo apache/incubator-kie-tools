@@ -16,50 +16,37 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.validation.Valid;
-
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @MorphBase(defaultType = IntermediateSignalEventThrowing.class)
-public abstract class BaseThrowingIntermediateEvent
-        implements BPMNViewDefinition,
-                   DataIOModel {
+public abstract class BaseThrowingIntermediateEvent extends BaseIntermediateEvent {
 
     @Category
     public static final transient String category = BPMNCategories.INTERMEDIATE_EVENTS;
 
-    @Labels
-    protected final Set<String> labels = new HashSet<>();
+    public BaseThrowingIntermediateEvent() {
+        super();
+    }
 
-    @Property
-    @FormField
-    @Valid
-    protected BPMNGeneralSet general;
+    public BaseThrowingIntermediateEvent(final BPMNGeneralSet general,
+                                         final BackgroundSet backgroundSet,
+                                         final FontSet fontSet,
+                                         final CircleDimensionSet dimensionsSet,
+                                         final DataIOSet dataIOSet) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet,
+              dataIOSet);
+    }
 
-    @Property
-    @Valid
-    protected BackgroundSet backgroundSet;
-
-    @Property
-    protected FontSet fontSet;
-
-    @Property
-    protected CircleDimensionSet dimensionsSet;
-
+    @Override
     protected void initLabels() {
         labels.add("all");
         labels.add("lane_child");
@@ -73,104 +60,17 @@ public abstract class BaseThrowingIntermediateEvent
         labels.add("IntermediateEventThrowing");
     }
 
-    public BaseThrowingIntermediateEvent() {
-        initLabels();
-    }
-
-    public BaseThrowingIntermediateEvent(final BPMNGeneralSet general,
-                                         final BackgroundSet backgroundSet,
-                                         final FontSet fontSet,
-                                         final CircleDimensionSet dimensionsSet) {
-        this();
-        this.general = general;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
-        this.dimensionsSet = dimensionsSet;
-    }
-
     @Override
     public boolean hasInputVars() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isSingleInputVar() {
-        return false;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return false;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return false;
+        return true;
     }
 
     public String getCategory() {
         return category;
-    }
-
-    public BPMNGeneralSet getGeneral() {
-        return general;
-    }
-
-    public void setGeneral(BPMNGeneralSet general) {
-        this.general = general;
-    }
-
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
-    }
-
-    public void setBackgroundSet(BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
-    }
-
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    public void setFontSet(FontSet fontSet) {
-        this.fontSet = fontSet;
-    }
-
-    public CircleDimensionSet getDimensionsSet() {
-        return dimensionsSet;
-    }
-
-    public void setDimensionsSet(CircleDimensionSet dimensionsSet) {
-        this.dimensionsSet = dimensionsSet;
-    }
-
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    @Override
-    public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(getClass()),
-                                         Objects.hashCode(general),
-                                         Objects.hashCode(backgroundSet),
-                                         Objects.hashCode(fontSet),
-                                         Objects.hashCode(dimensionsSet),
-                                         Objects.hashCode(labels));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o instanceof BaseThrowingIntermediateEvent) {
-            BaseThrowingIntermediateEvent other = (BaseThrowingIntermediateEvent) o;
-            return Objects.equals(general, other.general) &&
-                    Objects.equals(backgroundSet, other.backgroundSet) &&
-                    Objects.equals(fontSet, other.fontSet) &&
-                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
-                    Objects.equals(labels, other.labels);
-        }
-        return false;
     }
 }

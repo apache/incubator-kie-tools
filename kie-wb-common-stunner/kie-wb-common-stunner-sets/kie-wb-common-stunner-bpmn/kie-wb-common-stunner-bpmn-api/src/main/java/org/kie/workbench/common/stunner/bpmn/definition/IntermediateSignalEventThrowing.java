@@ -56,33 +56,28 @@ public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEve
     @Property
     @FormField(afterElement = "general")
     @Valid
-    private ScopedSignalEventExecutionSet executionSet;
-
-    @Property
-    @FormField(afterElement = "executionSet")
-    @Valid
-    private DataIOSet dataIOSet;
+    protected ScopedSignalEventExecutionSet executionSet;
 
     public IntermediateSignalEventThrowing() {
         this(new BPMNGeneralSet(""),
-             new DataIOSet(),
              new BackgroundSet(),
              new FontSet(),
              new CircleDimensionSet(new Radius()),
+             new DataIOSet(),
              new ScopedSignalEventExecutionSet());
     }
 
     public IntermediateSignalEventThrowing(final @MapsTo("general") BPMNGeneralSet general,
-                                           final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                            final @MapsTo("fontSet") FontSet fontSet,
                                            final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                                           final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                                            final @MapsTo("executionSet") ScopedSignalEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
-        this.dataIOSet = dataIOSet;
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
     }
 
@@ -94,29 +89,10 @@ public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEve
         this.executionSet = executionSet;
     }
 
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setDataIOSet(DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
-    }
-
-    @Override
-    public boolean hasInputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleInputVar() {
-        return true;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         Objects.hashCode(executionSet),
-                                         Objects.hashCode(dataIOSet));
+                                         Objects.hashCode(executionSet));
     }
 
     @Override
@@ -127,8 +103,7 @@ public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEve
         if (o instanceof IntermediateSignalEventThrowing) {
             IntermediateSignalEventThrowing other = (IntermediateSignalEventThrowing) o;
             return super.equals(other) &&
-                    Objects.equals(executionSet, other.executionSet) &&
-                    Objects.equals(dataIOSet, other.dataIOSet);
+                    Objects.equals(executionSet, other.executionSet);
         }
         return false;
     }

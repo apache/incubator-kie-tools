@@ -64,8 +64,11 @@ import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest.Mode;
 
 public class IntermediateThrowEventConverter extends AbstractConverter implements NodeConverter<IntermediateThrowEvent> {
 
-    private final TypedFactoryManager factoryManager;
-    private final PropertyReaderFactory propertyReaderFactory;
+    protected static final String NO_DEFINITION = "An intermediate throw event should contain exactly one definition";
+    protected static final String MULTIPLE_DEFINITIONS = "Multiple definitions not supported for intermediate throw event";
+
+    protected final TypedFactoryManager factoryManager;
+    protected final PropertyReaderFactory propertyReaderFactory;
 
     public IntermediateThrowEventConverter(TypedFactoryManager factoryManager,
                                            PropertyReaderFactory propertyReaderFactory,
@@ -80,10 +83,10 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         List<EventDefinition> eventDefinitions = p.getEventDefinitions();
         switch (eventDefinitions.size()) {
             case 0:
-                throw new UnsupportedOperationException("An intermediate throw event should contain exactly one definition");
+                throw new UnsupportedOperationException(NO_DEFINITION);
             case 1:
                 return Match.of(EventDefinition.class, BpmnNode.class)
-                        .when(SignalEventDefinition.class, e -> signalEvent(event, e))
+                        .when(SignalEventDefinition.class, e -> signalEvent(event))
                         .when(LinkEventDefinition.class, e -> linkEvent(event))
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
                         .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
@@ -93,22 +96,27 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
                         .mode(getMode())
                         .apply(eventDefinitions.get(0));
             default:
-                throw new UnsupportedOperationException("Multiple definitions not supported for intermediate throw event");
+                throw new UnsupportedOperationException(MULTIPLE_DEFINITIONS);
         }
     }
 
-    private BpmnNode messageEvent(
-            IntermediateThrowEvent event, MessageEventDefinition eventDefinition) {
+    protected BpmnNode messageEvent(IntermediateThrowEvent event, MessageEventDefinition eventDefinition) {
         Node<View<IntermediateMessageEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(), IntermediateMessageEventThrowing.class);
 
         IntermediateMessageEventThrowing definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
 
+        node.getContent().setBounds(p.getBounds());
+
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
         ));
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
 
         definition.setDataIOSet(new DataIOSet(
                 p.getAssignmentsInfo()
@@ -119,18 +127,10 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
                                EventDefinitionReader.messageRefStructureOf(eventDefinition))
         ));
 
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode signalEvent(
-            IntermediateThrowEvent event,
-            SignalEventDefinition eventDefinition) {
+    protected BpmnNode signalEvent(IntermediateThrowEvent event) {
 
         Node<View<IntermediateSignalEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(), IntermediateSignalEventThrowing.class);
@@ -138,10 +138,16 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         IntermediateSignalEventThrowing definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
 
+        node.getContent().setBounds(p.getBounds());
+
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
         ));
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
 
         definition.setDataIOSet(new DataIOSet(
                 p.getAssignmentsInfo()
@@ -152,16 +158,12 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
                 new SignalScope(p.getSignalScope())
         ));
 
-        node.getContent().setBounds(p.getBounds());
 
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode linkEvent(IntermediateThrowEvent event) {
+    protected BpmnNode linkEvent(IntermediateThrowEvent event) {
 
         Node<View<IntermediateLinkEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(), IntermediateLinkEventThrowing.class);
@@ -169,27 +171,29 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         IntermediateLinkEventThrowing definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
 
+        node.getContent().setBounds(p.getBounds());
+
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
         ));
 
         definition.setExecutionSet(new LinkEventExecutionSet(
                 new LinkRef(p.getLinkRef())
         ));
 
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode escalationEvent(
-            IntermediateThrowEvent event,
-            EscalationEventDefinition eventDefinition) {
+    protected BpmnNode escalationEvent(IntermediateThrowEvent event, EscalationEventDefinition eventDefinition) {
 
         Node<View<IntermediateEscalationEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(),
@@ -198,10 +202,16 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         IntermediateEscalationEventThrowing definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
 
+        node.getContent().setBounds(p.getBounds());
+
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
         ));
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
 
         definition.setDataIOSet(new DataIOSet(
                 p.getAssignmentsInfo()
@@ -211,17 +221,10 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
                 new EscalationRef(EventDefinitionReader.escalationRefOf(eventDefinition))
         ));
 
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode compensationEvent(IntermediateThrowEvent event,
-                                       CompensateEventDefinition eventDefinition) {
+    protected BpmnNode compensationEvent(IntermediateThrowEvent event, CompensateEventDefinition eventDefinition) {
 
         Node<View<IntermediateCompensationEventThrowing>, Edge> node =
                 factoryManager.newNode(event.getId(),
@@ -230,20 +233,24 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         IntermediateCompensationEventThrowing definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
 
+        node.getContent().setBounds(p.getBounds());
+
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
         ));
 
-        definition.setExecutionSet(new CompensationEventExecutionSet(
-                new ActivityRef(EventDefinitionReader.activityRefOf(eventDefinition))
-        ));
-
-        node.getContent().setBounds(p.getBounds());
-
         definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
+        ));
+
+        definition.setExecutionSet(new CompensationEventExecutionSet(
+                new ActivityRef(EventDefinitionReader.activityRefOf(eventDefinition))
+        ));
 
         return BpmnNode.of(node, p);
     }

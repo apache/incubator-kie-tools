@@ -58,11 +58,6 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
     @Valid
     protected CancellingMessageEventExecutionSet executionSet;
 
-    @Property
-    @FormField(afterElement = "executionSet")
-    @Valid
-    protected DataIOSet dataIOSet;
-
     public IntermediateMessageEventCatching() {
         this(new BPMNGeneralSet(""),
              new BackgroundSet(),
@@ -81,8 +76,8 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
-        this.dataIOSet = dataIOSet;
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
     }
 
@@ -92,24 +87,6 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
 
     public void setExecutionSet(CancellingMessageEventExecutionSet executionSet) {
         this.executionSet = executionSet;
-    }
-
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setDataIOSet(DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return true;
     }
 
     @Override
@@ -122,9 +99,7 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode(),
-                                         dataIOSet.hashCode(),
-                                         labels.hashCode());
+                                         executionSet.hashCode());
     }
 
     @Override
@@ -132,9 +107,7 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
         if (o instanceof IntermediateMessageEventCatching) {
             IntermediateMessageEventCatching other = (IntermediateMessageEventCatching) o;
             return super.equals(other) &&
-                    Objects.equals(executionSet, other.executionSet) &&
-                    Objects.equals(dataIOSet, other.dataIOSet) &&
-                    Objects.equals(labels, other.labels);
+                    Objects.equals(executionSet, other.executionSet);
         }
         return false;
     }

@@ -58,42 +58,27 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
     @Valid
     private MessageEventExecutionSet executionSet;
 
-    @Property
-    @FormField(afterElement = "executionSet")
-    @Valid
-    private DataIOSet dataIOSet;
-
     public IntermediateMessageEventThrowing() {
         this(new BPMNGeneralSet(""),
-             new DataIOSet(),
              new BackgroundSet(),
              new FontSet(),
              new CircleDimensionSet(new Radius()),
+             new DataIOSet(),
              new MessageEventExecutionSet());
     }
 
     public IntermediateMessageEventThrowing(final @MapsTo("general") BPMNGeneralSet general,
-                                            final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                                             final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                             final @MapsTo("fontSet") FontSet fontSet,
                                             final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                                            final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                                             final @MapsTo("executionSet") MessageEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
-              dimensionsSet);
-        this.dataIOSet = dataIOSet;
+              dimensionsSet,
+              dataIOSet);
         this.executionSet = executionSet;
-    }
-
-    @Override
-    public boolean hasInputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleInputVar() {
-        return true;
     }
 
     @Override
@@ -110,19 +95,10 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
         this.executionSet = executionSet;
     }
 
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setDataIOSet(DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
                                          Objects.hashCode(executionSet),
-                                         Objects.hashCode(dataIOSet),
                                          Objects.hashCode(labels));
     }
 
@@ -135,7 +111,6 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
             IntermediateMessageEventThrowing other = (IntermediateMessageEventThrowing) o;
             return super.equals(other) &&
                     Objects.equals(executionSet, other.executionSet) &&
-                    Objects.equals(dataIOSet, other.dataIOSet) &&
                     Objects.equals(labels, other.labels);
         }
         return false;

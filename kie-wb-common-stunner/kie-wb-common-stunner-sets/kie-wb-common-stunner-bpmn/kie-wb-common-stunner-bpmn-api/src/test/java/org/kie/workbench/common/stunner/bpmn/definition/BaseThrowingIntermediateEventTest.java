@@ -18,14 +18,54 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.ReflectionAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
 
 public class BaseThrowingIntermediateEventTest {
+
+    private FakeBaseThrowingIntermediateEvent tested;
+
+    @Before
+    public void setUp() {
+        tested = spy(new FakeBaseThrowingIntermediateEvent());
+    }
+
+    @Test
+    public void initLabels() {
+        tested.initLabels();
+        assertTrue(tested.labels.contains("all"));
+        assertTrue(tested.labels.contains("lane_child"));
+        assertTrue(tested.labels.contains("sequence_start"));
+        assertTrue(tested.labels.contains("sequence_end"));
+        assertTrue(tested.labels.contains("to_task_event"));
+        assertTrue(tested.labels.contains("from_task_event"));
+        assertTrue(tested.labels.contains("fromtoall"));
+        assertTrue(tested.labels.contains("IntermediateEventsMorph"));
+        assertTrue(tested.labels.contains("cmnop"));
+        assertTrue(tested.labels.contains("IntermediateEventThrowing"));
+    }
+
+    @Test
+    public void hasInputVars() {
+        assertTrue(tested.hasInputVars());
+    }
+
+    @Test
+    public void isSingleInputVar() {
+        assertTrue(tested.isSingleInputVar());
+    }
+
+    @Test
+    public void getCategory() {
+        assertEquals(BaseThrowingIntermediateEvent.category, tested.getCategory());
+    }
 
     @Test
     public void testBaseThrowingIntermediateEventCanBeContainedByALane() throws Exception {

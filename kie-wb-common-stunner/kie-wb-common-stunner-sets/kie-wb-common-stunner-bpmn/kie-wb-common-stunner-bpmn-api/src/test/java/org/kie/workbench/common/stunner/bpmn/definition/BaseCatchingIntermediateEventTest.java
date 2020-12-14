@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,57 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.ReflectionAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
 
 public class BaseCatchingIntermediateEventTest {
+
+    private FakeBaseCatchingIntermediateEvent tested;
+
+    @Before
+    public void setUp() {
+        tested = spy(new FakeBaseCatchingIntermediateEvent());
+    }
+
+    @Test
+    public void initLabels() {
+        tested.initLabels();
+        assertTrue(tested.labels.contains("all"));
+        assertTrue(tested.labels.contains("lane_child"));
+        assertTrue(tested.labels.contains("sequence_start"));
+        assertTrue(tested.labels.contains("sequence_end"));
+        assertTrue(tested.labels.contains("to_task_event"));
+        assertTrue(tested.labels.contains("from_task_event"));
+        assertTrue(tested.labels.contains("fromtoall"));
+        assertTrue(tested.labels.contains("IntermediateEventOnSubprocessBoundary"));
+        assertTrue(tested.labels.contains("IntermediateEventOnActivityBoundary"));
+        assertTrue(tested.labels.contains("EventOnChoreographyActivityBoundary"));
+        assertTrue(tested.labels.contains("IntermediateEventsMorph"));
+        assertTrue(tested.labels.contains("cm_nop"));
+        assertTrue(tested.labels.contains("IntermediateEventCatching"));
+    }
+
+    @Test
+    public void hasOutputVars() {
+        assertTrue(tested.hasOutputVars());
+    }
+
+    @Test
+    public void isSingleOutputVar() {
+        assertTrue(tested.isSingleOutputVar());
+    }
+
+    @Test
+    public void getCategory() {
+        assertEquals(BaseCatchingIntermediateEvent.category, tested.getCategory());
+    }
 
     @Test
     public void testBaseCatchingIntermediateEventCanBeContainedByALane() throws Exception {

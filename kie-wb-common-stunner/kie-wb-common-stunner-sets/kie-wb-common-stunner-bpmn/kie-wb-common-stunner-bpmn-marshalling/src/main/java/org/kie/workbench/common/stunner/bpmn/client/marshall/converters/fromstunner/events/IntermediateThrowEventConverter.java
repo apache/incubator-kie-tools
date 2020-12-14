@@ -37,7 +37,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.u
 
 public class IntermediateThrowEventConverter {
 
-    private final PropertyWriterFactory propertyWriterFactory;
+    protected final PropertyWriterFactory propertyWriterFactory;
 
     public IntermediateThrowEventConverter(PropertyWriterFactory propertyWriterFactory) {
         this.propertyWriterFactory = propertyWriterFactory;
@@ -63,99 +63,110 @@ public class IntermediateThrowEventConverter {
         return ConverterUtils.notSupported(def);
     }
 
-    private PropertyWriter signalEvent(Node<View<IntermediateSignalEventThrowing>, ?> n) {
+    protected PropertyWriter signalEvent(Node<View<IntermediateSignalEventThrowing>, ?> n) {
         IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
         event.setId(n.getUUID());
 
         IntermediateSignalEventThrowing definition = n.getContent().getDefinition();
+
         ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        p.setAbsoluteBounds(n);
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setAssignmentsInfo(
-                definition.getDataIOSet().getAssignmentsinfo());
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         p.addSignal(definition.getExecutionSet().getSignalRef());
         p.addSignalScope(definition.getExecutionSet().getSignalScope());
 
-        p.setAbsoluteBounds(n);
         return p;
     }
 
-    private PropertyWriter linkEvent(Node<View<IntermediateLinkEventThrowing>, ?> n) {
+    protected PropertyWriter linkEvent(Node<View<IntermediateLinkEventThrowing>, ?> n) {
         IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
         event.setId(n.getUUID());
 
         IntermediateLinkEventThrowing definition = n.getContent().getDefinition();
         ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
         p.setAbsoluteBounds(n);
-        p.addLink(definition.getExecutionSet().getLinkRef());
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
+
+        p.addLink(definition.getExecutionSet().getLinkRef());
 
         return p;
     }
 
-    private PropertyWriter messageEvent(Node<View<IntermediateMessageEventThrowing>, ?> n) {
+    protected PropertyWriter messageEvent(Node<View<IntermediateMessageEventThrowing>, ?> n) {
         IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
         event.setId(n.getUUID());
 
         IntermediateMessageEventThrowing definition = n.getContent().getDefinition();
+
         ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        p.setAbsoluteBounds(n);
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setAssignmentsInfo(
-                definition.getDataIOSet().getAssignmentsinfo());
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         MessageEventExecutionSet executionSet = definition.getExecutionSet();
 
         p.addMessage(executionSet.getMessageRef());
 
-        p.setAbsoluteBounds(n);
         return p;
     }
 
-    private PropertyWriter escalationEvent(Node<View<IntermediateEscalationEventThrowing>, ?> n) {
+    protected PropertyWriter escalationEvent(Node<View<IntermediateEscalationEventThrowing>, ?> n) {
         IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
         event.setId(n.getUUID());
 
         IntermediateEscalationEventThrowing definition = n.getContent().getDefinition();
+
         ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        p.setAbsoluteBounds(n);
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setAssignmentsInfo(
-                definition.getDataIOSet().getAssignmentsinfo());
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         p.addEscalation(definition.getExecutionSet().getEscalationRef());
 
-        p.setAbsoluteBounds(n);
         return p;
     }
 
-    private PropertyWriter compensationEvent(Node<View<IntermediateCompensationEventThrowing>, ?> n) {
+    protected PropertyWriter compensationEvent(Node<View<IntermediateCompensationEventThrowing>, ?> n) {
         IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
         event.setId(n.getUUID());
 
         IntermediateCompensationEventThrowing definition = n.getContent().getDefinition();
+
         ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        p.setAbsoluteBounds(n);
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
+
         p.addCompensation();
 
-        p.setAbsoluteBounds(n);
         return p;
     }
 }
