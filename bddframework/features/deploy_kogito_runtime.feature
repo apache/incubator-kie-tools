@@ -255,13 +255,15 @@ Feature: Deploy Kogito Runtime
 #####
 
   @persistence
+  @externalcomponent
   @infinispan
   Scenario: Deploy <example-service> service with Maven profile <profile> using external Infinispan
     Given Kogito Operator is deployed with Infinispan operator
     And Infinispan instance "external-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |
-    And Install Infinispan Kogito Infra "external-infinispan" connected to resource "external-infinispan" within 5 minutes
+    And Install Infinispan Kogito Infra "external-infinispan" within 5 minutes with configuration:
+      | resource | name | external-infinispan |
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
@@ -302,6 +304,71 @@ Feature: Deploy Kogito Runtime
 
 #####
 
+  @persistence
+  @externalcomponent
+  @mongodb
+  Scenario: Deploy <example-service> service with Maven profile <profile> using external MongoDB
+    Given Kogito Operator is deployed with MongoDB operator
+    And MongoDB instance "external-mongodb" is deployed with configuration:
+      | username | developer            |
+      | password | mypass               |
+      | database | kogito_dataindex     |
+    And Install MongoDB Kogito Infra "external-mongodb" within 5 minutes with configuration:
+      | resource | name     | external-mongodb  |
+      | config   | username | developer            |
+      | config   | database | kogito_dataindex     |
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | external-mongodb         |
+      # Setup short name as it can create some problems with route name too long ...
+      | config | name  | process-mongodb |         
+    And Kogito Runtime "process-mongodb" has 1 pods running within 10 minutes
+    And Start "deals" process on service "process-mongodb" within 3 minutes with body:
+      """json
+      {
+        "name" : "my fancy deal",
+        "traveller" : {
+          "firstName" : "John",
+          "lastName" : "Doe",
+          "email" : "jon.doe@example.com",
+          "nationality" : "American",
+          "address" : {
+            "street" : "main street",
+            "city" : "Boston",
+            "zipCode" : "10005",
+            "country" : "US" 
+          }
+        }
+      }
+      """
+
+    Then Service "process-mongodb" contains 1 instances of process with name "dealreviews"
+
+    When Scale Kogito Runtime "process-mongodb" to 0 pods within 2 minutes
+    And Scale Kogito Runtime "process-mongodb" to 1 pods within 2 minutes
+
+    Then Service "process-mongodb" contains 1 instances of process with name "dealreviews" within 2 minutes
+
+    @springboot
+    Examples:
+      | runtime    | example-service                        | profile |
+      | springboot | process-mongodb-persistence-springboot | default |
+
+    @quarkus
+    Examples:
+      | runtime    | example-service                     | profile |
+      | quarkus    | process-mongodb-persistence-quarkus | default |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service                     | profile |
+      | quarkus    | process-mongodb-persistence-quarkus | native  |
+
+#####
+
   @events
   @kafka
   @infinispan
@@ -310,7 +377,8 @@ Feature: Deploy Kogito Runtime
     And Kafka instance "external-kafka" is deployed
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
     And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
-    And Install Kafka Kogito Infra "external-kafka" connected to resource "external-kafka" within 5 minutes
+    And Install Kafka Kogito Infra "external-kafka" within 5 minutes with configuration:
+      | resource | name | external-kafka |
     And Install Kogito Data Index with 1 replicas with configuration:
       | config | infra | infinispan     |
       | config | infra | external-kafka |

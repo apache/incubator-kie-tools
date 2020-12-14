@@ -27,7 +27,9 @@ import (
 func registerOperatorSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Kogito operator should be installed with dependencies$`, data.kogitoOperatorShouldBeInstalledWithDependencies)
 	ctx.Step(`^Kogito Operator is deployed$`, data.kogitoOperatorIsDeployed)
-	ctx.Step(`^Kogito Operator is deployed with ((?:Infinispan|Kafka|Keycloak|, | and )+) (?:operator|operators)$`, data.kogitoOperatorIsDeployedWithDependencies)
+	ctx.Step(`^Kogito Operator is deployed with ((?:Infinispan|Kafka|Keycloak|MongoDB|, | and )+) (?:operator|operators)$`, data.kogitoOperatorIsDeployedWithDependencies)
+
+	ctx.Step(`^((?:Infinispan|Kafka|Keycloak|MongoDB|, | and )+) (?:operator|operators) (?:is|are) deployed$`, data.dependentOperatorsAreDeployed)
 
 	ctx.Step(`^CLI install Kogito operator$`, data.cliInstallKogitoOperator)
 }
@@ -88,23 +90,8 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 		}
 	}
 
-	// Dependent operators
-	operatorSource := framework.CommunityCatalog
-	if !framework.IsOpenshift() {
-		operatorSource = framework.OperatorHubCatalog
-	}
-
-	// Install and wait for operator dependencies
-	// Do it one by one due to racing condition in OLM (https://github.com/operator-framework/operator-lifecycle-manager/issues/1704)
-	for _, dependentOperator := range framework.KogitoOperatorDependencies {
-		if strings.Contains(dependencies, dependentOperator) {
-			if err := framework.InstallKogitoOperatorDependency(data.Namespace, dependentOperator, operatorSource); err != nil {
-				return err
-			}
-			if err := framework.WaitForKogitoOperatorDependencyRunning(data.Namespace, dependentOperator, operatorSource); err != nil {
-				return err
-			}
-		}
+	if err := deployDependentOperators(data.Namespace, dependencies); err != nil {
+		return err
 	}
 
 	// Wait for Kogito operator running
@@ -118,7 +105,43 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 	return nil
 }
 
+func (data *Data) dependentOperatorsAreDeployed(dependencies string) error {
+	return deployDependentOperators(data.Namespace, dependencies)
+}
+
 func (data *Data) cliInstallKogitoOperator() error {
 	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "operator")
 	return err
+}
+
+func deployDependentOperators(namespace string, dependencies string) error {
+	// Dependent operators
+	operatorSource := framework.CommunityCatalog
+	if !framework.IsOpenshift() {
+		operatorSource = framework.OperatorHubCatalog
+	}
+
+	// Install and wait for operator dependencies
+	// Do it one by one due to racing condition in OLM (https://github.com/operator-framework/operator-lifecycle-manager/issues/1704)
+	for _, dependentOperator := range framework.KogitoOperatorDependencies {
+		if strings.Contains(dependencies, dependentOperator) {
+			if err := framework.InstallKogitoOperatorDependency(namespace, dependentOperator, operatorSource); err != nil {
+				return err
+			}
+			if err := framework.WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator, operatorSource); err != nil {
+				return err
+			}
+		}
+	}
+
+	if strings.Contains(dependencies, framework.KogitoOperatorMongoDBDependency) {
+		if err := framework.DeployMongoDBOperatorFromYaml(namespace); err != nil {
+			return err
+		}
+		if err := framework.WaitForMongoDBOperatorRunning(namespace); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -22,6 +22,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	"k8s.io/apimachinery/pkg/api/errors"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
@@ -66,6 +67,11 @@ func GetKogitoInfraResourceStub(namespace, name, targetResourceType string) (*v1
 		Spec: v1beta1.KogitoInfraSpec{
 			Resource: *infraResource,
 		},
+		Status: v1beta1.KogitoInfraStatus{
+			Condition: v1beta1.KogitoInfraCondition{
+				LastTransitionTime: v1.Now(),
+			},
+		},
 	}, nil
 }
 
@@ -78,6 +84,8 @@ func parseKogitoInfraResource(targetResourceType string) (*v1beta1.Resource, err
 		return &v1beta1.Resource{APIVersion: infrastructure.KafkaAPIVersion, Kind: infrastructure.KafkaKind}, nil
 	case infrastructure.KeycloakKind:
 		return &v1beta1.Resource{APIVersion: infrastructure.KeycloakAPIVersion, Kind: infrastructure.KeycloakKind}, nil
+	case infrastructure.MongoDBKind:
+		return &v1beta1.Resource{APIVersion: infrastructure.MongoDBAPIVersion, Kind: infrastructure.MongoDBKind}, nil
 	default:
 		return nil, fmt.Errorf("Unknown KogitoInfra target resource type %s", targetResourceType)
 	}

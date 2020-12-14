@@ -16,6 +16,8 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -23,10 +25,11 @@ import (
 
 /*
 	DataTable for Data Index:
-	| config          | infra       | <KogitoInfra name>        |
-	| runtime-request | cpu/memory  | value                     |
-	| runtime-limit   | cpu/memory  | value                     |
-	| runtime-env     | varName     | varValue                  |
+	| config          | database       | <Infinispan|MongoDB>      |
+	| config          | infra          | <KogitoInfra name>        |
+	| runtime-request | cpu/memory     | value                     |
+	| runtime-limit   | cpu/memory     | value                     |
+	| runtime-env     | varName        | varValue                  |
 */
 
 func registerKogitoDataIndexServiceSteps(ctx *godog.ScenarioContext, data *Data) {
@@ -47,6 +50,11 @@ func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(rep
 
 	if err := mappers.MapKogitoServiceTable(table, dataIndex); err != nil {
 		return err
+	}
+
+	if dataIndex.DatabaseType == infrastructure.MongoDBKind {
+		framework.GetMainLogger().Debug("Setting Data Index MongoDB image")
+		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetDataIndexImageTag(), infrastructure.DataIndexMongoDBImageName))
 	}
 
 	return framework.InstallKogitoDataIndexService(data.Namespace, framework.GetDefaultInstallerType(), dataIndex)

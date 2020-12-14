@@ -16,9 +16,14 @@ package framework
 
 import (
 	"os/exec"
+	"sync"
 	"time"
 
 	"go.uber.org/zap"
+)
+
+var (
+	syncMutexMap sync.Map
 )
 
 // CreateCommand methods initializes the basic data to run commands.
@@ -34,6 +39,8 @@ type Command interface {
 	InDirectory(directory string) Command
 	// WithRetry method defines retry options to be applied to the command.
 	WithRetry(opts ...RetryOption) Command
+	// Sync method allows to execute only one command at a time based on the syncID.
+	Sync(syncID string) Command
 	// Execute command and returns the outputs.
 	Execute() (string, error)
 }
@@ -46,6 +53,7 @@ type commandStruct struct {
 	loggerContext string
 	retries       int
 	retryDelay    time.Duration
+	syncID        string
 }
 
 func (cmd *commandStruct) WithLoggerContext(loggerContext string) Command {
@@ -65,7 +73,21 @@ func (cmd *commandStruct) WithRetry(opts ...RetryOption) Command {
 	return cmd
 }
 
+func (cmd *commandStruct) Sync(syncID string) Command {
+	cmd.syncID = syncID
+	return cmd
+}
+
 func (cmd *commandStruct) Execute() (string, error) {
+	if len(cmd.syncID) > 0 {
+		mutex := getMutexOrCreate(cmd.syncID)
+		mutex.Lock()
+		defer mutex.Unlock()
+	}
+	return cmd.executeCommand()
+}
+
+func (cmd *commandStruct) executeCommand() (string, error) {
 	var logger = cmd.getLogger()
 
 	if len(cmd.directory) == 0 {
@@ -130,4 +152,13 @@ func NumberOfRetries(retries int) RetryOption {
 	return func(cmd *commandStruct) {
 		cmd.retries = retries
 	}
+}
+
+func getMutexOrCreate(syncID string) *sync.Mutex {
+	mutex, exists := syncMutexMap.Load(syncID)
+	if !exists {
+		mutex = &sync.Mutex{}
+		syncMutexMap.Store(syncID, mutex)
+	}
+	return mutex.(*sync.Mutex)
 }

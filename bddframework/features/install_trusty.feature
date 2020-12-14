@@ -29,8 +29,10 @@ Feature: Kogito Trusty
       | username | developer |
       | password | mypass |
     And Kafka instance "external-kafka" is deployed
-    And Install Infinispan Kogito Infra "external-infinispan" connected to resource "external-infinispan" within 5 minutes
-    And Install Kafka Kogito Infra "external-kafka" connected to resource "external-kafka" within 5 minutes
+    And Install Infinispan Kogito Infra "external-infinispan" within 5 minutes with configuration:
+      | resource | name | external-infinispan |
+    And Install Kafka Kogito Infra "external-kafka" within 5 minutes with configuration:
+      | resource | name | external-kafka |
     And Install Kogito Trusty with 1 replicas with configuration:
       | config | infra | external-infinispan |
       | config | infra | external-kafka      |

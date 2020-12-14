@@ -64,6 +64,7 @@ func (data *Data) RegisterAllSteps(ctx *godog.ScenarioContext) {
 	registerKogitoTrustyUISteps(ctx, data)
 	registerKubernetesSteps(ctx, data)
 	registerMavenSteps(ctx, data)
+	registerMongoDBSteps(ctx, data)
 	registerOpenShiftSteps(ctx, data)
 	registerOperatorSteps(ctx, data)
 	registerPrometheusSteps(ctx, data)

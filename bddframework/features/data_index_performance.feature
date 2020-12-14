@@ -12,7 +12,8 @@ Feature: Data Index Performance
     And Infinispan instance "external-infinispan" is deployed for performance within 5 minute(s) with configuration:
       | username | developer |
       | password | mypass |
-    And Install Infinispan Kogito Infra "external-infinispan" connected to resource "external-infinispan" within 5 minutes
+    And Install Infinispan Kogito Infra "external-infinispan" within 5 minutes with configuration:
+      | resource | name | external-infinispan |
     And Install Kafka Kogito Infra "kafka" within 10 minutes
     And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
     And Install Kogito Data Index with 1 replicas with configuration:

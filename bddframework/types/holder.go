@@ -21,6 +21,8 @@ import (
 // KogitoServiceHolder Helper structure holding informations which are not available in KogitoService
 type KogitoServiceHolder struct {
 	v1beta1.KogitoService
+
+	DatabaseType string
 }
 
 // KogitoBuildHolder Helper structure holding informations for Kogito build

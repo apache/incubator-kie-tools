@@ -139,5 +139,9 @@ func GetInfraCLIFlags(infraResource *v1beta1.KogitoInfra) []string {
 		cmd = append(cmd, "--resource-namespace", resourceNamespace)
 	}
 
+	for key, value := range infraResource.Spec.InfraProperties {
+		cmd = append(cmd, "--property", fmt.Sprintf("%s=%s", key, value))
+	}
+
 	return cmd
 }
