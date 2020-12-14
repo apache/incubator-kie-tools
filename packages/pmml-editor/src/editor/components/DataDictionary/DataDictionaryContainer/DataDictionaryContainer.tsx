@@ -34,10 +34,21 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   }, [dataTypes]);
 
   useEffect(() => {
+    // undoing a recently created data field force to exit the editing mode for that field
     if (editing === dataDictionary.length) {
       setEditing(false);
       onEditingPhaseChange(false);
     }
+    // if undoing causes constraints to be removed while user is in the constraints section, bring user back to DD main section
+    if (
+      typeof editing === "number" &&
+      dataDictionary[editing]?.constraints === undefined &&
+      dataTypes[editing]?.constraints === undefined &&
+      viewSection === "constraints"
+    ) {
+      setViewSection("main");
+    }
+    // updating constraintsEdit when dictionary change
     if (viewSection === "constraints" && typeof editing === "number") {
       setConstraintsEdit(dataDictionary[editing]);
     }
