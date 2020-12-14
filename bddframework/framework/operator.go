@@ -98,8 +98,19 @@ var (
 	}
 )
 
-// DeployKogitoOperatorFromYaml Deploy Kogito Operator from yaml files, return all objects created for deployment
-func DeployKogitoOperatorFromYaml(namespace string) (created []meta.ResourceObject, err error) {
+// DeployNamespacedKogitoOperatorFromYaml Deploy Kogito Operator watching for single namespace from yaml files, return all objects created for deployment
+// Will be deployed in the same namespace as it will watch for
+func DeployNamespacedKogitoOperatorFromYaml(deploymentNamespace string) (created []meta.ResourceObject, err error) {
+	return deployKogitoOperatorFromYaml(deploymentNamespace, true)
+}
+
+// DeployClusterWideKogitoOperatorFromYaml Deploy Kogito Operator watching for all namespaces from yaml files, return all objects created for deployment
+func DeployClusterWideKogitoOperatorFromYaml(deploymentNamespace string) (created []meta.ResourceObject, err error) {
+	return deployKogitoOperatorFromYaml(deploymentNamespace, false)
+}
+
+// Deploy Kogito Operator from yaml files, return all objects created for deployment
+func deployKogitoOperatorFromYaml(namespace string, namespaced bool) (created []meta.ResourceObject, err error) {
 	var deployURI = config.GetOperatorDeployURI()
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
@@ -160,11 +171,13 @@ func DeployKogitoOperatorFromYaml(namespace string) (created []meta.ResourceObje
 		GetLogger(namespace).Debugf("Using operator image %s", getOperatorImageNameAndTag())
 		object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0].Image = getOperatorImageNameAndTag()
 
-		// Set Kogito operator to watch only namespace where it is installed
-		container := object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0]
-		for i := range container.Env {
-			if container.Env[i].Name == "WATCH_NAMESPACE" {
-				container.Env[i].Value = namespace
+		if namespaced {
+			// Set Kogito operator to watch only namespace where it is installed
+			container := object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0]
+			for i := range container.Env {
+				if container.Env[i].Name == "WATCH_NAMESPACE" {
+					container.Env[i].Value = namespace
+				}
 			}
 		}
 	})
@@ -177,7 +190,7 @@ func DeployKogitoOperatorFromYaml(namespace string) (created []meta.ResourceObje
 
 // IsKogitoOperatorRunning returns whether Kogito operator is running
 func IsKogitoOperatorRunning(namespace string) (bool, error) {
-	exists, err := infra.CheckKogitoOperatorExists(kubeClient, namespace)
+	exists, err := KogitoOperatorExists(namespace)
 	if err != nil {
 		if exists {
 			return false, nil
@@ -186,6 +199,11 @@ func IsKogitoOperatorRunning(namespace string) (bool, error) {
 	}
 
 	return exists, nil
+}
+
+// KogitoOperatorExists returns whether Kogito operator exists and is running. If it is existing but not running, it returns true and an error
+func KogitoOperatorExists(namespace string) (bool, error) {
+	return infra.CheckKogitoOperatorExists(kubeClient, namespace)
 }
 
 // WaitForKogitoOperatorRunning waits for Kogito operator running

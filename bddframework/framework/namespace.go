@@ -54,7 +54,7 @@ func DeleteNamespace(namespace string) error {
 	return nil
 }
 
-// IsNamespace checks wherher a namespace exists
+// IsNamespace checks whether a namespace exists
 func IsNamespace(namespace string) (bool, error) {
 	ns, err := kubernetes.NamespaceC(kubeClient).Fetch(namespace)
 	if err != nil {

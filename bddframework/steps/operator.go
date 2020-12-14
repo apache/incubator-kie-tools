@@ -20,6 +20,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -36,11 +37,17 @@ func (data *Data) kogitoOperatorShouldBeInstalledWithDependencies() error {
 }
 
 func (data *Data) kogitoOperatorIsDeployed() error {
+	if !config.IsOperatorNamespaced() {
+		// Skip operator installation
+		framework.GetLogger(data.Namespace).Info("Skipped as cluster wide operator should be deployed")
+		return nil
+	}
+
 	// if operator not available, then install via yaml files
 	if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 		return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 	} else if !exists {
-		created, err := framework.DeployKogitoOperatorFromYaml(data.Namespace)
+		created, err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
 
 		// Store created objects
 		if o, ok := namespacesCreated.Load(data.Namespace); ok {
@@ -60,19 +67,24 @@ func (data *Data) kogitoOperatorIsDeployed() error {
 }
 
 func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) error {
-	// First install and wait for kogito operator
-	if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
-		return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
-	} else if !exists {
-		created, err := framework.DeployKogitoOperatorFromYaml(data.Namespace)
+	if !config.IsOperatorNamespaced() {
+		// Skip operator installation
+		framework.GetLogger(data.Namespace).Info("Kogito operator deployment skipped as cluster wide operator should be deployed")
+	} else {
+		// First install and wait for kogito operator
+		if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
+			return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
+		} else if !exists {
+			created, err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
 
-		// Store created objects
-		if o, ok := namespacesCreated.Load(data.Namespace); ok {
-			namespacesCreated.Store(data.Namespace, append(o.([]meta.ResourceObject), created...))
-		}
+			// Store created objects
+			if o, ok := namespacesCreated.Load(data.Namespace); ok {
+				namespacesCreated.Store(data.Namespace, append(o.([]meta.ResourceObject), created...))
+			}
 
-		if err != nil {
-			return fmt.Errorf("Error while deploying operator: %v", err)
+			if err != nil {
+				return fmt.Errorf("Error while deploying operator: %v", err)
+			}
 		}
 	}
 
@@ -97,8 +109,10 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 
 	// Wait for Kogito operator running
 	// This is put at the end because there should not be any racing condition as install is done via yaml and not OLM
-	if err := framework.WaitForKogitoOperatorRunning(data.Namespace); err != nil {
-		return fmt.Errorf("Error while checking operator running: %v", err)
+	if config.IsOperatorNamespaced() {
+		if err := framework.WaitForKogitoOperatorRunning(data.Namespace); err != nil {
+			return fmt.Errorf("Error while checking operator running: %v", err)
+		}
 	}
 
 	return nil

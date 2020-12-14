@@ -26,6 +26,7 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
 
+	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps"
@@ -36,14 +37,21 @@ const (
 	cliTag         = "@cli"
 	smokeTag       = "@smoke"
 	performanceTag = "@performance"
+
+	kogitoClusterWideNamespace = "kogito-operator-system"
 )
 
-var godogOpts = godog.Options{
-	Output:    colors.Colored(os.Stdout),
-	Format:    "junit",
-	Randomize: time.Now().UTC().UnixNano(),
-	Tags:      disabledTag,
-}
+var (
+	godogOpts = godog.Options{
+		Output:    colors.Colored(os.Stdout),
+		Format:    "junit",
+		Randomize: time.Now().UTC().UnixNano(),
+		Tags:      disabledTag,
+	}
+
+	// Array of created cluster objects, used to cleanup environment when the tests finish
+	clusterObjects []meta.ResourceObject
+)
 
 func init() {
 	godog.BindFlags("godog.", flag.CommandLine, &godogOpts)
@@ -149,14 +157,14 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 
 	// Initialization of cluster wide resources
 	ctx.BeforeSuite(func() {
-		go func() {
-			// Monitor OLM namespace for cluster wide operator deployments
-			olmNamespace := config.GetOlmNamespace()
-			err := framework.StartPodLogCollector(olmNamespace)
-			if err != nil {
-				framework.GetLogger(olmNamespace).Errorf("Error staring log collector for namespace %s: %v", olmNamespace, err)
+		monitorOlmNamespace()
+
+		if !config.IsOperatorNamespaced() {
+			if err := installClusterWideKogitoOperator(); err != nil {
+				panic(err)
 			}
-		}()
+			monitorKogitoOperatorNamespace()
+		}
 	})
 
 	// Final cleanup once test suite finishes
@@ -165,14 +173,15 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 			// Delete all operators created by test suite
 			deleteClusterWideTestOperators()
 		}
-		// Stop OLM namespace monitoring
-		olmNamespace := config.GetOlmNamespace()
-		if err := framework.StopPodLogCollector(olmNamespace); err != nil {
-			framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", olmNamespace, err)
+
+		if !config.IsOperatorNamespaced() {
+			if err := uninstallClusterWideKogitoOperator(); err != nil {
+				panic(err)
+			}
+			stopKogitoOperatorNamespaceMonitoring()
 		}
-		if err := framework.BumpEvents(olmNamespace); err != nil {
-			framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", olmNamespace, err)
-		}
+
+		stopOlmNamespaceMonitoring()
 	})
 }
 
@@ -280,4 +289,87 @@ func deleteClusterWideTestOperators() {
 			framework.GetMainLogger().Errorf("Error deleting cluster wide test subscription %s: %v", subscription.Name, err)
 		}
 	}
+}
+
+func monitorOlmNamespace() {
+	monitorNamespace(config.GetOlmNamespace())
+}
+
+func monitorKogitoOperatorNamespace() {
+	monitorNamespace(kogitoClusterWideNamespace)
+}
+
+func monitorNamespace(namespace string) {
+	go func() {
+		err := framework.StartPodLogCollector(namespace)
+		if err != nil {
+			framework.GetLogger(namespace).Errorf("Error starting log collector for namespace %s: %v", namespace, err)
+		}
+	}()
+}
+
+func stopOlmNamespaceMonitoring() {
+	stopNamespaceMonitoring(config.GetOlmNamespace())
+}
+
+func stopKogitoOperatorNamespaceMonitoring() {
+	stopNamespaceMonitoring(kogitoClusterWideNamespace)
+}
+
+func stopNamespaceMonitoring(namespace string) {
+	if err := framework.StopPodLogCollector(namespace); err != nil {
+		framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", namespace, err)
+	}
+	if err := framework.BumpEvents(namespace); err != nil {
+		framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", namespace, err)
+	}
+}
+
+// Install cluster wide Kogito operator
+func installClusterWideKogitoOperator() error {
+	// Check that Kogito operator is not deployed yet
+	if running, err := framework.KogitoOperatorExists(kogitoClusterWideNamespace); err != nil {
+		return fmt.Errorf("Error while checking whether Kogito operator in namespace %s is running: %v", kogitoClusterWideNamespace, err)
+	} else if running {
+		return fmt.Errorf("Kogito operator is already running in namespace %s. Please uninstall the operator first", kogitoClusterWideNamespace)
+	}
+
+	// Create the Kogito operator namespace if it doesn't exist
+	if exists, err := framework.IsNamespace(kogitoClusterWideNamespace); err != nil {
+		return err
+	} else if !exists {
+		// Create the namespace
+		if err := framework.CreateNamespace(kogitoClusterWideNamespace); err != nil {
+			return err
+		}
+	}
+
+	// Deploy the operator
+	created, err := framework.DeployClusterWideKogitoOperatorFromYaml(kogitoClusterWideNamespace)
+	clusterObjects = created
+	if err != nil {
+		return err
+	}
+
+	// Wait until operator runs
+	if err := framework.WaitForKogitoOperatorRunning(kogitoClusterWideNamespace); err != nil {
+		return fmt.Errorf("Error while checking operator running: %v", err)
+	}
+
+	return nil
+}
+
+// Uninstall cluster wide Kogito operator
+func uninstallClusterWideKogitoOperator() error {
+	if !config.IsKeepNamespace() {
+		// Delete all objects created for the Kogito operator
+		for _, o := range clusterObjects {
+			if err := framework.DeleteObject(o); err != nil {
+				framework.GetMainLogger().Errorf("Error removing created objects for namespace %s: %v", kogitoClusterWideNamespace, err)
+			}
+		}
+
+		return framework.DeleteNamespace(kogitoClusterWideNamespace)
+	}
+	return nil
 }

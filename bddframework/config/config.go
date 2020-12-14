@@ -37,8 +37,9 @@ type TestConfig struct {
 	olmNamespace     string
 
 	// operator information
-	operatorImageName string
-	operatorImageTag  string
+	operatorImageName  string
+	operatorImageTag   string
+	operatorNamespaced bool
 
 	// files/binaries
 	operatorDeployURI string
@@ -128,6 +129,7 @@ func BindFlags(set *flag.FlagSet) {
 	// operator information
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
 	set.StringVar(&env.operatorImageTag, prefix+"operator-image-tag", defaultOperatorImageTag, "Operator image tag")
+	set.BoolVar(&env.operatorNamespaced, prefix+"operator-namespaced", false, "Set to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false.")
 
 	// files/binaries
 	set.StringVar(&env.operatorDeployURI, prefix+"operator-deploy-uri", defaultOperatorDeployURI, "Url or Path to operator 'deploy' folder")
@@ -243,6 +245,11 @@ func GetOperatorImageName() string {
 // GetOperatorImageTag return the image tag for the operator
 func GetOperatorImageTag() string {
 	return env.operatorImageTag
+}
+
+// IsOperatorNamespaced return true if the Kogito operator should be deployed in scenario namespace, false for cluster wide deployment
+func IsOperatorNamespaced() bool {
+	return env.operatorNamespaced
 }
 
 // files/binaries
