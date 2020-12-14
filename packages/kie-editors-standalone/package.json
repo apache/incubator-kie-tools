@@ -25,6 +25,7 @@
     "build:fast": "rm -rf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run lint && yarn test && rm -rf dist && webpack --config webpack.build-resources.config.js --mode production --devtool none && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js --mode production --devtool none",
+    "pack:productization": "yarn pack",
     "start": "webpack-dev-server -d --host 0.0.0.0 --config webpack.package-resources.config.js"
   },
   "babel": {

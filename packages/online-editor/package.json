@@ -29,6 +29,7 @@
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none",
+    "pack:productization": "yarn pack",
     "start": "webpack-dev-server -d --host 0.0.0.0"
   },
   "babel": {
