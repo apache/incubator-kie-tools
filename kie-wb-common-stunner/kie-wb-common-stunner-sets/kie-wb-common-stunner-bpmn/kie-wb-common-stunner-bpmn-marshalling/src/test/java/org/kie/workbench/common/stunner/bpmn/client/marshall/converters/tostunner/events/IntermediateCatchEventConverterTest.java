@@ -62,12 +62,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -94,7 +95,7 @@ public class IntermediateCatchEventConverterTest {
         propertyReader = mock(CatchEventPropertyReader.class);
         eventDefinitions = new ArrayList<>();
         when(propertyReader.getEventDefinitions()).thenReturn(eventDefinitions);
-        when(propertyReaderFactory.of(any(CatchEvent.class))).thenReturn(propertyReader);
+        when(propertyReaderFactory.of(Mockito.<CatchEvent>any())).thenReturn(propertyReader);
 
         view = mock(View.class);
 
@@ -113,7 +114,7 @@ public class IntermediateCatchEventConverterTest {
     public void convert() {
         eventDefinitions.clear();
         try {
-            tested.convert(any(IntermediateCatchEvent.class));
+            tested.convert(Mockito.<IntermediateCatchEvent>any());
             fail("Exception expected");
         } catch (Exception exception) {
             assertTrue(exception instanceof UnsupportedOperationException);
@@ -133,7 +134,7 @@ public class IntermediateCatchEventConverterTest {
         eventDefinitions.add(mock(EventDefinition.class));
         eventDefinitions.add(mock(EventDefinition.class));
         try {
-            tested.convert(any(IntermediateCatchEvent.class));
+            tested.convert(Mockito.<IntermediateCatchEvent>any());
             fail("Exception expected");
         } catch (Exception exception) {
             assertTrue(exception instanceof UnsupportedOperationException);
@@ -147,7 +148,7 @@ public class IntermediateCatchEventConverterTest {
     public void convertBoundaryEvent() {
         eventDefinitions.clear();
         try {
-            tested.convertBoundaryEvent(any(BoundaryEvent.class));
+            tested.convertBoundaryEvent(Mockito.<BoundaryEvent>any());
             fail("Exception expected");
         } catch (Exception exception) {
             assertTrue(exception instanceof UnsupportedOperationException);
@@ -166,7 +167,7 @@ public class IntermediateCatchEventConverterTest {
         eventDefinitions.add(mock(EventDefinition.class));
         eventDefinitions.add(mock(EventDefinition.class));
         try {
-            tested.convertBoundaryEvent(any(BoundaryEvent.class));
+            tested.convertBoundaryEvent(Mockito.<BoundaryEvent>any());
             fail("Exception expected");
         } catch (Exception exception) {
             assertTrue(exception instanceof UnsupportedOperationException);
@@ -188,7 +189,7 @@ public class IntermediateCatchEventConverterTest {
         verify(propertyReader).isCancelActivity();
         verify(propertyReader).getSlaDueDate();
         verify(eventDefinition).getErrorRef();
-        verify(definition).setExecutionSet(any(CancellingErrorEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<CancellingErrorEventExecutionSet>any());
     }
 
     @Test
@@ -203,7 +204,7 @@ public class IntermediateCatchEventConverterTest {
         verify(propertyReader).isCancelActivity();
         verify(propertyReader).getSlaDueDate();
         verify(propertyReader).getSignalRef();
-        verify(definition).setExecutionSet(any(CancellingSignalEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<CancellingSignalEventExecutionSet>any());
     }
 
     @Test
@@ -216,7 +217,7 @@ public class IntermediateCatchEventConverterTest {
 
         verifyCommonProperties(definition);
         verify(propertyReader).getLinkRef();
-        verify(definition).setExecutionSet(any(LinkEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<LinkEventExecutionSet>any());
     }
 
     @Test
@@ -231,7 +232,7 @@ public class IntermediateCatchEventConverterTest {
         verify(propertyReader).isCancelActivity();
         verify(propertyReader).getSlaDueDate();
         verify(eventDefinition).getTimeCycle();
-        verify(definition).setExecutionSet(any(CancellingTimerEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<CancellingTimerEventExecutionSet>any());
     }
 
     @Test
@@ -246,7 +247,7 @@ public class IntermediateCatchEventConverterTest {
         verify(propertyReader).isCancelActivity();
         verify(propertyReader).getSlaDueDate();
         verify(eventDefinition, times(2)).getMessageRef();
-        verify(definition).setExecutionSet(any(CancellingMessageEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<CancellingMessageEventExecutionSet>any());
     }
 
     @Test
@@ -261,7 +262,7 @@ public class IntermediateCatchEventConverterTest {
         verify(propertyReader).isCancelActivity();
         verify(propertyReader).getSlaDueDate();
         verify(eventDefinition).getCondition();
-        verify(definition).setExecutionSet(any(CancellingConditionalEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<CancellingConditionalEventExecutionSet>any());
     }
 
     @Test
@@ -276,7 +277,7 @@ public class IntermediateCatchEventConverterTest {
         verify(propertyReader).isCancelActivity();
         verify(propertyReader).getSlaDueDate();
         verify(eventDefinition).getEscalationRef();
-        verify(definition).setExecutionSet(any(CancellingEscalationEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<CancellingEscalationEventExecutionSet>any());
     }
 
     @Test
@@ -289,7 +290,7 @@ public class IntermediateCatchEventConverterTest {
 
         verifyCommonProperties(definition);
         verify(propertyReader).getSlaDueDate();
-        verify(definition).setExecutionSet(any(BaseCancellingEventExecutionSet.class));
+        verify(definition).setExecutionSet(Mockito.<BaseCancellingEventExecutionSet>any());
     }
 
     private void verifyErrorEventConvert() {
@@ -444,23 +445,23 @@ public class IntermediateCatchEventConverterTest {
 
     private void verifyCommonProperties(BaseCatchingIntermediateEvent definition) {
         verify(propertyReader).getBounds();
-        verify(view).setBounds(any(Bounds.class));
+        verify(view).setBounds(Mockito.<Bounds>any());
 
         verify(propertyReader).getName();
         verify(propertyReader).getDocumentation();
-        verify(definition).setGeneral(any(BPMNGeneralSet.class));
+        verify(definition).setGeneral(Mockito.<BPMNGeneralSet>any());
 
         verify(propertyReader).getBackgroundSet();
-        verify(definition).setBackgroundSet(any(BackgroundSet.class));
+        verify(definition).setBackgroundSet(Mockito.<BackgroundSet>any());
 
         verify(propertyReader).getFontSet();
-        verify(definition).setFontSet(any(FontSet.class));
+        verify(definition).setFontSet(Mockito.<FontSet>any());
 
         verify(propertyReader).getCircleDimensionSet();
-        verify(definition).setDimensionsSet(any(CircleDimensionSet.class));
+        verify(definition).setDimensionsSet(Mockito.<CircleDimensionSet>any());
 
         verify(propertyReader).getAssignmentsInfo();
-        verify(definition).setDataIOSet(any(DataIOSet.class));
+        verify(definition).setDataIOSet(Mockito.<DataIOSet>any());
     }
 
     private IntermediateCatchEvent mockIntermediateCatchEvent(BaseCatchingIntermediateEvent eventDefinition) {
