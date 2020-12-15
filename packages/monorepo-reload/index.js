@@ -61,8 +61,15 @@ function watchSrcDirectoryOfPackage(path) {
   }
 
   const scopeList = getLernasScopeListForRebuildingPackage(path);
-  const refreshCommand = `npx lerna exec '${program.rebuildPackagesCmmd}' ${scopeList} --stream`;
-  return spawn(`npx chokidar ${pathToWatch} -c "${refreshCommand}"`, [], { shell: true, stdio: "inherit" });
+  const refreshCmmd = `npx lerna exec '${program.rebuildPackagesCmmd}' ${scopeList} --stream`;
+  const invalidateCmmd = program.invalidateUrl
+    ? `&& echo 'Invalidating app..' && sleep 5 && curl -s -X GET ${program.invalidateUrl} > /dev/null && echo 'Invalidated.'`
+    : ``;
+
+  spawn(`npx chokidar ${pathToWatch} -c "${refreshCmmd} ${invalidateCmmd}"`, [], {
+    shell: true,
+    stdio: "inherit"
+  });
 }
 
 //
@@ -74,6 +81,7 @@ program.requiredOption("--app-package-name <name>", "The application package nam
 program.requiredOption("--start-app-cmmd <cmmd>", "The command to start the application");
 program.requiredOption("--rebuild-packages-cmmd <cmmd>", "The command to rebuild the dependency packages");
 program.option("--no-build-dependents", "Signals not to build dependent packages after a change");
+program.option("--invalidate-url <url>", "URL used to invalidate the running webapp and trigger a recompilation.");
 
 program.parse(process.argv);
 
