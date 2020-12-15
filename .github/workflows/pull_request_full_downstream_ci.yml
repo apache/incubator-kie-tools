@@ -257,6 +257,36 @@ jobs:
           cd ${{ github.workspace }}/kogito-tooling
           yarn build:prod
 
+      - name: Upload VS Code Extension
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-fdb
+          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Backend VS Code Extension
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-backend-fdb
+          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Chrome Extension
+        uses: actions/upload-artifact@v1
+        with:
+          name: chrome-extension-fdb
+          path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
+
+      - name: Upload Desktop App
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-linux-fdb
+          path: ${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
+
+      - name: Upload Hub App
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-linux-fdb
+          path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
+
       - name: 'Checkout kogito-online-ci'
         if: github.repository == 'kiegroup/kogito-tooling' && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, 'Build:'))
         uses: actions/checkout@v2
@@ -313,33 +343,3 @@ jobs:
         with:
           name: chrome-extension-it-tests-logs-${{ matrix.os }}
           path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/logs
-
-      - name: Upload VS Code Extension
-        uses: actions/upload-artifact@v1
-        with:
-          name: vscode-extension-fdb
-          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
-
-      - name: Upload Backend VS Code Extension
-        uses: actions/upload-artifact@v1
-        with:
-          name: vscode-extension-backend-fdb
-          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ steps.version.outputs.version }}.vsix
-
-      - name: Upload Chrome Extension
-        uses: actions/upload-artifact@v1
-        with:
-          name: chrome-extension-fdb
-          path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
-
-      - name: Upload Desktop App
-        uses: actions/upload-artifact@v1
-        with:
-          name: desktop-app-linux-fdb
-          path: ${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
-
-      - name: Upload Hub App
-        uses: actions/upload-artifact@v1
-        with:
-          name: hub-app-linux-fdb
-          path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
