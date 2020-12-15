@@ -1,19 +1,18 @@
 import * as React from "react";
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { Label, LabelProps } from "@patternfly/react-core";
-import { Constraints, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { Constraints } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {
+  editingIndex?: number | boolean;
   constraints: Constraints;
   onConstraintsDelete?: () => void;
 }
-const ConstraintsLabel = ({ constraints, onConstraintsDelete }: ConstraintsLabelProps) => {
-  const editing = useContext(StatusContext);
-
+const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: ConstraintsLabelProps) => {
   const labelProps: Partial<LabelProps> = {};
 
-  if (editing !== false) {
+  if (editingIndex !== undefined && editingIndex !== false) {
     labelProps.onClose = event => {
       event.nativeEvent.stopImmediatePropagation();
       onConstraintsDelete?.();

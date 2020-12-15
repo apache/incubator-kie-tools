@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
+import { omit, isEqual } from "lodash";
 import {
   Button,
   Card,
@@ -34,6 +35,7 @@ interface ConstraintsEditProps {
 
 const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const { dataType, onSave, onClose } = props;
+  const [dataTypeState, setDataTypeState] = useState(dataType);
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeIsOpen, setTypeIsOpen] = useState(false);
   const constraintsTypes = [{ value: "", isPlaceholder: true }, { value: "Range" }, { value: "Enumeration" }];
@@ -47,6 +49,14 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     form: "default",
     fields: { start: "default", end: "default", enums: "default" }
   });
+
+  useEffect(() => {
+    if (!isEqual(omit(dataType, "constraints"), omit(dataTypeState, "constraints"))) {
+      onClose();
+    } else {
+      setDataTypeState(dataType);
+    }
+  }, [dataType, dataTypeState]);
 
   useEffect(() => {
     setConstraintType(dataType.constraints?.type ?? "");

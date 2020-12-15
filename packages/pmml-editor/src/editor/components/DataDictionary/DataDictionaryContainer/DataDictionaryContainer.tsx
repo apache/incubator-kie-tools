@@ -13,7 +13,6 @@ import "./DataDictionaryContainer.scss";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
-  onUpdate: (updatedDictionary: DDDataField[]) => void;
   onAdd: (name: string, type: DDDataField["type"]) => void;
   onEdit: (index: number, field: DDDataField) => void;
   onDelete: (index: number) => void;
@@ -23,7 +22,7 @@ interface DataDictionaryContainerProps {
 }
 
 const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
-  const { dataDictionary, onUpdate, onAdd, onEdit, onDelete, onReorder, onBatchAdd, onEditingPhaseChange } = props;
+  const { dataDictionary, onAdd, onEdit, onDelete, onReorder, onBatchAdd, onEditingPhaseChange } = props;
   const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
@@ -31,30 +30,17 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
-    onUpdate(dataTypes);
-  }, [dataTypes]);
-
-  useEffect(() => {
     // undoing a recently created data field force to exit the editing mode for that field
     if (editing === dataDictionary.length) {
       setEditing(false);
       onEditingPhaseChange(false);
     }
-    // if undoing causes constraints to be removed while user is in the constraints section, bring user back to DD main section
-    if (
-      typeof editing === "number" &&
-      dataDictionary[editing]?.constraints === undefined &&
-      dataTypes[editing]?.constraints === undefined &&
-      viewSection === "constraints"
-    ) {
-      setViewSection("main");
-    }
-    // updating constraintsEdit when dictionary change
+    // updating constraintsEdit when dictionary changes
     if (viewSection === "constraints" && typeof editing === "number") {
       setConstraintsEdit(dataDictionary[editing]);
     }
     setDataTypes(dataDictionary);
-  }, [dataDictionary]);
+  }, [dataDictionary, editing, viewSection]);
 
   const handleOutsideClick = () => {
     setEditing(false);
@@ -142,105 +128,102 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   return (
     <div className="data-dictionary">
-      <StatusContext.Provider value={editing}>
-        <SwitchTransition mode={"out-in"}>
-          <CSSTransition
-            timeout={{
-              enter: 230,
-              exit: 100
-            }}
-            classNames={getTransition(viewSection)}
-            key={viewSection}
-          >
-            <>
-              {viewSection === "main" && (
-                <section style={{ height: "100%" }}>
-                  <Flex style={{ padding: "1em 0" }}>
-                    <FlexItem>
-                      <Button
-                        variant="primary"
-                        onClick={addDataType}
-                        icon={<PlusIcon />}
-                        iconPosition="left"
-                        isDisabled={editing !== false || sorting}
-                      >
-                        Add Data Type
-                      </Button>
-                    </FlexItem>
-                    <FlexItem>
-                      <Button
-                        variant="secondary"
-                        onClick={() => setViewSection("batch-add")}
-                        icon={<BoltIcon />}
-                        iconPosition="left"
-                        isDisabled={editing !== false || sorting}
-                      >
-                        Add Multiple Data Types
-                      </Button>
-                    </FlexItem>
-                    <FlexItem align={{ default: "alignRight" }}>
-                      <Button
-                        variant={sorting ? "primary" : "secondary"}
-                        onClick={toggleSorting}
-                        icon={<SortIcon />}
-                        iconPosition="left"
-                        isDisabled={editing !== false}
-                      >
-                        {sorting ? "End Ordering" : "Order"}
-                      </Button>
-                    </FlexItem>
-                  </Flex>
-                  {!sorting && (
-                    <section className="data-dictionary__types-list">
-                      {dataTypes.length === 0 && (
-                        <Bullseye style={{ height: "40vh" }}>
-                          <EmptyDataDictionary />
-                        </Bullseye>
-                      )}
-                      {dataTypes.map((item, index) => (
-                        <DataTypeItem
-                          dataType={item}
-                          index={index}
-                          key={index}
-                          onSave={handleSave}
-                          onEdit={handleEdit}
-                          onDelete={handleDelete}
-                          onConstraintsEdit={handleConstraintsEdit}
-                          onConstraintsSave={handleConstraintsSave}
-                          onValidate={dataTypeNameValidation}
-                          onOutsideClick={handleOutsideClick}
-                        />
-                      ))}
-                    </section>
-                  )}
-                  {sorting && (
-                    <section className="data-dictionary__types-list">
-                      <DataTypesSort dataTypes={dataTypes} onReorder={onReorder} />
-                    </section>
-                  )}
-                </section>
-              )}
-              {viewSection === "batch-add" && (
-                <>
-                  <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
-                </>
-              )}
-              {viewSection === "constraints" && (
-                <ConstraintsEdit
-                  dataType={constrainsEdit!}
-                  onSave={handleConstraintsSave}
-                  onClose={exitFromConstraints}
-                />
-              )}
-            </>
-          </CSSTransition>
-        </SwitchTransition>
-      </StatusContext.Provider>
+      <SwitchTransition mode={"out-in"}>
+        <CSSTransition
+          timeout={{
+            enter: 230,
+            exit: 100
+          }}
+          classNames={getTransition(viewSection)}
+          key={viewSection}
+        >
+          <>
+            {viewSection === "main" && (
+              <section style={{ height: "100%" }}>
+                <Flex style={{ padding: "1em 0" }}>
+                  <FlexItem>
+                    <Button
+                      variant="primary"
+                      onClick={addDataType}
+                      icon={<PlusIcon />}
+                      iconPosition="left"
+                      isDisabled={editing !== false || sorting}
+                    >
+                      Add Data Type
+                    </Button>
+                  </FlexItem>
+                  <FlexItem>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setViewSection("batch-add")}
+                      icon={<BoltIcon />}
+                      iconPosition="left"
+                      isDisabled={editing !== false || sorting}
+                    >
+                      Add Multiple Data Types
+                    </Button>
+                  </FlexItem>
+                  <FlexItem align={{ default: "alignRight" }}>
+                    <Button
+                      variant={sorting ? "primary" : "secondary"}
+                      onClick={toggleSorting}
+                      icon={<SortIcon />}
+                      iconPosition="left"
+                      isDisabled={editing !== false}
+                    >
+                      {sorting ? "End Ordering" : "Order"}
+                    </Button>
+                  </FlexItem>
+                </Flex>
+                {!sorting && (
+                  <section className="data-dictionary__types-list">
+                    {dataTypes.length === 0 && (
+                      <Bullseye style={{ height: "40vh" }}>
+                        <EmptyDataDictionary />
+                      </Bullseye>
+                    )}
+                    {dataTypes.map((item, index) => (
+                      <DataTypeItem
+                        dataType={item}
+                        editingIndex={editing}
+                        index={index}
+                        key={index}
+                        onSave={handleSave}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onConstraintsEdit={handleConstraintsEdit}
+                        onConstraintsSave={handleConstraintsSave}
+                        onValidate={dataTypeNameValidation}
+                        onOutsideClick={handleOutsideClick}
+                      />
+                    ))}
+                  </section>
+                )}
+                {sorting && (
+                  <section className="data-dictionary__types-list">
+                    <DataTypesSort dataTypes={dataTypes} onReorder={onReorder} />
+                  </section>
+                )}
+              </section>
+            )}
+            {viewSection === "batch-add" && (
+              <>
+                <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
+              </>
+            )}
+            {viewSection === "constraints" && (
+              <ConstraintsEdit
+                dataType={constrainsEdit!}
+                onSave={handleConstraintsSave}
+                onClose={exitFromConstraints}
+              />
+            )}
+          </>
+        </CSSTransition>
+      </SwitchTransition>
     </div>
   );
 };
-
-export const StatusContext = React.createContext<number | boolean>(false);
 
 export default DataDictionaryContainer;
 

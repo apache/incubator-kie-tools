@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -23,10 +23,7 @@ const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
   const dispatch = useDispatch();
   const pmmlDataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
-  const [dictionary, setDictionary] = useState<DDDataField[]>(convertPMML2DD(pmmlDataDictionary));
-  const handleDataDictionaryUpdate = (updatedDictionary: DDDataField[]) => {
-    setDictionary(updatedDictionary);
-  };
+  const dictionary = useMemo(() => convertPMML2DD(pmmlDataDictionary), [pmmlDataDictionary]);
   const { setActiveOperation } = React.useContext(OperationContext);
 
   const handleDataDictionaryToggle = () => {
@@ -86,10 +83,6 @@ const DataDictionaryHandler = () => {
     setActiveOperation(status ? Operation.UPDATE_DATA_DICTIONARY : Operation.NONE);
   };
 
-  useEffect(() => {
-    setDictionary(convertPMML2DD(pmmlDataDictionary));
-  }, [pmmlDataDictionary]);
-
   const header = (
     <Split hasGutter={true}>
       <SplitItem isFilled={true}>
@@ -121,7 +114,6 @@ const DataDictionaryHandler = () => {
       >
         <DataDictionaryContainer
           dataDictionary={dictionary}
-          onUpdate={handleDataDictionaryUpdate}
           onAdd={addField}
           onEdit={updateField}
           onDelete={deleteField}

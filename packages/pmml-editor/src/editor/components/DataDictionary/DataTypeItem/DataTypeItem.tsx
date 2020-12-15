@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import {
   Button,
@@ -18,7 +18,7 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
-import { DDDataField, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
@@ -26,6 +26,7 @@ import { Validated } from "../../../types";
 interface DataTypeItemProps {
   dataType: DDDataField;
   index: number;
+  editingIndex: number | boolean;
   onSave: (dataType: DDDataField, index: number | null) => void;
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;
@@ -39,6 +40,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   const {
     dataType,
     index,
+    editingIndex,
     onSave,
     onEdit,
     onDelete,
@@ -47,7 +49,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onValidate,
     onOutsideClick
   } = props;
-  const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<DDDataField["type"]>(dataType.type);
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
@@ -65,7 +66,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       console.log("click outside");
       onOutsideClick();
     },
-    { eventTypes: ["click"], disabled: editing !== index }
+    { eventTypes: ["click"], disabled: editingIndex !== index }
   );
 
   const handleNameChange = (value: string) => {
@@ -131,14 +132,14 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   useEffect(() => {
-    if (editing === index) {
+    if (editingIndex === index) {
       const input = document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`);
       input?.focus();
       if (name.startsWith("New Data Type")) {
         input?.select();
       }
     }
-  }, [editing]);
+  }, [editingIndex]);
 
   useEffect(() => {
     setName(dataType.name);
@@ -146,8 +147,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   }, [dataType]);
 
   return (
-    <article className={`editable-item ${editing === index ? "editable-item--editing" : ""} data-type-item-n${index}`}>
-      {editing === index && (
+    <article
+      className={`editable-item ${editingIndex === index ? "editable-item--editing" : ""} data-type-item-n${index}`}
+    >
+      {editingIndex === index && (
         <section
           className={"editable-item__inner"}
           ref={ref}
@@ -206,6 +209,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                   <SplitItem>
                     {dataType.constraints !== undefined && (
                       <ConstraintsLabel
+                        editingIndex={editingIndex}
                         constraints={dataType.constraints}
                         onConstraintsDelete={handleConstraintsDelete}
                       />
@@ -236,7 +240,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
           </Form>
         </section>
       )}
-      {editing !== index && (
+      {editingIndex !== index && (
         <section
           className={"editable-item__inner"}
           tabIndex={0}
