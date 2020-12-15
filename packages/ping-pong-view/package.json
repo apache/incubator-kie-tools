@@ -1,6 +1,6 @@
 {
   "name": "ping-pong-view",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "license": "Apache-2.0",
   "private": false,
   "files": [
@@ -16,7 +16,7 @@
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "dependencies": {
-    "@kogito-tooling/envelope": "0.8.0",
-    "@kogito-tooling/envelope-bus": "0.8.0"
+    "@kogito-tooling/envelope": "0.8.1",
+    "@kogito-tooling/envelope-bus": "0.8.1"
   }
 }

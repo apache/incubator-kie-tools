@@ -59,7 +59,7 @@ module.exports = {
       patterns: [
         { from: "./envelope", to: "./envelope" },
         { from: "./static", to: "." },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
+        { from: "../../node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn", to: "./gwt-editors/dmn" },
       ],
     }),
   ],

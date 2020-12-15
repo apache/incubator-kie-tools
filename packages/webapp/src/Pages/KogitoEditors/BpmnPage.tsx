@@ -19,7 +19,8 @@ import * as React from "react";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { useMemo, useState } from "react";
 import { Page } from "@patternfly/react-core";
-import { File, EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { File } from "@kogito-tooling/editor/dist/channel";
 import { Sidebar } from "./Sidebar";
 
 /**
@@ -53,15 +54,15 @@ export function BpmnPage() {
         [
           "bpmn",
           {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.0/bpmn",
-            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.0/envelope",
+            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.1/bpmn",
+            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.1/envelope",
           },
         ],
         [
           "bpmn2",
           {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.0/bpmn2",
-            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.0/envelope",
+            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.1/bpmn2",
+            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.1/envelope",
           },
         ],
       ]),

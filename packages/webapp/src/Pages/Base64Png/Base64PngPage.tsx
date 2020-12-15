@@ -19,7 +19,8 @@ import * as React from "react";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { useMemo, useState } from "react";
 import { Page } from "@patternfly/react-core";
-import { File, EmbeddedEditor } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditor } from "@kogito-tooling/editor/dist/embedded";
+import { File } from "@kogito-tooling/editor/dist/channel";
 import { Base64PngGallery } from "./Base64PngGallery";
 
 /**

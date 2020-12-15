@@ -19,7 +19,8 @@ import * as React from "react";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { useMemo, useState } from "react";
 import { Page } from "@patternfly/react-core";
-import { File, EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { File } from "@kogito-tooling/editor/dist/channel";
 import { Sidebar } from "./Sidebar";
 
 export function DmnPage() {

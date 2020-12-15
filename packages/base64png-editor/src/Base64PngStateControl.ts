@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { StateControl } from "@kogito-tooling/editor/dist/embedded";
+import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 
 /**

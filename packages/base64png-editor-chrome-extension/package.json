@@ -1,6 +1,6 @@
 {
   "name": "base64png-editor-chrome-extension",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -22,11 +22,11 @@
     ]
   },
   "dependencies": {
-    "@kogito-tooling/chrome-extension": "0.8.0",
-    "@kogito-tooling/editor": "0.8.0",
-    "@kogito-tooling/envelope-bus": "0.8.0",
-    "@kogito-tooling/patternfly-base": "0.8.0",
-    "base64png-editor": "0.8.0"
+    "@kogito-tooling/chrome-extension": "0.8.1",
+    "@kogito-tooling/editor": "0.8.1",
+    "@kogito-tooling/envelope-bus": "0.8.1",
+    "@kogito-tooling/patternfly-base": "0.8.1",
+    "base64png-editor": "0.8.1"
   },
   "resolutions": {
     "@patternfly/react-styles": "4.4.2"

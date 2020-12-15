@@ -18,7 +18,8 @@ import * as React from "react";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { useCallback, useRef, useState } from "react";
 import { Nav, NavItem, NavList, TextInput } from "@patternfly/react-core";
-import { File, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/editor/dist/embedded";
+import { File } from "@kogito-tooling/editor/dist/channel";
 
 function extractFileExtension(fileName: string) {
   return fileName.match(/[\.]/)
