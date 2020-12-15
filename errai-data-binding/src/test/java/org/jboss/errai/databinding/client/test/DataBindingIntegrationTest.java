@@ -68,8 +68,6 @@ import org.jboss.errai.databinding.client.scan.TestModelWithoutBindableC;
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
-import org.jboss.errai.marshalling.client.Marshalling;
-import org.jboss.errai.marshalling.client.api.MarshallerFramework;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +101,6 @@ public class DataBindingIntegrationTest extends AbstractErraiIOCTest {
     final Logger logger = LoggerFactory.getLogger(getClass());
     GWT.setUncaughtExceptionHandler(e -> logger.error("Uncaught error.", e));
     Convert.deregisterDefaultConverters();
-    MarshallerFramework.initializeDefaultSessionProvider();
   }
 
   @Test
@@ -677,37 +674,6 @@ public class DataBindingIntegrationTest extends AbstractErraiIOCTest {
     model.getChild().activate();
     assertTrue("Model not properly updated", model.getChild().isActive());
     assertEquals("Widget not properly updated", "true", textBox.getText());
-  }
-
-  @Test
-  public void testBindableProxyMarshalling() {
-    final TestModel model = DataBinder.forType(TestModel.class).bind(new TextBox(), "value").getModel();
-    model.setName("test");
-
-    final String marshalledModel = Marshalling.toJSON(model);
-    assertEquals(model, Marshalling.fromJSON(marshalledModel, TestModel.class));
-  }
-
-  @Test
-  public void testBindableProxyListMarshalling() {
-    final TestModel model = DataBinder.forType(TestModel.class).bind(new TextBox(), "value").getModel();
-    model.setName("test");
-
-    final List<TestModel> modelList = new ArrayList<>();
-    modelList.add(model);
-    final String marshalledModelList = Marshalling.toJSON(modelList);
-    assertEquals(modelList, Marshalling.fromJSON(marshalledModelList, List.class));
-  }
-
-  @Test
-  public void testBindableProxyMapMarshalling() {
-    final TestModel model = DataBinder.forType(TestModel.class).bind(new TextBox(), "value").getModel();
-    model.setName("test");
-
-    final Map<TestModel, TestModel> modelMap = new HashMap<>();
-    modelMap.put(model, model);
-    final String marshalledModelMap = Marshalling.toJSON(modelMap);
-    assertEquals(modelMap, Marshalling.fromJSON(marshalledModelMap, Map.class));
   }
 
   @Test

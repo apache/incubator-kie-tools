@@ -38,7 +38,6 @@ import org.jboss.errai.databinding.client.api.StateSync;
 import org.jboss.errai.databinding.client.components.ListComponent;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
-import org.jboss.errai.marshalling.client.api.MarshallerFramework;
 
 /**
  * Tests binding to lists with the {@link DataBinder}.
@@ -56,7 +55,6 @@ public class ListBindingIntegrationTest extends AbstractErraiIOCTest {
   protected void gwtSetUp() throws Exception {
     super.gwtSetUp();
     Convert.deregisterDefaultConverters();
-    MarshallerFramework.initializeDefaultSessionProvider();
   }
 
   public void testListHandlerBindingToListProperty() throws Exception {
