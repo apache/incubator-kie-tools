@@ -11,8 +11,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/channel-common-api": "0.8.1",
-    "@kogito-tooling/envelope-bus": "0.8.1"
+    "@kogito-tooling/channel-common-api": "^0.8.1",
+    "@kogito-tooling/envelope-bus": "^0.8.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
