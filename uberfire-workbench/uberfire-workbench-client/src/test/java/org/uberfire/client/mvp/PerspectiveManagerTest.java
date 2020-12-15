@@ -31,7 +31,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
@@ -105,7 +105,7 @@ public class PerspectiveManagerTest {
         when(oz.getIdentifier()).thenReturn("oz_perspective");
         when(oz.isTransient()).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
+            //invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
             return null;
         }).when(oz).getMenus(any());
 

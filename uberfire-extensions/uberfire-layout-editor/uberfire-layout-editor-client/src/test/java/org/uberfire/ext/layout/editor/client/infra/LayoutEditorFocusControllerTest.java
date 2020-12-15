@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.HTMLElement;

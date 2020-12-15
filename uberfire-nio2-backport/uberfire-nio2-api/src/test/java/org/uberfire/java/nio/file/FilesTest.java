@@ -1140,18 +1140,6 @@ public class FilesTest extends AbstractBaseTest {
                 .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    //TODO
-/*    @Test
-    public void isExecutable() {
-        Assume.assumeFalse(SimpleFileSystemProvider.OSType.currentOS().equals(SimpleFileSystemProvider.OSType.WINDOWS));
-
-        final Path path = Files.createTempFile("foo", "bar");
-
-        assertThat(Files.isExecutable(path)).isFalse();
-        assertThat(Files.isExecutable(newTempDir())).isTrue();
-        assertThat(Files.isExecutable(Paths.get("/some/file"))).isFalse();
-    }*/
-
     @Test
     public void isExecutableNull() {
         assertThatThrownBy(() -> Files.isExecutable(null))

@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -80,7 +80,7 @@ public class WorkbenchMenuBarStandalonePresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
+            ((Consumer)invocationOnMock.getArgument(0)).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);

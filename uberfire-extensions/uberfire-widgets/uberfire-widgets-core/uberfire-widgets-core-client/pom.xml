@@ -93,6 +93,12 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Errai Core -->

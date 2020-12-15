@@ -100,12 +100,15 @@
     <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
     <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
 
+    <version.org.kie.lienzo>${version.org.kie}</version.org.kie.lienzo>
+
     <!-- database testing -->
     <version.org.mariadb.jdbc>1.3.6</version.org.mariadb.jdbc>
     <version.org.mysql-driver>5.1.6</version.org.mysql-driver>
     <version.org.postgres-driver>42.2.14</version.org.postgres-driver>
 
     <version.org.arquillian.cube>1.15.3</version.org.arquillian.cube>
+    <version.mockito.core>2.2.8</version.mockito.core>
 
     <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
 
@@ -1187,25 +1190,20 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>lienzo-core</artifactId>
-        <version>7.47.0-SNAPSHOT</version>
+        <version>${version.org.kie.lienzo}</version>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>lienzo-core</artifactId>
-        <version>7.47.0-SNAPSHOT</version>
+        <version>${version.org.kie.lienzo}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>lienzo-tests</artifactId>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>lienzo-tests</artifactId>
-        <classifier>sources</classifier>
+        <version>${version.org.kie.lienzo}</version>
       </dependency>
 
       <dependency>
@@ -1332,6 +1330,11 @@
       <artifactId>assertj-core</artifactId>
       <version>${version.org.assertj}</version>
     </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.mockito.core}</version>
+      </dependency>
 
     </dependencies>
   </dependencyManagement>
@@ -1340,11 +1343,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

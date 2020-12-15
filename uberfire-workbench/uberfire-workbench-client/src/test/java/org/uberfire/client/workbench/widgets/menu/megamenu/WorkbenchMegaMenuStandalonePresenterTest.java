@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -40,7 +40,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -136,7 +135,7 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
+            ((Consumer)invocationOnMock.getArgument(0)).accept(null);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);

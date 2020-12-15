@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -37,7 +37,6 @@ import org.uberfire.client.workbench.widgets.menu.events.PerspectiveVisibiltiyCh
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.security.Resource;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -157,7 +156,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
+            ((Consumer)invocationOnMock.getArgument(0)).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
@@ -185,7 +184,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
+            ((Consumer)invocationOnMock.getArgument(0)).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
@@ -258,7 +257,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
+            ((Consumer)invocationOnMock.getArgument(0)).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
