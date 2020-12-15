@@ -1,3 +1,13 @@
+# 0.8.1 (alpha)
+
+## Fixed issues
+VS Code
+*   [[KOGITO-2629](https://issues.redhat.com/browse/KOGITO-2629)] - [VSCode] Undo/redo command don't fire for webviews if used from command palette
+*   [[KOGITO-3808](https://issues.redhat.com/browse/KOGITO-3808)] - Fix Keyboard Shortcuts modal title on VS Code dark theme
+*   [[KOGITO-3884](https://issues.redhat.com/browse/KOGITO-3884)] - Save SVG file using the kieserver naming convention
+*   [[KOGITO-3901](https://issues.redhat.com/browse/KOGITO-3901)] - Cannot Include DMNs on VS Code- Kogito Bundle on Windows
+*   [[KOGITO-3348](https://issues.redhat.com/browse/KOGITO-3348)] - Fix Open SVG popup to not open SVG when clicking the X button
+
 # 0.8.0 (alpha)
 
 No changes.

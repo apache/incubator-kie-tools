@@ -3,7 +3,7 @@
   "publisher": "redhat",
   "displayName": "DMN Editor",
   "description": "Edit DMN and Test Scenario files",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -17,11 +17,11 @@
     "watch": "yarn build-ext"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.7.1",
-    "@kogito-tooling/kie-bc-editors": "0.7.1",
-    "@kogito-tooling/patternfly-base": "0.7.1",
-    "@kogito-tooling/vscode-extension": "0.7.1",
-    "kie-bc-editors-unpacked": "0.8.0"
+    "@kogito-tooling/editor": "0.8.1",
+    "@kogito-tooling/kie-bc-editors": "0.8.1",
+    "@kogito-tooling/patternfly-base": "0.8.1",
+    "@kogito-tooling/vscode-extension": "0.8.1",
+    "kie-bc-editors-unpacked": "0.8.1"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
