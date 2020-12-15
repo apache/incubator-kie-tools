@@ -65,6 +65,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectControllerTest {
 
+    private static final String SHOW_PROJECT_TOOLBAR = "projecttoolbar.show";
+
+    private static final String SHOW_METRICS_TAB = "metricstab.show";
+
+    private static final String SHOW_CHANGEREQUEST_TAB = "changerequesttab.show";
+
     @Mock
     private AuthorizationManager authorizationManager;
 
@@ -87,6 +93,27 @@ public class ProjectControllerTest {
                                                       user,
                                                       projectPermissionsServiceCaller,
                                                       promises));
+    }
+
+    @Test
+    public void userCanViewMetricsTabTest() {
+        when(authorizationManager.authorize(SHOW_METRICS_TAB,
+                                            user)).thenReturn(true);
+        assertTrue(projectController.canViewMetricsTab());
+    }
+
+    @Test
+    public void userCanViewMChangeRequestTabTest() {
+        when(authorizationManager.authorize(SHOW_CHANGEREQUEST_TAB,
+                                            user)).thenReturn(true);
+        assertTrue(projectController.canViewChangeRequestTab());
+    }
+
+    @Test
+    public void userCanViewProjectToolbarTest() {
+        when(authorizationManager.authorize(SHOW_PROJECT_TOOLBAR,
+                                            user)).thenReturn(true);
+        assertTrue(projectController.canViewProjectToolbar());
     }
 
     @Test

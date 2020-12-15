@@ -53,6 +53,12 @@ public class ProjectController {
     private Caller<ProjectPermissionsService> projectPermissionsService;
     private Promises promises;
 
+    private static final String SHOW_PROJECT_TOOLBAR = "projecttoolbar.show";
+
+    private static final String SHOW_METRICS_TAB = "metricstab.show";
+
+    private static final String SHOW_CHANGEREQUEST_TAB = "changerequesttab.show";
+
     @Inject
     public ProjectController(final AuthorizationManager authorizationManager,
                              final User user,
@@ -62,6 +68,21 @@ public class ProjectController {
         this.user = user;
         this.projectPermissionsService = projectPermissionsService;
         this.promises = promises;
+    }
+
+    public boolean canViewProjectToolbar() {
+        return authorizationManager.authorize(SHOW_PROJECT_TOOLBAR,
+                                              user);
+    }
+
+    public boolean canViewMetricsTab() {
+        return authorizationManager.authorize(SHOW_METRICS_TAB,
+                                              user);
+    }
+
+    public boolean canViewChangeRequestTab() {
+        return authorizationManager.authorize(SHOW_CHANGEREQUEST_TAB,
+                                              user);
     }
 
     public boolean canCreateProjects(final OrganizationalUnit organizationalUnit) {

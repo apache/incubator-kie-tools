@@ -1,0 +1,26 @@
+{
+  "name": "Logo",
+  "noData": true,
+
+  "parameters": [
+    {
+      "name": "src",
+      "type": "text",
+      "defaultValue": "./images/dashbuilder-logo.png",
+      "label": "Logo URL",
+      "mandatory": true
+    },
+    {
+      "name": "width",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Width"
+    },
+    {
+      "name": "height",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Height"
+    }
+  ]
+}
