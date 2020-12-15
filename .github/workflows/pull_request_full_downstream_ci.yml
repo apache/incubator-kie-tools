@@ -25,7 +25,7 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Fetch user membership to kiegroup
-        if: github.repository == 'kiegroup/kogito-tooling' && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, 'Build:'))
+        if: github.repository == 'kiegroup/kogito-tooling'
         uses: octokit/request-action@v2.x
         id: checkUserMembership
         with:
@@ -35,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
 
       - name: Check user membership to kiegroup
-        if: github.repository == 'kiegroup/kogito-tooling' && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, 'Build:'))
+        if: github.repository == 'kiegroup/kogito-tooling'
         run: |
           [ "204" == "${{ steps.checkUserMembership.outputs.status }}" ]
 
@@ -289,7 +289,7 @@ jobs:
           path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
 
       - name: 'Checkout kogito-online-ci'
-        if: github.repository == 'kiegroup/kogito-tooling' && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, 'Build:'))
+        if: github.repository == 'kiegroup/kogito-tooling'
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
@@ -299,7 +299,7 @@ jobs:
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online-ci'.
       - name: 'Update kogito-online-ci resources'
-        if: github.repository == 'kiegroup/kogito-tooling' && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, 'Build:'))
+        if: github.repository == 'kiegroup/kogito-tooling'
         run: |
           cd ${{ github.workspace }}/kogito-online-ci
           rm -rf ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}
