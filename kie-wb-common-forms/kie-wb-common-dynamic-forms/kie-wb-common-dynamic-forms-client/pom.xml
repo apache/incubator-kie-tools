@@ -169,12 +169,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
-      <artifactId>kie-wb-common-dynamic-forms-api</artifactId>
-      <scope>test</scope>
-      <type>test-jar</type>
-    </dependency>
   </dependencies>
 
 </project>
