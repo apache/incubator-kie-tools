@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    if: github.event_name != 'issue_comment' || startsWith(github.event.comment.body, 'Build:')
     runs-on: ${{ matrix.os }}
     timeout-minutes: 90
     strategy:
