@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Button, Flex, FlexItem, Label } from "@patternfly/react-core";
 import { GripVerticalIcon } from "@patternfly/react-icons";
@@ -9,16 +9,17 @@ import "./DataTypesSort.scss";
 
 interface DataTypesSortProps {
   dataTypes: DDDataField[];
-  onSort: (dataTypes: DDDataField[]) => void;
+  onReorder: (oldIndex: number, newIndex: number) => void;
 }
 
-const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
+const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
   const [state, setState] = useState<DDDataField[]>(dataTypes);
 
   const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+    // still updating the internal state before calling the callback to avoid flickering
     const newOrder = reorder(state, oldIndex, newIndex);
     setState(newOrder);
-    onSort(newOrder);
+    onReorder(oldIndex, newIndex);
   };
 
   const getHelperClass = () => {
@@ -29,6 +30,10 @@ const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
       return "data-type-item__sortable--md-size";
     }
   };
+
+  useEffect(() => {
+    setState(dataTypes);
+  }, [dataTypes]);
 
   return <SortableList items={state} onSortEnd={onSortEnd} lockAxis="y" helperClass={getHelperClass()} />;
 };

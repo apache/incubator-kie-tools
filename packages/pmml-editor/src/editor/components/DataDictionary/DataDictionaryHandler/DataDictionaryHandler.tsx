@@ -12,11 +12,10 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
-import { isEqual } from "lodash";
 import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
-import { convertDD2PMML, convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
+import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
 import { OperationContext } from "../../../PMMLEditor";
 import { Operation } from "../../EditorScorecard";
 
@@ -31,18 +30,6 @@ const DataDictionaryHandler = () => {
   const { setActiveOperation } = React.useContext(OperationContext);
 
   const handleDataDictionaryToggle = () => {
-    if (isDataDictionaryOpen) {
-      const convertedDataDictionary = convertDD2PMML(dictionary);
-      // temporary: checking if they are equals to prevent dispatching actions with no data changes
-      if (!isEqual(pmmlDataDictionary?.DataField, convertedDataDictionary)) {
-        dispatch({
-          type: Actions.SetDataFields,
-          payload: {
-            dataFields: convertedDataDictionary
-          }
-        });
-      }
-    }
     setActiveOperation(Operation.NONE);
     setIsDataDictionaryOpen(!isDataDictionaryOpen);
   };
@@ -71,6 +58,16 @@ const DataDictionaryHandler = () => {
       type: Actions.DeleteDataDictionaryField,
       payload: {
         index
+      }
+    });
+  };
+
+  const reorderFields = (oldIndex: number, newIndex: number) => {
+    dispatch({
+      type: Actions.ReorderDataDictionaryFields,
+      payload: {
+        oldIndex,
+        newIndex
       }
     });
   };
@@ -128,6 +125,7 @@ const DataDictionaryHandler = () => {
           onAdd={addField}
           onEdit={updateField}
           onDelete={deleteField}
+          onReorder={reorderFields}
           onBatchAdd={addBatchFields}
           onEditingPhaseChange={handleEditingPhase}
         />

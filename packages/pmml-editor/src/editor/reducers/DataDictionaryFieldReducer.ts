@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { DataField, DataType, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface DataDictionaryFieldPayload {
@@ -39,7 +39,6 @@ export const DataDictionaryFieldReducer: HistoryAwareReducer<DataField[], DataDi
           const dataDictionaryIndex = action.payload.dataDictionaryIndex;
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
             draft[dataDictionaryIndex] = {
-              ...draft[dataDictionaryIndex],
               ...action.payload.dataField
             };
           }

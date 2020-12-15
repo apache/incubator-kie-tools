@@ -30,7 +30,7 @@ interface DataTypeItemProps {
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;
   onConstraintsEdit: (dataType: DDDataField) => void;
-  onConstraintsDelete: () => void;
+  onConstraintsSave: (dataType: DDDataField) => void;
   onValidate: (dataTypeName: string) => boolean;
   onOutsideClick: () => void;
 }
@@ -43,7 +43,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onEdit,
     onDelete,
     onConstraintsEdit,
-    onConstraintsDelete,
+    onConstraintsSave,
     onValidate,
     onOutsideClick
   } = props;
@@ -124,6 +124,12 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onConstraintsEdit({ ...dataType, name, type: typeSelection });
   };
 
+  const handleConstraintsDelete = () => {
+    const updatedDataType = { ...dataType };
+    delete updatedDataType.constraints;
+    onConstraintsSave(updatedDataType);
+  };
+
   useEffect(() => {
     if (editing === index) {
       const input = document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`);
@@ -199,7 +205,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                 <Split hasGutter={true}>
                   <SplitItem>
                     {dataType.constraints !== undefined && (
-                      <ConstraintsLabel constraints={dataType.constraints} onConstraintsDelete={onConstraintsDelete} />
+                      <ConstraintsLabel
+                        constraints={dataType.constraints}
+                        onConstraintsDelete={handleConstraintsDelete}
+                      />
                     )}
                     {(name.trim().length === 0 || typeSelection === "boolean") && (
                       <Label icon={<ArrowAltCircleRightIcon />}>

@@ -29,6 +29,10 @@ interface DataDictionaryPayload {
   [Actions.AddBatchDataDictionaryFields]: {
     readonly dataDictionaryFields: FieldName[];
   };
+  [Actions.ReorderDataDictionaryFields]: {
+    readonly oldIndex: number;
+    readonly newIndex: number;
+  };
   [Actions.SetDataFields]: {
     readonly dataFields: DataField[];
   };
@@ -71,6 +75,12 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDict
           if (index >= 0 && index < draft.DataField.length) {
             draft.DataField.splice(index, 1);
           }
+        });
+
+      case Actions.ReorderDataDictionaryFields:
+        return service.mutate(state, "DataDictionary", draft => {
+          const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
+          draft.DataField.splice(action.payload.newIndex, 0, removed);
         });
 
       case Actions.SetDataFields:

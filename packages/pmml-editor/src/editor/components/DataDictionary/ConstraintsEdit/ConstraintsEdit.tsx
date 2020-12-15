@@ -21,25 +21,19 @@ import {
 } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
-import {
-  Constraints,
-  DDDataField,
-  EnumConstraint,
-  RangeConstraint
-} from "../DataDictionaryContainer/DataDictionaryContainer";
+import { DDDataField, EnumConstraint, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { Validated } from "../../../types";
 import "./ConstraintsEdit.scss";
 import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 
 interface ConstraintsEditProps {
   dataType: DDDataField;
-  onChange: (payload: DDDataField) => void;
-  onDelete: () => void;
+  onSave: (payload: DDDataField) => void;
   onClose: () => void;
 }
 
 const ConstraintsEdit = (props: ConstraintsEditProps) => {
-  const { dataType, onChange, onDelete, onClose } = props;
+  const { dataType, onSave, onClose } = props;
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeIsOpen, setTypeIsOpen] = useState(false);
   const constraintsTypes = [{ value: "", isPlaceholder: true }, { value: "Range" }, { value: "Enumeration" }];
@@ -69,7 +63,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       setConstraintType(value);
       setValidation({ form: "default", fields: { start: "default", end: "default", enums: "default" } });
       if (value === "Range") {
-        onChange({
+        onSave({
           ...dataType,
           constraints: {
             type: "Range",
@@ -95,14 +89,13 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleRangeChange = (rangeValue: RangeConstraint) => {
-    onChange({
+    onSave({
       ...dataType,
       constraints: {
         type: "Range",
         value: rangeValue
       }
     });
-    // setRange(rangeValue);
   };
 
   const handleEnumsChange = (value: string, index: number) => {
@@ -151,26 +144,14 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (validateConstraints() === "success") {
-      // switch (constraintType) {
-      //   case "":
-      //     onDelete();
-      //     break;
-      //   case "Range":
-      //     const rangeData = { value: { ...range }, type: "Range" };
-      //     // onAdd(rangeData as Constraints);
-      //     break;
-      //   case "Enumeration":
-      //     // onAdd({ type: "Enumeration", value: enums.filter(item => item.value.trim().length > 0) } as Constraints);
-      //     break;
-      // }
       onClose();
     }
   };
 
   const clearConstraints = () => {
-    setRange(undefined);
-    setConstraintType("");
-    setEnums([]);
+    const updatedDataType = { ...dataType };
+    delete updatedDataType.constraints;
+    onSave(updatedDataType);
     setValidation({ form: "default", fields: {} });
   };
 

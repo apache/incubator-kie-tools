@@ -17,12 +17,13 @@ interface DataDictionaryContainerProps {
   onAdd: (name: string, type: DDDataField["type"]) => void;
   onEdit: (index: number, field: DDDataField) => void;
   onDelete: (index: number) => void;
+  onReorder: (oldIndex: number, newIndex: number) => void;
   onBatchAdd: (fields: string[]) => void;
   onEditingPhaseChange: (status: boolean) => void;
 }
 
 const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
-  const { dataDictionary, onUpdate, onAdd, onEdit, onDelete, onBatchAdd, onEditingPhaseChange } = props;
+  const { dataDictionary, onUpdate, onAdd, onEdit, onDelete, onReorder, onBatchAdd, onEditingPhaseChange } = props;
   const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
@@ -56,15 +57,11 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   }, [dataDictionary]);
 
   const handleOutsideClick = () => {
-    //handleEmptyFields();
     setEditing(false);
     onEditingPhaseChange(false);
   };
 
   const addDataType = () => {
-    // const newTypes = dataTypes;
-    // newTypes.push({ name: "", type: "string" });
-    // setDataTypes(newTypes);
     onAdd(
       findIncrementalName(
         "New Data Type",
@@ -77,31 +74,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     onEditingPhaseChange(true);
   };
 
-  const handleEmptyFields = () => {
-    if (dataTypes[dataTypes.length - 1].name.trim().length === 0) {
-      const newDataTypes = dataTypes;
-      newDataTypes[newDataTypes.length - 1].name = findIncrementalName(
-        "New Data Type",
-        dataTypes.map(dt => dt.name),
-        1
-      );
-      setDataTypes(newDataTypes);
-    }
-  };
-
   const saveDataType = (dataType: DDDataField, index: number) => {
-    // if (!dataTypeNameValidation(dataType.name)) {
-    //   dataType.name = findIncrementalName(
-    //     dataType.name,
-    //     dataTypes.map(dt => dt.name),
-    //     2
-    //   );
-    // }
     console.log("updating data type");
     onEdit(index, dataType);
-    // const newTypes = dataTypes;
-    // newTypes[index] = { ...newTypes[index], ...dataType };
-    // setDataTypes(newTypes);
   };
 
   const handleSave = (dataType: DDDataField, index: number) => {
@@ -109,32 +84,22 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const handleDelete = (index: number) => {
-    // const newDataTypes = [...dataTypes];
-    // newDataTypes.splice(index, 1);
-    // setDataTypes(newDataTypes);
     onDelete(index);
   };
 
   const handleEdit = (index: number) => {
-    console.log("setting editing to " + index);
-    // handleEmptyFields();
     setEditing(index);
     onEditingPhaseChange(true);
   };
 
   const handleMultipleAdd = (fields: string) => {
     const fieldsNames = fields.split("\n").filter(item => item.trim().length > 0);
-    // const newDataTypes: DDDataField[] = typesNames.map(name => {
-    //   return { name: name.trim(), type: "string" };
-    // });
-    // setDataTypes([...dataTypes, ...newDataTypes]);
     onBatchAdd(fieldsNames);
     setViewSection("main");
   };
 
   const handleConstraintsEdit = (dataType: DDDataField) => {
     if (typeof editing === "number") {
-      //saveDataType(dataType, editing);
       setConstraintsEdit(dataType);
       setViewSection("constraints");
       onEditingPhaseChange(true);
@@ -142,21 +107,8 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const handleConstraintsSave = (payload: DDDataField) => {
-    // setViewSection("main");
     if (typeof editing === "number") {
-      // const newTypes = [...dataTypes];
-      // newTypes[editing] = { ...newTypes[editing], constraints: payload };
-      // setDataTypes(newTypes);
       onEdit(editing, payload);
-    }
-  };
-  const handleConstraintsDelete = () => {
-    setViewSection("main");
-    if (typeof editing === "number") {
-      const newTypes = [...dataTypes];
-      newTypes[editing] = { ...newTypes[editing] };
-      delete newTypes[editing].constraints;
-      setDataTypes(newTypes);
     }
   };
 
@@ -165,13 +117,8 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const toggleSorting = () => {
-    // handleEmptyFields();
     setEditing(false);
     setSorting(!sorting);
-  };
-
-  const handleSorting = (sortedDataTypes: DDDataField[]) => {
-    setDataTypes(sortedDataTypes);
   };
 
   const dataTypeNameValidation = (dataTypeName: string) => {
@@ -259,7 +206,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                           onEdit={handleEdit}
                           onDelete={handleDelete}
                           onConstraintsEdit={handleConstraintsEdit}
-                          onConstraintsDelete={handleConstraintsDelete}
+                          onConstraintsSave={handleConstraintsSave}
                           onValidate={dataTypeNameValidation}
                           onOutsideClick={handleOutsideClick}
                         />
@@ -268,7 +215,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                   )}
                   {sorting && (
                     <section className="data-dictionary__types-list">
-                      <DataTypesSort dataTypes={dataTypes} onSort={handleSorting} />
+                      <DataTypesSort dataTypes={dataTypes} onReorder={onReorder} />
                     </section>
                   )}
                 </section>
@@ -281,8 +228,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
               {viewSection === "constraints" && (
                 <ConstraintsEdit
                   dataType={constrainsEdit!}
-                  onChange={handleConstraintsSave}
-                  onDelete={handleConstraintsDelete}
+                  onSave={handleConstraintsSave}
                   onClose={exitFromConstraints}
                 />
               )}
