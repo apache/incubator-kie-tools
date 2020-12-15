@@ -294,7 +294,7 @@ jobs:
           DISPLAY: ":99.0"
         run: |
           cd ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors
-          yarn build:prod
+          yarn build:fast
           cd ${{ github.workspace }}/kogito-tooling/packages/online-editor && yarn run start &
           cd ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
           sleep 30
