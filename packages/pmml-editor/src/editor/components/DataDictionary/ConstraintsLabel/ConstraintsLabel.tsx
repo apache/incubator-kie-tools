@@ -20,22 +20,19 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
   }
 
   const constraintValue = useMemo(() => {
-    let value;
     switch (constraints.type) {
       case "Range":
-        value = `${constraints.value.start.included ? "[" : "("}${constraints.value.start.value}, ${
-          constraints.value.end.value
-        }${constraints.value.end.included ? "]" : ")"}`;
-        break;
+        return (
+          `${constraints.value.start.included ? "[" : "("}` +
+          `${constraints.value.start.value},` +
+          `${constraints.value.end.value}` +
+          `${constraints.value.end.included ? "]" : ")"}`
+        );
       case "Enumeration":
-        const enums = constraints.value.map(item => `"${item.value}"`);
-        value = `${enums.join(", ")}`;
-        break;
+        return constraints.value.map(item => `"${item.value}"`).join(", ");
       default:
-        value = "";
-        break;
+        return "";
     }
-    return value;
   }, [constraints]);
 
   return (

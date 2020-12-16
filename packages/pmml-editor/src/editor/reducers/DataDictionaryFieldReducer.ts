@@ -38,9 +38,7 @@ export const DataDictionaryFieldReducer: HistoryAwareReducer<DataField[], DataDi
         return service.mutate(state, "DataDictionary.DataField", draft => {
           const dataDictionaryIndex = action.payload.dataDictionaryIndex;
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
-            draft[dataDictionaryIndex] = {
-              ...action.payload.dataField
-            };
+            draft[dataDictionaryIndex] = action.payload.dataField;
           }
         });
     }
