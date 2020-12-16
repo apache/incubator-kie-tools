@@ -47,7 +47,6 @@ export enum Actions {
   DeleteDataDictionaryField = "DATA_DICTIONARY_DELETE_FIELD",
   UpdateDataDictionaryField = "DATA_DICTIONARY_UPDATE_FIELD",
   ReorderDataDictionaryFields = "DATA_DICTIONARY_REORDER_FIELDS",
-  SetDataFields = "SET_DATA_FIELDS",
   SetHeaderDescription = "SET_HEADER_DESCRIPTION",
   AddOutput = "OUTPUT_ADD",
   AddBatchOutputs = "OUTPUT_BATCH_ADD",
