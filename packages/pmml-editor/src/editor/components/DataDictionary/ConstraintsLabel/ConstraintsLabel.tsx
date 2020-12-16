@@ -5,14 +5,14 @@ import { Constraints } from "../DataDictionaryContainer/DataDictionaryContainer"
 import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {
-  editingIndex?: number | boolean;
+  editingIndex?: number;
   constraints: Constraints;
   onConstraintsDelete?: () => void;
 }
 const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: ConstraintsLabelProps) => {
   const labelProps: Partial<LabelProps> = {};
 
-  if (editingIndex !== undefined && editingIndex !== false) {
+  if (editingIndex !== undefined) {
     labelProps.onClose = event => {
       event.nativeEvent.stopImmediatePropagation();
       onConstraintsDelete?.();

@@ -26,7 +26,7 @@ import { Validated } from "../../../types";
 interface DataTypeItemProps {
   dataType: DDDataField;
   index: number;
-  editingIndex: number | boolean;
+  editingIndex: number | undefined;
   onSave: (dataType: DDDataField, index: number | null) => void;
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;

@@ -24,7 +24,7 @@ interface DataDictionaryContainerProps {
 const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   const { dataDictionary, onAdd, onEdit, onDelete, onReorder, onBatchAdd, onEditingPhaseChange } = props;
   const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
-  const [editing, setEditing] = useState<number | boolean>(false);
+  const [editing, setEditing] = useState<number | undefined>();
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
   const [constrainsEdit, setConstraintsEdit] = useState<DDDataField>();
   const [sorting, setSorting] = useState(false);
@@ -32,7 +32,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   useEffect(() => {
     // undoing a recently created data field force to exit the editing mode for that field
     if (editing === dataDictionary.length) {
-      setEditing(false);
+      setEditing(undefined);
       onEditingPhaseChange(false);
     }
     // updating constraintsEdit when dictionary changes
@@ -43,7 +43,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   }, [dataDictionary, editing, viewSection]);
 
   const handleOutsideClick = () => {
-    setEditing(false);
+    setEditing(undefined);
     onEditingPhaseChange(false);
   };
 
@@ -85,7 +85,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const handleConstraintsEdit = (dataType: DDDataField) => {
-    if (typeof editing === "number") {
+    if (editing !== undefined) {
       setConstraintsEdit(dataType);
       setViewSection("constraints");
       onEditingPhaseChange(true);
@@ -93,7 +93,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const handleConstraintsSave = (payload: DDDataField) => {
-    if (typeof editing === "number") {
+    if (editing !== undefined) {
       onEdit(editing, payload);
     }
   };
@@ -103,7 +103,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const toggleSorting = () => {
-    setEditing(false);
+    setEditing(undefined);
     setSorting(!sorting);
   };
 
@@ -147,7 +147,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                       onClick={addDataType}
                       icon={<PlusIcon />}
                       iconPosition="left"
-                      isDisabled={editing !== false || sorting}
+                      isDisabled={editing !== undefined || sorting}
                     >
                       Add Data Type
                     </Button>
@@ -158,7 +158,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                       onClick={() => setViewSection("batch-add")}
                       icon={<BoltIcon />}
                       iconPosition="left"
-                      isDisabled={editing !== false || sorting}
+                      isDisabled={editing !== undefined || sorting}
                     >
                       Add Multiple Data Types
                     </Button>
@@ -169,7 +169,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                       onClick={toggleSorting}
                       icon={<SortIcon />}
                       iconPosition="left"
-                      isDisabled={editing !== false}
+                      isDisabled={editing !== undefined}
                     >
                       {sorting ? "End Ordering" : "Order"}
                     </Button>
