@@ -29,7 +29,7 @@ exports[`LandingPage render::No Models 1`] = `
         <button
           aria-disabled="false"
           class="pf-c-button pf-m-secondary"
-          data-ouia-component-id="3"
+          data-ouia-component-id="0"
           data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
           type="button"
@@ -203,7 +203,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
         <button
           aria-disabled="false"
           class="pf-c-button pf-m-secondary"
-          data-ouia-component-id="7"
+          data-ouia-component-id="3"
           data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
           type="button"
@@ -248,7 +248,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
                     aria-disabled="false"
                     aria-label="filter button for filter input"
                     class="pf-c-button pf-m-control"
-                    data-ouia-component-id="5"
+                    data-ouia-component-id="4"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     data-testid="landing-page-toolbar__submit"
@@ -347,7 +347,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
               <button
                 aria-disabled="false"
                 class="pf-c-button pf-m-primary"
-                data-ouia-component-id="6"
+                data-ouia-component-id="5"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 data-testid="model-card__delete"
