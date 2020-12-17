@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.appformer.client.stateControl.registry.Registry;
@@ -41,7 +42,7 @@ public class RegistryProvider {
 
     @Inject
     public RegistryProvider(final ManagedInstance<CommandRegistryHolder> registryHolders,
-                            final DMNGraphsProvider graphsProvider) {
+                            final @Any DMNGraphsProvider graphsProvider) {
         this.registryHolders = registryHolders;
         this.graphsProvider = graphsProvider;
         this.registryMap = new HashMap<>();

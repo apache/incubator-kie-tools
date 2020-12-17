@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
@@ -31,7 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 @Alternative
 @ApplicationScoped
 @DMNEditor
-@Default
 public class DMNGraphsProvider implements GraphsProvider {
 
     private final DMNDiagramsSession diagramsSession;
