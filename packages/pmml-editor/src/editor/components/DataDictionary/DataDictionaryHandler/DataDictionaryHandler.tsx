@@ -31,12 +31,13 @@ const DataDictionaryHandler = () => {
     setIsDataDictionaryOpen(!isDataDictionaryOpen);
   };
 
-  const addField = (name: string, type: DDDataField["type"]) => {
+  const addField = (name: string, type: DDDataField["type"], optype: DDDataField["optype"]) => {
     dispatch({
       type: Actions.AddDataDictionaryField,
       payload: {
         name: name,
-        type: type
+        type: type,
+        optype: optype
       }
     });
   };

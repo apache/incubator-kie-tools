@@ -13,7 +13,7 @@ import "./DataDictionaryContainer.scss";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
-  onAdd: (name: string, type: DDDataField["type"]) => void;
+  onAdd: (name: string, type: DDDataField["type"], optype: DDDataField["optype"]) => void;
   onEdit: (index: number, field: DDDataField) => void;
   onDelete: (index: number) => void;
   onReorder: (oldIndex: number, newIndex: number) => void;
@@ -54,7 +54,8 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
         dataTypes.map(dt => dt.name),
         1
       ),
-      "string"
+      "string",
+      "categorical"
     );
     setEditing(dataTypes.length);
     onEditingPhaseChange(true);
@@ -230,6 +231,7 @@ export default DataDictionaryContainer;
 export interface DDDataField {
   name: string;
   type: "string" | "integer" | "float" | "double" | "boolean";
+  optype: "categorical" | "ordinal" | "continuous";
   constraints?: Constraints;
 }
 

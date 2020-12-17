@@ -1,12 +1,4 @@
-import {
-  Closure,
-  DataDictionary,
-  DataField,
-  DataType,
-  FieldName,
-  Interval,
-  OpType
-} from "@kogito-tooling/pmml-editor-marshaller";
+import { Closure, DataDictionary, DataField, FieldName, Interval } from "@kogito-tooling/pmml-editor-marshaller";
 import { DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
 
 export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DDDataField[] => {
@@ -19,25 +11,11 @@ export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): 
   }
 };
 
-export const convertDD2PMML = (dataDictionary: DDDataField[]): DataField[] => {
-  return dataDictionary.map(item => {
-    const dataField: DataField = {
-      name: item.name as FieldName,
-      dataType: item.type as DataType,
-      optype: calculateOptype(item.type),
-      Interval: [],
-      Value: []
-    };
-
-    return dataField;
-  });
-};
-
 export const convertToDataField = (item: DDDataField): DataField => {
   const convertedField: DataField = {
     name: item.name as FieldName,
     dataType: item.type,
-    optype: calculateOptype(item.type)
+    optype: item.optype
   };
   if (item.constraints) {
     if (item.constraints.type === "Range") {
@@ -74,7 +52,8 @@ export const convertFromDataField = (item: DataField) => {
   }
   const convertedField: DDDataField = {
     name: item.name as string,
-    type: type
+    type: type,
+    optype: item.optype
   };
   if (item.Interval && item.Interval.length > 0) {
     convertedField.constraints = {
@@ -92,8 +71,4 @@ export const convertFromDataField = (item: DataField) => {
     };
   }
   return convertedField;
-};
-
-const calculateOptype = (type: DataType): OpType => {
-  return type === "integer" || type === "float" || type === "double" ? "continuous" : "categorical";
 };

@@ -15,7 +15,8 @@ import {
   SplitItem,
   Stack,
   StackItem,
-  TextInput
+  TextInput,
+  SelectOptionObject
 } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
@@ -59,6 +60,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     { value: "double" },
     { value: "boolean" }
   ];
+  const [optypeSelection, setOptypeSelection] = useState(dataType.optype);
+  const [isOptypeSelectOpen, setIsOptypeSelectOpen] = useState(false);
+  const optypeOptions = [{ value: "categorical" }, { value: "ordinal" }, { value: "continuous" }];
   const [validation, setValidation] = useState<Validated>("default");
 
   const ref = useOnclickOutside(
@@ -78,31 +82,34 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     setIsTypeSelectOpen(isOpen);
   };
 
-  const clearTypeSelection = () => {
-    setIsTypeSelectOpen(false);
-    setTypeSelection("string");
+  const typeSelect = (event: React.MouseEvent | React.ChangeEvent, value: string | SelectOptionObject) => {
+    if (value !== typeSelection) {
+      setTypeSelection(value as DDDataField["type"]);
+      setIsTypeSelectOpen(false);
+      onSave({ name: name.trim(), type: value as DDDataField["type"], optype: optypeSelection }, index);
+    }
   };
 
-  const typeSelect = (event: any, selection: any, isPlaceholder: boolean) => {
-    if (isPlaceholder) {
-      clearTypeSelection();
-    } else {
-      setTypeSelection(selection);
-      setIsTypeSelectOpen(false);
-      onSave({ name: name.trim(), type: selection }, index);
+  const optypeToggle = (isOpen: boolean) => {
+    setIsOptypeSelectOpen(isOpen);
+  };
+
+  const optypeSelect = (event: React.MouseEvent | React.ChangeEvent, value: string | SelectOptionObject) => {
+    if (value !== optypeSelection) {
+      setOptypeSelection(value as DDDataField["optype"]);
+      setIsOptypeSelectOpen(false);
+      onSave({ name: name.trim(), type: typeSelection, optype: value as DDDataField["optype"] }, index);
     }
   };
 
   const handleEditStatus = () => {
     console.log("set edit status");
-    if (onEdit) {
-      onEdit(index);
-    }
+    onEdit?.(index);
   };
 
   const handleSave = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
-    onSave({ name: name.trim(), type: typeSelection }, index);
+    onSave({ name: name.trim(), type: typeSelection, optype: optypeSelection }, index);
   };
 
   const handleNameSave = () => {
@@ -144,6 +151,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   useEffect(() => {
     setName(dataType.name);
     setTypeSelection(dataType.type);
+    setOptypeSelection(dataType.optype);
   }, [dataType]);
 
   return (
@@ -188,7 +196,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                   <SplitItem>
                     <Select
                       variant={SelectVariant.single}
-                      aria-label="Select Input"
+                      aria-label="Select Input Type"
                       onToggle={typeToggle}
                       onSelect={typeSelect}
                       selections={typeSelection}
@@ -197,7 +205,31 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                       className="data-type-item__type-select"
                     >
                       {typeOptions.map((option, optionIndex) => (
-                        <SelectOption key={optionIndex} value={option.value} className="ignore-onclickoutside" />
+                        <SelectOption
+                          key={optionIndex}
+                          value={option.value}
+                          className="ignore-onclickoutside data-type-item__type-select__option"
+                        />
+                      ))}
+                    </Select>
+                  </SplitItem>
+                  <SplitItem>
+                    <Select
+                      variant={SelectVariant.single}
+                      aria-label="Select Op Type"
+                      onToggle={optypeToggle}
+                      onSelect={optypeSelect}
+                      selections={optypeSelection}
+                      isOpen={isOptypeSelectOpen}
+                      placeholder="Op Type"
+                      className="data-type-item__type-select"
+                    >
+                      {optypeOptions.map((option, optionIndex) => (
+                        <SelectOption
+                          key={optionIndex}
+                          value={option.value}
+                          className="ignore-onclickoutside data-type-item__type-select__option"
+                        />
                       ))}
                     </Select>
                   </SplitItem>
@@ -260,6 +292,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
             <FlexItem>
               <Label color="blue" className="data-type-item__type-label">
                 {typeSelection}
+              </Label>{" "}
+              <Label color="blue" className="data-type-item__type-label">
+                {optypeSelection}
               </Label>
               {dataType.constraints !== undefined && (
                 <>
