@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Button,
   ButtonVariant,
@@ -12,19 +12,22 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
-import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, FieldName, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
-import { OperationContext } from "../../../PMMLEditor";
+import { HistoryContext, OperationContext } from "../../../PMMLEditor";
 import { Operation } from "../../EditorScorecard";
+import { useBatchDispatch } from "../../../history";
 
 const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
-  const dispatch = useDispatch();
   const pmmlDataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
   const dictionary = useMemo(() => convertPMML2DD(pmmlDataDictionary), [pmmlDataDictionary]);
   const { setActiveOperation } = React.useContext(OperationContext);
+
+  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const handleDataDictionaryToggle = () => {
     setActiveOperation(Operation.NONE);
@@ -70,12 +73,13 @@ const DataDictionaryHandler = () => {
     });
   };
 
-  const updateField = (index: number, field: DDDataField) => {
+  const updateField = (index: number, originalName: string, field: DDDataField) => {
     dispatch({
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: index,
-        dataField: convertToDataField(field)
+        dataField: convertToDataField(field),
+        originalName: originalName as FieldName
       }
     });
   };

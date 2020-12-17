@@ -13,8 +13,10 @@ import {
 import { CloseIcon } from "@patternfly/react-icons";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
 import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
+import { useBatchDispatch } from "../../../history";
+import { HistoryContext } from "../../../PMMLEditor";
 
 interface MiningSchemaHandlerProps {
   miningSchema?: MiningSchema;
@@ -24,8 +26,10 @@ interface MiningSchemaHandlerProps {
 const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   const { miningSchema, modelIndex } = props;
   const [isMiningSchemaOpen, setIsMiningSchemaOpen] = useState(false);
-  const dispatch = useDispatch();
   const dataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
+
+  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const addMiningField = (names: string[]) => {
     dispatch({

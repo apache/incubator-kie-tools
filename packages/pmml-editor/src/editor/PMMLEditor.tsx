@@ -55,6 +55,16 @@ export interface State {
   activeOperation: Operation;
 }
 
+interface History {
+  service: HistoryService;
+  getCurrentState: () => PMML | undefined;
+}
+
+export const HistoryContext = React.createContext<History>({
+  service: new HistoryService(),
+  getCurrentState: () => undefined
+});
+
 interface ActiveOperation {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
@@ -198,7 +208,14 @@ export class PMMLEditor extends React.Component<Props, State> {
                         })
                     }}
                   >
-                    <SingleEditorRouter path={path} />
+                    <HistoryContext.Provider
+                      value={{
+                        service: this.service,
+                        getCurrentState: () => this.store?.getState()
+                      }}
+                    >
+                      <SingleEditorRouter path={path} />
+                    </HistoryContext.Provider>
                   </OperationContext.Provider>
                 </Route>
               </Switch>

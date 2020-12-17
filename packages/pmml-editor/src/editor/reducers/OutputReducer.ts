@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
@@ -35,13 +35,13 @@ interface OutputPayload {
 
 export type OutputActions = ActionMap<OutputPayload>[keyof ActionMap<OutputPayload>];
 
-export const OutputReducer: HistoryAwareReducer<Output, OutputActions> = (
+export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
   service: HistoryService
-): Reducer<Output, OutputActions> => {
-  return (state: Output, action: OutputActions) => {
+): Reducer<Output, AllActions> => {
+  return (state: Output, action: AllActions) => {
     switch (action.type) {
       case Actions.AddOutput:
-        return service.mutate(state, `models[${action.payload.modelIndex}].Output`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
           draft.OutputField.push({
             name: action.payload.outputField.name,
             dataType: action.payload.outputField.dataType,
@@ -55,15 +55,19 @@ export const OutputReducer: HistoryAwareReducer<Output, OutputActions> = (
             isFinalResult: action.payload.outputField.isFinalResult
           });
         });
+        break;
+
       case Actions.DeleteOutput:
-        return service.mutate(state, `models[${action.payload.modelIndex}].Output`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
           const outputIndex = action.payload.outputIndex;
           if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
             draft.OutputField.splice(outputIndex, 1);
           }
         });
+        break;
+
       case Actions.AddBatchOutputs:
-        return service.mutate(state, `models[${action.payload.modelIndex}].Output`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
           action.payload.outputFields.forEach(name => {
             draft.OutputField.push({
               name: name,

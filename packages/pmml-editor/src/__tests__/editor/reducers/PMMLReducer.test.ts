@@ -18,18 +18,21 @@ import { Actions, AllActions, PMMLReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 
+const service = new HistoryService();
 const pmml: PMML = { Header: {}, DataDictionary: { DataField: [] }, version: "" };
-
-const reducer: Reducer<PMML, AllActions> = PMMLReducer(new HistoryService());
+const reducer: Reducer<PMML, AllActions> = PMMLReducer(service);
 
 describe("PMMLReducer::Valid actions", () => {
   test("Actions.SetVersion", () => {
-    const updated: PMML = reducer(pmml, {
+    reducer(pmml, {
       type: Actions.SetVersion,
       payload: {
         version: "1.0"
       }
     });
+
+    const updated: PMML = service.commit(pmml) as PMML;
+
     expect(updated).not.toEqual(pmml);
     expect(updated.version).toBe("1.0");
   });

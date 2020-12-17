@@ -29,10 +29,39 @@ interface HistoryStore {
   index: number;
 }
 
+interface BatchEntry<M> {
+  state: M;
+  path: string | null;
+  recipe: (draft: WritableDraft<M>) => void;
+}
+
 export class HistoryService {
+  private pending: Array<BatchEntry<any>> = new Array<BatchEntry<any>>();
+
   private readonly history: HistoryStore = {
     changes: [],
     index: 0
+  };
+
+  public batch = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void): void => {
+    this.pending.push({ state: state, path: path, recipe: recipe });
+  };
+
+  public commit = (state: PMML | undefined): PMML | undefined => {
+    if (state === undefined) {
+      return;
+    }
+
+    const newState = this.mutate(state, null, draft => {
+      this.pending.forEach(be => {
+        const segment = be.path === null ? draft : get(draft, be.path as string);
+        be.recipe(segment as WritableDraft<any>);
+      });
+    });
+
+    this.pending = new Array<BatchEntry<any>>();
+
+    return newState;
   };
 
   public mutate = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void) => {

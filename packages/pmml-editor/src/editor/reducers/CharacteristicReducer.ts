@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { AttributesActions, AttributesReducer } from "./AttributesReducer";
+import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
 
 // @ts-ignore
@@ -35,12 +35,12 @@ interface CharacteristicPayload {
 
 export type CharacteristicActions = ActionMap<CharacteristicPayload>[keyof ActionMap<CharacteristicPayload>];
 
-export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], CharacteristicActions | AttributesActions> = (
+export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllActions> = (
   service: HistoryService
-): Reducer<Characteristic[], CharacteristicActions | AttributesActions> => {
+): Reducer<Characteristic[], AllActions> => {
   const attributesReducer = AttributesReducer(service);
 
-  const delegateToAttributes = (state: Characteristic[], action: AttributesActions) => {
+  const delegateToAttributes = (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_AddAttribute:
       case Actions.Scorecard_UpdateAttribute:
@@ -62,10 +62,10 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], Charac
     return state;
   };
 
-  return (state: Characteristic[], action: CharacteristicActions | AttributesActions) => {
+  return (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_UpdateCharacteristic:
-        return service.mutate(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
           const characteristicIndex: number = action.payload.characteristicIndex;
           if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
             draft[characteristicIndex] = {
@@ -76,6 +76,7 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], Charac
             };
           }
         });
+        return state;
     }
 
     return delegateToAttributes(state, action);

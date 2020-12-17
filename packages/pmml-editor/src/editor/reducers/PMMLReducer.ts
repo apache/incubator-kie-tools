@@ -19,6 +19,9 @@ import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface PMMLPayload {
+  [Actions.Refresh]: {
+    readonly pmml: PMML;
+  };
   [Actions.SetVersion]: {
     readonly version: string;
   };
@@ -38,10 +41,14 @@ export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
 ): Reducer<PMML, AllActions> => {
   return (state: PMML, action: AllActions) => {
     switch (action.type) {
+      case Actions.Refresh:
+        return action.payload.pmml;
+
       case Actions.SetVersion:
-        return service.mutate(state, null, draft => {
+        service.batch(state, null, draft => {
           draft.version = action.payload.version;
         });
+        break;
 
       case Actions.Undo:
         return service.undo(state);

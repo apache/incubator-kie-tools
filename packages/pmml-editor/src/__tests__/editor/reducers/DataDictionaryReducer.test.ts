@@ -18,13 +18,14 @@ import { Actions, AllActions, DataDictionaryReducer } from "../../../editor/redu
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 
+const service = new HistoryService();
 const dataDictionary: DataDictionary = { DataField: [] };
-
-const reducer: Reducer<DataDictionary, AllActions> = DataDictionaryReducer(new HistoryService());
+const pmml = { version: "1.0", DataDictionary: dataDictionary, Header: {} };
+const reducer: Reducer<DataDictionary, AllActions> = DataDictionaryReducer(service);
 
 describe("DataDictionaryReducer::Valid actions", () => {
   test("Actions.AddDataDictionaryField", () => {
-    const updated: DataDictionary = reducer(dataDictionary, {
+    reducer(dataDictionary, {
       type: Actions.AddDataDictionaryField,
       payload: {
         name: "field1",
@@ -32,6 +33,9 @@ describe("DataDictionaryReducer::Valid actions", () => {
         optype: "categorical"
       }
     });
+
+    const updated = service.commit(pmml)?.DataDictionary as DataDictionary;
+
     expect(updated).not.toEqual(dataDictionary);
     expect(updated.DataField.length).toBe(1);
     expect(updated.DataField[0].name).toBe("field1");
@@ -40,7 +44,7 @@ describe("DataDictionaryReducer::Valid actions", () => {
   });
 
   test("Actions.DeleteDataDictionaryField", () => {
-    const updated: DataDictionary = reducer(
+    reducer(
       {
         DataField: [
           {
@@ -57,6 +61,9 @@ describe("DataDictionaryReducer::Valid actions", () => {
         }
       }
     );
+
+    const updated = service.commit(pmml)?.DataDictionary as DataDictionary;
+
     expect(updated).toEqual(dataDictionary);
     expect(updated.DataField.length).toEqual(0);
   });
