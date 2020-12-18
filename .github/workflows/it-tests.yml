@@ -5,7 +5,7 @@ on:
     branches: "**"
 
 jobs:
-  build:
+  chrome-extension-pack-kogito-kie-editors:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -50,16 +50,74 @@ jobs:
           sleep 20  
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
-      - name: Archive it test screenshots	
-        if: success() || failure()	
-        uses: actions/upload-artifact@v1	
-        with:	
-          name: chrome-extension-it-tests-screenshots-${{ matrix.os }}	
-          path: packages/chrome-extension-pack-kogito-kie-editors/screenshots	
+      - name: Archive it test screenshots
+        if: success() || failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: chrome-extension-it-tests-screenshots-${{ matrix.os }}
+          path: packages/chrome-extension-pack-kogito-kie-editors/screenshots
 
-      - name: Archive it test logs	
-        if: success() || failure()	
-        uses: actions/upload-artifact@v1	
-        with:	
-          name: chrome-extension-it-tests-logs-${{ matrix.os }}	
-          path: packages/chrome-extension-pack-kogito-kie-editors/logs	
+      - name: Archive it test logs
+        if: success() || failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: chrome-extension-it-tests-logs-${{ matrix.os }}
+          path: packages/chrome-extension-pack-kogito-kie-editors/logs
+
+  kie-editors-standalone-tests-it:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [12.16.3]
+        yarn: [1.19.1]
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup Yarn
+        run: npm install -g yarn@${{ matrix.yarn }}
+
+      - name: Start Xvfb (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: Download dependencies
+        run: yarn run init
+
+      - name: Build repository
+        run: npx lerna run build:prod --scope '@kogito-tooling/kie-editors-standalone' --include-dependencies
+
+      - name: Build testing app
+        run: npx lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
+
+      - name: Run tests
+        run: npx lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
+
+      - name: Archive test results
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: junit-kie-editors-standalone-${{ matrix.os }}.xml
+          path: "packages/kie-editors-standalone/it-tests/results/junit.xml"
+
+      - name: Archive test screenshots
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: kie-editors-standalone-it-tests-screenshots-${{ matrix.os }}
+          path: packages/kie-editors-standalone/it-tests/cypress/screenshots
+
+      - name: Archive test videos
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: kie-editors-standalone-it-tests-videos-${{ matrix.os }}
+          path: packages/kie-editors-standalone/it-tests/cypress/videos
