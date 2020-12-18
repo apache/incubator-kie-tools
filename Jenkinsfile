@@ -9,6 +9,9 @@ pipeline{
     tools {
         jdk 'kie-jdk11'
     }
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
     environment {
         CI = true
     }
