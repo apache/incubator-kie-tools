@@ -17,6 +17,7 @@
     "update-version-to": "node ./update_version_to.js",
     "locktt": "locktt",
     "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save",
+    "install-npm-tt": "npm install npm-tt --global-style --no-package-lock --no-save",
     "npm-tt": "npm-tt",
     "publish": "npx lerna publish"
   },
