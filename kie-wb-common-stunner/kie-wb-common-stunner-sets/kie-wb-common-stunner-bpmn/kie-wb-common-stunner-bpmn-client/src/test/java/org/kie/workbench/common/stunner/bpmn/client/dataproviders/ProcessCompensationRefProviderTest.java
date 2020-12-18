@@ -54,6 +54,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL0_NODE1;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL0_NODE2;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL1_NODE1;

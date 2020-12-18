@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,9 +89,6 @@ public class DMNDocumentationFactoryTest {
     private Path path;
 
     @Mock
-    private User user;
-
-    @Mock
     private Moment moment;
 
     @Mock
@@ -142,8 +138,6 @@ public class DMNDocumentationFactoryTest {
         when(definitions.getDescription()).thenReturn(new Description(diagramDescription));
         when(graphUtils.getDRGElements(diagram)).thenReturn(drgElements);
         when(definitions.getItemDefinition()).thenReturn(itemDefinitions);
-        when(sessionInfo.getIdentity()).thenReturn(user);
-        when(user.getIdentifier()).thenReturn(admin);
         when(moment.format("D MMMM YYYY")).thenReturn(currentDate);
 
         final DMNDocumentation documentation = documentationFactory.create(diagram);
@@ -152,7 +146,6 @@ public class DMNDocumentationFactoryTest {
         assertEquals(diagramName, documentation.getDiagramName());
         assertEquals(diagramDescription, documentation.getDiagramDescription());
         assertEquals(image, documentation.getDiagramImage());
-        assertEquals(admin, documentation.getCurrentUser());
         assertEquals(currentDate, documentation.getCurrentDate());
         assertEquals(expectedDroolsLogo, documentation.getDroolsLogoURI());
         assertEquals(expectedSupportedByRedHatLogo, documentation.getSupportedByRedHatLogoURI());

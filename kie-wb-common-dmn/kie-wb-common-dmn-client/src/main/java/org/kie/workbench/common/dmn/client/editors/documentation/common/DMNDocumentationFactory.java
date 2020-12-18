@@ -170,7 +170,7 @@ public class DMNDocumentationFactory {
     }
 
     protected String getCurrentUserName() {
-        return sessionInfo.getIdentity().getIdentifier();
+        return "default";
     }
 
     private Optional<AbstractCanvasHandler> getCanvasHandler() {

@@ -18,7 +18,6 @@ package org.kie.workbench.common.services.shared.preferences.config;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.UsernameProvider;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.rpc.SessionInfo;
@@ -35,9 +34,7 @@ public class WorkbenchPreferenceScopeTypesTest {
 
     @Before
     public void setup() {
-        final SessionInfo sessionInfo = new SessionInfoMock();
         final UsernameProvider usernameProvider = mock(UsernameProvider.class);
-        doReturn(sessionInfo.getIdentity().getIdentifier()).when(usernameProvider).get();
         scopeTypes = new WorkbenchPreferenceScopeTypes(usernameProvider);
     }
 
@@ -47,12 +44,6 @@ public class WorkbenchPreferenceScopeTypesTest {
         assertFalse(scopeTypes.typeRequiresKey(WorkbenchPreferenceScopes.USER));
         assertTrue(scopeTypes.typeRequiresKey(WorkbenchPreferenceScopes.PROJECT));
         assertTrue(scopeTypes.typeRequiresKey(WorkbenchPreferenceScopes.SPACE));
-    }
-
-    @Test
-    public void defaultKeysForTypesTest() {
-        assertEquals(WorkbenchPreferenceScopes.GLOBAL, scopeTypes.getDefaultKeyFor(WorkbenchPreferenceScopes.GLOBAL));
-        assertEquals("admin", scopeTypes.getDefaultKeyFor(WorkbenchPreferenceScopes.USER));
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)

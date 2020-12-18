@@ -22,21 +22,13 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
-import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.picketlink.producer.IdentityManagementConfiguration;
 
 import static org.mockito.Mockito.*;
 
 @Singleton
 @Alternative
 public class TestAppSetup {
-
-    @Produces
-    @Alternative
-    public M2RepoService m2RepoService() {
-        return mock( M2RepoService.class );
-    }
 
     @Produces
     @Alternative
@@ -49,12 +41,6 @@ public class TestAppSetup {
     @Named("uf")
     public ServletContext servletContext() {
         return mock( ServletContext.class );
-    }
-
-    @Produces
-    @Alternative
-    public IdentityManagementConfiguration authenticationService() {
-        return new IdentityManagementConfiguration();
     }
 
 }

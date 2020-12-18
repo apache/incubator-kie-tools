@@ -25,7 +25,6 @@ import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.preferences.shared.UsernameProvider;
 import org.uberfire.preferences.shared.impl.PreferenceScopeFactoryImpl;
-import org.uberfire.mocks.SessionInfoMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -40,9 +39,7 @@ public class WorkbenchPreferenceScopeResolutionStrategyTest {
 
     @Before
     public void setup() {
-        final SessionInfoMock sessionInfo = new SessionInfoMock( "admin" );
         final UsernameProvider usernameProvider = mock( UsernameProvider.class );
-        doReturn( sessionInfo.getIdentity().getIdentifier() ).when( usernameProvider ).get();
         scopeTypes = new WorkbenchPreferenceScopeTypes( usernameProvider );
         scopesFactory = new PreferenceScopeFactoryImpl( scopeTypes );
 
@@ -57,7 +54,6 @@ public class WorkbenchPreferenceScopeResolutionStrategyTest {
 
         final PreferenceScope firstScope = order.get( 0 );
         assertEquals( "user", firstScope.type() );
-        assertEquals( "admin", firstScope.key() );
 
         final PreferenceScope secondScope = order.get( 1 );
         assertEquals( "global", secondScope.type() );
@@ -66,7 +62,6 @@ public class WorkbenchPreferenceScopeResolutionStrategyTest {
         final PreferenceScope defaultScope = defaultPreferenceScopeResolutionStrategy.getInfo().defaultScope();
 
         assertEquals( "user", defaultScope.type() );
-        assertEquals( "admin", defaultScope.key() );
     }
 
     @Test
@@ -83,13 +78,11 @@ public class WorkbenchPreferenceScopeResolutionStrategyTest {
 
         final PreferenceScope firstScope = order.get( 0 );
         assertEquals( "user", firstScope.type() );
-        assertEquals( "admin", firstScope.key() );
         assertEquals( "project", firstScope.childScope().type() );
         assertEquals( "my-project", firstScope.childScope().key() );
 
         final PreferenceScope secondScope = order.get( 1 );
         assertEquals( "user", secondScope.type() );
-        assertEquals( "admin", secondScope.key() );
 
         final PreferenceScope threeScope = order.get( 2 );
         assertEquals( "global", threeScope.type() );
@@ -98,7 +91,6 @@ public class WorkbenchPreferenceScopeResolutionStrategyTest {
         final PreferenceScope defaultScope = defaultPreferenceScopeResolutionStrategy.getInfo().defaultScope();
 
         assertEquals( "user", defaultScope.type() );
-        assertEquals( "admin", defaultScope.key() );
         assertEquals( "project", defaultScope.childScope().type() );
         assertEquals( "my-project", defaultScope.childScope().key() );
     }
