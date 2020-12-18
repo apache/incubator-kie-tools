@@ -42,7 +42,6 @@ import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeHan
 import org.jboss.errai.ioc.client.container.Proxy;
 import org.jboss.errai.ioc.client.container.RefHolder;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
-import org.jboss.errai.marshalling.client.api.MarshallerFramework;
 import org.junit.Test;
 
 import com.google.gwt.user.client.ui.TextBox;
@@ -64,7 +63,6 @@ public class PropertyChangeHandlerIntegrationTest extends AbstractErraiIOCTest {
   protected void gwtSetUp() throws Exception {
     super.gwtSetUp();
     Convert.deregisterDefaultConverters();
-    MarshallerFramework.initializeDefaultSessionProvider();
   }
 
   @Test

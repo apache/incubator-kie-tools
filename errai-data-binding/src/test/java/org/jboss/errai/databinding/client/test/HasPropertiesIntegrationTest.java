@@ -29,7 +29,6 @@ import org.jboss.errai.databinding.client.TestModelBindableProxyMethods;
 import org.jboss.errai.databinding.client.api.Convert;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
-import org.jboss.errai.marshalling.client.api.MarshallerFramework;
 import org.junit.Test;
 
 /**
@@ -48,7 +47,6 @@ public class HasPropertiesIntegrationTest extends AbstractErraiIOCTest {
   protected void gwtSetUp() throws Exception {
     super.gwtSetUp();
     Convert.deregisterDefaultConverters();
-    MarshallerFramework.initializeDefaultSessionProvider();
   }
 
   @Test
