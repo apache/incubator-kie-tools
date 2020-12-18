@@ -106,7 +106,7 @@ public class WorkbenchStandaloneModeTest {
         doReturn(true).when(workbenchCustomStandalonePerspectiveDefinition).openPathAutomatically();
         doReturn(workbenchCustomStandalonePerspectiveDefinition).when(workbenchCustomStandalonePerspectiveDefinitions).get();
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgument(1, ParameterizedCommand.class).execute(path);
+            ((ParameterizedCommand)invocationOnMock.getArgument(1)).execute(path);
             return null;
         }).when(vfsService).get(same(parameters.get("path").get(0)), any(ParameterizedCommand.class));
 

@@ -19,7 +19,7 @@ package org.uberfire.client.workbench.panels.impl;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class MultiTabWorkbenchPanelPresenterTest extends AbstractMultiPartWorkbenchPanelPresenterTest {

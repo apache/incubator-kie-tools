@@ -15,27 +15,21 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.Menus;
 
 public class WorkbenchMenuBarStandalonePresenter extends WorkbenchMenuBarPresenter {
 
-    WorkbenchMenuBarStandalonePresenter(final AuthorizationManager authzManager,
-                                        final PerspectiveManager perspectiveManager,
+    WorkbenchMenuBarStandalonePresenter(final PerspectiveManager perspectiveManager,
                                         final PlaceManager placeManager,
                                         final ActivityManager activityManager,
-                                        final User identity,
                                         final View view) {
-        super(authzManager,
-              perspectiveManager,
+        super(perspectiveManager,
               placeManager,
               activityManager,
-              identity,
               view);
     }
 

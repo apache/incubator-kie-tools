@@ -16,17 +16,13 @@
 
 package org.uberfire.preferences.client.store;
 
-import java.util.Arrays;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.preferences.shared.PropertyFormType;
-import org.uberfire.preferences.shared.bean.BasePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceBeanStore;
-import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 import static org.junit.Assert.assertEquals;
 

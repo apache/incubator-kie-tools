@@ -25,24 +25,20 @@ import javax.enterprise.context.Dependent;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.util.MockIOCBeanDef;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Resource;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -58,14 +54,6 @@ public class ActivityManagerLifecycleTest {
     SyncBeanManagerImpl iocManager;
     @Mock
     ActivityBeansCache activityBeansCache;
-    @Mock
-    AuthorizationManager authzManager;
-
-    @Mock
-    private ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
-
-    @Spy
-    User dorothy = new UserImpl("dorothy");
     // the activity manager we're unit testing
     @InjectMocks
     ActivityManagerImpl activityManager = new ActivityManagerImpl();
@@ -103,10 +91,6 @@ public class ActivityManagerLifecycleTest {
         pathIocBeanSpy = spy(pathIocBean);
         when(activityBeansCache.getActivity(pathPlace.getIdentifier())).thenReturn(pathIocBeanSpy);
 
-        when(authzManager.authorize(any(Resource.class),
-                                    eq(dorothy))).thenReturn(true);
-
-        when(activitiesAuthorizationManager.authorizeActivity(anyObject())).thenReturn(true);
     }
 
     @Test
@@ -207,8 +191,6 @@ public class ActivityManagerLifecycleTest {
 
     @Test
     public void shouldNotSeeUnauthorizedActivities() throws Exception {
-        when(authzManager.authorize(any(Resource.class),
-                                    eq(dorothy))).thenReturn(false);
         Set<Activity> activities = activityManager.getActivities(kansas);
         assertEquals(0,
                      activities.size());
@@ -216,8 +198,6 @@ public class ActivityManagerLifecycleTest {
 
     @Test
     public void shouldNotLeakUnauthorizedActivityInstances() throws Exception {
-        when(authzManager.authorize(any(Resource.class),
-                                    eq(dorothy))).thenReturn(false);
         activityManager.getActivities(kansas);
 
         // this overspecified; all we care is that any activity that was created has also been destroyed.
@@ -228,8 +208,6 @@ public class ActivityManagerLifecycleTest {
 
     @Test
     public void shouldNotStartUnauthorizedActivities() throws Exception {
-        when(authzManager.authorize(any(Resource.class),
-                                    eq(dorothy))).thenReturn(false);
         activityManager.getActivities(kansas);
         verify(kansasActivity,
                never()).onStartup(kansas);

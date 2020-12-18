@@ -32,14 +32,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.workbench.category.Category;
 
 import static org.mockito.Matchers.any;
@@ -73,9 +72,6 @@ public class ResourceTypeManagerCacheTest {
     private ResourceTypeManagerCache resourceTypeManagerCache;
 
     @Mock
-    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
-
-    @Mock
     private GWTEditorNativeRegister gwtEditorNativeRegister;
 
     private ActivityBeansCache activityBeansCache;
@@ -94,21 +90,12 @@ public class ResourceTypeManagerCacheTest {
         experimentalTestActivities.add(FormEditorActivity.class);
         experimentalTestActivities.add(DefaultEditorActivity.class);
 
-        when(experimentalActivitiesAuthorizationManager.authorizeActivityClass(any())).thenAnswer(new Answer<Boolean>() {
-            @Override
-            public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Class type = (Class) invocationOnMock.getArguments()[0];
-                return experimentalTestActivities.contains(type);
-            }
-        });
-
         resourceTypeManagerCache = new ResourceTypeManagerCache(categoriesManagerCache);
 
         activityBeansCache = new ActivityBeansCache(iocManager,
                                                     newPerspectiveEventEvent,
                                                     newWorkbenchScreenEvent,
                                                     resourceTypeManagerCache,
-                                                    experimentalActivitiesAuthorizationManager,
                                                     gwtEditorNativeRegister);
 
         modelEditorDef = registerResourceType(MODEL_CATEGORY, ModelEditorActivity.class, MODEL_TYPE, "1");

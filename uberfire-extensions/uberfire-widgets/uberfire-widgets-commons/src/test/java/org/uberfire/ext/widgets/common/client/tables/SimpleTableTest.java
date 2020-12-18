@@ -33,7 +33,6 @@ import org.uberfire.ext.services.shared.preferences.UserPreference;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
 import org.uberfire.ext.widgets.table.client.DataGrid;
-import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -47,8 +46,6 @@ public class SimpleTableTest {
     @GwtMock
     DataGrid dataGridMock;
 
-    protected CallerMock<UserPreferencesService> userPreferencesService;
-
     @Mock
     protected UserPreferencesService userPreferencesServiceMock;
 
@@ -61,8 +58,11 @@ public class SimpleTableTest {
         gridPreferencesStore = new GridPreferencesStore(new GridGlobalPreferences("key", null, null));
         simpleTable.setGridPreferencesStore(gridPreferencesStore);
 
+        //TODO
+/*
         userPreferencesService = new CallerMock<>(userPreferencesServiceMock);
-        simpleTable.setPreferencesService(userPreferencesService);
+
+        simpleTable.setPreferencesService(userPreferencesService);*/
     }
 
     @Test

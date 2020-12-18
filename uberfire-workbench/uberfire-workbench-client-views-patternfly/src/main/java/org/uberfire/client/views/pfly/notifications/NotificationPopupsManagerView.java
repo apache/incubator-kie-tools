@@ -33,13 +33,11 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager.NotificationPopupHandle;
 import org.uberfire.security.ResourceRef;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.security.shared.api.identity.User;
 
 @Dependent
 public class NotificationPopupsManagerView implements NotificationManager.View {
@@ -52,8 +50,6 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
     private int initialSpacing = SPACING;
     private IsWidget container;
     @Inject private PlaceManager placeManager;
-    @Inject private AuthorizationManager authorizationManager;
-    @Inject private User user;
     @Inject private ActivityBeansCache activityBeansCache;
 
     @Override
@@ -91,7 +87,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
             final String identifier = event.getNavigationPlace().getIdentifier();
             final SyncBeanDef<Activity> syncBeanDefActivity = activityBeansCache.getActivity(identifier);
             final ResourceRef resourceRef = new ResourceRef(identifier, syncBeanDefActivity.getInstance().getResourceType());
-            final Boolean isAuthorized = authorizationManager.authorize(resourceRef, user);
+            final Boolean isAuthorized = true;
             if (isAuthorized) {
                 view.addNavigation(
                         event.getNavigationText(),

@@ -18,19 +18,17 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.function.Consumer;
 
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -46,10 +44,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbenchMenuBarStandalonePresenterTest {
 
-    @Mock
-    protected AuthorizationManager authzManager;
-    @Mock
-    protected User identity;
     @Mock
     private PerspectiveManager perspectiveManager;
     @Mock
@@ -69,9 +63,6 @@ public class WorkbenchMenuBarStandalonePresenterTest {
 
         presenter.addMenus(menus);
 
-        verify(authzManager,
-               never()).authorize(any(MenuItem.class),
-                                  any(User.class));
         verify(view,
                never()).addMenuItem(anyString(),
                                     anyString(),
@@ -89,12 +80,10 @@ public class WorkbenchMenuBarStandalonePresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
+            ((Consumer)invocationOnMock.getArgument(0)).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
-        when(authzManager.authorize(contextMenus.getItems().get(0),
-                                    identity)).thenReturn(true);
         when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
         presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
@@ -102,8 +91,6 @@ public class WorkbenchMenuBarStandalonePresenterTest {
                                                             contextMenus,
                                                             perspectiveId));
 
-        verify(authzManager).authorize(contextMenus.getItems().get(0),
-                                       identity);
         verify(view).addMenuItem(anyString(),
                                  eq(contextLabel),
                                  isNull(String.class),

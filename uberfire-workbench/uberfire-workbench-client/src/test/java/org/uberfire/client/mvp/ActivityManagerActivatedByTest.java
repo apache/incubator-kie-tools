@@ -24,7 +24,6 @@ import java.util.Set;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,10 +31,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.*;
@@ -65,21 +62,10 @@ public class ActivityManagerActivatedByTest {
     @Mock
     private ResourceTypeManagerCache resourceTypeManagerCache;
 
-    @Mock
-    private AuthorizationManager authzManager;
-
-    @Mock
-    private ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
-
     private Activity activatedActivity;
 
     @Before
     public void setup() {
-        when(authzManager.authorize(Mockito.<Resource>any(),
-                                    any())).thenReturn(true);
-
-        when(activitiesAuthorizationManager.authorizeActivity(any())).thenReturn(true);
-
         activatedActivity = mock(Activity.class);
         when(activatedActivity.getIdentifier()).thenReturn("activated activity");
 

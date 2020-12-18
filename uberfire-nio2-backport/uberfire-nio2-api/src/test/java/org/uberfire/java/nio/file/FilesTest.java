@@ -23,14 +23,12 @@ import java.net.URI;
 import java.util.HashSet;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Assume;
 import org.junit.Test;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
 import org.uberfire.java.nio.base.NotImplementedException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -1140,17 +1138,6 @@ public class FilesTest extends AbstractBaseTest {
         assertThatThrownBy(() -> Files.isWritable(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Parameter named 'path' should be not null!");
-    }
-
-    @Test
-    public void isExecutable() {
-        Assume.assumeFalse(SimpleFileSystemProvider.OSType.currentOS().equals(SimpleFileSystemProvider.OSType.WINDOWS));
-
-        final Path path = Files.createTempFile("foo", "bar");
-
-        assertThat(Files.isExecutable(path)).isFalse();
-        assertThat(Files.isExecutable(newTempDir())).isTrue();
-        assertThat(Files.isExecutable(Paths.get("/some/file"))).isFalse();
     }
 
     @Test

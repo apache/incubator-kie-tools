@@ -33,7 +33,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
@@ -66,9 +65,6 @@ public class LockManagerImpl implements LockManager {
 
     @Inject
     private LockDemandDetector lockDemandDetector;
-
-    @Inject
-    private User user;
 
     private LockTarget lockTarget;
 
@@ -284,7 +280,7 @@ public class LockManagerImpl implements LockManager {
     }
 
     private boolean isLockedByCurrentUser() {
-        return lockInfo.isLocked() && lockInfo.lockedBy().equals(user.getIdentifier());
+        return lockInfo.isLocked();
     }
 
     void updateLockInfo(final @Observes LockInfo lockInfo) {
@@ -382,8 +378,7 @@ public class LockManagerImpl implements LockManager {
 
     protected void fireChangeTitleEvent() {
         changeTitleEvent.fire(LockTitleWidgetEvent.create(lockTarget,
-                                                          lockInfo,
-                                                          user));
+                                                          lockInfo));
     }
 
     protected void fireUpdatedLockStatusEvent() {

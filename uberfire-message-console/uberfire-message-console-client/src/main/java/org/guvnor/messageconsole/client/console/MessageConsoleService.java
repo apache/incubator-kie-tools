@@ -37,7 +37,6 @@ import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.guvnor.messageconsole.whitelist.MessageConsoleWhiteList;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.rpc.SessionInfo;
@@ -52,7 +51,6 @@ public class MessageConsoleService {
     private SyncBeanManager iocManager;
     private PlaceManager placeManager;
     private SessionInfo sessionInfo;
-    private User identity;
     private Event<FilteredMessagesEvent> filteredMessagesEvent;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
@@ -70,13 +68,11 @@ public class MessageConsoleService {
     public MessageConsoleService(final SyncBeanManager iocManager,
                                  final PlaceManager placeManager,
                                  final SessionInfo sessionInfo,
-                                 final User identity,
                                  final Event<FilteredMessagesEvent> filteredMessagesEvent) {
 
         this.iocManager = iocManager;
         this.placeManager = placeManager;
         this.sessionInfo = sessionInfo;
-        this.identity = identity;
         this.filteredMessagesEvent = filteredMessagesEvent;
     }
 
@@ -168,7 +164,7 @@ public class MessageConsoleService {
                                    final List<SystemMessage> messages) {
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;
-        String currentUserId = identity != null ? identity.getIdentifier() : null;
+        String currentUserId = null;
 
         List<MessageConsoleServiceRow> rowsToDelete = new ArrayList<MessageConsoleServiceRow>();
         for (MessageConsoleServiceRow row : dataProvider.getList()) {
@@ -213,7 +209,7 @@ public class MessageConsoleService {
         List<SystemMessage> result = new ArrayList<SystemMessage>();
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;
-        String currentUserId = identity != null ? identity.getIdentifier() : null;
+        String currentUserId = null;
 
         if (messages != null) {
             for (SystemMessage message : messages) {

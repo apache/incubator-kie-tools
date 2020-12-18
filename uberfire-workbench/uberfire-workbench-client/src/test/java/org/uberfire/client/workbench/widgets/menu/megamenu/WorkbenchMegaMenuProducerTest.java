@@ -17,12 +17,11 @@
 package org.uberfire.client.workbench.widgets.menu.megamenu;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -36,9 +35,7 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.Child
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
-import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -49,16 +46,10 @@ import static org.mockito.Mockito.verify;
 public class WorkbenchMegaMenuProducerTest {
 
     @Mock
-    private AuthorizationManager authzManager;
-
-    @Mock
     private PerspectiveManager perspectiveManager;
 
     @Mock
     private ActivityManager activityManager;
-
-    @Mock
-    private User identity;
 
     @Mock
     private WorkbenchMegaMenuPresenter.View view;
@@ -85,9 +76,6 @@ public class WorkbenchMegaMenuProducerTest {
     private PlaceManager placeManager;
 
     @Mock
-    private AuthorizationManager authorizationManager;
-
-    @Mock
     private SessionInfo sessionInfo;
 
     @Mock
@@ -105,29 +93,22 @@ public class WorkbenchMegaMenuProducerTest {
     @Mock
     private Workbench workbench;
 
-    @Mock
-    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
-
     private WorkbenchMegaMenuProducer producer;
     private boolean isStandalone = false;
 
     @Before
     public void setup() {
-        producer = new WorkbenchMegaMenuProducer(authzManager,
-                                                 perspectiveManager,
+        producer = new WorkbenchMegaMenuProducer(perspectiveManager,
                                                  activityManager,
-                                                 identity,
                                                  view,
                                                  megaMenuBrands,
                                                  placeManager,
-                                                 authorizationManager,
                                                  sessionInfo,
                                                  childMenuItemPresenters,
                                                  groupMenuItemPresenters,
                                                  childContextMenuItemPresenters,
                                                  groupContextMenuItemPresenters,
-                                                 workbench,
-                                                 experimentalActivitiesAuthorizationManager) {
+                                                 workbench) {
             @Override
             protected boolean isStandalone() {
                 return isStandalone;

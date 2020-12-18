@@ -19,7 +19,6 @@
     "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
 
-  <inherits name="org.uberfire.security.UberfireSecurityAPI"/>
   <inherits name='org.uberfire.UberfireBackend'/>
   <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorAPI'/>
 

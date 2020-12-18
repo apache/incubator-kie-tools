@@ -37,7 +37,6 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -53,9 +52,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.authz.AuthorizationPolicy;
-import org.uberfire.security.authz.PermissionManager;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
@@ -128,14 +124,8 @@ public class Workbench {
     @Inject
     private PlaceManager placeManager;
     @Inject
-    private PermissionManager permissionManager;
-    @Inject
-    private AuthorizationManager authorizationManager;
-    @Inject
     private VFSServiceProxy vfsService;
     private WorkbenchLayout layout;
-    @Inject
-    private User identity;
     @Inject
     private Logger logger;
     private SessionInfo sessionInfo = null;
@@ -324,8 +314,6 @@ public class Workbench {
 
         // Get the user's home perspective
         PerspectiveActivity homePerspective = null;
-        AuthorizationPolicy authPolicy = permissionManager.getAuthorizationPolicy();
-        String homePerspectiveId = authPolicy.getHomePerspective(identity);
 
         // Get the workbench's default perspective
         PerspectiveActivity defaultPerspective = null;
@@ -333,13 +321,7 @@ public class Workbench {
 
         for (final SyncBeanDef<PerspectiveActivity> perspective : perspectives) {
             final PerspectiveActivity instance = perspective.getInstance();
-
-            if (homePerspectiveId != null && homePerspectiveId.equals(instance.getIdentifier())) {
-                homePerspective = instance;
-                if (defaultPerspective != null) {
-                    iocManager.destroyBean(defaultPerspective);
-                }
-            } else if (instance.isDefault()) {
+            if (instance.isDefault()) {
                 defaultPerspective = instance;
             } else {
                 iocManager.destroyBean(instance);
@@ -353,7 +335,7 @@ public class Workbench {
     @ApplicationScoped
     private SessionInfo currentSession() {
         if (sessionInfo == null) {
-            sessionInfo = new SessionInfoImpl(identity);
+            sessionInfo = new SessionInfoImpl();
         }
         return sessionInfo;
     }

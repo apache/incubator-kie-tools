@@ -31,13 +31,11 @@ import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
@@ -58,11 +56,7 @@ public class ActivityManagerImpl implements ActivityManager {
     @Inject
     private SyncBeanManager iocManager;
     @Inject
-    private AuthorizationManager authzManager;
-    @Inject
     private ActivityBeansCache activityBeansCache;
-    @Inject
-    private User identity;
     @Inject
     private ActivityLifecycleErrorHandler lifecycleErrorHandler;
 
@@ -244,14 +238,7 @@ public class ActivityManagerImpl implements ActivityManager {
                 continue;
             }
             final T instance = activityBean.getInstance();
-            if (!protectedAccess || authzManager.authorize(instance, identity)) {
-                activities.add(instance);
-            } else {
-                // Since user does not have permission, destroy bean to avoid memory leak
-                if (activityBean.getScope().equals(Dependent.class)) {
-                    iocManager.destroyBean(instance);
-                }
-            }
+            activities.add(instance);
         }
 
         return activities;
@@ -261,13 +248,7 @@ public class ActivityManagerImpl implements ActivityManager {
         if (bean == null) {
             return null;
         }
-
-        if (authzManager.authorize(bean,
-                                   identity)) {
-            return bean;
-        }
-
-        return null;
+        return bean;
     }
 
     private <T extends Activity> T startIfNecessary(T activity,
