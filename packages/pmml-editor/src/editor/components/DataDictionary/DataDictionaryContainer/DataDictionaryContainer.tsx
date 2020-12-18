@@ -1,15 +1,17 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { pick, merge } from "lodash";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
-import { CSSTransition, SwitchTransition } from "react-transition-group";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
-import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";
 import EmptyDataDictionary from "../EmptyDataDictionary/EmptyDataDictionary";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import "./DataDictionaryContainer.scss";
+import DataDictionaryPropertiesEdit from "../DataDictionaryPropertiesEdit/DataDictionaryPropertiesEdit";
+import { isEqual } from "lodash";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
@@ -26,7 +28,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
   const [editing, setEditing] = useState<number | undefined>();
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
-  const [constrainsEdit, setConstraintsEdit] = useState<DDDataField>();
+  const [editingDataType, setEditingDataType] = useState<DDDataField>();
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
@@ -36,8 +38,8 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       onEditingPhaseChange(false);
     }
     // updating constraintsEdit when dictionary changes
-    if (viewSection === "constraints" && typeof editing === "number") {
-      setConstraintsEdit(dataDictionary[editing]);
+    if (viewSection === "properties" && editing !== undefined) {
+      setEditingDataType(dataDictionary[editing]);
     }
     setDataTypes(dataDictionary);
   }, [dataDictionary, editing, viewSection]);
@@ -87,8 +89,8 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const handleConstraintsEdit = (dataType: DDDataField) => {
     if (editing !== undefined) {
-      setConstraintsEdit(dataType);
-      setViewSection("constraints");
+      setEditingDataType(dataType);
+      setViewSection("properties");
       onEditingPhaseChange(true);
     }
   };
@@ -99,7 +101,18 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     }
   };
 
-  const exitFromConstraints = () => {
+  const handlePropertiesSave = (payload: Partial<DDDataField>) => {
+    if (editing !== undefined) {
+      const dataType = dataTypes[editing];
+      const existingPartial = pick(dataType, Object.keys(payload));
+
+      if (!isEqual(payload, existingPartial)) {
+        onEdit(editing, merge(dataType, payload));
+      }
+    }
+  };
+
+  const exitFromPropertiesEdit = () => {
     setViewSection("main");
   };
 
@@ -212,12 +225,17 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                 <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
               </>
             )}
-            {viewSection === "constraints" && (
-              <ConstraintsEdit
-                dataType={constrainsEdit!}
-                onSave={handleConstraintsSave}
-                onClose={exitFromConstraints}
+            {viewSection === "properties" && (
+              <DataDictionaryPropertiesEdit
+                dataType={editingDataType!}
+                onClose={exitFromPropertiesEdit}
+                onSave={handlePropertiesSave}
               />
+              // <ConstraintsEdit
+              //   dataType={constrainsEdit!}
+              //   onSave={handleConstraintsSave}
+              //   onClose={exitFromPropertiesEdit}
+              // />
             )}
           </>
         </CSSTransition>
@@ -233,14 +251,15 @@ export interface DDDataField {
   type: "string" | "integer" | "float" | "double" | "boolean";
   optype: "categorical" | "ordinal" | "continuous";
   constraints?: Constraints;
+  optionalProperties?: OptionalProperties;
 }
 
-type dataDictionarySection = "main" | "batch-add" | "constraints";
+type dataDictionarySection = "main" | "batch-add" | "properties";
 
 export type Constraints =
   | {
       type: "Range";
-      value: RangeConstraint;
+      value: RangeConstraint[];
     }
   | { type: "Enumeration"; value: EnumConstraint[] };
 
@@ -258,4 +277,11 @@ export interface RangeConstraint {
 export interface EnumConstraint {
   value: string;
   id: string;
+}
+
+export interface OptionalProperties {
+  displayName?: string;
+  isCyclic?: boolean;
+  missingValue?: string;
+  invalidValue?: string;
 }

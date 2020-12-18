@@ -262,7 +262,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           handleConstraints();
                         }}
                       >
-                        {dataType.constraints === undefined ? "Add" : "Edit"} Constraints
+                        {dataType.constraints === undefined ? "Add" : "Edit"} Properties
                       </Label>
                     )}
                   </SplitItem>

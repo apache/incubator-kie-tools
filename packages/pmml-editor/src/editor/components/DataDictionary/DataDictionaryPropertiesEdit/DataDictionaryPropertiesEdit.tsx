@@ -1,0 +1,208 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+import * as React from "react";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Radio,
+  Split,
+  SplitItem,
+  Stack,
+  StackItem,
+  TextInput,
+  Title,
+  TitleSizes
+} from "@patternfly/react-core";
+import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import "./DataDictionaryPropertiesEdit.scss";
+import { useEffect, useState } from "react";
+import Constraints from "../Constraints/Constraints";
+
+interface DataDictionaryPropertiesEditProps {
+  dataType: DDDataField;
+  onClose: () => void;
+  onSave: (payload: Partial<DDDataField>) => void;
+}
+
+const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) => {
+  const { dataType, onClose, onSave } = props;
+  const [displayName, setDisplayName] = useState(dataType.optionalProperties?.displayName ?? "");
+  const [isCyclic, setIsCyclic] = useState(dataType.optionalProperties?.isCyclic ?? null);
+  const [missingValue, setMissingValue] = useState(dataType.optionalProperties?.missingValue ?? "");
+  const [invalidValue, setInvalidValue] = useState(dataType.optionalProperties?.invalidValue ?? "");
+
+  useEffect(() => {
+    setDisplayName(dataType.optionalProperties?.displayName ?? "");
+    setIsCyclic(dataType.optionalProperties?.isCyclic ?? null);
+    setMissingValue(dataType.optionalProperties?.missingValue ?? "");
+    setInvalidValue(dataType.optionalProperties?.invalidValue ?? "");
+  }, [dataType]);
+
+  return (
+    <Stack hasGutter={true} className="data-dictionary__properties-edit">
+      <StackItem>
+        <Title headingLevel="h4" size={TitleSizes.xl}>
+          <Button variant="link" isInline={true} onClick={onClose}>
+            {dataType.name}
+          </Button>
+          &nbsp;/&nbsp;Properties
+        </Title>
+      </StackItem>
+      <StackItem className="data-dictionary__properties-edit__form">
+        <Form>
+          <Split hasGutter={true}>
+            <SplitItem>
+              <FormGroup
+                className="data-dictionary__properties-edit__field"
+                label="Display Name"
+                fieldId="display-name"
+                helperText="Display Name to use instead of the data type name"
+              >
+                <TextInput
+                  type="text"
+                  id="display-name"
+                  name="display-name"
+                  aria-describedby="Display Name"
+                  value={displayName}
+                  onChange={value => setDisplayName(value)}
+                  autoComplete="off"
+                  onBlur={() =>
+                    onSave({
+                      optionalProperties: {
+                        displayName
+                      }
+                    })
+                  }
+                />
+              </FormGroup>
+            </SplitItem>
+            <SplitItem>
+              <FormGroup
+                className="data-dictionary__properties-edit__field"
+                label="Cyclic Type"
+                fieldId="is-cyclic"
+                isInline={true}
+              >
+                <Radio
+                  isChecked={isCyclic === null}
+                  name="cyclicNotSet"
+                  onChange={() => {
+                    setIsCyclic(null);
+                    onSave({
+                      optionalProperties: {
+                        isCyclic: undefined
+                      }
+                    });
+                  }}
+                  label="Not Set"
+                  id="cyclicNotSet"
+                  value="cyclicNotSet"
+                />
+                <Radio
+                  isChecked={isCyclic === true}
+                  name="isCyclic"
+                  onChange={() => {
+                    setIsCyclic(true);
+                    onSave({
+                      optionalProperties: {
+                        isCyclic: true
+                      }
+                    });
+                  }}
+                  label="Yes"
+                  id="isCyclic"
+                  value="isCyclic"
+                />
+                <Radio
+                  isChecked={isCyclic === false}
+                  name="isNotCyclic"
+                  onChange={() => {
+                    setIsCyclic(false);
+                    onSave({
+                      optionalProperties: {
+                        isCyclic: false
+                      }
+                    });
+                  }}
+                  label="No"
+                  id="isNotCyclic"
+                  value="isNotCyclic"
+                />
+              </FormGroup>
+            </SplitItem>
+          </Split>
+          <Split hasGutter={true}>
+            <SplitItem>
+              <FormGroup
+                className="data-dictionary__properties-edit__field"
+                label="Missing Value"
+                fieldId="missing-value"
+                helperText="Value for when the input is missing"
+              >
+                <TextInput
+                  type="text"
+                  id="missing-value"
+                  name="missing-value"
+                  aria-describedby="Missing Value"
+                  value={missingValue}
+                  onChange={value => setMissingValue(value)}
+                  autoComplete="off"
+                  onBlur={() =>
+                    onSave({
+                      optionalProperties: {
+                        missingValue
+                      }
+                    })
+                  }
+                />
+              </FormGroup>
+            </SplitItem>
+            <SplitItem>
+              <FormGroup
+                className="data-dictionary__properties-edit__field"
+                label="Invalid Value"
+                fieldId="missing-value"
+                helperText="Value for when the input is invalid"
+              >
+                <TextInput
+                  type="text"
+                  id="invalid-value"
+                  name="invalid-value"
+                  aria-describedby="Invalid Value"
+                  value={invalidValue}
+                  onChange={value => setInvalidValue(value)}
+                  autoComplete="off"
+                  onBlur={() =>
+                    onSave({
+                      optionalProperties: {
+                        invalidValue
+                      }
+                    })
+                  }
+                />
+              </FormGroup>
+            </SplitItem>
+          </Split>
+          <Constraints dataType={dataType} onSave={onSave} />
+        </Form>
+      </StackItem>
+    </Stack>
+  );
+};
+
+export default DataDictionaryPropertiesEdit;

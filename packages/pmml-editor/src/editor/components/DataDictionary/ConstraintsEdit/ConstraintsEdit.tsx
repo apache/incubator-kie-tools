@@ -39,7 +39,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeIsOpen, setTypeIsOpen] = useState(false);
   const constraintsTypes = [{ value: "", isPlaceholder: true }, { value: "Range" }, { value: "Enumeration" }];
-  const [range, setRange] = useState<RangeConstraint | undefined>(
+  const [range, setRange] = useState<RangeConstraint[] | undefined>(
     dataType.constraints?.type === "Range" ? dataType.constraints.value : undefined
   );
   const [enums, setEnums] = useState(
@@ -77,16 +77,18 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           ...dataType,
           constraints: {
             type: "Range",
-            value: {
-              start: {
-                value: "1",
-                included: true
-              },
-              end: {
-                value: "10",
-                included: true
+            value: [
+              {
+                start: {
+                  value: "1",
+                  included: true
+                },
+                end: {
+                  value: "10",
+                  included: true
+                }
               }
-            }
+            ]
           }
         });
       }
@@ -103,7 +105,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       ...dataType,
       constraints: {
         type: "Range",
-        value: rangeValue
+        value: [rangeValue]
       }
     });
   };
@@ -134,10 +136,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const validateConstraints = () => {
     const isValid = { ...validation };
     isValid.form = "success";
-    if (constraintType === "Range") {
-      isValid.fields.start = range?.start.value.trim().length === 0 ? "error" : "success";
-      isValid.fields.end = range?.end.value.trim().length === 0 ? "error" : "success";
-    }
+    // if (constraintType === "Range") {
+    //   isValid.fields.start = range?.start.value.trim().length === 0 ? "error" : "success";
+    //   isValid.fields.end = range?.end.value.trim().length === 0 ? "error" : "success";
+    // }
     if (constraintType === "Enumeration") {
       const oneEnum = enums.find(item => item.value.trim().length > 0);
       isValid.fields.enums = oneEnum === undefined ? "error" : "success";
@@ -211,12 +213,12 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                 <Card isCompact={true}>
                   <CardTitle>Range Constraint</CardTitle>
                   <CardBody>
-                    <ConstraintsRangeEdit
-                      range={range}
-                      onChange={handleRangeChange}
-                      typeOfData={dataType.type}
-                      validation={validation}
-                    />
+                    {/*<ConstraintsRangeEdit*/}
+                    {/*  range={range}*/}
+                    {/*  onChange={handleRangeChange}*/}
+                    {/*  typeOfData={dataType.type}*/}
+                    {/*  validation={validation}*/}
+                    {/*/>*/}
                   </CardBody>
                 </Card>
               )}

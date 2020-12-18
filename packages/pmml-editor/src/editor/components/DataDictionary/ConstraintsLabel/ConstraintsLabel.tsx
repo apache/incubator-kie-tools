@@ -23,10 +23,10 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
     switch (constraints.type) {
       case "Range":
         return (
-          `${constraints.value.start.included ? "[" : "("}` +
-          `${constraints.value.start.value},` +
-          `${constraints.value.end.value}` +
-          `${constraints.value.end.included ? "]" : ")"}`
+          `${constraints.value[0].start.included ? "[" : "("}` +
+          `${constraints.value[0].start.value},` +
+          `${constraints.value[0].end.value}` +
+          `${constraints.value[0].end.included ? "]" : ")"}`
         );
       case "Enumeration":
         return constraints.value.map(item => `"${item.value}"`).join(", ");
