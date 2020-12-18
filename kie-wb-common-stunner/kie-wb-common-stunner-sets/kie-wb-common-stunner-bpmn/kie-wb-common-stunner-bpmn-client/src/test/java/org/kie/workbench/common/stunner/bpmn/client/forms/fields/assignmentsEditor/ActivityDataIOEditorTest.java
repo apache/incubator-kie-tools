@@ -22,11 +22,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.marshalling.client.api.MarshallingSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
-import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentDataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.mockito.ArgumentCaptor;
@@ -64,8 +62,7 @@ public class ActivityDataIOEditorTest {
     private ActivityDataIOEditor ioEditor = new ActivityDataIOEditor() {
         @Override
         protected String marshallToJson(AssignmentData data) {
-            return new AssignmentDataMarshaller().doNotNullMarshall(data,
-                                                                    mock(MarshallingSession.class));
+            return "{}";
         }
     };
 

@@ -17,13 +17,10 @@ package org.kie.workbench.common.kogito.webapp.base.backend;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
@@ -48,10 +45,5 @@ public class ApplicationScopedProducer {
         return ioService;
     }
 
-    @Produces
-    @RequestScoped
-    public User user() {
-        return new UserImpl("admin");
-    }
 }
 

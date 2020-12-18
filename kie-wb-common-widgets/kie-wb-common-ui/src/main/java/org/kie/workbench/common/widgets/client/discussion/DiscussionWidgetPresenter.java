@@ -25,14 +25,12 @@ import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.security.shared.api.identity.User;
 
 public class DiscussionWidgetPresenter
         implements IsWidget,
                    DiscussionWidgetView.Presenter {
 
     private DiscussionWidgetView view;
-    private User identity;
     private Caller<AppConfigService> appConfigService;
 
     private Metadata metadata;
@@ -43,10 +41,8 @@ public class DiscussionWidgetPresenter
     @Inject
     public DiscussionWidgetPresenter(
             final DiscussionWidgetView view,
-            final User identity,
             final Caller<AppConfigService> appConfigService) {
         this.view = view;
-        this.identity = identity;
         this.appConfigService = appConfigService;
 
         view.setPresenter( this );
@@ -74,7 +70,7 @@ public class DiscussionWidgetPresenter
             appConfigService.call( new RemoteCallback<Long>() {
                 @Override
                 public void callback( Long timestamp ) {
-                    DiscussionRecord record = new DiscussionRecord( timestamp, identity.getIdentifier(), comment );
+                    DiscussionRecord record = new DiscussionRecord( timestamp, "default", comment );
                     metadata.getDiscussion().add( record );
                     view.addRow( record );
                     view.clearCommentBox();

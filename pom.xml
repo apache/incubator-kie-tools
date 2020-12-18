@@ -30,6 +30,7 @@
   <properties>
       <!-- Version 2.0.1.Final which is coming from kie-parent is not compatible with appformer validation components -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
+    <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
     <checkstyle.header.template><![CDATA[
 ^\/\*$\n^
@@ -125,6 +126,12 @@
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito2</artifactId>
+        <version>${version.powermock.api.mockito2}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -21,7 +21,6 @@ import java.util.List;
 import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
@@ -43,9 +42,7 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
 
     @Before
     public void setup() {
-        final SessionInfoMock sessionInfo = new SessionInfoMock("admin");
         final UsernameProvider usernameProvider = mock(UsernameProvider.class);
-        doReturn(sessionInfo.getIdentity().getIdentifier()).when(usernameProvider).get();
         scopeTypes = new WorkbenchPreferenceScopeTypes(usernameProvider);
         scopesFactory = new PreferenceScopeFactoryImpl(scopeTypes);
 
@@ -63,7 +60,6 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
 
         final PreferenceScope firstScope = order.get(0);
         assertEquals("user", firstScope.type());
-        assertEquals("admin", firstScope.key());
 
         final PreferenceScope secondScope = order.get(1);
         assertEquals("global", secondScope.type());
@@ -72,7 +68,6 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
         final PreferenceScope defaultScope = scopeInfo.defaultScope();
 
         assertEquals("user", defaultScope.type());
-        assertEquals("admin", defaultScope.key());
     }
 
     @Test
@@ -86,13 +81,11 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
 
         final PreferenceScope firstScope = order.get(0);
         assertEquals("user", firstScope.type());
-        assertEquals("admin", firstScope.key());
         assertEquals("project", firstScope.childScope().type());
         assertEquals("my-project", firstScope.childScope().key());
 
         final PreferenceScope secondScope = order.get(1);
         assertEquals("user", secondScope.type());
-        assertEquals("admin", secondScope.key());
 
         final PreferenceScope threeScope = order.get(2);
         assertEquals("global", threeScope.type());
@@ -101,7 +94,6 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
         final PreferenceScope defaultScope = scopeInfo.defaultScope();
 
         assertEquals("user", defaultScope.type());
-        assertEquals("admin", defaultScope.key());
         assertEquals("project", defaultScope.childScope().type());
         assertEquals("my-project", defaultScope.childScope().key());
     }
@@ -116,7 +108,6 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
 
         final PreferenceScope firstScope = order.get(0);
         assertEquals("user", firstScope.type());
-        assertEquals("admin", firstScope.key());
 
         final PreferenceScope secondScope = order.get(1);
         assertEquals("global", secondScope.type());
@@ -125,7 +116,6 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
         final PreferenceScope defaultScope = scopeInfo.defaultScope();
 
         assertEquals("user", defaultScope.type());
-        assertEquals("admin", defaultScope.key());
     }
 
     @Test
@@ -142,7 +132,6 @@ public class WorkbenchPreferenceScopeResolutionStrategiesImplTest {
 
         final PreferenceScope secondScope = order.get(1);
         assertEquals("user", secondScope.type());
-        assertEquals("admin", secondScope.key());
 
         final PreferenceScope thirdScope = order.get(2);
         assertEquals("global", thirdScope.type());

@@ -369,12 +369,29 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
@@ -483,37 +500,6 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-banned-dependencies</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <banTransitiveDependencies>
-                  <excludes>
-                    <!-- the rule will not fail even if it detects ignoredArtifact
-                         of group org.apache.maven, because it is excluded -->
-                    <exclude>org.apache.maven:ignoredArtifact</exclude>
-                    <exclude>*:anotherIgnoredArtifact</exclude>
-                  </excludes>
-                  <includes>
-                    <!-- override "org.apache.maven:ignoredArtifact" to fail
-                         if exactly 1.0 version of ignoreArtifact is detected
-                         to be transitive dependency of the project -->
-                    <include>org.apache.maven:ignoredArtifact:[1.0]</include>
-                  </includes>
-                </banTransitiveDependencies>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
 
   </build>
@@ -559,8 +545,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
