@@ -27,6 +27,7 @@ import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
+import { Notification, NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
@@ -36,6 +37,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     private readonly resourceContentService: ResourceContentService,
     private readonly workspaceApi: WorkspaceApi,
     private readonly backendProxy: BackendProxy,
+    private readonly notificationsApi: NotificationsApi,
     private initialBackup = editor.document.initialBackup
   ) {}
 
@@ -86,5 +88,15 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public receive_getLocale(): Promise<string> {
     return Promise.resolve(vscode.env.language);
+  }
+
+  public createNotification(notification: Notification): void {
+    this.notificationsApi.createNotification(notification);
+  }
+  public setNotifications(path: string, notifications: Notification[]): void {
+    this.notificationsApi.setNotifications(path, notifications);
+  }
+  public removeNotifications(path: string): void {
+    this.notificationsApi.removeNotifications(path);
   }
 }

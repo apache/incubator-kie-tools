@@ -15,6 +15,7 @@
  */
 import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
 
@@ -52,5 +53,9 @@ export class PMMLEditorInterface implements Editor {
 
   public async redo(): Promise<void> {
     return this.self.redo();
+  }
+
+  public async validate(): Promise<Notification[]> {
+    return [];
   }
 }

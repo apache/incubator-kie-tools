@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import { KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/src/vscode";
 import * as vscode from "vscode";
 import {
   CancellationToken,
@@ -23,16 +26,17 @@ import {
   EventEmitter,
   Uri
 } from "vscode";
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEdit } from "@kogito-tooling/channel-common-api";
-import { KogitoEditor } from "./KogitoEditor";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
 import * as nodePath from "path";
+import { KogitoEditor } from "./KogitoEditor";
+import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
 
 export class KogitoEditableDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
   private readonly decoder = new TextDecoder("utf-8");
+
+  private readonly vsCodeLogger = new VsCodeOutputLogger(KogitoEditableDocument.name);
 
   private readonly _onDidDispose = new EventEmitter<void>();
   public readonly onDidDispose = this._onDidDispose.event;
@@ -44,7 +48,8 @@ export class KogitoEditableDocument implements CustomDocument {
     public readonly uri: Uri,
     public readonly initialBackup: Uri | undefined,
     public readonly editorStore: KogitoEditorStore,
-    private readonly vsCodeI18n: I18n<VsCodeI18n>
+    private readonly vsCodeI18n: I18n<VsCodeI18n>,
+    private readonly vsCodeNotifications: VsCodeNotificationsApi
   ) {}
 
   public dispose() {
@@ -72,15 +77,19 @@ export class KogitoEditableDocument implements CustomDocument {
         return;
       }
 
+      const notifications = await editor.validate();
+      this.vsCodeNotifications.setNotifications(destination.fsPath, notifications);
+
       const content = await editor.getContent();
       if (cancellation.isCancellationRequested) {
+        this.vsCodeLogger.info(cancellation);
         return;
       }
 
       await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
       vscode.window.setStatusBarMessage(i18n.savedSuccessfully, 3000);
     } catch (e) {
-      console.error("Error saving.", e);
+      this.vsCodeLogger.error(`Error saving. ${e}`);
     }
   }
 

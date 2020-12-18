@@ -67,6 +67,9 @@ export const createEditor = (
     close: () => {
       window.removeEventListener("message", listener);
       iframe.remove();
+    },
+    validate: () => {
+      return envelopeServer.envelopeApi.requests.validate();
     }
   };
 };

@@ -23,7 +23,6 @@ const testWorkspace = __path.resolve(__dirname, "test-workspace") + __path.sep;
 let resourceContentServie: VsCodeNodeResourceContentService;
 
 describe("VsCodeNodeResourceContentService", () => {
-
   beforeEach(() => {
     resourceContentServie = new VsCodeNodeResourceContentService(testWorkspace);
   });
