@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.touch.client.Point;
@@ -116,7 +117,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
     protected void doInit() {
         super.doInit();
         getTextEditorBox().initialize(canvasHandler,
-                                      AbstractCanvasInlineTextEditorControl.this::hide);
+                                      () -> scheduleDeferredCommand(AbstractCanvasInlineTextEditorControl.this::hide));
 
         getFloatingView()
                 .hide()
@@ -159,7 +160,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
         final TextDoubleClickHandler clickHandler = new TextDoubleClickHandler() {
             @Override
             public void handle(final TextDoubleClickEvent event) {
-                AbstractCanvasInlineTextEditorControl.this.show(element);
+                scheduleDeferredCommand(() -> AbstractCanvasInlineTextEditorControl.this.show(element));
             }
         };
         hasEventHandlers.addHandler(ViewEventType.TEXT_DBL_CLICK,
@@ -592,5 +593,9 @@ public abstract class AbstractCanvasInlineTextEditorControl
             getFloatingView().hide();
         }
         return this;
+    }
+
+    public void scheduleDeferredCommand(final Scheduler.ScheduledCommand command) {
+        Scheduler.get().scheduleDeferred(command);
     }
 }
