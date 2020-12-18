@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.keycloak.client.Keycloak;
+import org.uberfire.ext.security.management.keycloak.client.resource.ClientsResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
@@ -49,10 +50,14 @@ public abstract class BaseKeyCloakTest extends BaseTest {
     @Mock
     protected RolesResource rolesResource;
 
+    @Mock
+    protected ClientsResource clientsResource;
+
     @Before
     public void setup() throws Exception {
         when(realmResource.users()).thenReturn(usersResource);
         when(realmResource.roles()).thenReturn(rolesResource);
+        when(realmResource.clients()).thenReturn(clientsResource);
         when(keycloakMock.realm()).thenReturn(realmResource);
     }
 }

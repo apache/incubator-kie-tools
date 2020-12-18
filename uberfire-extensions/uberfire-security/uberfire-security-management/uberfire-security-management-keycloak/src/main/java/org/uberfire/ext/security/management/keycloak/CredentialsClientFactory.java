@@ -49,9 +49,12 @@ public class CredentialsClientFactory extends BaseClientFactory {
                                                                     DEFAULT_CLIENT_ID);
         final ConfigProperties.ConfigProperty clientSecret = config.get("org.uberfire.ext.security.management.keycloak.clientSecret",
                                                                         DEFAULT_CLIENT_SECRET);
+        final ConfigProperties.ConfigProperty useRoleResourceMappings = config.get("org.uberfire.ext.security.management.keycloak.use-resource-role-mappings",
+                                                                        "false");
 
         this.client = Keycloak.getInstance(authServer.getValue(),
                                            realm.getValue(),
+                                           useRoleResourceMappings.getBooleanValue(),
                                            new AuthTokenManager(new AuthSettings(authServer.getValue(),
                                                                                  realm.getValue(),
                                                                                  user.getValue(),

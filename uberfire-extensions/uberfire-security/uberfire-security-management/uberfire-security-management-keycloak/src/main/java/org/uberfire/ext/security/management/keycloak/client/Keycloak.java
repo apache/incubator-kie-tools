@@ -28,28 +28,34 @@ import org.uberfire.ext.security.management.keycloak.client.resource.RealmsResou
 
 /**
  * The Keycloak client.
+ *
  * @since 0.9.0
  */
 public class Keycloak {
 
     private final String serverUrl;
     private final String realm;
+    private final Boolean useRoleResourceMappings;
     private final ClientRequestFactory clientRequestFactory;
 
     Keycloak(String serverUrl,
              String realm,
+             Boolean useRoleResourceMappings,
              TokenManager tokenManager) {
         this.serverUrl = serverUrl;
         this.realm = realm;
+        this.useRoleResourceMappings = useRoleResourceMappings;
         this.clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(serverUrl).build());
         ResteasyProviderFactory.getInstance().getClientExecutionInterceptorRegistry().register(new BearerAuthenticationInterceptor(tokenManager));
     }
 
     public static Keycloak getInstance(String serverUrl,
                                        String realm,
+                                       Boolean useRoleResourceMappings,
                                        TokenManager tokenManager) {
         return new Keycloak(serverUrl,
                             realm,
+                            useRoleResourceMappings,
                             tokenManager);
     }
 
@@ -63,6 +69,10 @@ public class Keycloak {
 
     public String getRealm() {
         return realm;
+    }
+
+    public Boolean getUseRoleResourceMappings() {
+        return useRoleResourceMappings;
     }
 
     public void close() {

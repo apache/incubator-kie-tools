@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,6 +44,7 @@ import org.uberfire.ext.security.management.impl.SearchResponseImpl;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
@@ -53,6 +54,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 /**
  * <p>UsersManager Service Provider Implementation for KeyCloak.</p>
+ *
  * @since 0.8.0
  */
 public class KeyCloakUserManager extends BaseKeyCloakManager implements UserManager,
@@ -252,9 +254,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
             if (userResource == null) {
                 throw new UserNotFoundException(username);
             }
-            final RolesResource rolesResource = realmResource.roles();
-            final List<RoleRepresentation> roleRepresentations = userResource.roles().realmLevel().listEffective();
-            userResource.roles().realmLevel().remove(roleRepresentations);
+            final RolesResource rolesResource = getRolesResource(realmResource, getKeyCloakInstance().getUseRoleResourceMappings());
             if (idsToAssign != null && !idsToAssign.isEmpty()) {
                 // Add the given assignments.
                 final List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>();
@@ -265,7 +265,11 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
                                                              roleResource));
                     }
                 }
-                userResource.roles().realmLevel().add(rolesToAdd);
+
+                RoleScopeResource roleScopeResource = getRolesScopeResource(userResource.roles(), getKeyCloakInstance().getUseRoleResourceMappings());
+                final List<RoleRepresentation> roleRepresentations = roleScopeResource.listEffective();
+                roleScopeResource.remove(roleRepresentations);
+                roleScopeResource.add(rolesToAdd);
             }
         });
     }

@@ -44,10 +44,13 @@ public class KCAdapterClientFactory extends BaseClientFactory {
         // Check mandatory properties.
         final ConfigProperties.ConfigProperty authServer = config.get("org.uberfire.ext.security.management.keycloak.authServer",
                                                                       DEFAULT_AUTH_SERVER);
+        final ConfigProperties.ConfigProperty useRoleResourceMappings = config.get("org.uberfire.ext.security.management.keycloak.use-resource-role-mappings",
+                                                                                   "false");
 
         final KCAdapterContextTokenManager tokenManager = new KCAdapterContextTokenManager(request);
         this.client = Keycloak.getInstance(authServer.getValue(),
                                            tokenManager.getRealm(),
+                                           useRoleResourceMappings.getBooleanValue(),
                                            tokenManager);
     }
 }

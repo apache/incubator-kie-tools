@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,12 +31,15 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.jboss.resteasy.spi.NotFoundException;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.kie.soup.commons.util.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.exception.ClientNotFoundException;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.OperationFailedException;
 import org.uberfire.ext.security.management.api.exception.RealmManagementNotAuthorizedException;
@@ -48,6 +52,8 @@ import org.uberfire.ext.security.management.keycloak.client.Keycloak;
 import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
@@ -55,6 +61,8 @@ import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 public abstract class BaseKeyCloakManager {
 
     static final int STATUS_NOT_AUTHORIZED = 403;
+
+    protected static final String CLIENT_ID = "kie";
 
     protected static final String ATTRIBUTE_USER_ID = "user.id";
     protected static final String ATTRIBUTE_USER_FIRST_NAME = "user.firstName";
@@ -148,7 +156,6 @@ public abstract class BaseKeyCloakManager {
     protected Group createGroup(RoleRepresentation roleRepresentation) {
         if (roleRepresentation != null) {
             String name = roleRepresentation.getName();
-            ;
             final Group group = createGroup(name);
             return group;
         }
@@ -165,7 +172,8 @@ public abstract class BaseKeyCloakManager {
 
     protected Set[] getUserGroupsAndRoles(final RoleMappingResource roleMappingResource) {
         if (roleMappingResource != null) {
-            List<RoleRepresentation> roles = roleMappingResource.realmLevel().listEffective();
+            List<RoleRepresentation> roles;
+            roles = getRolesScopeResource(roleMappingResource, getKeyCloakInstance().getUseRoleResourceMappings()).listEffective();
             if (roles != null && !roles.isEmpty()) {
                 final Set<Group> _groups = new HashSet<Group>();
                 final Set<Role> _roles = new HashSet<Role>();
@@ -208,7 +216,7 @@ public abstract class BaseKeyCloakManager {
         final Map<String, List<String>> attrs = userRepresentation.getAttributes();
         if (attrs != null && !attrs.isEmpty()) {
             for (final Map.Entry<String, List<String>> entry : attrs.entrySet()) {
-                final String v = entry.getValue() != null ? String.join(", ",entry.getValue()) : null;
+                final String v = entry.getValue() != null ? String.join(", ", entry.getValue()) : null;
                 user.setProperty(entry.getKey(), v);
             }
         }
@@ -240,6 +248,21 @@ public abstract class BaseKeyCloakManager {
                                                        value);
                 }
             }
+        }
+        List<String> keycloakRoles = new ArrayList<>();
+
+        for (Group group : user.getGroups()) {
+            keycloakRoles.add(group.getName());
+        }
+
+        for (Role role : user.getRoles()) {
+            keycloakRoles.add(role.getName());
+        }
+
+        if (getKeyCloakInstance().getUseRoleResourceMappings()) {
+            userRepresentation.setClientRoles(new Maps.Builder().put(CLIENT_ID, keycloakRoles).build());
+        } else {
+            userRepresentation.setRealmRoles(keycloakRoles);
         }
     }
 
@@ -287,5 +310,27 @@ public abstract class BaseKeyCloakManager {
                                                    "Operation failed. See server log messages.");
             }
         }
+    }
+
+    protected RolesResource getRolesResource(RealmResource realmResource, boolean useClientRoles) {
+        if (useClientRoles) {
+            return realmResource.clients().get(getClientIdByName(realmResource)).roles();
+        }
+        return realmResource.roles();
+    }
+
+    protected RoleScopeResource getRolesScopeResource(RoleMappingResource roleMappingResource, boolean useClientRoles) {
+        if (useClientRoles) {
+            return roleMappingResource.clientLevel(getClientIdByName(getRealmResource()));
+        }
+            return roleMappingResource.realmLevel();
+    }
+
+    protected String getClientIdByName(RealmResource realmResource) {
+        List<ClientRepresentation> clientResource = realmResource.clients().findByClientId(CLIENT_ID);
+        if (!clientResource.isEmpty()) {
+            return clientResource.get(0).getId();
+        }
+        throw new ClientNotFoundException(CLIENT_ID);
     }
 }

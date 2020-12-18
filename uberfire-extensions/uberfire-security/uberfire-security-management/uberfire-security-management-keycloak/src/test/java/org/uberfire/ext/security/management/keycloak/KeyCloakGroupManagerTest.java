@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.jboss.errai.security.shared.api.Group;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +37,7 @@ import org.uberfire.ext.security.management.keycloak.client.resource.RealmResour
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
@@ -52,6 +51,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KeyCloakGroupManagerTest extends DefaultKeyCloakTest {
@@ -102,7 +102,6 @@ public class KeyCloakGroupManagerTest extends DefaultKeyCloakTest {
         assertGroup(group,
                     name);
     }
-
     @Test(expected = GroupNotFoundException.class)
     public void testGetGroup200() {
         String name = ROLE + 200;
@@ -229,6 +228,27 @@ public class KeyCloakGroupManagerTest extends DefaultKeyCloakTest {
         List rolesAdded = rolesCaptor.getValue();
         assertEquals(1,
                      rolesAdded.size());
+    }
+
+    @Test
+    public void testGetClientById() {
+        String clientId = groupsManager.getClientIdByName(realmResource);
+        assertEquals("clientId", clientId);
+    }
+
+    @Test
+    public void testGetRoleResource() {
+        RolesResource rolesResource = groupsManager.getRolesResource(realmResource, true);
+        assertEquals(52, rolesResource.list().size());
+    }
+
+    @Test
+    public void testGetClientRoles() {
+        String name = ROLE + 5;
+        when(groupsManager.getRolesResource(realmResource, true)).thenReturn(rolesResource);
+        Group group = groupsManager.get(name);
+        assertGroup(group,
+                    name);
     }
 
     private void assertGroup(Group group,

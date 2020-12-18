@@ -87,8 +87,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
                      identifier);
         final RoleResource[] roleResource = new RoleResource[1];
         consumeRealm(realmResource -> {
-            final RolesResource rolesResource = realmResource.roles();
-            roleResource[0] = rolesResource.get(identifier);
+            roleResource[0] = getRolesResource(realmResource, getKeyCloakInstance().getUseRoleResourceMappings()).get(identifier);
         });
         if (roleResource[0] != null) {
             final RoleRepresentation roleRepresentation = getRoleRepresentation(identifier,
@@ -104,8 +103,9 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     @Override
     public List<Group> getAll() throws SecurityManagementException {
         final List<Group> roles = new LinkedList<>();
+
         consumeRealm(realmResource -> {
-            final RolesResource rolesResource = realmResource.roles();
+            RolesResource rolesResource = getRolesResource(realmResource, getKeyCloakInstance().getUseRoleResourceMappings());
             final List<RoleRepresentation> roleRepresentations = rolesResource.list();
             final Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
             if (roleRepresentations != null && !roleRepresentations.isEmpty()) {
@@ -126,7 +126,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         checkNotNull("entity",
                      entity);
         consumeRealm(realmResource -> {
-            final RolesResource rolesResource = realmResource.roles();
+            final RolesResource rolesResource = getRolesResource(realmResource, getKeyCloakInstance().getUseRoleResourceMappings());
             final RoleRepresentation roleRepresentation = new RoleRepresentation(entity.getName(), entity.getName(), Boolean.FALSE);
             roleRepresentation.setId(entity.getName());
             roleRepresentation.setComposite(false);
@@ -148,7 +148,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         checkNotNull("identifiers",
                      identifiers);
         consumeRealm(realmResource -> {
-            final RolesResource rolesResource = realmResource.roles();
+            final RolesResource rolesResource = getRolesResource(realmResource, getKeyCloakInstance().getUseRoleResourceMappings());
             for (String identifier : identifiers) {
                 final RoleResource roleResource = rolesResource.get(identifier);
                 if (roleResource == null) {
@@ -178,7 +178,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         if (users != null) {
             consumeRealm(realmResource -> {
                 final UsersResource usersResource = realmResource.users();
-                final RolesResource rolesResource = realmResource.roles();
+                final RolesResource rolesResource = getRolesResource(realmResource, true);
                 final RoleResource roleResource = rolesResource.get(name);
                 final List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>(1);
                 rolesToAdd.add(getRoleRepresentation(name,
@@ -189,7 +189,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
                     if (userResource == null) {
                         throw new UserNotFoundException(username);
                     }
-                    userResource.roles().realmLevel().add(rolesToAdd);
+                    getRolesScopeResource(userResource.roles(), getKeyCloakInstance().getUseRoleResourceMappings()).add(rolesToAdd);
                 }
             });
         }
