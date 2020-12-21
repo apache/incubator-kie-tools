@@ -12,6 +12,7 @@
     "build:fast": "npx lerna run build:fast --stream",
     "build:prod": "npx lerna run build:prod --stream",
     "build:productization": "npx lerna run build:productization --stream",
+    "pack:productization": "npx lerna run pack:productization --scope=@kogito-tooling/kie-editors-standalone --include-filtered-dependencies --stream && node ./compress-packages.js",
     "test:clearCache": "npx lerna run test:clearCache --stream",
     "update-version-to": "node ./update_version_to.js",
     "locktt": "locktt",
