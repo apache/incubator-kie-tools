@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/envelope",
+  "name": "@kogito-tooling/envelope",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@redhat/envelope-bus": "0.8.1"
+    "@kogito-tooling/envelope-bus": "0.8.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

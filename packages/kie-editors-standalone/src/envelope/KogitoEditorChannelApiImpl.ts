@@ -21,10 +21,10 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList
-} from "@redhat/channel-common-api";
-import { KogitoEditorChannelApi, StateControlCommand } from "@redhat/editor/dist/api";
-import { Tutorial, UserInteraction } from "@redhat/guided-tour/dist/api";
-import { File, StateControl } from "@redhat/editor/dist/channel";
+} from "@kogito-tooling/channel-common-api";
+import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import { File, StateControl } from "@kogito-tooling/editor/dist/channel";
 import { Minimatch } from "minimatch";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {

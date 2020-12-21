@@ -22,13 +22,13 @@ import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../tes
 const onFileNameChanged = jest.fn((file: string) => null);
 
 function mockFunctions() {
-  const original = require.requireActual("@redhat/editor/dist/embedded");
+  const original = require.requireActual("@kogito-tooling/editor/dist/embedded");
   return {
     ...original,
     useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false)
   };
 }
-jest.mock("@redhat/editor/dist/embedded", () => mockFunctions());
+jest.mock("@kogito-tooling/editor/dist/embedded", () => mockFunctions());
 
 afterAll(() => {
   jest.resetAllMocks();

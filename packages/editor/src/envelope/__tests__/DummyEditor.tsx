@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Editor } from "../../api";
-import { DEFAULT_RECT } from "@redhat/guided-tour/dist/api";
+import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 
 export class DummyEditor implements Editor {
   private ref: DummyEditorComponent;

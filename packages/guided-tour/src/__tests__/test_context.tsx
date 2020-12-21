@@ -1,6 +1,6 @@
 import * as React from "react";
 import { CurrentTutorialContext, CurrentTutorialContextType } from "../contexts";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@redhat/i18n/dist/react-components";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
 import { GuidedTourI18nContext, guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n";
 import { GuidedTourI18n } from "../i18n";
 import { DEFAULT_RECT, Rect, Tutorial } from "../api";

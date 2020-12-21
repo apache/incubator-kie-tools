@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Header, PMML } from "@redhat/pmml-editor-marshaller";
+import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { HistoryService } from "../../../editor/history";
 
 const service: HistoryService = new HistoryService();

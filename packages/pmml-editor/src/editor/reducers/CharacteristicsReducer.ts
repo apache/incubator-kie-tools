@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Characteristics } from "@redhat/pmml-editor-marshaller";
+import { Characteristics } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 

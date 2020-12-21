@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapperFactory } from "@redhat/kie-bc-editors";
-import * as EditorEnvelope from "@redhat/editor/dist/envelope";
-import { ChannelType, getOperatingSystem } from "@redhat/channel-common-api";
+import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
+import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
 
 declare global {
   export const acquireVsCodeApi: any;

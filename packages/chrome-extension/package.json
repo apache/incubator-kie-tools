@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/chrome-extension",
+  "name": "@kogito-tooling/chrome-extension",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -13,12 +13,12 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/editor": "0.8.1",
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.1",
     "@octokit/rest": "16.35.0",
     "@types/chrome": "0.0.81",
-    "minimatch": "3.0.4",
-    "@redhat/editor": "0.8.1",
-    "@redhat/i18n": "0.8.1",
-    "@redhat/i18n-common-dictionary": "0.8.1"
+    "minimatch": "3.0.4"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

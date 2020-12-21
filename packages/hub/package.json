@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/hub",
+  "name": "@kogito-tooling/hub",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -10,15 +10,15 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/desktop": "0.8.1",
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.1",
+    "@kogito-tooling/patternfly-base": "0.8.1",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "electron": "7.2.4",
     "react-router": "5.1.1",
-    "react-router-dom": "5.1.1",
-    "@redhat/desktop": "0.8.1",
-    "@redhat/i18n": "0.8.1",
-    "@redhat/i18n-common-dictionary": "0.8.1",
-    "@redhat/patternfly-base": "0.8.1"
+    "react-router-dom": "5.1.1"
   },
   "scripts": {
     "start": "electron dist",

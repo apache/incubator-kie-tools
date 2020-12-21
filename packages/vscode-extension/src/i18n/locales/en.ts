@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { en as en_common } from "@redhat/i18n-common-dictionary";
+import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 import { VsCodeI18n } from "..";
 
 export const en: VsCodeI18n = {

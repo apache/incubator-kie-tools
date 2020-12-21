@@ -15,10 +15,10 @@
  */
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@redhat/patternfly-base/patternflyWebpackOptions");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const externalAssets = require("@redhat/external-assets-base");
+const externalAssets = require("@kogito-tooling/external-assets-base");
 
 module.exports = async (argv, env) => [
   merge(common, {

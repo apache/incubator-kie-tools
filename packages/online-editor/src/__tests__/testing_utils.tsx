@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { EMPTY_FILE_DMN } from "@redhat/editor/dist/channel";
+import { EMPTY_FILE_DMN } from "@kogito-tooling/editor/dist/channel";
 import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
-import { EnvelopeMapping } from "@redhat/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@redhat/i18n/dist/react-components";
+import { EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
 import { onlineI18nDefaults, onlineI18nDictionaries, OnlineI18nContext } from "../common/i18n";
 import { OnlineI18n } from "../common/i18n";
 

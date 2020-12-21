@@ -12,7 +12,7 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
-import { DataDictionary, MiningField, MiningSchema, PMML } from "@redhat/pmml-editor-marshaller";
+import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 

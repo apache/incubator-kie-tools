@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { BackendManagerService } from "@redhat/backend/dist/api";
-import { BackendExtensionApi } from "@redhat/backend/dist/channel-api";
-import { DefaultHttpBridge } from "@redhat/backend/dist/http-bridge";
-import { QuarkusLocalServer } from "@redhat/backend/dist/node";
-import { VsCodeTestScenarioRunnerService } from "@redhat/backend/dist/vscode";
+import { BackendManagerService } from "@kogito-tooling/backend/dist/api";
+import { BackendExtensionApi } from "@kogito-tooling/backend/dist/channel-api";
+import { DefaultHttpBridge } from "@kogito-tooling/backend/dist/http-bridge";
+import { QuarkusLocalServer } from "@kogito-tooling/backend/dist/node";
+import { VsCodeTestScenarioRunnerService } from "@kogito-tooling/backend/dist/vscode";
 import * as path from "path";
 import * as vscode from "vscode";
 

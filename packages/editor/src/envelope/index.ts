@@ -23,14 +23,14 @@ import {
   KogitoEditorEnvelopeContextType
 } from "../api";
 import { KogitoEditorEnvelope } from "./KogitoEditorEnvelope";
-import { EnvelopeBus } from "@redhat/envelope-bus/dist/api";
+import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
-import { DefaultKeyboardShortcutsService } from "@redhat/keyboard-shortcuts/dist/envelope";
-import { I18nService } from "@redhat/i18n/dist/envelope";
-import { Envelope } from "@redhat/envelope";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { Envelope } from "@kogito-tooling/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
-import { I18n } from "@redhat/i18n/dist/core";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import "./styles.scss"
 
 /**

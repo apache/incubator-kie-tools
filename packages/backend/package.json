@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/backend",
+  "name": "@kogito-tooling/backend",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -11,13 +11,13 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.1",
+    "@kogito-tooling/workspace": "0.8.1",
     "@types/semver": "^7.3.3",
     "axios": "^0.19.2",
     "fast-xml-parser": "^3.17.4",
-    "portfinder": "^1.0.27",
-    "@redhat/i18n": "0.8.1",
-    "@redhat/i18n-common-dictionary": "0.8.1",
-    "@redhat/workspace": "0.8.1"
+    "portfinder": "^1.0.27"
   },
   "devDependencies": {
     "@types/sinon": "9.0.3",

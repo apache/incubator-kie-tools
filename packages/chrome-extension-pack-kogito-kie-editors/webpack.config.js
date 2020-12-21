@@ -18,10 +18,10 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
-const pfWebpackOptions = require("@redhat/patternfly-base/patternflyWebpackOptions");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const externalAssets = require("@redhat/external-assets-base");
+const externalAssets = require("@kogito-tooling/external-assets-base");
 
 function getLatestGitTag() {
   const tagName = require("child_process")

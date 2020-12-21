@@ -24,7 +24,7 @@ import {
   OpType,
   OutlierTreatmentMethod,
   UsageType
-} from "@redhat/pmml-editor-marshaller";
+} from "@kogito-tooling/pmml-editor-marshaller";
 
 interface MiningSchemaFieldPayload {
   [Actions.UpdateMiningSchemaField]: {

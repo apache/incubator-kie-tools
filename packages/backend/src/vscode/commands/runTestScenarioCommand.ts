@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { I18n } from "@redhat/i18n/dist/core/I18n";
-import { WorkspaceApi } from "@redhat/workspace/dist/api";
+import { I18n } from "@kogito-tooling/i18n/dist/core/I18n";
+import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as vscode from "vscode";
 import { CapabilityResponseStatus } from "../../api";
 import { ServiceId, TestResult, TestScenarioRunnerCapability } from "../../channel-api";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OperatingSystem } from "@redhat/channel-common-api";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { ChannelKeyboardEvent } from "../api";
 import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
 

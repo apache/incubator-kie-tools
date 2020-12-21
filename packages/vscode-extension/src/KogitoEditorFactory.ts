@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { BackendProxy } from "@redhat/backend/dist/api";
-import { ResourceContentService } from "@redhat/channel-common-api";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@redhat/editor/dist/api";
-import { WorkspaceApi } from "@redhat/workspace/dist/api";
+import { BackendProxy } from "@kogito-tooling/backend/dist/api";
+import { ResourceContentService } from "@kogito-tooling/channel-common-api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
+import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as nodePath from "path";
 import * as vscode from "vscode";
 import { Uri, Webview } from "vscode";

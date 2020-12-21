@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContentOptions, ResourceListOptions } from "@redhat/channel-common-api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
 
 /**
  * PUBLIC ENVELOPE API

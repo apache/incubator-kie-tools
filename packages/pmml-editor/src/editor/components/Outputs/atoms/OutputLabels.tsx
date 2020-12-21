@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { FieldName, OpType, RankOrder, ResultFeature } from "@redhat/pmml-editor-marshaller";
+import { FieldName, OpType, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldLabel } from "./OutputFieldLabel";
 
 interface OutputLabelsProps {

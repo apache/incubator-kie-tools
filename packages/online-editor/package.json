@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/online-editor",
+  "name": "@kogito-tooling/online-editor",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -10,17 +10,17 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/editor": "0.8.1",
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.1",
+    "@kogito-tooling/kie-bc-editors": "0.8.1",
+    "@kogito-tooling/patternfly-base": "0.8.1",
+    "@kogito-tooling/external-assets-base": "0.8.1",
     "@octokit/rest": "16.35.0",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "react-router": "5.1.1",
-    "react-router-dom": "5.1.1",
-    "@redhat/editor": "0.8.1",
-    "@redhat/i18n": "0.8.1",
-    "@redhat/i18n-common-dictionary": "0.8.1",
-    "@redhat/kie-bc-editors": "0.8.1",
-    "@redhat/patternfly-base": "0.8.1",
-    "@redhat/external-assets-base": "0.8.1"
+    "react-router-dom": "5.1.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

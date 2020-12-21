@@ -22,7 +22,7 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType
-} from "@redhat/channel-common-api";
+} from "@kogito-tooling/channel-common-api";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";

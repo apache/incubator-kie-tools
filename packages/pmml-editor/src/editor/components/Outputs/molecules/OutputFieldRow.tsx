@@ -23,7 +23,7 @@ import {
   OutputField,
   RankOrder,
   ResultFeature
-} from "@redhat/pmml-editor-marshaller";
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
 

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { BackendProxy } from "@redhat/backend/dist/api";
+import { BackendProxy } from "@kogito-tooling/backend/dist/api";
 import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest
-} from "@redhat/channel-common-api";
-import { KogitoEditorChannelApi, StateControlCommand } from "@redhat/editor/dist/api";
-import { Tutorial, UserInteraction } from "@redhat/guided-tour/dist/api";
-import { WorkspaceApi } from "@redhat/workspace/dist/api";
+} from "@kogito-tooling/channel-common-api";
+import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";

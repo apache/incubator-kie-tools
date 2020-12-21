@@ -17,7 +17,7 @@
 const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const pfWebpackOptions = require("@redhat/patternfly-base/patternflyWebpackOptions");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 module.exports = [
   merge(common, {

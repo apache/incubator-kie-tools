@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { File } from "@redhat/editor/dist/channel";
+import { File } from "@kogito-tooling/editor/dist/channel";
 import * as React from "react";
 import { GithubService } from "./GithubService";
 import { Routes } from "./Routes";
-import { EditorEnvelopeLocator } from "@redhat/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 export interface GlobalContextType {
   file: File;

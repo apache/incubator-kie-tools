@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Header } from "@redhat/pmml-editor-marshaller";
+import { Header } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions, HeaderReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";

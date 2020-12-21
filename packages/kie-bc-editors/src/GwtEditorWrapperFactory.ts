@@ -21,13 +21,13 @@ import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType
-} from "@redhat/editor/dist/api";
+} from "@kogito-tooling/editor/dist/api";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
-import { Tutorial, UserInteraction } from "@redhat/guided-tour/dist/api";
-import { ResourceContentOptions, ResourceListOptions } from "@redhat/channel-common-api";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
 import { GuidedTourApi } from "./api/GuidedTourApi";
 import { ResourceContentApi } from "./api/ResourceContentApi";
 import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
@@ -37,9 +37,9 @@ import { EditorContextApi } from "./api/EditorContextApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
-import { I18n } from "@redhat/i18n/dist/core";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
-import { PMMLEditorMarshallerService } from "@redhat/pmml-editor-marshaller";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 declare global {
   interface Window {

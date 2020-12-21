@@ -2,7 +2,7 @@ import * as React from "react";
 import { useContext } from "react";
 import { Button, Split, SplitItem } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
-import { MiningField } from "@redhat/pmml-editor-marshaller";
+import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
 import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";

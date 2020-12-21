@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/guided-tour",
+  "name": "@kogito-tooling/guided-tour",
   "version": "0.8.1",
   "description": "Guided Tour component",
   "license": "Apache-2.0",
@@ -19,9 +19,9 @@
     "react-dom": "16.12.0"
   },
   "dependencies": {
-    "@redhat/envelope-bus": "0.8.1",
-    "@redhat/i18n": "0.8.1",
-    "@redhat/i18n-common-dictionary": "0.8.1"
+    "@kogito-tooling/envelope-bus": "0.8.1",
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.1"
   },
   "presets": [
     "@babel/preset-env",

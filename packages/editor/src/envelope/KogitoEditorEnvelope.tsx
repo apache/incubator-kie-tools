@@ -21,16 +21,16 @@ import {
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType
 } from "../api";
-import { DefaultKeyboardShortcutsService } from "@redhat/keyboard-shortcuts/dist/envelope";
-import { KogitoGuidedTour } from "@redhat/guided-tour/dist/envelope";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/envelope";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { Envelope } from "@redhat/envelope";
+import { Envelope } from "@kogito-tooling/envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
-import { I18nService } from "@redhat/i18n/dist/envelope";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
-import { I18nDictionariesProvider } from "@redhat/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 
 export class KogitoEditorEnvelope {
   constructor(

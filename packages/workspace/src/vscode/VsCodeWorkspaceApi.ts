@@ -19,7 +19,7 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList
-} from "@redhat/channel-common-api";
+} from "@kogito-tooling/channel-common-api";
 import * as fs from "fs";
 import * as vscode from "vscode";
 import { WorkspaceApi } from "../api";

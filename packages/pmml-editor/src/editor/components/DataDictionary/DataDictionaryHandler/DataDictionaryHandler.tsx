@@ -13,7 +13,7 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import { isEqual } from "lodash";
-import { DataDictionary, PMML } from "@redhat/pmml-editor-marshaller";
+import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { convertDD2PMML, convertPMML2DD } from "../dataDictionaryUtils";

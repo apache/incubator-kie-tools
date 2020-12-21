@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import { Editor } from "@redhat/editor/dist/api";
-import { DEFAULT_RECT } from "@redhat/guided-tour/dist/api";
+import { Editor } from "@kogito-tooling/editor/dist/api";
+import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 
 export class DummyEditor implements Editor {
   private ref: DummyEditorComponent;

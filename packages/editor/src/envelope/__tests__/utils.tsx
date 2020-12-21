@@ -15,10 +15,10 @@
  */
 
 import { KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } from "../../api";
-import { DefaultKeyboardShortcutsService } from "@redhat/keyboard-shortcuts/dist/envelope";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import * as React from "react";
-import { I18nService } from "@redhat/i18n/dist/envelope";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@redhat/i18n/dist/react-components";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
 import {
   EditorEnvelopeI18n,
   EditorEnvelopeI18nContext,

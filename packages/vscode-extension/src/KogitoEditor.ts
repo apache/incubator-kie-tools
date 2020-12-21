@@ -21,12 +21,12 @@ import {
   EnvelopeMapping,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi
-} from "@redhat/editor/dist/api";
+} from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
-import { EnvelopeBusMessage } from "@redhat/envelope-bus/dist/api";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { EnvelopeServer } from "@redhat/envelope-bus/dist/channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;

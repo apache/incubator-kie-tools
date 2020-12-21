@@ -15,7 +15,7 @@
  */
 import { applyPatches, produce } from "immer";
 import { WritableDraft } from "immer/dist/types/types-external";
-import { PMML } from "@redhat/pmml-editor-marshaller/dist/marshaller/model";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller/dist/marshaller/model";
 import { cloneDeep, get, set } from "lodash";
 
 interface Change {

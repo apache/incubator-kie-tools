@@ -15,7 +15,7 @@
  */
 
 import { HubI18n } from "..";
-import { en as en_common } from "@redhat/i18n-common-dictionary";
+import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 
 export const en: HubI18n = {
   ...en_common,

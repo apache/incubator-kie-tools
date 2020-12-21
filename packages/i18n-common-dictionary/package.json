@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/i18n-common-dictionary",
+  "name": "@kogito-tooling/i18n-common-dictionary",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -26,6 +26,6 @@
     ]
   },
   "dependencies": {
-    "@redhat/i18n": "0.8.1"
+    "@kogito-tooling/i18n": "0.8.1"
   }
 }

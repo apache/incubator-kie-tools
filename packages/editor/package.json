@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/editor",
+  "name": "@kogito-tooling/editor",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -13,13 +13,13 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@redhat/backend": "0.8.1",
-    "@redhat/envelope": "0.8.1",
-    "@redhat/envelope-bus": "0.8.1",
-    "@redhat/guided-tour": "0.8.1",
-    "@redhat/i18n": "0.8.1",
-    "@redhat/keyboard-shortcuts": "0.8.1",
-    "@redhat/workspace": "0.8.1"
+    "@kogito-tooling/backend": "0.8.1",
+    "@kogito-tooling/envelope": "0.8.1",
+    "@kogito-tooling/envelope-bus": "0.8.1",
+    "@kogito-tooling/guided-tour": "0.8.1",
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/keyboard-shortcuts": "0.8.1",
+    "@kogito-tooling/workspace": "0.8.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

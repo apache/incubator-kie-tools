@@ -15,9 +15,9 @@
  */
 
 import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
-import { KogitoEditorChannelApi } from "@redhat/editor/dist/api";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { StateControlApi } from "../api/StateControlApi";
-import { MessageBusClientApi } from "@redhat/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 
 export class GwtStateControlService {
   private undoCommand: () => void;

@@ -18,9 +18,9 @@ import * as React from "react";
 import { fireEvent } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
-import { MessageBusClientApi } from "@redhat/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { KeyboardShortcutsEnvelopeApi } from "../../api";
-import { messageBusClientApiMock } from "@redhat/envelope-bus/dist/common/__tests__";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 
 let envelopeApi: MessageBusClientApi<KeyboardShortcutsEnvelopeApi>;
 

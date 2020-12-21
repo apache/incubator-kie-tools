@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { FieldName, Output, OutputField } from "@redhat/pmml-editor-marshaller";
+import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface OutputPayload {

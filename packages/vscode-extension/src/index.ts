@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { VsCodeBackendProxy } from "@redhat/backend/dist/vscode";
-import { EditorEnvelopeLocator } from "@redhat/editor/dist/api";
-import { I18n } from "@redhat/i18n/dist/core";
-import { VsCodeWorkspaceApi } from "@redhat/workspace/dist/vscode";
+import { VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
 import * as vscode from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { generateSvg } from "./generateSvg";

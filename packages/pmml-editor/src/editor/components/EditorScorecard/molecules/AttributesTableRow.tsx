@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
-import { Attribute, DataField } from "@redhat/pmml-editor-marshaller";
+import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { toText } from "../../../reducers";

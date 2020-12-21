@@ -18,7 +18,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Gallery, GalleryItem, PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EmptyStateNoModels } from "../organisms";
 import { v4 as uuid } from "uuid";
-import { Model, PMML } from "@redhat/pmml-editor-marshaller";
+import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
 import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
 import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";

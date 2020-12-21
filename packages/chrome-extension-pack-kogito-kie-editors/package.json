@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/chrome-extension-pack-kogito-kie-editors",
+  "name": "chrome-extension-pack-kogito-kie-editors",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -8,11 +8,11 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@redhat/chrome-extension": "0.8.1",
-    "@redhat/editor": "0.8.1",
-    "@redhat/kie-bc-editors": "0.8.1",
-    "@redhat/patternfly-base": "0.8.1",
-    "@redhat/external-assets-base": "0.8.1"
+    "@kogito-tooling/chrome-extension": "0.8.1",
+    "@kogito-tooling/editor": "0.8.1",
+    "@kogito-tooling/kie-bc-editors": "0.8.1",
+    "@kogito-tooling/patternfly-base": "0.8.1",
+    "@kogito-tooling/external-assets-base": "0.8.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json '{src,it-tests}/**/*.{ts,tsx,js,jsx}'",

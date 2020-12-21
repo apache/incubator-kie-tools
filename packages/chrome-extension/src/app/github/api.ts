@@ -15,7 +15,7 @@
  */
 
 import * as Octokit from "@octokit/rest";
-import { ContentType } from "@redhat/channel-common-api";
+import { ContentType } from "@kogito-tooling/channel-common-api";
 
 export function fetchFile(
   octokit: Octokit,

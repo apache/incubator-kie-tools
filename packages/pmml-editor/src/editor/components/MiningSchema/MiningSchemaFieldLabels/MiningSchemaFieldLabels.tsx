@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Label } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
-import { MiningField } from "@redhat/pmml-editor-marshaller";
+import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaFieldLabels.scss";
 
 interface MiningSchemaFieldLabelsProps {

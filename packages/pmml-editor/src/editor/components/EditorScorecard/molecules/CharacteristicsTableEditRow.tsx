@@ -25,7 +25,7 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
-import { Attribute, Characteristic, Model, PMML, Scorecard } from "@redhat/pmml-editor-marshaller";
+import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { OperationContext } from "../../../PMMLEditor";
 
 interface CharacteristicsTableEditRowProps {

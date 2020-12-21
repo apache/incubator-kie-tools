@@ -28,7 +28,7 @@ import {
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
 import { EditorContext } from "../../api";
-import { OperatingSystem } from "@redhat/channel-common-api";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { useKogitoEditorEnvelopeContext } from "../../api";
 import { useEditorEnvelopeI18nContext } from "../i18n";
 

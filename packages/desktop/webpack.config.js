@@ -15,10 +15,10 @@
  */
 
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@redhat/patternfly-base/patternflyWebpackOptions");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const externalAssets = require("@redhat/external-assets-base");
+const externalAssets = require("@kogito-tooling/external-assets-base");
 
 module.exports = async (argv, env) => [
   merge(common, {
@@ -50,7 +50,7 @@ module.exports = async (argv, env) => [
         { from: "./static/resources", to: "./resources" },
         { from: "./static/images", to: "./images" },
         { from: "./static/index.html", to: "./index.html" },
-        { from: "../../node_modules/@redhat/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
+        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn" },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn" }
       ])

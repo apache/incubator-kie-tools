@@ -18,8 +18,8 @@ import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
 import { GwtStateControlService } from "../gwtStateControl";
 import { GwtEditorMapping } from "../GwtEditorMapping";
-import { messageBusClientApiMock } from "@redhat/envelope-bus/dist/common/__tests__";
-import { I18nService } from "@redhat/i18n/dist/envelope";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const cssResource: Resource = {
   type: "css",

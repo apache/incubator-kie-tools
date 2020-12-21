@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { PMML } from "@redhat/pmml-editor-marshaller";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface PMMLPayload {

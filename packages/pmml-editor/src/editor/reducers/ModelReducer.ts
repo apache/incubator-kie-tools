@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Model, Scorecard } from "@redhat/pmml-editor-marshaller";
+import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { AllScorecardActions, ScorecardReducer } from "./ScorecardReducer";
 import { DelegatingModelReducer } from "./DelegatingModelReducer";

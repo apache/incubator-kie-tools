@@ -20,8 +20,8 @@ import { ResourceContentServiceFactory } from "../app/components/common/ChromeRe
 import { GitHubContext, GitHubContextType } from "../app/components/common/GitHubContext";
 import { Logger } from "../Logger";
 import { Dependencies } from "../app/Dependencies";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@redhat/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@redhat/i18n/dist/react-components";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
 import {
   ChromeExtensionI18nContext,
   chromeExtensionI18nDictionaries,

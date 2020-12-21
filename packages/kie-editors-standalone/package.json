@@ -1,5 +1,5 @@
 {
-  "name": "@redhat/kie-editors-standalone",
+  "name": "@kogito-tooling/kie-editors-standalone",
   "version": "0.8.1",
   "description": "",
   "license": "Apache-2.0",
@@ -13,10 +13,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@redhat/editor": "0.8.1",
-    "@redhat/i18n": "0.8.1",
-    "@redhat/kie-bc-editors": "0.8.1",
-    "@redhat/external-assets-base": "0.8.1"
+    "@kogito-tooling/editor": "0.8.1",
+    "@kogito-tooling/i18n": "0.8.1",
+    "@kogito-tooling/kie-bc-editors": "0.8.1",
+    "@kogito-tooling/external-assets-base": "0.8.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

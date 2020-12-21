@@ -16,7 +16,7 @@
 import { Reducer } from "react";
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { FieldName, MiningSchema } from "@redhat/pmml-editor-marshaller";
+import { FieldName, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface MiningSchemaPayload {
   [Actions.AddMiningSchemaFields]: {

@@ -25,12 +25,12 @@ import {
   KogitoEditorEnvelopeContextType,
   StateControlCommand
 } from "../api";
-import { ChannelType } from "@redhat/channel-common-api";
-import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@redhat/envelope";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
-import { ChannelKeyboardEvent } from "@redhat/keyboard-shortcuts/dist/api";
-import { DEFAULT_RECT } from "@redhat/guided-tour/dist/api";
-import { I18n } from "@redhat/i18n/dist/core";
+import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
+import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { EditorEnvelopeI18n } from "./i18n";
 
 export class KogitoEditorEnvelopeApiFactory

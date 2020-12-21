@@ -18,7 +18,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Form, FormGroup, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputFieldsTable.scss";
-import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@redhat/pmml-editor-marshaller";
+import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector } from "../../EditorScorecard/atoms";
 
 interface OutputFieldExtendedPropertiesProps {

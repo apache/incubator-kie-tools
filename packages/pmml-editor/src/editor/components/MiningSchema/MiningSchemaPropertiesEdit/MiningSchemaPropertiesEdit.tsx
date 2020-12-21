@@ -21,7 +21,7 @@ import {
   OpType,
   OutlierTreatmentMethod,
   UsageType
-} from "@redhat/pmml-editor-marshaller";
+} from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
 
 interface MiningSchemaPropertiesEditProps {

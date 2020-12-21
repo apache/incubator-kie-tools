@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Characteristic, DataField, PMML } from "@redhat/pmml-editor-marshaller";
+import { Characteristic, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Form } from "@patternfly/react-core";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
 import { Operation } from "../Operation";

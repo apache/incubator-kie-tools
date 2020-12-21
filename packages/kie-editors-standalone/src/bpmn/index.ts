@@ -15,11 +15,11 @@
  */
 
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
-import { EnvelopeServer } from "@redhat/envelope-bus/dist/channel";
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@redhat/editor/dist/api";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
-import { StateControl } from "@redhat/editor/dist/channel";
-import { ContentType } from "@redhat/channel-common-api/dist";
+import { StateControl } from "@kogito-tooling/editor/dist/channel";
+import { ContentType } from "@kogito-tooling/channel-common-api/dist";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
 
 declare global {
