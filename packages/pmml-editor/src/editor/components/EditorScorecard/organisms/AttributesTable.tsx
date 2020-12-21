@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, DataField, PMML } from "@redhat/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";

@@ -34,7 +34,7 @@ import {
   OutputField,
   RankOrder,
   ResultFeature
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@redhat/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";

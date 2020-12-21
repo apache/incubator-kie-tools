@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { ChannelType } from "@redhat/channel-common-api";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@redhat/editor/dist/embedded";
 import {
   Alert,
   AlertActionCloseButton,

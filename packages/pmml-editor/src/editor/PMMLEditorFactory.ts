@@ -19,7 +19,7 @@ import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType
-} from "@kogito-tooling/editor/dist/api";
+} from "@redhat/editor/dist/api";
 
 export const FACTORY_TYPE = "pmml";
 

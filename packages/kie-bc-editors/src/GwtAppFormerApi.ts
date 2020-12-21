@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Rect } from "@kogito-tooling/guided-tour/dist/api";
+import { Rect } from "@redhat/guided-tour/dist/api";
 
 declare global {
   //Exposed API of AppFormerGwt

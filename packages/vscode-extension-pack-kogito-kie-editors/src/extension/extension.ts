@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kogito-tooling/backend/dist/i18n";
-import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
-import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
-import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
+import { backendI18nDefaults, backendI18nDictionaries } from "@redhat/backend/dist/i18n";
+import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@redhat/backend/dist/vscode";
+import { I18n } from "@redhat/i18n/dist/core";
+import * as KogitoVsCode from "@redhat/vscode-extension";
+import { VsCodeWorkspaceApi } from "@redhat/workspace/dist/vscode";
 import * as vscode from "vscode";
 
 let backendProxy: VsCodeBackendProxy;

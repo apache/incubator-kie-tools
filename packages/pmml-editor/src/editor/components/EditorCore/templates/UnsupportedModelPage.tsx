@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model } from "@redhat/pmml-editor-marshaller";
 import { LandingPageHeader } from "../../LandingPage/molecules";
 import { Level, PageSection, PageSectionVariants } from "@patternfly/react-core";
 

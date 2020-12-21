@@ -17,7 +17,7 @@
 import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
-import { StateControl } from "@kogito-tooling/editor/dist/channel";
+import { StateControl } from "@redhat/editor/dist/channel";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";

@@ -35,7 +35,7 @@ import {
   TextModel,
   TimeSeriesModel,
   TreeModel
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@redhat/pmml-editor-marshaller";
 import get = Reflect.get;
 
 const ICON_BASE: string = "images/";

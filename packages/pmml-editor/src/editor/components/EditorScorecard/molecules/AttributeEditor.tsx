@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
-import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@redhat/pmml-editor-marshaller";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import { toText } from "../../../reducers";

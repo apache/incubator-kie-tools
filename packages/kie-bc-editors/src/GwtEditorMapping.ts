@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorInitArgs } from "@kogito-tooling/editor/dist/api";
+import { EditorInitArgs } from "@redhat/editor/dist/api";
 import { GwtLanguageData } from "./GwtLanguageData";
 
 export const editors = {

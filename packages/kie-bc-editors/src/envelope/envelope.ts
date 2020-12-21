@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import { ChannelType, getOperatingSystem } from "@redhat/channel-common-api";
 import { GwtEditorWrapperFactory } from "..";
-import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
-import { CompositeEditorFactory } from "@kogito-tooling/editor/dist/envelope";
-import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
+import * as EditorEnvelope from "@redhat/editor/dist/envelope";
+import { CompositeEditorFactory } from "@redhat/editor/dist/envelope";
+import { EnvelopeBusMessage } from "@redhat/envelope-bus/dist/api";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,

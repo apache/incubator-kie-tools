@@ -19,7 +19,7 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList
-} from "@kogito-tooling/channel-common-api";
+} from "@redhat/channel-common-api";
 
 export interface WorkspaceApi {
   receive_openFile(path: string): void;

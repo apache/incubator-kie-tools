@@ -21,7 +21,7 @@ import {
   ResourceContentOptions,
   ResourceListOptions,
   ContentType
-} from "@kogito-tooling/channel-common-api";
+} from "@redhat/channel-common-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";

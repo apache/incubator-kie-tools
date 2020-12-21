@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChannelType } from "@kogito-tooling/channel-common-api";
-import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import { ChannelType } from "@redhat/channel-common-api";
+import * as EditorEnvelope from "@redhat/editor/dist/envelope";
 
 let channelType: ChannelType = ChannelType.DESKTOP;
 
-jest.mock("@kogito-tooling/editor/dist/envelope");
+jest.mock("@redhat/editor/dist/envelope");
 const mockEditorEnvelope = EditorEnvelope as jest.Mocked<typeof EditorEnvelope>;
 
 Object.defineProperty(global, "frameElement", {

@@ -18,7 +18,7 @@ import * as React from "react";
 import { LandingPage } from "../../../../../editor/components/LandingPage/templates";
 import { Provider } from "react-redux";
 import { createStore, Store } from "redux";
-import { PMML, Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML, Scorecard, TreeModel } from "@redhat/pmml-editor-marshaller";
 
 const PATH: string = "path";
 

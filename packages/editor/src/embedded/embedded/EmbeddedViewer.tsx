@@ -15,7 +15,7 @@
  */
 
 import { EditorEnvelopeLocator } from "../../api";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { ChannelType } from "@redhat/channel-common-api";
 import * as React from "react";
 import { File } from "../../channel";
 import { EmbeddedEditor, Props as EmbeddedEditorProps } from "./EmbeddedEditor";

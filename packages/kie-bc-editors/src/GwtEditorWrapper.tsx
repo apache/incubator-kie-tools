@@ -16,12 +16,12 @@
 
 import * as React from "react";
 import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
-import { Editor, KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { Editor, KogitoEditorChannelApi } from "@redhat/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { MessageBusClientApi } from "@redhat/envelope-bus/dist/api";
+import { I18n } from "@redhat/i18n/dist/core";
 import { KieBcEditorsI18n } from "./i18n";
 
 export class GwtEditorWrapper implements Editor {

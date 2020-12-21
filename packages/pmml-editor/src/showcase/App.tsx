@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorChannelApi } from "@redhat/editor/dist/api";
 import { PMMLEditor } from "../editor";
 import * as React from "react";
 import { useState } from "react";
-import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/common";
+import { EnvelopeBusMessageManager } from "@redhat/envelope-bus/dist/common";
 import { PMMLEmptyState } from "./EmptyState";
 import { DisplayProperty } from "csstype";
 import { HistoryButtons } from "./HistoryButtons";

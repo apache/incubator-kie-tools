@@ -18,7 +18,7 @@ import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../../Outputs/organisms";
-import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { MiningSchema, Output, OutputField } from "@redhat/pmml-editor-marshaller";
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 
 interface EditorHeaderProps {

@@ -19,12 +19,12 @@ import {
   EditorContext,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType
-} from "@kogito-tooling/editor/dist/api";
+} from "@redhat/editor/dist/api";
 import { FACTORY_TYPE, PMMLEditorFactory, PMMLEditorInterface } from "../../editor";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
-import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
-import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { DefaultKeyboardShortcutsService } from "@redhat/keyboard-shortcuts/dist/envelope";
+import { ChannelType, OperatingSystem } from "@redhat/channel-common-api";
+import { messageBusClientApiMock } from "@redhat/envelope-bus/dist/common/__tests__";
+import { I18nService } from "@redhat/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 

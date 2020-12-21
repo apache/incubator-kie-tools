@@ -20,7 +20,7 @@ import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
-import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, Output, OutputField } from "@redhat/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";

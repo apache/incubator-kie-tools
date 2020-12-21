@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, FieldName } from "@redhat/pmml-editor-marshaller";
 import { Actions, AllActions, DataDictionaryReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";

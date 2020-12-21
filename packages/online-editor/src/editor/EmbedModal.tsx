@@ -19,7 +19,7 @@ import { Button, Modal, ModalVariant, Radio, Tooltip, ClipboardCopy } from "@pat
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
-import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditorRef } from "@redhat/editor/dist/embedded";
 import { GlobalContext } from "../common/GlobalContext";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";

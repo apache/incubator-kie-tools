@@ -29,7 +29,7 @@ import {
   EmptyStateNoCharacteristics,
   EmptyStateNoMatchingCharacteristics
 } from "../molecules";
-import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic } from "@redhat/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { OperationContext } from "../../../PMMLEditor";

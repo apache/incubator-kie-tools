@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
-import { EnvelopeBusController } from "@kogito-tooling/envelope-bus/dist/envelope";
+import { ApiDefinition, EnvelopeBus } from "@redhat/envelope-bus/dist/api";
+import { EnvelopeBusController } from "@redhat/envelope-bus/dist/envelope";
 import { EnvelopeApiFactory } from "./EnvelopeApiFactory";
 
 export class Envelope<

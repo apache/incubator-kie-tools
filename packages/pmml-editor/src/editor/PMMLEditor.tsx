@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
+import { KogitoEditorChannelApi } from "@redhat/editor/dist/api";
+import { MessageBusClientApi } from "@redhat/envelope-bus/dist/api";
 import * as React from "react";
 import { Reducer } from "react";
 import { enableAllPlugins } from "immer";
@@ -28,7 +28,7 @@ import {
   ModelReducer,
   PMMLReducer
 } from "./reducers";
-import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, PMML, PMML2XML, XML2PMML } from "@redhat/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HistoryService } from "./history";

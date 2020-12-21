@@ -25,7 +25,7 @@ import {
   SimplePredicateOperator,
   SimpleSetPredicate,
   True
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@redhat/pmml-editor-marshaller";
 
 const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map<SimplePredicateOperator, string>([
   ["equal", "="],

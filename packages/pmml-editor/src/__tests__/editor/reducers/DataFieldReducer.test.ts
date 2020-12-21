@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataField, FieldName } from "@redhat/pmml-editor-marshaller";
 import { Actions, AllActions, DataFieldReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";

@@ -26,7 +26,7 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
-import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Output, OutputField } from "@redhat/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation } from "../../EditorScorecard";
 import { OperationContext } from "../../../PMMLEditor";

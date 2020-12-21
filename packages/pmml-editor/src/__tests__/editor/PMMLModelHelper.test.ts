@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { getModelIconUrlByType, getModelName, getModelType, isCollection, isSupportedModelType } from "../../editor";
-import { Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
+import { Scorecard, TreeModel } from "@redhat/pmml-editor-marshaller";
 
 describe("PMMLModelHelper::getModelIconUrl", () => {
   test("getModelIconUrlByType::Undefined", () => {

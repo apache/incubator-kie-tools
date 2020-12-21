@@ -15,9 +15,9 @@
  */
 
 import { EditorContent } from "./EditorContent";
-import { KeyboardShortcutsEnvelopeApi } from "@kogito-tooling/keyboard-shortcuts/dist/api";
-import { GuidedTourEnvelopeApi } from "@kogito-tooling/guided-tour/dist/api";
-import { I18nEnvelopeApi } from "@kogito-tooling/i18n/dist/api";
+import { KeyboardShortcutsEnvelopeApi } from "@redhat/keyboard-shortcuts/dist/api";
+import { GuidedTourEnvelopeApi } from "@redhat/guided-tour/dist/api";
+import { I18nEnvelopeApi } from "@redhat/i18n/dist/api";
 
 export interface Association {
   origin: string;

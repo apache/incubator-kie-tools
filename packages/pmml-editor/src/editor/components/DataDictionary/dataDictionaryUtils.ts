@@ -3,7 +3,7 @@ import {
   DataField as PMMLDataField,
   DataType,
   FieldName
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@redhat/pmml-editor-marshaller";
 import { DataField } from "./DataDictionaryContainer/DataDictionaryContainer";
 
 export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DataField[] => {

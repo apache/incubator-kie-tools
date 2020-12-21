@@ -19,7 +19,7 @@ import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
 import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
-import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataField } from "@redhat/pmml-editor-marshaller";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;

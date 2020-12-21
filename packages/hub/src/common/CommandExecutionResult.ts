@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { OperatingSystem } from "@redhat/channel-common-api";
 
 export interface CommandExecutionResult {
   success: boolean;

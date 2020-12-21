@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
-import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
+import { Editor, KogitoEditorEnvelopeContextType } from "@redhat/editor/dist/api";
+import { DEFAULT_RECT } from "@redhat/guided-tour/dist/api";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
 

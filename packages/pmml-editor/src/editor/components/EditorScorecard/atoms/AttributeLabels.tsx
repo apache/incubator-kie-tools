@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute } from "@redhat/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
 
 interface AttributeLabelsProps {

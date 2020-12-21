@@ -16,7 +16,7 @@
 import * as React from "react";
 import { CSSProperties } from "react";
 import { Label } from "@patternfly/react-core";
-import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@redhat/pmml-editor-marshaller";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { OutputFieldLabel } from "./OutputFieldLabel";
 

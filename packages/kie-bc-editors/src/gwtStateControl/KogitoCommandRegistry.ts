@@ -15,9 +15,9 @@
  */
 
 import { GwtStateControlCommand } from "./GwtStateControlCommand";
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
-import { KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { KogitoEditorChannelApi } from "@redhat/editor/dist/api";
+import { MessageBusClientApi } from "@redhat/envelope-bus/dist/api";
+import { KogitoEdit } from "@redhat/channel-common-api";
 
 /**
  * PUBLIC GWT EDITORS API

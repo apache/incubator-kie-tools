@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
-import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
+import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@redhat/pmml-editor-marshaller";
 import {
   Bullseye,
   Form,

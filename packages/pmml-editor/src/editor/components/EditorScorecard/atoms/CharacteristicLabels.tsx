@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, DataField } from "@redhat/pmml-editor-marshaller";
 import { CharacteristicLabel, CharacteristicLabelAttribute } from "./CharacteristicLabel";
 import { toText } from "../../../reducers";
 

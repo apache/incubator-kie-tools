@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
+import { ReferenceDictionary } from "@redhat/i18n/dist/core";
 import { names } from "./names";
 
 // tslint:disable-next-line:interface-over-type-literal

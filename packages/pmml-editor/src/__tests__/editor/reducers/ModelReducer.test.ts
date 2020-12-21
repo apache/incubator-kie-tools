@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, Scorecard } from "@redhat/pmml-editor-marshaller";
 import { Actions, AllActions, ModelReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";

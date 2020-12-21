@@ -26,11 +26,11 @@ import { ElectronFile } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+import { EditorEnvelopeLocator } from "@redhat/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@redhat/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
-import { File } from "@kogito-tooling/editor/dist/channel";
+import { File } from "@redhat/editor/dist/channel";
 
 enum Pages {
   HOME,

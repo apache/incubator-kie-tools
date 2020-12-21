@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { HistoryAwareModelReducer, HistoryService, ModelReducerBinding } from "../history";
-import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model } from "@redhat/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { AllScorecardActions } from "./ScorecardReducer";
 import { getModelType, ModelType } from "..";

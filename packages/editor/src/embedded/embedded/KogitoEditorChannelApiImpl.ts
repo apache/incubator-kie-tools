@@ -15,8 +15,8 @@
  */
 
 import { StateControl } from "../../channel";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import { KogitoGuidedTour } from "@redhat/guided-tour/dist/channel";
+import { Tutorial, UserInteraction } from "@redhat/guided-tour/dist/api";
 import { KogitoEditorChannelApi, StateControlCommand } from "../../api";
 import {
   KogitoEdit,
@@ -24,7 +24,7 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList
-} from "@kogito-tooling/channel-common-api";
+} from "@redhat/channel-common-api";
 import { File } from "../../channel";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {

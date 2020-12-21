@@ -15,7 +15,7 @@
  */
 
 import { ChromeRouter } from "./ChromeRouter";
-import { startExtension } from "@kogito-tooling/chrome-extension";
+import { startExtension } from "@redhat/chrome-extension";
 import { OnlineEditorManager } from "./OnlineEditorManager";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();

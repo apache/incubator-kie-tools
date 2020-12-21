@@ -30,7 +30,7 @@ import {
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
 import { useOnlineI18n } from "./i18n";
-import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nHtml } from "@redhat/i18n/dist/react-components";
 
 interface Props {
   isOpen: boolean;

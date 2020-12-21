@@ -15,7 +15,7 @@
  */
 
 
-import { PMMLDocumentData } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMMLDocumentData } from "@redhat/pmml-editor-marshaller";
 
 /**
  * PUBLIC ENVELOPE API

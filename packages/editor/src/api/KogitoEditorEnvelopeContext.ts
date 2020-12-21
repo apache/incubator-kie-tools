@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@redhat/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 import { EditorContext } from "./EditorContext";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { DefaultKeyboardShortcutsService } from "@redhat/keyboard-shortcuts/dist/envelope";
+import { I18nService } from "@redhat/i18n/dist/envelope";
 
 export interface KogitoEditorEnvelopeContextType {
   channelApi: MessageBusClientApi<KogitoEditorChannelApi>;

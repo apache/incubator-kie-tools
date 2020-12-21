@@ -15,7 +15,7 @@
  */
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, Scorecard } from "@redhat/pmml-editor-marshaller";
 import { ModelCard } from "../../../../../editor/components/LandingPage/molecules";
 
 describe("ModelCard", () => {
