@@ -59,7 +59,7 @@ function usage(){
   printf "\n--operator_namespaced {TAG}\n\tSet to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false."
 
   # files/binaries
-  printf "\n--deploy_uri {URI}\n\tUrl or Path to operator 'deploy' folder. Default is local 'deploy/' folder."
+  printf "\n--operator_yaml_uri {URI}\n\tUrl or Path to kogito-operator.yaml file."
   printf "\n--cli_path {PATH}\n\tPath to built CLI to test. Default is local built one."
 
   # runtime
@@ -103,7 +103,6 @@ function usage(){
   printf "\n--show_steps\n\tDisplay scenarios and their steps which will be executed."
   printf "\n--dry_run\n\tExecute a dry run of the tests, disable crds updates and display the scenarios which would be executed."
   printf "\n--keep_namespace\n\tDo not delete namespace(s) after scenario run (WARNING: can be resources consuming ...)."
-  printf "\n--disabled_crds_update\n\tDisable the update of CRDs."
   printf "\n--namespace_name\n\tSpecify name of the namespace which will be used for scenario execution (intended for development purposes)."
   printf "\n--local_cluster\n\tSpecify whether you run test using a local cluster."
   printf "\n"
@@ -144,7 +143,6 @@ TAGS="" # tags are parsed independently as there could be whitespace to be handl
 FEATURE=""
 TIMEOUT=240
 DEBUG=false
-CRDS_UPDATE=true
 KEEP_NAMESPACE=false
 LOAD_DEFAULT_CONFIG=false
 
@@ -252,9 +250,9 @@ case $1 in
   ;;
 
   # files/binaries
-  --deploy_uri)
+  --operator_yaml_uri)
     shift
-    if addParamKeyValueIfAccepted "--tests.operator-deploy-uri" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.operator-yaml-uri" ${1}; then shift; fi
   ;;
   --cli_path)
     shift
@@ -389,7 +387,6 @@ case $1 in
     shift
   ;;
   --dry_run)
-    CRDS_UPDATE=false
     addParam "--tests.show-scenarios"
     addParam "--tests.dry-run"
     shift
@@ -397,10 +394,6 @@ case $1 in
   --keep_namespace)
     KEEP_NAMESPACE=true
     addParam "--tests.keep-namespace"
-    shift
-  ;;
-  --disabled_crds_update)
-    CRDS_UPDATE=false
     shift
   ;;
   --namespace_name)
@@ -436,37 +429,11 @@ if [ "${LOAD_DEFAULT_CONFIG}" = "true" ]; then
   done < "${SCRIPT_DIR}/../test/.default_config"
 fi
 
-if ${CRDS_UPDATE}; then
-  echo "-------- Apply CRD files"
-  source $SCRIPT_DIR/crds-utils.sh
-
-  deploy_folder="${SCRIPT_DIR}/../deploy"
-  if [[ ! -z "${OPERATOR_DEPLOY_FOLDER}" ]]; then 
-    # Get crds files from URI if 
-    if [[ ${OPERATOR_DEPLOY_FOLDER} == http://* ]] || [[ ${OPERATOR_DEPLOY_FOLDER} == https://* ]]; then
-      url=${OPERATOR_DEPLOY_FOLDER}
-      deploy_folder=`mktemp -d`
-      download_remote_crds ${deploy_folder} ${url}
-    else
-      deploy_folder="${OPERATOR_DEPLOY_FOLDER}"
-    fi
-  fi
-  apply_crds ${deploy_folder}
-fi
-
 echo "-------- Running BDD tests"
 echo "DEBUG=${DEBUG} go test ${SCRIPT_DIR}/../test -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
 DEBUG=${DEBUG} go test ${SCRIPT_DIR}/../test -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
 exit_code=$?
 echo "Tests finished with code ${exit_code}"
-
-if ${CRDS_UPDATE}; then
-  echo "-------- Set back master CRD files"
-
-  deploy_folder=`mktemp -d`
-  download_remote_crds ${deploy_folder} ${MASTER_RAW_URL}
-  apply_crds ${deploy_folder}
-fi
 
 if [ "${KEEP_NAMESPACE}" = "false" ]; then
   echo "-------- Pruning namespaces"

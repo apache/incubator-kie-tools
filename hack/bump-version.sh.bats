@@ -1,9 +1,10 @@
 #!/usr/bin/env bats
 
+source ./hack/export-version.sh
+
 OLD_VERSION=998.0.0
 NEW_VERSION=999.0.0
 NEW_VERSION_MAJOR_MINOR=$(echo "${NEW_VERSION}" | awk -F. '{print $1"."$2}')
-
 function make() { 
     echo "make $@" 
 }
@@ -19,9 +20,9 @@ setup() {
     mkdir -p ${dir}
     cp -r ${BATS_TEST_DIRNAME}/.. ${dir}/
 
-    mkdir -p ${dir}/deploy/olm-catalog/kogito-operator/${OLD_VERSION}
+    mkdir -p ${dir}/bundle/
 
-    export CURRENT_VERSION=$(grep -m 1 'Version =' ${dir}/version/version.go) && CURRENT_VERSION=$(echo ${CURRENT_VERSION#*=} | tr -d '"')
+    export CURRENT_VERSION=$(grep -m 1 'Version =' ${dir}/pkg/version/version.go) && CURRENT_VERSION=$(echo ${CURRENT_VERSION#*=} | tr -d '"')
 }
 
 teardown() {
@@ -41,9 +42,10 @@ teardown() {
     dir="${BATS_TMPDIR}/${BATS_TEST_NAME}"
     cd ${dir}
     run hack/bump-version.sh ${NEW_VERSION}
+    echo ${output}
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "Latest released OLM version = ${OLD_VERSION}" ]]
-    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version ${NEW_VERSION}" ]]
+    [[ "${output}" =~ "Latest released OLM version = ${LATEST_RELEASED_OLM_VERSION}" ]]
+    [[ "${output}" =~ "make bundle" ]]
     [[ "${output}" =~ "make vet" ]]
 
     # No version should be set in test config
@@ -63,13 +65,13 @@ teardown() {
     cd ${dir}
     run hack/bump-version.sh ${NEW_VERSION} true
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "Latest released OLM version = ${OLD_VERSION}" ]]
-    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version ${NEW_VERSION}" ]]
+    [[ "${output}" =~ "Latest released OLM version = ${LATEST_RELEASED_OLM_VERSION}" ]]
+    [[ "${output}" =~ "make bundle" ]]
     [[ "${output}" =~ "make vet" ]]
 
     # Only image version should be set
     result=$(cat test/.default_config)
-    [[ "${result}" =~ "${NEW_VERSION_MAJOR_MINOR}" ]]
+    [[ "${result}" =~ ${NEW_VERSION_MAJOR_MINOR} ]]
     [[ "${result}" =~ "master" ]]
     [[ "${result}" != *${NEW_VERSION_MAJOR_MINOR}.x* ]]
     [[ "${result}" != *latest* ]]
@@ -83,8 +85,8 @@ teardown() {
     cd ${dir}
     run hack/bump-version.sh ${NEW_VERSION} true false
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "Latest released OLM version = ${OLD_VERSION}" ]]
-    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version ${NEW_VERSION}" ]]
+    [[ "${output}" =~ "Latest released OLM version = ${LATEST_RELEASED_OLM_VERSION}" ]]
+    [[ "${output}" =~ "make bundle" ]]
     [[ "${output}" =~ "make vet" ]]
 
     # Release branch and image version should be set
@@ -101,15 +103,15 @@ teardown() {
     #current_version=$(cat )
     run hack/bump-version.sh ${NEW_VERSION}
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "Latest released OLM version = ${OLD_VERSION}" ]]
+    [[ "${output}" =~ "Latest released OLM version = ${LATEST_RELEASED_OLM_VERSION}" ]]
 
     # Check csv file
-    result=$(cat deploy/olm-catalog/kogito-operator/manifests/kogito-operator.clusterserviceversion.yaml)
-    [[ "${result}" =~ "${OLD_VERSION}" ]]
+    result=$(cat config/manifests/bases/kogito-operator.clusterserviceversion.yaml)
+    [[ "${result}" =~ "${LATEST_RELEASED_OLM_VERSION}" ]]
     [[ "${result}" =~ "${NEW_VERSION}" ]]
     [[ "${result}" != *${CURRENT_VERSION}* ]]
     # fine tune results
-    [[ "${result}" =~ "replaces: kogito-operator.v${OLD_VERSION}" ]]
+    [[ "${result}" =~ "replaces: kogito-operator.v${LATEST_RELEASED_OLM_VERSION}" ]]
     [[ "${result}" =~ "version: ${NEW_VERSION}" ]]
     [[ "${result}" =~ "operated-by: kogito-operator.${NEW_VERSION}" ]]
     [[ "${result}" =~ "quay.io/kiegroup/kogito-cloud-operator:${NEW_VERSION}" ]]

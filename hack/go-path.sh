@@ -1,4 +1,3 @@
-#!/bin/bash
 # Copyright 2020 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-CONTAINER_IMAGE=$(grep -m 1 'image: ' ./deploy/operator.yaml) && CONTAINER_IMAGE=$(echo ${CONTAINER_IMAGE#*:} | tr -d '"')
-
-echo "Container image is ${CONTAINER_IMAGE}"
+# enforce GOROOT
+export GOROOT=$(go env GOROOT)
+export GOPATH=$(go env GOPATH)

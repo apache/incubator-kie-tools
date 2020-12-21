@@ -1,5 +1,5 @@
-#!/bin/env bash
-# Copyright 2019 Red Hat, Inc. and/or its affiliates
+#!/bin/bash
+# Copyright 2020 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,23 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-declare exit_status=0
-declare file_found=0
 
-shopt -s nullglob
-for yaml in deploy/crds/*_crd.yaml; do
-  file_found=1
-  kubectl apply -f "./${yaml}"
-  exit_status=$?
-  if [ $exit_status -gt 0 ]; then
-    break # Don't try other files if one fails
-  fi
-done
-shopt -u nullglob
+source ./hack/go-path.sh
 
-if [[ file_found -eq 0 ]]; then
-  echo "No deployment files found" >&2
-  exit_status=3
-fi
-
-exit ${exit_status}
+# get the openapi binary
+command -v openapi-gen >/dev/null || go build -o "${GOPATH}"/bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
+echo "Generating openapi files"
+openapi-gen --logtostderr=true -o "" -i ./api/v1beta1 -O zz_generated.openapi -p ./api/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
+openapi-gen --logtostderr=true -o "" -i ./api/kafka/v1beta1 -O zz_generated.openapi -p ./api/kafka/v1beta1 -h ./hack/boilerplate.go.txt -r "-"

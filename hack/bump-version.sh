@@ -15,7 +15,7 @@
 
 source ./hack/export-version.sh
 
-OLM_DIR="deploy/olm-catalog/kogito-operator"
+CSV_DIR="config/manifests/bases/"
 
 old_version=${OP_VERSION}
 new_version=$1
@@ -35,23 +35,20 @@ if [ -z "$no_release_branch" ]; then
   no_release_branch="true"
 fi
 
-# Get latest released olm version from folders in deploy/olm-catalog/kogito-operator/
-latest_released_olm_version=$(cd ${OLM_DIR} && for i in $(ls -d */); do echo ${i%%/}; done | grep -v manifests | grep -v ${old_version} | sort -V | tail -1)
-echo "Latest released OLM version = $latest_released_olm_version"
 
-sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md version/version.go deploy/operator.yaml ${OLM_DIR}/kogito-operator.package.yaml ${OLM_DIR}/custom-subscription-example.yaml hack/go-build.sh hack/go-vet.sh .osdk-scorecard.yaml
+echo "Latest released OLM version = $LATEST_RELEASED_OLM_VERSION"
 
-if [ "${old_version}" != "${new_version}" ]; then
-  operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version "$new_version" --from-version "$old_version" --update-crds --operator-name kogito-operator
-fi
+sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md pkg/version/version.go config/manager/kustomization.yaml Makefile
+
 make vet
 
+
 # replace in csv file
-source ./hack/export-container-image.sh
-csv_files="${OLM_DIR}/manifests/kogito-operator.clusterserviceversion.yaml ${OLM_DIR}/${new_version}/*.clusterserviceversion.yaml"
-sed -i "s|operated-by: kogito-operator.*|operated-by: kogito-operator.${new_version}|g" ${csv_files}
-sed -i "s|containerImage: .*|containerImage: ${CONTAINER_IMAGE}|g" ${csv_files}
-sed -i "s|replaces: kogito-operator.*|replaces: kogito-operator.v${latest_released_olm_version}|g" ${csv_files}
+csv_file="${CSV_DIR}/kogito-operator.clusterserviceversion.yaml"
+sed -i "s|replaces: kogito-operator.*|replaces: kogito-operator.v${LATEST_RELEASED_OLM_VERSION}|g" ${csv_file}
+sed -i "s/$old_version/$new_version/g" ${csv_file}
+
+make bundle
 
 # rewrite test default config, all other configuration into the file will be overridden
 test_config_file="test/.default_config"

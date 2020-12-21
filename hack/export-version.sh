@@ -14,6 +14,14 @@
 # limitations under the License.
 
 
-OP_VERSION=$(grep -m 1 'Version =' ./version/version.go) && OP_VERSION=$(echo ${OP_VERSION#*=} | tr -d '"')
+OP_VERSION=$(grep -m 1 'Version =' ./pkg/version/version.go) && OP_VERSION=$(echo ${OP_VERSION#*=} | tr -d '"')
 
 echo "Operator version is ${OP_VERSION}"
+
+### Fetching the latest released kogito-cloud-operator on the OperatorHub
+tempfolder=$(mktemp -d)
+git clone https://github.com/operator-framework/community-operators/ "${tempfolder}"
+LATEST_RELEASED_OLM_VERSION=$(cd ${tempfolder}/community-operators/kogito-operator && for i in $(ls -d */); do echo ${i%%/}; done | sort -V | tail -1)
+
+echo "Latest released OLM version is ${LATEST_RELEASED_OLM_VERSION}"
+rm -rf ${tempfolder}

@@ -350,22 +350,22 @@ setup() {
 
 # files/binaries
 
-@test "invoke run-tests with deploy_uri" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --deploy_uri folder --dry_run
+@test "invoke run-tests with operator_yaml_uri" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_yaml_uri file.yaml --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.operator-deploy-uri=folder" ]]
+    [[ "${output}" =~ "--tests.operator-yaml-uri=file.yaml" ]]
 }
 
-@test "invoke run-tests with deploy_uri missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --deploy_uri --dry_run
+@test "invoke run-tests with operator_yaml_uri missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_yaml_uri --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.operator-deploy-uri"* ]]
+    [[ "${output}" != *"--tests.operator-yaml-uri"* ]]
 }
 
-@test "invoke run-tests with deploy_uri empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --deploy_uri "" --dry_run
+@test "invoke run-tests with operator_yaml_uri empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_yaml_uri "" --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.operator-deploy-uri"* ]]
+    [[ "${output}" != *"--tests.operator-yaml-uri"* ]]
 }
 
 @test "invoke run-tests with cli_path" {

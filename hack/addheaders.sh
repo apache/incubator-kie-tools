@@ -15,4 +15,4 @@
 
 which addlicense > /dev/null || go get -u github.com/google/addlicense
 
-addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache cmd hack pkg test version tools.go
+addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache cmd hack pkg api controllers

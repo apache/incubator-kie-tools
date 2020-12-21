@@ -21,33 +21,14 @@
 
 SCRIPT_DIR=`dirname $0`
 IMAGE=$1
-OPERATOR_NAME=kogito-operator
 TMP_FOLDER=tmp
 
 mkdir -p $TMP_FOLDER
 rm -rf $TMP_FOLDER/*
 
-echo "Deploying Operator $OPERATOR_NAME"
-
-# CRDs
-source $SCRIPT_DIR/crds-utils.sh
-apply_crds "deploy"
-
-#Namespace
-oc apply -f deploy/namespace.yaml
-
-# Service Account
-oc apply -f deploy/service_account.yaml
-
-# Roles
-oc apply -f deploy/clusterrole.yaml
-oc apply -f deploy/clusterrole_binding.yaml
-
-# Operator
-sed "s/name: kogito-operator/name: $OPERATOR_NAME/g" deploy/operator.yaml > $TMP_FOLDER/operator.yaml
-sed "s|image: quay.io/kiegroup/.*|image: $IMAGE|g" $TMP_FOLDER/operator.yaml > $TMP_FOLDER/operator-tmp.yaml
-sed '4 a \ \ namespace: kogito-operator-system' $TMP_FOLDER/operator-tmp.yaml > $TMP_FOLDER/operator.yaml
-oc apply -f $TMP_FOLDER/operator.yaml
+# Apply all
+sed "s|image: quay.io/kiegroup/.*|image: $IMAGE|g" kogito-operator.yaml > $TMP_FOLDER/kogito-operator.yaml
+kubectl apply -f $TMP_FOLDER/kogito-operator.yaml
 
 # Clean Up
 rm -rf $TMP_FOLDER/*
