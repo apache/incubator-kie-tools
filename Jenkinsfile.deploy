@@ -2,6 +2,7 @@
 
 deployProperties = [ : ]
 
+commitDone = false
 
 pipeline {
     agent {
@@ -24,7 +25,7 @@ pipeline {
         // Git information
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build ? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
-        
+
         // Build&Test information
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
         string(name: 'MAVEN_ARTIFACT_REPOSITORY', defaultValue: '', description: 'Maven repository where the build artifacts are present')
@@ -38,11 +39,13 @@ pipeline {
         string(name: 'IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Image namespace to use to deploy images')
         string(name: 'IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
         string(name: 'IMAGE_TAG', defaultValue: '', description: 'Image tag to use to deploy images')
-        
+
         // Release information
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'KOGITO_ARTIFACTS_VERSION', defaultValue: '', description: 'Optional. If artifacts\' version is different from PROJECT_VERSION.')
+
+        booleanParam(name: 'CREATE_CHANGES_PR', defaultValue: false, description: 'In case of not releasing, you can ask to create a PR with the changes')
 
         // Bot author information. Set as params for easy testing.
         string(name: 'GIT_AUTHOR_BOT', defaultValue: 'bsig-gh-bot', description: 'From which author should the PR be created ?')
@@ -50,6 +53,8 @@ pipeline {
     }
 
     environment {
+        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+
         CI = true
         JAVA_HOME = "${GRAALVM_HOME}"
 
@@ -63,7 +68,7 @@ pipeline {
     stages {
         stage('Initialization') {
             steps {
-                script {  
+                script {
                     clean()
 
                     if (params.DISPLAY_NAME != '') {
@@ -71,7 +76,7 @@ pipeline {
                     }
 
                     // Set the mirror url only if no artifact repository is given
-                    if (env.MAVEN_MIRROR_REPOSITORY){
+                    if (env.MAVEN_MIRROR_REPOSITORY) {
                         echo 'Set Maven mirror url'
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
                     }
@@ -96,9 +101,6 @@ pipeline {
             }
         }
         stage('Prepare for PR') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     githubscm.forkRepo(getBotAuthorCredsID())
@@ -106,20 +108,22 @@ pipeline {
                 }
             }
         }
-        stage('Update project version'){
+        stage('Update project version') {
             when {
                 expression { return getProjectVersion() != '' }
             }
             steps {
-                script{
+                script {
                     versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${getProjectVersion()} --confirm"
-                    if(getBuildBranch() != 'master'){
+                    if (getBuildBranch() != 'master') {
                         versionCmd += " --examples-ref ${getBuildBranch()}"
                     }
-                    if(getKogitoArtifactsVersion()){
+                    if (getKogitoArtifactsVersion()) {
                         versionCmd += " --artifacts-version ${getKogitoArtifactsVersion()}"
                     }
                     sh versionCmd
+
+                    commitChanges("Update project version to ${getProjectVersion()}")
                 }
             }
         }
@@ -128,7 +132,7 @@ pipeline {
                 script {
                     // Update artifacts
                     updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
-                    if(getMavenArtifactRepository() != ''){
+                    if (getMavenArtifactRepository() != '') {
                         updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
                     }
                     sh updateArtifactCmd
@@ -142,6 +146,12 @@ pipeline {
                     sh 'cat modules/kogito-management-console/module.yaml'
                     sh 'cat modules/kogito-task-console/module.yaml'
                     sh 'cat modules/kogito-trusty-ui/module.yaml'
+
+                    if (isThereAnyChanges()) {
+                        commitChanges('Updated Maven artifacts')
+                    } else {
+                        echo 'No changes to commit'
+                    }
                 }
             }
         }
@@ -155,24 +165,13 @@ pipeline {
                     '''
                     sh './cekit-image-validator-runner modules/'
                     sh './cekit-image-validator-runner image.yaml'
-                    getImages().each{ image -> sh "./cekit-image-validator-runner ${image}-overrides.yaml" }   
+                    getImages().each { image -> sh "./cekit-image-validator-runner ${image}-overrides.yaml" }
                 }
             }
             post {
                 always {
                     sh 'rm -rf cekit-image-validator-runner*'
                 }
-            }
-        }
-        stage('Commit Changes'){
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    // Commit changes before changing tests repository
-                    githubscm.commitChanges("Update project version to ${getProjectVersion()} for release")
-                } 
             }
         }
         stage('Setup for testing') {
@@ -182,21 +181,21 @@ pipeline {
             steps {
                 script {
                     updateTestsCommand = 'python3 scripts/update-tests.py'
-                    if(getMavenArtifactRepository()){
+                    if (getMavenArtifactRepository()) {
                         // Update repo in tests
                         updateTestsCommand += " --repo-url ${getMavenArtifactRepository()}"
                     }
 
                     // Set kogito-examples to bot author/branch if release
-                    if(params.EXAMPLES_REF){
+                    if (params.EXAMPLES_REF) {
                         updateTestsCommand += " --examples-ref ${params.EXAMPLES_REF}"
                     }
-                    if(params.EXAMPLES_URI){
+                    if (params.EXAMPLES_URI) {
                         updateTestsCommand += " --examples-uri ${params.EXAMPLES_URI}"
                     }
 
                     //Ignore self-signed certificates if MAVEN_MIRROR_URL and/or artifact repo is defined
-                    if(env.MAVEN_MIRROR_URL || getMavenArtifactRepository()){
+                    if (env.MAVEN_MIRROR_URL || getMavenArtifactRepository()) {
                         updateTestsCommand += ' --ignore-self-signed-cert'
                     }
                     // Launch update tests
@@ -216,9 +215,9 @@ pipeline {
             steps {
                 script {
                     // Init workspaces before build
-                    getImages().each{ image -> initWorkspace(image) }
+                    getImages().each { image -> initWorkspace(image) }
                     // Build images
-                    launchParallelForEachImage("Build", {img -> buildImage(img)})
+                    launchParallelForEachImage('Build', { img -> buildImage(img) })
                 }
             }
             post {
@@ -236,9 +235,9 @@ pipeline {
             steps {
                 script {
                     // Init workspaces before test
-                    getImages().each{ image -> initWorkspace(image) }
+                    getImages().each { image -> initWorkspace(image) }
                     // Test images
-                    launchParallelForEachImage("Test", {img -> testImage(img)})
+                    launchParallelForEachImage('Test', { img -> testImage(img) })
                 }
             }
             post {
@@ -261,7 +260,7 @@ pipeline {
                 script {
                     if (isDeployImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                    } else if (getDeployImageRegistryCredentials() != ''){
+                    } else if (getDeployImageRegistryCredentials() != '') {
                         loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials())
                     }
                     pushImages()
@@ -283,16 +282,26 @@ pipeline {
         stage('Create PR') {
             when {
                 expression {
-                    return isRelease()
+                    return commitDone && (isRelease() || isCreateChangesPR())
                 }
             }
-            steps{
-                script{
+            steps {
+                script {
                     githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
-                    
-                    def commitMsg = "[${getBuildBranch()}] Update project version to ${getProjectVersion()} for release"
-                    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
-                    deployProperties['kogito-images.pr.link'] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
+
+                    def commitMsg = "[${getBuildBranch()}] Update Maven artifacts"
+                    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}."
+                    if (isRelease()) {
+                        commitMsg = "[${getBuildBranch()}] Update project version to ${getProjectVersion()} for release"
+                        prBody += '\nPlease do not merge, it will be merged automatically after testing.'
+                    }
+                    String prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
+                    deployProperties['kogito-images.pr.link'] = prLink
+
+                    if (isCreateChangesPR()) {
+                        String bodyMsg = "PR has been created with update Maven artifacts.\nPlease review it here: ${prLink}"
+
+                        emailext body: bodyMsg, subject: "[${getBuildBranch()}][d] Kogito Images pipeline", to: env.KOGITO_CI_EMAIL_TO }
                 }
             }
             post {
@@ -310,7 +319,7 @@ pipeline {
     post {
         always {
             script {
-                def propertiesStr = deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
+                def propertiesStr = deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
                 writeFile( file : 'deployment.properties' , text : propertiesStr)
                 archiveArtifacts artifacts: 'deployment.properties', allowEmptyArchive:true
                 clean()
@@ -324,6 +333,11 @@ void checkoutRepo() {
     checkout(githubscm.resolveRepository('kogito-images', getGitAuthor(), getBuildBranch(), false))
 }
 
+void commitChanges(String commitMsg) {
+    githubscm.commitChanges(commitMsg)
+    commitDone = true
+}
+
 void clean() {
     cleanWs()
     cleanImages()
@@ -332,16 +346,16 @@ void clean() {
     sh 'rm -rf \$HOME/.cekit/cache'
 }
 
-void cleanImages(){
+void cleanImages() {
     sh 'docker rm -f \$(docker ps -a -q) || date'
     sh 'docker rmi -f \$(docker images -q) || date'
 }
 
 void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
     parallelStages = [:]
-    getImages().each{ image -> 
+    getImages().each { image ->
         parallelStages["${stageNamePrefix} ${image}"] = {
-            dir(getWorkspacePath(image)){
+            dir(getWorkspacePath(image)) {
                 executeOnImage(image)
             }
         }
@@ -362,45 +376,45 @@ void testImage(image) {
 }
 
 void tagImages() {
-    for(String imageName : getImages()) {
+    for (String imageName : getImages()) {
         sh "docker tag quay.io/kiegroup/${imageName}:latest ${buildImageName(imageName)}"
     }
 }
 
 void pushImages() {
-    for(String imageName : getImages()) {
+    for (String imageName : getImages()) {
         sh "docker push ${buildImageName(imageName)}"
     }
 }
 
 String buildImageName(String imageName) {
     String finalImageName = imageName
-    if(getDeployImageNameSuffix() != ''){
+    if (getDeployImageNameSuffix() != '') {
         finalImageName += '-' + getDeployImageNameSuffix()
     }
     return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${finalImageName}:${getDeployImageTag()}"
 }
 
-void loginOpenshift(){
-    withCredentials([usernamePassword(credentialsId: env.OPENSHIFT_CREDS_KEY, usernameVariable: 'OC_USER', passwordVariable: 'OC_PWD')]){
+void loginOpenshift() {
+    withCredentials([usernamePassword(credentialsId: env.OPENSHIFT_CREDS_KEY, usernameVariable: 'OC_USER', passwordVariable: 'OC_PWD')]) {
         sh "oc login --username=${OC_USER} --password=${OC_PWD} --server=${env.OPENSHIFT_API} --insecure-skip-tls-verify"
     }
 }
 
-void loginOpenshiftRegistry(){
+void loginOpenshiftRegistry() {
     loginOpenshift()
     // username can be anything. See https://docs.openshift.com/container-platform/4.4/registry/accessing-the-registry.html#registry-accessing-directly_accessing-the-registry
     sh "set +x && docker login -u anything -p \$(oc whoami -t) ${env.OPENSHIFT_REGISTRY}"
 }
 
-void loginContainerRegistry(String registry, String credsId){
+void loginContainerRegistry(String registry, String credsId) {
     withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
         sh "docker login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
     }
 }
 
-void setDeployPropertyIfneeded(String key, def value){
-    if(value != null && value != '') {
+void setDeployPropertyIfneeded(String key, def value) {
+    if (value != null && value != '') {
         deployProperties[key] = value
     }
 }
@@ -409,53 +423,52 @@ void setDeployPropertyIfneeded(String key, def value){
 // Deploy image information
 ////////////////////////////////////////////////////////////////////////
 
-boolean isDeployImageInOpenshiftRegistry(){
+boolean isDeployImageInOpenshiftRegistry() {
     return params.IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getDeployImageRegistryCredentials(){
+String getDeployImageRegistryCredentials() {
     return isDeployImageInOpenshiftRegistry() ? '' : params.IMAGE_REGISTRY_CREDENTIALS
 }
 
-String getDeployImageRegistry(){
+String getDeployImageRegistry() {
     return isDeployImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.IMAGE_REGISTRY
 }
 
-String getDeployImageNamespace(){
+String getDeployImageNamespace() {
     return isDeployImageInOpenshiftRegistry() ? 'openshift' : params.IMAGE_NAMESPACE
 }
 
-String getDeployImageNameSuffix(){
+String getDeployImageNameSuffix() {
     return params.IMAGE_NAME_SUFFIX
 }
 
-String getDeployImageTag(){
-    if (params.IMAGE_TAG != ""){
+String getDeployImageTag() {
+    if (params.IMAGE_TAG != '') {
         return params.IMAGE_TAG
     } else {
         return sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 // Workspaces
 ////////////////////////////////////////////////////////////////////////
 
-void initWorkspace(String image){
+void initWorkspace(String image) {
     sh "mkdir -p ${getWorkspacePath(image)}"
     sh "rsync -av --progress . ${getWorkspacePath(image)} --exclude workspaces"
 }
 
-void cleanWorkspaces(){
+void cleanWorkspaces() {
     sh "rm -rf ${getWorkspacesPath()}"
 }
 
-String getWorkspacesPath(){
+String getWorkspacesPath() {
     return "${WORKSPACE}/workspaces"
 }
 
-String getWorkspacePath(String image){
+String getWorkspacePath(String image) {
     return "${getWorkspacesPath()}/${image}"
 }
 
@@ -467,6 +480,10 @@ boolean isRelease() {
     return params.RELEASE
 }
 
+boolean isCreateChangesPR() {
+    return params.CREATE_CHANGES_PR
+}
+
 String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
@@ -475,15 +492,15 @@ String getGitAuthor() {
     return params.GIT_AUTHOR
 }
 
-String getBotBranch(){
-    return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
+String getBotBranch() {
+    return "${getProjectVersion() ?: getBuildBranch()}-${env.BOT_BRANCH_HASH}"
 }
 
-String getBotAuthor(){
+String getBotAuthor() {
     return params.GIT_AUTHOR_BOT
 }
 
-String getBotAuthorCredsID(){
+String getBotAuthorCredsID() {
     return params.BOT_CREDENTIALS_ID
 }
 
@@ -499,16 +516,20 @@ String getMavenArtifactRepository() {
     return params.MAVEN_ARTIFACT_REPOSITORY
 }
 
-boolean shouldSkipTests(){
+boolean shouldSkipTests() {
     return params.SKIP_TESTS
 }
 
-void setDeployPropertyIfNeeded(String key, def value){
-    if (value != null && value != ''){
+void setDeployPropertyIfNeeded(String key, def value) {
+    if (value != null && value != '') {
         deployProperties[key] = value
     }
 }
 
-String[] getImages(){
+String[] getImages() {
     return sh(script: "make list | tr '\\n' ','", returnStdout: true).trim().split(',')
+}
+
+boolean isThereAnyChanges() {
+    return sh(script: 'git status --porcelain', returnStdout: true).trim() != ''
 }

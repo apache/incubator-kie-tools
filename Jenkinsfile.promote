@@ -1,7 +1,7 @@
 // Promote images
 @Library('jenkins-pipeline-shared-libraries')_
 
-deployProperties=[:]
+deployProperties = [:]
 
 pipeline {
     agent {
@@ -18,7 +18,7 @@ pipeline {
 
         // Deploy job url to retrieve deployment.properties
         string(name: 'DEPLOY_BUILD_URL', defaultValue: '', description: 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
-        
+
         // Git information which can override `deployment.properties`
         string(name: 'BUILD_BRANCH_NAME', defaultValue: '', description: 'Override `deployment.properties`. Which branch to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
@@ -38,7 +38,7 @@ pipeline {
         string(name: 'PROMOTE_IMAGE_NAMESPACE', defaultValue: '', description: 'Promote image namespace')
         string(name: 'PROMOTE_IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Promote image name suffix')
         string(name: 'PROMOTE_IMAGE_TAG', defaultValue: '', description: 'Promote image tag')
-        booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', defaultValue: false, description: 'Set to true if you want the deployed images to also be with the `latest` tag')         
+        booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', defaultValue: false, description: 'Set to true if you want the deployed images to also be with the `latest` tag')
 
         // Release information which can override `deployment.properties`
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
@@ -53,18 +53,20 @@ pipeline {
 
         // Main author creds
         string(name: 'AUTHOR_CREDS_ID', defaultValue: 'kie-ci', description: 'Credentials for PR merge')
-        string(name: 'GITHUB_TOKEN_CREDS_ID', defaultValue: 'kie-ci2-token', description: 'GH token to be used with GH CLI')        
+        string(name: 'GITHUB_TOKEN_CREDS_ID', defaultValue: 'kie-ci2-token', description: 'GH token to be used with GH CLI')
     }
 
     environment {
+        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+
         CI = true // Used by scripts
-        
+
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
         OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'
-        
+
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
-        
+
         GITHUB_REPO = 'kogito-images' // for github-release cli
     }
 
@@ -80,7 +82,7 @@ pipeline {
 
                     readDeployProperties()
 
-                    if(isRelease()) {
+                    if (isRelease()) {
                         assert getProjectVersion() != ''
                     }
 
@@ -94,12 +96,12 @@ pipeline {
         }
         stage('Update PR with released Maven artifacts') {
             when {
-                expression { return isRelease() && getPRSourceBranch() != ''}
+                expression { return isRelease() && getPRSourceBranch() != '' }
             }
             steps {
                 script {
                     // Update maven information with new artifacts from Maven central in the PR
-                    dir('kogito-images-update'){
+                    dir('kogito-images-update') {
                         checkoutRepo()
                         githubscm.forkRepo(getBotAuthorCredsID())
 
@@ -109,7 +111,7 @@ pipeline {
 
                         // Update artifacts
                         updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
-                        if(getMavenArtifactRepository() != ''){
+                        if (getMavenArtifactRepository() != '') {
                             updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
                         }
                         sh updateArtifactCmd
@@ -128,24 +130,22 @@ pipeline {
                             githubscm.commitChanges('Setup Maven artifacts to released ones')
                             githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())
                         } catch (err) {
-                            withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
                             emailext body: "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
                                     "And take your decision here: ${env.BUILD_URL}input",
                                     subject: "[${getBuildBranch()}] Release Pipeline",
-                                    to: ZULIP_EMAIL
-                            }
+                                    to: env.KOGITO_CI_EMAIL_TO
                             input message: 'Should the pipeline continue ?', ok: 'Yes'
                         }
                     }
                 }
             }
         }
-        stage('Pull "old" images'){
-            steps{
+        stage('Pull "old" images') {
+            steps {
                 script {
                     if (isOldImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                    } else if (getOldImageRegistryCredentials() != ''){
+                    } else if (getOldImageRegistryCredentials() != '') {
                         loginContainerRegistry(getOldImageRegistry(), getOldImageRegistryCredentials())
                     }
                     dir('kogito-images') {
@@ -154,8 +154,8 @@ pipeline {
                 }
             }
         }
-        stage('Tag images'){
-            steps{
+        stage('Tag images') {
+            steps {
                 script {
                     dir('kogito-images') {
                         tagImages()
@@ -163,12 +163,12 @@ pipeline {
                 }
             }
         }
-        stage('Pushing'){
-            steps{
+        stage('Pushing') {
+            steps {
                 script {
                     if (isNewImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                    } else if (getNewImageRegistryCredentials() != ''){
+                    } else if (getNewImageRegistryCredentials() != '') {
                         loginContainerRegistry(getNewImageRegistry(), getNewImageRegistryCredentials())
                     }
                     dir('kogito-images') {
@@ -181,18 +181,18 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
                     dir('kogito-images') {
                         // Merge PR
                         String prLink = getDeployProperty('kogito-images.pr.link')
-                        if(prLink != ''){                            
+                        if (prLink != '') {
                             githubscm.mergePR(prLink, getGitAuthorCredsID())
                             githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
                         }
 
-                        if(getGitTag() != ""){
-                            def releaseName = "Kogito Images Version ${getProjectVersion()}" 
+                        if (getGitTag() != '') {
+                            def releaseName = "Kogito Images Version ${getProjectVersion()}"
                             def description = params.RELEASE_NOTES != '' ? params.RELEASE_NOTES : "We are glad to announce that the Kogito ${getProjectVersion()} release is now available!"
                             withCredentials([string(credentialsId: params.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
                                 sh """
@@ -208,7 +208,7 @@ pipeline {
         stage('Set next version')
         {
             when {
-               expression { return isRelease() }
+                expression { return isRelease() }
             }
             steps {
                 script {
@@ -222,7 +222,7 @@ pipeline {
 
                         // Update version to next snapshot
                         versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${nextVersion} --artifacts-version ${getKogitoArtifactsNextVersion()} --confirm"
-                        if(getBuildBranch() != 'master') {
+                        if (getBuildBranch() != 'master') {
                             versionCmd += " --examples-ref ${getBuildBranch()}"
                         }
                         sh versionCmd
@@ -250,7 +250,7 @@ pipeline {
     }
 }
 
-void installGitHubReleaseCLI(){
+void installGitHubReleaseCLI() {
     sh 'go get github.com/github-release/github-release'
 }
 
@@ -266,107 +266,107 @@ void clean() {
     cleanImages()
 }
 
-void cleanImages(){
+void cleanImages() {
     sh 'podman rm -f \$(podman ps -a -q) || date'
     sh 'podman rmi -f \$(podman images -q) || date'
 }
 
-void pullImages(){
-    for(String imageName : getImages()){
+void pullImages() {
+    for (String imageName : getImages()) {
         sh "podman pull ${getOldImageFullTag(imageName)}"
     }
 }
 
 void tagImages() {
-    for(String imageName : getImages()){
+    for (String imageName : getImages()) {
         sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, getNewImageTag())}"
-        if(isDeployLatestTag()){
-            sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, "latest")}"
+        if (isDeployLatestTag()) {
+            sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, 'latest')}"
         }
         String reducedTag = getReducedTag()
-        if(reducedTag != ''){
+        if (reducedTag != '') {
             sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, reducedTag)}"
         }
     }
 }
 
-void pushImages(){
-    for(String imageName : getImages()){
+void pushImages() {
+    for (String imageName : getImages()) {
         sh "podman push ${getNewImageFullTag(imageName, getNewImageTag())}"
-        if(isDeployLatestTag()){
-            sh "podman push ${getNewImageFullTag(imageName, "latest")}"
+        if (isDeployLatestTag()) {
+            sh "podman push ${getNewImageFullTag(imageName, 'latest')}"
         }
         String reducedTag = getReducedTag()
-        if(reducedTag != ''){
+        if (reducedTag != '') {
             sh "podman push ${getNewImageFullTag(imageName, reducedTag)}"
         }
     }
 }
 
-String getOldImageFullTag(String imageName){
+String getOldImageFullTag(String imageName) {
     return "${getOldImageRegistry()}/${getOldImageNamespace()}/${buildImageNameWithSuffix(imageName, getOldImageNameSuffix())}:${getOldImageTag()}"
 }
 
-String getNewImageFullTag(String imageName, String tag){
+String getNewImageFullTag(String imageName, String tag) {
     return "${getNewImageRegistry()}/${getNewImageNamespace()}/${buildImageNameWithSuffix(imageName, getNewImageNameSuffix())}:${tag}"
 }
 
 String buildImageNameWithSuffix(String imageName, String suffix) {
     String finalImageName = imageName
-    if(suffix != null && suffix != '') {
+    if (suffix != null && suffix != '') {
         finalImageName += '-' + suffix
     }
     return finalImageName
 }
 
-boolean isDeployLatestTag(){
+boolean isDeployLatestTag() {
     return params.DEPLOY_WITH_LATEST_TAG
 }
 
-String getReducedTag(){
+String getReducedTag() {
     try {
         String version = getNewImageTag()
         String[] versionSplit = version.split("\\.")
         return "${versionSplit[0]}.${versionSplit[1]}"
-    } catch(error) {
+    } catch (error) {
         echo "${getNewImageTag()} cannot be reduced to the format X.Y"
     }
     return ''
 }
 
-void loginOpenshift(){
-    withCredentials([usernamePassword(credentialsId: env.OPENSHIFT_CREDS_KEY, usernameVariable: 'OC_USER', passwordVariable: 'OC_PWD')]){
+void loginOpenshift() {
+    withCredentials([usernamePassword(credentialsId: env.OPENSHIFT_CREDS_KEY, usernameVariable: 'OC_USER', passwordVariable: 'OC_PWD')]) {
         sh "oc login --username=${OC_USER} --password=${OC_PWD} --server=${env.OPENSHIFT_API} --insecure-skip-tls-verify"
     }
 }
 
-void loginOpenshiftRegistry(){
+void loginOpenshiftRegistry() {
     loginOpenshift()
     // username can be anything. See https://docs.openshift.com/container-platform/4.4/registry/accessing-the-registry.html#registry-accessing-directly_accessing-the-registry
     sh "set +x && podman login -u anything -p \$(oc whoami -t) --tls-verify=false ${env.OPENSHIFT_REGISTRY}"
 }
 
-void loginContainerRegistry(String registry, String credsId){
+void loginContainerRegistry(String registry, String credsId) {
     withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
         sh "podman login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} --tls-verify=false ${registry}"
     }
 }
-void readDeployProperties(){
+void readDeployProperties() {
     String deployUrl = params.DEPLOY_BUILD_URL
-    if(deployUrl != ''){
-        if(!deployUrl.endsWith('/')){
+    if (deployUrl != '') {
+        if (!deployUrl.endsWith('/')) {
             deployUrl += '/'
         }
         sh "wget ${deployUrl}artifact/deployment.properties"
         deployProperties = readProperties file: 'deployment.properties'
-        echo deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
+        echo deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
     }
 }
 boolean hasDeployProperty(String key) {
     return deployProperties[key] != null
 }
 String getDeployProperty(String key) {
-    if(hasDeployProperty(key)){
+    if (hasDeployProperty(key)) {
         return deployProperties[key]
     }
     return ''
@@ -411,11 +411,11 @@ String getGitAuthor() {
     return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
 }
 
-String getGitAuthorCredsID(){
+String getGitAuthorCredsID() {
     return params.AUTHOR_CREDS_ID
 }
 
-String getBotAuthorCredsID(){
+String getBotAuthorCredsID() {
     return params.BOT_CREDENTIALS_ID
 }
 
@@ -432,7 +432,7 @@ String getKogitoArtifactsNextVersion() {
     return util.getNextVersion(getKogitoArtifactsVersion(), 'micro', 'SNAPSHOT')
 }
 
-String getSnapshotBranch(){
+String getSnapshotBranch() {
     return "${getNextVersion()}-${env.BOT_BRANCH_HASH}"
 }
 
@@ -444,27 +444,27 @@ String getOldImagePrefix() {
     return 'kogito-images.image'
 }
 
-boolean isOldImageInOpenshiftRegistry(){
+boolean isOldImageInOpenshiftRegistry() {
     return params.BASE_IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getOldImageRegistryCredentials(){
+String getOldImageRegistryCredentials() {
     return isOldImageInOpenshiftRegistry() ? '' : params.BASE_IMAGE_REGISTRY_CREDENTIALS
 }
 
-String getOldImageRegistry(){
+String getOldImageRegistry() {
     return isOldImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : getParamOrDeployProperty('BASE_IMAGE_REGISTRY' , "${getOldImagePrefix()}.registry")
 }
 
-String getOldImageNamespace(){
+String getOldImageNamespace() {
     return isOldImageInOpenshiftRegistry() ? 'openshift' : getParamOrDeployProperty('BASE_IMAGE_NAMESPACE' , "${getOldImagePrefix()}.namespace")
 }
 
-String getOldImageNameSuffix(){
+String getOldImageNameSuffix() {
     return getParamOrDeployProperty('BASE_IMAGE_NAME_SUFFIX' , "${getOldImagePrefix()}.name-suffix")
 }
 
-String getOldImageTag(){
+String getOldImageTag() {
     return getParamOrDeployProperty('BASE_IMAGE_TAG' , "${getOldImagePrefix()}.tag")
 }
 
@@ -472,30 +472,30 @@ String getOldImageTag(){
 // New image information
 ////////////////////////////////////////////////////////////////////////
 
-boolean isNewImageInOpenshiftRegistry(){
+boolean isNewImageInOpenshiftRegistry() {
     return params.PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getNewImageRegistryCredentials(){
+String getNewImageRegistryCredentials() {
     return isNewImageInOpenshiftRegistry() ? '' : params.PROMOTE_IMAGE_REGISTRY_CREDENTIALS
 }
 
-String getNewImageRegistry(){
+String getNewImageRegistry() {
     return isNewImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.PROMOTE_IMAGE_REGISTRY
 }
 
-String getNewImageNamespace(){
+String getNewImageNamespace() {
     return isNewImageInOpenshiftRegistry() ? 'openshift' : params.PROMOTE_IMAGE_NAMESPACE
 }
 
-String getNewImageNameSuffix(){
+String getNewImageNameSuffix() {
     return params.PROMOTE_IMAGE_NAME_SUFFIX
 }
 
-String getNewImageTag(){
+String getNewImageTag() {
     return params.PROMOTE_IMAGE_TAG
 }
 
-String[] getImages(){
+String[] getImages() {
     return sh(script: "make list | tr '\\n' ','", returnStdout: true).trim().split(',')
 }
