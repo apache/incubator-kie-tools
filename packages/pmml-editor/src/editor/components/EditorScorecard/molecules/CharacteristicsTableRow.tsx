@@ -31,13 +31,11 @@ interface CharacteristicsTableRowProps {
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
   const { characteristic, dataFields, onEdit, onDelete } = props;
 
-  const index = characteristic.index;
-
   return (
     <article
-      className={`characteristic-item characteristic-item-n${index} editable`}
-      onClick={onEdit}
+      className={"editable-item__inner"}
       tabIndex={0}
+      onClick={onEdit}
       onKeyDown={e => {
         if (e.key === "Enter") {
           e.preventDefault();

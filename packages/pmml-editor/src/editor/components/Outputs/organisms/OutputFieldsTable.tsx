@@ -62,6 +62,14 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   }, [activeOperation]);
 
+  //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
+  useEffect(() => {
+    if (selectedOutputIndex === outputs.length) {
+      setSelectedOutputIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [outputs, selectedOutputIndex]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedOutputIndex(index);
     setActiveOperation(Operation.UPDATE_OUTPUT);
@@ -87,13 +95,13 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
       <section>
         {outputs.map((o, index) => (
           <article
+            key={index}
             className={`editable-item output-item-n${selectedOutputIndex} ${
               selectedOutputIndex === index ? "editable-item--editing" : ""
             }`}
           >
             {selectedOutputIndex === index && (
               <OutputFieldEditRow
-                key={index}
                 outputField={o}
                 validateOutputName={_name => onValidateOutputFieldName(index, _name)}
                 viewExtendedProperties={viewExtendedProperties}
@@ -104,7 +112,6 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
             )}
             {selectedOutputIndex !== index && (
               <OutputFieldRow
-                key={index}
                 outputField={o}
                 onEditOutputField={() => onEdit(index)}
                 onDeleteOutputField={() => onDelete(index)}

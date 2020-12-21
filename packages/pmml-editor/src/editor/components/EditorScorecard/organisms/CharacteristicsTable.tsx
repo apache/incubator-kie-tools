@@ -74,6 +74,14 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     }
   }, [activeOperation]);
 
+  //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
+  useEffect(() => {
+    if (selectedCharacteristicIndex === characteristics.length) {
+      setSelectedCharacteristicIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [characteristics, selectedCharacteristicIndex]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedCharacteristicIndex(index);
     setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
@@ -98,11 +106,15 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
       }}
     >
       <section>
-        {characteristics.map(ic => {
-          if (selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC) {
-            return (
+        {characteristics.map(ic => (
+          <article
+            key={ic.index}
+            className={`editable-item output-item-n${selectedCharacteristicIndex} ${
+              selectedCharacteristicIndex === ic.index ? "editable-item--editing" : ""
+            }`}
+          >
+            {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
               <CharacteristicsTableEditRow
-                key={ic.index}
                 modelIndex={modelIndex}
                 useReasonCodes={useReasonCodes}
                 isBaselineScoreRequired={isBaselineScoreRequired}
@@ -114,19 +126,17 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 onCommit={onCommit}
                 onCancel={onCancel}
               />
-            );
-          } else {
-            return (
+            )}
+            {selectedCharacteristicIndex !== ic.index && (
               <CharacteristicsTableRow
-                key={ic.index}
                 characteristic={ic}
                 dataFields={dataFields}
                 onEdit={() => onEdit(ic.index)}
                 onDelete={() => onDelete(ic.index)}
               />
-            );
-          }
-        })}
+            )}
+          </article>
+        ))}
       </section>
     </Form>
   );
