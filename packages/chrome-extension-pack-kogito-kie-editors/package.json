@@ -20,7 +20,6 @@
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none",
-    "pack:productization": "yarn pack",
     "serve-envelope": "webpack-dev-server",
     "test:it": "jest --runInBand"
   },
