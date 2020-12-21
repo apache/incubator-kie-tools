@@ -19,13 +19,13 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 
-	kafkabetav1 "github.com/kiegroup/kogito-cloud-operator/pkg/apis/kafka/v1beta1"
+	kafkabetav1 "github.com/kiegroup/kogito-cloud-operator/api/kafka/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DeployKafkaInstance deploys an instance of Kafka
 func DeployKafkaInstance(namespace string, kafka *kafkabetav1.Kafka) error {
-	GetLogger(namespace).Infof("Creating Kafka instance %s.", kafka.Name)
+	GetLogger(namespace).Info("Creating Kafka instance %s.", "name", kafka.Name)
 
 	if err := kubernetes.ResourceC(kubeClient).Create(kafka); err != nil {
 		return fmt.Errorf("Error while creating Kafka: %v ", err)
@@ -36,7 +36,7 @@ func DeployKafkaInstance(namespace string, kafka *kafkabetav1.Kafka) error {
 
 // DeployKafkaTopic deploys a Kafka topic
 func DeployKafkaTopic(namespace, kafkaTopicName, kafkaInstanceName string) error {
-	GetLogger(namespace).Infof("Creating Kafka topic %s in kafka %s.", kafkaTopicName, kafkaInstanceName)
+	GetLogger(namespace).Info("Creating Kafka", "topic", kafkaTopicName, "instanceName", kafkaInstanceName)
 
 	kafkaTopic := &kafkabetav1.KafkaTopic{
 		ObjectMeta: metav1.ObjectMeta{

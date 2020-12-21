@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -127,7 +127,7 @@ func getKogitoTrustyExecutionIDByExecutionName(namespace, executionName string, 
 				return false, err
 			}
 
-			GetLogger(namespace).Debugf("Got execution response %v", executionsResponse)
+			GetLogger(namespace).Debug("Got execution response", "executionResponse", executionsResponse)
 
 			for _, execution := range executionsResponse.Executions {
 				if execution.ExecutedModelName == executionName {

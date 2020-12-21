@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
@@ -174,7 +174,7 @@ func WaitForDeploymentRunning(namespace, dName string, podNb int, timeoutInMin i
 			} else if dc == nil {
 				return false, nil
 			} else {
-				GetLogger(namespace).Debugf("Deployment has %d available replicas\n", dc.Status.AvailableReplicas)
+				GetLogger(namespace).Debug("Deployment has", "available replicas", dc.Status.AvailableReplicas)
 				return dc.Status.Replicas == int32(podNb) && dc.Status.AvailableReplicas == int32(podNb), nil
 			}
 		})
@@ -192,7 +192,7 @@ func GetDeployment(namespace, deploymentName string) (*apps.Deployment, error) {
 }
 
 func loadResource(namespace, uri string, resourceRef meta.ResourceObject, beforeCreate func(object interface{})) error {
-	GetLogger(namespace).Debugf("loadResource %s", uri)
+	GetLogger(namespace).Debug("loadResource", "uri", uri)
 
 	data, err := ReadFromURI(uri)
 	if err != nil {
@@ -287,7 +287,7 @@ func DeleteObject(o meta.ResourceObject) error {
 
 // CreateSecret creates a new secret
 func CreateSecret(namespace, name string, secretContent map[string]string) error {
-	GetLogger(namespace).Infof("Create Secret %s", name)
+	GetLogger(namespace).Info("Create Secret %s", "name", name)
 
 	secret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{

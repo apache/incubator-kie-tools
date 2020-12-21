@@ -62,7 +62,7 @@ func WaitAndRetrieveEndpointURI(namespace, serviceName string) (string, error) {
 	} else if len(uri) <= 0 {
 		return "", fmt.Errorf("No URI found for route name %s in namespace %s: %v", serviceName, namespace, err)
 	}
-	GetLogger(namespace).Debugf("Got route %s\n", uri)
+	GetLogger(namespace).Debug("Got", "route", uri)
 	return uri, nil
 }
 
@@ -101,9 +101,9 @@ func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Re
 		if err == nil && checkHTTPResponseSuccessful(resp) {
 			return resp, err
 		} else if err != nil {
-			GetLogger(namespace).Warnf("Error while making http call: %v", err)
+			GetLogger(namespace).Warn("http call was not successful", "error", err)
 		} else if resp != nil {
-			GetLogger(namespace).Warnf("Http call was not successful. Response code: %d", resp.StatusCode)
+			GetLogger(namespace).Warn("Http call was not successful.", "Response code", resp.StatusCode)
 			if resp.StatusCode == 500 {
 				// In case of 500, it is server error and we don't need to call again
 				return resp, err
@@ -111,7 +111,7 @@ func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Re
 		} else {
 			GetLogger(namespace).Warn("Http call was not successful. No response available ...")
 		}
-		GetLogger(namespace).Warnf("Retrying in 1 second ...")
+		GetLogger(namespace).Warn("Retrying in 1 second ...")
 		retry++
 		time.Sleep(1 * time.Second)
 	}
@@ -120,7 +120,7 @@ func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Re
 
 // ExecuteHTTPRequestC executes an HTTP request using a given client
 func ExecuteHTTPRequestC(client *http.Client, namespace string, requestInfo HTTPRequestInfo) (*http.Response, error) {
-	GetLogger(namespace).Debugf("ExecuteHTTPRequest %s on uri %s, with path %s, %s bodyContent %s", requestInfo.HTTPMethod, requestInfo.URI, requestInfo.Path, requestInfo.BodyFormat, requestInfo.BodyContent)
+	GetLogger(namespace).Debug("ExecuteHTTPRequest", "method", requestInfo.HTTPMethod, "uri", requestInfo.URI, "path", requestInfo.Path, "bodyFormat", requestInfo.BodyFormat, "bodyContent", requestInfo.BodyContent)
 
 	request, err := http.NewRequest(requestInfo.HTTPMethod, requestInfo.URI+"/"+requestInfo.Path, strings.NewReader(requestInfo.BodyContent))
 	if len(requestInfo.BodyContent) > 0 && len(requestInfo.BodyFormat) > 0 {
@@ -167,7 +167,7 @@ func ExecuteHTTPRequestWithStringResponse(namespace string, requestInfo HTTPRequ
 	}
 	resultBody := buf.String()
 
-	GetLogger(namespace).Debugf("Retrieved body %v", resultBody)
+	GetLogger(namespace).Debug("Retrieved", "resdultBody", resultBody)
 	return resultBody, nil
 }
 
@@ -209,9 +209,9 @@ func checkHTTPRequestConditionC(client *http.Client, namespace string, requestIn
 		return false, err
 	}
 	defer response.Body.Close()
-	GetLogger(namespace).Debugf("Got response status code %d", response.StatusCode)
+	GetLogger(namespace).Debug("Got response", "status code", response.StatusCode)
 	if !condition(response) {
-		GetLogger(namespace).Warnf("Request not expected. Got status code %d", response.StatusCode)
+		GetLogger(namespace).Warn("Request not expected", "status code", response.StatusCode)
 		return false, nil
 	}
 
@@ -258,7 +258,7 @@ func ExecuteHTTPRequestsInThreads(namespace string, requestCount, threadCount in
 	waitGroup.Wait()
 
 	duration := time.Since(startTime)
-	GetLogger(namespace).Infof("%d requests finished in %s", requestCount, duration)
+	GetLogger(namespace).Info("requests finished", "requestCount", requestCount, "duration", duration)
 	return results, nil
 }
 
@@ -274,19 +274,19 @@ func createCustomClient() *http.Client {
 
 func runRequestRoutine(threadID int, waitGroup *sync.WaitGroup, client *http.Client, namespace string, requestPerThread int, requestInfo HTTPRequestInfo, results []HTTPRequestResult) {
 	defer waitGroup.Done()
-	GetLogger(namespace).Infof("Starting Go routine #%d", threadID)
+	GetLogger(namespace).Info("Starting Go routine", "threadID", threadID)
 	for i := 0; i < requestPerThread; i++ {
 		if success, err := checkHTTPRequestConditionC(client, namespace, requestInfo, checkHTTPResponseSuccessful); err != nil {
-			GetLogger(namespace).Errorf("Go routine #%d - Failed with error: %v", threadID, err)
+			GetLogger(namespace).Error(err, "Go routine failed", "threadID", threadID)
 			results[threadID] = HTTPRequestResultError
 			return
 		} else if !success {
-			GetLogger(namespace).Errorf("Go routine #%d - HTTP POST request to path %s was not successful", threadID, requestInfo.Path)
+			GetLogger(namespace).Error(fmt.Errorf("Go routine #%d - HTTP POST request to path %s was not successful", threadID, requestInfo.Path), "go routine failed")
 			results[threadID] = HTTPRequestResultError
 			return
 		}
 	}
-	GetLogger(namespace).Infof("Go routine #%d finished", threadID)
+	GetLogger(namespace).Info("Go routine finished", "threadID", threadID)
 	results[threadID] = HTTPRequestResultSuccess
 }
 

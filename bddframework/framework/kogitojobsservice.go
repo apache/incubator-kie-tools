@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
@@ -38,7 +38,7 @@ func WaitForKogitoJobsService(namespace string, replicas int, timeoutInMin int) 
 
 // SetKogitoJobsServiceReplicas sets the number of replicas for the Kogito Jobs Service
 func SetKogitoJobsServiceReplicas(namespace string, nbPods int32) error {
-	GetLogger(namespace).Infof("Set Kogito jobs service replica number to %d", nbPods)
+	GetLogger(namespace).Info("Set Kogito jobs service props", "replica number", nbPods)
 	kogitoJobsService, err := GetKogitoJobsService(namespace)
 	if err != nil {
 		return err

@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -56,7 +56,7 @@ func mapKogitoInfraTableRow(row *TableRow, kogitoInfra *v1beta1.KogitoInfra) (ma
 
 	switch firstColumn {
 	case kogitoInfraConfigKey:
-		framework.GetLogger(kogitoInfra.Namespace).Debugf("Got config %s", getSecondColumn(row))
+		framework.GetLogger(kogitoInfra.Namespace).Debug("Got config", "config", getSecondColumn(row))
 		appendConfig(kogitoInfra, getSecondColumn(row), getThirdColumn(row))
 	case kogitoInfraResourceKey:
 		return mapKogitoInfraResourceTableRow(row, kogitoInfra)

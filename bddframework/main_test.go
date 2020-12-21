@@ -26,7 +26,6 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps"
@@ -48,9 +47,6 @@ var (
 		Randomize: time.Now().UTC().UnixNano(),
 		Tags:      disabledTag,
 	}
-
-	// Array of created cluster objects, used to cleanup environment when the tests finish
-	clusterObjects []meta.ResourceObject
 )
 
 func init() {
@@ -193,12 +189,12 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Scenario handlers
 	ctx.BeforeScenario(func(scenario *godog.Scenario) {
 		if err := data.BeforeScenario(scenario); err != nil {
-			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for before scenario  %v", err)
+			framework.GetLogger(data.Namespace).Error(err, "Error in configuring data for before scenario")
 		}
 	})
 	ctx.AfterScenario(func(scenario *godog.Scenario, err error) {
 		if err := data.AfterScenario(scenario, err); err != nil {
-			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for After scenario  %v", err)
+			framework.GetLogger(data.Namespace).Error(err, "Error in configuring data for After scenario")
 		}
 
 		// Namespace should be deleted after all other operations have been done
@@ -206,7 +202,7 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 			// Delete all objects created for the scenario
 			for _, o := range data.GetCreatedOperatorObjects() {
 				if err := framework.DeleteObject(o); err != nil {
-					framework.GetMainLogger().Errorf("Error removing created objects for namespace %s: %v", data.Namespace, err)
+					framework.GetMainLogger().Error(err, "Error removing created objects", "namespace", data.Namespace)
 				}
 			}
 
@@ -216,25 +212,25 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 
 	// Step handlers
 	ctx.BeforeStep(func(s *godog.Step) {
-		framework.GetLogger(data.Namespace).Infof("Step %s", s.Text)
+		framework.GetLogger(data.Namespace).Info("Step", "stepText", s.Text)
 	})
 	ctx.AfterStep(func(s *godog.Step, err error) {
 		if err != nil {
-			framework.GetLogger(data.Namespace).Errorf("Error in step '%s': %v", s.Text, err)
+			framework.GetLogger(data.Namespace).Error(err, "Error in step", "step", s.Text)
 		}
 	})
 }
 
 func deleteNamespaceIfExists(namespace string) {
 	err := framework.OperateOnNamespaceIfExists(namespace, func(namespace string) error {
-		framework.GetLogger(namespace).Infof("Delete created namespace %s", namespace)
+		framework.GetLogger(namespace).Info("Delete created namespace", "namespace", namespace)
 		if e := framework.DeleteNamespace(namespace); e != nil {
 			return fmt.Errorf("Error while deleting the namespace: %v", e)
 		}
 		return nil
 	})
 	if err != nil {
-		framework.GetLogger(namespace).Errorf("Error while doing operator on namespace: %v", err)
+		framework.GetLogger(namespace).Error(err, "Error while doing operator on namespace")
 	}
 }
 
@@ -262,12 +258,12 @@ func showScenarios(features []*feature, showSteps bool) {
 	for _, ft := range features {
 		// Placeholders in names are now replaced directly into names for each scenario
 		if len(ft.scenarios) > 0 {
-			mainLogger.Infof("Feature: %s", ft.document.GetFeature().GetName())
+			mainLogger.Info(fmt.Sprintf("Feature: %s", ft.document.GetFeature().GetName()))
 			for _, scenario := range ft.scenarios {
-				mainLogger.Infof("    Scenario: %s", scenario.GetName())
+				mainLogger.Info(fmt.Sprintf("    Scenario: %s", scenario.GetName()))
 				if showSteps {
 					for _, step := range scenario.Steps {
-						mainLogger.Infof("        Step: %s", step.GetText())
+						mainLogger.Info(fmt.Sprintf("        Step: %s", step.GetText()))
 					}
 				}
 			}
@@ -279,14 +275,14 @@ func showScenarios(features []*feature, showSteps bool) {
 func deleteClusterWideTestOperators() {
 	subscriptions, err := framework.GetClusterWideTestSubscriptions()
 	if err != nil {
-		framework.GetMainLogger().Errorf("Error retrieving cluster wide test subscriptions: %v", err)
+		framework.GetMainLogger().Error(err, "Error retrieving cluster wide test subscriptions")
 		return
 	}
 
 	for _, subscription := range subscriptions.Items {
 		err := framework.DeleteSubscription(&subscription)
 		if err != nil {
-			framework.GetMainLogger().Errorf("Error deleting cluster wide test subscription %s: %v", subscription.Name, err)
+			framework.GetMainLogger().Error(err, "Error deleting cluster wide test subscription", "subscriptionName", subscription.Name)
 		}
 	}
 }
@@ -303,7 +299,7 @@ func monitorNamespace(namespace string) {
 	go func() {
 		err := framework.StartPodLogCollector(namespace)
 		if err != nil {
-			framework.GetLogger(namespace).Errorf("Error starting log collector for namespace %s: %v", namespace, err)
+			framework.GetLogger(namespace).Error(err, "Error starting log collector", "namespace", namespace, err)
 		}
 	}()
 }
@@ -318,10 +314,10 @@ func stopKogitoOperatorNamespaceMonitoring() {
 
 func stopNamespaceMonitoring(namespace string) {
 	if err := framework.StopPodLogCollector(namespace); err != nil {
-		framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", namespace, err)
+		framework.GetMainLogger().Error(err, "Error stopping log collector", "namespace", namespace)
 	}
 	if err := framework.BumpEvents(namespace); err != nil {
-		framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", namespace, err)
+		framework.GetMainLogger().Error(err, "Error bumping events", "namespace", namespace)
 	}
 }
 
@@ -345,8 +341,7 @@ func installClusterWideKogitoOperator() error {
 	}
 
 	// Deploy the operator
-	created, err := framework.DeployClusterWideKogitoOperatorFromYaml(kogitoClusterWideNamespace)
-	clusterObjects = created
+	err := framework.DeployClusterWideKogitoOperatorFromYaml(kogitoClusterWideNamespace)
 	if err != nil {
 		return err
 	}
@@ -362,13 +357,6 @@ func installClusterWideKogitoOperator() error {
 // Uninstall cluster wide Kogito operator
 func uninstallClusterWideKogitoOperator() error {
 	if !config.IsKeepNamespace() {
-		// Delete all objects created for the Kogito operator
-		for _, o := range clusterObjects {
-			if err := framework.DeleteObject(o); err != nil {
-				framework.GetMainLogger().Errorf("Error removing created objects for namespace %s: %v", kogitoClusterWideNamespace, err)
-			}
-		}
-
 		return framework.DeleteNamespace(kogitoClusterWideNamespace)
 	}
 	return nil

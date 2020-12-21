@@ -33,7 +33,7 @@ const (
 
 // CreateNamespace creates a new namespace
 func CreateNamespace(namespace string) error {
-	GetLogger(namespace).Infof("Create namespace %s", namespace)
+	GetLogger(namespace).Info("Creating namespace", "namespace", namespace)
 	_, err := kubernetes.NamespaceC(kubeClient).Create(namespace)
 	if err != nil {
 		return fmt.Errorf("Cannot create namespace %s: %v", namespace, err)
@@ -45,7 +45,7 @@ func CreateNamespace(namespace string) error {
 // DeleteNamespace deletes a namespace
 func DeleteNamespace(namespace string) error {
 	ns := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: namespace}}
-	GetLogger(namespace).Infof("Delete namespace %s", namespace)
+	GetLogger(namespace).Info("Deleting namespace", "namespace", namespace)
 	err := kubernetes.ResourceC(kubeClient).Delete(ns)
 	if err != nil {
 		return fmt.Errorf("Cannot delete namespace %s: %v", namespace, err)
@@ -92,13 +92,13 @@ func ClearNamespaceHistory() {
 
 func onNamespacePostCreated(namespace string) {
 	if err := addNamespaceToHistory(namespace); err != nil {
-		GetLogger(namespace).Warnf("Error updating namespace history %v", err)
+		GetLogger(namespace).Warn("Error updating namespace history", "error", err)
 	}
 }
 
 func onNamespacePostDeleted(namespace string) {
 	if err := removeNamespaceFromHistory(namespace); err != nil {
-		GetLogger(namespace).Warnf("Error removing namespace of history %v", err)
+		GetLogger(namespace).Warn("Error removing namespace of history", "error", err)
 	}
 }
 

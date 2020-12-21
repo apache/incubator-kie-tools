@@ -16,19 +16,19 @@ package framework
 
 import (
 	"fmt"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	"k8s.io/apimachinery/pkg/api/errors"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
 // InstallKogitoInfraComponent installs the desired component with the given installer type
 func InstallKogitoInfraComponent(namespace string, installerType InstallerType, infra *v1beta1.KogitoInfra) error {
-	GetLogger(namespace).Infof("%s install Kogito Infra resource with APIVersion %s and Kind %s", installerType, infra.Spec.Resource.APIVersion, infra.Spec.Resource.Kind)
+	GetLogger(namespace).Info("Installing kogito infra resource", "installType", installerType, "APIVersion", infra.Spec.Resource.APIVersion, "kind", infra.Spec.Resource.Kind)
 	switch installerType {
 	case CLIInstallerType:
 		return cliInstallKogitoInfraComponent(namespace, infra)

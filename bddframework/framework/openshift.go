@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/openshift"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
@@ -119,7 +119,7 @@ func WaitForDeploymentConfigRunning(namespace, dcName string, podNb int, timeout
 			} else if dc == nil {
 				return false, nil
 			} else {
-				GetLogger(namespace).Debugf("Deployment config has %d available replicas\n", dc.Status.AvailableReplicas)
+				GetLogger(namespace).Debug("Deployment config has", "available replicas", dc.Status.AvailableReplicas)
 				return dc.Status.AvailableReplicas == int32(podNb), nil
 			}
 		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
@@ -163,7 +163,7 @@ func GetRoute(namespace, routeName string) (*routev1.Route, error) {
 }
 
 func createHTTPRoute(namespace, serviceName string) error {
-	GetLogger(namespace).Infof("Creating HTTP route for service %s.", serviceName)
+	GetLogger(namespace).Info("Creating HTTP route", "serviceName", serviceName)
 
 	route := &routev1.Route{
 		ObjectMeta: metav1.ObjectMeta{

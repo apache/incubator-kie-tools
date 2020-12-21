@@ -21,7 +21,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -127,16 +127,16 @@ func createTemporaryFolder() string {
 func (data *Data) AfterScenario(scenario *godog.Scenario, err error) error {
 	error := framework.OperateOnNamespaceIfExists(data.Namespace, func(namespace string) error {
 		if err := framework.StopPodLogCollector(namespace); err != nil {
-			framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", namespace, err)
+			framework.GetMainLogger().Error(err, "Error stopping log collector", "namespace", namespace)
 		}
 		if err := framework.FlushLogger(namespace); err != nil {
-			framework.GetMainLogger().Errorf("Error flushing running logs for namespace %s: %v", namespace, err)
+			framework.GetMainLogger().Error(err, "Error flushing running logs", "namespace", namespace)
 		}
 		if err := framework.BumpEvents(data.Namespace); err != nil {
-			framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", namespace, err)
+			framework.GetMainLogger().Error(err, "Error bumping events", "namespace", namespace)
 		}
 		if err := framework.LogKubernetesObjects(data.Namespace, &imgv1.ImageStreamList{}, &v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{}, &olmapiv1alpha1.ClusterServiceVersionList{}); err != nil {
-			framework.GetMainLogger().Errorf("Error logging Kubernetes objects for namespace %s: %v", namespace, err)
+			framework.GetMainLogger().Error(err, "Error logging Kubernetes objects", "namespace", namespace)
 		}
 		return nil
 	})
@@ -165,28 +165,28 @@ func (data *Data) ResolveWithScenarioContext(str string) string {
 func logScenarioDuration(data *Data) {
 	endTime := time.Now()
 	duration := endTime.Sub(data.StartTime)
-	framework.GetLogger(data.Namespace).Infof("Scenario duration: %s", duration.String())
+	framework.GetLogger(data.Namespace).Info("Scenario duration", "duration", duration.String())
 }
 
 func handleScenarioResult(data *Data, scenario *godog.Scenario, err error) {
 	newLogFolderName := fmt.Sprintf("%s - %s", strings.ReplaceAll(scenario.GetName(), "/", "_"), data.Namespace)
 	if err != nil {
-		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %+v", scenario.GetName(), err)
+		framework.GetLogger(data.Namespace).Error(err, "Error in scenario", "scenarioName", scenario.GetName())
 
 		newLogFolderName = "error - " + newLogFolderName
 	} else {
-		framework.GetLogger(data.Namespace).Infof("Successful scenario '%s'", scenario.GetName())
+		framework.GetLogger(data.Namespace).Info("Successful scenario", "scenarioName", scenario.GetName())
 	}
 	err = framework.RenameLogFolder(data.Namespace, newLogFolderName)
 	if err != nil {
-		framework.GetMainLogger().Errorf("Error while moving log foler for namespace %s. New name is %s. Error = %v", data.Namespace, newLogFolderName, err)
+		framework.GetMainLogger().Error(err, "Error while moving log foler", "logFolder", newLogFolderName, "namespace", data.Namespace)
 	}
 }
 
 func deleteTemporaryExamplesFolder(data *Data) {
 	err := framework.DeleteFolder(data.KogitoExamplesLocation)
 	if err != nil {
-		framework.GetMainLogger().Errorf("Error while deleting temporary examples folder %s: %v", data.KogitoExamplesLocation, err)
+		framework.GetMainLogger().Error(err, "Error while deleting temporary examples folder", "folderName", data.KogitoExamplesLocation)
 	}
 }
 

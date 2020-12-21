@@ -44,7 +44,7 @@ func WaitForSuccessfulGraphQLRequestUsingPagination(namespace, uri, path, query 
 		func() (bool, error) {
 			for queried := 0; queried < totalSize; {
 				query := strings.ReplaceAll(query, "$offset", strconv.Itoa(queried))
-				GetLogger(namespace).Infof("Querying page no. %d of %d using query: %s", queried/pageSize+1, totalSize/pageSize, query)
+				GetLogger(namespace).Info("Querying", "page no.", queried/pageSize+1, "of", totalSize/pageSize, "query", query)
 				err := ExecuteGraphQLRequestWithLoggingOption(namespace, uri, path, query, graphQLNoAuthToken, response, false)
 				if err != nil {
 					return false, err
@@ -100,7 +100,7 @@ func ExecuteGraphQLRequestWithLoggingOption(namespace, uri, path, query, bearerT
 	}
 	GetLogger(namespace).Info("GraphQL response received successfully")
 	if logResponse {
-		GetLogger(namespace).Infof("GraphQL response = %v", response)
+		GetLogger(namespace).Info("GraphQL", "response", response)
 
 	}
 	return nil

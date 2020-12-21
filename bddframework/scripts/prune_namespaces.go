@@ -24,7 +24,7 @@ func main() {
 		if len(namespace) > 0 {
 			err := framework.DeleteNamespace(namespace)
 			if err != nil {
-				framework.GetMainLogger().Errorf("Error in deleting namespace %s", err)
+				framework.GetMainLogger().Error(err, "Error in deleting namespace")
 			}
 		}
 	}

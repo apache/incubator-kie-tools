@@ -18,8 +18,6 @@ import (
 	"os/exec"
 	"sync"
 	"time"
-
-	"go.uber.org/zap"
 )
 
 var (
@@ -61,6 +59,11 @@ func (cmd *commandStruct) WithLoggerContext(loggerContext string) Command {
 	return cmd
 }
 
+func (cmd *commandStruct) Sync(syncID string) Command {
+	cmd.syncID = syncID
+	return cmd
+}
+
 func (cmd *commandStruct) InDirectory(directory string) Command {
 	cmd.directory = directory
 	return cmd
@@ -70,11 +73,6 @@ func (cmd *commandStruct) WithRetry(opts ...RetryOption) Command {
 	for _, opt := range opts {
 		opt(cmd)
 	}
-	return cmd
-}
-
-func (cmd *commandStruct) Sync(syncID string) Command {
-	cmd.syncID = syncID
 	return cmd
 }
 
@@ -91,9 +89,9 @@ func (cmd *commandStruct) executeCommand() (string, error) {
 	var logger = cmd.getLogger()
 
 	if len(cmd.directory) == 0 {
-		logger.Infof("Execute command %s %v", cmd.name, cmd.args)
+		logger.Info("Execute command", "command", cmd.name, "args", cmd.args)
 	} else {
-		logger.Infof("Execute command %s %v in directory %s", cmd.name, cmd.args, cmd.directory)
+		logger.Info("Execute command ", "command", cmd.name, "args", cmd.args, "directory", cmd.directory)
 	}
 
 	var out []byte
@@ -113,19 +111,18 @@ func (cmd *commandStruct) executeCommand() (string, error) {
 	}
 
 	if err != nil {
-		logger.Errorf("output command: %s", string(out[:]))
+		logger.Error(err, "output command", "output", string(out[:]))
 		if ee, ok := err.(*exec.ExitError); ok {
-			logger.Errorf("error output command: %s", string(ee.Stderr))
+			logger.Error(err, "error output command", "output", string(ee.Stderr))
 		}
 	} else {
-		logger.Debugf("output command: %s", string(out[:]))
+		logger.Debug("output command", "output", string(out[:]))
 	}
 
 	return string(out[:]), err
 }
-
-func (cmd *commandStruct) getLogger() *zap.SugaredLogger {
-	var logger *zap.SugaredLogger
+func (cmd *commandStruct) getLogger() Logger {
+	var logger Logger
 	if len(cmd.loggerContext) > 0 {
 		logger = GetLogger(cmd.loggerContext)
 	} else {

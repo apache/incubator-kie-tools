@@ -32,7 +32,7 @@ const (
 
 // DeployKeycloakInstance deploys an instance of Keycloak
 func DeployKeycloakInstance(namespace string) error {
-	GetLogger(namespace).Infof("Creating Keycloak instance.")
+	GetLogger(namespace).Info("Creating Keycloak instance.")
 
 	keycloak := &keycloak.Keycloak{
 		ObjectMeta: createKeycloakMeta(namespace, keycloakKey),
@@ -53,7 +53,7 @@ func DeployKeycloakInstance(namespace string) error {
 
 // DeployKeycloakRealm deploys a realm configuration of Keycloak
 func DeployKeycloakRealm(namespace, realmName string) error {
-	GetLogger(namespace).Infof("Creating Keycloak realm %s.", realmName)
+	GetLogger(namespace).Info("Creating Keycloak realm", "realmName", realmName)
 
 	realm := &keycloak.KeycloakRealm{
 		ObjectMeta: createKeycloakMeta(namespace, realmName),
@@ -74,7 +74,7 @@ func DeployKeycloakRealm(namespace, realmName string) error {
 
 // DeployKeycloakClient deploys a client configuration of Keycloak
 func DeployKeycloakClient(namespace, clientName string) error {
-	GetLogger(namespace).Infof("Creating Keycloak client %s.", clientName)
+	GetLogger(namespace).Info("Creating Keycloak client", "clientName", clientName)
 
 	client := &keycloak.KeycloakClient{
 		ObjectMeta: createKeycloakMeta(namespace, clientName),
@@ -103,7 +103,7 @@ func DeployKeycloakClient(namespace, clientName string) error {
 
 // DeployKeycloakUser deploys a realm configuration of Keycloak
 func DeployKeycloakUser(namespace, userName, password string) error {
-	GetLogger(namespace).Infof("Creating Keycloak user %s.", userName)
+	GetLogger(namespace).Info("Creating Keycloak user %s.", "userName", userName)
 	user := &keycloak.KeycloakUser{
 		ObjectMeta: createKeycloakMeta(namespace, userName),
 		Spec: keycloak.KeycloakUserSpec{
@@ -134,7 +134,7 @@ func DeployKeycloakUser(namespace, userName, password string) error {
 func GetAccessTokenFromKeycloak(namespace, server, userName, password, realm, clientName string) (string, error) {
 	path := fmt.Sprintf("auth/realms/%s/protocol/openid-connect/token", realm)
 	body := fmt.Sprintf("client_id=%s&username=%s&password=%s&grant_type=password", clientName, userName, password)
-	GetLogger(namespace).Infof("Getting access token for '%s' and server '%s/%s'.", body, server, path)
+	GetLogger(namespace).Info(fmt.Sprintf("Getting access token for '%s' and server '%s/%s'.", body, server, path))
 
 	requestInfo := NewPOSTHTTPRequestInfo(server, path, "x-www-form-urlencoded", body)
 	requestInfo.Unsecure = true

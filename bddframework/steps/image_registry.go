@@ -90,7 +90,7 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 			return err
 		}
 	} else {
-		framework.GetLogger(data.Namespace).Infof("Using cached Kogito image from %s", imageTag)
+		framework.GetLogger(data.Namespace).Info("Using cached Kogito image", "imageTag", imageTag)
 	}
 
 	// Store image tag into scenario context

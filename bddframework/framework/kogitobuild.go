@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
@@ -32,7 +32,7 @@ import (
 
 // DeployKogitoBuild deploy a KogitoBuild
 func DeployKogitoBuild(namespace string, installerType InstallerType, buildHolder *bddtypes.KogitoBuildHolder) error {
-	GetLogger(namespace).Infof("%s deploy %s example %s with name %s and native %v", installerType, buildHolder.KogitoBuild.Spec.Runtime, buildHolder.KogitoBuild.Spec.GitSource.ContextDir, buildHolder.KogitoBuild.Name, buildHolder.KogitoBuild.Spec.Native)
+	GetLogger(namespace).Info(fmt.Sprintf("%s deploy %s example %s with name %s and native %v", installerType, buildHolder.KogitoBuild.Spec.Runtime, buildHolder.KogitoBuild.Spec.GitSource.ContextDir, buildHolder.KogitoBuild.Name, buildHolder.KogitoBuild.Spec.Native))
 
 	switch installerType {
 	case CLIInstallerType:

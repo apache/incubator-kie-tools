@@ -229,8 +229,8 @@ Feature: Deploy Kogito Runtime
     Then Service "<example-service>" contains 1 instances of process with name "orders"
 
     When Complete "Verify order" task on service "<example-service>" and process with name "orderItems" by user "john" with body:
-	  """json
-	  {}
+    """json
+    {}
     """
 
     Then Service "<example-service>" contains 0 instances of process with name "orders"

@@ -15,6 +15,7 @@
 package steps
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -33,7 +34,7 @@ func registerGraphQLSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery(serviceName string, timeoutInMin int, path string, query *godog.DocString) error {
-	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes", "service", serviceName, "path", path, "query", query, "timeout", timeoutInMin)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -44,7 +45,7 @@ func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQue
 
 func (data *Data) graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery(serviceName, accessToken string, timeoutInMin int, path string, query *godog.DocString) error {
 	accessToken = data.ResolveWithScenarioContext(accessToken)
-	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery with service %s, path %s, query %s, access token %s and timeout %d", serviceName, path, query, accessToken, timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery", "service", serviceName, "path", path, "query", query, "access token", accessToken, "timeout", timeoutInMin)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -58,7 +59,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWit
 	query := getProcessInstancesNameQuery
 	path := "graphql"
 
-	framework.GetLogger(data.Namespace).Debugf("graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes", "service", serviceName, "path", path, "query", query, "timeout", timeoutInMin)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -82,7 +83,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWith
 	preProcessedQuery = strings.ReplaceAll(preProcessedQuery, "$limit", strconv.Itoa(pageSize))
 	path := "graphql"
 
-	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, preProcessedQuery, timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes", "service", serviceName, "path", path, "query", preProcessedQuery, "timeout", timeoutInMin)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -100,7 +101,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWith
 		},
 		func() (bool, error) {
 			queried := len(allQueriedProcessInstances.ProcessInstances)
-			framework.GetLogger(data.Namespace).Infof("Queried records: %d, expected: %d", queried, processInstances)
+			framework.GetLogger(data.Namespace).Info("Queried records", "got", queried, "expected", processInstances)
 			conditionMet := queried == processInstances
 			if !conditionMet { // delete all results so we can start again
 				allQueriedProcessInstances.ProcessInstances = nil
@@ -110,7 +111,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWith
 
 	duration := time.Since(startTime)
 	// TODO include reporting
-	framework.GetLogger(data.Namespace).Infof("%d process instances retrieved from Data Index after %s", processInstances, duration)
+	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("%d process instances retrieved from Data Index after %s", processInstances, duration))
 
 	return err
 }
@@ -120,7 +121,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes(id string,
 	query := getJobsIDQuery
 	path := "graphql"
 
-	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes", "service", serviceName, "path", path, "query", query, "timeout", timeoutInMin)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err

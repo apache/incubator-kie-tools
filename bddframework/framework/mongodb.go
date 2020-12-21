@@ -39,7 +39,7 @@ var (
 
 // DeployMongoDBInstance deploys an instance of Mongo DB
 func DeployMongoDBInstance(namespace string, instance *mongodb.MongoDB) error {
-	GetLogger(namespace).Infof("Creating MongoDB instance")
+	GetLogger(namespace).Info("Creating MongoDB instance")
 
 	if err := kubernetes.ResourceC(kubeClient).Create(instance); err != nil {
 		return fmt.Errorf("Error while creating MongoDB: %v ", err)
@@ -50,7 +50,7 @@ func DeployMongoDBInstance(namespace string, instance *mongodb.MongoDB) error {
 
 // CreateMongoDBSecret creates a new secret for MongoDB instance
 func CreateMongoDBSecret(namespace, name, password string) error {
-	GetLogger(namespace).Infof("Create MongoDB Secret %s", name)
+	GetLogger(namespace).Info("Create MongoDB Secret", "secret", name)
 	return kubernetes.ResourceC(kubeClient).Create(GetMongoDBSecret(namespace, name, password))
 }
 

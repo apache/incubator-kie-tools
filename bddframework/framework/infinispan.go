@@ -30,7 +30,7 @@ import (
 
 // DeployInfinispanInstance deploys an instance of Infinispan
 func DeployInfinispanInstance(namespace string, infinispan *infinispan.Infinispan) error {
-	GetLogger(namespace).Infof("Creating Infinispan instance %s.", infinispan.Name)
+	GetLogger(namespace).Info("Creating Infinispan instance", "name", infinispan.Name)
 
 	if err := kubernetes.ResourceC(kubeClient).Create(infinispan); err != nil {
 		return fmt.Errorf("Error while creating Infinispan: %v ", err)
@@ -41,7 +41,7 @@ func DeployInfinispanInstance(namespace string, infinispan *infinispan.Infinispa
 
 // CreateInfinispanSecret creates a new secret for Infinispan instance
 func CreateInfinispanSecret(namespace, name string, credentialsMap map[string]string) error {
-	GetLogger(namespace).Infof("Create Infinispan Secret %s", name)
+	GetLogger(namespace).Info("Create Infinispan Secret %s", "name", name)
 
 	credentialsFileData, err := convertInfinispanCredentialsToYaml(credentialsMap)
 	if err != nil {
@@ -80,7 +80,7 @@ func WaitForInfinispanPodsToBeRunningWithConfig(namespace string, expectedConfig
 
 // SetInfinispanReplicas sets the number of replicas for an Infinispan instance
 func SetInfinispanReplicas(namespace, name string, nbPods int) error {
-	GetLogger(namespace).Infof("Set Infinispan %s replica number to %d", name, nbPods)
+	GetLogger(namespace).Info("Set Infinispan props for", "name", name, "replica number", nbPods)
 	infinispan, err := getInfinispan(namespace, name)
 	if err != nil {
 		return err

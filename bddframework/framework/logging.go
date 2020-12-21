@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
 	"io"
 	"os"
 	"reflect"
@@ -26,9 +27,7 @@ import (
 	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
-	"go.uber.org/zap"
 	"k8s.io/api/events/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 
@@ -46,22 +45,24 @@ var (
 
 	monitoredNamespaces sync.Map
 
-	loggerOpts = make(map[string]*logger.Opts)
+	loggerOpts = make(map[string]*Opts)
 )
 
 // GetMainLogger returns the main logger
-func GetMainLogger() *zap.SugaredLogger {
-	return logger.GetLogger("main")
+func GetMainLogger() Logger {
+	return GetLogger("main")
 }
 
 // GetLogger retrieves the logger for a namespace
-func GetLogger(namespace string) *zap.SugaredLogger {
+func GetLogger(namespace string) Logger {
 	opts, err := getOrCreateLoggerOpts(namespace)
 	if err != nil {
-		logger.GetLogger(namespace).Errorf("Error getting logger for namespace %s: %v", namespace, err)
-		return logger.GetLogger(namespace)
+		logger.GetLogger(namespace).Error(err, "Error getting logger", "namespace", namespace)
+		return Logger{
+			Logger: logger.GetLogger(namespace).Logger,
+		}
 	}
-	return logger.GetLoggerWithOptions(namespace, opts)
+	return getLoggerWithOptions(namespace, opts)
 }
 
 // FlushLogger flushes a specific logger
@@ -82,17 +83,17 @@ func FlushLogger(namespace string) error {
 func FlushAllRemainingLoggers() {
 	for logName := range loggerOpts {
 		if err := FlushLogger(logName); err != nil {
-			GetMainLogger().Errorf("Error flushing logger %s: %v", logName, err)
+			GetMainLogger().Error(err, "Error flushing logger", "logName", logName)
 		}
 	}
 }
 
-func getLoggerOpts(logName string) (*logger.Opts, bool) {
+func getLoggerOpts(logName string) (*Opts, bool) {
 	opts, exists := loggerOpts[logName]
 	return opts, exists
 }
 
-func getOrCreateLoggerOpts(logName string) (*logger.Opts, error) {
+func getOrCreateLoggerOpts(logName string) (*Opts, error) {
 	opts, exists := getLoggerOpts(logName)
 	if !exists {
 		if err := createPrefixedLogFolder(logName); err != nil {
@@ -104,7 +105,7 @@ func getOrCreateLoggerOpts(logName string) (*logger.Opts, error) {
 			return nil, fmt.Errorf("Error while creating filewriter: %v", err)
 		}
 
-		opts = &logger.Opts{
+		opts = &Opts{
 			Output:  io.MultiWriter(os.Stdout, fileWriter),
 			Verbose: util.GetBoolOSEnv("DEBUG"),
 		}
@@ -143,7 +144,7 @@ func StartPodLogCollector(namespace string) error {
 			return nil
 		case <-scanningPeriod.C:
 			if pods, err := GetPods(namespace); err != nil {
-				GetLogger(namespace).Errorf("Error while getting pods in namespace '%s': %v", namespace, err)
+				GetLogger(namespace).Error(err, "Error while getting pods", "namespace", namespace)
 			} else {
 				for _, pod := range pods.Items {
 					if !isPodMonitored(namespace, pod.Name) && IsPodRunning(&pod) {
@@ -165,18 +166,18 @@ func StartPodLogCollector(namespace string) error {
 func ReportPerformanceMetric(metric, value, unit string) {
 	resultsFile, err := getOrCreateResultsFile()
 	if err != nil {
-		GetMainLogger().Errorf("Error when retrieving the results file: %v", err)
+		GetMainLogger().Error(err, "Error when retrieving the results file")
 		return
 	}
 	defer func() {
 		err = resultsFile.Close()
 		if err != nil {
-			GetMainLogger().Errorf("Error while closing the results file: %v", err)
+			GetMainLogger().Error(err, "Error while closing the results file")
 		}
 	}()
 
 	if err = writeCsvValue(resultsFile, []string{metric, value, unit}); err != nil {
-		GetMainLogger().Errorf("Error writing a new measurement to the results file: %v", err)
+		GetMainLogger().Error(err, "Error writing a new measurement to the results file")
 	}
 }
 
@@ -259,16 +260,16 @@ func initMonitoredContainer(namespace, podName, containerName string) {
 func storeContainerLogWithFollow(namespace, podName, containerName string) {
 	log, err := getContainerLogWithFollow(namespace, podName, containerName)
 	if err != nil {
-		GetLogger(namespace).Errorf("Error while retrieving log of pod '%s': %v", podName, err)
+		GetLogger(namespace).Error(err, "Error while retrieving log of pod", "podName", podName)
 		return
 	}
 
 	if isContainerLoggingFinished(namespace, podName, containerName) {
-		GetLogger(namespace).Debugf("Logging of container '%s' of pod '%s' already finished, retrieved log will be ignored.", containerName, podName)
+		GetLogger(namespace).Debug("Logging already finished, retrieved log will be ignored.", "container", containerName, "podName", podName)
 	} else {
 		markContainerLoggingAsFinished(namespace, podName, containerName)
 		if err := writeLogIntoTheFile(namespace, podName, containerName, log); err != nil {
-			GetLogger(namespace).Errorf("Error while writing log into the file: %v", err)
+			GetLogger(namespace).Error(err, "Error while writing log into the file")
 		}
 	}
 }
@@ -321,17 +322,17 @@ func storeUnfinishedContainersLog(namespace string) {
 // Write container log into filesystem
 func storeContainerLog(namespace string, podName, containerName string) {
 	if isContainerLoggingFinished(namespace, podName, containerName) {
-		GetLogger(namespace).Infof("Logging of container '%s' of pod '%s' already finished, retrieved log will be ignored.", containerName, podName)
+		GetLogger(namespace).Info("Logging already finished, retrieved log will be ignored.", "container", containerName, "podName", podName)
 	} else {
 		log, err := GetContainerLog(namespace, podName, containerName)
 		if err != nil {
-			GetLogger(namespace).Errorf("Error while retrieving log of container '%s' in pod '%s': %v", containerName, podName, err)
+			GetLogger(namespace).Error(err, "Error while retrieving log", "container", containerName, "podName", podName)
 			return
 		}
 
 		markContainerLoggingAsFinished(namespace, podName, containerName)
 		if err := writeLogIntoTheFile(namespace, podName, containerName, log); err != nil {
-			GetLogger(namespace).Errorf("Error while writing log into the file: %v", err)
+			GetLogger(namespace).Error(err, "Error while writing log into the file")
 		}
 	}
 }

@@ -33,7 +33,7 @@ func (data *Data) localServiceBuiltByMaven(serviceName string) error {
 		UpdateArtifacts().
 		WithLoggerContext(data.Namespace).
 		Execute("clean", "package")
-	framework.GetLogger(data.Namespace).Debugf(output)
+	framework.GetLogger(data.Namespace).Debug(output)
 	return err
 }
 
@@ -52,6 +52,6 @@ func (data *Data) localServiceBuiltByMavenWithProfileWithOptions(serviceName, pr
 		Options(options...).
 		WithLoggerContext(data.Namespace).
 		Execute("clean", "package")
-	framework.GetLogger(data.Namespace).Debugf(output)
+	framework.GetLogger(data.Namespace).Debug(output)
 	return err
 }

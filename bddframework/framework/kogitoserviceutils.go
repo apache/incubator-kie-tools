@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
@@ -41,7 +41,7 @@ func DeployService(serviceHolder *bddtypes.KogitoServiceHolder, installerType In
 
 // InstallOrDeployService the Kogito Service component
 func installOrDeployService(serviceHolder *bddtypes.KogitoServiceHolder, installerType InstallerType, cliDeployCommand, cliDeploymentName string) error {
-	GetLogger(serviceHolder.GetNamespace()).Infof("%s install %s with %d replicas", serviceHolder.GetName(), installerType, *serviceHolder.GetSpec().GetReplicas())
+	GetLogger(serviceHolder.GetNamespace()).Info("Installing kogito service", "name", serviceHolder.GetName(), "installerType", installerType, "replicas", *serviceHolder.GetSpec().GetReplicas())
 	var err error
 	switch installerType {
 	case CLIInstallerType:

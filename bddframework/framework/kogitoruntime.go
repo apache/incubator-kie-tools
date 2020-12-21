@@ -22,7 +22,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
@@ -34,7 +34,7 @@ func DeployRuntimeService(namespace string, installerType InstallerType, service
 
 // SetKogitoRuntimeReplicas sets the number of replicas for a Kogito application
 func SetKogitoRuntimeReplicas(namespace, name string, nbPods int) error {
-	GetLogger(namespace).Infof("Set Kogito application %s replica number to %d", name, nbPods)
+	GetLogger(namespace).Info("Set Kogito application props", "name", name, "replica number", nbPods)
 	kogitoRuntime, err := getKogitoRuntime(namespace, name)
 	if err != nil {
 		return err

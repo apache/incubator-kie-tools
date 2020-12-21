@@ -51,7 +51,6 @@ func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(rep
 	if err := mappers.MapKogitoServiceTable(table, dataIndex); err != nil {
 		return err
 	}
-
 	if dataIndex.DatabaseType == infrastructure.MongoDBKind {
 		framework.GetMainLogger().Debug("Setting Data Index MongoDB image")
 		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetDataIndexImageTag(), infrastructure.DataIndexMongoDBImageName))

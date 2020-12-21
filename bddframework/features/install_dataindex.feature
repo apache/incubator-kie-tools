@@ -16,7 +16,7 @@ Feature: Kogito Data Index
 
     When Install Kogito Data Index with 1 replicas with configuration:
       | config | database-type | Infinispan               |
-      | config | infra         | infinispan          |
+      | config | infra         | infinispan               |
       | config | infra         | kafka                    |
 
     Then Kogito Data Index has 1 pods running within 10 minutes
@@ -59,7 +59,7 @@ Feature: Kogito Data Index
     """
 
 #####
-# For infinispan/mongodb external component, we cannot merge in one scenario outline 
+# For infinispan/mongodb external component, we cannot merge in one scenario outline
 # due to the added `database` field in external config
 
   @externalcomponent

@@ -78,7 +78,7 @@ func (data *Data) httpGetRequestOnServiceUsingAccessTokenWithPathIsSuccessfulWit
 func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path string, body *godog.DocString) error {
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
-	framework.GetLogger(data.Namespace).Debugf("httpPostRequestOnServiceWithPathAndBody with service %s, path %s and %s bodyContent %s", serviceName, path, body.GetMediaType(), bodyContent)
+	framework.GetLogger(data.Namespace).Debug("httpPostRequestOnServiceWithPathAndBody", "service", serviceName, "path", path, "bodyMediaType", body.GetMediaType(), "bodyContent", bodyContent)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -97,7 +97,7 @@ func (data *Data) httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinu
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
 	token = data.ResolveWithScenarioContext(token)
-	framework.GetLogger(data.Namespace).Debugf("httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinutesWithPathAndBody with service %s, token %s, path %s, %s bodyContent %s and timeout %d", serviceName, token, path, body.GetMediaType(), bodyContent, timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinutesWithPathAndBody", "service", serviceName, "token", token, "path", path, "bodyMediaType", body.GetMediaType(), "bodyContent", bodyContent, "timeout", timeoutInMin)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -110,7 +110,7 @@ func (data *Data) httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinu
 func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody(serviceName string, timeoutInMin int, path string, body *godog.DocString) error {
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
-	framework.GetLogger(data.Namespace).Debugf("httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody with service %s, path %s, %s bodyContent %s and timeout %d", serviceName, path, body.GetMediaType(), bodyContent, timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody", "service", serviceName, "path", path, "bodyMediaType", body.GetMediaType(), "bodyContent", bodyContent, "timeout", timeoutInMin)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -159,7 +159,7 @@ func (data *Data) httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody
 func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data *Data, requestCount int, threadCount int, report bool, serviceName string, path string, body *godog.DocString) error {
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
-	framework.GetLogger(data.Namespace).Infof("httpPostRequestsUsingThreadsOnServiceWithPathAndBody with requests %d, threads %d, report %t, service %s, path %s and %s bodyContent %s", requestCount, threadCount, report, serviceName, path, body.GetMediaType(), bodyContent)
+	framework.GetLogger(data.Namespace).Info("httpPostRequestsUsingThreadsOnServiceWithPathAndBody", "requests", requestCount, "threads", threadCount, "report", report, "service", serviceName, "path", path, "bodyMediaType", body.GetMediaType(), "bodyContent", bodyContent)
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err

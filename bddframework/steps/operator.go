@@ -19,7 +19,6 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -49,13 +48,7 @@ func (data *Data) kogitoOperatorIsDeployed() error {
 	if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 		return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 	} else if !exists {
-		created, err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
-
-		// Store created objects
-		if o, ok := namespacesCreated.Load(data.Namespace); ok {
-			namespacesCreated.Store(data.Namespace, append(o.([]meta.ResourceObject), created...))
-		}
-
+		err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
 		if err != nil {
 			return fmt.Errorf("Error while deploying operator: %v", err)
 		}
@@ -77,13 +70,7 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 		if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 			return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 		} else if !exists {
-			created, err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
-
-			// Store created objects
-			if o, ok := namespacesCreated.Load(data.Namespace); ok {
-				namespacesCreated.Store(data.Namespace, append(o.([]meta.ResourceObject), created...))
-			}
-
+			err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
 			if err != nil {
 				return fmt.Errorf("Error while deploying operator: %v", err)
 			}

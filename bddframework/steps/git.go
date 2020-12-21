@@ -29,7 +29,7 @@ func registerGitSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 func (data *Data) cloneKogitoExamplesIntoLocalDirectory() error {
-	framework.GetLogger(data.Namespace).Infof("Cloning Kogito examples from %s with branch %s to location %s", config.GetExamplesRepositoryURI(), config.GetExamplesRepositoryRef(), data.KogitoExamplesLocation)
+	framework.GetLogger(data.Namespace).Info("Cloning kogito examples", "URI", config.GetExamplesRepositoryURI(), "branch", config.GetExamplesRepositoryRef(), "clonedLocation", data.KogitoExamplesLocation)
 
 	cloneOptions := &git.CloneOptions{
 		URL:          config.GetExamplesRepositoryURI(),

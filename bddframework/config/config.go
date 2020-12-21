@@ -18,7 +18,7 @@ import (
 	"flag"
 	"path/filepath"
 
-	"github.com/kiegroup/kogito-cloud-operator/version"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/version"
 )
 
 // TestConfig contains the information about the tests environment
@@ -42,8 +42,8 @@ type TestConfig struct {
 	operatorNamespaced bool
 
 	// files/binaries
-	operatorDeployURI string
-	cliPath           string
+	operatorYamlURI string
+	cliPath         string
 
 	// runtime
 	servicesImageRegistry             string
@@ -91,8 +91,8 @@ type TestConfig struct {
 const (
 	defaultOperatorImageName = "quay.io/kiegroup/kogito-cloud-operator"
 
-	defaultOperatorDeployURI = "../deploy/"
-	defaultCliPath           = "../build/_output/bin/kogito"
+	defaultOperatorYamlURI = "../kogito-operator.yaml"
+	defaultCliPath         = "../build/_output/bin/kogito"
 
 	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
 
@@ -132,7 +132,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.BoolVar(&env.operatorNamespaced, prefix+"operator-namespaced", false, "Set to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false.")
 
 	// files/binaries
-	set.StringVar(&env.operatorDeployURI, prefix+"operator-deploy-uri", defaultOperatorDeployURI, "Url or Path to operator 'deploy' folder")
+	set.StringVar(&env.operatorYamlURI, prefix+"operator-yaml-uri", defaultOperatorYamlURI, "Url or Path to kogito-operator.yaml file")
 	set.StringVar(&env.cliPath, prefix+"cli-path", defaultCliPath, "Path to built CLI to test")
 
 	// runtime
@@ -254,9 +254,9 @@ func IsOperatorNamespaced() bool {
 
 // files/binaries
 
-// GetOperatorDeployURI return the uri for deployment folder
-func GetOperatorDeployURI() string {
-	return env.operatorDeployURI
+// GetOperatorYamlURI return the uri for kogito-operator.yaml file
+func GetOperatorYamlURI() string {
+	return env.operatorYamlURI
 }
 
 // GetOperatorCliPath return the path to the kogito CLI binary
