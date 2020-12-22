@@ -17,7 +17,7 @@
     "locktt": "locktt",
     "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save",
     "npm-tt": "npm-tt",
-    "publish": "npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub --ignore @kogito-tooling/pmml-editor -- npm publish --access public"
+    "publish:productization": "npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub --ignore @kogito-tooling/pmml-editor -- npm publish --access public"
   },
   "dependencies": {
     "react": "16.12.0",
