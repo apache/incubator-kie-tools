@@ -5,8 +5,7 @@ pipeline {
         label 'image-test'
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk11'
+        nodejs "nodejs-12.16.3"
     }
     parameters {
         booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
@@ -25,41 +24,31 @@ pipeline {
         stage('Clone build configuration repo') {
             steps {
                 script {
-                    // def currentBranch = env.BRANCH_NAME ?: env.GIT_BRANCH
-                    def currentBranch = 'BXMSPROD-1128'
+                    def currentBranch = env.BRANCH_NAME ?: env.GIT_BRANCH
                     println "Checking out ${env.BUILD_CONFIGURATION_REPO_URL}:${currentBranch} into build_config folder"
                     sh "git clone -b ${currentBranch} --single-branch ${env.BUILD_CONFIGURATION_REPO_URL} build_config"
+                }
+            }
+        }
+        stage('npm login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "npmRegistryPublish", usernameVariable: 'NPM_USER', passwordVariable: 'NPM_PASSWORD')]) {
+                    sh "npm-cli-login -u $NPM_USER -p $NPM_PASSWORD -e kie@redhat.com -r $NPM_REGISTRY_PUBLISH_URL"
                 }
             }
         }
         stage('Build Nightly projects') {
             steps {
                 script {
-                        def projectCollection = ["kiegroup/kogito-tooling"]
-                        println "Project Collection to build ${projectCollection}"
-                        def buildConfigAdditionalVariables = [:]
-                        def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
+                    def projectCollection = ["kiegroup/kogito-tooling"]
+                    println "Project Collection to build ${projectCollection}"
+                    def buildConfigAdditionalVariables = [:]
+                    def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
 
-                        println "[DEBUG] 1"
-                        Map<String, Object> buildConfigMap = getBuildConfigMap(buildConfigPathFolder, buildConfigAdditionalVariables)
-                        println "[DEBUG] 2"
-                        pmebuild.checkoutProjects(projectCollection, buildConfigMap, buildConfigAdditionalVariables)
-                        println "[DEBUG] 3"
-                        projectCollection.each { project -> buildProject(project, buildConfigMap) }
-                }
-            }
-        }
-        stage('Generate Properties Files') {
-            steps {
-                script {
-                    echo "[WARN] TODO"
-                }
-            }
-        }
-        stage ("Send UMB Message to QE.") {
-            steps {
-                script {
-                    echo "[WARN] TODO"
+                    Map<String, Object> buildConfigMap = getBuildConfigMap(buildConfigPathFolder, buildConfigAdditionalVariables)
+                    pmebuild.checkoutProjects(projectCollection, buildConfigMap, buildConfigAdditionalVariables)
+                    
+                    projectCollection.each { project -> buildProject(project, buildConfigMap) }
                 }
             }
         }
@@ -70,6 +59,8 @@ pipeline {
         }
     }
 }
+
+
 
 def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariables){
   env.DATE_TIME_SUFFIX = env.DATE_TIME_SUFFIX ?: "${new Date().format('yyyyMMdd')}"
@@ -83,5 +74,9 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
     def projectGroupName = util.getProjectGroupName(project, defaultGroup)
     def group = projectGroupName[0]
     def name = projectGroupName[1]
-    pmebuild.executeBuildScript("${group}/${name}", buildConfig, null)
+    dir("${env.WORKSPACE}/${group}_${name}") {
+        env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim()
+        println "kogito-tooling current version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
+        pmebuild.executeBuildScript("${group}/${name}", buildConfig, null)
+    }
 }
