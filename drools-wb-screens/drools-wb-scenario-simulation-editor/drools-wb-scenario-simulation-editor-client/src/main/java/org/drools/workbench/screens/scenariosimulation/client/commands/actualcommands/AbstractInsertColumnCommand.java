@@ -43,5 +43,6 @@ public abstract class AbstractInsertColumnCommand extends AbstractScenarioGridCo
                                                                                       context.getScenarioCellTextAreaSingletonDOMElementFactory(gridWidget),
                                                                                       ScenarioSimulationEditorConstants.INSTANCE.defineValidType());
         context.getAbstractScesimGridModelByGridWidget(gridWidget).insertColumn(index, scenarioGridColumnLocal);
+        context.getSelectedScenarioGridLayer().ifPresent(layer -> layer.getScenarioGrid().selectCurrentHeaderCellGroup());
     }
 }

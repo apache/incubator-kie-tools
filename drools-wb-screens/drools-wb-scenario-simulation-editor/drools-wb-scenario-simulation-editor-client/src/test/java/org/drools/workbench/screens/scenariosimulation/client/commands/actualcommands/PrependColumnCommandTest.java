@@ -35,6 +35,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PrependColumnCommandTest extends AbstractScenarioGridCommandTest {
@@ -55,9 +56,12 @@ public class PrependColumnCommandTest extends AbstractScenarioGridCommandTest {
     public void execute() {
         scenarioSimulationContextLocal.getStatus().setColumnId(COLUMN_ID);
         scenarioSimulationContextLocal.getStatus().setColumnGroup(COLUMN_GROUP);
+        when(backgroundGridWidgetSpy.isSelected()).thenReturn(false);
+        when(scenarioGridWidgetSpy.isSelected()).thenReturn(true);
         commandSpy.execute(scenarioSimulationContextLocal);
         verify(commandSpy, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioHeaderTextBoxSingletonDOMElementFactorySpy), eq(scenarioCellTextAreaSingletonDOMElementFactorySpy), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         verify(scenarioGridModelMock, times(1)).getFirstIndexLeftOfGroup(eq(COLUMN_GROUP));
         verify(scenarioGridModelMock, times(1)).insertColumn(eq(FIRST_INDEX_LEFT), eq(gridColumnMock));
+        verify(scenarioGridMock, times(1)).selectCurrentHeaderCellGroup();
     }
 }
