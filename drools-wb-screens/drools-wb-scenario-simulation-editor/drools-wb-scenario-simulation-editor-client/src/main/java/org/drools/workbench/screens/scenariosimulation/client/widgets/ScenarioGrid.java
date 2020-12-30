@@ -153,6 +153,18 @@ public class ScenarioGrid extends BaseGridWidget {
     }
 
     /**
+     * It focus the current selected header cells group
+     */
+    public void selectCurrentHeaderCellGroup() {
+        if (!model.getSelectedHeaderCells().isEmpty()) {
+            int rowIndex = model.getSelectedHeaderCells().get(0).getRowIndex();
+            int columnIndex = ColumnIndexUtilities.findUiColumnIndex(model.getColumns(),
+                                                                     model.getSelectedHeaderCells().get(0).getColumnIndex());
+            setSelectedColumnAndHeader(rowIndex, columnIndex);
+        }
+    }
+
+    /**
      * It ensures there is a selected cell (can be Header / Data cell) in the grid. If not, it selects the one defined
      * in <code>defaultSelectedDataCellX</code> and <code>defaultSelectedDataCellY</code> fields.
      */

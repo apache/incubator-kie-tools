@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -513,5 +515,60 @@ public class ScenarioGridTest {
         scenarioGridSpy.ensureCellIsSelected();
         verify(scenarioGridSpy, never()).selectCell(anyInt(), anyInt(), anyBoolean(), anyBoolean());
         verify(scenarioGridSpy, never()).signalTestTools();
+    }
+
+    @Test
+    public void reselectCurrentHeaderCell() {
+        final ScenarioGridColumn columnMock = mock(ScenarioGridColumn.class);
+        when(columnMock.getIndex()).thenReturn(0);
+        when(scenarioGridModelMock.getColumns()).thenReturn(Collections.singletonList(columnMock));
+        List<GridData.SelectedCell> selectedHeaderCells = new ArrayList<>();
+        selectedHeaderCells.add(new GridData.SelectedCell(0, 0));
+        when(scenarioGridModelMock.getSelectedHeaderCells()).thenReturn(selectedHeaderCells);
+        scenarioGridSpy.selectCurrentHeaderCellGroup();
+        verify(scenarioGridSpy, times(1)).setSelectedColumnAndHeader(eq(0), eq(0));
+    }
+
+    @Test
+    public void reselectCurrentHeaderCellMultipleColumns() {
+        final ScenarioGridColumn columnMock = mock(ScenarioGridColumn.class);
+        when(columnMock.getIndex()).thenReturn(0);
+        final ScenarioGridColumn columnMock2 = mock(ScenarioGridColumn.class);
+        when(columnMock2.getIndex()).thenReturn(1);
+        final ScenarioGridColumn columnMock3 = mock(ScenarioGridColumn.class);
+        when(columnMock3.getIndex()).thenReturn(2);
+        when(scenarioGridModelMock.getColumns()).thenReturn(Arrays.asList(columnMock, columnMock2, columnMock3));
+        List<GridData.SelectedCell> selectedHeaderCells = new ArrayList<>();
+        selectedHeaderCells.add(new GridData.SelectedCell(0, 0));
+        selectedHeaderCells.add(new GridData.SelectedCell(0, 1));
+        selectedHeaderCells.add(new GridData.SelectedCell(0, 2));
+        when(scenarioGridModelMock.getSelectedHeaderCells()).thenReturn(selectedHeaderCells);
+        scenarioGridSpy.selectCurrentHeaderCellGroup();
+        verify(scenarioGridSpy, times(1)).setSelectedColumnAndHeader(eq(0), eq(0));
+    }
+
+    @Test
+    public void reselectCurrentHeaderCellMultipleMiddleColumns() {
+        final ScenarioGridColumn columnMock = mock(ScenarioGridColumn.class);
+        when(columnMock.getIndex()).thenReturn(0);
+        final ScenarioGridColumn columnMock2 = mock(ScenarioGridColumn.class);
+        when(columnMock2.getIndex()).thenReturn(1);
+        final ScenarioGridColumn columnMock3 = mock(ScenarioGridColumn.class);
+        when(columnMock3.getIndex()).thenReturn(2);
+        when(scenarioGridModelMock.getColumns()).thenReturn(Arrays.asList(columnMock, columnMock2, columnMock3));
+        List<GridData.SelectedCell> selectedHeaderCells = new ArrayList<>();
+        selectedHeaderCells.add(new GridData.SelectedCell(0, 1));
+        selectedHeaderCells.add(new GridData.SelectedCell(0, 2));
+        when(scenarioGridModelMock.getSelectedHeaderCells()).thenReturn(selectedHeaderCells);
+        scenarioGridSpy.selectCurrentHeaderCellGroup();
+        verify(scenarioGridSpy, times(1)).setSelectedColumnAndHeader(eq(0), eq(1));
+    }
+
+    @Test
+    public void reselectCurrentHeaderCell_NoHeaderCellsSelected() {
+        List<GridData.SelectedCell> selectedHeaderCells = new ArrayList<>();
+        when(scenarioGridModelMock.getSelectedHeaderCells()).thenReturn(selectedHeaderCells);
+        scenarioGridSpy.selectCurrentHeaderCellGroup();
+        verify(scenarioGridSpy, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
     }
 }
