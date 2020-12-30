@@ -34,7 +34,10 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 @Dependent
 public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl implements ScenarioSimulationKogitoCreationAssetsDropdownProvider {
 
-    protected static final String DMN_FILE_SEARCH_PATTERN = "src/**/*.dmn";
+    protected static final String DMN_FILE_SEARCH_PATTERN = "**/*.dmn";
+    protected static final String TARGET_FOLDER = "target/";
+    protected static final String TARGET_FOLDER_NOT_ROOT = "/" + TARGET_FOLDER;
+
 
     @Inject
     protected KogitoResourceContentService resourceContentService;
@@ -51,6 +54,7 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl i
     protected RemoteCallback<List<String>> getRemoteCallback(Consumer<List<KieAssetsDropdownItem>> assetListConsumer) {
         return response -> {
             List<KieAssetsDropdownItem> toAccept = response.stream()
+                    .filter(item -> !isInTargetFolder(item))
                     .map(this::getKieAssetsDropdownItem)
                     .sorted(Comparator.comparing(KieAssetsDropdownItem::getText, String.CASE_INSENSITIVE_ORDER))
                     .collect(Collectors.toList());
@@ -69,5 +73,9 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl i
         int idx = fullPath.replaceAll("\\\\", "/").lastIndexOf('/');
         final String fileName = idx >= 0 ? fullPath.substring(idx + 1) : fullPath;
         return new KieAssetsDropdownItem(fileName, fullPath, fullPath, new HashMap<>());
+    }
+
+    private boolean isInTargetFolder(String path) {
+        return path.toLowerCase().startsWith(TARGET_FOLDER) || path.toLowerCase().contains(TARGET_FOLDER_NOT_ROOT);
     }
 }
