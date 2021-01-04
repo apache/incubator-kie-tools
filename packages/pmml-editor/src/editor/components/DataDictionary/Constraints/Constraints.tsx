@@ -83,6 +83,37 @@ const Constraints = (props: ConstraintsProps) => {
     });
   };
 
+  const handleRangeAdd = () => {
+    const updatedRanges = [...ranges];
+    updatedRanges.push({
+      start: {
+        value: "1",
+        included: true
+      },
+      end: {
+        value: "10",
+        included: true
+      }
+    });
+    onSave({
+      constraints: {
+        type: "Range",
+        value: updatedRanges
+      }
+    });
+  };
+
+  const handleRangeDelete = (index: number) => {
+    const updatedRanges = [...ranges];
+    updatedRanges.splice(index, 1);
+    onSave({
+      constraints: {
+        type: "Range",
+        value: updatedRanges
+      }
+    });
+  };
+
   useEffect(() => {
     setConstraintType(dataType.constraints?.type ?? "");
     if (dataType.constraints?.type === "Range") {
@@ -126,7 +157,9 @@ const Constraints = (props: ConstraintsProps) => {
           <CardBody>
             <ConstraintsRangeEdit
               ranges={ranges}
+              onAdd={handleRangeAdd}
               onChange={handleRangeSave}
+              onDelete={handleRangeDelete}
               typeOfData={dataType.type}
               validation={validation}
             />

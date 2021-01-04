@@ -18,7 +18,10 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Button,
   Checkbox,
+  Flex,
+  FlexItem,
   FormGroup,
   Split,
   SplitItem,
@@ -27,29 +30,31 @@ import {
   Text,
   TextContent,
   TextInput,
-  TextInputProps,
   TextVariants
 } from "@patternfly/react-core";
+import { TrashAltIcon } from "@patternfly/react-icons";
 import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 import { DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
 
 interface ConstraintsRangeEditProps {
   ranges: RangeConstraint[];
+  onAdd: () => void;
   onChange: (ranges: RangeConstraint[]) => void;
+  onDelete: (index: number) => void;
   typeOfData: DDDataField["type"];
   validation: FormValidation;
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { ranges, onChange, typeOfData, validation } = props;
+  const { ranges, onAdd, onChange, onDelete, typeOfData, validation } = props;
 
   const updateRange = (index: number, range: RangeConstraint) => {
     const newRanges = [...ranges];
     newRanges[index] = range;
     onChange(newRanges);
   };
-
+  console.table(ranges);
   return (
     <Stack hasGutter={true}>
       {validation.form === "error" && (
@@ -64,8 +69,20 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
       </StackItem>
       <StackItem>
         {ranges.map((range, index) => (
-          <RangeEdit range={range} index={index} key={index} onSave={updateRange} />
+          <RangeEdit
+            range={range}
+            rangesCount={ranges.length}
+            index={index}
+            key={index}
+            onSave={updateRange}
+            onDelete={onDelete}
+          />
         ))}
+      </StackItem>
+      <StackItem>
+        <Button variant="secondary" onClick={onAdd}>
+          Add another range
+        </Button>
       </StackItem>
     </Stack>
   );
@@ -75,12 +92,14 @@ export default ConstraintsRangeEdit;
 
 interface RangeEditProps {
   range: RangeConstraint;
+  rangesCount: number;
   index: number;
   onSave: (index: number, range: RangeConstraint) => void;
+  onDelete: (index: number) => void;
 }
 
 const RangeEdit = (props: RangeEditProps) => {
-  const { range, index, onSave } = props;
+  const { range, rangesCount, index, onSave, onDelete } = props;
   const [rangeValues, setRangeValues] = useState(range);
   const [submitChanges, setSubmitChanges] = useState(false);
 
@@ -102,6 +121,11 @@ const RangeEdit = (props: RangeEditProps) => {
         break;
     }
   };
+
+  const handleDelete = () => {
+    onDelete(index);
+  };
+
   const saveChange = () => {
     setSubmitChanges(true);
   };
@@ -118,9 +142,9 @@ const RangeEdit = (props: RangeEditProps) => {
   }, [range]);
 
   return (
-    <Split hasGutter={true}>
-      <SplitItem style={{ width: 320 }}>
-        <FormGroup label="Start Value" fieldId={`start-value-${index}`}>
+    <Split hasGutter={true} className="constraints__range-item">
+      <SplitItem>
+        <FormGroup label="Start Value" fieldId={`start-value-${index}`} style={{ width: 320 }}>
           <TextInput
             type="number"
             id={`start-value-${index}`}
@@ -128,7 +152,7 @@ const RangeEdit = (props: RangeEditProps) => {
             value={rangeValues.start.value}
             onChange={handleRangeChange}
             onBlur={saveChange}
-            tabIndex={20}
+            tabIndex={(index + 1) * 10 + 1}
           />
         </FormGroup>
         <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
@@ -140,12 +164,12 @@ const RangeEdit = (props: RangeEditProps) => {
             isChecked={rangeValues.start.included}
             onChange={handleRangeChange}
             onClick={saveChange}
-            tabIndex={22}
+            tabIndex={(index + 1) * 10 + 3}
           />
         </FormGroup>
       </SplitItem>
-      <SplitItem style={{ width: 320 }}>
-        <FormGroup label="End Value" fieldId={`end-value-${index}`}>
+      <SplitItem isFilled={true}>
+        <FormGroup label="End Value" fieldId={`end-value-${index}`} style={{ width: 320 }}>
           <TextInput
             type="number"
             id={`end-value-${index}`}
@@ -153,7 +177,7 @@ const RangeEdit = (props: RangeEditProps) => {
             value={rangeValues.end.value}
             onChange={handleRangeChange}
             onBlur={saveChange}
-            tabIndex={21}
+            tabIndex={(index + 1) * 10 + 2}
           />
         </FormGroup>
         <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">
@@ -165,9 +189,28 @@ const RangeEdit = (props: RangeEditProps) => {
             isChecked={rangeValues.end.included}
             onChange={handleRangeChange}
             onClick={saveChange}
-            tabIndex={23}
+            tabIndex={(index + 1) * 10 + 4}
           />
         </FormGroup>
+      </SplitItem>
+      <SplitItem>
+        <Flex
+          alignItems={{ default: "alignItemsCenter" }}
+          justifyContent={{ default: "justifyContentCenter" }}
+          style={{ height: "100%" }}
+        >
+          <FlexItem>
+            <Button
+              variant="plain"
+              aria-label="Delete Range"
+              onClick={handleDelete}
+              isDisabled={rangesCount === 1}
+              tabIndex={(index + 1) * 10 + 5}
+            >
+              <TrashAltIcon />
+            </Button>
+          </FlexItem>
+        </Flex>
       </SplitItem>
     </Split>
   );

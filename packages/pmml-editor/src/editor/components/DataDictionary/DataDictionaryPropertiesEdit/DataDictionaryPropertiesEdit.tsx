@@ -42,13 +42,13 @@ interface DataDictionaryPropertiesEditProps {
 const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) => {
   const { dataType, onClose, onSave } = props;
   const [displayName, setDisplayName] = useState(dataType.optionalProperties?.displayName ?? "");
-  const [isCyclic, setIsCyclic] = useState(dataType.optionalProperties?.isCyclic ?? null);
+  const [isCyclic, setIsCyclic] = useState(dataType.optionalProperties?.isCyclic);
   const [missingValue, setMissingValue] = useState(dataType.optionalProperties?.missingValue ?? "");
   const [invalidValue, setInvalidValue] = useState(dataType.optionalProperties?.invalidValue ?? "");
 
   useEffect(() => {
     setDisplayName(dataType.optionalProperties?.displayName ?? "");
-    setIsCyclic(dataType.optionalProperties?.isCyclic ?? null);
+    setIsCyclic(dataType.optionalProperties?.isCyclic);
     setMissingValue(dataType.optionalProperties?.missingValue ?? "");
     setInvalidValue(dataType.optionalProperties?.invalidValue ?? "");
   }, [dataType]);
@@ -99,21 +99,6 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                 isInline={true}
               >
                 <Radio
-                  isChecked={isCyclic === null}
-                  name="cyclicNotSet"
-                  onChange={() => {
-                    setIsCyclic(null);
-                    onSave({
-                      optionalProperties: {
-                        isCyclic: undefined
-                      }
-                    });
-                  }}
-                  label="Not Set"
-                  id="cyclicNotSet"
-                  value="cyclicNotSet"
-                />
-                <Radio
                   isChecked={isCyclic === true}
                   name="isCyclic"
                   onChange={() => {
@@ -142,6 +127,21 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   label="No"
                   id="isNotCyclic"
                   value="isNotCyclic"
+                />
+                <Radio
+                  isChecked={isCyclic === undefined}
+                  name="cyclicNotSet"
+                  onChange={() => {
+                    setIsCyclic(undefined);
+                    onSave({
+                      optionalProperties: {
+                        isCyclic: undefined
+                      }
+                    });
+                  }}
+                  label="Not Set"
+                  id="cyclicNotSet"
+                  value="cyclicNotSet"
                 />
               </FormGroup>
             </SplitItem>

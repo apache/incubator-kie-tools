@@ -14,6 +14,13 @@
  *  limitations under the License.
  */
 .constraints {
+  &__range-item {
+    border-top: 1px solid var(--pf-global--BorderColor--100);
+    &:last-of-type {
+      border-bottom: 1px solid var(--pf-global--BorderColor--100);
+    }
+    padding: 1rem;
+  }
   &__include-range {
     margin-top: 1em;
     label {

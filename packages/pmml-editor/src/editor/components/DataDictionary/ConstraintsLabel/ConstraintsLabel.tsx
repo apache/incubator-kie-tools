@@ -24,7 +24,7 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
       case "Range":
         return (
           `${constraints.value[0].start.included ? "[" : "("}` +
-          `${constraints.value[0].start.value},` +
+          `${constraints.value[0].start.value}, ` +
           `${constraints.value[0].end.value}` +
           `${constraints.value[0].end.included ? "]" : ")"}`
         );

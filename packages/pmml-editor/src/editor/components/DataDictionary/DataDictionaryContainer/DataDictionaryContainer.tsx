@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { pick, merge } from "lodash";
+import { pick, assignIn } from "lodash";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
@@ -107,7 +107,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       const existingPartial = pick(dataType, Object.keys(payload));
 
       if (!isEqual(payload, existingPartial)) {
-        onEdit(editing, merge(dataType, payload));
+        onEdit(editing, assignIn(dataType, payload));
       }
     }
   };
