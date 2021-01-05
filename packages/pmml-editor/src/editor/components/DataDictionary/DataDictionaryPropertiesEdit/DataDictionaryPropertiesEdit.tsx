@@ -41,16 +41,16 @@ interface DataDictionaryPropertiesEditProps {
 
 const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) => {
   const { dataType, onClose, onSave } = props;
-  const [displayName, setDisplayName] = useState(dataType.optionalProperties?.displayName ?? "");
-  const [isCyclic, setIsCyclic] = useState(dataType.optionalProperties?.isCyclic);
-  const [missingValue, setMissingValue] = useState(dataType.optionalProperties?.missingValue ?? "");
-  const [invalidValue, setInvalidValue] = useState(dataType.optionalProperties?.invalidValue ?? "");
+  const [displayName, setDisplayName] = useState(dataType.displayName ?? "");
+  const [isCyclic, setIsCyclic] = useState(dataType.isCyclic);
+  const [missingValue, setMissingValue] = useState(dataType.missingValue ?? "");
+  const [invalidValue, setInvalidValue] = useState(dataType.invalidValue ?? "");
 
   useEffect(() => {
-    setDisplayName(dataType.optionalProperties?.displayName ?? "");
-    setIsCyclic(dataType.optionalProperties?.isCyclic);
-    setMissingValue(dataType.optionalProperties?.missingValue ?? "");
-    setInvalidValue(dataType.optionalProperties?.invalidValue ?? "");
+    setDisplayName(dataType.displayName ?? "");
+    setIsCyclic(dataType.isCyclic);
+    setMissingValue(dataType.missingValue ?? "");
+    setInvalidValue(dataType.invalidValue ?? "");
   }, [dataType]);
 
   return (
@@ -83,9 +83,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   autoComplete="off"
                   onBlur={() =>
                     onSave({
-                      optionalProperties: {
-                        displayName
-                      }
+                      displayName
                     })
                   }
                 />
@@ -104,9 +102,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   onChange={() => {
                     setIsCyclic(true);
                     onSave({
-                      optionalProperties: {
-                        isCyclic: true
-                      }
+                      isCyclic: true
                     });
                   }}
                   label="Yes"
@@ -119,9 +115,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   onChange={() => {
                     setIsCyclic(false);
                     onSave({
-                      optionalProperties: {
-                        isCyclic: false
-                      }
+                      isCyclic: false
                     });
                   }}
                   label="No"
@@ -134,9 +128,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   onChange={() => {
                     setIsCyclic(undefined);
                     onSave({
-                      optionalProperties: {
-                        isCyclic: undefined
-                      }
+                      isCyclic: undefined
                     });
                   }}
                   label="Not Set"
@@ -164,9 +156,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   autoComplete="off"
                   onBlur={() =>
                     onSave({
-                      optionalProperties: {
-                        missingValue
-                      }
+                      missingValue
                     })
                   }
                 />
@@ -189,9 +179,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   autoComplete="off"
                   onBlur={() =>
                     onSave({
-                      optionalProperties: {
-                        invalidValue
-                      }
+                      invalidValue
                     })
                   }
                 />

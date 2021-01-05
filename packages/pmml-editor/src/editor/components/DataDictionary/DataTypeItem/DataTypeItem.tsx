@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import {
   Button,
-  Flex,
-  FlexItem,
   FormGroup,
   Label,
   Select,
@@ -23,6 +21,7 @@ import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer"
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
+import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
 
 interface DataTypeItemProps {
   dataType: DDDataField;
@@ -67,7 +66,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
 
   const ref = useOnclickOutside(
     () => {
-      console.log("click outside");
       onOutsideClick();
     },
     { eventTypes: ["click"], disabled: editingIndex !== index }
@@ -138,6 +136,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onConstraintsSave(updatedDataType);
   };
 
+  const handlePropertiesDelete = (updatedDataType: DDDataField, updateIndex: number) => {
+    onSave(updatedDataType, updateIndex);
+  };
+
   useEffect(() => {
     if (editingIndex === index) {
       const input = document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`);
@@ -176,6 +178,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                   <SplitItem>
                     <FormGroup
                       fieldId="name"
+                      label="Name"
                       helperTextInvalid="Name already used by another Data Type"
                       validated={validation}
                       style={{ width: 280 }}
@@ -194,44 +197,50 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                     </FormGroup>
                   </SplitItem>
                   <SplitItem>
-                    <Select
-                      variant={SelectVariant.single}
-                      aria-label="Select Input Type"
-                      onToggle={typeToggle}
-                      onSelect={typeSelect}
-                      selections={typeSelection}
-                      isOpen={isTypeSelectOpen}
-                      placeholder="Type"
-                      className="data-type-item__type-select"
-                    >
-                      {typeOptions.map((option, optionIndex) => (
-                        <SelectOption
-                          key={optionIndex}
-                          value={option.value}
-                          className="ignore-onclickoutside data-type-item__type-select__option"
-                        />
-                      ))}
-                    </Select>
+                    <FormGroup fieldId="type" label="Type">
+                      <Select
+                        id="type"
+                        variant={SelectVariant.single}
+                        aria-label="Select Input Type"
+                        onToggle={typeToggle}
+                        onSelect={typeSelect}
+                        selections={typeSelection}
+                        isOpen={isTypeSelectOpen}
+                        placeholder="Type"
+                        className="data-type-item__type-select"
+                      >
+                        {typeOptions.map((option, optionIndex) => (
+                          <SelectOption
+                            key={optionIndex}
+                            value={option.value}
+                            className="ignore-onclickoutside data-type-item__type-select__option"
+                          />
+                        ))}
+                      </Select>
+                    </FormGroup>
                   </SplitItem>
                   <SplitItem>
-                    <Select
-                      variant={SelectVariant.single}
-                      aria-label="Select Op Type"
-                      onToggle={optypeToggle}
-                      onSelect={optypeSelect}
-                      selections={optypeSelection}
-                      isOpen={isOptypeSelectOpen}
-                      placeholder="Op Type"
-                      className="data-type-item__type-select"
-                    >
-                      {optypeOptions.map((option, optionIndex) => (
-                        <SelectOption
-                          key={optionIndex}
-                          value={option.value}
-                          className="ignore-onclickoutside data-type-item__type-select__option"
-                        />
-                      ))}
-                    </Select>
+                    <FormGroup fieldId="optype" label="Op Type">
+                      <Select
+                        id="optype"
+                        variant={SelectVariant.single}
+                        aria-label="Select Op Type"
+                        onToggle={optypeToggle}
+                        onSelect={optypeSelect}
+                        selections={optypeSelection}
+                        isOpen={isOptypeSelectOpen}
+                        placeholder="Op Type"
+                        className="data-type-item__type-select"
+                      >
+                        {optypeOptions.map((option, optionIndex) => (
+                          <SelectOption
+                            key={optionIndex}
+                            value={option.value}
+                            className="ignore-onclickoutside data-type-item__type-select__option"
+                          />
+                        ))}
+                      </Select>
+                    </FormGroup>
                   </SplitItem>
                   <SplitItem isFilled={true}>&nbsp;</SplitItem>
                 </Split>
@@ -239,6 +248,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <StackItem>
                 <Split hasGutter={true}>
                   <SplitItem>
+                    <PropertiesLabels
+                      dataType={dataType}
+                      editingIndex={editingIndex}
+                      onPropertyDelete={handlePropertiesDelete}
+                    />
                     {dataType.constraints !== undefined && (
                       <ConstraintsLabel
                         editingIndex={editingIndex}
@@ -246,25 +260,18 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         onConstraintsDelete={handleConstraintsDelete}
                       />
                     )}
-                    {(name.trim().length === 0 || typeSelection === "boolean") && (
-                      <Label icon={<ArrowAltCircleRightIcon />}>
-                        {dataType.constraints === undefined ? "Add" : "Edit"} Constraints
-                      </Label>
-                    )}
-                    {!(name.trim().length === 0 || typeSelection === "boolean") && (
-                      <Label
-                        variant="outline"
-                        color="orange"
-                        href="#"
-                        icon={<ArrowAltCircleRightIcon />}
-                        onClick={event => {
-                          event.preventDefault();
-                          handleConstraints();
-                        }}
-                      >
-                        {dataType.constraints === undefined ? "Add" : "Edit"} Properties
-                      </Label>
-                    )}
+                    <Label
+                      variant="outline"
+                      color="orange"
+                      href="#"
+                      icon={<ArrowAltCircleRightIcon />}
+                      onClick={event => {
+                        event.preventDefault();
+                        handleConstraints();
+                      }}
+                    >
+                      {dataType.constraints === undefined ? "Add" : "Edit"} Properties
+                    </Label>
                   </SplitItem>
                 </Split>
               </StackItem>
@@ -285,30 +292,26 @@ const DataTypeItem = (props: DataTypeItemProps) => {
             }
           }}
         >
-          <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
-            <FlexItem>
-              <strong>{name}</strong>
-            </FlexItem>
-            <FlexItem>
+          <Split hasGutter={true}>
+            <SplitItem>
+              <span className="data-type-item__name">{name}</span>
+            </SplitItem>
+            <SplitItem isFilled={true}>
               <Label color="blue" className="data-type-item__type-label">
                 {typeSelection}
               </Label>{" "}
               <Label color="blue" className="data-type-item__type-label">
                 {optypeSelection}
-              </Label>
-              {dataType.constraints !== undefined && (
-                <>
-                  {" "}
-                  <ConstraintsLabel constraints={dataType.constraints} />
-                </>
-              )}
-            </FlexItem>
-            <FlexItem align={{ default: "alignRight" }}>
+              </Label>{" "}
+              <PropertiesLabels dataType={dataType} />
+              {dataType.constraints !== undefined && <ConstraintsLabel constraints={dataType.constraints} />}
+            </SplitItem>
+            <SplitItem>
               <Button variant="plain" onClick={handleDelete}>
                 <TrashIcon />
               </Button>
-            </FlexItem>
-          </Flex>
+            </SplitItem>
+          </Split>
         </section>
       )}
     </article>

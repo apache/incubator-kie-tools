@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { pick, assignIn } from "lodash";
+import { pick } from "lodash";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
@@ -35,6 +35,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     // undoing a recently created data field force to exit the editing mode for that field
     if (editing === dataDictionary.length) {
       setEditing(undefined);
+      if (viewSection !== "main") {
+        setViewSection("main");
+      }
       onEditingPhaseChange(false);
     }
     // updating constraintsEdit when dictionary changes
@@ -107,7 +110,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       const existingPartial = pick(dataType, Object.keys(payload));
 
       if (!isEqual(payload, existingPartial)) {
-        onEdit(editing, assignIn(dataType, payload));
+        onEdit(editing, Object.assign(dataType, payload));
       }
     }
   };
@@ -231,11 +234,6 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                 onClose={exitFromPropertiesEdit}
                 onSave={handlePropertiesSave}
               />
-              // <ConstraintsEdit
-              //   dataType={constrainsEdit!}
-              //   onSave={handleConstraintsSave}
-              //   onClose={exitFromPropertiesEdit}
-              // />
             )}
           </>
         </CSSTransition>
@@ -251,7 +249,10 @@ export interface DDDataField {
   type: "string" | "integer" | "float" | "double" | "boolean";
   optype: "categorical" | "ordinal" | "continuous";
   constraints?: Constraints;
-  optionalProperties?: OptionalProperties;
+  displayName?: string;
+  isCyclic?: boolean;
+  missingValue?: string;
+  invalidValue?: string;
 }
 
 type dataDictionarySection = "main" | "batch-add" | "properties";
@@ -261,7 +262,7 @@ export type Constraints =
       type: "Range";
       value: RangeConstraint[];
     }
-  | { type: "Enumeration"; value: EnumConstraint[] };
+  | { type: "Enumeration"; value: string[] };
 
 export interface RangeConstraint {
   start: {
@@ -276,12 +277,5 @@ export interface RangeConstraint {
 
 export interface EnumConstraint {
   value: string;
-  id: string;
-}
-
-export interface OptionalProperties {
-  displayName?: string;
-  isCyclic?: boolean;
-  missingValue?: string;
-  invalidValue?: string;
+  displayValue: string;
 }

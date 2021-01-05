@@ -36,9 +36,9 @@ const Constraints = (props: ConstraintsProps) => {
   const [ranges, setRange] = useState<RangeConstraint[] | undefined>(
     dataType.constraints?.type === "Range" ? dataType.constraints.value : undefined
   );
-  // const [enums, setEnums] = useState(
-  //   dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : [{ value: "", id: uuid() }]
-  // );
+  const [enums, setEnums] = useState(
+    dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : undefined
+  );
   const [validation, setValidation] = useState<FormValidation>({
     form: "default",
     fields: { start: "default", end: "default", enums: "default" }
@@ -55,15 +55,23 @@ const Constraints = (props: ConstraintsProps) => {
             value: [
               {
                 start: {
-                  value: "1",
+                  value: "",
                   included: true
                 },
                 end: {
-                  value: "10",
+                  value: "",
                   included: true
                 }
               }
             ]
+          }
+        });
+      }
+      if (value === "Enumeration") {
+        onSave({
+          constraints: {
+            type: "Enumeration",
+            value: [""]
           }
         });
       }
@@ -87,11 +95,11 @@ const Constraints = (props: ConstraintsProps) => {
     const updatedRanges = [...ranges];
     updatedRanges.push({
       start: {
-        value: "1",
+        value: "",
         included: true
       },
       end: {
-        value: "10",
+        value: "",
         included: true
       }
     });
@@ -114,14 +122,58 @@ const Constraints = (props: ConstraintsProps) => {
     });
   };
 
+  const handleEnumsChange = (value: string, index: number) => {
+    const updatedEnums = [...enums];
+    updatedEnums[index] = value;
+    onSave({
+      constraints: {
+        type: "Enumeration",
+        value: updatedEnums
+      }
+    });
+  };
+
+  const handleEnumsDelete = (index: number) => {
+    const updatedEnums = [...enums];
+    updatedEnums.splice(index, 1);
+    onSave({
+      constraints: {
+        type: "Enumeration",
+        value: updatedEnums
+      }
+    });
+  };
+
+  const handleAddEnum = () => {
+    const updatedEnums = [...enums, ""];
+    onSave({
+      constraints: {
+        type: "Enumeration",
+        value: updatedEnums
+      }
+    });
+  };
+
+  const handleEnumSort = (oldIndex: number, newIndex: number) => {
+    if (enums) {
+      const updatedEnums = reorderArray(enums, oldIndex, newIndex);
+      onSave({
+        constraints: {
+          type: "Enumeration",
+          value: updatedEnums
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     setConstraintType(dataType.constraints?.type ?? "");
     if (dataType.constraints?.type === "Range") {
       setRange(dataType.constraints.value);
     }
-    // if (dataType.constraints?.type === "Enumeration") {
-    //   setEnums(dataType.constraints.value);
-    // }
+    if (dataType.constraints?.type === "Enumeration") {
+      setEnums(dataType.constraints.value);
+    }
   }, [dataType.constraints]);
 
   return (
@@ -160,30 +212,36 @@ const Constraints = (props: ConstraintsProps) => {
               onAdd={handleRangeAdd}
               onChange={handleRangeSave}
               onDelete={handleRangeDelete}
-              typeOfData={dataType.type}
               validation={validation}
             />
           </CardBody>
         </Card>
       )}
-      {constraintType === "Enumeration" && (
-        <span>enum constraint here</span>
-        // <Card isCompact={true}>
-        //   <CardTitle>Enumerations List</CardTitle>
-        //   <CardBody>
-        //     <ConstraintsEnumEdit
-        //       enumerations={enums}
-        //       onChange={handleEnumsChange}
-        //       onDelete={handleEnumsDelete}
-        //       onAdd={handleAddEnum}
-        //       onSort={handleEnumSort}
-        //       validation={validation}
-        //     />
-        //   </CardBody>
-        // </Card>
+      {constraintType === "Enumeration" && enums !== undefined && (
+        <Card isCompact={true} style={{ margin: "1em 0" }}>
+          <CardTitle>Enumerations List</CardTitle>
+          <CardBody>
+            <ConstraintsEnumEdit
+              enumerations={enums}
+              onChange={handleEnumsChange}
+              onDelete={handleEnumsDelete}
+              onAdd={handleAddEnum}
+              onSort={handleEnumSort}
+              validation={validation}
+            />
+          </CardBody>
+        </Card>
       )}
     </section>
   );
 };
 
 export default Constraints;
+
+const reorderArray = <T extends unknown>(list: T[], startIndex: number, endIndex: number) => {
+  const result = [...list];
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};

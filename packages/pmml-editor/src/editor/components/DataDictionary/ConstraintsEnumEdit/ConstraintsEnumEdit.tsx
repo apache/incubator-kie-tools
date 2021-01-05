@@ -15,12 +15,11 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { GripVerticalIcon, TrashIcon } from "@patternfly/react-icons";
-import { EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsEnumEdit.scss";
 import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 
 interface ConstraintsEnumEditProps {
-  enumerations: EnumConstraint[];
+  enumerations: string[];
   onAdd: () => void;
   onChange: (value: string, index: number) => void;
   onDelete: (index: number) => void;
@@ -106,17 +105,17 @@ const EnumsList = SortableContainer(
     onTab,
     onDelete
   }: {
-    items: EnumConstraint[];
+    items: string[];
     onUpdate: (value: string, index: number) => void;
     onTab: () => void;
     onDelete: (index: number) => void;
   }) => {
     return (
-      <ul className="constraints-enum__list" aria-label="Compact data list example" style={{ width: 550 }}>
+      <ul className="constraints-enum__list" aria-label="Compact data list example">
         {items.map((item, index) => (
           <EnumItem
-            key={`enum-${item.id}`}
-            enumValue={item.value}
+            key={index + item}
+            enumValue={item}
             index={index}
             position={index}
             onUpdate={onUpdate}
@@ -171,6 +170,7 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
         </FlexItem>
         <FlexItem>
           <TextInput
+            className="constraints-enum__field"
             type="text"
             id={`enum-value-${position}`}
             name={`enum-value-${position}`}
@@ -179,7 +179,6 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
             onBlur={handleSave}
             onKeyDown={handleTabNavigation}
             placeholder="Insert a value"
-            style={{ width: 300 }}
           />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>

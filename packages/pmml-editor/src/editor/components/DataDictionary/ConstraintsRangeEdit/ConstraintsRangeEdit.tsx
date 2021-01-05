@@ -32,9 +32,9 @@ import {
   TextInput,
   TextVariants
 } from "@patternfly/react-core";
-import { TrashAltIcon } from "@patternfly/react-icons";
+import { TrashIcon } from "@patternfly/react-icons";
 import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
-import { DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
 
 interface ConstraintsRangeEditProps {
@@ -42,19 +42,18 @@ interface ConstraintsRangeEditProps {
   onAdd: () => void;
   onChange: (ranges: RangeConstraint[]) => void;
   onDelete: (index: number) => void;
-  typeOfData: DDDataField["type"];
   validation: FormValidation;
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { ranges, onAdd, onChange, onDelete, typeOfData, validation } = props;
+  const { ranges, onAdd, onChange, onDelete, validation } = props;
 
   const updateRange = (index: number, range: RangeConstraint) => {
     const newRanges = [...ranges];
     newRanges[index] = range;
     onChange(newRanges);
   };
-  console.table(ranges);
+
   return (
     <Stack hasGutter={true}>
       {validation.form === "error" && (
@@ -207,7 +206,7 @@ const RangeEdit = (props: RangeEditProps) => {
               isDisabled={rangesCount === 1}
               tabIndex={(index + 1) * 10 + 5}
             >
-              <TrashAltIcon />
+              <TrashIcon />
             </Button>
           </FlexItem>
         </Flex>

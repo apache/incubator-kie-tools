@@ -1,6 +1,5 @@
 import { Closure, DataDictionary, DataField, FieldName, Interval } from "@kogito-tooling/pmml-editor-marshaller";
-import { DDDataField, RangeConstraint } from "./DataDictionaryContainer/DataDictionaryContainer";
-import convert = require("lodash/fp/convert");
+import { DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
 
 export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DDDataField[] => {
   if (PMMLDataDictionary === undefined) {
@@ -18,40 +17,47 @@ export const convertToDataField = (item: DDDataField): DataField => {
     dataType: item.type,
     optype: item.optype
   };
-  if (item.optionalProperties) {
-    convertedField.displayName = item.optionalProperties.displayName;
-    if (item.optionalProperties.isCyclic !== undefined) {
-      convertedField.isCyclic = item.optionalProperties.isCyclic ? "1" : "0";
-    }
-    if (item.optionalProperties.missingValue) {
-      convertedField.Value = convertedField.Value || [];
-      convertedField.Value.push({
-        property: "missing",
-        value: item.optionalProperties.missingValue
-      });
-    }
-    if (item.optionalProperties.invalidValue) {
-      convertedField.Value = convertedField.Value || [];
-      convertedField.Value.push({
-        property: "invalid",
-        value: item.optionalProperties.invalidValue
-      });
-    }
+
+  convertedField.displayName = item.displayName;
+  if (item.isCyclic !== undefined) {
+    convertedField.isCyclic = item.isCyclic ? "1" : "0";
   }
+  if (item.missingValue) {
+    convertedField.Value = convertedField.Value || [];
+    convertedField.Value.push({
+      property: "missing",
+      value: item.missingValue
+    });
+  }
+  if (item.invalidValue) {
+    convertedField.Value = convertedField.Value || [];
+    convertedField.Value.push({
+      property: "invalid",
+      value: item.invalidValue
+    });
+  }
+
   if (item.constraints) {
     if (item.constraints.type === "Range" && item.constraints.value.length > 0) {
       convertedField.Interval = item.constraints.value.map(range => {
         const interval: Interval = {
           closure: `${range?.start?.included ? "closed" : "open"}${range?.end?.included ? "Closed" : "Open"}` as Closure
         };
-        if (range.start) {
+        if (range.start && range.start.value) {
           interval.leftMargin = Number(range.start.value);
         }
-        if (range.end) {
+        if (range.end && range.end.value) {
           interval.rightMargin = Number(range.end.value);
         }
         return interval;
       });
+    }
+    if (item.constraints.type === "Enumeration" && item.constraints.value.length > 0) {
+      convertedField.Value = (convertedField.Value || []).concat(
+        item.constraints.value.map(value => {
+          return { value };
+        })
+      );
     }
   }
 
@@ -78,22 +84,26 @@ export const convertFromDataField = (item: DataField) => {
     optype: item.optype
   };
   if (item.displayName) {
-    convertedField.optionalProperties = convertedField.optionalProperties || {};
-    convertedField.optionalProperties.displayName = item.displayName;
+    convertedField.displayName = item.displayName;
   }
   if (item.isCyclic !== undefined) {
-    convertedField.optionalProperties = convertedField.optionalProperties || {};
-    convertedField.optionalProperties.isCyclic = item.isCyclic === "1";
+    convertedField.isCyclic = item.isCyclic === "1";
   }
   if (item.Value) {
     item.Value.forEach(value => {
       if (value.property === "missing") {
-        convertedField.optionalProperties = convertedField.optionalProperties || {};
-        convertedField.optionalProperties.missingValue = value.value;
+        convertedField.missingValue = value.value;
       }
       if (value.property === "invalid") {
-        convertedField.optionalProperties = convertedField.optionalProperties || {};
-        convertedField.optionalProperties.invalidValue = value.value;
+        convertedField.invalidValue = value.value;
+      }
+      // valid values correspond to the enumeration constraint
+      if (value.property === "valid" || value.property === undefined) {
+        convertedField.constraints = convertedField.constraints || {
+          type: "Enumeration",
+          value: []
+        };
+        convertedField.constraints.value.push(value.value);
       }
     });
   }

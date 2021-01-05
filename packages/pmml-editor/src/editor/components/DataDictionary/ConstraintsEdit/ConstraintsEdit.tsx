@@ -42,9 +42,9 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const [range, setRange] = useState<RangeConstraint[] | undefined>(
     dataType.constraints?.type === "Range" ? dataType.constraints.value : undefined
   );
-  const [enums, setEnums] = useState(
-    dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : [{ value: "", id: uuid() }]
-  );
+  // const [enums, setEnums] = useState(
+  //   dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : [{ value: "", id: uuid() }]
+  // );
   const [validation, setValidation] = useState<FormValidation>({
     form: "default",
     fields: { start: "default", end: "default", enums: "default" }
@@ -63,10 +63,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     if (dataType.constraints?.type === "Range") {
       setRange(dataType.constraints.value);
     }
-    if (dataType.constraints?.type === "Enumeration") {
-      setEnums(dataType.constraints.value);
-    }
-  }, [dataType.constraints, setConstraintType, setRange, setEnums]);
+    // if (dataType.constraints?.type === "Enumeration") {
+    //   setEnums(dataType.constraints.value);
+    // }
+  }, [dataType.constraints, setConstraintType, setRange]);
 
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {
@@ -110,28 +110,28 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     });
   };
 
-  const handleEnumsChange = (value: string, index: number) => {
-    const updatedEnums = [...enums];
-    updatedEnums[index].value = value;
-    setEnums(updatedEnums);
-  };
-
-  const handleEnumsDelete = (index: number) => {
-    const updatedEnums = [...enums];
-    updatedEnums.splice(index, 1);
-    setEnums(updatedEnums);
-  };
-
-  const handleAddEnum = () => {
-    const updatedEnums = [...enums];
-    updatedEnums.push({ value: "", id: uuid() });
-    setEnums(updatedEnums);
-  };
-
-  const handleEnumSort = (oldIndex: number, newIndex: number) => {
-    const newOrder = reorderArray(enums, oldIndex, newIndex);
-    setEnums(newOrder);
-  };
+  // const handleEnumsChange = (value: string, index: number) => {
+  //   const updatedEnums = [...enums];
+  //   updatedEnums[index].value = value;
+  //   setEnums(updatedEnums);
+  // };
+  //
+  // const handleEnumsDelete = (index: number) => {
+  //   const updatedEnums = [...enums];
+  //   updatedEnums.splice(index, 1);
+  //   setEnums(updatedEnums);
+  // };
+  //
+  // const handleAddEnum = () => {
+  //   const updatedEnums = [...enums];
+  //   updatedEnums.push({ value: "", id: uuid() });
+  //   setEnums(updatedEnums);
+  // };
+  //
+  // const handleEnumSort = (oldIndex: number, newIndex: number) => {
+  //   const newOrder = reorderArray(enums, oldIndex, newIndex);
+  //   setEnums(newOrder);
+  // };
 
   const validateConstraints = () => {
     const isValid = { ...validation };
@@ -140,10 +140,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     //   isValid.fields.start = range?.start.value.trim().length === 0 ? "error" : "success";
     //   isValid.fields.end = range?.end.value.trim().length === 0 ? "error" : "success";
     // }
-    if (constraintType === "Enumeration") {
-      const oneEnum = enums.find(item => item.value.trim().length > 0);
-      isValid.fields.enums = oneEnum === undefined ? "error" : "success";
-    }
+    // if (constraintType === "Enumeration") {
+    //   const oneEnum = enums.find(item => item.value.trim().length > 0);
+    //   isValid.fields.enums = oneEnum === undefined ? "error" : "success";
+    // }
     for (const fieldsKey in isValid.fields) {
       if (isValid.fields[fieldsKey] === "error") {
         isValid.form = "error";
@@ -226,14 +226,14 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                 <Card isCompact={true}>
                   <CardTitle>Enumerations List</CardTitle>
                   <CardBody>
-                    <ConstraintsEnumEdit
-                      enumerations={enums}
-                      onChange={handleEnumsChange}
-                      onDelete={handleEnumsDelete}
-                      onAdd={handleAddEnum}
-                      onSort={handleEnumSort}
-                      validation={validation}
-                    />
+                    {/*<ConstraintsEnumEdit*/}
+                    {/*  enumerations={enums}*/}
+                    {/*  onChange={handleEnumsChange}*/}
+                    {/*  onDelete={handleEnumsDelete}*/}
+                    {/*  onAdd={handleAddEnum}*/}
+                    {/*  onSort={handleEnumSort}*/}
+                    {/*  validation={validation}*/}
+                    {/*/>*/}
                   </CardBody>
                 </Card>
               )}
