@@ -15,7 +15,6 @@
 
 set -e
 source ./hack/ci/operator-ensure-manifests.sh
-source ./hack/export-version.sh
 
 default_cluster_name="operator-test"
 

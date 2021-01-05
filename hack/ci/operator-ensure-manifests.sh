@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-source ./hack/export-version.sh
+source ./hack/env.sh
 
 OUTPUT="${PWD}/build/_output/operatorhub"
 
@@ -33,7 +33,7 @@ cp -r ~/operators/community-operators/infinispan/ "${OUTPUT}"
 cp -r ~/operators/community-operators/kogito-operator/ "${OUTPUT}"
 rm -rf ~/operators/
 
-cp -r "deploy/olm-catalog/kogito-operator/${OP_VERSION}/" "${OUTPUT}/kogito-operator/"
+cp -r "deploy/olm-catalog/kogito-operator/$(getOperatorVersion)/" "${OUTPUT}/kogito-operator/"
 cp "deploy/olm-catalog/kogito-operator/kogito-operator.package.yaml"  "${OUTPUT}/kogito-operator/"
 
 echo "---> Manifest files in the output directory for OLM verification"

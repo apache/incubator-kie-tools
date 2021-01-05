@@ -21,10 +21,10 @@ if [[ -z ${CLUSTER_NAME} ]]; then
     CLUSTER_NAME=$default_cluster_name
 fi
 
-source ./hack/export-version.sh
+source ./hack/env.sh
 docker images
 echo "---> Loading Operator Image into Kind"
-kind load docker-image quay.io/kiegroup/kogito-cloud-operator:"${OP_VERSION}" --name ${CLUSTER_NAME}
+kind load docker-image quay.io/kiegroup/kogito-cloud-operator:"$(getOperatorVersion)" --name ${CLUSTER_NAME}
 
 node_name=$(kubectl get nodes -o jsonpath="{.items[0].metadata.name}")
 echo "---> Checking internal loaded images on node ${node_name}"
