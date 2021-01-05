@@ -159,7 +159,7 @@ function getIntervalsMaximumRange(intervals: Interval[] | undefined): Range | un
   if (intervals.length === 0) {
     return undefined;
   }
-  let min: number = intervals.map(interval => interval.leftMargin ?? 0).reduce((pv, cv) => Math.min(pv, cv));
+  const min: number = intervals.map(interval => interval.leftMargin ?? 0).reduce((pv, cv) => Math.min(pv, cv));
   const max: number = intervals.map(interval => interval.rightMargin ?? 0).reduce((pv, cv) => Math.max(pv, cv));
   return new Range(min, max);
 }

@@ -25,7 +25,7 @@ import { OperationContext } from "../../../PMMLEditor";
 
 interface HeaderTitleProps {
   modelName: string;
-  commitModelName: (_modelName: string) => void;
+  commitModelName?: (_modelName: string) => void;
 }
 
 export const ModelTitle = (props: HeaderTitleProps) => {
@@ -46,7 +46,9 @@ export const ModelTitle = (props: HeaderTitleProps) => {
 
   const onCommit = () => {
     if (modelName.value !== props.modelName) {
-      commitModelName(modelName.value);
+      if (commitModelName !== undefined) {
+        commitModelName(modelName.value);
+      }
     }
     onCancel();
   };
@@ -75,7 +77,9 @@ export const ModelTitle = (props: HeaderTitleProps) => {
               tabIndex={0}
               onKeyDown={e => {
                 if (e.key === "Enter") {
-                  setActiveOperation(Operation.UPDATE_NAME);
+                  if (commitModelName !== undefined) {
+                    setActiveOperation(Operation.UPDATE_NAME);
+                  }
                 }
               }}
             >
@@ -83,7 +87,11 @@ export const ModelTitle = (props: HeaderTitleProps) => {
                 size="3xl"
                 headingLevel="h2"
                 className="modelTitle__truncate"
-                onClick={e => setActiveOperation(Operation.UPDATE_NAME)}
+                onClick={e => {
+                  if (commitModelName !== undefined) {
+                    setActiveOperation(Operation.UPDATE_NAME);
+                  }
+                }}
               >
                 {modelName.value}
               </Title>

@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useMemo } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
-import {
-  MiningSchema,
-  Model,
-  Output,
-  OutputField,
-  PMML,
-  RegressionModel
-} from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, PMML, RegressionModel } from "@kogito-tooling/pmml-editor-marshaller";
 import { getModelName } from "../../..";
-import { Actions } from "../../../reducers";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "./LinearRegressionViewerPage.scss";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
 import { LinearRegressionViewAdaptor } from "../molecules";
@@ -38,10 +29,6 @@ interface LinearRegressionViewerPageProps {
 }
 
 export const LinearRegressionViewerPage = (props: LinearRegressionViewerPageProps) => {
-  const { modelIndex } = props;
-
-  const dispatch = useDispatch();
-
   const model: RegressionModel | undefined = useSelector<PMML, RegressionModel | undefined>((state: PMML) => {
     const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
     if (_model && _model instanceof RegressionModel) {
@@ -53,74 +40,13 @@ export const LinearRegressionViewerPage = (props: LinearRegressionViewerPageProp
     return undefined;
   });
 
-  const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
-  const output: Output | undefined = useMemo(() => model?.Output, [model]);
-
-  const validateOutputName = useCallback(
-    (index: number | undefined, name: string): boolean => {
-      if (name === undefined || name.trim() === "") {
-        return false;
-      }
-      const existing: OutputField[] = output?.OutputField ?? [];
-      const matching = existing.filter((c, _index) => _index !== index && c.name === name);
-      return matching.length === 0;
-    },
-    [output]
-  );
-
   return (
     <div data-testid="editor-page" className={"editor"}>
       {!model && <EmptyStateModelNotFound />}
       {model && (
         <>
           <PageSection variant={PageSectionVariants.light} isFilled={false}>
-            <EditorHeader
-              modelName={getModelName(model)}
-              modelIndex={modelIndex}
-              miningSchema={miningSchema}
-              output={output}
-              validateOutputFieldName={validateOutputName}
-              deleteOutputField={_index => {
-                if (window.confirm(`Delete Output "${_index}"?`)) {
-                  dispatch({
-                    type: Actions.DeleteOutput,
-                    payload: {
-                      modelIndex: modelIndex,
-                      outputIndex: _index
-                    }
-                  });
-                }
-              }}
-              commitOutputField={(_index, _outputField: OutputField) => {
-                if (_index === undefined) {
-                  dispatch({
-                    type: Actions.AddOutput,
-                    payload: {
-                      modelIndex: modelIndex,
-                      outputField: _outputField
-                    }
-                  });
-                } else {
-                  dispatch({
-                    type: Actions.UpdateOutput,
-                    payload: {
-                      modelIndex: modelIndex,
-                      outputIndex: _index,
-                      outputField: _outputField
-                    }
-                  });
-                }
-              }}
-              commitModelName={(_modelName: string) => {
-                dispatch({
-                  type: Actions.Scorecard_SetModelName,
-                  payload: {
-                    modelIndex: modelIndex,
-                    modelName: _modelName
-                  }
-                });
-              }}
-            />
+            <EditorHeader modelName={getModelName(model)} />
           </PageSection>
 
           <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
