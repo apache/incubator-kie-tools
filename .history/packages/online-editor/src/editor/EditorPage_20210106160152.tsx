@@ -177,8 +177,8 @@ export function EditorPage(props: Props) {
             body: JSON.stringify(payload),
           })
             .then((response) => response.json())
-            .then((c) => {
-              console.log('Success:', c);
+            .then((data) => {
+              console.log('Success:', data);
             })
             //Then with the error genereted...
             .catch((error) => {
