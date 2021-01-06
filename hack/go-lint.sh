@@ -20,6 +20,6 @@ fi
 rm -f golint_errors
 # The command in or will fetch the latest tag available for golangci-lint and install in $GOPATH/bin/
 which golangci-lint > /dev/null || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
-golangci-lint run ./... --enable golint --timeout 4m0s
+golangci-lint run ./... --enable golint --timeout 10m0s
 
 exit ${code:0}
