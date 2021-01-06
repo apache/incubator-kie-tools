@@ -1,0 +1,1 @@
+$wnd.org_drools_workbench_screens_scenariosimulation_webapp_DroolsWorkbenchScenarioSimulationKogitoRuntime.runAsyncCallback2('$entry(onLoad_0)(2);\n\n//# sourceURL=org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime-2.js\n')

@@ -42,6 +42,7 @@ interface Props {
   onFullScreen: () => void;
   onSave: () => void;
   onDownload: () => void;
+  onRun: () => void;
   onPreview: () => void;
   onSetGitHubToken: () => void;
   onGistIt: () => void;
@@ -191,6 +192,28 @@ export function EditorToolbar(props: Props) {
                 sm: "hidden"
               }}
             >
+               <Button
+                data-testid="save-button"
+                variant={"primary"}
+                onClick={props.onRun}
+                aria-label={"Save and Download button"}
+                className={"kogito--editor__toolbar button"}
+              >
+                Run!
+              </Button> 
+            </PageHeaderToolsItem>
+          </PageHeaderToolsGroup>
+          <PageHeaderToolsGroup>
+            <PageHeaderToolsItem
+              visibility={{
+                default: "hidden",
+                "2xl": "visible",
+                xl: "visible",
+                lg: "hidden",
+                md: "hidden",
+                sm: "hidden"
+              }}
+            >
               <Button
                 data-testid="save-button"
                 variant={"primary"}
@@ -200,6 +223,7 @@ export function EditorToolbar(props: Props) {
               >
                 {i18n.editorToolbar.saveAndDownload}
               </Button>
+             
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>
           <PageHeaderToolsGroup>
