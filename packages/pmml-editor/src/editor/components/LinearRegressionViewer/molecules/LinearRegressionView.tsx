@@ -16,7 +16,7 @@
 import * as React from "react";
 import { Chart, ChartAxis, ChartGroup, ChartLabel, ChartLine, ChartVoronoiContainer } from "@patternfly/react-charts";
 
-class Line {
+export class Line {
   //y=mx+c
   public readonly m: number;
   public readonly c: number;
@@ -29,7 +29,7 @@ class Line {
   }
 }
 
-class Range {
+export class Range {
   public readonly min: number;
   public readonly max: number;
 
@@ -50,28 +50,28 @@ interface LinearRegressionViewProps {
   rangeY: Range;
 }
 
-const LinearRegressionView = (props: LinearRegressionViewProps) => {
-  function roundedToFixed(_float: number, _digits: number): string {
-    const rounded = Math.pow(10, _digits);
-    return (Math.round(_float * rounded) / rounded).toFixed(_digits);
-  }
+const roundedToFixed = (_float: number, _digits: number): string => {
+  const rounded = Math.pow(10, _digits);
+  return (Math.round(_float * rounded) / rounded).toFixed(_digits);
+};
 
-  function getTicks(range: Range, count: number): number[] {
-    const start: number = range.min;
-    const end: number = range.max;
-    const step: number = (end - start) / count;
-    const ticks: number[] = new Array<number>();
-    let v: number = start;
-    while (v <= end) {
-      ticks.push(v);
-      v = v + step;
-    }
-    if (ticks[ticks.length - 1] !== end) {
-      ticks.push(end);
-    }
-    return ticks;
+const getTicks = (range: Range, count: number): number[] => {
+  const start: number = range.min;
+  const end: number = range.max;
+  const step: number = (end - start) / count;
+  const ticks: number[] = new Array<number>();
+  let v: number = start;
+  while (v <= end) {
+    ticks.push(v);
+    v = v + step;
   }
+  if (ticks[ticks.length - 1] !== end) {
+    ticks.push(end);
+  }
+  return ticks;
+};
 
+export const LinearRegressionView = (props: LinearRegressionViewProps) => {
   const legendData: any = [];
   props.lines.forEach(line => {
     legendData.push({ name: line.title });
@@ -134,5 +134,3 @@ const LinearRegressionView = (props: LinearRegressionViewProps) => {
     </div>
   );
 };
-
-export { LinearRegressionView, Line, Range };
