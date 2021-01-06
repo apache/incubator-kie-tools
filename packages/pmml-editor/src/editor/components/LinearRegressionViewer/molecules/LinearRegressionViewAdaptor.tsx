@@ -87,16 +87,16 @@ function getRegressionTable(model: RegressionModel): RegressionTable | undefined
 }
 
 function getNumericPredictorType(table: RegressionTable): NumericPredictor | undefined {
-  const predicators: NumericPredictor[] | undefined = table.NumericPredictor;
-  if (predicators === undefined || predicators.length > 1) {
+  const predicates: NumericPredictor[] | undefined = table.NumericPredictor;
+  if (predicates === undefined || predicates.length > 1) {
     return undefined;
   }
-  return predicators[0];
+  return predicates[0];
 }
 
-function getLines(table: RegressionTable, numbericPredictor: NumericPredictor): Line[] {
+function getLines(table: RegressionTable, numericPredictor: NumericPredictor): Line[] {
   const c: number = table.intercept;
-  const line: Line = { m: numbericPredictor.coefficient, c: c, title: "base" };
+  const line: Line = { m: numericPredictor.coefficient, c: c, title: "base" };
   const lines: Line[] = new Array<Line>(line);
 
   //We need to duplicate the line for each CategoricalPredictor
@@ -106,7 +106,7 @@ function getLines(table: RegressionTable, numbericPredictor: NumericPredictor): 
   }
 
   categoricalPredictors.forEach(cp => {
-    lines.push({ m: line.m, c: line.c + cp.coefficient, title: line.title + " (" + cp.value + ")" });
+    lines.push({ m: line.m, c: line.c + cp.coefficient, title: `${line.title} (${cp.value})` });
   });
 
   return lines;
