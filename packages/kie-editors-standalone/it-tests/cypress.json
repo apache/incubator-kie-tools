@@ -1,12 +1,12 @@
 {
-  "fixturesFolder": "it-tests/cypress/fixtures",
-  "integrationFolder": "it-tests/cypress/integration",
-  "pluginsFile": "it-tests/cypress/plugins/index.ts",
-  "screenshotsFolder": "it-tests/cypress/screenshots",
-  "videosFolder": "it-tests/cypress/videos",
-  "supportFile": "it-tests/cypress/support/index.ts",
+  "fixturesFolder": "./cypress/fixtures",
+  "integrationFolder": "./cypress/integration",
+  "pluginsFile": "./cypress/plugins/index.ts",
+  "screenshotsFolder": "./cypress/screenshots",
+  "videosFolder": "./cypress/videos",
+  "supportFile": "./cypress/support/index.ts",
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "it-tests/results/junit-[hash].xml"
+    "mochaFile": "./results/junit-[hash].xml"
   }
 }
