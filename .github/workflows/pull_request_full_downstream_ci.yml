@@ -112,7 +112,7 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/droolsjbpm-build-bootstrap.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            if [ ${{ steps.buildInfo.outputs.category }} == "comment" ]; then
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
               git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
             else
               echo $MERGE_WARNING_MESSAGE
@@ -129,7 +129,7 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kie-soup.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            if [ ${{ steps.buildInfo.outputs.category }} == "comment" ]; then
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
               git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
             else
               echo $MERGE_WARNING_MESSAGE
@@ -146,7 +146,7 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/appformer.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            if [ ${{ steps.buildInfo.outputs.category }} == "comment" ]; then
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
               git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
             else
               echo $MERGE_WARNING_MESSAGE
@@ -163,7 +163,7 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kie-wb-common.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            if [ ${{ steps.buildInfo.outputs.category }} == "comment" ]; then
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
               git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
             else
               echo $MERGE_WARNING_MESSAGE
@@ -180,7 +180,7 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/drools-wb.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            if [ ${{ steps.buildInfo.outputs.category }} == "comment" ]; then
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
               git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
             else
               echo $MERGE_WARNING_MESSAGE
@@ -227,7 +227,7 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-tooling.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            if [ ${{ steps.buildInfo.outputs.category }} == "comment" ]; then
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
               git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
             else
               echo $MERGE_WARNING_MESSAGE
