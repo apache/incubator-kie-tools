@@ -112,7 +112,7 @@ jobs:
 
       - name: Copy settings.xml to access KIE Internal Staging Maven Repository
         run: |
-          mkdir ~/.m2
+          mkdir -p ~/.m2
           cp ${{ github.workspace }}/kogito-tooling/.github/supporting-files/community-releases-fdb/settings.xml ~/.m2
 
       - name: Build droolsjbpm-build-bootstrap
