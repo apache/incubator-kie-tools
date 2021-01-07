@@ -33,22 +33,6 @@ function manage_incremental_build() {
 
 
 function assemble_runtime() {
-    if [ -d ""${KOGITO_HOME}"/bin" ]; then
-        log_info "---> Application binaries found and ready to use"
-
-        log_info "---> [s2i-core] Adding custom labels..."
-        if [ -e ""${KOGITO_HOME}"/bin/image_metadata.json" ]; then
-            mkdir -pv /tmp/.s2i
-            mkdir -pv /tmp/src/.s2i/
-            cp -v "${KOGITO_HOME}"/bin/image_metadata.json /tmp/.s2i/image_metadata.json
-            cp -v "${KOGITO_HOME}"/bin/image_metadata.json /tmp/src/.s2i/image_metadata.json
-        else
-            log_info "-----> Failed to copy metadata file, "${KOGITO_HOME}"/bin/image_metadata.json does not exist"
-        fi
-    else
-        log_error "---> Application binaries NOT found, failing build..."
-        exit 1
-    fi
     # handle persistence files
     move_persistence_files
 }
@@ -82,7 +66,6 @@ function runtime_assemble() {
         log_info "-----> Copying uploaded files to "${KOGITO_HOME}""
         artifactDir="."
         ARTIFACT_DIR=$artifactDir
-        handle_image_metadata_json
         copy_kogito_app
         copy_persistence_files
     else
@@ -92,21 +75,6 @@ function runtime_assemble() {
     log_info "-----> Cleaning up s2i directory"
     rm -rfv ${S2I_DESTINATION_DIR}/src/*
 }
-
-
-function handle_image_metadata_json() {
-    log_info "---> [s2i-core] Copy image metadata file..."
-    if [ -e "/tmp/src/${artifactDir}/image_metadata.json" ]; then
-        mkdir /tmp/.s2i
-        mkdir -p /tmp/src/.s2i/
-        cp -v /tmp/src/$artifactDir/image_metadata.json /tmp/.s2i
-        cp -v /tmp/src/$artifactDir/image_metadata.json /tmp/src/.s2i
-        cp -v /tmp/src/$artifactDir/image_metadata.json "${KOGITO_HOME}"/bin
-    else
-        log_info "-----> Failed to copy metadata file, /tmp/src/${artifactDir}/image_metadata.json not found."
-    fi
-}
-
 
 function build_kogito_app() {
     local RUNTIME_TYPE="${1:-$QUARKUS_RUNTIME_TYPE}"

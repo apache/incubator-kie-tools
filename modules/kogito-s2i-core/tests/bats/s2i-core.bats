@@ -57,48 +57,7 @@ teardown() {
 
 @test "test assemble_runtime no binaries" {
     run assemble_runtime
-    echo "result= ${lines[@]}"
-    [ "${lines[0]}" = "---> Application binaries NOT found, failing build..." ]
-    [ "$status" -eq 1 ]
-}
-
-
-@test "test assemble_runtime with binaries binaries" {
-    mkdir "${KOGITO_HOME}"/bin
-    touch "${KOGITO_HOME}"/bin/artifact.jar
-
-    run assemble_runtime
-
-    rm -rf "${KOGITO_HOME}"/bin/image_metadata.json
-    rm -rf "${KOGITO_HOME}"/bin/artifact.jar
-
-    echo "result= ${lines[@]}"
-
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> Application binaries found and ready to use" ]
-    [ "${lines[1]}" = "---> [s2i-core] Adding custom labels..." ]
-    [ "${lines[2]}" = "-----> Failed to copy metadata file, "${KOGITO_HOME}"/bin/image_metadata.json does not exist" ]
-}
-
-
-@test "test assemble_runtime with binaries binaries and metadata" {
-    mkdir "${KOGITO_HOME}"/bin
-    touch "${KOGITO_HOME}"/bin/image_metadata.json
-    touch "${KOGITO_HOME}"/bin/artifact.jar
-
-    run assemble_runtime
-
-    echo "result= ${lines[@]}"
-
-    [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> Application binaries found and ready to use" ]
-    [ "${lines[1]}" = "---> [s2i-core] Adding custom labels..." ]
-    [ "${lines[2]}" = "mkdir: created directory '/tmp/.s2i'" ]
-    [ "${lines[3]}" = "mkdir: created directory '/tmp/src'" ]
-    [ "${lines[4]}" = "mkdir: created directory '/tmp/src/.s2i/'" ]
-    [ "${lines[5]}" = "'"${KOGITO_HOME}"/bin/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
-    [ "${lines[6]}" = "'"${KOGITO_HOME}"/bin/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'" ]
-
 }
 
 @test "test runtime_assemble" {
@@ -126,7 +85,7 @@ teardown() {
 
     echo "result= ${lines[@]}"
     [ "$status" -eq 0 ]
-    [ "${lines[7]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
+    [ "${lines[5]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
 }
 
 @test "test runtime_assemble with binary builds native binary" {
@@ -139,7 +98,7 @@ teardown() {
 
     echo "result= ${lines[@]}"
     [ "$status" -eq 0 ]
-    [ "${lines[8]}" = "'./myapp-0.0.1-runner' -> '"${KOGITO_HOME}"/bin/myapp-0.0.1-runner'" ]
+    [ "${lines[6]}" = "'./myapp-0.0.1-runner' -> '"${KOGITO_HOME}"/bin/myapp-0.0.1-runner'" ]
 
     # Only runner is located in bin directory
     [ -f ""${KOGITO_HOME}"/bin/myapp-0.0.1-runner" ]
@@ -159,7 +118,7 @@ teardown() {
 
     echo "result= ${lines[@]}"
     [ "$status" -eq 0 ]
-    [ "${lines[9]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
+    [ "${lines[7]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
 }
 
 # Check that the irrelevant binaries are excluded
@@ -255,30 +214,6 @@ teardown() {
     [ ! -f ""${KOGITO_HOME}"/bin/myapp-0.0.1-tests.jar" ]
     [ ! -f ""${KOGITO_HOME}"/bin/myapp-0.0.1-tests-sources.jar" ]
     [ ! -f ""${KOGITO_HOME}"/bin/lib/mydependency-0.0.1.jar" ]
-}
-
-@test "test handle_image_metadata_json no metadata" {
-    mkdir -p /tmp/src/target
-    run handle_image_metadata_json
-
-    echo "result= ${lines[@]}"
-    [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> [s2i-core] Copy image metadata file..." ]
-    [ "${lines[1]}" = "-----> Failed to copy metadata file, /tmp/src/target/image_metadata.json not found." ]
-}
-
-
-@test "test handle_image_metadata_json with metadata" {
-    mkdir -p /tmp/src/target
-    touch /tmp/src/target/image_metadata.json
-    run handle_image_metadata_json
-
-    echo "result= ${lines[@]}"
-    [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> [s2i-core] Copy image metadata file..." ]
-    [ "${lines[1]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'" ]
-    [ "${lines[2]}" = "'/tmp/src/target/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'" ]
-    [ "${lines[3]}" = "'/tmp/src/target/image_metadata.json' -> '"${KOGITO_HOME}"/bin'" ]
 }
 
 @test "test copy_kogito_app default java build no jar file present" {

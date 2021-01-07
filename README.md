@@ -175,10 +175,6 @@ $ s2i build https://github.com/kiegroup/kogito-examples.git \
 ---> Installing jar file
 'target/rules-quarkus-helloworld-runner.jar' -> '/home/kogito/bin/rules-quarkus-helloworld-runner.jar'
 ---> Copying application libraries
----> [s2i-core] Copy image metadata file...
-'/tmp/src/target/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'
-'/tmp/src/target/image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'
-'/tmp/src/target/image_metadata.json' -> '/home/kogito/bin/image_metadata.json'
 INFO ---> [persistence] Copying persistence files...
 INFO ---> [persistence] Skip copying files, persistence directory does not exist...
 Build completed successfully
@@ -542,10 +538,6 @@ removed 'process-springboot-example-tests.jar'
 removed 'process-springboot-example-sources.jar'
 removed 'process-springboot-example-test-sources.jar'
 -----> Copying uploaded files to /home/kogito
----> [s2i-core] Copy image metadata file...
-'/tmp/src/./image_metadata.json' -> '/tmp/.s2i/image_metadata.json'
-'/tmp/src/./image_metadata.json' -> '/tmp/src/.s2i/image_metadata.json'
-'/tmp/src/./image_metadata.json' -> '/home/kogito/bin/image_metadata.json'
 ---> Installing application binaries
 './process-springboot-example.jar' -> '/home/kogito/bin/process-springboot-example.jar'
 ...
@@ -1173,13 +1165,9 @@ As an example, let's execute the tests from the [kogito-s2i-core](modules/kogito
  $ bats modules/kogito-s2i-core/tests/bats/s2i-core.bats 
  ✓ test manage_incremental_builds
  ✓ test assemble_runtime no binaries
- ✓ test assemble_runtime with binaries binaries
- ✓ test assemble_runtime with binaries binaries and metadata
  ✓ test runtime_assemble
  ✓ test runtime_assemble with binary builds
  ✓ test runtime_assemble with binary builds entire target!
- ✓ test handle_image_metadata_json no metadata
- ✓ test handle_image_metadata_json with metadata
  ✓ test copy_kogito_app default java build no jar file present
  ✓ test copy_kogito_app default java build jar file present
  ✓ test copy_kogito_app default quarkus java build no jar file present

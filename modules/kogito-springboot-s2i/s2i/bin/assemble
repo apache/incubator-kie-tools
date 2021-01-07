@@ -30,8 +30,5 @@ build_kogito_app $SPRINGBOOT_RUNTIME_TYPE
 # copy kogito app to "${KOGITO_HOME}"/bin dir
 copy_kogito_app
 
-# handle custom image-metadata.json
-handle_image_metadata_json
-
 # handle persistence files
 copy_persistence_files
