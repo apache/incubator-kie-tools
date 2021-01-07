@@ -28,12 +28,14 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: 0,
-        dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" }
+        dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" }
       }
     });
     expect(updated).not.toEqual(dataFields);
     expect(updated.length).toBe(1);
     expect(updated[0].name).toBe("updated");
+    expect(updated[0].dataType).toBe("string");
+    expect(updated[0].optype).toBe("ordinal");
   });
 
   test("Actions.SetDataFieldName::Index out of bounds (less than 0)", () => {

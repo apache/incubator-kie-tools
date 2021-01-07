@@ -34,6 +34,8 @@ describe("DataDictionaryReducer::Valid actions", () => {
     expect(updated).not.toEqual(dataDictionary);
     expect(updated.DataField.length).toBe(1);
     expect(updated.DataField[0].name).toBe("field1");
+    expect(updated.DataField[0].dataType).toBe("string");
+    expect(updated.DataField[0].optype).toBe("categorical");
   });
 
   test("Actions.DeleteDataDictionaryField", () => {
