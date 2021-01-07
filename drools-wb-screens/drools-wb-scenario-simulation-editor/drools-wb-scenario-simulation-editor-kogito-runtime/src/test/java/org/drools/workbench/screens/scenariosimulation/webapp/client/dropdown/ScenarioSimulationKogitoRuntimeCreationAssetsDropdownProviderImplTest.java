@@ -37,7 +37,6 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.spy;
@@ -80,15 +79,21 @@ public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplTe
     @Test
     public void getRemoteCallBack() {
         RemoteCallback<List<String>> remoteCallBack = scenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImplSpy.getRemoteCallback(assetConsumer);
-        remoteCallBack.callback(Arrays.asList("path/B", "a"));
+        remoteCallBack.callback(Arrays.asList("path/B", "a", "target/a", "TARGET/a", "/target/a", "/TARGET/a", "a/target/b", "a/TARGET/b", "mytarget/C", "q/mytarget/D"));
         verify(assetConsumer, times(1)).accept(dropDownListCaptor.capture());
-        assertTrue(dropDownListCaptor.getValue().size() == 2);
+        assertEquals(4, dropDownListCaptor.getValue().size());
         assertEquals("a", dropDownListCaptor.getValue().get(0).getText());
         assertEquals("a", dropDownListCaptor.getValue().get(0).getSubText());
         assertEquals("a", dropDownListCaptor.getValue().get(0).getValue());
         assertEquals("B", dropDownListCaptor.getValue().get(1).getText());
         assertEquals("path/B", dropDownListCaptor.getValue().get(1).getSubText());
         assertEquals("path/B", dropDownListCaptor.getValue().get(1).getValue());
+        assertEquals("C", dropDownListCaptor.getValue().get(2).getText());
+        assertEquals("mytarget/C", dropDownListCaptor.getValue().get(2).getSubText());
+        assertEquals("mytarget/C", dropDownListCaptor.getValue().get(2).getValue());
+        assertEquals("D", dropDownListCaptor.getValue().get(3).getText());
+        assertEquals("q/mytarget/D", dropDownListCaptor.getValue().get(3).getSubText());
+        assertEquals("q/mytarget/D", dropDownListCaptor.getValue().get(3).getValue());
     }
 
     @Test
