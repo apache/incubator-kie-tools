@@ -4,7 +4,6 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Button, Flex, FlexItem, Label } from "@patternfly/react-core";
 import { GripVerticalIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
-import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import "./DataTypesSort.scss";
 
 interface DataTypesSortProps {
@@ -53,7 +52,6 @@ const SortableList = SortableContainer(({ items }: { items: DDDataField[] }) => 
 const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
   <li className="editable-item data-type-item__sortable">
     <section className="editable-item__inner">
-      {/*abstract data field component from DataDictionaryContainer and reuse it here*/}
       <Flex alignItems={{ default: "alignItemsCenter" }}>
         <FlexItem spacer={{ default: "spacerXs" }}>
           <Button variant="plain" aria-label="Drag to sort" component={"span"}>
@@ -64,13 +62,7 @@ const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
           <strong>{item.name}</strong>
         </FlexItem>
         <FlexItem>
-          <Label color="blue">{item.type}</Label>
-          {item.constraints !== undefined && (
-            <>
-              {" "}
-              <ConstraintsLabel constraints={item.constraints} />
-            </>
-          )}
+          <Label color="blue">{item.type}</Label> <Label color="blue">{item.optype}</Label>
         </FlexItem>
       </Flex>
     </section>

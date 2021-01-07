@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Form,
@@ -29,9 +30,8 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
-import { useEffect, useState } from "react";
-import Constraints from "../Constraints/Constraints";
 
 interface DataDictionaryPropertiesEditProps {
   dataType: DDDataField;
@@ -186,7 +186,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
               </FormGroup>
             </SplitItem>
           </Split>
-          <Constraints dataType={dataType} onSave={onSave} />
+          <ConstraintsEdit dataType={dataType} onSave={onSave} />
         </Form>
       </StackItem>
     </Stack>

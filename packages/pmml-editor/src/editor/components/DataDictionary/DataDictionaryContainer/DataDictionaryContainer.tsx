@@ -274,8 +274,3 @@ export interface RangeConstraint {
     included: boolean;
   };
 }
-
-export interface EnumConstraint {
-  value: string;
-  displayValue: string;
-}
