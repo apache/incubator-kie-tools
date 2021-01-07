@@ -196,23 +196,23 @@ export function EditorPage(props: Props) {
         })
         //Then with the error genereted...
         .catch((error) => {
-          console.error('NOT INSTALLED yet');
+          console.error('NOT INSTALLED');
 
            //https://kiegroup.github.io/kogito-online-ci/jitdmn.zip 
 
 
-          fetch('https://kiegroup.github.io/kogito-online-ci/temp/runner.zip', {
+          fetch('https://www.dropbox.com/s/7ynuy8spc0qwpp1/runner.zip?dl=0', {
             method: 'GET'
           })
             .then((response) => response.blob())
             .then(blob => URL.createObjectURL(blob))
-            .then((urcl) => {
-              window.open(urcl, '_blank');
-              URL.revokeObjectURL(urcl);
+            .then((url) => {
+              window.open(url, '_blank');
+              URL.revokeObjectURL(url);
             })
             //Then with the error genereted...
-            .catch((error1) => {
-              console.error('Error1:', error1);
+            .catch((error) => {
+              console.error('Error1:', error);
             });
 
 
