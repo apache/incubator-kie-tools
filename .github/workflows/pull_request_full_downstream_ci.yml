@@ -104,6 +104,17 @@ jobs:
           repository: kiegroup/drools-wb
           fetch-depth: 0
 
+      - name: Checkout kogito-tooling
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: ${{ github.workspace }}/kogito-tooling
+
+      - name: Copy settings.xml to access KIE Internal Staging Maven Repository
+        run: |
+          mkdir ~/.m2
+          cp ${{ github.workspace }}/kogito-tooling/.github/supporting-files/community-releases-fdb/settings.xml ~/.m2
+
       - name: Build droolsjbpm-build-bootstrap
         run: |
           cd ${{ github.workspace }}/droolsjbpm-build-bootstrap
@@ -206,12 +217,6 @@ jobs:
         with:
           name: scesim-editor-fdb
           path: ${{ github.workspace }}/drools-wb/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime/
-
-      - name: Checkout kogito-tooling
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          path: ${{ github.workspace }}/kogito-tooling
 
       - name: Setup kogito-tooling
         run: |
