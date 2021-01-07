@@ -19,7 +19,10 @@
 
     <profiles>
         <profile>
-
+            <id>community-release-fdb</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <repositories>
                 <repository>
                     <id>kie-internal-staging-repository-group</id>
