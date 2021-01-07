@@ -14,8 +14,8 @@ function copy_persistence_files() {
     fi
 
     log_info "---> [persistence] Copying persistence files..."
-    if [ -d /tmp/src/"${persistenceDir}"/classes/persistence ]; then
-        cp -v /tmp/src/"${persistenceDir}"/classes/persistence/* "${KOGITO_HOME}"/bin/
+    if [ -d /tmp/src/"${persistenceDir}"/classes/META-INF/resources/persistence/protobuf ]; then
+        cp -v /tmp/src/"${persistenceDir}"/classes/META-INF/resources/persistence/protobuf/* "${KOGITO_HOME}"/bin/
         # we don't need this file to be indexed
         rm -rfv "${KOGITO_HOME}"/bin/kogito-application.proto
         move_persistence_files
