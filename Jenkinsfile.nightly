@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'image-test'
+        label 'kie-rhel7 && kie-mem16g && !master'
     }
     tools {
         nodejs "nodejs-12.16.3"
@@ -37,10 +37,18 @@ pipeline {
                 }
             }
         }
+        stage('prepare kogito-tooling dependencies') {
+            steps {
+                sh "export EXTERNAL_RESOURCE_PATH__bpmnEditor=$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/bpmn-editor-unpacked/target/bpmn"
+                sh "export EXTERNAL_RESOURCE_PATH__dmnEditor=$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/dmn-editor-unpacked/target/dmn"
+                sh "export EXTERNAL_RESOURCE_PATH__scesimEditor=$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/scesim-editor-unpacked/target/scesim"
+                sh "export EXTERNAL_RESOURCE_PATH__quarkusRunner=$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/kogito-tooling/quarkus-runner-unpacked/target/dependencies"
+            }
+        }
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def projectCollection = ["kiegroup/kogito-tooling"]
+                    def projectCollection = ["kiegroup/kie-wb-common", "kiegroup/kogito-tooling-java", "kiegroup/drools-wb", "kiegroup/kogito-tooling"]
                     println "Project Collection to build ${projectCollection}"
                     def buildConfigAdditionalVariables = [:]
                     def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
@@ -75,8 +83,10 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
     def group = projectGroupName[0]
     def name = projectGroupName[1]
     dir("${env.WORKSPACE}/${group}_${name}") {
-        env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim()
-        println "kogito-tooling current version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
+        if("kiegroup/kogito-tooling" == project) {
+            env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim()
+            println "kogito-tooling current version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
+        }
         pmebuild.executeBuildScript("${group}/${name}", buildConfig, null)
     }
 }
