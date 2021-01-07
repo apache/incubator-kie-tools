@@ -131,6 +131,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
             )}
             {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
               <CharacteristicsTableRow
+                useReasonCodes={useReasonCodes}
+                isBaselineScoreRequired={isBaselineScoreRequired}
                 characteristic={ic}
                 dataFields={dataFields}
                 onEdit={() => onEdit(ic.index)}

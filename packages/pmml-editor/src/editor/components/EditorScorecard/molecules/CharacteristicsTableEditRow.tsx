@@ -235,6 +235,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             <FormGroup label="Attributes" fieldId="output-labels-helper">
               <AttributesTable
                 attributes={attributes}
+                useReasonCodes={useReasonCodes}
                 viewAttribute={viewAttribute}
                 deleteAttribute={attributeIndex => {
                   if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {
