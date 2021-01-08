@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
@@ -56,6 +57,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -125,6 +127,7 @@ public class DataTypeSelectViewTest {
     @Test
     public void testSetupDropdownItems() {
 
+        final HTMLOptGroupElement groupElementStructure = mock(HTMLOptGroupElement.class);
         final HTMLOptGroupElement groupElementCustom = mock(HTMLOptGroupElement.class);
         final HTMLOptGroupElement groupElementDefault = mock(HTMLOptGroupElement.class);
         final List<DataType> defaultDataTypes = new ArrayList<>();
@@ -135,8 +138,9 @@ public class DataTypeSelectViewTest {
         when(translationService.format(DataTypeSelectView_CustomTitle)).thenReturn("Custom");
         when(presenter.getDefaultDataTypes()).thenReturn(defaultDataTypes);
         when(presenter.getCustomDataTypes()).thenReturn(customDataTypes);
-        doReturn(groupElementCustom).when(view).makeOptionGroup(eq("Default"), eq(defaultDataTypes), any());
-        doReturn(groupElementDefault).when(view).makeOptionGroup(eq("Custom"), eq(customDataTypes), any());
+        doReturn(groupElementStructure).when(view).makeOptionStructureGroup();
+        doReturn(groupElementDefault).when(view).makeOptionGroup(eq("Default"), eq(defaultDataTypes), any());
+        doReturn(groupElementCustom).when(view).makeOptionGroup(eq("Custom"), eq(customDataTypes), any());
         typeSelect.firstChild = element;
 
         when(typeSelect.removeChild(element)).then(a -> {
@@ -146,9 +150,12 @@ public class DataTypeSelectViewTest {
 
         view.setupDropdownItems();
 
-        verify(typeSelect).removeChild(element);
-        verify(typeSelect).appendChild(groupElementCustom);
-        verify(typeSelect).appendChild(groupElementDefault);
+        final InOrder inOrder = inOrder(typeSelect, element, groupElementStructure, groupElementDefault, groupElementCustom);
+
+        inOrder.verify(typeSelect).removeChild(element);
+        inOrder.verify(typeSelect).appendChild(groupElementStructure);
+        inOrder.verify(typeSelect).appendChild(groupElementDefault);
+        inOrder.verify(typeSelect).appendChild(groupElementCustom);
     }
 
     @Test

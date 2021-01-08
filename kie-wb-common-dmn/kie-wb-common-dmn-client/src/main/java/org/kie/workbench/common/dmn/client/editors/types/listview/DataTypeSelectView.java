@@ -96,9 +96,9 @@ public class DataTypeSelectView implements DataTypeSelect.View {
 
     void setupDropdownItems() {
         RemoveHelper.removeChildren(typeSelect);
+        typeSelect.appendChild(makeOptionStructureGroup());
         typeSelect.appendChild(makeOptionGroup(defaultTitle(), presenter.getDefaultDataTypes(), DataType::getType));
         typeSelect.appendChild(makeOptionGroup(customTitle(), presenter.getCustomDataTypes(), DataType::getName));
-        typeSelect.appendChild(makeOptionStructureGroup());
     }
 
     private String defaultTitle() {
@@ -126,7 +126,7 @@ public class DataTypeSelectView implements DataTypeSelect.View {
         return optionGroup;
     }
 
-    private HTMLOptGroupElement makeOptionStructureGroup() {
+    HTMLOptGroupElement makeOptionStructureGroup() {
         return typeSelectStructureOptGroup;
     }
 
