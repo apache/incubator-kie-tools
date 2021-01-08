@@ -51,10 +51,14 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
@@ -83,8 +87,8 @@ public class AsyncPackageDataModelOracleImplTest {
 
     @Before
     public void setUp() throws Exception {
-        AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl(new Service(),
-                                                                                 validatorInstance);
+        AsyncPackageDataModelOracle oracle = spy(new AsyncPackageDataModelOracleImpl(new Service(),
+                                                                                     validatorInstance));
         personPayload = createPersonPayload();
         addressPayload = createAddressPayload();
         giantPayload = createGiantPayload();
@@ -829,7 +833,30 @@ public class AsyncPackageDataModelOracleImplTest {
 
         oracle.getSuperTypes("Person",
                              getSuperTypesCallback);
+        verify(oracle, never()).getFQCNByFactName(anyString());
         verify(getSuperTypesCallback).callback(anyList());
+    }
+
+    @Test
+    public void testGetSuperTypesNullResult() {
+        ((AsyncPackageDataModelOracleImpl) oracle).filteredSuperTypes = new HashMap<>();
+
+        Callback<List<String>> getSuperTypesCallback = spy(new Callback<List<String>>() {
+            @Override
+            public void callback(List<String> result) {
+                assertEquals(2,
+                             result.size());
+                assertEquals("org.test.GrandParent",
+                             result.get(0));
+                assertEquals("org.test.Parent",
+                             result.get(1));
+            }
+        });
+
+        oracle.getSuperTypes("Person", getSuperTypesCallback);
+
+        verify(oracle, times(1)).getFQCNByFactName(eq("Person"));
+        verify(getSuperTypesCallback, times(1)).callback(anyList());
     }
 
     @Test
