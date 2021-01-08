@@ -94,17 +94,14 @@ jobs:
       - name: Download dependencies
         run: yarn run init
 
-      - name: Build repository
-        run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
-
       - name: Increase inotify watches
         if: matrix.os == 'ubuntu-latest'
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-      - name: Run integration tests
+      - name: Build repository and run integration tests
         env:
           DISPLAY: ":99.0"
-        run: npx lerna run test:it --scope '@kogito-tooling/online-editor'
+        run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
 
       - name: Archive it test screenshots	
         if: failure()
