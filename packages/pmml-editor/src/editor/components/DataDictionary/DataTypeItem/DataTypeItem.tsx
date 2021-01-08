@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import {
   Button,
@@ -18,19 +18,20 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
-import { DataField, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
 
 interface DataTypeItemProps {
-  dataType: DataField;
+  dataType: DDDataField;
   index: number;
-  onSave: (dataType: DataField, index: number | null) => void;
+  editingIndex: number | undefined;
+  onSave: (dataType: DDDataField, index: number | null) => void;
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;
-  onConstraintsEdit: (dataType: DataField) => void;
-  onConstraintsDelete: () => void;
+  onConstraintsEdit: (dataType: DDDataField) => void;
+  onConstraintsSave: (dataType: DDDataField) => void;
   onValidate: (dataTypeName: string) => boolean;
   onOutsideClick: () => void;
 }
@@ -39,17 +40,17 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   const {
     dataType,
     index,
+    editingIndex,
     onSave,
     onEdit,
     onDelete,
     onConstraintsEdit,
-    onConstraintsDelete,
+    onConstraintsSave,
     onValidate,
     onOutsideClick
   } = props;
-  const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
-  const [typeSelection, setTypeSelection] = useState<DataField["type"]>(dataType.type);
+  const [typeSelection, setTypeSelection] = useState<DDDataField["type"]>(dataType.type);
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
   const typeOptions = [
     { value: "string" },
@@ -65,7 +66,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       console.log("click outside");
       onOutsideClick();
     },
-    { eventTypes: ["click"], ignoreClass: "data-type-item__type-select__option", disabled: editing !== index }
+    { eventTypes: ["click"], disabled: editingIndex !== index }
   );
 
   const handleNameChange = (value: string) => {
@@ -107,7 +108,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   const handleNameSave = () => {
     if (name.trim().length === 0) {
       setName(dataType.name);
-    } else {
+    } else if (name !== dataType.name) {
       handleSave();
     }
   };
@@ -124,15 +125,32 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onConstraintsEdit({ ...dataType, name, type: typeSelection });
   };
 
+  const handleConstraintsDelete = () => {
+    const updatedDataType = { ...dataType };
+    delete updatedDataType.constraints;
+    onConstraintsSave(updatedDataType);
+  };
+
   useEffect(() => {
-    if (editing === index) {
-      document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`)?.focus();
+    if (editingIndex === index) {
+      const input = document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`);
+      input?.focus();
+      if (name.startsWith("New Data Type")) {
+        input?.select();
+      }
     }
-  }, [editing]);
+  }, [editingIndex]);
+
+  useEffect(() => {
+    setName(dataType.name);
+    setTypeSelection(dataType.type);
+  }, [dataType]);
 
   return (
-    <article className={`editable-item ${editing === index ? "editable-item--editing" : ""} data-type-item-n${index}`}>
-      {editing === index && (
+    <article
+      className={`editable-item ${editingIndex === index ? "editable-item--editing" : ""} data-type-item-n${index}`}
+    >
+      {editingIndex === index && (
         <section
           className={"editable-item__inner"}
           ref={ref}
@@ -179,11 +197,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                       className="data-type-item__type-select"
                     >
                       {typeOptions.map((option, optionIndex) => (
-                        <SelectOption
-                          key={optionIndex}
-                          value={option.value}
-                          className="data-type-item__type-select__option"
-                        />
+                        <SelectOption key={optionIndex} value={option.value} className="ignore-onclickoutside" />
                       ))}
                     </Select>
                   </SplitItem>
@@ -194,7 +208,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                 <Split hasGutter={true}>
                   <SplitItem>
                     {dataType.constraints !== undefined && (
-                      <ConstraintsLabel constraints={dataType.constraints} onConstraintsDelete={onConstraintsDelete} />
+                      <ConstraintsLabel
+                        editingIndex={editingIndex}
+                        constraints={dataType.constraints}
+                        onConstraintsDelete={handleConstraintsDelete}
+                      />
                     )}
                     {(name.trim().length === 0 || typeSelection === "boolean") && (
                       <Label icon={<ArrowAltCircleRightIcon />}>
@@ -222,7 +240,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
           </Form>
         </section>
       )}
-      {editing !== index && (
+      {editingIndex !== index && (
         <section
           className={"editable-item__inner"}
           tabIndex={0}

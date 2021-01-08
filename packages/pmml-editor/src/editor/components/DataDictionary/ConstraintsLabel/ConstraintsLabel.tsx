@@ -1,40 +1,40 @@
 import * as React from "react";
-import { useContext } from "react";
+import { useMemo } from "react";
 import { Label, LabelProps } from "@patternfly/react-core";
-import { Constraints, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { Constraints } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {
+  editingIndex?: number;
   constraints: Constraints;
   onConstraintsDelete?: () => void;
 }
-const ConstraintsLabel = ({ constraints, onConstraintsDelete }: ConstraintsLabelProps) => {
-  let constraintValue;
-  const editing = useContext(StatusContext);
-
+const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: ConstraintsLabelProps) => {
   const labelProps: Partial<LabelProps> = {};
 
-  if (editing !== false) {
+  if (editingIndex !== undefined) {
     labelProps.onClose = event => {
       event.nativeEvent.stopImmediatePropagation();
       onConstraintsDelete?.();
     };
   }
 
-  switch (constraints.type) {
-    case "Range":
-      constraintValue = `${constraints.start.included ? "[" : "("}${constraints.start.value}, ${constraints.end.value}${
-        constraints.end.included ? "]" : ")"
-      }`;
-      break;
-    case "Enumeration":
-      const enums = constraints.value.map(item => `"${item.value}"`);
-      constraintValue = `${enums.join(", ")}`;
-      break;
-    default:
-      constraintValue = "";
-      break;
-  }
+  const constraintValue = useMemo(() => {
+    switch (constraints.type) {
+      case "Range":
+        return (
+          `${constraints.value.start.included ? "[" : "("}` +
+          `${constraints.value.start.value},` +
+          `${constraints.value.end.value}` +
+          `${constraints.value.end.included ? "]" : ")"}`
+        );
+      case "Enumeration":
+        return constraints.value.map(item => `"${item.value}"`).join(", ");
+      default:
+        return "";
+    }
+  }, [constraints]);
+
   return (
     <Label color="orange" className="constraints-label" {...labelProps}>
       <strong>Constraints:</strong>&nbsp;

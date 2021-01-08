@@ -14,34 +14,36 @@
  * limitations under the License.
  */
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions, DataFieldReducer } from "../../../editor/reducers";
+import { Actions, AllActions, DataDictionaryFieldReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 
 const dataFields: DataField[] = [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }];
 
-const reducer: Reducer<DataField[], AllActions> = DataFieldReducer(new HistoryService());
+const reducer: Reducer<DataField[], AllActions> = DataDictionaryFieldReducer(new HistoryService());
 
-describe("DataFieldReducer::Valid actions", () => {
-  test("Actions.SetDataFieldName", () => {
+describe("DataDictionaryFieldReducer::Valid actions", () => {
+  test("Actions.UpdateDataDictionaryField", () => {
     const updated: DataField[] = reducer(dataFields, {
-      type: Actions.SetDataFieldName,
+      type: Actions.UpdateDataDictionaryField,
       payload: {
-        index: 0,
-        name: "updated" as FieldName
+        dataDictionaryIndex: 0,
+        dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" }
       }
     });
     expect(updated).not.toEqual(dataFields);
     expect(updated.length).toBe(1);
     expect(updated[0].name).toBe("updated");
+    expect(updated[0].dataType).toBe("string");
+    expect(updated[0].optype).toBe("ordinal");
   });
 
   test("Actions.SetDataFieldName::Index out of bounds (less than 0)", () => {
     const updated: DataField[] = reducer(dataFields, {
-      type: Actions.SetDataFieldName,
+      type: Actions.UpdateDataDictionaryField,
       payload: {
-        index: -1,
-        name: "updated" as FieldName
+        dataDictionaryIndex: -1,
+        dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" }
       }
     });
     expect(updated).toEqual(dataFields);
@@ -49,10 +51,10 @@ describe("DataFieldReducer::Valid actions", () => {
 
   test("Actions.SetDataFieldName::Index out of bounds (greater than number of fields)", () => {
     const updated: DataField[] = reducer(dataFields, {
-      type: Actions.SetDataFieldName,
+      type: Actions.UpdateDataDictionaryField,
       payload: {
-        index: 1,
-        name: "updated" as FieldName
+        dataDictionaryIndex: 1,
+        dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" }
       }
     });
     expect(updated).toEqual(dataFields);
