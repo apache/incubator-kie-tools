@@ -89,7 +89,7 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
         }
         if (fileExists("./pom.xml")) {
             def pom = readMavenPom file: 'pom.xml'
-            env["${group}_${name}-VERSION".replace("-", "_")] = pom.version ?: pom.parent.version
+            env["${name}-VERSION".replace("-", "_")] = pom.version ?: pom.parent.version
         }
         pmebuild.executeBuildScript("${group}/${name}", buildConfig, null)
     }
