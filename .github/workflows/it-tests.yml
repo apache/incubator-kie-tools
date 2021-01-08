@@ -95,7 +95,7 @@ jobs:
         run: yarn run init
 
       - name: Build repository
-        run: yarn run build:fast
+        run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
 
       - name: Increase inotify watches
         if: matrix.os == 'ubuntu-latest'

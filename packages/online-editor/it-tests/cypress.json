@@ -1,0 +1,10 @@
+{
+  "fixturesFolder": false,
+  "integrationFolder": "tests",
+  "pluginsFile": "plugins/index.ts",
+  "screenshotsFolder": "screenshots",
+  "videosFolder": "videos",
+  "supportFile": "support/index.ts",
+  "baseUrl": "http://localhost:9001",
+  "chromeWebSecurity": false
+}

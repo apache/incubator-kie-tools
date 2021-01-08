@@ -23,12 +23,13 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add("getEditor", () => {
+    cy.frameLoaded("iframe#kogito-iframe");
     return cy.iframe("iframe#kogito-iframe");
 });
 
 Cypress.Commands.add("waitUntilEditorIsLoaded", () => {
     cy.getEditor().within(() => {
-        cy.get(".pf-l-bullseye", { timeout: 30000 }).should("be.visible");
-        cy.get(".pf-l-bullseye", { timeout: 60000 }).should("not.exist");
+        cy.get("[data-testid='loading-screen-div']", { timeout: 30000 }).should("be.visible");
+        cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
     });
 });
