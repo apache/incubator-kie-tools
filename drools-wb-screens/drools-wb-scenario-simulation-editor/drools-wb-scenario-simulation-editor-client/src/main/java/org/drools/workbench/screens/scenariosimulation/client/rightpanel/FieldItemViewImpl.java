@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.google.gwt.dom.client.Document;
@@ -45,14 +46,14 @@ public class FieldItemViewImpl implements FieldItemView {
 
     private Presenter fieldItemPresenter;
 
-    private String fullPath;
+    private List<String> fullPath;
     private String factName;
     private String fieldName;
     private String className;
     private String classTypeName;
 
     @Override
-    public void setFieldData(String fullPath, String factName, String fieldName, String className, String classTypeName) {
+    public void setFieldData(List<String> fullPath, String factName, String fieldName, String className, String classTypeName) {
         String innerHtml = new StringBuilder()
                 .append("<a>")
                 .append(fieldName)
@@ -64,7 +65,7 @@ public class FieldItemViewImpl implements FieldItemView {
         fieldNameElement.setAttribute("id", "fieldElement-" + factName + "-" + fieldName);
         fieldNameElement.setAttribute("fieldName", fieldName);
         fieldNameElement.setAttribute("className", className);
-        fieldNameElement.setAttribute("fullPath", fullPath);
+        fieldNameElement.setAttribute("fullPath", String.join(".", fullPath));
         this.factName = factName;
         this.fieldName = fieldName;
         this.className = className;
@@ -73,7 +74,7 @@ public class FieldItemViewImpl implements FieldItemView {
     }
 
     @Override
-    public String getFullPath() {
+    public List<String> getFullPath() {
         return fullPath;
     }
 

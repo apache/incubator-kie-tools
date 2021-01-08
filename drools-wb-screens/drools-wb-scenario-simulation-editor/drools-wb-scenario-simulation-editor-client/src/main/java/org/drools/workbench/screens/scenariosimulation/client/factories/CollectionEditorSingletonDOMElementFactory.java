@@ -132,7 +132,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
     }
 
     protected String getRuleComplexType(String genericTypeName0) {
-        return genericTypeName0.substring(genericTypeName0.lastIndexOf('.') + 1);
+        return genericTypeName0.substring(genericTypeName0.lastIndexOf('.') + 1).replace("$", ".");
     }
 
     protected void manageList(CollectionViewImpl collectionEditorView, String key, String genericTypeName0, ScenarioSimulationModel.Type type) {

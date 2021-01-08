@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.Dependent;
@@ -36,8 +37,8 @@ public class FieldItemPresenter implements FieldItemView.Presenter {
     protected Map<String, FieldItemView> fieldItemMap = new HashMap<>();
 
     @Override
-    public LIElement getLIElement(String parentPath, String factName, String fieldName, String className, String classTypeName) {
-        String key = parentPath  + "." + fieldName;
+    public LIElement getLIElement(List<String> parentPath, String factName, String fieldName, String className, String classTypeName) {
+        String key = String.join(".", parentPath)  + "." + fieldName;
         if (!fieldItemMap.containsKey(key)) {
             FieldItemView fieldItemView = viewsProvider.getFieldItemView();
             fieldItemView.setFieldData(parentPath, factName, fieldName, className, classTypeName);

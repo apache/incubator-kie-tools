@@ -141,7 +141,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
      */
     protected String getFullPackage(ScenarioSimulationContext context) {
         String fullPackage = context.getStatus().getFullPackage();
-        if (!fullPackage.endsWith(".")) {
+        if (!fullPackage.isEmpty() && !fullPackage.endsWith(".")) {
             fullPackage += ".";
         }
         return fullPackage;
@@ -181,9 +181,8 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
      * @param propertyNameElements The <code>List</code> with the path instance_name.property.name (eg. Author.isAlive)
      * @param propertyClass it contains the full classname of the property (eg. com.Author)
      */
-    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, List<String> propertyNameElements, String propertyClass) {
+    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String canonicalClassName, List<String> propertyNameElements, String propertyClass) {
         String instanceAliasName = propertyNameElements.get(0);
-        String canonicalClassName = getFullPackage(context) + instanceAliasName;
         final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, instanceAliasName, canonicalClassName);
         String propertyTitle = getPropertyHeaderTitle(context, propertyNameElements, factIdentifier);
         this.setPropertyHeader(context, selectedColumn, factIdentifier, propertyNameElements, propertyClass, propertyTitle);
@@ -197,9 +196,8 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
      * @param propertyClass it contains the full classname of the property (eg. com.Author)
      * @param propertyTitle The title to assign to this property.
      */
-    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, List<String> propertyNameElements, String propertyClass, String propertyTitle) {
+    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String canonicalClassName, List<String> propertyNameElements, String propertyClass, String propertyTitle) {
         String instanceAliasName = propertyNameElements.get(0);
-        String canonicalClassName = getFullPackage(context) + instanceAliasName;
         final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, instanceAliasName, canonicalClassName);
         this.setPropertyHeader(context, selectedColumn, factIdentifier, propertyNameElements, propertyClass, propertyTitle);
     }
@@ -244,8 +242,10 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
         context.getAbstractScesimGridModelByGridWidget(gridWidget).updateColumnProperty(columnIndex,
                                                                                         selectedColumn,
                                                                                         propertyNameElements,
-                                                                                        propertyClass, context.getStatus().isKeepData(),
-                                                                                        factMappingValueType);
+                                                                                        propertyClass,
+                                                                                        context.getStatus().isKeepData(),
+                                                                                        factMappingValueType,
+                                                                                        context.getScenarioSimulationModel().getSettings().getType());
         if (ScenarioSimulationSharedUtils.isCollection(propertyClass) && factMappingValueType.equals(FactMappingValueType.NOT_EXPRESSION)) {
             manageCollectionProperty(context, selectedColumn, className, columnIndex, propertyNameElements);
         } else {
@@ -325,7 +325,9 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
             return FactMappingValueType.EXPRESSION.equals(factMappingValueType) ? ConstantHolder.EXPRESSION_INSTANCE_PLACEHOLDER : VALUE;
         }
         String propertyPathPart = String.join(".", propertyNameElements.subList(1, propertyNameElements.size()));
-        List<String> propertyNameElementsClone = getPropertyNameElementsWithoutAlias(propertyNameElements, factIdentifier);
+        List<String> propertyNameElementsClone = getPropertyNameElementsWithoutAlias(propertyNameElements,
+                                                                                     factIdentifier,
+                                                                                     context.getScenarioSimulationModel().getSettings().getType());
         // This is because the propertyName starts with the alias of the fact; i.e. it may be Book.name but also Bookkk.name,
         // while the first element of ExpressionElements is always the class name
         return getMatchingExpressionAlias(context, propertyNameElementsClone, factIdentifier).orElse(propertyPathPart);

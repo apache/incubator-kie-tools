@@ -268,6 +268,15 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     }
 
     @Test
+    public void getRuleComplexType() {
+        String ruleComplexType = collectionEditorSingletonDOMElementFactorySpy.getRuleComplexType(FULL_CLASS_NAME);
+        assertEquals(CLASS_NAME, ruleComplexType);
+        //
+        ruleComplexType = collectionEditorSingletonDOMElementFactorySpy.getRuleComplexType("com.Test$Nested");
+        assertEquals("Test.Nested", ruleComplexType);
+    }
+
+    @Test
     public void registerHandlers() {
         CollectionEditorDOMElement collectionEditorDOMElementMock = mock(CollectionEditorDOMElement.class);
         collectionEditorSingletonDOMElementFactorySpy.registerHandlers(collectionEditorViewImpl, collectionEditorDOMElementMock);

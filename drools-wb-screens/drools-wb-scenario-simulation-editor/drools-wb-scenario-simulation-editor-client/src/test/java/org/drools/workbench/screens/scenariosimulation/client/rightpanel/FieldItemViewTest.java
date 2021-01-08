@@ -31,6 +31,8 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FIELD_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PROPERTY_PATH;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PROPERTY_PATH_ELEMENTS;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -80,7 +82,12 @@ public class FieldItemViewTest extends AbstractTestToolsTest {
 
     @Test
     public void setFieldData() {
-        fieldItemViewSpy.setFieldData(FULL_PROPERTY_PATH, FACT_NAME, FIELD_NAME, FACT_MODEL_TREE.getFactName(), CLASS_NAME);
+        fieldItemViewSpy.setFieldData(FULL_PROPERTY_PATH_ELEMENTS, FACT_NAME, FIELD_NAME, FACT_MODEL_TREE.getFactName(), CLASS_NAME);
+        assertEquals(FULL_PROPERTY_PATH_ELEMENTS, fieldItemViewSpy.getFullPath());
+        assertEquals(FACT_NAME, fieldItemViewSpy.getFactName());
+        assertEquals(FIELD_NAME, fieldItemViewSpy.getFieldName());
+        assertEquals(FACT_MODEL_TREE.getFactName(), fieldItemViewSpy.getClassName());
+        assertEquals(CLASS_NAME, fieldItemViewSpy.getClassTypeName());
         verify(fieldNameElementMock, times(1)).setInnerHTML(eq(INNER_HTML));
         verify(fieldNameElementMock, times(1)).setAttribute(eq("id"), eq(ID_ATTRIBUTE));
         verify(fieldNameElementMock, times(1)).setAttribute(eq("fieldName"), eq(FIELD_NAME));

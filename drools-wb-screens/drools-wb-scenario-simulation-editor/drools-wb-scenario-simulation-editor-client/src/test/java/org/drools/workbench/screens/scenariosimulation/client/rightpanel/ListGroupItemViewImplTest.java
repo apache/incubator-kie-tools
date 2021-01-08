@@ -16,6 +16,10 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -29,12 +33,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LIST_GROUP_ITEM;
 import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.ListGroupItemViewImpl.LIST_VIEW_PF_EXPAND_ACTIVE;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.FA_ANGLE_DOWN;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.HIDDEN;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.SELECTED;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
@@ -160,7 +166,10 @@ public class ListGroupItemViewImplTest extends AbstractTestToolsTest {
     @Test
     public void setFactName() {
         listGroupItemViewSpy.setFactName(FACT_NAME);
+        assertEquals(FACT_NAME, listGroupItemViewSpy.factName);
+        assertEquals(FACT_NAME, listGroupItemViewSpy.factType);
         verify(fullClassNameMock, times(1)).setInnerText(eq(FACT_NAME));
+        verify(listGroupItemMock, times(1)).setAttribute(eq("id"), eq("listGroupItem-" + FACT_NAME));
     }
 
     @Test
@@ -183,5 +192,44 @@ public class ListGroupItemViewImplTest extends AbstractTestToolsTest {
         verify(listGroupItemHeaderMock, times(1)).addClassName(eq(LIST_VIEW_PF_EXPAND_ACTIVE));
         verify(listGroupItemContainerMock, times(1)).removeClassName(eq(HIDDEN));
         verify(faAngleRightMock, times(1)).addClassName(eq(FA_ANGLE_DOWN));
+    }
+
+    @Test
+    public void getActualClassNameEmptyParentPath() {
+        String actualClassName = listGroupItemViewSpy.getActualClassName();
+        assertEquals(FACT_NAME, actualClassName);
+    }
+
+    @Test
+    public void getActualClassNameWithParentPath() {
+        listGroupItemViewSpy.setParentPath(Arrays.asList("com", "test"));
+        String actualClassName = listGroupItemViewSpy.getActualClassName();
+        assertEquals("com.test." + FACT_NAME, actualClassName);
+    }
+
+    @Test
+    public void setParentPathEmpty() {
+        List<String> list = Arrays.asList("com");
+        listGroupItemViewSpy.setParentPath(list);
+        assertEquals(list, listGroupItemViewSpy.getParentPath());
+    }
+
+    @Test
+    public void setParentPathNotEmpty() {
+        listGroupItemViewSpy.parentPath = new ArrayList<>(Arrays.asList("com"));
+        listGroupItemViewSpy.setParentPath(Arrays.asList("test"));
+        assertEquals(Arrays.asList("com", "test"), listGroupItemViewSpy.getParentPath());
+    }
+
+    @Test
+    public void setFactNameAndType() {
+        listGroupItemViewSpy.setFactNameAndType(FACT_NAME, CLASS_NAME);
+        assertEquals(FACT_NAME, listGroupItemViewSpy.factName);
+        assertEquals(CLASS_NAME, listGroupItemViewSpy.factType);
+        verify(fullClassNameMock, times(1)).setInnerHTML(eq(FACT_NAME + " [" + CLASS_NAME + "]"));
+        verify(fullClassNameMock, times(1)).setAttribute(eq("factName"), eq(FACT_NAME));
+        verify(fullClassNameMock, times(1)).setAttribute(eq("factType"), eq(CLASS_NAME));
+        verify(fullClassNameMock, times(1)).setAttribute(eq("parentPath"), eq(""));
+        verify(listGroupItemMock, times(1)).setAttribute(eq("id"), eq("listGroupItem-" + FACT_NAME));
     }
 }

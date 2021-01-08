@@ -31,6 +31,7 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
 
     private final GridWidget gridWidget;
     private final String fullPackage;
+    private final String factType;
     private final List<String> propertyNameElements;
     private final String valueClassName;
     private FactMappingValueType factMappingValueType;
@@ -44,9 +45,10 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
      * @param valueClassName
      * @param factMappingValueType
      */
-    public SetPropertyHeaderEvent(GridWidget gridWidget, String fullPackage, List<String> propertyNameElements, String valueClassName, FactMappingValueType factMappingValueType) {
+    public SetPropertyHeaderEvent(GridWidget gridWidget, String fullPackage, String factType, List<String> propertyNameElements, String valueClassName, FactMappingValueType factMappingValueType) {
         this.gridWidget = gridWidget;
         this.fullPackage = fullPackage;
+        this.factType = factType;
         this.propertyNameElements = propertyNameElements;
         this.valueClassName = valueClassName;
         this.factMappingValueType = factMappingValueType;
@@ -63,6 +65,10 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
 
     public String getFullPackage() {
         return fullPackage;
+    }
+
+    public String getFactType() {
+        return factType;
     }
 
     public List<String> getPropertyNameElements() {
@@ -85,4 +91,5 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
     protected void dispatch(SetPropertyHeaderEventHandler handler) {
         handler.onEvent(this);
     }
+
 }

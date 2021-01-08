@@ -94,6 +94,7 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         scenarioSimulationContextLocal.getStatus().setColumnId(COLUMN_ID);
         scenarioSimulationContextLocal.getStatus().setColumnIndex(COLUMN_INDEX);
         scenarioSimulationContextLocal.getStatus().setPropertyNameElements(MULTIPART_VALUE_ELEMENTS);
+        scenarioSimulationContextLocal.getStatus().setClassName(CLASS_NAME);
     }
 
     @Test
@@ -172,12 +173,12 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         scenarioSimulationContextLocal.getStatus().setValueClassName(LIST_CLASS_NAME);
         scenarioSimulationContextLocal.getStatus().setValue(FULL_PROPERTY_PATH);
         doReturn(factIdentifierMock).when(((AbstractSelectedColumnCommand) commandSpy)).setEditableHeadersAndGetFactIdentifier(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(CLASS_NAME), eq(FULL_CLASS_NAME));
-        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME);
+        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_CLASS_NAME, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME);
         verify(((AbstractSelectedColumnCommand) commandSpy), times(2)).setInstanceHeaderMetaData(eq(gridColumnMock), eq(CLASS_NAME), eq(factIdentifierMock));
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(eq(LIST_PROPERTY_NAME));
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(eq(false));
-        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class));
+        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class), eq(ScenarioSimulationModel.Type.RULE));
         verify((AbstractSelectedColumnCommand) commandSpy, times(1)).manageCollectionProperty(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(FULL_CLASSNAME_CREATED), eq(0), eq(FULL_PROPERTY_PATH_ELEMENTS));
         verify((AbstractSelectedColumnCommand) commandSpy, times(1)).navigateComplexObject(eq(factModelTreeMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(scenarioSimulationContextLocal.getDataObjectFieldsMap()));
     }
@@ -188,12 +189,12 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         scenarioSimulationContextLocal.getStatus().setValue(FULL_PROPERTY_PATH);
         when(gridColumnMock.isInstanceAssigned()).thenReturn(true);
         when(gridColumnMock.getInformationHeaderMetaData().getTitle()).thenReturn(CLASS_NAME);
-        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME);
+        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_CLASS_NAME, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME);
         verify(((AbstractSelectedColumnCommand) commandSpy), never()).setInstanceHeaderMetaData(eq(gridColumnMock), eq(CLASS_NAME), eq(factIdentifierMock));
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(eq(LIST_PROPERTY_NAME));
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(eq(false));
-        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class));
+        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class), eq(ScenarioSimulationModel.Type.RULE));
         verify((AbstractSelectedColumnCommand) commandSpy, times(1)).manageCollectionProperty(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(FULL_CLASSNAME_CREATED), eq(0), eq(FULL_PROPERTY_PATH_ELEMENTS));
         verify((AbstractSelectedColumnCommand) commandSpy, times(1)).navigateComplexObject(eq(factModelTreeMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(scenarioSimulationContextLocal.getDataObjectFieldsMap()));
     }
@@ -204,12 +205,12 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         scenarioSimulationContextLocal.getStatus().setValue(FULL_PROPERTY_PATH);
         when(gridColumnMock.isInstanceAssigned()).thenReturn(true);
         when(gridColumnMock.getInformationHeaderMetaData().getTitle()).thenReturn(CLASS_NAME);
-        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME, PROPERTY_NAME);
+        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_CLASS_NAME, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME, PROPERTY_NAME);
         verify(((AbstractSelectedColumnCommand) commandSpy), never()).setInstanceHeaderMetaData(eq(gridColumnMock), eq(CLASS_NAME), eq(factIdentifierMock));
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(eq(PROPERTY_NAME));
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(eq(false));
-        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class));
+        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class), eq(ScenarioSimulationModel.Type.RULE));
         verify((AbstractSelectedColumnCommand) commandSpy, times(1)).manageCollectionProperty(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(FULL_CLASSNAME_CREATED), eq(0), eq(FULL_PROPERTY_PATH_ELEMENTS));
         verify((AbstractSelectedColumnCommand) commandSpy, times(1)).navigateComplexObject(eq(factModelTreeMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(scenarioSimulationContextLocal.getDataObjectFieldsMap()));
     }
@@ -219,12 +220,12 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         scenarioSimulationContextLocal.getStatus().setValueClassName(LIST_CLASS_NAME);
         scenarioSimulationContextLocal.getStatus().setValue(FULL_PROPERTY_PATH);
         when(gridColumnMock.isInstanceAssigned()).thenReturn(true);
-        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME);
+        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_CLASS_NAME, FULL_PROPERTY_PATH_ELEMENTS, LIST_CLASS_NAME);
         verify(((AbstractSelectedColumnCommand) commandSpy), never()).setInstanceHeaderMetaData(eq(gridColumnMock), eq(CLASS_NAME), eq(factIdentifierMock));
         verify(propertyHeaderMetaDataMock, never()).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, never()).setTitle(anyString());
         verify(propertyHeaderMetaDataMock, never()).setReadOnly(anyBoolean());
-        verify(scenarioGridModelMock, never()).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class));
+        verify(scenarioGridModelMock, never()).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(LIST_CLASS_NAME), anyBoolean(), isA(FactMappingValueType.class), eq(ScenarioSimulationModel.Type.RULE));
         verify((AbstractSelectedColumnCommand) commandSpy, never()).manageCollectionProperty(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(FULL_CLASSNAME_CREATED), eq(0), eq(FULL_PROPERTY_PATH_ELEMENTS));
         verify((AbstractSelectedColumnCommand) commandSpy, never()).navigateComplexObject(eq(factModelTreeMock), eq(FULL_PROPERTY_PATH_ELEMENTS), eq(scenarioSimulationContextLocal.getDataObjectFieldsMap()));
     }
@@ -236,6 +237,19 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         verify(gridColumnMock, times(1)).setInstanceAssigned(true);
         verify(gridColumnMock, times(1)).setFactIdentifier(eq(factIdentifierMock));
         verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(FACT_NAME));
+    }
+
+    @Test
+    public void getFullPackage() {
+        scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
+        String fullPackage = ((AbstractSelectedColumnCommand) commandSpy).getFullPackage(scenarioSimulationContextLocal);
+        assertEquals(fullPackage, FULL_PACKAGE + ".");
+        scenarioSimulationContextLocal.getStatus().setFullPackage("");
+        fullPackage = ((AbstractSelectedColumnCommand) commandSpy).getFullPackage(scenarioSimulationContextLocal);
+        assertEquals("", fullPackage);
+        scenarioSimulationContextLocal.getStatus().setFullPackage(null);
+        fullPackage = ((AbstractSelectedColumnCommand) commandSpy).getFullPackage(scenarioSimulationContextLocal);
+        assertEquals("", fullPackage);
     }
 
     /* This test is usable ONLY by <code>SetPropertyCommandTest</code> subclass */
@@ -262,12 +276,12 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
     }
 
     protected void commonSetPropertyHeader(ScenarioSimulationModel.Type type, boolean keepData, List<String> propertyNameElements, String propertyClass) {
-        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, propertyNameElements, propertyClass);
+        ((AbstractSelectedColumnCommand) commandSpy).setPropertyHeader(scenarioSimulationContextLocal, gridColumnMock, FULL_CLASS_NAME, propertyNameElements, propertyClass);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(!type.equals(ScenarioSimulationModel.Type.DMN)));
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(String.join(".", propertyNameElements.subList(1, propertyNameElements.size())));
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);
-        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), isA(ScenarioGridColumn.class), eq(propertyNameElements), eq(propertyClass), eq(keepData), isA(FactMappingValueType.class));
+        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(propertyNameElements), eq(propertyClass), eq(keepData), isA(FactMappingValueType.class), eq(type));
         verify(scenarioSimulationContextLocal.getScenarioSimulationEditorPresenter(), times(1)).reloadTestTools(false);
     }
 

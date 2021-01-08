@@ -289,7 +289,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
 
     @Test
     public void updateColumnTypeFalse() {
-        abstractScesimGridModelSpy.updateColumnProperty(COLUMN_INDEX, gridColumnMock, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, false, FactMappingValueType.NOT_EXPRESSION);
+        abstractScesimGridModelSpy.updateColumnProperty(COLUMN_INDEX, gridColumnMock, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, false, FactMappingValueType.NOT_EXPRESSION, ScenarioSimulationModel.Type.RULE);
         verify(abstractScesimGridModelSpy, times(2)).checkSimulation();
         verify(factMappingMock, times(1)).setFactMappingValueType(eq(FactMappingValueType.NOT_EXPRESSION));
         verify(abstractScesimGridModelSpy, times(1)).deleteColumn(eq(COLUMN_INDEX));
@@ -299,7 +299,7 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
 
     @Test
     public void updateColumnTypeTrue() {
-        abstractScesimGridModelSpy.updateColumnProperty(COLUMN_INDEX, gridColumnMock, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, true, FactMappingValueType.NOT_EXPRESSION);
+        abstractScesimGridModelSpy.updateColumnProperty(COLUMN_INDEX, gridColumnMock, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, true, FactMappingValueType.NOT_EXPRESSION, ScenarioSimulationModel.Type.RULE);
         verify(abstractScesimGridModelSpy, atLeast(2)).checkSimulation();
         verify(abstractScesimGridModelSpy, atLeast(ROW_COUNT - 1)).getCell(anyInt(), eq(COLUMN_INDEX));
         verify(factMappingMock, times(1)).setFactMappingValueType(eq(FactMappingValueType.NOT_EXPRESSION));

@@ -124,14 +124,14 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
      * @return
      */
     protected Callback<String> superTypeAggregatorCallBack(final List<String> dataObjectsTypes,
-                                                         final Map<String, String> superTypeMap,
-                                                         final TestToolsView.Presenter testToolsPresenter,
-                                                         final int expectedElements,
-                                                         final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
-                                                         final ScenarioSimulationContext context,
-                                                         final List<String> simpleJavaTypes,
-                                                         final GridWidget gridWidget,
-                                                         final String factType) {
+                                                           final Map<String, String> superTypeMap,
+                                                           final TestToolsView.Presenter testToolsPresenter,
+                                                           final int expectedElements,
+                                                           final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
+                                                           final ScenarioSimulationContext context,
+                                                           final List<String> simpleJavaTypes,
+                                                           final GridWidget gridWidget,
+                                                           final String factType) {
         return superType -> {
             superTypeMap.put(factType, superType);
             /* This is used to invoke this callback only once, when all the expected superclasses
@@ -156,10 +156,12 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
     public FactModelTree getFactModelTree(String factName, Map<String, String> superTypeMap, ModelField[] modelFields) {
         Map<String, FactModelTree.PropertyTypeName> simpleProperties = new HashMap<>();
         Map<String, List<String>> genericTypesMap = new HashMap<>();
-        String factPackageName = packageName;
         String fullFactClassName = getFQCNByFactName(factName);
+        String factPackageName = packageName;
+        String factClassName = fullFactClassName;
         if (fullFactClassName != null && fullFactClassName.contains(".")) {
             factPackageName = fullFactClassName.substring(0, fullFactClassName.lastIndexOf('.'));
+            factClassName = fullFactClassName.substring(fullFactClassName.lastIndexOf('.') + 1);
         }
         if (ScenarioSimulationSharedUtils.isEnumCanonicalName(superTypeMap.get(factName))) {
             simpleProperties.put(ConstantsHolder.VALUE, new FactModelTree.PropertyTypeName(fullFactClassName));
@@ -175,7 +177,7 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
                 }
             }
         }
-        return new FactModelTree(factName, factPackageName, simpleProperties, genericTypesMap);
+        return FactModelTree.ofDMO(factName, factPackageName, simpleProperties, genericTypesMap, factClassName);
     }
 
     protected String defineClassNameField(String modelFieldClassName, Map<String, String> superTypesMap) {

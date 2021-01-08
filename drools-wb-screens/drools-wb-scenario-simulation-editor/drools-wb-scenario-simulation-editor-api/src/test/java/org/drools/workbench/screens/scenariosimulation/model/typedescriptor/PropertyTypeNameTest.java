@@ -49,6 +49,15 @@ public class PropertyTypeNameTest {
     }
 
     @Test
+    public void propertyTypeNestedNameNoBaseType() {
+        String typeName = "typeName$nested";
+        FactModelTree.PropertyTypeName propertyTypeNameTest = new FactModelTree.PropertyTypeName(typeName);
+        assertFalse(propertyTypeNameTest.getBaseTypeName().isPresent());
+        assertEquals(typeName, propertyTypeNameTest.getTypeName());
+        assertEquals("typeName.nested", propertyTypeNameTest.getPropertyTypeNameToVisualize());
+    }
+
+    @Test
     public void propertyTypeNameWithBaseType() {
         String typeName = "typeName";
         String baseTypeName = "baseTypeName";

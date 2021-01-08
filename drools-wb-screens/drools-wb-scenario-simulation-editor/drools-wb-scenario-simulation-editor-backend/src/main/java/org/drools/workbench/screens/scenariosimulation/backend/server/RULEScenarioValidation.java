@@ -84,7 +84,7 @@ public class RULEScenarioValidation extends AbstractScenarioValidation {
                     ScenarioBeanWrapper<?> beanWrapper = navigateToObject(beanBeforeLastStep.getBean(), Collections.singletonList(lastStep), false);
 
                     String targetClassName = beanWrapper.getBeanClass() != null ?
-                            beanWrapper.getBeanClass().getCanonicalName() :
+                            beanWrapper.getBeanClass().getName() :
                             null;
 
                     // check if target field has valid type

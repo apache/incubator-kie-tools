@@ -68,6 +68,7 @@ public class DuplicateInstanceCommand extends AbstractSelectedColumnCommand {
                             propertyNameElements.addAll(originalFactMapping.getExpressionElementsWithoutClass().stream().map(ExpressionElement::getStep).collect(Collectors.toList()));
                             setPropertyHeader(context,
                                               createdColumn,
+                                              originalColumn.getFactIdentifier().getClassName(),
                                               propertyNameElements,
                                               originalFactMapping.getClassName(),
                                               originalColumn.getPropertyHeaderMetaData().getTitle());

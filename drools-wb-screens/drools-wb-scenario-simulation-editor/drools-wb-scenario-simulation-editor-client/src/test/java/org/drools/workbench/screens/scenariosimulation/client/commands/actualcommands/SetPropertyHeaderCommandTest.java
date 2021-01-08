@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PACKAGE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE_ELEMENTS;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.VALUE_CLASS_NAME;
 import static org.mockito.Matchers.eq;
@@ -56,6 +58,7 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
         ((SetPropertyHeaderCommand) commandSpy).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
         verify((SetPropertyHeaderCommand) commandSpy, times(1)).setPropertyHeader(eq(scenarioSimulationContextLocal),
                                                                                   eq(gridColumnMock),
+                                                                                  eq(FULL_PACKAGE + "." + CLASS_NAME),
                                                                                   eq(MULTIPART_VALUE_ELEMENTS),
                                                                                   eq(VALUE_CLASS_NAME));
     }

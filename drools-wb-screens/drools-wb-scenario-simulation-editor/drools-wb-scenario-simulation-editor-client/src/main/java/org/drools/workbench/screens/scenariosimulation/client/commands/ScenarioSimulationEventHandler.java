@@ -402,6 +402,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
             return;
         }
         context.getStatus().setFullPackage(event.getFullPackage());
+        context.getStatus().setClassName(event.getFactType());
         context.getStatus().setPropertyNameElements(event.getPropertyNameElements());
         context.getStatus().setValueClassName(event.getValueClassName());
         if (context.getAbstractScesimGridModelByGridWidget(event.getGridWidget()).isSelectedColumnEmpty()) {

@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PACKAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.eq;
@@ -234,4 +235,13 @@ public class ScenarioSimulationContextTest extends AbstractScenarioSimulationTes
         scenarioSimulationContextLocal.setRedoButtonEnabledStatus(true);
         verify(scenarioSimulationEditorPresenterMock, times(1)).setRedoButtonEnabledStatus(eq(true));
     }
+
+    @Test
+    public void getStatusFullPackage() {
+        scenarioSimulationContextLocal.getStatus().setFullPackage(null);
+        assertEquals("", scenarioSimulationContextLocal.getStatus().getFullPackage());
+        scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
+        assertEquals(FULL_PACKAGE, scenarioSimulationContextLocal.getStatus().getFullPackage());
+    }
+
 }

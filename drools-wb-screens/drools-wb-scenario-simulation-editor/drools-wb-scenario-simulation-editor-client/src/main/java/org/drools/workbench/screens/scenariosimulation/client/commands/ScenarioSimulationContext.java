@@ -348,7 +348,7 @@ public class ScenarioSimulationContext {
         }
 
         public String getFullPackage() {
-            return fullPackage;
+            return fullPackage == null ? "" : fullPackage;
         }
 
         public void setFullPackage(String fullPackage) {

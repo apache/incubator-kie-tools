@@ -25,6 +25,7 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.SimpleClassEntry;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
@@ -126,11 +127,12 @@ public class ScenarioSimulationUtils {
      * @param factIdentifier
      * @return
      */
-    public static List<String> getPropertyNameElementsWithoutAlias(List<String> propertyNameElements, FactIdentifier factIdentifier) {
-        String actualClassName = factIdentifier.getClassName();
-        if (actualClassName.contains(".")) {
-            actualClassName = actualClassName.substring(actualClassName.lastIndexOf('.') + 1);
-        }
+    public static List<String> getPropertyNameElementsWithoutAlias(List<String> propertyNameElements,
+                                                                   FactIdentifier factIdentifier,
+                                                                   ScenarioSimulationModel.Type type) {
+        String actualClassName = ScenarioSimulationModel.Type.DMN.equals(type) ?
+                factIdentifier.getClassName() :
+                factIdentifier.getClassNameWithoutPackage().replace("$", ".");
         List<String> toReturn = new ArrayList<>(); // We have to keep the original List unmodified
         toReturn.addAll(propertyNameElements);
         if (toReturn.size() > 1) {

@@ -38,6 +38,7 @@ public class FactModelTree {
 
     private String factName;  // The name of the asset
     private String fullPackage;  // The package of the asset
+    private String typeName; // The type of the asset. In rule case, it's the class name. In dmn it's the full fact name (eg. with prefix)
     private boolean isSimple = false;
     /**
      * Map of the simple properties: key = property name, value = property' type name
@@ -53,12 +54,28 @@ public class FactModelTree {
     private Map<String, String> expandableProperties = new HashMap<>();
     private Type type;
 
+    /**
+     * Static factory method to be used in DMO context. type is not managed. Managing factName and typeName.
+     * @param factName
+     * @param fullPackage
+     * @param simpleProperties
+     * @param genericTypesMap
+     * @param typeName
+     * @return
+     */
+    public static FactModelTree ofDMO(String factName, String fullPackage, Map<String, PropertyTypeName> simpleProperties, Map<String, List<String>> genericTypesMap, String typeName) {
+        if (typeName == null || factName.equals(typeName)) {
+            return new FactModelTree(factName, fullPackage, simpleProperties, genericTypesMap);
+        }
+        return new FactModelTree(factName, fullPackage, simpleProperties, genericTypesMap, typeName);
+    }
+
     public FactModelTree() {
         // CDI
     }
 
     /**
-     * Call this constructor to have a <code>FactModelTree</code> with <b>UNDEFINED</b> <code>Type</code>
+     * Call this constructor to have a <code>FactModelTree</code> with <b>UNDEFINED</b> <code>Type</code>. RULE Test Scenario specific.
      * @param factName
      * @param fullPackage
      * @param simpleProperties
@@ -69,7 +86,20 @@ public class FactModelTree {
     }
 
     /**
-     * Call this constructor to specify the <code>FactModelTree</code>' <code>Type</code>
+     * Call this constructor to have a <code>FactModelTree</code> with <b>UNDEFINED</b> <code>Type</code> and the type (eg. ClassName)
+     * differs from the factName (A case is for nested classes eg Class.Nested as FactName and Class$Nested as className. RULE Test Scenario specific.
+     * @param factName
+     * @param fullPackage
+     * @param simpleProperties
+     * @param genericTypesMap the <b>generic type</b> info, in the format {collection_class_name}#{generic_type}: ex "java.util.List#com.Book"
+     * @param typeName The typeName of the fact (the className)
+     */
+    public FactModelTree(String factName, String fullPackage, Map<String, PropertyTypeName> simpleProperties, Map<String, List<String>> genericTypesMap, String typeName) {
+        this(factName, fullPackage, simpleProperties, genericTypesMap, Type.UNDEFINED, typeName);
+    }
+
+    /**
+     * Call this constructor to specify the <code>FactModelTree</code>' <code>Type</code>. DMN Test Scenario specific.
      * @param factName
      * @param fullPackage
      * @param simpleProperties
@@ -77,11 +107,17 @@ public class FactModelTree {
      * @param type
      */
     public FactModelTree(String factName, String fullPackage, Map<String, PropertyTypeName> simpleProperties, Map<String, List<String>> genericTypesMap, Type type) {
+        this(factName, fullPackage, simpleProperties, genericTypesMap, type, null);
+
+    }
+
+    public FactModelTree(String factName, String fullPackage, Map<String, PropertyTypeName> simpleProperties, Map<String, List<String>> genericTypesMap, Type type, String typeName) {
         this.factName = factName;
         this.fullPackage = fullPackage;
         this.simpleProperties = simpleProperties;
         this.genericTypesMap = genericTypesMap;
         this.type = type;
+        this.typeName = typeName;
     }
 
     public String getFactName() {
@@ -137,6 +173,14 @@ public class FactModelTree {
         return type;
     }
 
+    public String getTypeName() {
+        return typeName != null ? typeName : factName;
+    }
+
+    public String getFullTypeName() {
+        return (fullPackage == null || fullPackage.isEmpty()) ? getTypeName() : fullPackage + "." + getTypeName();
+    }
+
     public FactModelTree cloneFactModelTree() {
         Map<String, PropertyTypeName> clonedSimpleProperties = new HashMap<>(simpleProperties);
         Map<String, List<String>> clonedGenericTypesMap =
@@ -151,7 +195,7 @@ public class FactModelTree {
                                 }
 
                         ));
-        FactModelTree toReturn = new FactModelTree(factName, fullPackage, clonedSimpleProperties, clonedGenericTypesMap, type);
+        FactModelTree toReturn = new FactModelTree(factName, fullPackage, clonedSimpleProperties, clonedGenericTypesMap, type, typeName);
         toReturn.expandableProperties = new HashMap<>(expandableProperties);
         toReturn.isSimple = isSimple;
         return toReturn;
@@ -161,6 +205,7 @@ public class FactModelTree {
     public String toString() {
         return "FactModelTree{" +
                 "factName='" + factName + '\'' +
+                "typeName='" + typeName + '\'' +
                 ", simpleProperties=" + simpleProperties +
                 ", expandableProperties=" + expandableProperties +
                 '}';
@@ -212,11 +257,13 @@ public class FactModelTree {
         }
 
         /**
-         * This method returns the correct <b>type</b> name of the property to be visualized in UI.
+         * This method returns the correct <b>type</b> name of the property to be visualized in UI. In case of nested
+         * objects, '$' character is substituted with `.`/
          * @return
          */
         public String getPropertyTypeNameToVisualize() {
-            return baseTypeName.orElse(typeName);
+            return baseTypeName.orElse(typeName.replace('$', '.'));
         }
     }
 }
+
