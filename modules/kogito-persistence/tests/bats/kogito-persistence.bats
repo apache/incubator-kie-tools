@@ -26,8 +26,8 @@ teardown() {
 }
 
 @test "There's some proto files in the target directory" {
-    mkdir -p /tmp/src/target/META-INF/resources/persistence/protobuf
-    touch /tmp/src/target/META-INF/resources/persistence/protobuf/{file1.proto,kogito-application.proto}
+    mkdir -p /tmp/src/target/classes/META-INF/resources/persistence/protobuf
+    touch /tmp/src/target/classes/META-INF/resources/persistence/protobuf/{file1.proto,kogito-application.proto}
 
     run copy_persistence_files
 
@@ -35,8 +35,8 @@ teardown() {
 
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "INFO ---> [persistence] Copying persistence files..." ]
-    [ "${lines[1]}" = "'/tmp/src/target/META-INF/resources/persistence/protobuf/file1.proto' -> '"${KOGITO_HOME}"/bin/file1.proto'" ]
-    [ "${lines[2]}" = "'/tmp/src/target/META-INF/resources/persistence/protobuf/kogito-application.proto' -> '"${KOGITO_HOME}"/bin/kogito-application.proto'" ]
+    [ "${lines[1]}" = "'/tmp/src/target/classes/META-INF/resources/persistence/protobuf/file1.proto' -> '"${KOGITO_HOME}"/bin/file1.proto'" ]
+    [ "${lines[2]}" = "'/tmp/src/target/classes/META-INF/resources/persistence/protobuf/kogito-application.proto' -> '"${KOGITO_HOME}"/bin/kogito-application.proto'" ]
     [ "${lines[3]}" = "removed '"${KOGITO_HOME}"/bin/kogito-application.proto'" ]
     [ "${lines[4]}" = "INFO ---> [persistence] Moving persistence files to final directory" ]
     [ "${lines[5]}" = "'"${KOGITO_HOME}"/bin/file1.proto' -> '"${KOGITO_HOME}"/data/protobufs/file1.proto'" ]
