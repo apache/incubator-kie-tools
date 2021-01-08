@@ -23,12 +23,12 @@ import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
 import { useEffect, useState } from "react";
 import { Validated } from "../../../types";
 
-interface ConstraintsProps {
+interface ConstraintsEditProps {
   dataType: DDDataField;
   onSave: (payload: Partial<DDDataField>) => void;
 }
 
-const Constraints = (props: ConstraintsProps) => {
+const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const { dataType, onSave } = props;
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeSelectIsOpen, setTypeSelectIsOpen] = useState(false);
@@ -235,7 +235,7 @@ const Constraints = (props: ConstraintsProps) => {
   );
 };
 
-export default Constraints;
+export default ConstraintsEdit;
 
 export interface FormValidation {
   form: Validated;

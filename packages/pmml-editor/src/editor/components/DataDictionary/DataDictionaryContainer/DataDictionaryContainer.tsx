@@ -224,9 +224,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
               </section>
             )}
             {viewSection === "batch-add" && (
-              <>
-                <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
-              </>
+              <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
             )}
             {viewSection === "properties" && (
               <DataDictionaryPropertiesEdit
