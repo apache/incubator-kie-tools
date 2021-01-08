@@ -21,7 +21,11 @@ import { OutputsHandler } from "../../Outputs/organisms";
 import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 
-interface EditorHeaderProps {
+interface EditorHeaderViewerProps {
+  modelName: string;
+}
+
+interface EditorHeaderEditorProps {
   modelName: string;
   modelIndex: number;
   output?: Output;
@@ -32,41 +36,61 @@ interface EditorHeaderProps {
   commitModelName: (modelName: string) => void;
 }
 
-export const EditorHeader = (props: EditorHeaderProps) => {
-  const {
-    modelName,
-    miningSchema,
-    modelIndex,
-    output,
-    validateOutputFieldName,
-    deleteOutputField,
-    commitOutputField,
-    commitModelName
-  } = props;
+type EditorHeaderProps = EditorHeaderViewerProps | EditorHeaderEditorProps;
 
-  return (
-    <Split hasGutter={true}>
-      <SplitItem>
-        <ModelTitle modelName={modelName} commitModelName={commitModelName} />
-      </SplitItem>
-      <SplitItem isFilled={true}>
-        <div>&nbsp;</div>
-      </SplitItem>
-      <SplitItem>
-        <DataDictionaryHandler />
-      </SplitItem>
-      <SplitItem>
-        <MiningSchemaHandler miningSchema={miningSchema} modelIndex={modelIndex} />
-      </SplitItem>
-      <SplitItem>
-        <OutputsHandler
-          modelIndex={modelIndex}
-          output={output}
-          validateOutputFieldName={validateOutputFieldName}
-          deleteOutputField={deleteOutputField}
-          commitOutputField={commitOutputField}
-        />
-      </SplitItem>
-    </Split>
-  );
+const isEditor = (props: EditorHeaderProps): props is EditorHeaderEditorProps => {
+  return (props as EditorHeaderEditorProps).modelIndex !== undefined;
+};
+
+export const EditorHeader = (props: EditorHeaderProps) => {
+  const { modelName } = props;
+
+  if (isEditor(props)) {
+    const {
+      miningSchema,
+      modelIndex,
+      output,
+      validateOutputFieldName,
+      deleteOutputField,
+      commitOutputField,
+      commitModelName
+    } = props;
+
+    return (
+      <Split hasGutter={true}>
+        <SplitItem>
+          <ModelTitle modelName={modelName} commitModelName={commitModelName} />
+        </SplitItem>
+        <SplitItem isFilled={true}>
+          <div>&nbsp;</div>
+        </SplitItem>
+        <SplitItem>
+          <DataDictionaryHandler />
+        </SplitItem>
+        <SplitItem>
+          <MiningSchemaHandler miningSchema={miningSchema} modelIndex={modelIndex} />
+        </SplitItem>
+        <SplitItem>
+          <OutputsHandler
+            modelIndex={modelIndex}
+            output={output}
+            validateOutputFieldName={validateOutputFieldName}
+            deleteOutputField={deleteOutputField}
+            commitOutputField={commitOutputField}
+          />
+        </SplitItem>
+      </Split>
+    );
+  } else {
+    return (
+      <Split hasGutter={true}>
+        <SplitItem>
+          <ModelTitle modelName={modelName} />
+        </SplitItem>
+        <SplitItem isFilled={true}>
+          <div>&nbsp;</div>
+        </SplitItem>
+      </Split>
+    );
+  }
 };

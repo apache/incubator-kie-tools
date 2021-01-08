@@ -154,7 +154,7 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
     model: RegressionModel,
     type: "Regression Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    isSupported: true,
     factory: undefined
   },
   {

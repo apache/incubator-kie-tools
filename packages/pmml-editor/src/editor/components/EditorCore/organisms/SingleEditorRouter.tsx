@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { EmptyStateModelNotFound } from ".";
 import { UnsupportedModelPage } from "../templates";
 import { Operation } from "../../EditorScorecard";
+import { LinearRegressionViewerPage } from "../../LinearRegressionViewer/templates";
 
 interface ModelParams {
   index?: string;
@@ -61,6 +62,9 @@ export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
       {!_isSupportedModelType && <UnsupportedModelPage path={props.path} model={model} />}
       {_isSupportedModelType && modelType === "Scorecard" && (
         <ScorecardEditorPage path={props.path} modelIndex={_index} />
+      )}
+      {_isSupportedModelType && modelType === "Regression Model" && (
+        <LinearRegressionViewerPage path={props.path} modelIndex={_index} />
       )}
     </div>
   );
