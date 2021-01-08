@@ -47,7 +47,7 @@ interface CoreProperties {
   baselineScore: number | undefined;
   baselineMethod: BaselineMethod;
   initialScore: number | undefined;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   reasonCodeAlgorithm: ReasonCodeAlgorithm;
 }
 
@@ -75,7 +75,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
   const [baselineMethod, setBaselineMethod] = useState<BaselineMethod | undefined>();
   const [initialScore, setInitialScore] = useState<number | undefined>(props.initialScore);
-  const [useReasonCodes, setUseReasonCodes] = useState<boolean>(props.useReasonCodes);
+  const [areReasonCodesUsed, setAreReasonCodesUsed] = useState<boolean>(props.areReasonCodesUsed);
   const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState<ReasonCodeAlgorithm | undefined>();
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setBaselineScore(props.baselineScore);
     setBaselineMethod(props.baselineMethod);
     setInitialScore(props.initialScore);
-    setUseReasonCodes(props.useReasonCodes);
+    setAreReasonCodesUsed(props.areReasonCodesUsed);
     setReasonCodeAlgorithm(props.reasonCodeAlgorithm);
   }, [props]);
 
@@ -252,14 +252,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   </LevelItem>
                   <LevelItem>
                     <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
-                      {!isEditModeEnabled && value(toYesNo(useReasonCodes))}
+                      {!isEditModeEnabled && value(toYesNo(areReasonCodesUsed))}
                       {isEditModeEnabled && (
                         <Switch
                           id="core-useReasonCodes"
-                          isChecked={useReasonCodes}
+                          isChecked={areReasonCodesUsed}
                           onChange={checked => {
-                            setUseReasonCodes(checked);
-                            onCommit({ useReasonCodes: checked });
+                            setAreReasonCodesUsed(checked);
+                            onCommit({ areReasonCodesUsed: checked });
                           }}
                         />
                       )}
@@ -279,7 +279,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           },
                           // Reason Code Algorithm is only required when Reason Codes are enabled.
                           // See http://dmg.org/pmml/v4-4/Scorecard.html
-                          !useReasonCodes
+                          !areReasonCodesUsed
                         )}
                     </FormGroup>
                   </LevelItem>
@@ -297,7 +297,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           type="number"
                           // Baseline Score is only required when Reason Codes are enabled.
                           // See http://dmg.org/pmml/v4-4/Scorecard.html
-                          isDisabled={!useReasonCodes}
+                          isDisabled={!areReasonCodesUsed}
                         />
                       )}
                     </FormGroup>
@@ -316,7 +316,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           },
                           // Baseline Method is only required when Reason Codes are enabled.
                           // See http://dmg.org/pmml/v4-4/Scorecard.html
-                          !useReasonCodes
+                          !areReasonCodesUsed
                         )}
                     </FormGroup>
                   </LevelItem>

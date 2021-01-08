@@ -148,7 +148,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               baselineScore={model.baselineScore}
               baselineMethod={model.baselineMethod ?? "other"}
               initialScore={model.initialScore}
-              useReasonCodes={model.useReasonCodes ?? true}
+              areReasonCodesUsed={model.useReasonCodes ?? true}
               reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
               commit={_props => {
                 dispatch({
@@ -161,7 +161,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                     baselineScore: _props.baselineScore,
                     baselineMethod: _props.baselineMethod,
                     initialScore: _props.initialScore,
-                    useReasonCodes: _props.useReasonCodes,
+                    useReasonCodes: _props.areReasonCodesUsed,
                     reasonCodeAlgorithm: _props.reasonCodeAlgorithm
                   }
                 });
@@ -174,7 +174,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               <div>
                 <CharacteristicsContainer
                   modelIndex={modelIndex}
-                  useReasonCodes={model.useReasonCodes ?? true}
+                  areReasonCodesUsed={model.useReasonCodes ?? true}
                   isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
                   characteristics={characteristics?.Characteristic ?? []}
                   filteredCharacteristics={filteredCharacteristics}

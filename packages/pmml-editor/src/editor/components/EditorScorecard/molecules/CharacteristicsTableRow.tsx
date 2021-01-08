@@ -23,7 +23,7 @@ import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
   dataFields: DataField[];
   onEdit: () => void;
@@ -31,7 +31,7 @@ interface CharacteristicsTableRowProps {
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
-  const { characteristic, useReasonCodes, isBaselineScoreRequired, dataFields, onEdit, onDelete } = props;
+  const { characteristic, areReasonCodesUsed, isBaselineScoreRequired, dataFields, onEdit, onDelete } = props;
 
   return (
     <article
@@ -53,7 +53,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
         <SplitItem isFilled={true}>
           <CharacteristicLabels
             activeCharacteristic={characteristic.characteristic}
-            useReasonCodes={useReasonCodes}
+            areReasonCodesUsed={areReasonCodesUsed}
             isBaselineScoreRequired={isBaselineScoreRequired}
             dataFields={dataFields}
           />
