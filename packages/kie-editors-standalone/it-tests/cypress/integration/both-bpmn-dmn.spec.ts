@@ -33,17 +33,17 @@ describe("Both BPMN DMN.", () => {
       .should("be.visible");
 
     cy.editor("both-dmn")
-      .find(".qe-docks-bar-W", { timeout: 10000 })
+      .find(".collapsed-docks-bar-W", { timeout: 10000 })
       .should("be.visible");
 
     cy.editor("both-dmn")
-      .find(".qe-docks-bar-W button")
+      .find(".collapsed-docks-bar-W button")
       .first()
       .should("be.visible")
       .click({ force: true }); // open DecisionNavigator
 
     cy.editor("both-dmn")
-      .find(".qe-docks-bar-expanded-W")
+      .find(".expanded-docks-bar-W")
       .should("be.visible")
       .within($navigator => {
         cy.get("[data-field='item'][title='DRG']")
