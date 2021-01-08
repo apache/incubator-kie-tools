@@ -33,17 +33,18 @@ describe("Both BPMN DMN.", () => {
       .should("be.visible");
 
     cy.editor("both-dmn")
-      .find(".collapsed-docks-bar-W", { timeout: 10000 })
+      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W", { timeout: 10000 })
       .should("be.visible");
 
     cy.editor("both-dmn")
-      .find(".collapsed-docks-bar-W button")
+      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W")
+      .find("button")
       .first()
       .should("be.visible")
       .click({ force: true }); // open DecisionNavigator
 
     cy.editor("both-dmn")
-      .find(".expanded-docks-bar-W")
+      .ouiaId("expanded-docks-bar", "expanded-docks-bar-W")
       .should("be.visible")
       .within($navigator => {
         cy.get("[data-field='item'][title='DRG']")
