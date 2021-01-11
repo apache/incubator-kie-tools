@@ -114,18 +114,20 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
             }`}
           >
             {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
-              <CharacteristicsTableEditRow
-                modelIndex={modelIndex}
-                useReasonCodes={useReasonCodes}
-                isBaselineScoreRequired={isBaselineScoreRequired}
-                characteristic={ic}
-                validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
-                viewAttribute={viewAttribute}
-                onAddAttribute={onAddAttribute}
-                onCommitAndClose={onCommitAndClose}
-                onCommit={onCommit}
-                onCancel={onCancel}
-              />
+              <div ref={addCharacteristicRowRef}>
+                <CharacteristicsTableEditRow
+                  modelIndex={modelIndex}
+                  useReasonCodes={useReasonCodes}
+                  isBaselineScoreRequired={isBaselineScoreRequired}
+                  characteristic={ic}
+                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                  viewAttribute={viewAttribute}
+                  onAddAttribute={onAddAttribute}
+                  onCommitAndClose={onCommitAndClose}
+                  onCommit={onCommit}
+                  onCancel={onCancel}
+                />
+              </div>
             )}
             {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
               <CharacteristicsTableRow
