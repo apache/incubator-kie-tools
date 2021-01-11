@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./Actions";
-export * from "./AttributesReducer";
-export * from "./AttributePredicateConverter";
-export * from "./CharacteristicReducer";
-export * from "./CharacteristicsReducer";
-export * from "./DataDictionaryReducer";
-export * from "./DataDictionaryFieldReducer";
-export * from "./HeaderReducer";
-export * from "./ModelReducer";
-export * from "./OutputReducer";
-export * from "./OutputFieldReducer";
-export * from "./PMMLReducer";
-export * from "./ScorecardReducer";
+export * from "./LinearRegressionViewerPage";

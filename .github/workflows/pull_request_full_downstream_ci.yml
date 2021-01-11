@@ -104,6 +104,17 @@ jobs:
           repository: kiegroup/drools-wb
           fetch-depth: 0
 
+      - name: Checkout kogito-tooling
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: ${{ github.workspace }}/kogito-tooling
+
+      - name: Copy settings.xml to access KIE Internal Staging Maven Repository
+        run: |
+          mkdir -p ~/.m2
+          cp ${{ github.workspace }}/kogito-tooling/.github/supporting-files/community-releases-fdb/settings.xml ~/.m2
+
       - name: Build droolsjbpm-build-bootstrap
         run: |
           cd ${{ github.workspace }}/droolsjbpm-build-bootstrap
@@ -112,8 +123,12 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/droolsjbpm-build-bootstrap.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            echo $MERGE_WARNING_MESSAGE
-            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
+              git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            else
+              echo $MERGE_WARNING_MESSAGE
+              git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            fi
           fi
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
@@ -125,8 +140,12 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kie-soup.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            echo $MERGE_WARNING_MESSAGE
-            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
+              git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            else
+              echo $MERGE_WARNING_MESSAGE
+              git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            fi
           fi
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
@@ -138,8 +157,12 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/appformer.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            echo $MERGE_WARNING_MESSAGE
-            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
+              git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            else
+              echo $MERGE_WARNING_MESSAGE
+              git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            fi
           fi
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
@@ -151,8 +174,12 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kie-wb-common.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            echo $MERGE_WARNING_MESSAGE
-            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
+              git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            else
+              echo $MERGE_WARNING_MESSAGE
+              git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            fi
           fi
           mvn clean install -DskipTests -Denforcer.skip -T 2 -B -am -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime,kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
 
@@ -164,8 +191,12 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/drools-wb.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            echo $MERGE_WARNING_MESSAGE
-            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
+              git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            else
+              echo $MERGE_WARNING_MESSAGE
+              git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            fi
           fi
           mvn clean install -DskipTests -Denforcer.skip -pl drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime -am -T 2 -B
 
@@ -187,12 +218,6 @@ jobs:
           name: scesim-editor-fdb
           path: ${{ github.workspace }}/drools-wb/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime/
 
-      - name: Checkout kogito-tooling
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          path: ${{ github.workspace }}/kogito-tooling
-
       - name: Setup kogito-tooling
         run: |
           cd ${{ github.workspace }}/kogito-tooling
@@ -207,8 +232,12 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-tooling.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            echo $MERGE_WARNING_MESSAGE
-            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            if [ "${{ steps.buildInfo.outputs.category }}" == "comment" ]; then
+              git checkout ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            else
+              echo $MERGE_WARNING_MESSAGE
+              git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+            fi
           fi
 
       # This bash script will set an output version for this step. It can be used with steps.version.outputs.version

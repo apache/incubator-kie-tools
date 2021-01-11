@@ -127,7 +127,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 onCancel={onCancel}
               />
             )}
-            {selectedCharacteristicIndex !== ic.index && (
+            {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
               <CharacteristicsTableRow
                 characteristic={ic}
                 dataFields={dataFields}

@@ -3,128 +3,108 @@ import { useEffect, useState } from "react";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";
-import "./DataDictionaryContainer.scss";
 import EmptyDataDictionary from "../EmptyDataDictionary/EmptyDataDictionary";
 import { findIncrementalName } from "../../../PMMLModelHelper";
+import "./DataDictionaryContainer.scss";
 
 interface DataDictionaryContainerProps {
-  dataDictionary: DataField[];
-  onUpdate: (updatedDictionary: DataField[]) => void;
+  dataDictionary: DDDataField[];
+  onAdd: (name: string, type: DDDataField["type"]) => void;
+  onEdit: (index: number, field: DDDataField) => void;
+  onDelete: (index: number) => void;
+  onReorder: (oldIndex: number, newIndex: number) => void;
+  onBatchAdd: (fields: string[]) => void;
+  onEditingPhaseChange: (status: boolean) => void;
 }
 
-const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryContainerProps) => {
-  const [dataTypes, setDataTypes] = useState<DataField[]>(dataDictionary);
-  const [editing, setEditing] = useState<number | boolean>(false);
+const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
+  const { dataDictionary, onAdd, onEdit, onDelete, onReorder, onBatchAdd, onEditingPhaseChange } = props;
+  const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
+  const [editing, setEditing] = useState<number | undefined>();
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
-  const [constrainsEdit, setConstraintsEdit] = useState<DataField>();
+  const [constrainsEdit, setConstraintsEdit] = useState<DDDataField>();
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
-    onUpdate(dataTypes);
-  }, [dataTypes]);
+    // undoing a recently created data field force to exit the editing mode for that field
+    if (editing === dataDictionary.length) {
+      setEditing(undefined);
+      onEditingPhaseChange(false);
+    }
+    // updating constraintsEdit when dictionary changes
+    if (viewSection === "constraints" && typeof editing === "number") {
+      setConstraintsEdit(dataDictionary[editing]);
+    }
+    setDataTypes(dataDictionary);
+  }, [dataDictionary, editing, viewSection]);
 
   const handleOutsideClick = () => {
-    handleEmptyFields();
-    setEditing(false);
+    setEditing(undefined);
+    onEditingPhaseChange(false);
   };
 
   const addDataType = () => {
-    const newTypes = dataTypes;
-    newTypes.push({ name: "", type: "string" });
-    setDataTypes(newTypes);
-    setEditing(newTypes.length - 1);
-  };
-
-  const handleEmptyFields = () => {
-    if (dataTypes[dataTypes.length - 1].name.trim().length === 0) {
-      const newDataTypes = dataTypes;
-      newDataTypes[newDataTypes.length - 1].name = findIncrementalName(
+    onAdd(
+      findIncrementalName(
         "New Data Type",
         dataTypes.map(dt => dt.name),
         1
-      );
-      setDataTypes(newDataTypes);
-    }
+      ),
+      "string"
+    );
+    setEditing(dataTypes.length);
+    onEditingPhaseChange(true);
   };
 
-  const saveDataType = (dataType: DataField, index: number) => {
-    if (!dataTypeNameValidation(dataType.name)) {
-      dataType.name = findIncrementalName(
-        dataType.name,
-        dataTypes.map(dt => dt.name),
-        2
-      );
-    }
-    const newTypes = dataTypes;
-    newTypes[index] = { ...newTypes[index], ...dataType };
+  const saveDataType = (dataType: DDDataField, index: number) => {
     console.log("updating data type");
-    setDataTypes(newTypes);
+    onEdit(index, dataType);
   };
 
-  const handleSave = (dataType: DataField, index: number) => {
+  const handleSave = (dataType: DDDataField, index: number) => {
     saveDataType(dataType, index);
   };
 
   const handleDelete = (index: number) => {
-    const newDataTypes = [...dataTypes];
-    newDataTypes.splice(index, 1);
-    setDataTypes(newDataTypes);
+    onDelete(index);
   };
 
   const handleEdit = (index: number) => {
-    console.log("setting editing to " + index);
-    handleEmptyFields();
     setEditing(index);
+    onEditingPhaseChange(true);
   };
 
-  const handleMultipleAdd = (types: string) => {
-    const typesNames = types.split("\n").filter(item => item.trim().length > 0);
-    const newDataTypes: DataField[] = typesNames.map(name => {
-      return { name: name.trim(), type: "string" };
-    });
-    setDataTypes([...dataTypes, ...newDataTypes]);
+  const handleMultipleAdd = (fields: string) => {
+    const fieldsNames = fields.split("\n").filter(item => item.trim().length > 0);
+    onBatchAdd(fieldsNames);
     setViewSection("main");
   };
 
-  const handleConstraintsEdit = (dataType: DataField) => {
-    if (typeof editing === "number") {
-      saveDataType(dataType, editing);
+  const handleConstraintsEdit = (dataType: DDDataField) => {
+    if (editing !== undefined) {
       setConstraintsEdit(dataType);
       setViewSection("constraints");
+      onEditingPhaseChange(true);
     }
   };
 
-  const handleConstraintsSave = (payload: Constraints) => {
-    setViewSection("main");
-    if (typeof editing === "number") {
-      const newTypes = [...dataTypes];
-      newTypes[editing] = { ...newTypes[editing], constraints: payload };
-      setDataTypes(newTypes);
+  const handleConstraintsSave = (payload: DDDataField) => {
+    if (editing !== undefined) {
+      onEdit(editing, payload);
     }
   };
-  const handleConstraintsDelete = () => {
+
+  const exitFromConstraints = () => {
     setViewSection("main");
-    if (typeof editing === "number") {
-      const newTypes = [...dataTypes];
-      newTypes[editing] = { ...newTypes[editing] };
-      delete newTypes[editing].constraints;
-      setDataTypes(newTypes);
-    }
   };
 
   const toggleSorting = () => {
-    handleEmptyFields();
-    setEditing(false);
+    setEditing(undefined);
     setSorting(!sorting);
-  };
-
-  const handleSorting = (sortedDataTypes: DataField[]) => {
-    setDataTypes(sortedDataTypes);
   };
 
   const dataTypeNameValidation = (dataTypeName: string) => {
@@ -148,109 +128,106 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
 
   return (
     <div className="data-dictionary">
-      <StatusContext.Provider value={editing}>
-        <SwitchTransition mode={"out-in"}>
-          <CSSTransition
-            timeout={{
-              enter: 230,
-              exit: 100
-            }}
-            classNames={getTransition(viewSection)}
-            key={viewSection}
-          >
-            <>
-              {viewSection === "main" && (
-                <section style={{ height: "100%" }}>
-                  <Flex style={{ padding: "1em 0" }}>
-                    <FlexItem>
-                      <Button
-                        variant="primary"
-                        onClick={addDataType}
-                        icon={<PlusIcon />}
-                        iconPosition="left"
-                        isDisabled={editing !== false || sorting}
-                      >
-                        Add Data Type
-                      </Button>
-                    </FlexItem>
-                    <FlexItem>
-                      <Button
-                        variant="secondary"
-                        onClick={() => setViewSection("batch-add")}
-                        icon={<BoltIcon />}
-                        iconPosition="left"
-                        isDisabled={editing !== false || sorting}
-                      >
-                        Add Multiple Data Types
-                      </Button>
-                    </FlexItem>
-                    <FlexItem align={{ default: "alignRight" }}>
-                      <Button
-                        variant={sorting ? "primary" : "secondary"}
-                        onClick={toggleSorting}
-                        icon={<SortIcon />}
-                        iconPosition="left"
-                        isDisabled={editing !== false}
-                      >
-                        {sorting ? "End Ordering" : "Order"}
-                      </Button>
-                    </FlexItem>
-                  </Flex>
-                  {!sorting && (
-                    <section className="data-dictionary__types-list">
-                      {dataTypes.length === 0 && (
-                        <Bullseye style={{ height: "40vh" }}>
-                          <EmptyDataDictionary />
-                        </Bullseye>
-                      )}
-                      {dataTypes.map((item, index) => (
-                        <DataTypeItem
-                          dataType={item}
-                          index={index}
-                          key={item.name}
-                          onSave={handleSave}
-                          onEdit={handleEdit}
-                          onDelete={handleDelete}
-                          onConstraintsEdit={handleConstraintsEdit}
-                          onConstraintsDelete={handleConstraintsDelete}
-                          onValidate={dataTypeNameValidation}
-                          onOutsideClick={handleOutsideClick}
-                        />
-                      ))}
-                    </section>
-                  )}
-                  {sorting && (
-                    <section className="data-dictionary__types-list">
-                      <DataTypesSort dataTypes={dataTypes} onSort={handleSorting} />
-                    </section>
-                  )}
-                </section>
-              )}
-              {viewSection === "batch-add" && (
-                <>
-                  <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
-                </>
-              )}
-              {viewSection === "constraints" && (
-                <ConstraintsEdit
-                  dataType={constrainsEdit!}
-                  onAdd={handleConstraintsSave}
-                  onDelete={handleConstraintsDelete}
-                />
-              )}
-            </>
-          </CSSTransition>
-        </SwitchTransition>
-      </StatusContext.Provider>
+      <SwitchTransition mode={"out-in"}>
+        <CSSTransition
+          timeout={{
+            enter: 230,
+            exit: 100
+          }}
+          classNames={getTransition(viewSection)}
+          key={viewSection}
+        >
+          <>
+            {viewSection === "main" && (
+              <section style={{ height: "100%" }}>
+                <Flex style={{ padding: "1em 0" }}>
+                  <FlexItem>
+                    <Button
+                      variant="primary"
+                      onClick={addDataType}
+                      icon={<PlusIcon />}
+                      iconPosition="left"
+                      isDisabled={editing !== undefined || sorting}
+                    >
+                      Add Data Type
+                    </Button>
+                  </FlexItem>
+                  <FlexItem>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setViewSection("batch-add")}
+                      icon={<BoltIcon />}
+                      iconPosition="left"
+                      isDisabled={editing !== undefined || sorting}
+                    >
+                      Add Multiple Data Types
+                    </Button>
+                  </FlexItem>
+                  <FlexItem align={{ default: "alignRight" }}>
+                    <Button
+                      variant={sorting ? "primary" : "secondary"}
+                      onClick={toggleSorting}
+                      icon={<SortIcon />}
+                      iconPosition="left"
+                      isDisabled={editing !== undefined}
+                    >
+                      {sorting ? "End Ordering" : "Order"}
+                    </Button>
+                  </FlexItem>
+                </Flex>
+                {!sorting && (
+                  <section className="data-dictionary__types-list">
+                    {dataTypes.length === 0 && (
+                      <Bullseye style={{ height: "40vh" }}>
+                        <EmptyDataDictionary />
+                      </Bullseye>
+                    )}
+                    {dataTypes.map((item, index) => (
+                      <DataTypeItem
+                        dataType={item}
+                        editingIndex={editing}
+                        index={index}
+                        key={index}
+                        onSave={handleSave}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onConstraintsEdit={handleConstraintsEdit}
+                        onConstraintsSave={handleConstraintsSave}
+                        onValidate={dataTypeNameValidation}
+                        onOutsideClick={handleOutsideClick}
+                      />
+                    ))}
+                  </section>
+                )}
+                {sorting && (
+                  <section className="data-dictionary__types-list">
+                    <DataTypesSort dataTypes={dataTypes} onReorder={onReorder} />
+                  </section>
+                )}
+              </section>
+            )}
+            {viewSection === "batch-add" && (
+              <>
+                <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
+              </>
+            )}
+            {viewSection === "constraints" && (
+              <ConstraintsEdit
+                dataType={constrainsEdit!}
+                onSave={handleConstraintsSave}
+                onClose={exitFromConstraints}
+              />
+            )}
+          </>
+        </CSSTransition>
+      </SwitchTransition>
     </div>
   );
 };
 
-export const StatusContext = React.createContext<number | boolean>(false);
-
 export default DataDictionaryContainer;
 
-export interface DataField {
+export interface DDDataField {
   name: string;
   type: "string" | "integer" | "float" | "double" | "boolean";
   constraints?: Constraints;
@@ -261,16 +238,20 @@ type dataDictionarySection = "main" | "batch-add" | "constraints";
 export type Constraints =
   | {
       type: "Range";
-      start: {
-        value: "";
-        included: false;
-      };
-      end: {
-        value: "";
-        included: false;
-      };
+      value: RangeConstraint;
     }
   | { type: "Enumeration"; value: EnumConstraint[] };
+
+export interface RangeConstraint {
+  start: {
+    value: string;
+    included: boolean;
+  };
+  end: {
+    value: string;
+    included: boolean;
+  };
+}
 
 export interface EnumConstraint {
   value: string;
