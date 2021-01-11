@@ -8,6 +8,6 @@
     },
     "include": [
         "support",
-        "tests"
+        "integration"
     ]
 }
