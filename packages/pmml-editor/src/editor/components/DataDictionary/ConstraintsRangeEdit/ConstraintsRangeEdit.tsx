@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Button,
@@ -36,8 +36,11 @@ import { TrashIcon } from "@patternfly/react-icons";
 import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface ConstraintsRangeEditProps {
+  dataFieldIndex: number | undefined;
   ranges: RangeConstraint[];
   onAdd: () => void;
   onChange: (ranges: RangeConstraint[]) => void;
@@ -46,7 +49,7 @@ interface ConstraintsRangeEditProps {
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { ranges, onAdd, onChange, onDelete, validation } = props;
+  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, validation } = props;
   const [addedRange, setAddedRange] = useState<number>();
 
   const updateRange = (index: number, range: RangeConstraint) => {
@@ -79,6 +82,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
       <StackItem>
         {ranges.map((range, index) => (
           <RangeEdit
+            dataFieldIndex={dataFieldIndex}
             range={range}
             rangesCount={ranges.length}
             index={index}
@@ -102,6 +106,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
 export default ConstraintsRangeEdit;
 
 interface RangeEditProps {
+  dataFieldIndex: number | undefined;
   range: RangeConstraint;
   rangesCount: number;
   index: number;
@@ -112,7 +117,7 @@ interface RangeEditProps {
 }
 
 const RangeEdit = (props: RangeEditProps) => {
-  const { range, rangesCount, index, onSave, onDelete, addedRange, updateAddedRange } = props;
+  const { dataFieldIndex, range, rangesCount, index, onSave, onDelete, addedRange, updateAddedRange } = props;
   const [rangeValues, setRangeValues] = useState(range);
   const [submitChanges, setSubmitChanges] = useState(false);
 
@@ -164,9 +169,28 @@ const RangeEdit = (props: RangeEditProps) => {
     }
   }, [addedRange, index, rangeRef.current]);
 
+  const { service } = useValidationService();
+  const validations = useMemo(
+    () => service.getValidations(`DataDictionary.DataField[${dataFieldIndex}].Interval[${index}]`),
+    [range]
+  );
+
   return (
     <section ref={rangeRef}>
       <Split hasGutter={true} className="constraints__range-item">
+        {validations.length > 0 && (
+          <SplitItem>
+            <Flex
+              alignItems={{ default: "alignItemsCenter" }}
+              justifyContent={{ default: "justifyContentCenter" }}
+              style={{ height: "100%" }}
+            >
+              <FlexItem>
+                <ValidationIndicator validations={validations} />
+              </FlexItem>
+            </Flex>
+          </SplitItem>
+        )}
         <SplitItem>
           <FormGroup label="Start Value" fieldId={`start-value-${index}`} style={{ width: 320 }}>
             <TextInput

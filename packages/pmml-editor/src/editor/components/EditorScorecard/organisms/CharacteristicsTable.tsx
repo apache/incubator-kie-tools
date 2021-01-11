@@ -20,7 +20,7 @@ import { Form } from "@patternfly/react-core";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
-import { OperationContext } from "../../../PMMLEditor";
+import { useOperation } from "../OperationContext";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -62,7 +62,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation, setActiveOperation } = useOperation();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;

@@ -17,8 +17,14 @@ import { Reducer } from "react";
 import { HistoryService } from "./HistoryProvider";
 import { ModelType } from "..";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import { ValidationService } from "../validation";
 
-export type HistoryAwareReducer<S, A> = (service: HistoryService) => Reducer<S, A>;
+export type HistoryAwareReducer<S, A> = (history: HistoryService) => Reducer<S, A>;
+
+export type HistoryAwareValidatingReducer<S, A> = (
+  history: HistoryService,
+  validation: ValidationService
+) => Reducer<S, A>;
 
 export interface ModelReducerBinding<S, A> {
   reducer: Reducer<S, A>;
@@ -28,6 +34,6 @@ export interface ModelReducerBinding<S, A> {
 }
 
 export type HistoryAwareModelReducer<A> = (
-  service: HistoryService,
+  history: HistoryService,
   modelReducers: Map<ModelType, ModelReducerBinding<any, any>>
 ) => Reducer<Model[], A>;

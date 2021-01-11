@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./ActionSpacer";
-export * from "./ModelTitle";
-export * from "./ValidationIndicator";
+import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
+
+export class ValidationService {
+  private readonly registry: ValidationRegistry = new ValidationRegistry();
+
+  public setValidation = (path: string, entry: ValidationEntry): void => {
+    this.registry.set(path, entry);
+  };
+
+  public getValidations = (path: string): ValidationEntry[] => {
+    return this.registry.get(path);
+  };
+}

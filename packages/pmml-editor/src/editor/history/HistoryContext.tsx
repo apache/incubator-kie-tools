@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { HistoryService } from "./HistoryProvider";
 
-export * from "./ActionSpacer";
-export * from "./ModelTitle";
-export * from "./ValidationIndicator";
+export interface History {
+  service: HistoryService;
+  getCurrentState: () => PMML | undefined;
+}
+
+export const HistoryContext = React.createContext<History>({
+  service: new HistoryService(),
+  getCurrentState: () => undefined
+});
+
+export function useHistoryService() {
+  return React.useContext(HistoryContext);
+}

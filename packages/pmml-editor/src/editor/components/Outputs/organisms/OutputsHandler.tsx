@@ -28,8 +28,7 @@ import {
 import { CloseIcon } from "@patternfly/react-icons";
 import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
-import { Operation } from "../../EditorScorecard";
-import { OperationContext } from "../../../PMMLEditor";
+import { Operation, useOperation } from "../../EditorScorecard";
 
 interface OutputsHandlerProps {
   modelIndex: number;
@@ -44,7 +43,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { setActiveOperation } = React.useContext(OperationContext);
+  const { setActiveOperation } = useOperation();
 
   const toggleModal = () => {
     setActiveOperation(Operation.NONE);

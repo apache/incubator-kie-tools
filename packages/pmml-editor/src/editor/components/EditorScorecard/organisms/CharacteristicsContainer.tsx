@@ -31,8 +31,8 @@ import {
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
-import { HistoryContext, OperationContext } from "../../../PMMLEditor";
-import { useBatchDispatch } from "../../../history";
+import { useBatchDispatch, useHistoryService } from "../../../history";
+import { useOperation } from "../OperationContext";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -63,8 +63,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     commit
   } = props;
 
-  const { setActiveOperation } = React.useContext(OperationContext);
-  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const { setActiveOperation } = useOperation();
+  const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);

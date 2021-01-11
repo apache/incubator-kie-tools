@@ -20,8 +20,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { ValidatedType } from "../../../types";
-import { Operation } from "../../EditorScorecard";
-import { OperationContext } from "../../../PMMLEditor";
+import { Operation, useOperation } from "../../EditorScorecard";
 
 interface HeaderTitleProps {
   modelName: string;
@@ -33,7 +32,7 @@ export const ModelTitle = (props: HeaderTitleProps) => {
 
   const [modelName, setModelName] = useState<ValidatedType<string>>({ value: "", valid: true });
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation, setActiveOperation } = useOperation();
 
   const ref = useOnclickOutside(event => onCancel(), {
     disabled: activeOperation !== Operation.UPDATE_NAME,
