@@ -1,6 +1,6 @@
 {
   "fixturesFolder": false,
-  "integrationFolder": "tests",
+  "integrationFolder": "integration",
   "pluginsFile": "plugins/index.ts",
   "screenshotsFolder": "screenshots",
   "videosFolder": "videos",

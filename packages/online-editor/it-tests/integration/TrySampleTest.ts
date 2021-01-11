@@ -22,7 +22,7 @@ describe("Try sample test", () => {
     it("should create BPMN sample", () => {
 
         // clicks BPMN Try sample 
-        cy.get(".pf-c-card:has(h2:contains('BPMN')) > div > button.pf-m-link").click();
+        cy.get("[data-ouia-component-id='try-bpmn-sample-button']").click();
 
         // checks editor title name
         cy.get("[aria-label='Edit file name']").should("have.value", "sample");
@@ -58,7 +58,7 @@ describe("Try sample test", () => {
     it("should create DMN sample", () => {
 
         // clicks DMN Try Sample
-        cy.get(".pf-c-card:has(h2:contains('DMN')) > div > button.pf-m-link").click();
+        cy.get("[data-ouia-component-id='try-dmn-sample-button']").click();
 
         // checks editor title name
         cy.get("[aria-label='Edit file name']").should("have.value", "sample");
