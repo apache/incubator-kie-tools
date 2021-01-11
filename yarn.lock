@@ -2146,12 +2146,12 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@patternfly/patternfly@4.70.2", "@patternfly/patternfly@^4.70.2":
+"@patternfly/patternfly@4.70.2":
   version "4.70.2"
   resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.70.2.tgz#94b733f68f4f63040ab142eb2fa3c3ac5d08f2ae"
   integrity sha512-XKCHnOjx1JThY3s98AJhsApSsGHPvEdlY7r+b18OecqUnmThVGw3nslzYYrwfCGlJ/xQtV5so29SduH2/uhHzA==
 
-"@patternfly/react-charts@^6.12.12":
+"@patternfly/react-charts@6.12.12":
   version "6.12.12"
   resolved "https://registry.yarnpkg.com/@patternfly/react-charts/-/react-charts-6.12.12.tgz#15afe292724a06f11a4cfd979059957b5ac42234"
   integrity sha512-2tCCR2FvbwObw9uw3sHIvIu7IeP1s+R0ANHyRTHmakie7GcfzAiVv3KbDgrOn7iKtEpIOdee3EH4PWhLlLkxtQ==
@@ -2178,7 +2178,7 @@
     victory-voronoi-container "^35.3.5"
     victory-zoom-container "^35.3.5"
 
-"@patternfly/react-core@^4.84.4":
+"@patternfly/react-core@4.84.4":
   version "4.84.4"
   resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.84.4.tgz#e3061596f0ac02c5cb181f41201293ba073013a1"
   integrity sha512-GIv6zJl+NGYIrSm2pATQFggRt4ZFYUKVNbLSsna2x8+eYeZscqIUFSPmBM+eNpQkGaoJk254Lu09pgm4hM/b4g==
@@ -2191,7 +2191,7 @@
     tippy.js "5.1.2"
     tslib "1.13.0"
 
-"@patternfly/react-icons@^4.7.22":
+"@patternfly/react-icons@4.7.22", "@patternfly/react-icons@^4.7.22":
   version "4.7.22"
   resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.7.22.tgz#ee8c4f66020abf200cbdd233fba27d004dea562f"
   integrity sha512-JDsnebr9CNIyrv9yjaGFQ56OChbV6KcxMYBIpNc8/sZdU4TXHWNC7P7rlUM/BuGpbWvyaOJtscRuf5uteIKX3A==
