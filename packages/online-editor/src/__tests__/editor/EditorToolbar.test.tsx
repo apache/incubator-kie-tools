@@ -143,6 +143,7 @@ describe("EditorToolbar", () => {
 
       fireEvent.click(getByTestId("share-menu"));
       expect(getByTestId("gist-it-button")).toBeVisible();
+      expect(getByTestId("gist-it-button")).toHaveAttribute("aria-disabled", "true");
       expect(getByTestId("share-menu")).toMatchSnapshot();
     });
 
