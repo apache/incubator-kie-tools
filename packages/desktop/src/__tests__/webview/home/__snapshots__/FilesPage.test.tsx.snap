@@ -23,6 +23,10 @@ exports[`FilesPage empty page 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-1"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -45,6 +49,10 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-2"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -67,6 +75,10 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-3"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -89,6 +101,10 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-4"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -111,6 +127,10 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
+        data-ouia-component-id="OUIA-Generated-Card-5"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -180,7 +200,7 @@ exports[`FilesPage empty page 1`] = `
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-secondary"
-            data-ouia-component-id="0"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-1"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -214,16 +234,17 @@ exports[`FilesPage empty page 1`] = `
           >
             <div
               class="pf-c-select"
-              data-ouia-component-id="1"
+              data-ouia-component-id="OUIA-Generated-Select-single-1"
               data-ouia-component-type="PF4/Select"
               data-ouia-safe="true"
+              style="width: 7em;"
             >
               <button
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                aria-labelledby=" pf-toggle-id-0"
+                aria-labelledby=" pf-select-toggle-id-0"
                 class="pf-c-select__toggle"
-                id="pf-toggle-id-0"
+                id="pf-select-toggle-id-0"
                 type="button"
               >
                 <div
@@ -249,7 +270,6 @@ exports[`FilesPage empty page 1`] = `
                   >
                     <path
                       d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                      transform=""
                     />
                   </svg>
                 </span>
@@ -281,7 +301,7 @@ exports[`FilesPage empty page 1`] = `
               aria-disabled="false"
               aria-label="sort file view"
               class="pf-c-button pf-m-plain kogito--filter-btn"
-              data-ouia-component-id="2"
+              data-ouia-component-id="OUIA-Generated-Button-plain-1"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe="true"
               data-testid="orderAlphabeticallyButton"
@@ -298,7 +318,6 @@ exports[`FilesPage empty page 1`] = `
               >
                 <path
                   d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-                  transform=""
                 />
               </svg>
             </button>
@@ -358,6 +377,10 @@ exports[`FilesPage three recent files in different directories listed ordered al
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-14"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -380,6 +403,10 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-15"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -402,6 +429,10 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-16"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -424,6 +455,10 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-17"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -446,6 +481,10 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
+        data-ouia-component-id="OUIA-Generated-Card-18"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -515,7 +554,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-secondary"
-            data-ouia-component-id="17"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-3"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -549,16 +588,17 @@ exports[`FilesPage three recent files in different directories listed ordered al
           >
             <div
               class="pf-c-select"
-              data-ouia-component-id="20"
+              data-ouia-component-id="OUIA-Generated-Select-single-3"
               data-ouia-component-type="PF4/Select"
               data-ouia-safe="true"
+              style="width: 7em;"
             >
               <button
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                aria-labelledby=" pf-toggle-id-8"
+                aria-labelledby=" pf-select-toggle-id-8"
                 class="pf-c-select__toggle"
-                id="pf-toggle-id-8"
+                id="pf-select-toggle-id-8"
                 type="button"
               >
                 <div
@@ -584,7 +624,6 @@ exports[`FilesPage three recent files in different directories listed ordered al
                   >
                     <path
                       d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                      transform=""
                     />
                   </svg>
                 </span>
@@ -616,7 +655,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
               aria-disabled="false"
               aria-label="sort file view"
               class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
-              data-ouia-component-id="19"
+              data-ouia-component-id="OUIA-Generated-Button-plain-3"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe="true"
               data-testid="orderAlphabeticallyButton"
@@ -633,7 +672,6 @@ exports[`FilesPage three recent files in different directories listed ordered al
               >
                 <path
                   d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-                  transform=""
                 />
               </svg>
             </button>
@@ -665,7 +703,12 @@ exports[`FilesPage three recent files in different directories listed ordered al
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
+        aria-describedby="pf-tooltip-7"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-20"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -690,7 +733,12 @@ exports[`FilesPage three recent files in different directories listed ordered al
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-8"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-19"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -715,7 +763,12 @@ exports[`FilesPage three recent files in different directories listed ordered al
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-9"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-21"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -767,6 +820,10 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-22"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -789,6 +846,10 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-23"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -811,6 +872,10 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-24"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -833,6 +898,10 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-25"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -855,6 +924,10 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
+        data-ouia-component-id="OUIA-Generated-Card-26"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -924,7 +997,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-secondary"
-            data-ouia-component-id="28"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-4"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -958,16 +1031,17 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
           >
             <div
               class="pf-c-select"
-              data-ouia-component-id="31"
+              data-ouia-component-id="OUIA-Generated-Select-single-4"
               data-ouia-component-type="PF4/Select"
               data-ouia-safe="true"
+              style="width: 7em;"
             >
               <button
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                aria-labelledby=" pf-toggle-id-13"
+                aria-labelledby=" pf-select-toggle-id-13"
                 class="pf-c-select__toggle"
-                id="pf-toggle-id-13"
+                id="pf-select-toggle-id-13"
                 type="button"
               >
                 <div
@@ -993,7 +1067,6 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
                   >
                     <path
                       d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                      transform=""
                     />
                   </svg>
                 </span>
@@ -1025,7 +1098,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
               aria-disabled="false"
               aria-label="sort file view"
               class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
-              data-ouia-component-id="30"
+              data-ouia-component-id="OUIA-Generated-Button-plain-4"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe="true"
               data-testid="orderAlphabeticallyButton"
@@ -1042,7 +1115,6 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
               >
                 <path
                   d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-                  transform=""
                 />
               </svg>
             </button>
@@ -1074,7 +1146,12 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
+        aria-describedby="pf-tooltip-14"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-27"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1099,7 +1176,12 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-15"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-29"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1124,7 +1206,12 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-16"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-28"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1149,7 +1236,12 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-17"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-30"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1201,6 +1293,10 @@ exports[`FilesPage three recent files listed 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-6"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1223,6 +1319,10 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-7"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1245,6 +1345,10 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-8"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1267,6 +1371,10 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-9"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1289,6 +1397,10 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
+        data-ouia-component-id="OUIA-Generated-Card-10"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1358,7 +1470,7 @@ exports[`FilesPage three recent files listed 1`] = `
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-secondary"
-            data-ouia-component-id="6"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-2"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -1392,16 +1504,17 @@ exports[`FilesPage three recent files listed 1`] = `
           >
             <div
               class="pf-c-select"
-              data-ouia-component-id="9"
+              data-ouia-component-id="OUIA-Generated-Select-single-2"
               data-ouia-component-type="PF4/Select"
               data-ouia-safe="true"
+              style="width: 7em;"
             >
               <button
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                aria-labelledby=" pf-toggle-id-3"
+                aria-labelledby=" pf-select-toggle-id-3"
                 class="pf-c-select__toggle"
-                id="pf-toggle-id-3"
+                id="pf-select-toggle-id-3"
                 type="button"
               >
                 <div
@@ -1427,7 +1540,6 @@ exports[`FilesPage three recent files listed 1`] = `
                   >
                     <path
                       d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                      transform=""
                     />
                   </svg>
                 </span>
@@ -1459,7 +1571,7 @@ exports[`FilesPage three recent files listed 1`] = `
               aria-disabled="false"
               aria-label="sort file view"
               class="pf-c-button pf-m-plain kogito--filter-btn"
-              data-ouia-component-id="8"
+              data-ouia-component-id="OUIA-Generated-Button-plain-2"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe="true"
               data-testid="orderAlphabeticallyButton"
@@ -1476,7 +1588,6 @@ exports[`FilesPage three recent files listed 1`] = `
               >
                 <path
                   d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-                  transform=""
                 />
               </svg>
             </button>
@@ -1508,7 +1619,12 @@ exports[`FilesPage three recent files listed 1`] = `
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
+        aria-describedby="pf-tooltip-1"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-11"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1533,7 +1649,12 @@ exports[`FilesPage three recent files listed 1`] = `
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-2"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-12"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1558,7 +1679,12 @@ exports[`FilesPage three recent files listed 1`] = `
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-3"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-13"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1610,6 +1736,10 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-31"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1632,6 +1762,10 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-32"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1654,6 +1788,10 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-33"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1676,6 +1814,10 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+        data-ouia-component-id="OUIA-Generated-Card-34"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1698,6 +1840,10 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
+        data-ouia-component-id="OUIA-Generated-Card-35"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__header"
@@ -1767,7 +1913,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-secondary"
-            data-ouia-component-id="43"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-5"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -1801,16 +1947,17 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
           >
             <div
               class="pf-c-select"
-              data-ouia-component-id="46"
+              data-ouia-component-id="OUIA-Generated-Select-single-5"
               data-ouia-component-type="PF4/Select"
               data-ouia-safe="true"
+              style="width: 7em;"
             >
               <button
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                aria-labelledby=" pf-toggle-id-20"
+                aria-labelledby=" pf-select-toggle-id-20"
                 class="pf-c-select__toggle"
-                id="pf-toggle-id-20"
+                id="pf-select-toggle-id-20"
                 type="button"
               >
                 <div
@@ -1836,7 +1983,6 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
                   >
                     <path
                       d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                      transform=""
                     />
                   </svg>
                 </span>
@@ -1868,7 +2014,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
               aria-disabled="false"
               aria-label="sort file view"
               class="pf-c-button pf-m-plain kogito--filter-btn"
-              data-ouia-component-id="45"
+              data-ouia-component-id="OUIA-Generated-Button-plain-5"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe="true"
               data-testid="orderAlphabeticallyButton"
@@ -1885,7 +2031,6 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
               >
                 <path
                   d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-                  transform=""
                 />
               </svg>
             </button>
@@ -1917,7 +2062,12 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
+        aria-describedby="pf-tooltip-24"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-36"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1942,7 +2092,12 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-25"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-37"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
@@ -1967,7 +2122,12 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         </div>
       </article>
       <article
+        aria-describedby="pf-tooltip-26"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        data-ouia-component-id="OUIA-Generated-Card-38"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
         <div
           class="pf-c-card__body"
