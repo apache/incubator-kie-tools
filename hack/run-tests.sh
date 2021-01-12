@@ -57,6 +57,8 @@ function usage(){
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-cloud-operator' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
   printf "\n--operator_namespaced {TAG}\n\tSet to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false."
+  printf "\n--operator_installation_source {TAG}\n\tDefines installation source for the Kogito operator. Options are 'olm' and 'yaml'. Default is yaml."
+  printf "\n--operator_catalog_image {TAG}\n\tDefines image containing operator catalog. Needs to be specified only when operator_installation_source is 'olm'."
 
   # files/binaries
   printf "\n--operator_yaml_uri {URI}\n\tUrl or Path to kogito-operator.yaml file."
@@ -247,6 +249,14 @@ case $1 in
   --operator_namespaced)
     addParam "--tests.operator-namespaced"
     shift
+  ;;
+  --operator_installation_source)
+    shift
+    if addParamKeyValueIfAccepted "--tests.operator-installation-source" ${1}; then shift; fi
+  ;;
+  --operator_catalog_image)
+    shift
+    if addParamKeyValueIfAccepted "--tests.operator-catalog-image" ${1}; then shift; fi
   ;;
 
   # files/binaries

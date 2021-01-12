@@ -348,6 +348,42 @@ setup() {
     [[ "${output}" != *"--tests.operator-namespaced"* ]]
 }
 
+@test "invoke run-tests with operator_installation_source" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_installation_source olm --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.operator-installation-source=olm" ]]
+}
+
+@test "invoke run-tests with operator_installation_source missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_installation_source --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-installation-source"* ]]
+}
+
+@test "invoke run-tests with operator_installation_source empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_installation_source "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-installation-source"* ]]
+}
+
+@test "invoke run-tests with operator_catalog_image" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_catalog_image catalog-image --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.operator-catalog-image=catalog-image" ]]
+}
+
+@test "invoke run-tests with operator_catalog_image missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_catalog_image --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-catalog-image"* ]]
+}
+
+@test "invoke run-tests with operator_catalog_image empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_catalog_image "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-catalog-image"* ]]
+}
+
 # files/binaries
 
 @test "invoke run-tests with operator_yaml_uri" {
