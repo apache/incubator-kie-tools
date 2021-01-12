@@ -111,6 +111,12 @@ export const convertFromDataField = (item: DataField) => {
     convertedField.constraints = {
       type: "Range",
       value: item.Interval.map(interval => {
+        /* A note about the included value and how it's calculated.
+        PMML presents a single property to handle the inclusion of both interval limits called Closure.
+        Closure combines both inclusion values in camel case, i.e. "openClosed", meaning that the left margin is open
+        and the right margin is closed. To convert it to DD structure where the info is stored separately for start
+        and end values, I check if closure value starts with or ends with "closed" or "Closed" respectively.
+        */
         return {
           start: {
             value: interval.leftMargin?.toString() ?? "",
