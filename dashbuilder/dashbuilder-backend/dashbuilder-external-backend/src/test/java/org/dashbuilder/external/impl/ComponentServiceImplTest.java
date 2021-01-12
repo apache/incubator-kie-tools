@@ -70,6 +70,7 @@ public class ComponentServiceImplTest {
         assertEquals(c1ProvidedName, externalComponentServiceImpl.byId(C1_ID).get().getName());
     }
 
+    @Test
     public void testListAllComponents() {
         String providedId = "c1";
         String externalId = "c2";
