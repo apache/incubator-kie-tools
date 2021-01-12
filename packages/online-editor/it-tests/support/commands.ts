@@ -16,8 +16,15 @@
 
 declare namespace Cypress {
     interface Chainable {
+        /**
+         * Get Kogito editor iframe.
+         */
         getEditor(): Chainable<JQuery<HTMLBodyElement>>;
-        waitUntilEditorIsLoaded(): void;
+
+        /**
+         * Wait until Kogito editor is loaded.
+         */
+        loadEditor(): void;
     }
 }
 
@@ -26,9 +33,9 @@ Cypress.Commands.add("getEditor", () => {
     return cy.iframe("iframe#kogito-iframe");
 });
 
-Cypress.Commands.add("waitUntilEditorIsLoaded", () => {
+Cypress.Commands.add("loadEditor", () => {
     cy.getEditor().within(() => {
-        cy.get("[data-testid='loading-screen-div']", { timeout: 30000 }).should("be.visible");
+        cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("be.visible");
         cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
     });
 });

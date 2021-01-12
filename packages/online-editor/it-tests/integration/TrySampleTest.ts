@@ -28,7 +28,7 @@ describe("Try sample test", () => {
         cy.get("[aria-label='Edit file name']").should("have.value", "sample");
 
         // waits until loading dialog diappears
-        cy.waitUntilEditorIsLoaded();
+        cy.loadEditor();
 
         cy.getEditor().within(($bpmnEditor) => {
 
@@ -64,7 +64,7 @@ describe("Try sample test", () => {
         cy.get("[aria-label='Edit file name']").should("have.value", "sample");
 
         // waits until loading dialog diappears
-        cy.waitUntilEditorIsLoaded();
+        cy.loadEditor();
 
         // closes DMN guided tour dialog
         cy.get("[data-kgt-close='true']").click();
