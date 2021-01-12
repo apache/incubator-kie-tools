@@ -40,10 +40,12 @@ pipeline {
         }
         stage('prepare kogito-tooling dependencies') {
             steps {
-                env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/bpmn-editor-unpacked/target/bpmn"
-                env['EXTERNAL_RESOURCE_PATH__dmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/dmn-editor-unpacked/target/dmn"
-                env['EXTERNAL_RESOURCE_PATH__scesimEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/scesim-editor-unpacked/target/scesim"
-                env['EXTERNAL_RESOURCE_PATH__quarkusRunner'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/kogito-tooling/quarkus-runner-unpacked/target/dependencies"
+                script {
+                    env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/bpmn-editor-unpacked/target/bpmn"
+                    env['EXTERNAL_RESOURCE_PATH__dmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/dmn-editor-unpacked/target/dmn"
+                    env['EXTERNAL_RESOURCE_PATH__scesimEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/scesim-editor-unpacked/target/scesim"
+                    env['EXTERNAL_RESOURCE_PATH__quarkusRunner'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/kogito-tooling/quarkus-runner-unpacked/target/dependencies"
+                }
             }
         }
         stage('Build Nightly projects') {
