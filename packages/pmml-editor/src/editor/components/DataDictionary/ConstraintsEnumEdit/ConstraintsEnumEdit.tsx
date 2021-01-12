@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import {
   Alert,
@@ -36,6 +36,8 @@ const ConstraintsEnumEdit = ({
   validation
 }: ConstraintsEnumEditProps) => {
   const [enums, setEnums] = useState(enumerations);
+  const [addedEnum, setAddedEnum] = useState<number>();
+
   const handleChange = (value: string, index: number) => {
     onChange(value, index);
   };
@@ -46,6 +48,7 @@ const ConstraintsEnumEdit = ({
 
   const addOne = () => {
     onAdd();
+    setAddedEnum(enums.length);
   };
 
   const handleTab = () => {
@@ -61,38 +64,47 @@ const ConstraintsEnumEdit = ({
   }, [enumerations]);
 
   return (
-    <section className="constraints-enum">
-      <Stack hasGutter={true}>
-        {validation.form === "error" && (
+    <EnumConstraintsContext.Provider
+      value={{
+        addedEnum: addedEnum,
+        updateAddedEnum: position => {
+          setAddedEnum(position);
+        }
+      }}
+    >
+      <section className="constraints-enum">
+        <Stack hasGutter={true}>
+          {validation.form === "error" && (
+            <StackItem>
+              <Alert variant="danger" isInline={true} title="Please enter at least one enumeration." />
+            </StackItem>
+          )}
           <StackItem>
-            <Alert variant="danger" isInline={true} title="Please enter at least one enumeration." />
+            <TextContent>
+              <Text component={TextVariants.p}>
+                Add constraints values to limit and define valid inputs for the data type.
+              </Text>
+            </TextContent>
           </StackItem>
-        )}
-        <StackItem>
-          <TextContent>
-            <Text component={TextVariants.p}>
-              Add constraints values to limit and define valid inputs for the data type.
-            </Text>
-          </TextContent>
-        </StackItem>
-        <StackItem>
-          <EnumsList
-            items={enums}
-            onUpdate={handleChange}
-            onTab={handleTab}
-            onDelete={handleDelete}
-            onSortEnd={onSortEnd}
-            lockAxis="y"
-            distance={10}
-          />
-        </StackItem>
-        <StackItem>
-          <Button variant={ButtonVariant.secondary} onClick={addOne}>
-            Add another value
-          </Button>
-        </StackItem>
-      </Stack>
-    </section>
+          <StackItem>
+            <EnumsList
+              items={enums}
+              onUpdate={handleChange}
+              onTab={handleTab}
+              onDelete={handleDelete}
+              onSortEnd={onSortEnd}
+              lockAxis="y"
+              distance={10}
+            />
+          </StackItem>
+          <StackItem>
+            <Button variant={ButtonVariant.secondary} onClick={addOne}>
+              Add another value
+            </Button>
+          </StackItem>
+        </Stack>
+      </section>
+    </EnumConstraintsContext.Provider>
   );
 };
 
@@ -141,6 +153,8 @@ interface EnumItemProps {
 
 const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, onTab, onDelete }: EnumItemProps) => {
   const [enumeration, setEnumeration] = useState(enumValue);
+  const { addedEnum, updateAddedEnum } = useContext(EnumConstraintsContext);
+
   const handleChange = (value: string) => {
     setEnumeration(value);
   };
@@ -157,10 +171,20 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
     }
   };
 
+  const enumRef = useRef<HTMLLIElement | null>(null);
+  useEffect(() => {
+    if (enumRef.current && addedEnum === position) {
+      const container = document.querySelector(".data-dictionary__properties-edit__form");
+      container?.scroll({ top: container?.scrollHeight, behavior: "smooth" });
+      updateAddedEnum(undefined);
+    }
+  }, [addedEnum, enumRef.current, position]);
+
   return (
     <li
       className={`constraints-enum__item ${enumsCount === 1 ? "constraints-enum__item--sort-disabled" : ""}`}
       tabIndex={20 + position}
+      ref={enumRef}
     >
       <Flex>
         <FlexItem>
@@ -189,4 +213,14 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
       </Flex>
     </li>
   );
+});
+
+interface AddedEnumConstraints {
+  addedEnum: number | undefined;
+  updateAddedEnum: (position: number | undefined) => void;
+}
+
+const EnumConstraintsContext = React.createContext<AddedEnumConstraints>({
+  addedEnum: undefined,
+  updateAddedEnum: () => null
 });
