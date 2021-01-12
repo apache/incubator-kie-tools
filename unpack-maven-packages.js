@@ -20,6 +20,7 @@ const decompress = require('decompress');
 const http = require('http');
 const https = require("https");
 const fs = require('fs');
+const path = require('path');
 
 const download = function (url, dest, cb) {
   const file = fs.createWriteStream(dest);
@@ -29,20 +30,20 @@ const download = function (url, dest, cb) {
       file.close(cb(dest));
     });
   }).on('error', function (err) {
-    fs.unlink(dest);
-    if (cb) cb(err.message);
+    console.error("[ERROR] Error downloading file", err);
+    if (cb) cb(dest);
   });
 };
 
 const urls = process.argv.slice(2);
 fs.mkdirSync("unpacked");
 
-urls.forEach(url => download(url, `unpacked/${url.substring(url.lastIndexOf('/') + 1)}`, file => {
+urls.forEach(url => download(url, path.join("unpacked", url.substring(url.lastIndexOf('/') + 1)), file => {
   console.log(`${file} downloaded. Uncompressing it...`);
 
   decompress(file, `${file.replace(/\./g, "_")}`)
     .then(
       () => console.log(`File ${file} unpacked.`),
-      error => console.error(`File ${file} not unpacked`, error)
+      error => console.error(`Error unpackaging file ${file}.`, error)
     )
 }));
