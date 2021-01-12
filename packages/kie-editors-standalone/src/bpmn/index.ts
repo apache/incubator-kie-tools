@@ -29,9 +29,11 @@ declare global {
 }
 
 const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, origin?: string) => {
+  const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
+
   return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
     { postMessage: message => iframe.contentWindow?.postMessage(message, "*") },
-    origin ?? window.location.origin,
+    origin ?? defaultOrigin,
     self => {
       return self.envelopeApi.requests.receive_initRequest(
         {
