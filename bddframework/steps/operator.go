@@ -15,6 +15,7 @@
 package steps
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -44,11 +45,15 @@ func (data *Data) kogitoOperatorIsDeployed() error {
 		return nil
 	}
 
-	// if operator not available, then install via yaml files
+	if config.IsOperatorInstalledByYaml() {
+		return errors.New("Installing namespace scoped operator using YAML files is not supported")
+	}
+
+	// if operator not available, then install using OLM (as the only supported namespace scoped installation approach)
 	if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 		return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 	} else if !exists {
-		err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
+		err := framework.DeployNamespacedKogitoOperatorUsingOlm(data.Namespace)
 		if err != nil {
 			return fmt.Errorf("Error while deploying operator: %v", err)
 		}
@@ -65,12 +70,14 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 	if !config.IsOperatorNamespaced() {
 		// Skip operator installation
 		framework.GetLogger(data.Namespace).Info("Kogito operator deployment skipped as cluster wide operator should be deployed")
+	} else if config.IsOperatorInstalledByYaml() {
+		return errors.New("Installing namespace scoped operator using YAML files is not supported")
 	} else {
 		// First install and wait for kogito operator
 		if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 			return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 		} else if !exists {
-			err := framework.DeployNamespacedKogitoOperatorFromYaml(data.Namespace)
+			err := framework.DeployNamespacedKogitoOperatorUsingOlm(data.Namespace)
 			if err != nil {
 				return fmt.Errorf("Error while deploying operator: %v", err)
 			}

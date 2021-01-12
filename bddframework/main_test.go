@@ -155,11 +155,24 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	ctx.BeforeSuite(func() {
 		monitorOlmNamespace()
 
-		if !config.IsOperatorNamespaced() {
-			if err := installClusterWideKogitoOperator(); err != nil {
+		if config.IsOperatorInstalledByOlm() {
+			if err := installKogitoOperatorCatalogSource(); err != nil {
 				panic(err)
 			}
-			monitorKogitoOperatorNamespace()
+		}
+
+		if !config.IsOperatorNamespaced() {
+			if config.IsOperatorInstalledByOlm() {
+				if err := installClusterWideKogitoOperatorUsingOlm(); err != nil {
+					panic(err)
+				}
+			} else {
+				if err := installClusterWideKogitoOperatorUsingYaml(); err != nil {
+					panic(err)
+				}
+				monitorKogitoOperatorNamespace()
+			}
+
 		}
 	})
 
@@ -170,11 +183,15 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 			deleteClusterWideTestOperators()
 		}
 
-		if !config.IsOperatorNamespaced() {
-			if err := uninstallClusterWideKogitoOperator(); err != nil {
+		if config.IsOperatorInstalledByYaml() && !config.IsOperatorNamespaced() {
+			if err := uninstallClusterWideKogitoOperatorUsingYaml(); err != nil {
 				panic(err)
 			}
 			stopKogitoOperatorNamespaceMonitoring()
+		}
+
+		if config.IsOperatorInstalledByOlm() {
+			deleteKogitoOperatorCatalogSource()
 		}
 
 		stopOlmNamespaceMonitoring()
@@ -321,8 +338,38 @@ func stopNamespaceMonitoring(namespace string) {
 	}
 }
 
-// Install cluster wide Kogito operator
-func installClusterWideKogitoOperator() error {
+// Install cluster wide Kogito operator from OLM
+func installKogitoOperatorCatalogSource() error {
+	// Create CatalogSource
+	if _, err := framework.CreateKogitoOperatorCatalogSource(); err != nil {
+		return fmt.Errorf("Error installing custer wide Kogito operator using OLM: %v", err)
+	}
+
+	// Wait for the CatalogSource
+	if err := framework.WaitForKogitoOperatorCatalogSourceReady(); err != nil {
+		return fmt.Errorf("Error while waiting for Kogito operator CatalogSource initialization: %v", err)
+	}
+
+	return nil
+}
+
+// Install cluster wide Kogito operator from OLM
+func installClusterWideKogitoOperatorUsingOlm() error {
+	// Install cluster wide Kogito operator
+	if err := framework.DeployClusterWideKogitoOperatorUsingOlm(); err != nil {
+		return fmt.Errorf("Error deploying cluster wide Kogito operator using OLM: %v", err)
+	}
+
+	// Wait until cluster wide Kogito operator runs
+	if err := framework.WaitForClusterWideKogitoOperatorRunningUsingOlm(); err != nil {
+		return fmt.Errorf("Error while checking operator running: %v", err)
+	}
+
+	return nil
+}
+
+// Install cluster wide Kogito operator from YAML files
+func installClusterWideKogitoOperatorUsingYaml() error {
 	// Check that Kogito operator is not deployed yet
 	if running, err := framework.KogitoOperatorExists(kogitoClusterWideNamespace); err != nil {
 		return fmt.Errorf("Error while checking whether Kogito operator in namespace %s is running: %v", kogitoClusterWideNamespace, err)
@@ -354,10 +401,16 @@ func installClusterWideKogitoOperator() error {
 	return nil
 }
 
-// Uninstall cluster wide Kogito operator
-func uninstallClusterWideKogitoOperator() error {
+// Uninstall cluster wide Kogito operator installed by YAML files
+func uninstallClusterWideKogitoOperatorUsingYaml() error {
 	if !config.IsKeepNamespace() {
 		return framework.DeleteNamespace(kogitoClusterWideNamespace)
 	}
 	return nil
+}
+
+func deleteKogitoOperatorCatalogSource() {
+	if err := framework.DeleteKogitoOperatorCatalogSource(); err != nil {
+		framework.GetMainLogger().Error(err, "Error deleting Kogito operator CatalogSource")
+	}
 }

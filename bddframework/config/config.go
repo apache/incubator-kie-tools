@@ -37,9 +37,11 @@ type TestConfig struct {
 	olmNamespace     string
 
 	// operator information
-	operatorImageName  string
-	operatorImageTag   string
-	operatorNamespaced bool
+	operatorImageName          string
+	operatorImageTag           string
+	operatorNamespaced         bool
+	operatorInstallationSource string
+	operatorCatalogImage       string
 
 	// files/binaries
 	operatorYamlURI string
@@ -100,6 +102,9 @@ const (
 	defaultHTTPRetryNumber = 3
 
 	defaultContainerEngine = "podman"
+
+	installationSourceOlm  = "olm"
+	installationSourceYaml = "yaml"
 )
 
 var (
@@ -130,6 +135,8 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
 	set.StringVar(&env.operatorImageTag, prefix+"operator-image-tag", defaultOperatorImageTag, "Operator image tag")
 	set.BoolVar(&env.operatorNamespaced, prefix+"operator-namespaced", false, "Set to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false.")
+	set.StringVar(&env.operatorInstallationSource, prefix+"operator-installation-source", installationSourceYaml, "Operator installation source")
+	set.StringVar(&env.operatorCatalogImage, prefix+"operator-catalog-image", "", "Operator catalog image")
 
 	// files/binaries
 	set.StringVar(&env.operatorYamlURI, prefix+"operator-yaml-uri", defaultOperatorYamlURI, "Url or Path to kogito-operator.yaml file")
@@ -250,6 +257,21 @@ func GetOperatorImageTag() string {
 // IsOperatorNamespaced return true if the Kogito operator should be deployed in scenario namespace, false for cluster wide deployment
 func IsOperatorNamespaced() bool {
 	return env.operatorNamespaced
+}
+
+// IsOperatorInstalledByOlm return true if Kogito operator is installed using OLM
+func IsOperatorInstalledByOlm() bool {
+	return env.operatorInstallationSource == installationSourceOlm
+}
+
+// IsOperatorInstalledByYaml return true if Kogito operator is installed using YAML files
+func IsOperatorInstalledByYaml() bool {
+	return env.operatorInstallationSource == installationSourceYaml
+}
+
+// GetOperatorCatalogImage return the image tag for the Kogito operator catalog
+func GetOperatorCatalogImage() string {
+	return env.operatorCatalogImage
 }
 
 // files/binaries
