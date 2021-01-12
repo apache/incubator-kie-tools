@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { pick } from "lodash";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
@@ -107,7 +106,8 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   const handlePropertiesSave = (payload: Partial<DDDataField>) => {
     if (editing !== undefined) {
       const dataType = dataTypes[editing];
-      const existingPartial = pick(dataType, Object.keys(payload));
+      const existingPartial = {};
+      Object.keys(payload).forEach(key => Reflect.set(existingPartial, key, Reflect.get(dataType, key)));
 
       if (!isEqual(payload, existingPartial)) {
         onEdit(editing, Object.assign(dataType, payload));

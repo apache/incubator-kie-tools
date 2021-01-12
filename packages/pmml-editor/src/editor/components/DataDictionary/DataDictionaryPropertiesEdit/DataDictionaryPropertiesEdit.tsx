@@ -83,7 +83,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   autoComplete="off"
                   onBlur={() =>
                     onSave({
-                      displayName
+                      displayName: displayName === "" ? undefined : displayName
                     })
                   }
                 />
@@ -156,7 +156,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   autoComplete="off"
                   onBlur={() =>
                     onSave({
-                      missingValue
+                      missingValue: missingValue === "" ? undefined : missingValue
                     })
                   }
                 />
@@ -179,7 +179,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                   autoComplete="off"
                   onBlur={() =>
                     onSave({
-                      invalidValue
+                      invalidValue: invalidValue === "" ? undefined : invalidValue
                     })
                   }
                 />
