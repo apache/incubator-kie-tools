@@ -38,7 +38,7 @@ const download = function (url, dest, cb) {
 const urls = process.argv.slice(2);
 fs.mkdirSync("unpacked");
 
-urls.forEach(url => download(url, path.join("unpacked", url.substring(url.lastIndexOf('/') + 1)), file => {
+urls.forEach(url => download(url, path.join(".", "unpacked", url.substring(url.lastIndexOf('/') + 1)), file => {
   console.log(`${file} downloaded. Uncompressing it...`);
 
   decompress(file, `${file.replace(/\./g, "_")}`)
