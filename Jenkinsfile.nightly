@@ -41,17 +41,17 @@ pipeline {
         stage('prepare kogito-tooling dependencies') {
             steps {
                 script {
-                    env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/bpmn-editor-unpacked/target/bpmn"
-                    env['EXTERNAL_RESOURCE_PATH__dmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/dmn-editor-unpacked/target/dmn"
-                    env['EXTERNAL_RESOURCE_PATH__scesimEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/scesim-editor-unpacked/target/scesim"
-                    env['EXTERNAL_RESOURCE_PATH__quarkusRunner'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/kogito-tooling/quarkus-runner-unpacked/target/dependencies"
+                    env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/ginxo_kogito-tooling/.github/supporting-files/maven-artifacts/bpmn-editor-unpacked/target/bpmn"
+                    env['EXTERNAL_RESOURCE_PATH__dmnEditor'] = "$WORKSPACE/ginxo_kogito-tooling/.github/supporting-files/maven-artifacts/dmn-editor-unpacked/target/dmn"
+                    env['EXTERNAL_RESOURCE_PATH__scesimEditor'] = "$WORKSPACE/ginxo_kogito-tooling/.github/supporting-files/maven-artifacts/scesim-editor-unpacked/target/scesim"
+                    env['EXTERNAL_RESOURCE_PATH__quarkusRunner'] = "$WORKSPACE/ginxo_kogito-tooling/.github/supporting-files/maven-artifacts/kogito-tooling/quarkus-runner-unpacked/target/dependencies"
                 }
             }
         }
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def projectCollection = ["kiegroup/kie-wb-common", "kiegroup/kogito-tooling-java", "kiegroup/drools-wb", "kiegroup/kogito-tooling"]
+                    def projectCollection = ["kiegroup/kie-wb-common", "kiegroup/kogito-tooling-java", "kiegroup/drools-wb", "ginxo/kogito-tooling"]
                     println "Project Collection to build ${projectCollection}"
                     def buildConfigAdditionalVariables = [:]
                     def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
@@ -67,15 +67,14 @@ pipeline {
             steps {
                 script {
                     echo "[INFO] Sending kogito-tooling UMB message to QE."
-                    def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(";").collect{ it.split("=")}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
-
                     def messageBody = """
 {
-	\"npmRegistry\": \"${NPM_REGISTRY_PUBLISH_URL}",
-	\"versions\": {
-		\"kogito-tooling\": \"${env.KOGITO_TOOLING_PROD_VERSION}\"
-	}
-}                    """
+    \"npmRegistry\": \"${NPM_REGISTRY_PUBLISH_URL}",
+    \"versions\": {
+        \"kogito-tooling\": \"${env.KOGITO_TOOLING_PROD_VERSION}\"
+    }
+}
+                    """
                     def topic = "VirtualTopic.qe.ci.ba.kogito-tooling.${env.UMB_VERSION}.nightly.trigger"
                     def eventType = "kogito-tooling-${env.UMB_VERSION}-nightly-qe-trigger"
 
@@ -132,7 +131,7 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
     def group = projectGroupName[0]
     def name = projectGroupName[1]
     dir("${env.WORKSPACE}/${group}_${name}") {
-        if("kiegroup/kogito-tooling" == project) {
+        if("ginxo/kogito-tooling" == project) {
             env.KOGITO_TOOLING_PROD_VERSION = env.KOGITO_TOOLING_PROD_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
             println "kogito-tooling prod version ${env.KOGITO_TOOLING_PROD_VERSION}"
         }
