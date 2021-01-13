@@ -24,7 +24,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
       | runtime-env  | quarkus.oidc.client-id                         | kogito-dataindex-service                       |
-      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*,/q/health/*                          |
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
@@ -52,7 +52,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
       | runtime-env  | quarkus.oidc.client-id                         | kogito-jobs-service                            |
-      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*,/q/health/*                          |
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
@@ -89,7 +89,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
       | runtime-env  | quarkus.oidc.client-id                         | kogito-explainability-service                  |
-      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*,/q/health/*                          |
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
@@ -128,7 +128,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
       | runtime-env  | quarkus.oidc.client-id                         | kogito-trusty-service                          |
-      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*,/q/health/*                          |
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
@@ -159,7 +159,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
       | runtime-env  | quarkus.oidc.client-id                         | kogito-mgmt-service                            |
-      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*,/q/health/*                          |
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
@@ -192,7 +192,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
       | runtime-env  | quarkus.oidc.client-id                         | kogito-task-service                            |
-      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*,/q/health/*                          |
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
