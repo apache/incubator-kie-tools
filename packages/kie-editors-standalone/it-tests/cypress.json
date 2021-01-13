@@ -8,8 +8,9 @@
   "reporter": "junit",
   "reporterOptions": {
     "mochaFile": "./results/junit-[hash].xml",
-    "jenkinsMode": true,
+    "testsuitesTitle": true,
     "testCaseSwitchClassnameAndName": true,
-    "reporterOptions.rootSuiteTitle": "@kogito-tooling/kie-editors-standalone"
+    "suiteTitleSeparatedBy": ".",
+    "rootSuiteTitle": "@kogito-tooling/kie-editors-standalone"
   }
 }
