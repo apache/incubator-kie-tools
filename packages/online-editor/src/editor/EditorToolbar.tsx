@@ -50,6 +50,7 @@ interface Props {
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
   isEdited: boolean;
+  onRunDmn: () => void;
 }
 
 export function EditorToolbar(props: Props) {
@@ -181,6 +182,28 @@ export function EditorToolbar(props: Props) {
       headerTools={
         <PageHeaderTools>
           <PageHeaderToolsGroup>
+            {fileExtension === "dmn" && (
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden"
+                }}
+              >
+                <Button
+                  data-testid="save-button"
+                  variant={"primary"}
+                  onClick={props.onRunDmn}
+                  aria-label={"Save and Download button"}
+                  className={"kogito--editor__toolbar button"}
+                >
+                  Run!
+                </Button>
+              </PageHeaderToolsItem>
+            )}
             <PageHeaderToolsItem
               visibility={{
                 default: "hidden",

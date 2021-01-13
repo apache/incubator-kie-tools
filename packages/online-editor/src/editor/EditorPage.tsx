@@ -29,6 +29,8 @@ import { useFileUrl } from "../common/Hooks";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
+import { JitDmn, JitDmnPayload } from "../common/JitDmn";
+import { JitDmnForm } from "./JitDmnForm";
 
 export enum Alerts {
   NONE,
@@ -180,6 +182,17 @@ export function EditorPage(props: Props) {
     }
   }, [fileUrl, context, editor]);
 
+  const onRunDmn = useCallback(async () => {
+    if (context.file.fileExtension !== "dmn") {
+      return;
+    }
+
+    const content = await editor?.getContent();
+
+    const schema = await JitDmn.getFormSchema(content ?? "");
+    console.log(schema);
+  }, [context.file]);
+
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
@@ -276,10 +289,12 @@ export function EditorPage(props: Props) {
           onGistIt={requestGistIt}
           onEmbed={requestEmbed}
           isEdited={isDirty}
+          onRunDmn={onRunDmn}
         />
       }
     >
       <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
+        <JitDmnForm editorContent={editor?.getContent()} />
         {!fullscreen && alert === Alerts.COPY && (
           <div className={"kogito--alert-container"}>
             <Alert
