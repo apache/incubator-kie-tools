@@ -1,11 +1,18 @@
 .data-type-item {
-  // TODO {kelvah} write the following better
   span,
   strong {
     user-select: text;
   }
+  &__name {
+    font-weight: 700;
+    word-break: keep-all;
+    display: block;
+    margin-top: 5px;
+  }
   &__type-label {
     text-transform: capitalize;
+    margin-top: var(--pf-global--spacer--xs);
+    margin-bottom: var(--pf-global--spacer--xs);
   }
   &__type-select {
     &__option,

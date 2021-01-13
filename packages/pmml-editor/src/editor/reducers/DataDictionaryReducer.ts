@@ -22,6 +22,7 @@ interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
     readonly name?: string;
     readonly type: DataType;
+    readonly optype: OpType;
   };
   [Actions.DeleteDataDictionaryField]: {
     readonly index: number;
@@ -44,25 +45,10 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDict
     switch (action.type) {
       case Actions.AddDataDictionaryField:
         return service.mutate(state, "DataDictionary", draft => {
-          let opType: OpType;
-          switch (action.payload.type) {
-            case "boolean":
-            case "string":
-              opType = "categorical";
-              break;
-            case "double":
-            case "float":
-            case "integer":
-              opType = "continuous";
-              break;
-            default:
-              opType = "continuous";
-              break;
-          }
           draft.DataField.push({
             name: action.payload.name as FieldName,
             dataType: action.payload.type,
-            optype: opType
+            optype: action.payload.optype
           });
         });
 

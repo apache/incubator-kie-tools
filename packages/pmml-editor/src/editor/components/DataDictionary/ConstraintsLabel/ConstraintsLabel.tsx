@@ -22,14 +22,19 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
   const constraintValue = useMemo(() => {
     switch (constraints.type) {
       case "Range":
-        return (
-          `${constraints.value.start.included ? "[" : "("}` +
-          `${constraints.value.start.value},` +
-          `${constraints.value.end.value}` +
-          `${constraints.value.end.included ? "]" : ")"}`
-        );
+        return constraints.value
+          .map(range => {
+            return (
+              `${range.start.included ? "[" : "("}` +
+              `${range.start.value || `${String.fromCharCode(8722, 8734)}`}, ` +
+              `${range.end.value || `${String.fromCharCode(43, 8734)}`}` +
+              `${range.end.included ? "]" : ")"}`
+            );
+          })
+          .join(" ");
+
       case "Enumeration":
-        return constraints.value.map(item => `"${item.value}"`).join(", ");
+        return constraints.value.map(item => `"${item}"`).join(", ");
       default:
         return "";
     }
@@ -38,7 +43,7 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
   return (
     <Label color="orange" className="constraints-label" {...labelProps}>
       <strong>Constraints:</strong>&nbsp;
-      <span>{`${constraints.type} ${constraintValue}`}</span>
+      <span>{constraintValue}</span>
     </Label>
   );
 };
