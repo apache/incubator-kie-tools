@@ -154,7 +154,8 @@ export const en: OnlineI18n = {
     init: {
       title: "Welcome to this 5-minute tour",
       learnMore: `Learn more about the DMN online editor by taking this brief and interactive tour.`,
-      letsGo: "Let's go"
+      letsGo: "Let's go",
+      skipTour: "Skip tour"
     },
     end: {
       title: "Congratulations",

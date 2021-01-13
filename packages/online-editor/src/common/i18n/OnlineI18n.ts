@@ -152,6 +152,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       title: string;
       learnMore: string;
       letsGo: string;
+      skipTour: string;
     };
     end: {
       title: string;
