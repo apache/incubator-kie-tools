@@ -101,14 +101,16 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
             }`}
           >
             {selectedOutputIndex === index && (
-              <OutputFieldEditRow
-                outputField={o}
-                validateOutputName={_name => onValidateOutputFieldName(index, _name)}
-                viewExtendedProperties={viewExtendedProperties}
-                onCommitAndClose={onCommitAndClose}
-                onCommit={onCommit}
-                onCancel={onCancel}
-              />
+              <div ref={addOutputRowRef}>
+                <OutputFieldEditRow
+                  outputField={o}
+                  validateOutputName={_name => onValidateOutputFieldName(index, _name)}
+                  viewExtendedProperties={viewExtendedProperties}
+                  onCommitAndClose={onCommitAndClose}
+                  onCommit={onCommit}
+                  onCancel={onCancel}
+                />
+              </div>
             )}
             {selectedOutputIndex !== index && (
               <OutputFieldRow
