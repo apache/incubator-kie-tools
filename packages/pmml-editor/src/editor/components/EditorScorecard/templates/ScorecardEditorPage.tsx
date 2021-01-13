@@ -147,7 +147,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               modelIndex={modelIndex}
               isScorable={model.isScorable ?? true}
               functionName={model.functionName}
-              algorithmName={model.algorithmName ?? ""}
+              algorithmName={model.algorithmName}
               baselineScore={model.baselineScore}
               baselineMethod={model.baselineMethod ?? "other"}
               initialScore={model.initialScore}
