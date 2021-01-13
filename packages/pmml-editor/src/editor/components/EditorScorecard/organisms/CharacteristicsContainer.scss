@@ -15,14 +15,13 @@
  */
 
 .characteristics-container {
-
   height: 100%;
 
   &__overview {
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
-    height: calc(100vh - 482px);
+    height: 100%;
 
     &-enter {
       opacity: 0;

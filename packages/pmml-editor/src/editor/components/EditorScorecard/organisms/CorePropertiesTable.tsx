@@ -18,7 +18,6 @@ import { useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import {
-  Bullseye,
   Form,
   FormGroup,
   Label,
@@ -180,142 +179,140 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
           </StackItem>
           {isEditModeEnabled && (
             <StackItem>
-              <Bullseye>
-                <Form
-                  onSubmit={e => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                  className="core-properties__container"
-                >
-                  <Level hasGutter={true}>
-                    <LevelItem>
-                      <FormGroup label="Is Scorable" fieldId="core-isScorable">
-                        <Switch
-                          id="core-isScorable"
-                          isChecked={isScorable}
-                          onChange={checked => {
-                            setScorable(checked);
-                            onCommit({ isScorable: checked });
-                          }}
-                        />
-                      </FormGroup>
-                    </LevelItem>
-                    <LevelItem>
-                      <FormGroup label="Function" fieldId="core-functionName" required={true}>
-                        {GenericSelectorEditor(
-                          "core-functionName",
-                          [
-                            "associationRules",
-                            "sequences",
-                            "classification",
-                            "regression",
-                            "clustering",
-                            "timeSeries",
-                            "mixed"
-                          ],
-                          functionName,
-                          _selection => {
-                            setFunctionName(_selection as MiningFunction);
-                            onCommit({ functionName: _selection as MiningFunction });
-                          },
-                          // TODO {manstis] Scorecards are ALWAYS regression. We probably don't need this field.
-                          // See http://dmg.org/pmml/v4-4/Scorecard.html
-                          true
-                        )}
-                      </FormGroup>
-                    </LevelItem>
-                    <LevelItem>
-                      <FormGroup label="Algorithm" fieldId="core-algorithmName">
-                        <TextInput
-                          type="text"
-                          id="core-algorithmName"
-                          name="core-algorithmName"
-                          aria-describedby="core-algorithmName"
-                          value={algorithmName}
-                          onChange={e => setAlgorithmName(e)}
-                          onBlur={() => {
-                            onCommit({ algorithmName: algorithmName });
-                          }}
-                        />
-                      </FormGroup>
-                    </LevelItem>
-                    <LevelItem>
-                      <FormGroup label="Initial score" fieldId="core-initialScore">
-                        <TextInput
-                          id="core-initialScore"
-                          value={initialScore}
-                          onChange={e => setInitialScore(toNumber(e))}
-                          onBlur={() => {
-                            onCommit({ initialScore: initialScore });
-                          }}
-                          type="number"
-                        />
-                      </FormGroup>
-                    </LevelItem>
-                    <LevelItem>
-                      <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
-                        <Switch
-                          id="core-useReasonCodes"
-                          isChecked={areReasonCodesUsed}
-                          onChange={checked => {
-                            setAreReasonCodesUsed(checked);
-                            onCommit({ areReasonCodesUsed: checked });
-                          }}
-                        />
-                      </FormGroup>
-                    </LevelItem>
-                    <LevelItem>
-                      <FormGroup label="Reason code algorithm" fieldId="core-reasonCodeAlgorithm">
-                        {GenericSelectorEditor(
-                          "core-reasonCodeAlgorithm",
-                          ["pointsAbove", "pointsBelow"],
-                          reasonCodeAlgorithm,
-                          _selection => {
-                            setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
-                            onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
-                          },
-                          // Reason Code Algorithm is only required when Reason Codes are enabled.
-                          // See http://dmg.org/pmml/v4-4/Scorecard.html
-                          !areReasonCodesUsed
-                        )}
-                      </FormGroup>
-                    </LevelItem>
-                    <LevelItem>
-                      <FormGroup label="Baseline score" fieldId="core-baselineScore">
-                        <TextInput
-                          id="core-baselineScore"
-                          value={baselineScore}
-                          onChange={e => setBaselineScore(toNumber(e))}
-                          onBlur={() => {
-                            onCommit({ baselineScore: baselineScore });
-                          }}
-                          type="number"
-                          // Baseline Score is only required when Reason Codes are enabled.
-                          // See http://dmg.org/pmml/v4-4/Scorecard.html
-                          isDisabled={!areReasonCodesUsed}
-                        />
-                      </FormGroup>
-                    </LevelItem>
-                    <LevelItem>
-                      <FormGroup label="Baseline method" fieldId="core-baselineMethod">
-                        {GenericSelectorEditor(
-                          "core-baselineMethod",
-                          ["max", "min", "mean", "neutral", "other"],
-                          baselineMethod,
-                          _selection => {
-                            setBaselineMethod(_selection as BaselineMethod);
-                            onCommit({ baselineMethod: _selection as BaselineMethod });
-                          },
-                          // Baseline Method is only required when Reason Codes are enabled.
-                          // See http://dmg.org/pmml/v4-4/Scorecard.html
-                          !areReasonCodesUsed
-                        )}
-                      </FormGroup>
-                    </LevelItem>
-                  </Level>
-                </Form>
-              </Bullseye>
+              <Form
+                onSubmit={e => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                className="core-properties__container"
+              >
+                <Level hasGutter={true}>
+                  <LevelItem>
+                    <FormGroup label="Is Scorable" fieldId="core-isScorable">
+                      <Switch
+                        id="core-isScorable"
+                        isChecked={isScorable === true}
+                        onChange={checked => {
+                          setScorable(checked);
+                          onCommit({ isScorable: checked });
+                        }}
+                      />
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Function" fieldId="core-functionName" required={true}>
+                      {GenericSelectorEditor(
+                        "core-functionName",
+                        [
+                          "associationRules",
+                          "sequences",
+                          "classification",
+                          "regression",
+                          "clustering",
+                          "timeSeries",
+                          "mixed"
+                        ],
+                        functionName,
+                        _selection => {
+                          setFunctionName(_selection as MiningFunction);
+                          onCommit({ functionName: _selection as MiningFunction });
+                        },
+                        // TODO {manstis] Scorecards are ALWAYS regression. We probably don't need this field.
+                        // See http://dmg.org/pmml/v4-4/Scorecard.html
+                        true
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Algorithm" fieldId="core-algorithmName">
+                      <TextInput
+                        type="text"
+                        id="core-algorithmName"
+                        name="core-algorithmName"
+                        aria-describedby="core-algorithmName"
+                        value={algorithmName}
+                        onChange={e => setAlgorithmName(e)}
+                        onBlur={() => {
+                          onCommit({ algorithmName: algorithmName });
+                        }}
+                      />
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Initial score" fieldId="core-initialScore">
+                      <TextInput
+                        id="core-initialScore"
+                        value={initialScore}
+                        onChange={e => setInitialScore(toNumber(e))}
+                        onBlur={() => {
+                          onCommit({ initialScore: initialScore });
+                        }}
+                        type="number"
+                      />
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
+                      <Switch
+                        id="core-useReasonCodes"
+                        isChecked={areReasonCodesUsed}
+                        onChange={checked => {
+                          setAreReasonCodesUsed(checked);
+                          onCommit({ areReasonCodesUsed: checked });
+                        }}
+                      />
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Reason code algorithm" fieldId="core-reasonCodeAlgorithm">
+                      {GenericSelectorEditor(
+                        "core-reasonCodeAlgorithm",
+                        ["pointsAbove", "pointsBelow"],
+                        reasonCodeAlgorithm,
+                        _selection => {
+                          setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
+                          onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
+                        },
+                        // Reason Code Algorithm is only required when Reason Codes are enabled.
+                        // See http://dmg.org/pmml/v4-4/Scorecard.html
+                        !areReasonCodesUsed
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Baseline score" fieldId="core-baselineScore">
+                      <TextInput
+                        id="core-baselineScore"
+                        value={baselineScore}
+                        onChange={e => setBaselineScore(toNumber(e))}
+                        onBlur={() => {
+                          onCommit({ baselineScore: baselineScore });
+                        }}
+                        type="number"
+                        // Baseline Score is only required when Reason Codes are enabled.
+                        // See http://dmg.org/pmml/v4-4/Scorecard.html
+                        isDisabled={!areReasonCodesUsed}
+                      />
+                    </FormGroup>
+                  </LevelItem>
+                  <LevelItem>
+                    <FormGroup label="Baseline method" fieldId="core-baselineMethod">
+                      {GenericSelectorEditor(
+                        "core-baselineMethod",
+                        ["max", "min", "mean", "neutral", "other"],
+                        baselineMethod,
+                        _selection => {
+                          setBaselineMethod(_selection as BaselineMethod);
+                          onCommit({ baselineMethod: _selection as BaselineMethod });
+                        },
+                        // Baseline Method is only required when Reason Codes are enabled.
+                        // See http://dmg.org/pmml/v4-4/Scorecard.html
+                        !areReasonCodesUsed
+                      )}
+                    </FormGroup>
+                  </LevelItem>
+                </Level>
+              </Form>
             </StackItem>
           )}
         </Stack>
