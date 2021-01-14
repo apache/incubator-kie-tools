@@ -18,6 +18,7 @@ package org.uberfire.client.docks.view.bars;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -31,10 +32,15 @@ import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.ouia.OuiaAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponent;
+import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public class DocksCollapsedBar
-        extends Composite {
+public class DocksCollapsedBar extends Composite implements OuiaComponent {
+
+    private static final String OUIA_COMPONENT_TYPE = "collapsed-docks-bar";
 
     @UiField
     FlowPanel docksBarPanel;
@@ -49,6 +55,7 @@ public class DocksCollapsedBar
         initWidget(uiBinder.createAndBindUi(this));
         this.position = position;
         setCSS(position);
+        setupLocators(position);
     }
 
     private void setCSS(UberfireDockPosition position) {
@@ -57,12 +64,11 @@ public class DocksCollapsedBar
         } else {
             docksBarPanel.addStyleName(CSS.CSS().gradientBottomTop());
         }
-        setupCSSLocators(position);
     }
 
-    private void setupCSSLocators(UberfireDockPosition position) {
-
-        docksBarPanel.addStyleName(CSSLocatorsUtils.buildLocator("qe-docks-bar",
+    private void setupLocators(UberfireDockPosition position) {
+        initOuiaComponentAttributes();
+        docksBarPanel.addStyleName(CSSLocatorsUtils.buildLocator(OUIA_COMPONENT_TYPE,
                                                                  position.getShortName()));
     }
 
@@ -152,6 +158,21 @@ public class DocksCollapsedBar
                 abstractDockItem.openAndExecuteExpandCommand();
             }
         }
+    }
+
+    @Override
+    public Consumer<OuiaAttribute> ouiaAttributeRenderer() {
+        return ouiaAttribute -> getElement().setAttribute(ouiaAttribute.getName(), ouiaAttribute.getValue());
+    }
+
+    @Override
+    public OuiaComponentTypeAttribute ouiaComponentType() {
+        return new OuiaComponentTypeAttribute(OUIA_COMPONENT_TYPE);
+    }
+
+    @Override
+    public OuiaComponentIdAttribute ouiaComponentId() {
+        return new OuiaComponentIdAttribute(OUIA_COMPONENT_TYPE + "-" + position.getShortName());
     }
 
     interface ViewBinder

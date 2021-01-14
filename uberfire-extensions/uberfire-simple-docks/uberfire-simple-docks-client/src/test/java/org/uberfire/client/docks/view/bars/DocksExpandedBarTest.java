@@ -16,17 +16,29 @@
 
 package org.uberfire.client.docks.view.bars;
 
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DocksExpandedBarTest {
+
+    @Mock
+    private Element elementMock;
 
     private DocksExpandedBar docksExpandedBar;
     private FlowPanel targetPanel;
@@ -37,6 +49,8 @@ public class DocksExpandedBarTest {
         targetPanel = mock(FlowPanel.class);
         dock.targetPanel = targetPanel;
         docksExpandedBar = spy(dock);
+
+        doReturn(elementMock).when(docksExpandedBar).getElement();
     }
 
     @Test
@@ -88,5 +102,22 @@ public class DocksExpandedBarTest {
 
         verify(targetPanel).setPixelSize(1,
                                          10);
+    }
+
+    @Test
+    public void testOuiaComponentTypeAttribute() {
+        assertEquals("expanded-docks-bar", docksExpandedBar.ouiaComponentType().getValue());
+    }
+
+    @Test
+    public void testOuiaComponentIdAttribute() {
+        assertEquals("expanded-docks-bar-W", docksExpandedBar.ouiaComponentId().getValue());
+    }
+
+    @Test
+    public void testOuiaAttributeRenderer() {
+        final OuiaComponentTypeAttribute componentTypeAttribute = docksExpandedBar.ouiaComponentType();
+        docksExpandedBar.ouiaAttributeRenderer().accept(componentTypeAttribute);
+        verify(elementMock).setAttribute(componentTypeAttribute.getName(), componentTypeAttribute.getValue());
     }
 }

@@ -18,7 +18,6 @@ package org.uberfire.client.docks.view;
 
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
-import org.uberfire.client.docks.view.items.AbstractDockItem;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -47,7 +46,7 @@ public class DocksBar {
     protected void setupChildBars(UberfireDockPosition position) {
         this.collapsedBar = new DocksCollapsedBar(position);
         this.expandedBar = new DocksExpandedBar(position);
-        dockResizeBar = new DockResizeBar(this);
+        this.dockResizeBar = new DockResizeBar(this);
     }
 
     public DocksCollapsedBar getCollapsedBar() {
@@ -79,7 +78,7 @@ public class DocksBar {
         expandedBar.clear();
     }
 
-    public void addDock(UberfireDock dock,
+    public void addDock(final UberfireDock dock,
                         final ParameterizedCommand<String> openCommand,
                         final ParameterizedCommand<String> closeCommand) {
         if (collapsedBar != null) {

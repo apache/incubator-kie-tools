@@ -46,7 +46,7 @@ public class SideDockItem extends AbstractSideDockItem {
 
     private ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
-    SideDockItem(UberfireDock dock,
+    SideDockItem(final UberfireDock dock,
                  final ParameterizedCommand<String> openCommand,
                  final ParameterizedCommand<String> closeCommand) {
         super(dock);
@@ -55,7 +55,7 @@ public class SideDockItem extends AbstractSideDockItem {
         initWidget(uiBinder.createAndBindUi(this));
 
         createButton();
-        setupCSSLocators(dock);
+        setupLocators(dock);
     }
 
     void createButton() {

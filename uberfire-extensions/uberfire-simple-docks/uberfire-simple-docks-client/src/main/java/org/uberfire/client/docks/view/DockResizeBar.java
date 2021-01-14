@@ -16,6 +16,8 @@
 
 package org.uberfire.client.docks.view;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -33,9 +35,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.ouia.OuiaAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponent;
+import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public class DockResizeBar extends FlowPanel {
+public class DockResizeBar extends FlowPanel implements OuiaComponent {
+
+    private static final String OUIA_COMPONENT_TYPE = "resize-docks-bar";
 
     private static WebAppResource CSS = GWT.create(WebAppResource.class);
 
@@ -56,10 +64,27 @@ public class DockResizeBar extends FlowPanel {
         getElement().addClassName(CSS.CSS().resizableBar());
         setupGlassElement();
         setupMouseHandlers(docksBar);
+        initOuiaComponentAttributes();
     }
 
     public void setup(ParameterizedCommand<Double> resizeCommand) {
         this.resizeCommand = resizeCommand;
+    }
+
+    @Override
+    public Consumer<OuiaAttribute> ouiaAttributeRenderer() {
+        return ouiaAttribute -> getElement().setAttribute(ouiaAttribute.getName(),
+                                                          ouiaAttribute.getValue());
+    }
+
+    @Override
+    public OuiaComponentTypeAttribute ouiaComponentType() {
+        return new OuiaComponentTypeAttribute(OUIA_COMPONENT_TYPE);
+    }
+
+    @Override
+    public OuiaComponentIdAttribute ouiaComponentId() {
+        return new OuiaComponentIdAttribute(OUIA_COMPONENT_TYPE + "-" + docksBar.getPosition().getShortName());
     }
 
     private void setupMouseHandlers(final DocksBar docksBar) {

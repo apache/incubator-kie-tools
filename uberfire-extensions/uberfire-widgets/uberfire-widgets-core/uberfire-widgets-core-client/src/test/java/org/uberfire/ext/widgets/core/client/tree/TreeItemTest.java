@@ -25,10 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -283,5 +286,26 @@ public class TreeItemTest {
         final TreeItem treeItemTest = testedRoot.getItemByUuid(ITEM_VALUE);
         assertEquals(treeItemTest,
                      item);
+    }
+
+    @Test
+    public void testOuiaComponentTypeAttribute() {
+        assertEquals("tree-item", testedItem.ouiaComponentType().getValue());
+    }
+
+    @Test
+    public void testOuiaComponentIdAttribute() {
+        assertEquals("tree-item-" + ITEM_LABEL, testedItem.ouiaComponentId().getValue());
+    }
+
+    @Test
+    public void testOuiaAttributeRenderer() {
+        testedItem = spy(testedItem);
+        final Element elementMock = mock(Element.class);
+        doReturn(elementMock).when(testedItem).getElement();
+
+        final OuiaComponentTypeAttribute componentTypeAttribute = testedItem.ouiaComponentType();
+        testedItem.ouiaAttributeRenderer().accept(componentTypeAttribute);
+        verify(elementMock).setAttribute(componentTypeAttribute.getName(), componentTypeAttribute.getValue());
     }
 }
