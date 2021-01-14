@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Octokit from "@octokit/rest";
+import Octokit from "@octokit/rest";
 import { getCookie, setCookie } from "./utils";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;

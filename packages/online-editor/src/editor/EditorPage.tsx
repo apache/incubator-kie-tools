@@ -31,6 +31,8 @@ import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/edi
 import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 import { JitDmn, JitDmnPayload } from "../common/JitDmn";
 import { JitDmnForm } from "./JitDmnForm";
+import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { AutoForm } from "uniforms-unstyled";
 
 export enum Alerts {
   NONE,
@@ -182,16 +184,20 @@ export function EditorPage(props: Props) {
     }
   }, [fileUrl, context, editor]);
 
-  const onRunDmn = useCallback(async () => {
+  const [jitSchema, setJitSchema] = useState<JSONSchemaBridge>();
+  const onRunDmn = useCallback(() => {
     if (context.file.fileExtension !== "dmn") {
       return;
     }
 
-    const content = await editor?.getContent();
+    // const content = await editor?.getContent();
+    const schema = JitDmn.getFormSchema("");
 
-    const schema = await JitDmn.getFormSchema(content ?? "");
+    console.log("schema,");
     console.log(schema);
-  }, [context.file]);
+
+    setJitSchema(schema);
+  }, [context.file, editor, JitDmn]);
 
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
@@ -294,7 +300,7 @@ export function EditorPage(props: Props) {
       }
     >
       <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
-        <JitDmnForm editorContent={editor?.getContent()} />
+        {jitSchema && <AutoForm schema={jitSchema} onSubmit={console.log} />}
         {!fullscreen && alert === Alerts.COPY && (
           <div className={"kogito--alert-container"}>
             <Alert

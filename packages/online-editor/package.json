@@ -19,8 +19,13 @@
     "@octokit/rest": "16.35.0",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
+    "ajv": "^7.0.3",
     "react-router": "5.1.1",
-    "react-router-dom": "5.1.1"
+    "react-router-dom": "5.1.1",
+    "uniforms": "^3.0.0",
+    "uniforms-bridge-json-schema": "^3.0.0",
+    "uniforms-semantic": "^3.0.0",
+    "uniforms-unstyled": "^3.0.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
@@ -36,5 +41,8 @@
       "@babel/env",
       "@babel/react"
     ]
+  },
+  "devDependencies": {
+    "@types/ajv": "^1.0.0"
   }
 }

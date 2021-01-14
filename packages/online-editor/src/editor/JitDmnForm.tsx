@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import React from "react";
 import { useCallback, useContext } from "react";
 import { JitDmn } from "../common/JitDmn";
 import { GlobalContext } from "../common/GlobalContext";
+import { AutoForm } from "uniforms-unstyled";
+import JSONSchemaBridge from "uniforms-bridge-json-schema";
 
 interface Props {
   editorContent: Promise<string> | undefined;
+  jsonSchemaBridge: JSONSchemaBridge | undefined;
 }
 
 export function JitDmnForm(props: Props) {
   const context = useContext(GlobalContext);
 
-  const generateDmnForm = useCallback(async () => {
-    try {
-      if (context.file.fileExtension !== "dmn") {
-        return;
-      }
+  // const generateDmnForm = useCallback(async () => {
+  //   try {
+  //     if (context.file.fileExtension !== "dmn") {
+  //       return;
+  //     }
+  //
+  //     const content = (await props.editorContent) ?? "";
+  //     const formSchema = await JitDmn.getFormSchema(content);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [context.file]);
 
-      const content = (await props.editorContent) ?? "";
-      const formSchema = await JitDmn.getFormSchema(content);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [context.file]);
-
-  return (
-    <div>
-      <p>something</p>
-    </div>
-  );
+  return <div>{props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={console.log} />}</div>;
 }
