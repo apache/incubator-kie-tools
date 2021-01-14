@@ -64,9 +64,9 @@ public class BPMNDesignerKogitoSeleniumIT {
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
     private static final String NOT_PRESENT_IN_NAVIGATOR = "' was not present in the process navigator";
-    private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
-    private static final String DIAGRAM_EXPLORER = "qe-docks-item-E-ProjectDiagramExplorerScreen";
-    private static final String DIAGRAM_EXPLORER_EXPANDED = "qe-docks-bar-expanded-E";
+    private static final String PROPERTIES_PANEL = "docks-item-E-DiagramEditorPropertiesScreen";
+    private static final String DIAGRAM_EXPLORER = "docks-item-E-ProjectDiagramExplorerScreen";
+    private static final String DIAGRAM_EXPLORER_EXPANDED = "expanded-docks-bar-E";
     private static final String DIAGRAM_PANEL = "qe-static-workbench-panel-view";
     private static final String ACE_EDITOR = "//div[@class='ace_content']";
     private static final String ERROR_MODAL_DIALOG = "//div[@class='modal-dialog']";

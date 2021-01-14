@@ -68,7 +68,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
  */
 public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
 
-    private static final String DECISION_NAVIGATOR_EXPANDED = "qe-docks-bar-expanded-W";
+    private static final String DECISION_NAVIGATOR_EXPANDED = "expanded-docks-bar-W";
 
     private static final String NOT_PRESENT_IN_NAVIGATOR = "'%s' was not present in the decision navigator";
 

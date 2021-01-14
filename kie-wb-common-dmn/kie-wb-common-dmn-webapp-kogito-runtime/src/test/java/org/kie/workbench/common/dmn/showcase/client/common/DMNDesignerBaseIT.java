@@ -64,9 +64,9 @@ public class DMNDesignerBaseIT {
 
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
-    private static final String DECISION_NAVIGATOR_EXPAND = "qe-docks-item-W-org.kie.dmn.decision.navigator";
+    private static final String DECISION_NAVIGATOR_EXPAND = "docks-item-W-org.kie.dmn.decision.navigator";
 
-    private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
+    private static final String PROPERTIES_PANEL = "docks-item-E-DiagramEditorPropertiesScreen";
 
     private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
 
