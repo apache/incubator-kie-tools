@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Label, Split, SplitItem } from "@patternfly/react-core";
 import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
@@ -36,7 +36,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     <article
       className={`attribute-item attribute-item-n${index} editable`}
       tabIndex={0}
-      onClick={e => onEdit()}
+      onClick={() => onEdit()}
       onKeyDown={e => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -47,7 +47,9 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
-          <pre>{toText(attribute.predicate, dataFields)}</pre>
+          <Label tabIndex={0} color="blue">
+            <pre>{toText(attribute.predicate, dataFields)}</pre>
+          </Label>
         </SplitItem>
         <SplitItem isFilled={true}>
           <AttributeLabels activeAttribute={attribute} areReasonCodesUsed={areReasonCodesUsed} />

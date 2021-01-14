@@ -15,11 +15,16 @@
  */
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
-import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
+import {
+  AttributeLabels,
+  CharacteristicLabels,
+  CharacteristicPredicateLabel,
+  CharacteristicsTableAction
+} from "../atoms";
+import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
+import { toText } from "../../../reducers";
 import "./CharacteristicsTableRow.scss";
-import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
-import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
@@ -57,11 +62,33 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
             isBaselineScoreRequired={isBaselineScoreRequired}
             dataFields={dataFields}
           />
+          <br />
+          <CharacteristicAttributesList characteristic={characteristic.characteristic} dataFields={dataFields} />
         </SplitItem>
         <SplitItem>
           <CharacteristicsTableAction onDelete={onDelete} />
         </SplitItem>
       </Split>
     </article>
+  );
+};
+
+interface CharacteristicAttributesListProps {
+  characteristic: Characteristic;
+  dataFields: DataField[];
+}
+
+const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
+  const { characteristic, dataFields } = props;
+
+  return (
+    <ul>
+      {characteristic.Attribute.map((item, index) => (
+        <li key={index}>
+          {CharacteristicPredicateLabel(toText(item.predicate, dataFields))}
+          <AttributeLabels activeAttribute={item} />
+        </li>
+      ))}
+    </ul>
   );
 };

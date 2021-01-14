@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicLabel, CharacteristicLabelAttribute } from "./CharacteristicLabel";
-import { toText } from "../../../reducers";
+import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { CharacteristicLabel } from "./CharacteristicLabel";
 
 interface CharacteristicLabelsProps {
   activeCharacteristic: Characteristic;
@@ -30,39 +29,11 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
 
   return (
     <>
-      {activeCharacteristic.Attribute.length > 0 &&
-        CharacteristicLabelAttribute(
-          "Attributes",
-          attributesToTruncatedText(activeCharacteristic.Attribute, dataFields),
-          attributesToFullText(activeCharacteristic.Attribute, dataFields)
-        )}
-      {activeCharacteristic.reasonCode !== undefined &&
-        areReasonCodesUsed &&
+      {activeCharacteristic.baselineScore !== undefined && isBaselineScoreRequired &&
+
+      CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
+      {activeCharacteristic.reasonCode !== undefined && areReasonCodesUsed &&
         CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
-      {activeCharacteristic.baselineScore !== undefined &&
-        isBaselineScoreRequired &&
-        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
     </>
   );
-};
-
-const attributesToTruncatedText = (attributes: Attribute[], fields: DataField[]): string => {
-  const text: string[] = [];
-  attributes.forEach(attribute => {
-    let line: string = toText(attribute.predicate, fields);
-    if (line.length > 32) {
-      line = line.slice(0, 29) + "...";
-    }
-    text.push(line);
-  });
-  return text.join(" ");
-};
-
-const attributesToFullText = (attributes: Attribute[], fields: DataField[]): string => {
-  const text: string[] = [];
-  attributes.forEach(attribute => {
-    const line: string = toText(attribute.predicate, fields);
-    text.push(line);
-  });
-  return text.join("\n");
 };
