@@ -40,9 +40,7 @@ import org.uberfire.client.views.pfly.widgets.Modal;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,6 +59,8 @@ public class ScenarioSimulationKogitoCreationPopupViewTest {
     private Button okButtonMock;
     @Mock
     private Button cancelButtonMock;
+    @Mock
+    private HTMLElement cancelButtonElementMock;
     @Mock
     private Command okCommandMock;
     @Mock
@@ -100,6 +100,7 @@ public class ScenarioSimulationKogitoCreationPopupViewTest {
             }
         });
         when(scenarioSimulationKogitoCreationAssetsDropdownMock.getElement()).thenReturn(htmlElementMock);
+        when(cancelButtonMock.getElement()).thenReturn(cancelButtonElementMock);
     }
 
     @Test
@@ -111,6 +112,7 @@ public class ScenarioSimulationKogitoCreationPopupViewTest {
     @Test
     public void initialize() {
         scenarioSimulationCreationPopupViewSpy.initialize();
+        verify(cancelButtonElementMock, times(1)).remove();
         verify(okButtonMock, times(1)).setEnabled(eq(false));
         verify(cancelButtonMock, times(1)).setText(eq(ScenarioSimulationEditorConstants.INSTANCE.cancelButton()));
         verify(dmnAssetsDivElementMock, times(1)).setAttribute(eq(ConstantHolder.HIDDEN), eq(""));
@@ -154,14 +156,14 @@ public class ScenarioSimulationKogitoCreationPopupViewTest {
     @Test
     public void enableCreateButtonForDMNScenarioNullPath() {
         scenarioSimulationCreationPopupViewSpy.enableCreateButtonForDMNScenario();
-        verify(okButtonMock, never()).setEnabled(anyBoolean());
+        verify(okButtonMock, times(1)).setEnabled(eq(false));
     }
 
     @Test
     public void enableCreateButtonForDMNScenarioEmptyPath() {
         scenarioSimulationCreationPopupViewSpy.selectedPath = "";
         scenarioSimulationCreationPopupViewSpy.enableCreateButtonForDMNScenario();
-        verify(okButtonMock, never()).setEnabled(anyBoolean());
+        verify(okButtonMock, times(1)).setEnabled(eq(false));
     }
 
     @Test
