@@ -56,6 +56,7 @@ Table of Contents
     - [Kogito Explainability Component Image](#kogito-explainability-component-image)
     - [Kogito Jobs Service Component Image](#kogito-jobs-service-component-image)
     - [Kogito Management Console Component Image](#kogito-management-console-component-image)
+    - [Kogito Task Console Component Image](#kogito-task-console-component-image)
     - [Kogito Trusty UI Component Image](#kogito-trusty-ui-component-image)
   - [Using Kogito Images to Deploy Apps on OpenShift](#using-kogito-images-to-deploy-apps-on-openshift)
     - [Using released images](#using-released-images)
@@ -565,6 +566,7 @@ Today we have 3 Kogito Component Images:
 * [quay.io/kiegroup/kogito-explainability](https://quay.io/kiegroup/kogito-explainability)
 * [quay.io/kiegroup/kogito-jobs-service](htps://quay.io/kiegroup/kogito-jobs-service)
 * [quay.io/kiegroup/kogito-management-console](https://quay.io/kiegroup/kogito-management-console)
+* [quay.io/kiegroup/kogito-task-console](https://quay.io/kiegroup/kogito-task-console)
 * [quay.io/kiegroup/kogito-trusty-ui](https://quay.io/kiegroup/kogito-trusty-ui)
 
 
@@ -700,6 +702,31 @@ You should notice a few debug messages being printed in the system output.
 To know what configurations this image accepts please take a look [here](kogito-management-console-overrides.yaml) on the **envs** section.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Management Console 
+to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
+
+### Kogito Task Console Component Image
+
+The Kogito Task Console allows you to have a intuitive way to work with User Tasks in Kogito processes.
+It depends on the Kogito Data Index Service on which the Console will connect to so it can be able to manage it.
+
+To work correctly, the Kogito Task Console needs the Kogito Data Index Service url. If not provided, it will try to connect to the default one (http://localhost:8180).
+
+Basic usage:
+
+```bash
+$ docker run -it --env KOGITO_DATAINDEX_HTTP_URL=data-index-service-url:9090 quay.io/kiegroup/kogito-task-console:latest
+```
+
+To enable debug just use this env while running this image:
+
+```bash
+docker run -it --env SCRIPT_DEBUG=true --env KOGITO_DATAINDEX_HTTP_URL=data-index-service-url:9090 quay.io/kiegroup/kogito-task-console:latest
+```
+You should notice a few debug messages being printed in the system output.
+
+To know what configurations this image accepts please take a look [here](kogito-task-console-overrides.yaml) on the **envs** section.
+
+The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Task Console
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ### Kogito Trusty UI Component Image

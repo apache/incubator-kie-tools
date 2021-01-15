@@ -26,6 +26,6 @@ function configure_data_index_url {
         log_info "Data index url not set, default will be used: http://localhost:8180"
         dataIndexURL="http://localhost:8180"
     fi
-    KOGITO_TASK_CONSOLE_PROPS="${KOGITO_DATA_INDEX_PROPS} -Dkogito.dataindex.http.url=${dataIndexURL}"
+    KOGITO_TASK_CONSOLE_PROPS="${KOGITO_TASK_CONSOLE_PROPS} -Dkogito.dataindex.http.url=${dataIndexURL}"
 }
 
