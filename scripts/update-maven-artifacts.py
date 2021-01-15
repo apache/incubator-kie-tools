@@ -50,7 +50,7 @@ def getMetadataRoot(service):
     :return: root object
     '''
     metadataURL=service["repo_url"]+"maven-metadata.xml"
-    mavenMetadata=requests.get(metadataURL)
+    mavenMetadata=requests.get(metadataURL, verify=service["ignore_self_signed_cert"])
     with open('maven-metadata.xml', 'wb') as f:
         f.write(mavenMetadata.content)
     tree = ET.parse('maven-metadata.xml')
@@ -121,6 +121,7 @@ def update_artifacts(service,modulePath):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Update Maven information in repo from the given maven repository')
     parser.add_argument('--repo-url', dest='repo_url', default=DEFAULT_REPO_URL, help='Defines the url of the repository to extract the artifacts from, defaults to {}'.format(DEFAULT_REPO_URL))
+    parser.add_argument('--ignore-self-signed-cert', action='store_false', help='If set, will relax the SSL for user-generated self-signed certificates')
     args = parser.parse_args()
     
     artifactsVersion = common.retrieve_artifacts_version()
@@ -131,7 +132,8 @@ if __name__ == "__main__":
         service = {
             "repo_url" : args.repo_url + "{}/{}/{}/".format(KOGITO_ARTIFACT_PATH, serviceName, artifactsVersion),
             "name" : serviceName,
-            "version" : artifactsVersion
+            "version" : artifactsVersion,
+            "ignore_self_signed_cert": args.ignore_self_signed_cert
         }
         moduleYamlFile = "modules/{}/module.yaml".format(modulePath)
         

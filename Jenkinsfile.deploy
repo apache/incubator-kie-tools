@@ -101,6 +101,9 @@ pipeline {
             }
         }
         stage('Prepare for PR') {
+            when {
+                expression { return isRelease() || isCreateChangesPR() }
+            }
             steps {
                 script {
                     githubscm.forkRepo(getBotAuthorCredsID())
@@ -133,7 +136,7 @@ pipeline {
                     // Update artifacts
                     updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
                     if (getMavenArtifactRepository() != '') {
-                        updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
+                        updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()} --ignore-self-signed-cert"
                     }
                     sh updateArtifactCmd
 
