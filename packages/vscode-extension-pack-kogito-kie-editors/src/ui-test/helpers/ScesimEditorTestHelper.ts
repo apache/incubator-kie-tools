@@ -59,7 +59,7 @@ export default class ScesimEditorTestHelper {
      * @returns Promise<WebElement> promise that resolves to DMN decision navigator element. 
      */
     public getScenarioCheatsheet = async (): Promise<WebElement> => {
-        return await this.webview.findWebElement(By.className("qe-docks-item-E-org.drools.scenariosimulation.CheatSheet"));
+        return await this.webview.findWebElement(By.className("docks-item-E-org.drools.scenariosimulation.CheatSheet"));
     }
 
     /**
@@ -75,7 +75,7 @@ export default class ScesimEditorTestHelper {
         const settings = await this.getSettings();
         await assertWebElementIsDisplayedEnabled(settings)
         await settings.click();
-        const expandedSettingsPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedSettingsPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
         await assertWebElementIsDisplayedEnabled(await settings.findElement(By.xpath(h3ComponentWithText('Settings'))));
         await assertWebElementIsDisplayedEnabled(expandedSettingsPanel);
         return expandedSettingsPanel;
@@ -94,7 +94,7 @@ export default class ScesimEditorTestHelper {
         const testTools = await this.getTestTools();
         await assertWebElementIsDisplayedEnabled(testTools);
         await testTools.click();
-        const expandedTestToolsPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedTestToolsPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
         await assertWebElementIsDisplayedEnabled(await testTools.findElement(By.xpath(h3ComponentWithText('Test Tools'))));
         await assertWebElementIsDisplayedEnabled(expandedTestToolsPanel);
         return expandedTestToolsPanel;
@@ -113,7 +113,7 @@ export default class ScesimEditorTestHelper {
         const scenarioCheatsheet = await this.getScenarioCheatsheet();
         await assertWebElementIsDisplayedEnabled(scenarioCheatsheet);
         await scenarioCheatsheet.click();
-        const expandedNavigatorPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedNavigatorPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
         await assertWebElementIsDisplayedEnabled(await scenarioCheatsheet.findElement(By.xpath(h3ComponentWithText('Scenario Cheatsheet'))));
         await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
         return expandedNavigatorPanel;

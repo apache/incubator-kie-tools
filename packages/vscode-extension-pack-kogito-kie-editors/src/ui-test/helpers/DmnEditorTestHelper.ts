@@ -55,7 +55,7 @@ export default class DmnEditorTestHelper {
      * @returns Promise<WebElement> promise that resolves to DMN diagram properties element. 
      */
     public getDiagramProperties = async (): Promise<WebElement> => {
-        this.properties = await this.webview.findWebElement(By.className('qe-docks-item-E-DiagramEditorPropertiesScreen'));
+        this.properties = await this.webview.findWebElement(By.className('docks-item-E-DiagramEditorPropertiesScreen'));
         return this.properties;
     }
 
@@ -65,7 +65,7 @@ export default class DmnEditorTestHelper {
      * @returns Promise<WebElement> promise that resolves to DMN decision navigator element. 
      */
     public getDecisionNavigator = async (): Promise<WebElement> => {
-        this.decisionNavigator = await this.webview.findWebElement(By.className('qe-docks-item-E-org.kie.dmn.decision.navigator'));
+        this.decisionNavigator = await this.webview.findWebElement(By.className('docks-item-E-org.kie.dmn.decision.navigator'));
         return this.decisionNavigator;
     }
 
@@ -82,7 +82,7 @@ export default class DmnEditorTestHelper {
         const properties = await this.getDiagramProperties();
         await assertWebElementIsDisplayedEnabled(properties)
         await properties.click();
-        const expandedPropertiesPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedPropertiesPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
         await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText('Properties'))));
         await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
         return expandedPropertiesPanel;
@@ -101,7 +101,7 @@ export default class DmnEditorTestHelper {
         const explorer = await this.getDiagramExplorer();
         await assertWebElementIsDisplayedEnabled(explorer);
         await explorer.click();
-        const expandedExplorerPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedExplorerPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
         await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(h3ComponentWithText('Explore diagram'))));
         await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
         return expandedExplorerPanel;
@@ -120,7 +120,7 @@ export default class DmnEditorTestHelper {
         const navigator = await this.getDecisionNavigator();
         await assertWebElementIsDisplayedEnabled(navigator);
         await navigator.click();
-        const expandedNavigatorPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedNavigatorPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
         await assertWebElementIsDisplayedEnabled(await navigator.findElement(By.xpath(h3ComponentWithText('Decision Navigator'))));
         await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
         return expandedNavigatorPanel;
