@@ -291,6 +291,11 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     }
 
     @Override
+    public void unpublishTestResultsAlerts() {
+        // Not used in Kogito
+    }
+
+    @Override
     public AbstractScenarioSimulationDocksHandler getScenarioSimulationDocksHandler() {
         return scenarioSimulationKogitoDocksHandler;
     }

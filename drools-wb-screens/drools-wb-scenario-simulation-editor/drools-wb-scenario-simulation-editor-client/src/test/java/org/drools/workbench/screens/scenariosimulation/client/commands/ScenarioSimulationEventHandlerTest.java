@@ -497,6 +497,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         scenarioSimulationEventHandler.onEvent(event);
         verify(predicateMock, times(1)).test(eq(settingsLocal));
         verify(scenarioSimulationEventHandler, times(1)).commonExecution(isA(UpdateSettingsDataCommand.class), eq(false));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).unpublishTestResultsAlerts();
     }
 
     @Test
@@ -508,6 +509,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         scenarioSimulationEventHandler.onEvent(event);
         verify(predicateMock, times(1)).test(eq(settingsLocal));
         verify(scenarioSimulationEventHandler, never()).commonExecution(isA(UpdateSettingsDataCommand.class), eq(false));
+        verify(scenarioSimulationEditorPresenterMock, never()).unpublishTestResultsAlerts();
     }
 
     @Test
@@ -516,6 +518,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         UpdateSettingsDataEvent event = new UpdateSettingsDataEvent(consumerMock);
         scenarioSimulationEventHandler.onEvent(event);
         verify(scenarioSimulationEventHandler, times(1)).commonExecution(isA(UpdateSettingsDataCommand.class), eq(false));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).unpublishTestResultsAlerts();
     }
 
     @Test

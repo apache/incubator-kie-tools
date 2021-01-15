@@ -190,6 +190,12 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-message-console-api</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-library-api</artifactId>

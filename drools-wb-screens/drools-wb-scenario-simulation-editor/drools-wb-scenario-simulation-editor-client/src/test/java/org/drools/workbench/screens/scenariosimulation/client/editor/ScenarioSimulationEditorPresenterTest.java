@@ -748,4 +748,10 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).getSettingsPresenter();
         verify(presenterSpy, times(1)).updateSettings(settingsPresenterMock);
     }
+
+    @Test
+    public void unpublishTestResultsAlerts(){
+        presenterSpy.unpublishTestResultsAlerts();
+        verify(scenarioSimulationEditorWrapperMock, times(1)).unpublishTestResultsAlerts();
+    }
 }

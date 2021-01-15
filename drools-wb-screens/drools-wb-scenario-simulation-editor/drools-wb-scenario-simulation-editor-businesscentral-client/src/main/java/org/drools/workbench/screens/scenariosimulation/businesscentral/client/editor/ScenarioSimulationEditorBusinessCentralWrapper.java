@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -59,6 +60,7 @@ import org.drools.workbench.screens.scenariosimulation.service.RunnerReportServi
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -90,6 +92,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -112,6 +115,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     private Caller<ImportExportService> importExportService;
     private Caller<RunnerReportService> runnerReportService;
     private ScenarioSimulationBusinessCentralDocksHandler scenarioSimulationBusinessCentralDocksHandler;
+    private Event<UnpublishMessagesEvent> unpublishMessagesEvent;
+    private SessionInfo sessionInfo;
     protected SimulationRunResult lastRunResult;
 
     public ScenarioSimulationEditorBusinessCentralWrapper() {
@@ -127,6 +132,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
                                                           final Caller<DMNTypeService> dmnTypeService,
                                                           final Caller<ImportExportService> importExportService,
                                                           final Caller<RunnerReportService> runnerReportService,
+                                                          final SessionInfo sessionInfo,
+                                                          final Event<UnpublishMessagesEvent> unpublishMessagesEvent,
                                                           final ScenarioSimulationBusinessCentralDocksHandler scenarioSimulationBusinessCentralDocksHandler) {
         super(scenarioSimulationEditorPresenter.getView());
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
@@ -138,6 +145,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
         this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
         this.type = scenarioSimulationEditorPresenter.getType();
+        this.unpublishMessagesEvent = unpublishMessagesEvent;
+        this.sessionInfo = sessionInfo;
         this.scenarioSimulationBusinessCentralDocksHandler = scenarioSimulationBusinessCentralDocksHandler;
     }
 
@@ -154,6 +163,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     public void onClose() {
         this.versionRecordManager.clear();
         scenarioSimulationEditorPresenter.onClose();
+        unpublishTestResultsAlerts();
         super.onClose();
     }
 
@@ -237,12 +247,22 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
 
     @Override
     public void onRunScenario(RemoteCallback<SimulationRunResult> refreshModelCallback, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, ScesimModelDescriptor simulationDescriptor, Settings settings, List<ScenarioWithIndex> toRun, Background background) {
+        unpublishTestResultsAlerts();
         service.call(refreshModelCallback, scenarioSimulationHasBusyIndicatorDefaultErrorCallback)
                 .runScenario(versionRecordManager.getCurrentPath(),
                              simulationDescriptor,
                              toRun,
                              settings,
                              background);
+    }
+
+    @Override
+    public void unpublishTestResultsAlerts() {
+        final UnpublishMessagesEvent event = new UnpublishMessagesEvent();
+        event.setShowSystemConsole(false);
+        event.setMessageType("TestResults");
+        event.setSessionId(sessionInfo.getId());
+        this.unpublishMessagesEvent.fire(event);
     }
 
     @Override
