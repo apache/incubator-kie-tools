@@ -22,6 +22,7 @@ export interface JitDmnPayload {
   context: Map<string, object>;
 }
 
+const JIT_DMN_SERVER = "http://localhost:8080/";
 const JIT_DMN_URL = "http://localhost:8080/jitdmn";
 const JIT_DMN_SCHEMA_URL = "http://localhost:8080/jitdmn/schema";
 const JIT_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
@@ -38,13 +39,9 @@ function createValidator(schema: any) {
 }
 
 export class JitDmn {
-  private static createValidator(schema: object) {
-    const validator = ajv.compile(schema);
-
-    return (model: object) => {
-      validator(model);
-      return validator.errors?.length ? { details: validator.errors } : null;
-    };
+  public static async checkServer(): Promise<boolean> {
+    const response = await fetch(JIT_DMN_SERVER, { method: "OPTIONS" });
+    return response.status < 300;
   }
 
   public static async download() {
@@ -71,74 +68,18 @@ export class JitDmn {
     });
   }
 
-  public static getFormSchema(model: string) {
+  public static async getFormSchema(model: string) {
     try {
-      // const response = await fetch(JIT_DMN_SCHEMA_URL, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/xml;"
-      //   },
-      //   body: model
-      // });
-      // const jitDmnSchema = await response.json();
+      const response = await fetch(JIT_DMN_SCHEMA_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/xml;"
+        },
+        body: model
+      });
+      const jitDmnSchema = await response.json();
       const jitDmnSchemaHard = {
         definitions: {
-          Back_End_Ratio: {
-            enum: ["Insufficient", "Sufficient"],
-            type: "string"
-          },
-          Marital_Status: {
-            enum: ["M", "D", "S"],
-            type: "string"
-          },
-          Front_End_Ratio: {
-            enum: ["Sufficient", "Insufficient"],
-            type: "string"
-          },
-          Credit_Score_FICO: { type: "number" },
-          Employment_Status: {
-            enum: ["Unemployed", "Employed", "Self-employed", "Student"],
-            type: "string"
-          },
-          Requested_Product: {
-            type: "object",
-            properties: {
-              Type: { $ref: "#/definitions/Product_Type" },
-              Rate: { type: "number" },
-              Term: { type: "number" },
-              Amount: { type: "number" }
-            }
-          },
-          InputSet: {
-            required: ["Credit Score", "Applicant Data", "Requested Product"],
-            type: "object",
-            properties: {
-              "Credit Score": { $ref: "#/definitions/Credit_Score" },
-              "Applicant Data": { $ref: "#/definitions/Applicant_Data" },
-              "Requested Product": { $ref: "#/definitions/Requested_Product" }
-            }
-          },
-          Applicant_Data: {
-            type: "object",
-            properties: {
-              Age: { type: "number" },
-              "Marital Status": { $ref: "#/definitions/Marital_Status" },
-              "Employment Status": { $ref: "#/definitions/Employment_Status" },
-              "Existing Customer": { type: "boolean" },
-              Monthly: { $ref: "#/definitions/Applicant_Data_Monthly" }
-            }
-          },
-          Loan_Qualification: {
-            type: "object",
-            properties: {
-              Qualification: { $ref: "#/definitions/Loan_Qualification_Qualification" },
-              Reason: { type: "string" }
-            }
-          },
-          Loan_Qualification_Qualification: {
-            enum: ["Qualified", "Not Qualified"],
-            type: "string"
-          },
           OutputSet: {
             type: "object",
             properties: {
@@ -149,38 +90,108 @@ export class JitDmn {
               "Credit Score": { $ref: "#/definitions/Credit_Score" },
               "Applicant Data": { $ref: "#/definitions/Applicant_Data" },
               "Requested Product": { $ref: "#/definitions/Requested_Product" }
-            }
+            },
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : OutputSet }"
+          },
+          Loan_Qualification: {
+            type: "object",
+            properties: {
+              Qualification: { $ref: "#/definitions/Loan_Qualification_Qualification" },
+              Reason: { type: "string", "x-dmn-type": "FEEL:string" }
+            },
+            "x-dmn-type":
+              "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Loan_Qualification }"
+          },
+          Loan_Qualification_Qualification: {
+            enum: ["Qualified", "Not Qualified"],
+            type: "string",
+            "x-dmn-type": "FEEL:string"
+          },
+          Applicant_Data: {
+            type: "object",
+            properties: {
+              Age: { type: "number", "x-dmn-type": "FEEL:number" },
+              "Marital Status": { $ref: "#/definitions/Marital_Status" },
+              "Employment Status": { $ref: "#/definitions/Employment_Status" },
+              "Existing Customer": { type: "boolean", "x-dmn-type": "FEEL:boolean" },
+              Monthly: { $ref: "#/definitions/Applicant_Data_Monthly" }
+            },
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Applicant_Data }"
+          },
+          Front_End_Ratio: {
+            enum: ["Sufficient", "Insufficient"],
+            type: "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Front_End_Ratio }"
+          },
+          Requested_Product: {
+            type: "object",
+            properties: {
+              Type: { $ref: "#/definitions/Product_Type" },
+              Rate: { type: "number", "x-dmn-type": "FEEL:number" },
+              Term: { type: "number", "x-dmn-type": "FEEL:number" },
+              Amount: { type: "number", "x-dmn-type": "FEEL:number" }
+            },
+            "x-dmn-type":
+              "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Requested_Product }"
+          },
+          Back_End_Ratio: {
+            enum: ["Insufficient", "Sufficient"],
+            type: "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Back_End_Ratio }"
           },
           Credit_Score: {
             type: "object",
-            properties: { FICO: { $ref: "#/definitions/Credit_Score_FICO" } }
-          },
-          Product_Type: {
-            enum: ["Standard Loan", "Special Loan"],
-            type: "string"
-          },
-          Credit_Score_Rating: {
-            enum: ["Poor", "Bad", "Fair", "Good", "Excellent"],
-            type: "string"
+            properties: { FICO: { $ref: "#/definitions/Credit_Score_FICO" } },
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score }"
           },
           Applicant_Data_Monthly: {
             type: "object",
             properties: {
-              Income: { type: "number" },
-              Repayments: { type: "number" },
-              Expenses: { type: "number" },
-              Tax: { type: "number" },
-              Insurance: { type: "number" }
+              Income: { type: "number", "x-dmn-type": "FEEL:number" },
+              Repayments: { type: "number", "x-dmn-type": "FEEL:number" },
+              Expenses: { type: "number", "x-dmn-type": "FEEL:number" },
+              Tax: { type: "number", "x-dmn-type": "FEEL:number" },
+              Insurance: { type: "number", "x-dmn-type": "FEEL:number" }
             }
+          },
+          Credit_Score_Rating: {
+            enum: ["Poor", "Bad", "Fair", "Good", "Excellent"],
+            type: "string",
+            "x-dmn-type":
+              "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score_Rating }"
+          },
+          Employment_Status: {
+            enum: ["Unemployed", "Employed", "Self-employed", "Student"],
+            type: "string",
+            "x-dmn-type": "FEEL:string"
+          },
+          Product_Type: {
+            enum: ["Standard Loan", "Special Loan"],
+            type: "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Product_Type }"
+          },
+          Credit_Score_FICO: { type: "number", "x-dmn-type": "FEEL:number\n[[300..850]]" },
+          Marital_Status: {
+            enum: ["M", "D", "S"],
+            type: "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Marital_Status }"
+          },
+          InputSet: {
+            required: ["Credit Score", "Applicant Data", "Requested Product"],
+            type: "object",
+            properties: {
+              "Credit Score": { $ref: "#/definitions/Credit_Score" },
+              "Applicant Data": { $ref: "#/definitions/Applicant_Data" },
+              "Requested Product": { $ref: "#/definitions/Requested_Product" }
+            },
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : InputSet }"
           }
         },
-        properties: { context: { $ref: "#/definitions/InputSet" }, model: { type: "string" } },
+        properties: { context: { $ref: "#/definitions/InputSet" } },
         type: "object",
-        required: ["context", "model"]
+        required: ["context"]
       };
-      const validator = createValidator(jitDmnSchemaHard);
-      const bridge = new JSONSchemaBridge(jitDmnSchemaHard, validator);
-      return bridge;
+      return new JSONSchemaBridge(jitDmnSchemaHard, createValidator(jitDmnSchemaHard));
     } catch (err) {
       console.error(err);
     }

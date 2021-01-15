@@ -28,11 +28,22 @@ import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
-import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertActionLink,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerPanelContent,
+  Page,
+  PageSection
+} from "@patternfly/react-core";
 import { JitDmn, JitDmnPayload } from "../common/JitDmn";
 import { JitDmnForm } from "./JitDmnForm";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { AutoForm } from "uniforms-unstyled";
+import set = Reflect.set;
 
 export enum Alerts {
   NONE,
@@ -49,6 +60,13 @@ export enum Modal {
   NONE,
   GITHUB_TOKEN,
   EMBED
+}
+
+enum JitDmnStatus {
+  DISABLED,
+  INSTRUCTIONS,
+  FORM,
+  LOADING
 }
 
 interface Props {
@@ -184,21 +202,6 @@ export function EditorPage(props: Props) {
     }
   }, [fileUrl, context, editor]);
 
-  const [jitSchema, setJitSchema] = useState<JSONSchemaBridge>();
-  const onRunDmn = useCallback(() => {
-    if (context.file.fileExtension !== "dmn") {
-      return;
-    }
-
-    // const content = await editor?.getContent();
-    const schema = JitDmn.getFormSchema("");
-
-    console.log("schema,");
-    console.log(schema);
-
-    setJitSchema(schema);
-  }, [context.file, editor, JitDmn]);
-
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
@@ -253,6 +256,48 @@ export function EditorPage(props: Props) {
     }
   }, [context.file.fileName]);
 
+  const [runJitDmn, setRunJitDmn] = useState(false);
+  const [jitDmnSchema, setJitDmnSchema] = useState<JSONSchemaBridge>();
+  const [jitDmnStatus, setJitDmnStatus] = useState(JitDmnStatus.LOADING);
+
+  const checkJitServer = useCallback(
+    () =>
+      JitDmn.checkServer().then(() => {
+        editor
+          ?.getContent()
+          .then(content => JitDmn.getFormSchema(content ?? ""))
+          .then(schema => {
+            setJitDmnSchema(schema);
+            setJitDmnStatus(JitDmnStatus.FORM);
+          })
+          .catch(console.error);
+      }),
+    [editor]
+  );
+
+  useEffect(() => {
+    if (!runJitDmn) {
+      setJitDmnStatus(JitDmnStatus.DISABLED);
+    }
+
+    if (runJitDmn && jitDmnStatus === JitDmnStatus.INSTRUCTIONS) {
+      const interval = setInterval(checkJitServer, 15000);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [runJitDmn, jitDmnStatus]);
+
+  // TODO: ERROR HANDLER
+  useEffect(() => {
+    if (runJitDmn && context.file.fileExtension === "dmn") {
+      setJitDmnStatus(JitDmnStatus.LOADING);
+      checkJitServer().catch(() => {
+        setJitDmnStatus(JitDmnStatus.INSTRUCTIONS);
+      });
+    }
+  }, [context.file, runJitDmn]);
+
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
     document.addEventListener("mozfullscreenchange", toggleFullScreen);
@@ -295,12 +340,12 @@ export function EditorPage(props: Props) {
           onGistIt={requestGistIt}
           onEmbed={requestEmbed}
           isEdited={isDirty}
-          onRunDmn={onRunDmn}
+          runJitDmn={runJitDmn}
+          setRunJitDmn={setRunJitDmn}
         />
       }
     >
       <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
-        {jitSchema && <AutoForm schema={jitSchema} onSubmit={console.log} />}
         {!fullscreen && alert === Alerts.COPY && (
           <div className={"kogito--alert-container"}>
             <Alert
@@ -397,14 +442,29 @@ export function EditorPage(props: Props) {
           />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-        <EmbeddedEditor
-          ref={editorRef}
-          file={context.file}
-          editorEnvelopeLocator={context.editorEnvelopeLocator}
-          receive_ready={onReady}
-          channelType={ChannelType.ONLINE}
-          locale={locale}
-        />
+        <Drawer isStatic={runJitDmn}>
+          <DrawerContent
+            panelContent={
+              <DrawerPanelContent style={{ padding: "20px" }}>
+                {jitDmnStatus === JitDmnStatus.FORM && (
+                  <JitDmnForm jsonSchemaBridge={jitDmnSchema} editorContent={editor?.getContent} />
+                )}
+                {jitDmnStatus === JitDmnStatus.INSTRUCTIONS && <p>Failed to connect with you JIT server.</p>}
+              </DrawerPanelContent>
+            }
+          >
+            <DrawerContentBody>
+              <EmbeddedEditor
+                ref={editorRef}
+                file={context.file}
+                editorEnvelopeLocator={context.editorEnvelopeLocator}
+                receive_ready={onReady}
+                channelType={ChannelType.ONLINE}
+                locale={locale}
+              />
+            </DrawerContentBody>
+          </DrawerContent>
+        </Drawer>
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
       <a ref={downloadRef} />

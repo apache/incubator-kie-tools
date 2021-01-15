@@ -22,25 +22,28 @@ import { AutoForm } from "uniforms-unstyled";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 
 interface Props {
-  editorContent: Promise<string> | undefined;
+  editorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
 }
 
 export function JitDmnForm(props: Props) {
-  const context = useContext(GlobalContext);
+  const onSubmit = useCallback(
+    (context: any) => {
+      if (props.editorContent) {
+        props.editorContent().then((model: string) => {
+          JitDmn.validateForm({ context, model })
+            .then(res => res.json())
+            .then(json => console.log(json))
+            .catch(() => console.log("errorrr"));
+        });
+      }
+    },
+    [props.editorContent]
+  );
 
-  // const generateDmnForm = useCallback(async () => {
-  //   try {
-  //     if (context.file.fileExtension !== "dmn") {
-  //       return;
-  //     }
-  //
-  //     const content = (await props.editorContent) ?? "";
-  //     const formSchema = await JitDmn.getFormSchema(content);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }, [context.file]);
-
-  return <div>{props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={console.log} />}</div>;
+  return (
+    <div style={{ position: "absolute" }}>
+      {props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={onSubmit} />}
+    </div>
+  );
 }
