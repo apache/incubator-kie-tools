@@ -22,8 +22,8 @@ import { createStore, Store } from "redux";
 import {
   Actions,
   AllActions,
-  DataDictionaryReducer,
   DataDictionaryFieldReducer,
+  DataDictionaryReducer,
   HeaderReducer,
   ModelReducer,
   PMMLReducer
@@ -38,7 +38,7 @@ import { HashRouter } from "react-router-dom";
 import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
-import { PMMLModelMapping, PMMLModels } from "./PMMLModelHelper";
+import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation } from "./components/EditorScorecard";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
@@ -118,9 +118,11 @@ export class PMMLEditor extends React.Component<Props, State> {
       pmml = XML2PMML(_content);
 
       //If there is only one supported type of model then create a default entry
-      const supportedModelTypes: Array<PMMLModelMapping<any>> = PMMLModels.filter(m => m.isSupported);
-      if (content === "" && supportedModelTypes.length === 1) {
-        const factory = supportedModelTypes[0].factory;
+      const supportedEditorTypes: Array<PMMLModelMapping<any>> = PMMLModels.filter(
+        m => m.capability === SupportedCapability.EDITOR
+      );
+      if (content === "" && supportedEditorTypes.length === 1) {
+        const factory = supportedEditorTypes[0].factory;
         if (factory) {
           pmml.models = [factory()];
         }
