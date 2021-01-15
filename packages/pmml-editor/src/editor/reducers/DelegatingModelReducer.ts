@@ -49,7 +49,7 @@ export const DelegatingModelReducer: HistoryAwareModelReducer<AllActions> = (
 
     //Delegate Model agnostic actions to all Model reducers
     if (modelIndex === undefined) {
-      state.every((model, index) => {
+      state.forEach((model, index) => {
         const modelAction = Object.assign({}, action, { payload: { ...action.payload, modelIndex: index } });
         const newModel = reduce(model, modelAction, reducers);
         if (model !== newModel) {
