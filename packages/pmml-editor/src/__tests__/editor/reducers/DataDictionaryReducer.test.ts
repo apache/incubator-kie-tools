@@ -28,7 +28,8 @@ describe("DataDictionaryReducer::Valid actions", () => {
       type: Actions.AddDataDictionaryField,
       payload: {
         name: "field1",
-        type: "string"
+        type: "string",
+        optype: "categorical"
       }
     });
     expect(updated).not.toEqual(dataDictionary);

@@ -7,6 +7,11 @@
   "supportFile": "./cypress/support/index.ts",
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "./results/junit-[hash].xml"
+    "mochaFile": "./results/junit-[hash].xml",
+    "testsuitesTitle": "@kogito-tooling",
+    "testCaseSwitchClassnameAndName": true,
+    "suiteTitleSeparatedBy": ".",
+    "useFullSuiteTitle":true,
+    "rootSuiteTitle": "@kogito-tooling/kie-editors-standalone"
   }
 }
