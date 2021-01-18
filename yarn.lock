@@ -1267,10 +1267,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@kie/npm-treatment-tool@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@kie/npm-treatment-tool/-/npm-treatment-tool-1.1.0.tgz#20cd28ed5a93a0115e51a422f52f05f9e7917594"
-  integrity sha512-GXqWI270XmnF2xmuNt2ndNxzHJGOe+0WYk1hP9dt0/NQUu2ABm1GbG5Js29CdhCmx2LPEmDuX6zG3uJBtCJ0aw==
+"@kie/npm-treatment-tool@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@kie/npm-treatment-tool/-/npm-treatment-tool-1.1.1.tgz#67b0d237645127a4e53a9be5b6ddc478c2bbf948"
+  integrity sha512-NLomXhEHz2F7Svjt2GiQuH2CXmQzy2PyFAe3BOj8PpFDteXBsQl43Xbhj5qzbOwIgnhzEsdWBR8LXP/Yj9S8Ag==
   dependencies:
     "@actions/core" "^1.2.6"
     argparse "^2.0.1"
