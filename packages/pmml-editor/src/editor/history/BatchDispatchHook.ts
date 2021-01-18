@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 
-export * from "./BatchDispatchHook";
-export * from "./HistoryAwareReducer";
-export * from "./HistoryProvider";
+import { useDispatch } from "react-redux";
+import { HistoryService } from "./HistoryProvider";
+import { Dispatch } from "redux";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Actions } from "../reducers";
+
+export const useBatchDispatch = (service: HistoryService, getCurrentState: () => PMML | undefined): Dispatch<any> => {
+  const dispatch = useDispatch();
+
+  return (action: any): any => {
+    const result = dispatch(action);
+
+    dispatch({
+      type: Actions.Refresh,
+      payload: {
+        pmml: service.commit(getCurrentState())
+      }
+    });
+
+    return result;
+  };
+};

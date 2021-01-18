@@ -21,7 +21,6 @@ import { CharacteristicsTable, IndexedCharacteristic } from "./CharacteristicsTa
 import "./CharacteristicsContainer.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Actions } from "../../../reducers";
-import { useDispatch } from "react-redux";
 import {
   AttributeEditor,
   AttributeToolbar,
@@ -32,7 +31,8 @@ import {
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
-import { OperationContext } from "../../../PMMLEditor";
+import { HistoryContext, OperationContext } from "../../../PMMLEditor";
+import { useBatchDispatch } from "../../../history";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -63,9 +63,9 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     commit
   } = props;
 
-  const dispatch = useDispatch();
-
   const { setActiveOperation } = React.useContext(OperationContext);
+  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);

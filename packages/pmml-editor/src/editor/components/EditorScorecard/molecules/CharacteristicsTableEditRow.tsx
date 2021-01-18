@@ -24,9 +24,10 @@ import { AttributesTable, IndexedCharacteristic } from "../organisms";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { OperationContext } from "../../../PMMLEditor";
+import { HistoryContext, OperationContext } from "../../../PMMLEditor";
+import { useBatchDispatch } from "../../../history";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
@@ -57,9 +58,9 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const characteristicIndex = characteristic.index;
 
-  const dispatch = useDispatch();
-
   const { activeOperation } = React.useContext(OperationContext);
+  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,

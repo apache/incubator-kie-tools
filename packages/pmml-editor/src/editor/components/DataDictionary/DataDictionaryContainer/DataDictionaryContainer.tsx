@@ -15,7 +15,7 @@ import { isEqual } from "lodash";
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
   onAdd: (name: string, type: DDDataField["type"], optype: DDDataField["optype"]) => void;
-  onEdit: (index: number, field: DDDataField) => void;
+  onEdit: (index: number, originalName: string, field: DDDataField) => void;
   onDelete: (index: number) => void;
   onReorder: (oldIndex: number, newIndex: number) => void;
   onBatchAdd: (fields: string[]) => void;
@@ -67,7 +67,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const saveDataType = (dataType: DDDataField, index: number) => {
     console.log("updating data type");
-    onEdit(index, dataType);
+    onEdit(index, dataTypes[index].name, dataType);
   };
 
   const handleSave = (dataType: DDDataField, index: number) => {
@@ -99,7 +99,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const handleConstraintsSave = (payload: DDDataField) => {
     if (editing !== undefined) {
-      onEdit(editing, payload);
+      onEdit(editing, dataTypes[editing].name, payload);
     }
   };
 
@@ -110,7 +110,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       Object.keys(payload).forEach(key => Reflect.set(existingPartial, key, Reflect.get(dataType, key)));
 
       if (!isEqual(payload, existingPartial)) {
-        onEdit(editing, Object.assign(dataType, payload));
+        onEdit(editing, dataType.name, Object.assign(dataType, payload));
       }
     }
   };

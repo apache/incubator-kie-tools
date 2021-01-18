@@ -3,18 +3,18 @@ import { useEffect, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import {
   Button,
+  Form,
   FormGroup,
   Label,
   Select,
   SelectOption,
+  SelectOptionObject,
   SelectVariant,
-  Form,
   Split,
   SplitItem,
   Stack,
   StackItem,
-  TextInput,
-  SelectOptionObject
+  TextInput
 } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";

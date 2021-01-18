@@ -34,16 +34,22 @@ const header1: Header = {
 
 describe("HistoryProvider", () => {
   test("Mutation applied", () => {
-    const updated: PMML = service.mutate(pmml, null, draft => {
+    service.batch(pmml, null, draft => {
       draft.Header = header1;
     });
+
+    const updated: PMML = service.commit(pmml) as PMML;
+
     expect(updated.Header).toBe(header1);
   });
 
   test("Mutation undo", () => {
-    const updated1: PMML = service.mutate(pmml, null, draft => {
+    service.batch(pmml, null, draft => {
       draft.Header = header1;
     });
+
+    const updated1: PMML = service.commit(pmml) as PMML;
+
     expect(updated1).not.toStrictEqual(pmml);
 
     const updated2: PMML = service.undo(updated1);
@@ -51,9 +57,12 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation redo", () => {
-    const updated1: PMML = service.mutate(pmml, null, draft => {
+    service.batch(pmml, null, draft => {
       draft.Header = header1;
     });
+
+    const updated1: PMML = service.commit(pmml) as PMML;
+
     expect(updated1).not.toStrictEqual(pmml);
 
     const updated2: PMML = service.undo(updated1);
@@ -64,9 +73,12 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation undo beyond start", () => {
-    const updated1: PMML = service.mutate(pmml, null, draft => {
+    service.batch(pmml, null, draft => {
       draft.Header = header1;
     });
+
+    const updated1: PMML = service.commit(pmml) as PMML;
+
     expect(updated1).not.toStrictEqual(pmml);
 
     const updated2: PMML = service.undo(updated1);
@@ -77,9 +89,12 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation redo beyond end", () => {
-    const updated1: PMML = service.mutate(pmml, null, draft => {
+    service.batch(pmml, null, draft => {
       draft.Header = header1;
     });
+
+    const updated1: PMML = service.commit(pmml) as PMML;
+
     expect(updated1).not.toStrictEqual(pmml);
 
     const updated2: PMML = service.undo(updated1);
