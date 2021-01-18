@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { By } from "vscode-extension-tester"
+
 /**
  * Creates a XPATH string that locates <a> element with specific text.
  * 
@@ -39,4 +41,11 @@ export const spanComponentWithText = (text: string): string => {
  */
 export const h3ComponentWithText = (text: string): string => {
     return `//h3[text() = \'${text}\']`
+}
+
+/**
+ * Creates a classname locator for 'expanded-docks-bar-E'
+ */
+export const expandedDocksBarE = (): By => {
+    return By.className('expanded-docks-bar-E')
 }
