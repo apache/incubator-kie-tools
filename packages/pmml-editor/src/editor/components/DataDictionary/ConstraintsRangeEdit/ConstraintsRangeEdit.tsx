@@ -37,7 +37,6 @@ import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
 import { useValidationService } from "../../../validation";
-import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface ConstraintsRangeEditProps {
   dataFieldIndex: number | undefined;
@@ -178,26 +177,20 @@ const RangeEdit = (props: RangeEditProps) => {
   return (
     <section ref={rangeRef}>
       <Split hasGutter={true} className="constraints__range-item">
-        {validations.length > 0 && (
-          <SplitItem>
-            <Flex
-              alignItems={{ default: "alignItemsCenter" }}
-              justifyContent={{ default: "justifyContentCenter" }}
-              style={{ height: "100%" }}
-            >
-              <FlexItem>
-                <ValidationIndicator validations={validations} />
-              </FlexItem>
-            </Flex>
-          </SplitItem>
-        )}
         <SplitItem>
-          <FormGroup label="Start Value" fieldId={`start-value-${index}`} style={{ width: 320 }}>
+          <FormGroup
+            label="Start Value"
+            fieldId={`start-value-${index}`}
+            style={{ width: 320 }}
+            validated={validations.length === 0 ? "default" : "error"}
+            helperTextInvalid={validations[0] ? validations[0].message : ""}
+          >
             <TextInput
               type="number"
               id={`start-value-${index}`}
               name="start-value"
               value={rangeValues.start.value}
+              validated={validations.length === 0 ? "default" : "error"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
@@ -217,12 +210,19 @@ const RangeEdit = (props: RangeEditProps) => {
           </FormGroup>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <FormGroup label="End Value" fieldId={`end-value-${index}`} style={{ width: 320 }}>
+          <FormGroup
+            label="End Value"
+            fieldId={`end-value-${index}`}
+            style={{ width: 320 }}
+            validated={validations.length === 0 ? "default" : "error"}
+            helperTextInvalid={validations[0] ? validations[0].message : ""}
+          >
             <TextInput
               type="number"
               id={`end-value-${index}`}
               name="end-value"
               value={rangeValues.end.value}
+              validated={validations.length === 0 ? "default" : "error"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}
