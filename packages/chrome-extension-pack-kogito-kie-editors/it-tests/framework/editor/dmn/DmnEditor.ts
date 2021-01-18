@@ -24,7 +24,7 @@ import Locator from "../../Locator";
 export default class DmnEditor extends Editor {
 
     private static readonly PALETTE_LOCATOR: By = By.className("kie-palette");
-    private static readonly SIDE_BAR_LOCATOR: By = By.className("qe-docks-bar-E");
+    private static readonly SIDE_BAR_LOCATOR: By = By.className("collapsed-docks-bar-E");
 
     public async getDmnPalette(): Promise<DmnPalette> {
         const palette: Element = await this.tools.by(DmnEditor.PALETTE_LOCATOR).getElement();

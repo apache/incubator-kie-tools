@@ -25,7 +25,7 @@ export default class SideBar extends PageFragment {
 
     private static readonly PROP_BUTTON_LOCATOR = By.xpath("//div[./button[@data-title='Properties']]");
     private static readonly EXPLORER_BUTTON_LOCATOR = By.xpath("//div[./button[@data-title='Explore Diagram' or @data-title='Explore diagram']]");
-    private static readonly EXPANDED_BAR_LOCATOR = By.className("qe-docks-bar-expanded-E");
+    private static readonly EXPANDED_BAR_LOCATOR = By.className("expanded-docks-bar-E");
     private static readonly TITLE_LOCATOR = By.xpath("./div/h3");
 
     public async waitUntilLoaded(): Promise<void> {
