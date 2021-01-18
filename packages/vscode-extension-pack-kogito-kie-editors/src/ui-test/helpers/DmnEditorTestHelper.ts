@@ -16,7 +16,7 @@
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { h3ComponentWithText } from "./CommonLocators";
+import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
 
 /**
  * Helper class to easen work with DMN editor inside of a webview.
@@ -80,9 +80,9 @@ export default class DmnEditorTestHelper {
      */
     public openDiagramProperties = async (): Promise<WebElement> => {
         const properties = await this.getDiagramProperties();
-        await assertWebElementIsDisplayedEnabled(properties)
+        await assertWebElementIsDisplayedEnabled(properties);
         await properties.click();
-        const expandedPropertiesPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
+        const expandedPropertiesPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText('Properties'))));
         await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
         return expandedPropertiesPanel;
@@ -101,7 +101,7 @@ export default class DmnEditorTestHelper {
         const explorer = await this.getDiagramExplorer();
         await assertWebElementIsDisplayedEnabled(explorer);
         await explorer.click();
-        const expandedExplorerPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
+        const expandedExplorerPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(h3ComponentWithText('Explore diagram'))));
         await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
         return expandedExplorerPanel;
@@ -120,7 +120,7 @@ export default class DmnEditorTestHelper {
         const navigator = await this.getDecisionNavigator();
         await assertWebElementIsDisplayedEnabled(navigator);
         await navigator.click();
-        const expandedNavigatorPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
+        const expandedNavigatorPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await navigator.findElement(By.xpath(h3ComponentWithText('Decision Navigator'))));
         await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
         return expandedNavigatorPanel;

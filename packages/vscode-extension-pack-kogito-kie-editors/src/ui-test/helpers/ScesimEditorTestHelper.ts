@@ -16,7 +16,7 @@
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { h3ComponentWithText } from "./CommonLocators";
+import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
 
 /**
  * Helper class to easen work with SCESIM editor inside of a webview.
@@ -73,9 +73,9 @@ export default class ScesimEditorTestHelper {
      */
     public openSettings = async (): Promise<WebElement> => {
         const settings = await this.getSettings();
-        await assertWebElementIsDisplayedEnabled(settings)
+        await assertWebElementIsDisplayedEnabled(settings);
         await settings.click();
-        const expandedSettingsPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
+        const expandedSettingsPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await settings.findElement(By.xpath(h3ComponentWithText('Settings'))));
         await assertWebElementIsDisplayedEnabled(expandedSettingsPanel);
         return expandedSettingsPanel;
@@ -94,7 +94,7 @@ export default class ScesimEditorTestHelper {
         const testTools = await this.getTestTools();
         await assertWebElementIsDisplayedEnabled(testTools);
         await testTools.click();
-        const expandedTestToolsPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
+        const expandedTestToolsPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await testTools.findElement(By.xpath(h3ComponentWithText('Test Tools'))));
         await assertWebElementIsDisplayedEnabled(expandedTestToolsPanel);
         return expandedTestToolsPanel;
@@ -113,7 +113,7 @@ export default class ScesimEditorTestHelper {
         const scenarioCheatsheet = await this.getScenarioCheatsheet();
         await assertWebElementIsDisplayedEnabled(scenarioCheatsheet);
         await scenarioCheatsheet.click();
-        const expandedNavigatorPanel = await this.webview.findWebElement(By.className('docks-bar-expanded-E'))
+        const expandedNavigatorPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await scenarioCheatsheet.findElement(By.xpath(h3ComponentWithText('Scenario Cheatsheet'))));
         await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
         return expandedNavigatorPanel;
