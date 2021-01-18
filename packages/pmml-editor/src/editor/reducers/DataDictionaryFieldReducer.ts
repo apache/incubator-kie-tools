@@ -67,7 +67,7 @@ const validateDataFieldConstraintRanges = (
       interval.leftMargin === undefined && interval.rightMargin === undefined
         ? new ValidationEntry(
             ValidationLevel.WARNING,
-            `Data Field[${dataDictionaryIndex}], Interval[${index}] must have either the start of end values set.`
+            `Data Field[${dataDictionaryIndex}], Interval[${index}] must have the start and/or end value set.`
           )
         : new ValidationEntry(ValidationLevel.VALID)
     );

@@ -180,19 +180,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
         >
           <Form onSubmit={handleSave}>
             <Split hasGutter={true}>
-              {validations.length > 0 && (
-                <SplitItem>
-                  <Flex
-                    alignItems={{ default: "alignItemsCenter" }}
-                    justifyContent={{ default: "justifyContentCenter" }}
-                    style={{ height: "100%" }}
-                  >
-                    <FlexItem>
-                      <ValidationIndicator validations={validations} />
-                    </FlexItem>
-                  </Flex>
-                </SplitItem>
-              )}
               <SplitItem>
                 <Stack hasGutter={true}>
                   <StackItem>
