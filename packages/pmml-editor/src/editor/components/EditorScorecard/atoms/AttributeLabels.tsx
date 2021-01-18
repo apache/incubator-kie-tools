@@ -19,14 +19,17 @@ import { CharacteristicLabel } from "./CharacteristicLabel";
 
 interface AttributeLabelsProps {
   activeAttribute: Attribute;
+  areReasonCodesUsed: boolean;
 }
 
 export const AttributeLabels = (props: AttributeLabelsProps) => {
-  const { activeAttribute } = props;
+  const { activeAttribute, areReasonCodesUsed } = props;
 
   return (
     <>
-      {activeAttribute.reasonCode !== undefined && CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
+      {activeAttribute.reasonCode !== undefined &&
+        areReasonCodesUsed &&
+        CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
       {activeAttribute.partialScore !== undefined && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
     </>
   );

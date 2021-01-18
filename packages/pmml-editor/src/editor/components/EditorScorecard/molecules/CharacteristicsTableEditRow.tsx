@@ -30,7 +30,7 @@ import { OperationContext } from "../../../PMMLEditor";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
@@ -44,7 +44,7 @@ interface CharacteristicsTableEditRowProps {
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
   const {
     modelIndex,
-    useReasonCodes,
+    areReasonCodesUsed,
     isBaselineScoreRequired,
     characteristic,
     validateCharacteristicName,
@@ -127,7 +127,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
       <Stack hasGutter={true}>
         <StackItem>
           <Split hasGutter={true}>
-            <SplitItem isFilled={!useReasonCodes}>
+            <SplitItem isFilled={!areReasonCodesUsed}>
               <FormGroup
                 label="Name"
                 isRequired={true}
@@ -135,7 +135,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 helperTextInvalid="Name must be unique and present"
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={name.valid ? "default" : "error"}
-                style={!useReasonCodes ? { width: "16em" } : {}}
+                style={!areReasonCodesUsed ? { width: "16em" } : {}}
               >
                 <TextInput
                   type="text"
@@ -161,7 +161,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 />
               </FormGroup>
             </SplitItem>
-            {useReasonCodes && (
+            {areReasonCodesUsed && (
               <>
                 <SplitItem>
                   <FormGroup label="Reason code" fieldId="characteristic-reason-code-helper">
@@ -235,6 +235,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             <FormGroup label="Attributes" fieldId="output-labels-helper">
               <AttributesTable
                 attributes={attributes}
+                areReasonCodesUsed={areReasonCodesUsed}
                 viewAttribute={viewAttribute}
                 deleteAttribute={attributeIndex => {
                   if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {

@@ -38,7 +38,7 @@ import get = Reflect.get;
 
 interface CharacteristicsContainerProps {
   modelIndex: number;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
   characteristics: Characteristic[];
   filteredCharacteristics: IndexedCharacteristic[];
@@ -53,7 +53,7 @@ type CharacteristicsViewSection = "overview" | "attribute";
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
   const {
     modelIndex,
-    useReasonCodes,
+    areReasonCodesUsed,
     isBaselineScoreRequired,
     characteristics,
     filteredCharacteristics,
@@ -203,7 +203,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                   <StackItem className="characteristics-container__overview">
                     <CharacteristicsTable
                       modelIndex={modelIndex}
-                      useReasonCodes={useReasonCodes}
+                      areReasonCodesUsed={areReasonCodesUsed}
                       isBaselineScoreRequired={isBaselineScoreRequired}
                       characteristics={filteredCharacteristics}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
@@ -229,7 +229,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       modelIndex={modelIndex}
                       characteristicIndex={selectedCharacteristicIndex}
                       attributeIndex={selectedAttributeIndex}
-                      useReasonCodes={useReasonCodes}
+                      areReasonCodesUsed={areReasonCodesUsed}
                       onCancel={onViewOverviewView}
                       onCommit={(_index, _content) => {
                         if (_index === undefined) {
