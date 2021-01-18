@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { AllScorecardActions, ScorecardReducer } from "./ScorecardReducer";
+import { ScorecardReducer } from "./ScorecardReducer";
 import { DelegatingModelReducer } from "./DelegatingModelReducer";
 import mergeReducers from "combine-reducer";
 import { CharacteristicsReducer } from "./CharacteristicsReducer";
@@ -35,9 +35,9 @@ interface ModelPayload {
 
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
-export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | AllScorecardActions> = (
+export const ModelReducer: HistoryAwareReducer<Model[], AllActions> = (
   service: HistoryService
-): Reducer<Model[], ModelActions | AllScorecardActions> => {
+): Reducer<Model[], AllActions> => {
   const scorecardReducer = mergeReducers(ScorecardReducer(service), {
     MiningSchema: mergeReducers(MiningSchemaReducer(service), { MiningField: MiningSchemaFieldReducer(service) }),
     Output: mergeReducers(OutputReducer(service), { OutputField: OutputFieldReducer(service) }),
@@ -64,7 +64,7 @@ export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | AllScorec
     ])
   );
 
-  return (state: Model[], action: ModelActions | AllScorecardActions) => {
+  return (state: Model[], action: AllActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
         return service.mutate(state, "models", draft => {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { DataDictionary, DataType, FieldName, OpType } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
@@ -22,6 +22,7 @@ interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
     readonly name?: string;
     readonly type: DataType;
+    readonly optype: OpType;
   };
   [Actions.DeleteDataDictionaryField]: {
     readonly index: number;
@@ -37,51 +38,39 @@ interface DataDictionaryPayload {
 
 export type DataDictionaryActions = ActionMap<DataDictionaryPayload>[keyof ActionMap<DataDictionaryPayload>];
 
-export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDictionaryActions> = (
+export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, AllActions> = (
   service: HistoryService
-): Reducer<DataDictionary, DataDictionaryActions> => {
-  return (state: DataDictionary, action: DataDictionaryActions) => {
+): Reducer<DataDictionary, AllActions> => {
+  return (state: DataDictionary, action: AllActions) => {
     switch (action.type) {
       case Actions.AddDataDictionaryField:
-        return service.mutate(state, "DataDictionary", draft => {
-          let opType: OpType;
-          switch (action.payload.type) {
-            case "boolean":
-            case "string":
-              opType = "categorical";
-              break;
-            case "double":
-            case "float":
-            case "integer":
-              opType = "continuous";
-              break;
-            default:
-              opType = "continuous";
-              break;
-          }
+        service.batch(state, "DataDictionary", draft => {
           draft.DataField.push({
             name: action.payload.name as FieldName,
             dataType: action.payload.type,
-            optype: opType
+            optype: action.payload.optype
           });
         });
+        break;
 
       case Actions.DeleteDataDictionaryField:
-        return service.mutate(state, "DataDictionary", draft => {
+        service.batch(state, "DataDictionary", draft => {
           const index = action.payload.index;
           if (index >= 0 && index < draft.DataField.length) {
             draft.DataField.splice(index, 1);
           }
         });
+        break;
 
       case Actions.ReorderDataDictionaryFields:
-        return service.mutate(state, "DataDictionary", draft => {
+        service.batch(state, "DataDictionary", draft => {
           const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
           draft.DataField.splice(action.payload.newIndex, 0, removed);
         });
+        break;
 
       case Actions.AddBatchDataDictionaryFields:
-        return service.mutate(state, "DataDictionary", draft => {
+        service.batch(state, "DataDictionary", draft => {
           action.payload.dataDictionaryFields.forEach(name => {
             draft.DataField.push({
               name,

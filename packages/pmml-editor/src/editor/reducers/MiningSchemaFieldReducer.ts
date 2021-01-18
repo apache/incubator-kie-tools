@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Reducer } from "react";
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import {
   FieldName,
@@ -46,13 +46,26 @@ interface MiningSchemaFieldPayload {
 
 export type MiningSchemaFieldActions = ActionMap<MiningSchemaFieldPayload>[keyof ActionMap<MiningSchemaFieldPayload>];
 
-export const MiningSchemaFieldReducer: HistoryAwareReducer<MiningField[], MiningSchemaFieldActions> = (
+export const MiningSchemaFieldReducer: HistoryAwareReducer<MiningField[], AllActions> = (
   service: HistoryService
-): Reducer<MiningField[], MiningSchemaFieldActions> => {
-  return (state: MiningField[], action: MiningSchemaFieldActions) => {
+): Reducer<MiningField[], AllActions> => {
+  return (state: MiningField[], action: AllActions) => {
     switch (action.type) {
+      case Actions.UpdateDataDictionaryField:
+        state.forEach((mf, index) => {
+          if (mf.name === action.payload.originalName) {
+            service.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
+              draft[index] = {
+                ...draft[index],
+                name: action.payload.dataField.name
+              };
+            });
+          }
+        });
+        break;
+
       case Actions.UpdateMiningSchemaField:
-        return service.mutate(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
           const miningSchemaIndex = action.payload.miningSchemaIndex;
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
             draft[miningSchemaIndex] = {

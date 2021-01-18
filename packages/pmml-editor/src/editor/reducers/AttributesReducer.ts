@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
@@ -54,13 +54,13 @@ interface AttributesPayload {
 
 export type AttributesActions = ActionMap<AttributesPayload>[keyof ActionMap<AttributesPayload>];
 
-export const AttributesReducer: HistoryAwareReducer<Attribute[], AttributesActions> = (
+export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
   service: HistoryService
-): Reducer<Attribute[], AttributesActions> => {
-  return (state: Attribute[], action: AttributesActions) => {
+): Reducer<Attribute[], AllActions> => {
+  return (state: Attribute[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_AddAttribute:
-        return service.mutate(
+        service.batch(
           state,
           `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
           draft => {
@@ -71,9 +71,10 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AttributesActio
             });
           }
         );
+        break;
 
       case Actions.Scorecard_DeleteAttribute:
-        return service.mutate(
+        service.batch(
           state,
           `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
           draft => {
@@ -83,9 +84,10 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AttributesActio
             }
           }
         );
+        break;
 
       case Actions.Scorecard_UpdateAttribute:
-        return service.mutate(
+        service.batch(
           state,
           `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
           draft => {

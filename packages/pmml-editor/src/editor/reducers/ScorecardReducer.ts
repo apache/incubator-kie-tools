@@ -54,12 +54,13 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
   return (state: Scorecard, action: ScorecardActions) => {
     switch (action.type) {
       case Actions.Scorecard_SetModelName:
-        return service.mutate(state, `models[${action.payload.modelIndex}]`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
           draft.modelName = action.payload.modelName;
         });
+        break;
 
       case Actions.Scorecard_SetCoreProperties:
-        return service.mutate(state, `models[${action.payload.modelIndex}]`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
           draft.isScorable = action.payload.isScorable;
           draft.functionName = action.payload.functionName;
           draft.algorithmName = action.payload.algorithmName;

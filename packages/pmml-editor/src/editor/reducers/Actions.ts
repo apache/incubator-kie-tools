@@ -40,6 +40,7 @@ export type ActionMap<M extends { [index: string]: any }> = {
 };
 
 export enum Actions {
+  Refresh = "REFRESH",
   SetVersion = "SET_VERSION",
   DeleteModel = "DELETE_MODEL",
   AddDataDictionaryField = "DATA_DICTIONARY_ADD_FIELD",

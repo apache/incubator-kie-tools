@@ -24,13 +24,14 @@ import { AttributesTable, IndexedCharacteristic } from "../organisms";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { OperationContext } from "../../../PMMLEditor";
+import { HistoryContext, OperationContext } from "../../../PMMLEditor";
+import { useBatchDispatch } from "../../../history";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
@@ -44,7 +45,7 @@ interface CharacteristicsTableEditRowProps {
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
   const {
     modelIndex,
-    useReasonCodes,
+    areReasonCodesUsed,
     isBaselineScoreRequired,
     characteristic,
     validateCharacteristicName,
@@ -57,9 +58,9 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const characteristicIndex = characteristic.index;
 
-  const dispatch = useDispatch();
-
   const { activeOperation } = React.useContext(OperationContext);
+  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -127,7 +128,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
       <Stack hasGutter={true}>
         <StackItem>
           <Split hasGutter={true}>
-            <SplitItem isFilled={!useReasonCodes}>
+            <SplitItem isFilled={!areReasonCodesUsed}>
               <FormGroup
                 label="Name"
                 isRequired={true}
@@ -135,7 +136,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 helperTextInvalid="Name must be unique and present"
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={name.valid ? "default" : "error"}
-                style={!useReasonCodes ? { width: "16em" } : {}}
+                style={!areReasonCodesUsed ? { width: "16em" } : {}}
               >
                 <TextInput
                   type="text"
@@ -161,7 +162,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 />
               </FormGroup>
             </SplitItem>
-            {useReasonCodes && (
+            {areReasonCodesUsed && (
               <>
                 <SplitItem>
                   <FormGroup label="Reason code" fieldId="characteristic-reason-code-helper">
@@ -235,6 +236,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             <FormGroup label="Attributes" fieldId="output-labels-helper">
               <AttributesTable
                 attributes={attributes}
+                areReasonCodesUsed={areReasonCodesUsed}
                 viewAttribute={viewAttribute}
                 deleteAttribute={attributeIndex => {
                   if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {

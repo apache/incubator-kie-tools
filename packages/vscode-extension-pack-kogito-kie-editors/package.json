@@ -110,10 +110,10 @@
     "compile": "webpack",
     "watch": "webpack",
     "test": "echo 'No tests to run.'",
-    "ui-test": "yarn run compile && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
+    "ui-test": "yarn run compile && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run build:fast",
-    "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run ui-test && yarn run package:prod",
+    "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
     "build:prod:windows": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
     "build:prod": "run-script-os"
   },

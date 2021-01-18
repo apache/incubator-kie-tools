@@ -29,7 +29,7 @@ export interface IndexedCharacteristic {
 
 interface CharacteristicsTableProps {
   modelIndex: number;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
   characteristics: IndexedCharacteristic[];
   selectedCharacteristicIndex: number | undefined;
@@ -46,7 +46,7 @@ interface CharacteristicsTableProps {
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const {
     modelIndex,
-    useReasonCodes,
+    areReasonCodesUsed,
     isBaselineScoreRequired,
     characteristics,
     selectedCharacteristicIndex,
@@ -114,21 +114,25 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
             }`}
           >
             {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
-              <CharacteristicsTableEditRow
-                modelIndex={modelIndex}
-                useReasonCodes={useReasonCodes}
-                isBaselineScoreRequired={isBaselineScoreRequired}
-                characteristic={ic}
-                validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
-                viewAttribute={viewAttribute}
-                onAddAttribute={onAddAttribute}
-                onCommitAndClose={onCommitAndClose}
-                onCommit={onCommit}
-                onCancel={onCancel}
-              />
+              <div ref={addCharacteristicRowRef}>
+                <CharacteristicsTableEditRow
+                  modelIndex={modelIndex}
+                  areReasonCodesUsed={areReasonCodesUsed}
+                  isBaselineScoreRequired={isBaselineScoreRequired}
+                  characteristic={ic}
+                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                  viewAttribute={viewAttribute}
+                  onAddAttribute={onAddAttribute}
+                  onCommitAndClose={onCommitAndClose}
+                  onCommit={onCommit}
+                  onCancel={onCancel}
+                />
+              </div>
             )}
             {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
               <CharacteristicsTableRow
+                areReasonCodesUsed={areReasonCodesUsed}
+                isBaselineScoreRequired={isBaselineScoreRequired}
                 characteristic={ic}
                 dataFields={dataFields}
                 onEdit={() => onEdit(ic.index)}
