@@ -105,7 +105,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleEditStatus = () => {
-    console.log("set edit status");
     onEdit?.(index);
   };
 
@@ -115,8 +114,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleNameSave = () => {
-    if (name.trim().length === 0) {
+    if (name.trim().length === 0 || validation !== "success") {
       setName(dataType.name);
+      setValidation("default");
     } else if (name !== dataType.name) {
       handleSave();
     }
@@ -150,6 +150,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       input?.focus();
       if (name.startsWith("New Data Type")) {
         input?.select();
+      }
+    } else {
+      if (validation !== "success") {
+        setName(dataType.name);
+        setValidation("default");
       }
     }
   }, [editingIndex]);
