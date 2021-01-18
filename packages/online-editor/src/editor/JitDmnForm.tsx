@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { useCallback, useContext } from "react";
+import React, { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { JitDmn } from "../common/JitDmn";
-import { GlobalContext } from "../common/GlobalContext";
 import { AutoForm } from "uniforms-unstyled";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 
@@ -27,23 +26,66 @@ interface Props {
 }
 
 export function JitDmnForm(props: Props) {
+  const [jitResponse, setJitResponse] = useState<object>();
+
   const onSubmit = useCallback(
-    (context: any) => {
+    ({ context }: any) => {
       if (props.editorContent) {
         props.editorContent().then((model: string) => {
           JitDmn.validateForm({ context, model })
             .then(res => res.json())
-            .then(json => console.log(json))
-            .catch(() => console.log("errorrr"));
+            .then(setJitResponse)
+            .catch(() => console.log("Failed to load validate the form"));
         });
       }
     },
     [props.editorContent]
   );
 
+  useEffect(() => {
+    console.log(jitResponse);
+  }, [jitResponse]);
+
   return (
-    <div style={{ position: "absolute" }}>
-      {props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={onSubmit} />}
+    <div>
+      <div style={{ border: "solid", borderColor: "black" }}>
+        {props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={onSubmit} />}
+      </div>
+      {jitResponse && (
+        <>
+          <h2>Response</h2>
+          <div>
+            {[...Object.entries(jitResponse)].map(([key, value]: any[]) => (
+              <div key={key} style={{ border: "solid", borderColor: "blue" }}>
+                {typeof value === "object" ? (
+                  <>
+                    <p>{key}</p>
+                    {[...Object.entries(value)].map(([key2, value2]: any[]) => (
+                      <div key={key2}>
+                        <p style={{ display: "inline" }}>- {key2} : </p>
+                        {value2 ? (
+                          <p style={{ display: "inline" }}>{value2}</p>
+                        ) : (
+                          <p style={{ display: "inline" }}>Not provided</p>
+                        )}
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <p style={{ display: "inline" }}>{key} : </p>
+                    {value ? (
+                      <p style={{ display: "inline" }}>{value}</p>
+                    ) : (
+                      <p style={{ display: "inline" }}>Not provided</p>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

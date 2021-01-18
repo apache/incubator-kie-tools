@@ -64,9 +64,8 @@ export enum Modal {
 
 enum JitDmnStatus {
   DISABLED,
-  INSTRUCTIONS,
-  FORM,
-  LOADING
+  RUNNING,
+  NOT_RUNNING
 }
 
 interface Props {
@@ -258,45 +257,39 @@ export function EditorPage(props: Props) {
 
   const [runJitDmn, setRunJitDmn] = useState(false);
   const [jitDmnSchema, setJitDmnSchema] = useState<JSONSchemaBridge>();
-  const [jitDmnStatus, setJitDmnStatus] = useState(JitDmnStatus.LOADING);
+  const [jitDmnStatus, setJitDmnStatus] = useState(JitDmnStatus.DISABLED);
 
-  const checkJitServer = useCallback(
-    () =>
-      JitDmn.checkServer().then(() => {
+  const checkJitServer = useCallback(() => {
+    return JitDmn.checkServer()
+      .then(() => setJitDmnStatus(JitDmnStatus.RUNNING))
+      .catch(() => setJitDmnStatus(JitDmnStatus.NOT_RUNNING));
+  }, []);
+
+  useEffect(() => {
+    if (context.file.fileExtension === "dmn") {
+      let interval: number | undefined;
+      if (runJitDmn) {
+        interval = window.setInterval(checkJitServer, 500);
+      }
+
+      if (runJitDmn && jitDmnStatus === JitDmnStatus.RUNNING) {
         editor
           ?.getContent()
           .then(content => JitDmn.getFormSchema(content ?? ""))
-          .then(schema => {
-            setJitDmnSchema(schema);
-            setJitDmnStatus(JitDmnStatus.FORM);
-          })
-          .catch(console.error);
-      }),
-    [editor]
-  );
+          .then(schema => setJitDmnSchema(schema));
+      }
 
-  useEffect(() => {
-    if (!runJitDmn) {
-      setJitDmnStatus(JitDmnStatus.DISABLED);
-    }
+      if (!runJitDmn) {
+        setJitDmnStatus(JitDmnStatus.DISABLED);
+      }
 
-    if (runJitDmn && jitDmnStatus === JitDmnStatus.INSTRUCTIONS) {
-      const interval = setInterval(checkJitServer, 15000);
       return () => {
-        clearInterval(interval);
+        if (interval) {
+          window.clearInterval(interval);
+        }
       };
     }
-  }, [runJitDmn, jitDmnStatus]);
-
-  // TODO: ERROR HANDLER
-  useEffect(() => {
-    if (runJitDmn && context.file.fileExtension === "dmn") {
-      setJitDmnStatus(JitDmnStatus.LOADING);
-      checkJitServer().catch(() => {
-        setJitDmnStatus(JitDmnStatus.INSTRUCTIONS);
-      });
-    }
-  }, [context.file, runJitDmn]);
+  }, [editor, runJitDmn, jitDmnStatus, checkJitServer]);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
@@ -446,10 +439,10 @@ export function EditorPage(props: Props) {
           <DrawerContent
             panelContent={
               <DrawerPanelContent style={{ padding: "20px" }}>
-                {jitDmnStatus === JitDmnStatus.FORM && (
+                {jitDmnStatus === JitDmnStatus.RUNNING && (
                   <JitDmnForm jsonSchemaBridge={jitDmnSchema} editorContent={editor?.getContent} />
                 )}
-                {jitDmnStatus === JitDmnStatus.INSTRUCTIONS && <p>Failed to connect with you JIT server.</p>}
+                {jitDmnStatus === JitDmnStatus.NOT_RUNNING && <p>Failed to connect with you JIT server.</p>}
               </DrawerPanelContent>
             }
           >
