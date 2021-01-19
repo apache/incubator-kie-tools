@@ -23,12 +23,13 @@ import { OperationContext } from "../../../PMMLEditor";
 
 interface AttributesTableProps {
   attributes: Attribute[];
+  areReasonCodesUsed: boolean;
   viewAttribute: (index: number | undefined) => void;
   deleteAttribute: (index: number) => void;
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { attributes, viewAttribute, deleteAttribute } = props;
+  const { attributes, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
 
   const { setActiveOperation } = React.useContext(OperationContext);
 
@@ -55,6 +56,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
             key={index}
             index={index}
             attribute={attribute}
+            areReasonCodesUsed={areReasonCodesUsed}
             dataFields={dataFields}
             onEdit={() => onEdit(index)}
             onDelete={() => onDelete(index)}

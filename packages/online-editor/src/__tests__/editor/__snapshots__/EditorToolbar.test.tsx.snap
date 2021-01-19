@@ -5,6 +5,9 @@ exports[`EditorToolbar file actions Gist it button should be disable without tok
   aria-expanded="true"
   aria-haspopup="true"
   class="pf-c-dropdown__toggle pf-m-plain"
+  data-ouia-component-id="OUIA-Generated-DropdownToggle-7"
+  data-ouia-component-type="PF4/DropdownToggle"
+  data-ouia-safe="true"
   data-testid="share-menu"
   id="share-id-lg"
   type="button"
@@ -28,7 +31,6 @@ exports[`EditorToolbar file actions Gist it button should be disable without tok
     >
       <path
         d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-        transform=""
       />
     </svg>
   </span>
@@ -64,7 +66,6 @@ exports[`EditorToolbar file actions Set GitHub token button should open a GitHub
       >
         <path
           d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"
-          transform=""
         />
       </svg>
     </a>

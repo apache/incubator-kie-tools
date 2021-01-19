@@ -39,13 +39,13 @@ interface AttributeEditorProps {
   modelIndex: number;
   characteristicIndex: number | undefined;
   attributeIndex: number | undefined;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   onCancel: () => void;
   onCommit: (index: number | undefined, content: AttributeEditorContent) => void;
 }
 
 export const AttributeEditor = (props: AttributeEditorProps) => {
-  const { modelIndex, characteristicIndex, attributeIndex, useReasonCodes, onCancel, onCommit } = props;
+  const { modelIndex, characteristicIndex, attributeIndex, areReasonCodesUsed, onCancel, onCommit } = props;
 
   const [text, setText] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -170,7 +170,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                   />
                 </FormGroup>
               </StackItem>
-              {useReasonCodes && (
+              {areReasonCodesUsed && (
                 <StackItem>
                   <FormGroup
                     label="Reason code"

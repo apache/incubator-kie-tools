@@ -20,11 +20,13 @@ import { toText } from "../../../reducers";
 
 interface CharacteristicLabelsProps {
   activeCharacteristic: Characteristic;
+  areReasonCodesUsed: boolean;
+  isBaselineScoreRequired: boolean;
   dataFields: DataField[];
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic, dataFields } = props;
+  const { activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired, dataFields } = props;
 
   return (
     <>
@@ -35,8 +37,10 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
           attributesToFullText(activeCharacteristic.Attribute, dataFields)
         )}
       {activeCharacteristic.reasonCode !== undefined &&
+        areReasonCodesUsed &&
         CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
       {activeCharacteristic.baselineScore !== undefined &&
+        isBaselineScoreRequired &&
         CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
     </>
   );

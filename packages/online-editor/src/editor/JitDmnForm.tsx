@@ -19,6 +19,13 @@ import { useCallback } from "react";
 import { JitDmn } from "../common/JitDmn";
 import { AutoForm } from "uniforms-unstyled";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import {
+  DescriptionList,
+  DescriptionListTerm,
+  DescriptionListGroup,
+  DescriptionListDescription,
+  Title
+} from "@patternfly/react-core";
 
 interface Props {
   editorContent: (() => Promise<string>) | undefined;
@@ -34,7 +41,10 @@ export function JitDmnForm(props: Props) {
         props.editorContent().then((model: string) => {
           JitDmn.validateForm({ context, model })
             .then(res => res.json())
-            .then(setJitResponse)
+            .then(json => {
+              setJitResponse(json);
+              console.log(json);
+            })
             .catch(() => console.log("Failed to load validate the form"));
         });
       }
@@ -48,44 +58,45 @@ export function JitDmnForm(props: Props) {
 
   return (
     <div>
-      <div style={{ border: "solid", borderColor: "black" }}>
-        {props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={onSubmit} />}
-      </div>
+      {props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={onSubmit} />}
       {jitResponse && (
-        <>
-          <h2>Response</h2>
-          <div>
-            {[...Object.entries(jitResponse)].map(([key, value]: any[]) => (
-              <div key={key} style={{ border: "solid", borderColor: "blue" }}>
-                {typeof value === "object" ? (
-                  <>
-                    <p>{key}</p>
-                    {[...Object.entries(value)].map(([key2, value2]: any[]) => (
-                      <div key={key2}>
-                        <p style={{ display: "inline" }}>- {key2} : </p>
-                        {value2 ? (
-                          <p style={{ display: "inline" }}>{value2}</p>
-                        ) : (
-                          <p style={{ display: "inline" }}>Not provided</p>
-                        )}
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    <p style={{ display: "inline" }}>{key} : </p>
-                    {value ? (
-                      <p style={{ display: "inline" }}>{value}</p>
-                    ) : (
-                      <p style={{ display: "inline" }}>Not provided</p>
-                    )}
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
+        <DescriptionList isHorizontal={true}>
+          <RecursiveJitResponse someObject={jitResponse} withoutPadding={false} />
+        </DescriptionList>
       )}
+    </div>
+  );
+}
+
+interface RecursiveJitResponseProps {
+  someObject: object;
+  withoutPadding: boolean;
+}
+
+function RecursiveJitResponse(props: RecursiveJitResponseProps) {
+  return (
+    <div style={{ padding: "10px" }}>
+      {[...Object.entries(props.someObject)].map(([key, value]: any[]) => (
+        <>
+          {typeof value === "object" && value !== null ? (
+            <>
+              <Title headingLevel={"h5"}>{key}</Title>
+              <RecursiveJitResponse someObject={value} withoutPadding={true} />
+            </>
+          ) : (
+            <div style={props.withoutPadding ? {} : { padding: "10px" }}>
+              <DescriptionListGroup>
+                <DescriptionListTerm>{key}</DescriptionListTerm>
+                {value ? (
+                  <DescriptionListDescription>{value}</DescriptionListDescription>
+                ) : (
+                  <DescriptionListDescription>Not provided</DescriptionListDescription>
+                )}
+              </DescriptionListGroup>
+            </div>
+          )}
+        </>
+      ))}
     </div>
   );
 }

@@ -23,13 +23,14 @@ import { toText } from "../../../reducers";
 interface AttributesTableRowProps {
   index: number;
   attribute: Attribute;
+  areReasonCodesUsed: boolean;
   dataFields: DataField[];
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
-  const { index, attribute, dataFields, onEdit, onDelete } = props;
+  const { index, attribute, areReasonCodesUsed, dataFields, onEdit, onDelete } = props;
 
   return (
     <article
@@ -49,7 +50,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           <pre>{toText(attribute.predicate, dataFields)}</pre>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <AttributeLabels activeAttribute={attribute} />
+          <AttributeLabels activeAttribute={attribute} areReasonCodesUsed={areReasonCodesUsed} />
         </SplitItem>
         <SplitItem>
           <AttributesTableAction onDelete={onDelete} />

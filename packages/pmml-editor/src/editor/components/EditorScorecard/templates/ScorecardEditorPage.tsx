@@ -27,11 +27,12 @@ import {
   Scorecard
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicsContainer, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
-import { getModelName } from "../../..";
+import { getModelName, HistoryContext } from "../../..";
 import { Actions } from "../../../reducers";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "./ScorecardEditorPage.scss";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
+import { useBatchDispatch } from "../../../history";
 
 interface ScorecardEditorPageProps {
   path: string;
@@ -41,7 +42,8 @@ interface ScorecardEditorPageProps {
 export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const { modelIndex } = props;
 
-  const dispatch = useDispatch();
+  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [filter, setFilter] = useState("");
 
@@ -148,7 +150,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               baselineScore={model.baselineScore}
               baselineMethod={model.baselineMethod ?? "other"}
               initialScore={model.initialScore}
-              useReasonCodes={model.useReasonCodes ?? true}
+              areReasonCodesUsed={model.useReasonCodes ?? true}
               reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
               commit={_props => {
                 dispatch({
@@ -161,7 +163,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                     baselineScore: _props.baselineScore,
                     baselineMethod: _props.baselineMethod,
                     initialScore: _props.initialScore,
-                    useReasonCodes: _props.useReasonCodes,
+                    useReasonCodes: _props.areReasonCodesUsed,
                     reasonCodeAlgorithm: _props.reasonCodeAlgorithm
                   }
                 });
@@ -174,7 +176,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               <div>
                 <CharacteristicsContainer
                   modelIndex={modelIndex}
-                  useReasonCodes={model.useReasonCodes ?? true}
+                  areReasonCodesUsed={model.useReasonCodes ?? true}
                   isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
                   characteristics={characteristics?.Characteristic ?? []}
                   filteredCharacteristics={filteredCharacteristics}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Reducer } from "react";
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { FieldName, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
 
@@ -31,21 +31,23 @@ interface MiningSchemaPayload {
 
 export type MiningSchemaActions = ActionMap<MiningSchemaPayload>[keyof ActionMap<MiningSchemaPayload>];
 
-export const MiningSchemaReducer: HistoryAwareReducer<MiningSchema, MiningSchemaActions> = (
+export const MiningSchemaReducer: HistoryAwareReducer<MiningSchema, AllActions> = (
   service: HistoryService
-): Reducer<MiningSchema, MiningSchemaActions> => {
-  return (state: MiningSchema, action: MiningSchemaActions) => {
+): Reducer<MiningSchema, AllActions> => {
+  return (state: MiningSchema, action: AllActions) => {
     switch (action.type) {
       case Actions.AddMiningSchemaFields:
-        return service.mutate(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
           action.payload.names.forEach(name => {
             draft.MiningField.push({
               name: name
             });
           });
         });
+        break;
+
       case Actions.DeleteMiningSchemaField:
-        return service.mutate(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
           const miningSchemaIndex = action.payload.miningSchemaIndex;
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
             draft.MiningField.splice(miningSchemaIndex, 1);

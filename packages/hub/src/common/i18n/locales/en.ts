@@ -36,7 +36,7 @@ export const en: HubI18n = {
     title: `${en_common.names.bpmn}, ${en_common.names.dmn} and ${en_common.names.testScenario} Editors for ${en_common.names.github}`,
     description: `Install the ${en_common.names.chromeExtensionName} on ${en_common.names.chrome} browser`,
     modal: {
-      title: `Install ${en_common.names.chromeExtensionName} on ${en_common.names.chrome} browser`,
+      title: `Install ${en_common.names.chromeExtensionName}`,
       chromeRequirement: `To be able to install and use the ${en_common.names.chromeExtensionName} it's necessary to have the ${en_common.names.chrome} browser installed on your computer.`,
       chromeDownload: "In case you don't have it, you can download it",
       here: "here",

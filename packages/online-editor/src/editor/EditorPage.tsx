@@ -269,7 +269,13 @@ export function EditorPage(props: Props) {
     if (context.file.fileExtension === "dmn") {
       let interval: number | undefined;
       if (runJitDmn) {
-        interval = window.setInterval(checkJitServer, 500);
+        interval = window.setInterval(
+          () =>
+            JitDmn.checkServer()
+              .then(() => setJitDmnStatus(JitDmnStatus.RUNNING))
+              .catch(() => setJitDmnStatus(JitDmnStatus.NOT_RUNNING)),
+          500
+        );
       }
 
       if (runJitDmn && jitDmnStatus === JitDmnStatus.RUNNING) {
@@ -289,7 +295,7 @@ export function EditorPage(props: Props) {
         }
       };
     }
-  }, [editor, runJitDmn, jitDmnStatus, checkJitServer]);
+  }, [editor, runJitDmn, jitDmnStatus]);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);

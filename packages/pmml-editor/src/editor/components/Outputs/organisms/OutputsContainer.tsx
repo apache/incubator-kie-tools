@@ -15,7 +15,6 @@
  */
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
 import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
@@ -28,7 +27,8 @@ import { Operation } from "../../EditorScorecard";
 import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import "./OutputsContainer.scss";
 import { findIncrementalName } from "../../../PMMLModelHelper";
-import { OperationContext } from "../../../PMMLEditor";
+import { HistoryContext, OperationContext } from "../../../PMMLEditor";
+import { useBatchDispatch } from "../../../history";
 import get = Reflect.get;
 import set = Reflect.set;
 
@@ -48,9 +48,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const [selectedOutputIndex, setSelectedOutputIndex] = useState<number | undefined>(undefined);
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
-  const dispatch = useDispatch();
-
   const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const editItem: OutputField | undefined = useMemo(() => {
     if (selectedOutputIndex === undefined) {

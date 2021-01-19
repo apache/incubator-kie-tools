@@ -16,38 +16,63 @@
 import { HistoryAwareModelReducer, HistoryService, ModelReducerBinding } from "../history";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { AllScorecardActions } from "./ScorecardReducer";
-import { getModelType, ModelType } from "..";
+import { getModelType, ModelType } from "../PMMLModelHelper";
+import { AllActions } from "./Actions";
+import get = Reflect.get;
 
-export const DelegatingModelReducer: HistoryAwareModelReducer<AllScorecardActions> = (
+const reduce = (model: Model, action: AllActions, reducers: Map<ModelType, ModelReducerBinding<any, any>>) => {
+  const modelType = getModelType(model);
+  const reducer = reducers.get(modelType);
+  if (reducer !== undefined) {
+    return reducer.factory(reducer.reducer(model, action));
+  }
+  return model;
+};
+
+export const DelegatingModelReducer: HistoryAwareModelReducer<AllActions> = (
   service: HistoryService,
   reducers: Map<ModelType, ModelReducerBinding<any, any>>
-): Reducer<Model[], AllScorecardActions> => {
-  return (state: Model[], action: AllScorecardActions) => {
+): Reducer<Model[], AllActions> => {
+  return (state: Model[], action: AllActions) => {
     //Redux calls all reducers when the Store is created to allow initialisation.
     if (state === undefined || action === undefined || action.payload === undefined) {
       return state;
     }
 
-    //Delegate actions to model specific reducers
-    const modelIndex: number = action.payload.modelIndex;
+    //The sub-reducers may have created new instances of model components however
+    //this reducer needs to return a *new* Model[] instance in order for a state change
+    //to be correctly detected.
+    let changed = false;
+    const newState: Model[] = [];
+    state.forEach(m => newState.push(m));
+    const modelIndex: number = get(action.payload, "modelIndex");
+
+    //Delegate Model agnostic actions to all Model reducers
+    if (modelIndex === undefined) {
+      state.forEach((model, index) => {
+        const modelAction = Object.assign({}, action, { payload: { ...action.payload, modelIndex: index } });
+        const newModel = reduce(model, modelAction, reducers);
+        if (model !== newModel) {
+          changed = true;
+          newState[index] = newModel;
+        }
+      });
+    }
+
+    //Delegate Model specific actions to Model specific reducers
     if (modelIndex >= 0 && modelIndex < state.length) {
       const model = state[modelIndex];
-      const modelType = getModelType(model);
-      const reducer = reducers.get(modelType);
-      if (reducer) {
-        const newState = reducer.reducer(model, action);
-        //The sub-reducer may have created new instances of the model components however
-        //this reducer needs to return a *new* Model[] instance in order for a state change
-        //to be correctly detected.
-        if (newState !== model) {
-          const newModels: Model[] = [];
-          state.forEach(m => newModels.push(m));
-          newModels[modelIndex] = reducer.factory(newState);
-          return newModels;
-        }
+      const newModel = reduce(model, action, reducers);
+      if (model !== newModel) {
+        changed = true;
+        newState[modelIndex] = newModel;
       }
     }
+
+    if (changed) {
+      return newState;
+    }
+
     return state;
   };
 };
