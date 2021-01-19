@@ -88,7 +88,14 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (value !== typeSelection) {
       setTypeSelection(value as DDDataField["type"]);
       setIsTypeSelectOpen(false);
-      onSave({ name: name.trim(), type: value as DDDataField["type"], optype: optypeSelection }, index);
+      const updatedItem: DDDataField = { ...dataType, type: value as DDDataField["type"] };
+      if (value === "string" && optypeSelection === "ordinal") {
+        updatedItem.constraints = {
+          type: "Enumeration",
+          value: [""]
+        };
+      }
+      onSave(updatedItem, index);
     }
   };
 
@@ -100,16 +107,15 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (value !== optypeSelection) {
       setOptypeSelection(value as DDDataField["optype"]);
       setIsOptypeSelectOpen(false);
-      const updatedItem: DDDataField = {
-        name: name.trim(),
-        type: typeSelection,
-        optype: value as DDDataField["optype"]
-      };
-      if (value === "ordinal" && typeSelection === "string") {
+      const updatedItem: DDDataField = { ...dataType, optype: value as DDDataField["optype"] };
+      if ((value === "ordinal" && typeSelection === "string") || (value === "ordinal" && dataType.isCyclic)) {
         updatedItem.constraints = {
           type: "Enumeration",
           value: [""]
         };
+      }
+      if (value === "categorical" && dataType.isCyclic !== undefined) {
+        delete updatedItem.isCyclic;
       }
       onSave(updatedItem, index);
     }

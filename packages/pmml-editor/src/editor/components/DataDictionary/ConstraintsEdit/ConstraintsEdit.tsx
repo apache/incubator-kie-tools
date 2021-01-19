@@ -33,7 +33,11 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const { dataType, dataFieldIndex, onSave } = props;
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeSelectIsOpen, setTypeSelectIsOpen] = useState(false);
-  const constraintsTypes = [{ value: "", isPlaceholder: true }, { value: "Range" }, { value: "Enumeration" }];
+  const constraintsTypes = [
+    { value: "", label: "Select a type" },
+    { value: "Range", label: "Interval" },
+    { value: "Enumeration", label: "Value" }
+  ];
   const [ranges, setRanges] = useState<RangeConstraint[] | undefined>(
     dataType.constraints?.type === "Range" ? dataType.constraints.value : undefined
   );
@@ -44,6 +48,21 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     form: "default",
     fields: { start: "default", end: "default", enums: "default" }
   });
+
+  const isConstraintOptionDisabled = (option: string) => {
+    if (dataType.isCyclic) {
+      if ((option === "" || option === "Range") && dataType.optype === "ordinal") {
+        return true;
+      }
+      if (option === "" && dataType.optype === "continuous") {
+        return true;
+      }
+    }
+    if (option === "Range" && dataType.type === "string") {
+      return true;
+    }
+    return false;
+  };
 
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {
@@ -196,8 +215,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
             placeholderText={"Select a type"}
           >
             {constraintsTypes.map((item, index) => (
-              <SelectOption key={index} value={item.value}>
-                {item.isPlaceholder ? "Select a type" : item.value}
+              <SelectOption key={index} value={item.value} isDisabled={isConstraintOptionDisabled(item.value)}>
+                {item.label}
               </SelectOption>
             ))}
           </Select>
@@ -205,7 +224,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       </FormGroup>
       {constraintType === "Range" && ranges !== undefined && (
         <Card isCompact={true} style={{ margin: "1em 0" }}>
-          <CardTitle>Range Constraint</CardTitle>
+          <CardTitle>Interval Constraint</CardTitle>
           <CardBody>
             <ConstraintsRangeEdit
               dataFieldIndex={dataFieldIndex}
@@ -220,7 +239,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       )}
       {constraintType === "Enumeration" && enums !== undefined && (
         <Card isCompact={true} style={{ margin: "1em 0" }}>
-          <CardTitle>Enumerations List</CardTitle>
+          <CardTitle>Values Constraint</CardTitle>
           <CardBody>
             <ConstraintsEnumEdit
               enumerations={enums}

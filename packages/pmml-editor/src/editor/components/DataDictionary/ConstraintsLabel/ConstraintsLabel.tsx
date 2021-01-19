@@ -57,12 +57,10 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
           <ValidationIndicator validations={validations} />
         </span>
       )}
-      {validations.length === 0 && (
-        <Label color="cyan" className="constraints-label" {...labelProps}>
-          <strong>Constraints:</strong>&nbsp;
-          <span>{constraintValue}</span>
-        </Label>
-      )}
+      <Label color="cyan" className="constraints-label" {...labelProps}>
+        <strong>Constraints:</strong>&nbsp;
+        <span>{constraintValue}</span>
+      </Label>
     </>
   );
 };

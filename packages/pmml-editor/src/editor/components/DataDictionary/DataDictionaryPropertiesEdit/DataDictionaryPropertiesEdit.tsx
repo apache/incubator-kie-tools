@@ -28,12 +28,14 @@ import {
   StackItem,
   TextInput,
   Title,
-  TitleSizes
+  TitleSizes,
+  Tooltip
 } from "@patternfly/react-core";
+import { HelpIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
-import "./DataDictionaryPropertiesEdit.scss";
 import { useValidationService } from "../../../validation";
+import "./DataDictionaryPropertiesEdit.scss";
 
 interface DataDictionaryPropertiesEditProps {
   dataType: DDDataField;
@@ -55,6 +57,24 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
     setMissingValue(dataType.missingValue ?? "");
     setInvalidValue(dataType.invalidValue ?? "");
   }, [dataType]);
+
+  const saveCyclicProperty = (value: DDDataField["isCyclic"]) => {
+    setIsCyclic(value);
+    const updatedDataType: Partial<DDDataField> = {
+      isCyclic: value
+    };
+    if (value === true) {
+      if (dataType.optype === "ordinal" && dataType.constraints?.type !== "Enumeration") {
+        updatedDataType.constraints = {
+          type: "Enumeration",
+          value: [""]
+        };
+      }
+    }
+    onSave(updatedDataType);
+  };
+
+  const isOptypeDisabled = useMemo(() => dataType.optype === "categorical", [dataType.optype]);
 
   const validationService = useValidationService().service;
   const validations = useMemo(() => validationService.get(`DataDictionary.DataField[${dataFieldIndex}]`), [dataType]);
@@ -106,45 +126,55 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                 label="Cyclic Type"
                 fieldId="is-cyclic"
                 isInline={true}
+                labelIcon={
+                  dataType.optype === "categorical" ? (
+                    <Tooltip content={"Categorical fields cannot be cyclic"}>
+                      <button
+                        aria-label="More info for name field"
+                        onClick={e => e.preventDefault()}
+                        aria-describedby="simple-form-name"
+                        className="pf-c-form__group-label-help"
+                      >
+                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      </button>
+                    </Tooltip>
+                  ) : (
+                    <></>
+                  )
+                }
               >
                 <Radio
                   isChecked={isCyclic === true}
                   name="isCyclic"
                   onChange={() => {
-                    setIsCyclic(true);
-                    onSave({
-                      isCyclic: true
-                    });
+                    saveCyclicProperty(true);
                   }}
                   label="Yes"
                   id="isCyclic"
                   value="isCyclic"
+                  isDisabled={isOptypeDisabled}
                 />
                 <Radio
                   isChecked={isCyclic === false}
                   name="isNotCyclic"
                   onChange={() => {
-                    setIsCyclic(false);
-                    onSave({
-                      isCyclic: false
-                    });
+                    saveCyclicProperty(false);
                   }}
                   label="No"
                   id="isNotCyclic"
                   value="isNotCyclic"
+                  isDisabled={isOptypeDisabled}
                 />
                 <Radio
                   isChecked={isCyclic === undefined}
                   name="cyclicNotSet"
                   onChange={() => {
-                    setIsCyclic(undefined);
-                    onSave({
-                      isCyclic: undefined
-                    });
+                    saveCyclicProperty(undefined);
                   }}
                   label="Not Set"
                   id="cyclicNotSet"
                   value="cyclicNotSet"
+                  isDisabled={isOptypeDisabled}
                 />
               </FormGroup>
             </SplitItem>
