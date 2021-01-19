@@ -176,11 +176,10 @@ const RangeEdit = (props: RangeEditProps) => {
   return (
     <section ref={rangeRef}>
       <Split hasGutter={true} className="constraints__range-item">
-        <SplitItem>
+        <SplitItem isFilled={true}>
           <FormGroup
             label="Start Value"
             fieldId={`start-value-${index}`}
-            style={{ width: 320 }}
             validated={validations.length === 0 ? "default" : "error"}
             helperTextInvalid={validations[0] ? validations[0].message : ""}
           >
@@ -212,7 +211,6 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="End Value"
             fieldId={`end-value-${index}`}
-            style={{ width: 320 }}
             validated={validations.length === 0 ? "default" : "error"}
             helperTextInvalid={validations[0] ? validations[0].message : ""}
           >
