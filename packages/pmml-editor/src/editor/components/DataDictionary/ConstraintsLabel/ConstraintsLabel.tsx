@@ -1,10 +1,11 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { Label, LabelProps } from "@patternfly/react-core";
+import { every } from "lodash";
 import { Constraints } from "../DataDictionaryContainer/DataDictionaryContainer";
-import "./ConstraintsLabel.scss";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 import { useValidationService } from "../../../validation";
+import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {
   editingIndex?: number;
@@ -37,6 +38,9 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
           .join(" ");
 
       case "Enumeration":
+        if (every(constraints.value, value => value === "")) {
+          return <em>No values</em>;
+        }
         return constraints.value.map(item => `"${item}"`).join(", ");
       default:
         return "";
@@ -53,10 +57,12 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
           <ValidationIndicator validations={validations} />
         </span>
       )}
-      <Label color="orange" className="constraints-label" {...labelProps}>
-        <strong>Constraints:</strong>&nbsp;
-        <span>{constraintValue}</span>
-      </Label>
+      {validations.length === 0 && (
+        <Label color="cyan" className="constraints-label" {...labelProps}>
+          <strong>Constraints:</strong>&nbsp;
+          <span>{constraintValue}</span>
+        </Label>
+      )}
     </>
   );
 };

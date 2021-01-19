@@ -100,7 +100,18 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (value !== optypeSelection) {
       setOptypeSelection(value as DDDataField["optype"]);
       setIsOptypeSelectOpen(false);
-      onSave({ name: name.trim(), type: typeSelection, optype: value as DDDataField["optype"] }, index);
+      const updatedItem: DDDataField = {
+        name: name.trim(),
+        type: typeSelection,
+        optype: value as DDDataField["optype"]
+      };
+      if (value === "ordinal" && typeSelection === "string") {
+        updatedItem.constraints = {
+          type: "Enumeration",
+          value: [""]
+        };
+      }
+      onSave(updatedItem, index);
     }
   };
 
