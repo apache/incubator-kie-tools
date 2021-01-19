@@ -504,8 +504,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
             addImportsTab(importsWidget);
         }
         baseView.hideBusyIndicator();
-        setOriginalHash(scenarioSimulationEditorPresenter.getJsonModel(model).hashCode());
         scenarioSimulationEditorPresenter.getModelSuccessCallbackMethod(dataManagementStrategy, model);
+        setOriginalHash(scenarioSimulationEditorPresenter.getJsonModel(model).hashCode());
     }
 
     protected void onBackgroundTabSelected() {

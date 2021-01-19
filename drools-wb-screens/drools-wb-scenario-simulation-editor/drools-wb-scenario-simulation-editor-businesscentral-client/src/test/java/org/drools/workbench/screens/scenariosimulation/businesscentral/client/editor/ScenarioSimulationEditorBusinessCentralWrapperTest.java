@@ -70,6 +70,7 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -100,10 +101,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -602,8 +605,10 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         /* Not possible to mock a new Instance, for this reason any()s are used */
         verify(importsWidgetPresenterMock, times(1)).setContent(any(), any(), anyBoolean());
         verify(scenarioSimulationViewMock, times(1)).hideBusyIndicator();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).getJsonModel(eq(modelLocal));
-        verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(isA(DataManagementStrategy.class), eq(modelLocal));
+        InOrder inOrder = inOrder(scenarioSimulationEditorBusinessClientWrapper, scenarioSimulationEditorPresenterMock);
+        inOrder.verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(isA(DataManagementStrategy.class), eq(modelLocal));
+        inOrder.verify(scenarioSimulationEditorPresenterMock, times(1)).getJsonModel(eq(modelLocal));
+        inOrder.verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).setOriginalHash(anyInt());
     }
 
     @Test
@@ -620,6 +625,10 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         verify(scenarioSimulationViewMock, times(1)).hideBusyIndicator();
         verify(scenarioSimulationEditorPresenterMock, times(1)).getJsonModel(eq(modelLocal));
         verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(isA(DataManagementStrategy.class), eq(modelLocal));
+        InOrder inOrder = inOrder(scenarioSimulationEditorBusinessClientWrapper, scenarioSimulationEditorPresenterMock);
+        inOrder.verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(isA(DataManagementStrategy.class), eq(modelLocal));
+        inOrder.verify(scenarioSimulationEditorPresenterMock, times(1)).getJsonModel(eq(modelLocal));
+        inOrder.verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).setOriginalHash(anyInt());
     }
 
     @Test
