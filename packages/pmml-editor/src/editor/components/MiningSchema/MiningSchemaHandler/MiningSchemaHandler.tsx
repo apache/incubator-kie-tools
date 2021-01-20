@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -10,12 +10,14 @@ import {
   Title,
   TitleSizes
 } from "@patternfly/react-core";
-import { CloseIcon } from "@patternfly/react-icons";
+import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
 import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 import { useBatchDispatch, useHistoryService } from "../../../history";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 interface MiningSchemaHandlerProps {
   miningSchema?: MiningSchema;
@@ -65,6 +67,13 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
     setIsMiningSchemaOpen(!isMiningSchemaOpen);
   };
 
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`models[${modelIndex}].MiningSchema`), [
+    modelIndex,
+    miningSchema,
+    dataDictionary
+  ]);
+
   const header = (
     <Split hasGutter={true}>
       <SplitItem isFilled={true}>
@@ -82,9 +91,22 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
 
   return (
     <>
-      <Button variant="secondary" onClick={handleMiningSchemaToggle}>
-        Set Mining Schema
-      </Button>
+      {validations.length === 0 && (
+        <Button variant="secondary" onClick={handleMiningSchemaToggle}>
+          Set Mining Schema
+        </Button>
+      )}
+      {validations.length > 0 && (
+        <ValidationIndicatorTooltip validations={validations}>
+          <Button
+            variant="secondary"
+            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            onClick={handleMiningSchemaToggle}
+          >
+            Set Mining Schema
+          </Button>
+        </ValidationIndicatorTooltip>
+      )}
       <Modal
         aria-label="mining-schema"
         title="Mining Schema"
@@ -95,6 +117,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         onEscapePress={() => false}
       >
         <MiningSchemaContainer
+          modelIndex={modelIndex}
           miningSchema={miningSchema}
           dataDictionary={dataDictionary}
           onAddField={addMiningField}

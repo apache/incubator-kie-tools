@@ -79,7 +79,7 @@ export class PMMLEditor extends React.Component<Props, State> {
       DataDictionary: mergeReducers(DataDictionaryReducer(this.history, this.validation), {
         DataField: DataDictionaryFieldReducer(this.history, this.validation)
       }),
-      models: ModelReducer(this.history)
+      models: ModelReducer(this.history, this.validation)
     });
   }
 

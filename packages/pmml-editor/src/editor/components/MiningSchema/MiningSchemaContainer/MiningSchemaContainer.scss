@@ -1,10 +1,12 @@
 .mining-schema {
   height: 60vh;
+
   &__field-option {
     font-size: 1rem;
     cursor: pointer;
     margin: 0 0.5em 0.5em 0;
   }
+
   &__fields {
     margin: 1rem 0 0;
     height: calc(60vh - 145px);
@@ -12,17 +14,25 @@
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
   }
+
+  &__validation-alert {
+    margin-bottom: 16px;
+  }
+
   &__overview {
     &-enter {
       opacity: 0;
     }
+
     &-enter-active {
       opacity: 1;
       transition: opacity 230ms;
     }
+
     &-exit {
       opacity: 1;
     }
+
     &-exit-active {
       opacity: 0;
       transition: opacity 100ms;
@@ -34,20 +44,24 @@
       transform: translateX(100px);
       opacity: 0;
     }
+
     &-enter-active {
       transform: translateX(0);
       opacity: 1;
       transition: all 230ms;
     }
+
     &-exit {
       transform: translateX(0);
       opacity: 1;
     }
+
     &-exit-active {
       opacity: 0;
       transform: translateX(44px);
       transition: all 100ms;
     }
+
     &__field {
       width: 320px;
     }

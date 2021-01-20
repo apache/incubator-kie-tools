@@ -1,10 +1,15 @@
 import * as React from "react";
+import { useMemo } from "react";
 import { Label } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaFieldLabels.scss";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface MiningSchemaFieldLabelsProps {
+  index: number;
+  modelIndex: number;
   field: MiningField;
   onEdit: () => void;
   onDelete: (updatedField: MiningField) => void;
@@ -12,7 +17,7 @@ interface MiningSchemaFieldLabelsProps {
 }
 
 const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
-  const { field, onEdit, onDelete, editing } = props;
+  const { index, modelIndex, field, onEdit, onDelete, editing } = props;
 
   const MiningLabel = (name: string, value: any, updatedField: MiningField) => {
     return (
@@ -29,15 +34,37 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
     );
   };
 
+  const { service } = useValidationService();
+  const validationsImportance = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].importance`),
+    [index, modelIndex, field]
+  );
+
   return (
     <>
-      {field.usageType !== undefined && MiningLabel("Usage Type", field.usageType, { ...field, usageType: undefined })}
+      {field.usageType !== undefined &&
+        MiningLabel("Usage Type", field.usageType, {
+          ...field,
+          usageType: undefined
+        })}
       {field.optype !== undefined && MiningLabel("Op Type", field.optype, { ...field, optype: undefined })}
+      {editing && validationsImportance.length > 0 && (
+        <span className="constraints-label">
+          <ValidationIndicator validations={validationsImportance} />
+        </span>
+      )}
       {field.importance !== undefined &&
-        MiningLabel("Importance", field.importance, { ...field, importance: undefined })}
+        MiningLabel("Importance", field.importance, {
+          ...field,
+          importance: undefined
+        })}
       {field.outliers !== undefined && MiningLabel("Outliers", field.outliers, { ...field, outliers: undefined })}
       {field.lowValue !== undefined && MiningLabel("Low Value", field.lowValue, { ...field, lowValue: undefined })}
-      {field.highValue !== undefined && MiningLabel("High Value", field.highValue, { ...field, highValue: undefined })}
+      {field.highValue !== undefined &&
+        MiningLabel("High Value", field.highValue, {
+          ...field,
+          highValue: undefined
+        })}
       {field.missingValueReplacement !== undefined &&
         MiningLabel("Missing Value Replacement", field.missingValueReplacement, {
           ...field,

@@ -70,9 +70,9 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
         </Title>
       </StackItem>
       {validations.length > 0 && (
-        <section className="data-dictionary__validation-alert">
+        <StackItem>
           <Alert variant="warning" title="Some items are invalid and need attention." />
-        </section>
+        </StackItem>
       )}
       <StackItem className="data-dictionary__properties-edit__form">
         <Form>
