@@ -71,9 +71,6 @@ public class NodeConnectorTest {
     @Mock
     private Node requiredNode;
 
-    @Mock
-    private JSITDMNElement nodeEntryElement;
-
     private NodeConnector nodeConnector;
 
     private String connectorTypeId = getDefinitionId(InformationRequirement.class);
@@ -98,9 +95,8 @@ public class NodeConnectorTest {
 
         when(jsiDMNElementReference.getHref()).thenReturn("#123");
         when(jsiDMNElement.getId()).thenReturn("789");
-        when(nodeEntry.getDmnElement()).thenReturn(nodeEntryElement);
         when(nodeEntry.getNode()).thenReturn(requiredNode);
-        when(nodeEntryElement.getId()).thenReturn("456");
+        doReturn("456").when(nodeConnector).uuid();
         doReturn(newEdge).when(nodeConnector).newEdge();
         doNothing().when(nodeConnector).connectWbEdge(any(), any(), any(), any(), any(), any());
 

@@ -62,6 +62,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.kie.workbench.common.dmn.client.marshaller.common.JsInteropUtils.forEach;
 import static org.kie.workbench.common.dmn.client.marshaller.converters.dd.PointUtils.upperLeftBound;
@@ -370,14 +371,13 @@ public class NodeConnector {
             // Generate new a edge and connect it
             final NodeEntry nodeEntry = nodeEntries.get(0);
             final Node requiredNode = nodeEntry.getNode();
-            final String id = nodeEntry.getDmnElement().getId();
 
             connectWbEdge(connectorTypeId,
                           diagramId,
                           currentNode,
                           requiredNode,
                           newEdge(),
-                          id);
+                          uuid());
         } else if (existingEdge.isPresent()) {
             // Connect existing edge
             final JSIDMNEdge edge = Js.uncheckedCast(existingEdge.get());
@@ -515,5 +515,9 @@ public class NodeConnector {
         });
 
         return entriesByPoint2D.get(nearest).getNode();
+    }
+
+    String uuid() {
+        return UUID.uuid();
     }
 }

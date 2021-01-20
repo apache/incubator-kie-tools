@@ -1,94 +1,100 @@
 <?xml version="1.0" ?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://www.drools.org/kie-dmn" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_0019_flight_rebooking" name="0019-flight-rebooking" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://www.drools.org/kie-dmn">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://www.drools.org/kie-dmn"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_0019_flight_rebooking" name="0019-flight-rebooking" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://www.drools.org/kie-dmn">
   <dmn:extensionElements/>
   <dmn:itemDefinition id="_tFlight" name="tFlight" isCollection="false">
     <dmn:itemComponent id="_tFlight_Flight" name="Flight Number" isCollection="false">
-      <dmn:typeRef>feel:string</dmn:typeRef>
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tFlight_From" name="From" isCollection="false">
-      <dmn:typeRef>feel:string</dmn:typeRef>
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tFlight_To" name="To" isCollection="false">
-      <dmn:typeRef>feel:string</dmn:typeRef>
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tFlight_Dep" name="Departure" isCollection="false">
-      <dmn:typeRef>feel:dateTime</dmn:typeRef>
+      <dmn:typeRef>dateTime</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tFlight_Arr" name="Arrival" isCollection="false">
-      <dmn:typeRef>feel:dateTime</dmn:typeRef>
+      <dmn:typeRef>dateTime</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tFlight_Capacity" name="Capacity" isCollection="false">
-      <dmn:typeRef>feel:number</dmn:typeRef>
+      <dmn:typeRef>number</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tFlight_Status" name="Status" isCollection="false">
-      <dmn:typeRef>feel:string</dmn:typeRef>
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_tFlightTable" name="tFlightTable" isCollection="true">
-    <dmn:typeRef>kie:tFlight</dmn:typeRef>
+    <dmn:typeRef>tFlight</dmn:typeRef>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_tPassenger" name="tPassenger" isCollection="false">
     <dmn:itemComponent id="_tPassenger_Name" name="Name" isCollection="false">
-      <dmn:typeRef>feel:string</dmn:typeRef>
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tPassenger_Status" name="Status" isCollection="false">
-      <dmn:typeRef>feel:string</dmn:typeRef>
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tPassenger_Miles" name="Miles" isCollection="false">
-      <dmn:typeRef>feel:number</dmn:typeRef>
+      <dmn:typeRef>number</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_tPassenger_Flight" name="Flight Number" isCollection="false">
-      <dmn:typeRef>feel:string</dmn:typeRef>
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_tPassengerTable" name="tPassengerTable" isCollection="true">
-    <dmn:typeRef>kie:tPassenger</dmn:typeRef>
+    <dmn:typeRef>tPassenger</dmn:typeRef>
   </dmn:itemDefinition>
   <dmn:inputData id="i_Flight_List" name="Flight List">
     <dmn:extensionElements/>
-    <dmn:variable id="_9DAFCCE2-631F-4BC3-9D3D-BE9779204424" name="Flight List" typeRef="kie:tFlightTable"/>
+    <dmn:variable id="_EFFC4300-C44F-4120-8EEB-6A95D28A74D3" name="Flight List" typeRef="tFlightTable"/>
   </dmn:inputData>
   <dmn:inputData id="i_Passenger_List" name="Passenger List">
     <dmn:extensionElements/>
-    <dmn:variable id="_1A89507E-CDC6-4F39-AAC2-50414E88B480" name="Passenger List" typeRef="kie:tPassengerTable"/>
+    <dmn:variable id="_1402E3D4-CCFE-4075-B7DC-2AB693898331" name="Passenger List" typeRef="tPassengerTable"/>
   </dmn:inputData>
   <dmn:decision id="d_PrioritizedWaitingList" name="Prioritized Waiting List">
     <dmn:extensionElements/>
-    <dmn:variable id="_7D8D6950-99E8-46A2-8CEB-0F30F6637665" name="Prioritized Waiting List" typeRef="kie:tPassengerTable"/>
-    <dmn:informationRequirement id="i_Passenger_List">
+    <dmn:variable id="_34C1817C-EF04-4D6A-AE61-8EBE3FF1495D" name="Prioritized Waiting List" typeRef="tPassengerTable"/>
+    <dmn:informationRequirement id="_D23FCE0A-25F3-4FCE-9A32-D23F6C4C57C1">
       <dmn:requiredInput href="#i_Passenger_List"/>
     </dmn:informationRequirement>
-    <dmn:informationRequirement id="i_Flight_List">
+    <dmn:informationRequirement id="_26A0DF82-39CD-4617-A998-712743F003B3">
       <dmn:requiredInput href="#i_Flight_List"/>
     </dmn:informationRequirement>
-    <dmn:knowledgeRequirement id="b_StatusPriority">
+    <dmn:knowledgeRequirement id="_B15EF6FC-5689-4D60-9C6C-6E5A6DCE0C07">
       <dmn:requiredKnowledge href="#b_StatusPriority"/>
     </dmn:knowledgeRequirement>
-    <dmn:context id="_424AB64B-8A8B-47EE-9CDC-B2531FF361C1">
+    <dmn:context id="_694D50A6-66A5-4AE6-82B5-D624586AA224">
       <dmn:contextEntry>
-        <dmn:variable id="_EF608D77-8D77-48E3-BB8F-CAD816AE11BB" name="Cancelled Flights" typeRef="feel:string"/>
-        <dmn:literalExpression id="_DADE28CB-D884-40C9-8298-7FEB9558FFB5">
+        <dmn:variable id="_6CAFD111-8488-48C6-84CF-C3ED3DCCA58B" name="Cancelled Flights" typeRef="string"/>
+        <dmn:literalExpression id="_830A5904-2528-4411-886F-CD26BD5DA4F3">
           <dmn:text>Flight List[ Status = "cancelled" ].Flight Number</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
       <dmn:contextEntry>
-        <dmn:variable id="_B2A7E1AB-6EF9-4CD3-B646-DF1C1EA472D0" name="Waiting List" typeRef="kie:tPassengerTable"/>
-        <dmn:literalExpression id="_D1C5951F-AB89-479F-B861-ECDBD6E19AAB">
+        <dmn:variable id="_DE4E4C9A-E5B5-4D1F-A583-F37C4FB35275" name="Waiting List" typeRef="tPassengerTable"/>
+        <dmn:literalExpression id="_9D3BED31-273F-4306-99F6-88AAF5C4D73B">
           <dmn:text>Passenger List[ list contains( Cancelled Flights, Flight Number ) ]</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
       <dmn:contextEntry>
-        <dmn:variable id="_78929F8F-ECC2-4F41-83C8-6119A12DBBD4" name="passenger priority" typeRef="feel:boolean"/>
-        <dmn:functionDefinition id="_121902DB-4B42-442F-9D6E-3FDEA85EA36E" kind="FEEL">
-          <dmn:formalParameter id="_26EA3FDB-E47C-4B39-971E-575288CE7883" name="Passenger1" typeRef="kie:tPassenger"/>
-          <dmn:formalParameter id="_17B92DA2-7E05-47B2-AFD1-8AF24A2B21D0" name="Passenger2" typeRef="kie:tPassenger"/>
-          <dmn:literalExpression id="_DB6F564A-0470-4A5C-8FBA-B150BCDDC081">
-            <dmn:text>status priority( Passenger1.Status ) &lt; status priority( Passenger2.Status ) or							   ( status priority( Passenger1.Status ) = status priority( Passenger2.Status ) and 							     Passenger1.Miles &gt; Passenger2.Miles ) 							   )</dmn:text>
+        <dmn:variable id="_9C454B18-AB8C-4B38-B2DE-684FD9CB9111" name="passenger priority" typeRef="boolean"/>
+        <dmn:functionDefinition id="_93D9E7BA-1508-47AA-83E9-2B64DF1F6741" kind="FEEL">
+          <dmn:formalParameter id="_2E726E98-1E5A-4E7C-BAED-EA49E63D24D1" name="Passenger1" typeRef="tPassenger"/>
+          <dmn:formalParameter id="_B3463711-45BE-46E4-9AAA-B3D0F8307EAC" name="Passenger2" typeRef="tPassenger"/>
+          <dmn:literalExpression id="_4365CE39-19AF-49B2-81ED-F8E57DAE07CA">
+            <dmn:text> status priority( Passenger1.Status ) &lt; status priority( Passenger2.Status ) or							   ( status priority( Passenger1.Status ) = status priority( Passenger2.Status ) and 							     Passenger1.Miles &gt; Passenger2.Miles ) 							   )</dmn:text>
           </dmn:literalExpression>
         </dmn:functionDefinition>
       </dmn:contextEntry>
       <dmn:contextEntry>
-        <dmn:literalExpression id="_97164D8D-EDC2-4802-890F-5C1544E9C648">
+        <dmn:literalExpression id="_778C956B-3167-4C95-9098-1BDE3F511CB3">
           <dmn:text>sort( Waiting List, passenger priority )</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
@@ -96,31 +102,31 @@
   </dmn:decision>
   <dmn:decision id="d_RebookedPassengers" name="Rebooked Passengers">
     <dmn:extensionElements/>
-    <dmn:variable id="_982B50C1-581F-4A86-8F85-BAD72F7B4FEC" name="Rebooked Passengers" typeRef="kie:tPassengerTable"/>
-    <dmn:informationRequirement id="d_PrioritizedWaitingList">
+    <dmn:variable id="_CC6031BF-B67D-4466-9C48-08504B91B331" name="Rebooked Passengers" typeRef="tPassengerTable"/>
+    <dmn:informationRequirement id="_D552FBC5-D9B0-40CD-B054-7E7EA5662C48">
       <dmn:requiredDecision href="#d_PrioritizedWaitingList"/>
     </dmn:informationRequirement>
-    <dmn:informationRequirement id="i_Flight_List">
+    <dmn:informationRequirement id="_425E881A-1B5A-4102-BE16-00A64306130B">
       <dmn:requiredInput href="#i_Flight_List"/>
     </dmn:informationRequirement>
-    <dmn:knowledgeRequirement id="b_RebookedFlights">
+    <dmn:knowledgeRequirement id="_E74FE5AC-B920-415A-BFF5-2BE646C54881">
       <dmn:requiredKnowledge href="#b_RebookedFlights"/>
     </dmn:knowledgeRequirement>
-    <dmn:literalExpression id="_B21566B4-1392-4481-8936-ED0D3BB0018B">
-      <dmn:text>rebooked flights( Prioritized Waiting List, [], Flight List )</dmn:text>
+    <dmn:literalExpression id="_0BB1A436-3D60-42EC-9F1D-9FB573869A11">
+      <dmn:text>				rebooked flights( Prioritized Waiting List, [], Flight List )			</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
   <dmn:businessKnowledgeModel id="b_StatusPriority" name="status priority">
     <dmn:extensionElements/>
-    <dmn:variable id="_A8717B8B-AC99-47AE-850C-7732C2AB7F72" name="status priority" typeRef="feel:number"/>
-    <dmn:encapsulatedLogic id="_0F180650-92EC-4970-9A48-8520E56EFDC1" kind="FEEL">
-      <dmn:formalParameter id="_73E8445F-1674-408E-A29B-5C5E7F978C54" name="Status" typeRef="feel:string"/>
-      <dmn:decisionTable id="_08491153-9B5C-4BDD-8272-891A49398DDE" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+    <dmn:variable id="_728B9790-E4E1-4C2C-ABBF-B338B4468E0A" name="status priority" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_74812A88-DEB5-49B9-98C8-79C9B6641394" kind="FEEL">
+      <dmn:formalParameter id="_859EDDDE-D700-42A4-B380-6A15D91247FF" name="Status" typeRef="string"/>
+      <dmn:decisionTable id="_5CCC6093-1FE2-4477-8EE4-DC3E722118AE" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
         <dmn:input id="b_Status_Priority_dt_i_Status">
-          <dmn:inputExpression id="_CA89C027-1EC0-4883-870C-8A096F71B3D4" typeRef="feel:string">
+          <dmn:inputExpression id="_DC343345-4BA6-4AC6-9359-ED80BACD13B5" typeRef="string">
             <dmn:text>Status</dmn:text>
           </dmn:inputExpression>
-          <dmn:inputValues id="_66085483-C468-4023-943D-C8F77DAF7475">
+          <dmn:inputValues id="_0D285157-08C2-49E0-8F4C-70AE41E512CE">
             <dmn:text>"gold", "silver", "bronze"</dmn:text>
           </dmn:inputValues>
         </dmn:input>
@@ -164,103 +170,103 @@
   </dmn:businessKnowledgeModel>
   <dmn:businessKnowledgeModel id="b_RebookedFlights" name="rebooked flights">
     <dmn:extensionElements/>
-    <dmn:variable id="_289D42B1-5C59-474D-BFC3-C3DD5A09C52A" name="rebooked flights" typeRef="kie:tPassengerTable"/>
-    <dmn:encapsulatedLogic id="_F9F7FE3E-F250-4AB8-B7E1-8BE164392FA5" kind="FEEL">
-      <dmn:formalParameter id="_18BEFABC-4727-4B4D-B42E-21C850B72180" name="Waiting" typeRef="kie:tPassengerTable"/>
-      <dmn:formalParameter id="_C0EA0B44-7C79-4BC0-AAC5-65D909B8A130" name="Rebooked" typeRef="kie:tPassengerTable"/>
-      <dmn:formalParameter id="_31C6F208-667D-475E-B483-AD4479F7C196" name="Flights" typeRef="kie:tFlightTable"/>
-      <dmn:context id="_691E8732-6083-43BE-8733-C7A1EB8B2C0B">
+    <dmn:variable id="_0AC63706-D766-4993-8C33-1E556D682E0E" name="rebooked flights" typeRef="tPassengerTable"/>
+    <dmn:encapsulatedLogic id="_14511F2A-5DAE-40DD-AE8F-8FC0E9800A2F" kind="FEEL">
+      <dmn:formalParameter id="_373FAFAE-F333-488B-8654-1FB2EA33A75D" name="Waiting" typeRef="tPassengerTable"/>
+      <dmn:formalParameter id="_D77E2C65-D1E9-4D70-B2D4-7AAB1B4865B5" name="Rebooked" typeRef="tPassengerTable"/>
+      <dmn:formalParameter id="_78441F64-ACED-4ADD-AF23-2DAADAC905B1" name="Flights" typeRef="tFlightTable"/>
+      <dmn:context id="_C06C2015-86A3-4ECF-B198-22B7DEB2694E">
         <dmn:contextEntry>
-          <dmn:variable id="_56FDB16B-BDFD-4615-ACEC-3BFC93C6854D" name="Passenger" typeRef="kie:tPassenger"/>
-          <dmn:literalExpression id="_E2E3BA03-36E4-4DD6-AD78-BE04E31644EC">
+          <dmn:variable id="_CF4D1736-5A73-4FE1-BFC3-8A26670CEBC4" name="Passenger" typeRef="tPassenger"/>
+          <dmn:literalExpression id="_997EA10A-8FD4-479A-B992-7D298866F282">
             <dmn:text>Waiting[1]</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
         <dmn:contextEntry>
-          <dmn:variable id="_0D390DBE-04DA-40FB-971E-5879B813EED9" name="Original Flight" typeRef="kie:tFlight"/>
-          <dmn:literalExpression id="_CAB1CFE8-56F8-4288-A9D6-41631D934125">
+          <dmn:variable id="_459CB737-B9BD-4DFE-B2F3-2DF6F9913C00" name="Original Flight" typeRef="tFlight"/>
+          <dmn:literalExpression id="_A2C7CC2A-68AC-40B3-9188-F16A97C8B521">
             <dmn:text>Flights[ Flight Number = Passenger.Flight Number ][1]</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
         <dmn:contextEntry>
-          <dmn:variable id="_903FE38C-1536-4594-9C49-6FFBA47F6545" name="has capacity" typeRef="feel:boolean"/>
-          <dmn:functionDefinition id="_9593E685-FA69-486B-9244-7D362DD2678E" kind="FEEL">
-            <dmn:formalParameter id="_0302F2D1-0521-49CB-B427-66DE8F39F098" name="flight" typeRef="kie:tFlight"/>
-            <dmn:formalParameter id="_2FA2E751-505E-464F-BCA0-2F4D302149C4" name="rebooked list" typeRef="kie:tPassengerTable"/>
-            <dmn:literalExpression id="_B036F8F7-009B-4FDC-BD2C-ED9B6716B869">
-              <dmn:text>flight.Capacity &gt; count( rebooked list[ Flight Number = flight.Flight Number ] )</dmn:text>
+          <dmn:variable id="_0462E871-EEFF-4A14-97F9-81AD5CFE2A2C" name="has capacity" typeRef="boolean"/>
+          <dmn:functionDefinition id="_B8C1E92F-74C4-45B1-8841-ABC860B424DD" kind="FEEL">
+            <dmn:formalParameter id="_3E3F9FF0-06FC-4445-B78C-B6E7BA15208B" name="flight" typeRef="tFlight"/>
+            <dmn:formalParameter id="_D8FD144C-C50A-47C3-911F-0D26637A56C7" name="rebooked list" typeRef="tPassengerTable"/>
+            <dmn:literalExpression id="_BA1F19A6-6D0D-405C-843D-26C28CD3B39A">
+              <dmn:text> flight.Capacity &gt; count( rebooked list[ Flight Number = flight.Flight Number ] ) </dmn:text>
             </dmn:literalExpression>
           </dmn:functionDefinition>
         </dmn:contextEntry>
         <dmn:contextEntry>
-          <dmn:variable id="_EEB71DAD-E0CE-4552-9E81-D9BB273E4036" name="Best Alternate Flight" typeRef="kie:tFlight"/>
-          <dmn:literalExpression id="_0A779ADF-A13A-4488-A2F0-D25323CF697F">
+          <dmn:variable id="_5106EC4E-58F9-4D02-9F39-748AFEDBCD9C" name="Best Alternate Flight" typeRef="tFlight"/>
+          <dmn:literalExpression id="_063F2D73-717E-45D4-8B88-068B59D1A074">
             <dmn:text>Flight List[ From = Original Flight.From and 							               To = Original Flight.To and							               Departure &gt; Original Flight.Departure and							               Status = "scheduled" and							               has capacity( item, Rebooked ) ][1]</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
         <dmn:contextEntry>
-          <dmn:variable id="_FBF8DC8B-EA96-4DD6-B941-DA1580E5FC61" name="New Flight" typeRef="kie:tPassenger"/>
-          <dmn:context id="_F3993D9C-7B3F-4C74-88D4-88CC32414784">
+          <dmn:variable id="_D80C8735-B16B-4776-A9A1-085E29DA8243" name="New Flight" typeRef="tPassenger"/>
+          <dmn:context id="_9FFFCC2F-2AC6-40B8-8705-09B9187F205B">
             <dmn:contextEntry>
-              <dmn:variable id="_35EC5E95-E232-4C9A-AA0F-BDE724CD4260" name="Name" typeRef="feel:string"/>
-              <dmn:literalExpression id="_005AAAC6-3FA2-47AC-9CC2-27F38A17812F">
+              <dmn:variable id="_A86D7C48-4F78-4550-AE9C-92F88C7C9918" name="Name" typeRef="string"/>
+              <dmn:literalExpression id="_23105A96-D0B1-4DAA-9A05-1FA183199052">
                 <dmn:text>Passenger.Name</dmn:text>
               </dmn:literalExpression>
             </dmn:contextEntry>
             <dmn:contextEntry>
-              <dmn:variable id="_DFF04719-CB16-46C0-94C5-AA9B551DC5E7" name="Status" typeRef="feel:string"/>
-              <dmn:literalExpression id="_78BAF6B7-58D3-4A15-895B-C494AF936287">
+              <dmn:variable id="_B0788F1D-7B1D-45DD-A970-DF639CCFC195" name="Status" typeRef="string"/>
+              <dmn:literalExpression id="_C84534C9-2B3A-4249-A15C-E54FA6931731">
                 <dmn:text>Passenger.Status</dmn:text>
               </dmn:literalExpression>
             </dmn:contextEntry>
             <dmn:contextEntry>
-              <dmn:variable id="_2DF95258-7574-427B-9316-468D83884DFC" name="Miles" typeRef="feel:number"/>
-              <dmn:literalExpression id="_4676C989-01FE-4E4C-BBD5-6CAB7E013508">
+              <dmn:variable id="_D390B5B4-22BA-4614-AC22-0536006219AA" name="Miles" typeRef="number"/>
+              <dmn:literalExpression id="_93886C23-3EB0-40A9-81EB-0D539A3C1339">
                 <dmn:text>Passenger.Miles</dmn:text>
               </dmn:literalExpression>
             </dmn:contextEntry>
             <dmn:contextEntry>
-              <dmn:variable id="_F3F8BE5E-F24E-4B3D-820C-A359463FA68A" name="Flight Number" typeRef="feel:string"/>
-              <dmn:literalExpression id="_E0DC87D6-FA0F-42A8-BBFE-0F99C2BA68EC">
+              <dmn:variable id="_F5C51149-560A-49A8-90C1-08D045BE9D64" name="Flight Number" typeRef="string"/>
+              <dmn:literalExpression id="_8CF837F6-2DEA-40FE-B737-E85E071FF5B8">
                 <dmn:text>Best Alternate Flight.Flight Number</dmn:text>
               </dmn:literalExpression>
             </dmn:contextEntry>
           </dmn:context>
         </dmn:contextEntry>
         <dmn:contextEntry>
-          <dmn:literalExpression id="_084D1E9D-AABA-41E2-9061-713FC1204FF0">
-            <dmn:text>if count( Waiting ) &gt; 1 							  then							       rebooked flights( remove( Waiting, 1 ),							                         append( Rebooked, New Flight ),							                         Flights )							  else 							       append( Rebooked, New Flight )</dmn:text>
+          <dmn:literalExpression id="_8F070D82-4A44-43C5-A7C3-7EDC5409252E">
+            <dmn:text>if count( Waiting ) &gt; 1 							  then							       rebooked flights( remove( Waiting, 1 ),							                         append( Rebooked, New Flight ),							                         Flights )							  else 							       append( Rebooked, New Flight )						</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
       </dmn:context>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram id="_42C1B81D-D06C-44F2-8D1C-A3F7FAE6A28D" name="DRG">
+    <dmndi:DMNDiagram id="_ABDC73D2-9743-43E4-87F5-6CF94C254C74" name="DRG">
       <di:extension>
         <kie:ComponentsWidthsExtension>
-          <kie:ComponentWidths dmnElementRef="_424AB64B-8A8B-47EE-9CDC-B2531FF361C1"/>
-          <kie:ComponentWidths dmnElementRef="_DADE28CB-D884-40C9-8298-7FEB9558FFB5"/>
-          <kie:ComponentWidths dmnElementRef="_D1C5951F-AB89-479F-B861-ECDBD6E19AAB"/>
-          <kie:ComponentWidths dmnElementRef="_121902DB-4B42-442F-9D6E-3FDEA85EA36E"/>
-          <kie:ComponentWidths dmnElementRef="_DB6F564A-0470-4A5C-8FBA-B150BCDDC081"/>
-          <kie:ComponentWidths dmnElementRef="_97164D8D-EDC2-4802-890F-5C1544E9C648"/>
-          <kie:ComponentWidths dmnElementRef="_B21566B4-1392-4481-8936-ED0D3BB0018B"/>
-          <kie:ComponentWidths dmnElementRef="_08491153-9B5C-4BDD-8272-891A49398DDE"/>
-          <kie:ComponentWidths dmnElementRef="_0F180650-92EC-4970-9A48-8520E56EFDC1"/>
-          <kie:ComponentWidths dmnElementRef="_691E8732-6083-43BE-8733-C7A1EB8B2C0B"/>
-          <kie:ComponentWidths dmnElementRef="_E2E3BA03-36E4-4DD6-AD78-BE04E31644EC"/>
-          <kie:ComponentWidths dmnElementRef="_CAB1CFE8-56F8-4288-A9D6-41631D934125"/>
-          <kie:ComponentWidths dmnElementRef="_9593E685-FA69-486B-9244-7D362DD2678E"/>
-          <kie:ComponentWidths dmnElementRef="_B036F8F7-009B-4FDC-BD2C-ED9B6716B869"/>
-          <kie:ComponentWidths dmnElementRef="_0A779ADF-A13A-4488-A2F0-D25323CF697F"/>
-          <kie:ComponentWidths dmnElementRef="_F3993D9C-7B3F-4C74-88D4-88CC32414784"/>
-          <kie:ComponentWidths dmnElementRef="_005AAAC6-3FA2-47AC-9CC2-27F38A17812F"/>
-          <kie:ComponentWidths dmnElementRef="_78BAF6B7-58D3-4A15-895B-C494AF936287"/>
-          <kie:ComponentWidths dmnElementRef="_4676C989-01FE-4E4C-BBD5-6CAB7E013508"/>
-          <kie:ComponentWidths dmnElementRef="_E0DC87D6-FA0F-42A8-BBFE-0F99C2BA68EC"/>
-          <kie:ComponentWidths dmnElementRef="_084D1E9D-AABA-41E2-9061-713FC1204FF0"/>
-          <kie:ComponentWidths dmnElementRef="_F9F7FE3E-F250-4AB8-B7E1-8BE164392FA5"/>
+          <kie:ComponentWidths dmnElementRef="_694D50A6-66A5-4AE6-82B5-D624586AA224"/>
+          <kie:ComponentWidths dmnElementRef="_830A5904-2528-4411-886F-CD26BD5DA4F3"/>
+          <kie:ComponentWidths dmnElementRef="_9D3BED31-273F-4306-99F6-88AAF5C4D73B"/>
+          <kie:ComponentWidths dmnElementRef="_93D9E7BA-1508-47AA-83E9-2B64DF1F6741"/>
+          <kie:ComponentWidths dmnElementRef="_4365CE39-19AF-49B2-81ED-F8E57DAE07CA"/>
+          <kie:ComponentWidths dmnElementRef="_778C956B-3167-4C95-9098-1BDE3F511CB3"/>
+          <kie:ComponentWidths dmnElementRef="_0BB1A436-3D60-42EC-9F1D-9FB573869A11"/>
+          <kie:ComponentWidths dmnElementRef="_5CCC6093-1FE2-4477-8EE4-DC3E722118AE"/>
+          <kie:ComponentWidths dmnElementRef="_74812A88-DEB5-49B9-98C8-79C9B6641394"/>
+          <kie:ComponentWidths dmnElementRef="_C06C2015-86A3-4ECF-B198-22B7DEB2694E"/>
+          <kie:ComponentWidths dmnElementRef="_997EA10A-8FD4-479A-B992-7D298866F282"/>
+          <kie:ComponentWidths dmnElementRef="_A2C7CC2A-68AC-40B3-9188-F16A97C8B521"/>
+          <kie:ComponentWidths dmnElementRef="_B8C1E92F-74C4-45B1-8841-ABC860B424DD"/>
+          <kie:ComponentWidths dmnElementRef="_BA1F19A6-6D0D-405C-843D-26C28CD3B39A"/>
+          <kie:ComponentWidths dmnElementRef="_063F2D73-717E-45D4-8B88-068B59D1A074"/>
+          <kie:ComponentWidths dmnElementRef="_9FFFCC2F-2AC6-40B8-8705-09B9187F205B"/>
+          <kie:ComponentWidths dmnElementRef="_23105A96-D0B1-4DAA-9A05-1FA183199052"/>
+          <kie:ComponentWidths dmnElementRef="_C84534C9-2B3A-4249-A15C-E54FA6931731"/>
+          <kie:ComponentWidths dmnElementRef="_93886C23-3EB0-40A9-81EB-0D539A3C1339"/>
+          <kie:ComponentWidths dmnElementRef="_8CF837F6-2DEA-40FE-B737-E85E071FF5B8"/>
+          <kie:ComponentWidths dmnElementRef="_8F070D82-4A44-43C5-A7C3-7EDC5409252E"/>
+          <kie:ComponentWidths dmnElementRef="_14511F2A-5DAE-40DD-AE8F-8FC0E9800A2F"/>
         </kie:ComponentsWidthsExtension>
       </di:extension>
       <dmndi:DMNShape id="dmnshape-drg-i_Flight_List" dmnElementRef="i_Flight_List" isCollapsed="false">
@@ -317,23 +323,27 @@
         <dc:Bounds x="313" y="225" width="100" height="50"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNEdge id="dmnedge-drg-i_Passenger_List" dmnElementRef="i_Passenger_List">
+      <dmndi:DMNEdge id="dmnedge-drg-_D23FCE0A-25F3-4FCE-9A32-D23F6C4C57C1" dmnElementRef="_D23FCE0A-25F3-4FCE-9A32-D23F6C4C57C1">
         <di:waypoint x="225" y="400"/>
         <di:waypoint x="138" y="225"/>
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="dmnedge-drg-i_Flight_List" dmnElementRef="i_Flight_List">
+      <dmndi:DMNEdge id="dmnedge-drg-_26A0DF82-39CD-4617-A998-712743F003B3" dmnElementRef="_26A0DF82-39CD-4617-A998-712743F003B3">
         <di:waypoint x="50" y="400"/>
         <di:waypoint x="138" y="225"/>
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="dmnedge-drg-b_StatusPriority" dmnElementRef="b_StatusPriority">
+      <dmndi:DMNEdge id="dmnedge-drg-_B15EF6FC-5689-4D60-9C6C-6E5A6DCE0C07" dmnElementRef="_B15EF6FC-5689-4D60-9C6C-6E5A6DCE0C07">
         <di:waypoint x="400" y="400"/>
         <di:waypoint x="138" y="225"/>
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="dmnedge-drg-d_PrioritizedWaitingList" dmnElementRef="d_PrioritizedWaitingList">
+      <dmndi:DMNEdge id="dmnedge-drg-_D552FBC5-D9B0-40CD-B054-7E7EA5662C48" dmnElementRef="_D552FBC5-D9B0-40CD-B054-7E7EA5662C48">
         <di:waypoint x="138" y="225"/>
         <di:waypoint x="225" y="50"/>
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="dmnedge-drg-b_RebookedFlights" dmnElementRef="b_RebookedFlights">
+      <dmndi:DMNEdge id="dmnedge-drg-_425E881A-1B5A-4102-BE16-00A64306130B" dmnElementRef="_425E881A-1B5A-4102-BE16-00A64306130B">
+        <di:waypoint x="50" y="400"/>
+        <di:waypoint x="225" y="50"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_E74FE5AC-B920-415A-BFF5-2BE646C54881" dmnElementRef="_E74FE5AC-B920-415A-BFF5-2BE646C54881">
         <di:waypoint x="313" y="225"/>
         <di:waypoint x="225" y="50"/>
       </dmndi:DMNEdge>
