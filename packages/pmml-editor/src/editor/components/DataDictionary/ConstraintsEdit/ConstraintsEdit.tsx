@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardBody, CardTitle, FormGroup, Select, SelectOption, SelectVariant } from "@patternfly/react-core";
 
 import { DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
@@ -64,6 +64,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     return false;
   };
 
+  const rangeConstraintLimit = useMemo(() => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined), [
+    dataType
+  ]);
+
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {
       setConstraintType(value);
@@ -94,9 +98,15 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           }
         });
       }
+      if (value === "") {
+        onSave({
+          constraints: undefined
+        });
+      }
     }
     setTypeSelectIsOpen(false);
   };
+
   const handleTypeToggle = () => {
     setTypeSelectIsOpen(!typeSelectIsOpen);
   };
@@ -233,6 +243,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
               onChange={handleRangeSave}
               onDelete={handleRangeDelete}
               validation={validation}
+              countLimit={rangeConstraintLimit}
             />
           </CardBody>
         </Card>

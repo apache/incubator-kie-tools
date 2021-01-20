@@ -45,10 +45,11 @@ interface ConstraintsRangeEditProps {
   onChange: (ranges: RangeConstraint[]) => void;
   onDelete: (index: number) => void;
   validation: FormValidation;
+  countLimit?: number;
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, validation } = props;
+  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, validation, countLimit } = props;
   const [addedRange, setAddedRange] = useState<number>();
 
   const updateRange = (index: number, range: RangeConstraint) => {
@@ -94,7 +95,11 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
         ))}
       </StackItem>
       <StackItem>
-        <Button variant="secondary" onClick={addRange}>
+        <Button
+          variant="secondary"
+          onClick={addRange}
+          isDisabled={countLimit !== undefined && ranges.length >= countLimit}
+        >
           Add another range
         </Button>
       </StackItem>
@@ -181,7 +186,7 @@ const RangeEdit = (props: RangeEditProps) => {
             label="Start Value"
             fieldId={`start-value-${index}`}
             validated={validations.length === 0 ? "default" : "error"}
-            helperTextInvalid={validations[0] ? validations[0].message : ""}
+            helperTextInvalid={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
@@ -212,7 +217,7 @@ const RangeEdit = (props: RangeEditProps) => {
             label="End Value"
             fieldId={`end-value-${index}`}
             validated={validations.length === 0 ? "default" : "error"}
-            helperTextInvalid={validations[0] ? validations[0].message : ""}
+            helperTextInvalid={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
