@@ -178,7 +178,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         if (users != null) {
             consumeRealm(realmResource -> {
                 final UsersResource usersResource = realmResource.users();
-                final RolesResource rolesResource = getRolesResource(realmResource, true);
+                final RolesResource rolesResource = getRolesResource(realmResource, getKeyCloakInstance().getUseRoleResourceMappings());
                 final RoleResource roleResource = rolesResource.get(name);
                 final List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>(1);
                 rolesToAdd.add(getRoleRepresentation(name,
