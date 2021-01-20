@@ -27,7 +27,7 @@ import {
   removeFileExtension
 } from "./common/utils";
 import { GithubService } from "./common/GithubService";
-import { Alert, AlertActionLink, AlertVariant } from "@patternfly/react-core";
+import { Alert, AlertActionLink, AlertActionCloseButton, AlertVariant, List, ListItem } from "@patternfly/react-core";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import "../static/resources/style.css";
 
@@ -149,7 +149,8 @@ function showResponseError(statusCode: number, description: string) {
       <Alert
         variant={AlertVariant.danger}
         title="An error happened while fetching your file"
-        actionClose={<AlertActionLink onClick={goToHomePage}>Go to Home Page</AlertActionLink>}
+        actionLinks={<AlertActionLink onClick={goToHomePage}>Go to Home Page</AlertActionLink>}
+        actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
       >
         <br />
         <b>Error details: </b>
@@ -168,17 +169,25 @@ function showFetchError(description: string) {
       <Alert
         variant={AlertVariant.danger}
         title="An unexpected error happened while trying to fetch your file"
-        actionClose={<AlertActionLink onClick={goToHomePage} children={"Go to Home Page"} />}
+        actionLinks={<AlertActionLink onClick={goToHomePage}>Go to Home Page</AlertActionLink>}
+        actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
       >
         <br />
         <b>Error details: </b>
         {description}
         <br />
         <br />
-        <b>Possible cause: </b>
-        The URL to your file must allow CORS in its response, which should contain the following header:
-        <br />
-        <pre>Access-Control-Allow-Origin: *</pre>
+        <b>Possible causes: </b>
+        <List>
+          <ListItem>
+            If you're trying to open a private file, make sure to set your GitHub token before. To do it use one of the
+            Editor pages and open the "Set your GitHub token" modal under the Share dropdown.
+          </ListItem>
+          <ListItem>
+            The URL to your file must allow CORS in its response, which should contain the following header:
+            <pre>Access-Control-Allow-Origin: *</pre>
+          </ListItem>
+        </List>
       </Alert>
     </div>,
     document.getElementById("app")!
