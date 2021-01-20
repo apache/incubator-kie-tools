@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useCallback } from "react";
 import { JitDmn } from "../common/JitDmn";
-import { AutoForm } from "uniforms-unstyled";
+import { AutoForm } from "uniforms-patternfly";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
+  Alert,
   DescriptionList,
   DescriptionListTerm,
   DescriptionListGroup,
@@ -27,13 +28,31 @@ import {
   Title
 } from "@patternfly/react-core";
 
+enum JitResponseStatus {
+  SUCCESS,
+  WARNING,
+  NONE
+}
+
 interface Props {
   editorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
 }
 
 export function JitDmnForm(props: Props) {
-  const [jitResponse, setJitResponse] = useState<object>();
+  const [jitResponse, setJitResponse] = useState();
+  const [jitResponseStatus, setJitResponseStatus] = useState(JitResponseStatus.NONE);
+
+  const alertMessage = useMemo(() => {
+    switch (jitResponseStatus) {
+      case JitResponseStatus.SUCCESS:
+        return <Alert title={"Your request has been successfully processed"} variant={"success"} isInline={true} />;
+      case JitResponseStatus.WARNING:
+        return <Alert title={"Your request couldn't be processed"} variant={"warning"} isInline={true} />;
+      case JitResponseStatus.NONE:
+        return;
+    }
+  }, [jitResponseStatus]);
 
   const onSubmit = useCallback(
     ({ context }: any) => {
@@ -43,9 +62,9 @@ export function JitDmnForm(props: Props) {
             .then(res => res.json())
             .then(json => {
               setJitResponse(json);
-              console.log(json);
+              setJitResponseStatus(JitResponseStatus.SUCCESS);
             })
-            .catch(() => console.log("Failed to load validate the form"));
+            .catch(() => setJitResponseStatus(JitResponseStatus.WARNING));
         });
       }
     },
@@ -59,9 +78,10 @@ export function JitDmnForm(props: Props) {
   return (
     <div>
       {props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={onSubmit} />}
+      {alertMessage}
       {jitResponse && (
         <DescriptionList isHorizontal={true}>
-          <RecursiveJitResponse someObject={jitResponse} withoutPadding={false} />
+          <JitResponse responseObject={jitResponse!} withoutPadding={false} />
         </DescriptionList>
       )}
     </div>
@@ -69,19 +89,19 @@ export function JitDmnForm(props: Props) {
 }
 
 interface RecursiveJitResponseProps {
-  someObject: object;
+  responseObject: object;
   withoutPadding: boolean;
 }
 
-function RecursiveJitResponse(props: RecursiveJitResponseProps) {
+function JitResponse(props: RecursiveJitResponseProps) {
   return (
     <div style={{ padding: "10px" }}>
-      {[...Object.entries(props.someObject)].map(([key, value]: any[]) => (
+      {[...Object.entries(props.responseObject)].map(([key, value]: any[]) => (
         <>
           {typeof value === "object" && value !== null ? (
             <>
               <Title headingLevel={"h5"}>{key}</Title>
-              <RecursiveJitResponse someObject={value} withoutPadding={true} />
+              <JitResponse responseObject={value} withoutPadding={true} />
             </>
           ) : (
             <div style={props.withoutPadding ? {} : { padding: "10px" }}>
