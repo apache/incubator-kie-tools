@@ -57,9 +57,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
   }, [dataType]);
 
   const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.getValidations(`DataDictionary.DataField[${dataFieldIndex}]`), [
-    dataType
-  ]);
+  const validations = useMemo(() => validationService.get(`DataDictionary.DataField[${dataFieldIndex}]`), [dataType]);
 
   return (
     <Stack hasGutter={true} className="data-dictionary__properties-edit">

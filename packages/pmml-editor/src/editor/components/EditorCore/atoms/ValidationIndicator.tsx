@@ -28,23 +28,9 @@ interface ValidationIndicatorTooltipProps extends ValidationIndicatorProps {
   children: ReactElement<any>;
 }
 
-const hasProblems = (validations: ValidationEntry[]) => {
-  if (validations.length === 1) {
-    if (validations[0].level === ValidationLevel.VALID) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const getMaxLevel = (validations: ValidationEntry[]): ValidationLevel => {
+const getMaxLevel = (validations: ValidationEntry[]): ValidationLevel | undefined => {
   if (validations.length === 0) {
-    return ValidationLevel.VALID;
-  }
-  if (validations.length === 1) {
-    if (validations[0].level === ValidationLevel.VALID) {
-      return ValidationLevel.VALID;
-    }
+    return undefined;
   }
   return validations.reduce((pv, cv) => {
     if (pv.level < cv.level) {
@@ -74,7 +60,7 @@ export const ValidationIndicator = (props: ValidationIndicatorProps) => {
 
   return (
     <>
-      {maxLevel !== ValidationLevel.VALID && (
+      {maxLevel !== undefined && (
         <ValidationIndicatorTooltip validations={validations}>
           <>
             {maxLevel === ValidationLevel.ERROR && <ExclamationCircleIcon size={"sm"} color={"red"} />}
@@ -91,7 +77,7 @@ export const ValidationIndicatorTooltip = (props: ValidationIndicatorTooltipProp
 
   return (
     <>
-      {hasProblems(validations) && (
+      {validations.length > 0 && (
         <Tooltip maxWidth={"100%"} isContentLeftAligned={true} content={list(validations)}>
           {children}
         </Tooltip>

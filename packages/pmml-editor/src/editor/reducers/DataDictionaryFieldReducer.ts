@@ -17,7 +17,11 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { ValidationEntry, ValidationLevel, ValidationService } from "../validation";
+import {
+  validateDataFieldConstraintRanges,
+  validateDataFieldsConstraintRanges,
+  ValidationService
+} from "../validation";
 
 interface DataDictionaryFieldPayload {
   [Actions.UpdateDataDictionaryField]: {
@@ -39,43 +43,22 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
   return (state: DataField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateDataDictionaryField:
+        const dataField = action.payload.dataField;
+        const dataDictionaryIndex = action.payload.dataDictionaryIndex;
         service.batch(state, "DataDictionary.DataField", draft => {
-          const dataDictionaryIndex = action.payload.dataDictionaryIndex;
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
-            draft[dataDictionaryIndex] = action.payload.dataField;
+            draft[dataDictionaryIndex] = dataField;
           }
+          validation.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);
+          validateDataFieldConstraintRanges(dataField, dataDictionaryIndex, validation);
         });
-        validateDataFieldConstraintRanges(action.payload.dataField, action.payload.dataDictionaryIndex, validation);
         break;
 
       case Actions.Validate:
+        validation.clear("DataDictionary.DataField");
         validateDataFieldsConstraintRanges(state, validation);
     }
 
     return state;
   };
-};
-
-const validateDataFieldConstraintRanges = (
-  dataField: DataField,
-  dataDictionaryIndex: number,
-  validation: ValidationService
-): void => {
-  dataField.Interval?.forEach((interval, index) => {
-    validation.setValidation(
-      `DataDictionary.DataField[${dataDictionaryIndex}].Interval[${index}]`,
-      interval.leftMargin === undefined && interval.rightMargin === undefined
-        ? new ValidationEntry(
-            ValidationLevel.WARNING,
-            `Data Field[${dataDictionaryIndex}], Interval[${index}] must have the start and/or end value set.`
-          )
-        : new ValidationEntry(ValidationLevel.VALID)
-    );
-  });
-};
-
-const validateDataFieldsConstraintRanges = (dataFields: DataField[], validation: ValidationService): void => {
-  dataFields.forEach((dataField, dataDictionaryIndex) =>
-    validateDataFieldConstraintRanges(dataField, dataDictionaryIndex, validation)
-  );
 };

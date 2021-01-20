@@ -78,4 +78,38 @@ describe("ValidationRegistry", () => {
     expect(entries[0].level).toBe(ValidationLevel.WARNING);
     expect(entries[1].level).toBe(ValidationLevel.ERROR);
   });
+
+  test("clear::root", () => {
+    registry.set("root", new ValidationEntry(ValidationLevel.WARNING));
+
+    expect(registry.get("root").length).toBe(1);
+
+    registry.clear("root");
+
+    expect(registry.get("root").length).toBe(0);
+  });
+
+  test("clear::child", () => {
+    registry.set("root.child1", new ValidationEntry(ValidationLevel.WARNING));
+
+    expect(registry.get("root").length).toBe(1);
+
+    registry.clear("root");
+
+    expect(registry.get("root").length).toBe(0);
+  });
+  test("clear::child::multiple", () => {
+    registry.set("root.child1", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set("root.child2", new ValidationEntry(ValidationLevel.ERROR));
+
+    expect(registry.get("root").length).toBe(2);
+
+    registry.clear("root.child1");
+
+    expect(registry.get("root").length).toBe(1);
+
+    registry.clear("root");
+
+    expect(registry.get("root").length).toBe(0);
+  });
 });

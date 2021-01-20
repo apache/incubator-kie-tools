@@ -26,11 +26,7 @@ export class ValidationRegistry {
   private readonly registry = {};
 
   public set = (path: string, entry: ValidationEntry): void => {
-    if (entry.level === ValidationLevel.VALID) {
-      unset(this.registry, path);
-    } else {
-      set(this.registry, path, entry);
-    }
+    set(this.registry, path, entry);
   };
 
   public get = (path: string): ValidationEntry[] => {
@@ -50,8 +46,15 @@ export class ValidationRegistry {
       return [];
     }
     const mapped = ownKeys(node).map(key => this.get(`${path}.${String(key)}`));
+    if (mapped.length === 0) {
+      return [];
+    }
     return mapped.reduce((pv, cv) => {
       return pv.concat(cv);
     });
+  };
+
+  public clear = (path: string): void => {
+    unset(this.registry, path);
   };
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from "./DataDictionary";
 export * from "./ValidationContext";
 export * from "./ValidationLevel";
 export * from "./ValidationRegistry";

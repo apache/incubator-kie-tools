@@ -90,7 +90,7 @@ const DataDictionaryHandler = () => {
   };
 
   const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.getValidations(`DataDictionary`), [dictionary]);
+  const validations = useMemo(() => validationService.get(`DataDictionary`), [dictionary]);
 
   const header = (
     <Split hasGutter={true}>

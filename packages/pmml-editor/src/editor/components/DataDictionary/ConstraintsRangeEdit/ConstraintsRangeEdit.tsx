@@ -169,10 +169,9 @@ const RangeEdit = (props: RangeEditProps) => {
   }, [addedRange, index, rangeRef.current]);
 
   const { service } = useValidationService();
-  const validations = useMemo(
-    () => service.getValidations(`DataDictionary.DataField[${dataFieldIndex}].Interval[${index}]`),
-    [range]
-  );
+  const validations = useMemo(() => service.get(`DataDictionary.DataField[${dataFieldIndex}].Interval[${index}]`), [
+    range
+  ]);
 
   return (
     <section ref={rangeRef}>

@@ -19,11 +19,15 @@ import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 export class ValidationService {
   private readonly registry: ValidationRegistry = new ValidationRegistry();
 
-  public setValidation = (path: string, entry: ValidationEntry): void => {
+  public set = (path: string, entry: ValidationEntry): void => {
     this.registry.set(path, entry);
   };
 
-  public getValidations = (path: string): ValidationEntry[] => {
+  public get = (path: string): ValidationEntry[] => {
     return this.registry.get(path);
+  };
+
+  public clear = (path: string): void => {
+    this.registry.clear(path);
   };
 }

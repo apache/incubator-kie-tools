@@ -161,7 +161,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   }, [dataType]);
 
   const { service } = useValidationService();
-  const validations = useMemo(() => service.getValidations(`DataDictionary.DataField[${index}]`), [index]);
+  const validations = useMemo(() => service.get(`DataDictionary.DataField[${index}]`), [index, dataType]);
 
   return (
     <article

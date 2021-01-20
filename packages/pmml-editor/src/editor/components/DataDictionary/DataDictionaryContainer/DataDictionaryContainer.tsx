@@ -145,7 +145,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.getValidations(`DataDictionary`), [dataDictionary]);
+  const validations = useMemo(() => validationService.get(`DataDictionary`), [dataDictionary]);
 
   return (
     <div className="data-dictionary">

@@ -44,9 +44,7 @@ const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: Co
   }, [constraints]);
 
   const { service } = useValidationService();
-  const validations = useMemo(() => service.getValidations(`DataDictionary.DataField[${editingIndex}].Interval`), [
-    editingIndex
-  ]);
+  const validations = useMemo(() => service.get(`DataDictionary.DataField[${editingIndex}].Interval`), [editingIndex]);
 
   return (
     <>
