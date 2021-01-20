@@ -77,9 +77,10 @@ func getLogger(name string, options *Opts) Logger {
 	// implementing the logr.Logger interface. This logger will
 	// be propagated through the whole operator, generating
 	// uniform and structured logs.
-	logger := createLogger(options)
-	//logger.Logger = logf.Log.WithName(name)
-	logger.Logger.WithName(name)
+	logger := Logger{
+		createLogger(options).WithName(name),
+	}
+
 	return logger
 }
 
