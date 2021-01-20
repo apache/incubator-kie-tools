@@ -23,10 +23,7 @@ import get = Reflect.get;
 const reduce = (model: Model, action: AllActions, reducers: Map<ModelType, ModelReducerBinding<any, any>>) => {
   const modelType = getModelType(model);
   const reducer = reducers.get(modelType);
-  if (reducer !== undefined) {
-    return reducer.factory(reducer.reducer(model, action));
-  }
-  return model;
+  return reducer?.factory(reducer.reducer(model, action)) ?? model;
 };
 
 export const DelegatingModelReducer: HistoryAwareModelReducer<AllActions> = (

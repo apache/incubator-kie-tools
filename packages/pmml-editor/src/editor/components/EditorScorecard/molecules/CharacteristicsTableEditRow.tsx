@@ -26,8 +26,8 @@ import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
 import { useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { HistoryContext, OperationContext } from "../../../PMMLEditor";
-import { useBatchDispatch } from "../../../history";
+import { useBatchDispatch, useHistoryService } from "../../../history";
+import { useOperation } from "../OperationContext";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
@@ -58,8 +58,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const characteristicIndex = characteristic.index;
 
-  const { activeOperation } = React.useContext(OperationContext);
-  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const { activeOperation } = useOperation();
+  const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({

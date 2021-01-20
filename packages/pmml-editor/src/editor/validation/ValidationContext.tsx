@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
+import { ValidationService } from "./ValidationService";
 
-export * from "./ActionSpacer";
-export * from "./ModelTitle";
-export * from "./ValidationIndicator";
+export interface Validation {
+  service: ValidationService;
+}
+
+export const ValidationContext = React.createContext<Validation>({
+  service: new ValidationService()
+});
+
+export function useValidationService() {
+  return React.useContext(ValidationContext);
+}

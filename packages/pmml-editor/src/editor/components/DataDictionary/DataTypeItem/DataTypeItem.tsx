@@ -1,8 +1,10 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import {
   Button,
+  Flex,
+  FlexItem,
   Form,
   FormGroup,
   Label,
@@ -22,6 +24,8 @@ import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
 import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface DataTypeItemProps {
   dataType: DDDataField;
@@ -156,6 +160,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     setOptypeSelection(dataType.optype);
   }, [dataType]);
 
+  const { service } = useValidationService();
+  const validations = useMemo(() => service.get(`DataDictionary.DataField[${index}]`), [index, dataType]);
+
   return (
     <article
       className={`editable-item ${editingIndex === index ? "editable-item--editing" : ""} data-type-item-n${index}`}
@@ -172,110 +179,114 @@ const DataTypeItem = (props: DataTypeItemProps) => {
           }}
         >
           <Form onSubmit={handleSave}>
-            <Stack hasGutter={true}>
-              <StackItem>
-                <Split hasGutter={true}>
-                  <SplitItem>
-                    <FormGroup
-                      fieldId="name"
-                      label="Name"
-                      helperTextInvalid="Name already used by another Data Type"
-                      validated={validation}
-                      style={{ width: 280 }}
-                    >
-                      <TextInput
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={name}
-                        onChange={handleNameChange}
-                        placeholder="Name"
-                        validated={validation}
-                        onBlur={handleNameSave}
-                        autoComplete="off"
-                      />
-                    </FormGroup>
-                  </SplitItem>
-                  <SplitItem>
-                    <FormGroup fieldId="type" label="Type">
-                      <Select
-                        id="type"
-                        variant={SelectVariant.single}
-                        aria-label="Select Input Type"
-                        onToggle={typeToggle}
-                        onSelect={typeSelect}
-                        selections={typeSelection}
-                        isOpen={isTypeSelectOpen}
-                        placeholder="Type"
-                        className="data-type-item__type-select"
-                      >
-                        {typeOptions.map((option, optionIndex) => (
-                          <SelectOption
-                            key={optionIndex}
-                            value={option.value}
-                            className="ignore-onclickoutside data-type-item__type-select__option"
+            <Split hasGutter={true}>
+              <SplitItem>
+                <Stack hasGutter={true}>
+                  <StackItem>
+                    <Split hasGutter={true}>
+                      <SplitItem>
+                        <FormGroup
+                          fieldId="name"
+                          label="Name"
+                          helperTextInvalid="Name already used by another Data Type"
+                          validated={validation}
+                          style={{ width: 280 }}
+                        >
+                          <TextInput
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={name}
+                            onChange={handleNameChange}
+                            placeholder="Name"
+                            validated={validation}
+                            onBlur={handleNameSave}
+                            autoComplete="off"
                           />
-                        ))}
-                      </Select>
-                    </FormGroup>
-                  </SplitItem>
-                  <SplitItem>
-                    <FormGroup fieldId="optype" label="Op Type">
-                      <Select
-                        id="optype"
-                        variant={SelectVariant.single}
-                        aria-label="Select Op Type"
-                        onToggle={optypeToggle}
-                        onSelect={optypeSelect}
-                        selections={optypeSelection}
-                        isOpen={isOptypeSelectOpen}
-                        placeholder="Op Type"
-                        className="data-type-item__type-select"
-                      >
-                        {optypeOptions.map((option, optionIndex) => (
-                          <SelectOption
-                            key={optionIndex}
-                            value={option.value}
-                            className="ignore-onclickoutside data-type-item__type-select__option"
+                        </FormGroup>
+                      </SplitItem>
+                      <SplitItem>
+                        <FormGroup fieldId="type" label="Type">
+                          <Select
+                            id="type"
+                            variant={SelectVariant.single}
+                            aria-label="Select Input Type"
+                            onToggle={typeToggle}
+                            onSelect={typeSelect}
+                            selections={typeSelection}
+                            isOpen={isTypeSelectOpen}
+                            placeholder="Type"
+                            className="data-type-item__type-select"
+                          >
+                            {typeOptions.map((option, optionIndex) => (
+                              <SelectOption
+                                key={optionIndex}
+                                value={option.value}
+                                className="ignore-onclickoutside data-type-item__type-select__option"
+                              />
+                            ))}
+                          </Select>
+                        </FormGroup>
+                      </SplitItem>
+                      <SplitItem>
+                        <FormGroup fieldId="optype" label="Op Type">
+                          <Select
+                            id="optype"
+                            variant={SelectVariant.single}
+                            aria-label="Select Op Type"
+                            onToggle={optypeToggle}
+                            onSelect={optypeSelect}
+                            selections={optypeSelection}
+                            isOpen={isOptypeSelectOpen}
+                            placeholder="Op Type"
+                            className="data-type-item__type-select"
+                          >
+                            {optypeOptions.map((option, optionIndex) => (
+                              <SelectOption
+                                key={optionIndex}
+                                value={option.value}
+                                className="ignore-onclickoutside data-type-item__type-select__option"
+                              />
+                            ))}
+                          </Select>
+                        </FormGroup>
+                      </SplitItem>
+                      <SplitItem isFilled={true}>&nbsp;</SplitItem>
+                    </Split>
+                  </StackItem>
+                  <StackItem>
+                    <Split hasGutter={true}>
+                      <SplitItem>
+                        <PropertiesLabels
+                          dataType={dataType}
+                          editingIndex={editingIndex}
+                          onPropertyDelete={handlePropertiesDelete}
+                        />
+                        {dataType.constraints !== undefined && (
+                          <ConstraintsLabel
+                            editingIndex={editingIndex}
+                            constraints={dataType.constraints}
+                            onConstraintsDelete={handleConstraintsDelete}
                           />
-                        ))}
-                      </Select>
-                    </FormGroup>
-                  </SplitItem>
-                  <SplitItem isFilled={true}>&nbsp;</SplitItem>
-                </Split>
-              </StackItem>
-              <StackItem>
-                <Split hasGutter={true}>
-                  <SplitItem>
-                    <PropertiesLabels
-                      dataType={dataType}
-                      editingIndex={editingIndex}
-                      onPropertyDelete={handlePropertiesDelete}
-                    />
-                    {dataType.constraints !== undefined && (
-                      <ConstraintsLabel
-                        editingIndex={editingIndex}
-                        constraints={dataType.constraints}
-                        onConstraintsDelete={handleConstraintsDelete}
-                      />
-                    )}
-                    <Label
-                      variant="outline"
-                      color="orange"
-                      href="#"
-                      icon={<ArrowAltCircleRightIcon />}
-                      onClick={event => {
-                        event.preventDefault();
-                        handleConstraints();
-                      }}
-                    >
-                      Edit Properties
-                    </Label>
-                  </SplitItem>
-                </Split>
-              </StackItem>
-            </Stack>
+                        )}
+                        <Label
+                          variant="outline"
+                          color="orange"
+                          href="#"
+                          icon={<ArrowAltCircleRightIcon />}
+                          onClick={event => {
+                            event.preventDefault();
+                            handleConstraints();
+                          }}
+                        >
+                          Edit Properties
+                        </Label>
+                      </SplitItem>
+                    </Split>
+                  </StackItem>
+                </Stack>
+              </SplitItem>
+            </Split>
           </Form>
         </section>
       )}
@@ -293,6 +304,19 @@ const DataTypeItem = (props: DataTypeItemProps) => {
           }}
         >
           <Split hasGutter={true}>
+            {validations.length > 0 && (
+              <SplitItem>
+                <Flex
+                  alignItems={{ default: "alignItemsCenter" }}
+                  justifyContent={{ default: "justifyContentCenter" }}
+                  style={{ height: "100%" }}
+                >
+                  <FlexItem>
+                    <ValidationIndicator validations={validations} />
+                  </FlexItem>
+                </Flex>
+              </SplitItem>
+            )}
             <SplitItem>
               <span className="data-type-item__name">{name}</span>
             </SplitItem>

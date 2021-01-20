@@ -31,7 +31,7 @@ import {
 import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
-import { HistoryService } from "./history";
+import { HistoryContext, HistoryService } from "./history";
 import { LandingPage } from "./components/LandingPage/templates";
 import { Page } from "@patternfly/react-core";
 import { HashRouter } from "react-router-dom";
@@ -39,7 +39,8 @@ import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
-import { Operation } from "./components/EditorScorecard";
+import { Operation, OperationContext } from "./components/EditorScorecard";
+import { ValidationContext, ValidationService } from "./validation";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -55,29 +56,10 @@ export interface State {
   activeOperation: Operation;
 }
 
-interface History {
-  service: HistoryService;
-  getCurrentState: () => PMML | undefined;
-}
-
-export const HistoryContext = React.createContext<History>({
-  service: new HistoryService(),
-  getCurrentState: () => undefined
-});
-
-interface ActiveOperation {
-  activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
-}
-
-export const OperationContext = React.createContext<ActiveOperation>({
-  activeOperation: Operation.NONE,
-  setActiveOperation: (operation: Operation) => null
-});
-
 export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
-  private readonly service: HistoryService = new HistoryService();
+  private readonly history: HistoryService = new HistoryService();
+  private readonly validation: ValidationService = new ValidationService();
   private readonly reducer: Reducer<PMML, AllActions>;
 
   constructor(props: Props) {
@@ -92,12 +74,12 @@ export class PMMLEditor extends React.Component<Props, State> {
 
     enableAllPlugins();
 
-    this.reducer = mergeReducers(PMMLReducer(this.service), {
-      Header: HeaderReducer(this.service),
-      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), {
-        DataField: DataDictionaryFieldReducer(this.service)
+    this.reducer = mergeReducers(PMMLReducer(this.history), {
+      Header: HeaderReducer(this.history),
+      DataDictionary: mergeReducers(DataDictionaryReducer(this.history, this.validation), {
+        DataField: DataDictionaryFieldReducer(this.history, this.validation)
       }),
-      models: ModelReducer(this.service)
+      models: ModelReducer(this.history)
     });
   }
 
@@ -131,7 +113,13 @@ export class PMMLEditor extends React.Component<Props, State> {
       pmml = XML2PMML(_content);
     }
 
+    //Create and validate store before setting state to ensure Validation is complete before the UI renders
     this.store = createStore(this.reducer, pmml);
+    this.store?.dispatch({
+      type: Actions.Validate,
+      payload: {}
+    });
+
     this.setState({ path: path, content: _content, originalContent: _content, activeOperation: Operation.NONE });
   }
 
@@ -155,6 +143,10 @@ export class PMMLEditor extends React.Component<Props, State> {
         type: Actions.Undo,
         payload: undefined
       });
+      this.store?.dispatch({
+        type: Actions.Validate,
+        payload: {}
+      });
     }
   }
 
@@ -168,6 +160,10 @@ export class PMMLEditor extends React.Component<Props, State> {
       this.store?.dispatch({
         type: Actions.Redo,
         payload: undefined
+      });
+      this.store?.dispatch({
+        type: Actions.Validate,
+        payload: {}
       });
     }
   }
@@ -194,33 +190,35 @@ export class PMMLEditor extends React.Component<Props, State> {
         <HashRouter>
           <Page>
             <Provider store={this.store}>
-              <Switch>
-                <Route exact={true} path={"/"}>
-                  {!isSingleModel && <LandingPage path={path} />}
-                  {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
-                </Route>
-                <Route exact={true} path={"/editor/:index"}>
-                  <OperationContext.Provider
-                    value={{
-                      activeOperation: this.state.activeOperation,
-                      setActiveOperation: operation =>
-                        this.setState({
-                          ...this.state,
-                          activeOperation: operation
-                        })
-                    }}
-                  >
-                    <HistoryContext.Provider
-                      value={{
-                        service: this.service,
-                        getCurrentState: () => this.store?.getState()
-                      }}
-                    >
-                      <SingleEditorRouter path={path} />
-                    </HistoryContext.Provider>
-                  </OperationContext.Provider>
-                </Route>
-              </Switch>
+              <ValidationContext.Provider value={{ service: this.validation }}>
+                <HistoryContext.Provider
+                  value={{
+                    service: this.history,
+                    getCurrentState: () => this.store?.getState()
+                  }}
+                >
+                  <Switch>
+                    <Route exact={true} path={"/"}>
+                      {!isSingleModel && <LandingPage path={path} />}
+                      {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
+                    </Route>
+                    <Route exact={true} path={"/editor/:index"}>
+                      <OperationContext.Provider
+                        value={{
+                          activeOperation: this.state.activeOperation,
+                          setActiveOperation: operation =>
+                            this.setState({
+                              ...this.state,
+                              activeOperation: operation
+                            })
+                        }}
+                      >
+                        <SingleEditorRouter path={path} />
+                      </OperationContext.Provider>
+                    </Route>
+                  </Switch>
+                </HistoryContext.Provider>
+              </ValidationContext.Provider>
             </Provider>
           </Page>
         </HashRouter>

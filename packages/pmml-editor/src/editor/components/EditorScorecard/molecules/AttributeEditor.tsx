@@ -25,7 +25,7 @@ import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 import { isEqual } from "lodash";
 import useOnclickOutside from "react-cool-onclickoutside";
-import { OperationContext } from "../../../PMMLEditor";
+import { useOperation } from "../OperationContext";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -55,7 +55,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [originalText, setOriginalText] = useState<string>();
 
-  const { activeOperation } = React.useContext(OperationContext);
+  const { activeOperation } = useOperation();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;

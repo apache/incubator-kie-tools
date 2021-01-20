@@ -16,12 +16,12 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
 import { ScorecardEditorPage } from "../../EditorScorecard/templates";
-import { getModelType, isSupportedModelType, OperationContext } from "../../..";
-import { Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { getModelType, isSupportedModelType } from "../../..";
+import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { EmptyStateModelNotFound } from ".";
 import { UnsupportedModelPage } from "../templates";
-import { Operation } from "../../EditorScorecard";
+import { Operation, useOperation } from "../../EditorScorecard";
 import { LinearRegressionViewerPage } from "../../LinearRegressionViewer/templates";
 
 interface ModelParams {
@@ -35,7 +35,7 @@ interface SingleEditorRouterProps {
 export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
   const { index } = useParams<ModelParams>();
 
-  const { setActiveOperation } = React.useContext(OperationContext);
+  const { setActiveOperation } = useOperation();
 
   const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
   if (!models) {

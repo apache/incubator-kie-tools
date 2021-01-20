@@ -27,12 +27,12 @@ import {
   Scorecard
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicsContainer, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
-import { getModelName, HistoryContext } from "../../..";
+import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useSelector } from "react-redux";
 import "./ScorecardEditorPage.scss";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
-import { useBatchDispatch } from "../../../history";
+import { useBatchDispatch, useHistoryService } from "../../../history";
 
 interface ScorecardEditorPageProps {
   path: string;
@@ -42,7 +42,7 @@ interface ScorecardEditorPageProps {
 export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const { modelIndex } = props;
 
-  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [filter, setFilter] = useState("");
@@ -144,6 +144,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
           <PageSection isFilled={false}>
             <CorePropertiesTable
+              modelIndex={modelIndex}
               isScorable={model.isScorable ?? true}
               functionName={model.functionName}
               algorithmName={model.algorithmName ?? ""}

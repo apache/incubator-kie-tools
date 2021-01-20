@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
+import { Alert, Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
@@ -11,6 +11,7 @@ import { findIncrementalName } from "../../../PMMLModelHelper";
 import "./DataDictionaryContainer.scss";
 import DataDictionaryPropertiesEdit from "../DataDictionaryPropertiesEdit/DataDictionaryPropertiesEdit";
 import { isEqual } from "lodash";
+import { useValidationService } from "../../../validation";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
@@ -143,6 +144,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     }
   };
 
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`DataDictionary`), [dataDictionary]);
+
   return (
     <div className="data-dictionary">
       <SwitchTransition mode={"out-in"}>
@@ -193,28 +197,35 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                   </FlexItem>
                 </Flex>
                 {!sorting && (
-                  <section className="data-dictionary__types-list">
-                    {dataTypes.length === 0 && (
-                      <Bullseye style={{ height: "40vh" }}>
-                        <EmptyDataDictionary />
-                      </Bullseye>
+                  <>
+                    {validations.length > 0 && (
+                      <section className="data-dictionary__validation-alert">
+                        <Alert variant="warning" title="Some items are invalid and need attention." />
+                      </section>
                     )}
-                    {dataTypes.map((item, index) => (
-                      <DataTypeItem
-                        dataType={item}
-                        editingIndex={editing}
-                        index={index}
-                        key={index}
-                        onSave={handleSave}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        onConstraintsEdit={handleConstraintsEdit}
-                        onConstraintsSave={handleConstraintsSave}
-                        onValidate={dataTypeNameValidation}
-                        onOutsideClick={handleOutsideClick}
-                      />
-                    ))}
-                  </section>
+                    <section className="data-dictionary__types-list">
+                      {dataTypes.length === 0 && (
+                        <Bullseye style={{ height: "40vh" }}>
+                          <EmptyDataDictionary />
+                        </Bullseye>
+                      )}
+                      {dataTypes.map((item, index) => (
+                        <DataTypeItem
+                          dataType={item}
+                          editingIndex={editing}
+                          index={index}
+                          key={index}
+                          onSave={handleSave}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onConstraintsEdit={handleConstraintsEdit}
+                          onConstraintsSave={handleConstraintsSave}
+                          onValidate={dataTypeNameValidation}
+                          onOutsideClick={handleOutsideClick}
+                        />
+                      ))}
+                    </section>
+                  </>
                 )}
                 {sorting && (
                   <section className="data-dictionary__types-list">
@@ -229,6 +240,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
             {viewSection === "properties" && (
               <DataDictionaryPropertiesEdit
                 dataType={editingDataType!}
+                dataFieldIndex={editing}
                 onClose={exitFromPropertiesEdit}
                 onSave={handlePropertiesSave}
               />

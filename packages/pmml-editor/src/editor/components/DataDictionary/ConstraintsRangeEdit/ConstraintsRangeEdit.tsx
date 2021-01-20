@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Button,
@@ -36,8 +36,10 @@ import { TrashIcon } from "@patternfly/react-icons";
 import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
+import { useValidationService } from "../../../validation";
 
 interface ConstraintsRangeEditProps {
+  dataFieldIndex: number | undefined;
   ranges: RangeConstraint[];
   onAdd: () => void;
   onChange: (ranges: RangeConstraint[]) => void;
@@ -46,7 +48,7 @@ interface ConstraintsRangeEditProps {
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { ranges, onAdd, onChange, onDelete, validation } = props;
+  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, validation } = props;
   const [addedRange, setAddedRange] = useState<number>();
 
   const updateRange = (index: number, range: RangeConstraint) => {
@@ -79,6 +81,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
       <StackItem>
         {ranges.map((range, index) => (
           <RangeEdit
+            dataFieldIndex={dataFieldIndex}
             range={range}
             rangesCount={ranges.length}
             index={index}
@@ -102,6 +105,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
 export default ConstraintsRangeEdit;
 
 interface RangeEditProps {
+  dataFieldIndex: number | undefined;
   range: RangeConstraint;
   rangesCount: number;
   index: number;
@@ -112,7 +116,7 @@ interface RangeEditProps {
 }
 
 const RangeEdit = (props: RangeEditProps) => {
-  const { range, rangesCount, index, onSave, onDelete, addedRange, updateAddedRange } = props;
+  const { dataFieldIndex, range, rangesCount, index, onSave, onDelete, addedRange, updateAddedRange } = props;
   const [rangeValues, setRangeValues] = useState(range);
   const [submitChanges, setSubmitChanges] = useState(false);
 
@@ -164,16 +168,28 @@ const RangeEdit = (props: RangeEditProps) => {
     }
   }, [addedRange, index, rangeRef.current]);
 
+  const { service } = useValidationService();
+  const validations = useMemo(() => service.get(`DataDictionary.DataField[${dataFieldIndex}].Interval[${index}]`), [
+    range
+  ]);
+
   return (
     <section ref={rangeRef}>
       <Split hasGutter={true} className="constraints__range-item">
         <SplitItem>
-          <FormGroup label="Start Value" fieldId={`start-value-${index}`} style={{ width: 320 }}>
+          <FormGroup
+            label="Start Value"
+            fieldId={`start-value-${index}`}
+            style={{ width: 320 }}
+            validated={validations.length === 0 ? "default" : "error"}
+            helperTextInvalid={validations[0] ? validations[0].message : ""}
+          >
             <TextInput
               type="number"
               id={`start-value-${index}`}
               name="start-value"
               value={rangeValues.start.value}
+              validated={validations.length === 0 ? "default" : "error"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
@@ -193,12 +209,19 @@ const RangeEdit = (props: RangeEditProps) => {
           </FormGroup>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <FormGroup label="End Value" fieldId={`end-value-${index}`} style={{ width: 320 }}>
+          <FormGroup
+            label="End Value"
+            fieldId={`end-value-${index}`}
+            style={{ width: 320 }}
+            validated={validations.length === 0 ? "default" : "error"}
+            helperTextInvalid={validations[0] ? validations[0].message : ""}
+          >
             <TextInput
               type="number"
               id={`end-value-${index}`}
               name="end-value"
               value={rangeValues.end.value}
+              validated={validations.length === 0 ? "default" : "error"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}

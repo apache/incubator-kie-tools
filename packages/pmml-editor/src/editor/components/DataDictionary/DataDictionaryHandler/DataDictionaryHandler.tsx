@@ -11,22 +11,23 @@ import {
   Title,
   TitleSizes
 } from "@patternfly/react-core";
-import { CloseIcon } from "@patternfly/react-icons";
+import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import { DataDictionary, FieldName, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
-import { HistoryContext, OperationContext } from "../../../PMMLEditor";
-import { Operation } from "../../EditorScorecard";
-import { useBatchDispatch } from "../../../history";
+import { Operation, useOperation } from "../../EditorScorecard";
+import { useBatchDispatch, useHistoryService } from "../../../history";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
   const pmmlDataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
   const dictionary = useMemo(() => convertPMML2DD(pmmlDataDictionary), [pmmlDataDictionary]);
-  const { setActiveOperation } = React.useContext(OperationContext);
+  const { setActiveOperation } = useOperation();
 
-  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const handleDataDictionaryToggle = () => {
@@ -88,6 +89,9 @@ const DataDictionaryHandler = () => {
     setActiveOperation(status ? Operation.UPDATE_DATA_DICTIONARY : Operation.NONE);
   };
 
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`DataDictionary`), [dictionary]);
+
   const header = (
     <Split hasGutter={true}>
       <SplitItem isFilled={true}>
@@ -105,9 +109,22 @@ const DataDictionaryHandler = () => {
 
   return (
     <>
-      <Button variant="secondary" onClick={handleDataDictionaryToggle}>
-        Set Data Dictionary
-      </Button>
+      {validations.length === 0 && (
+        <Button variant="secondary" onClick={handleDataDictionaryToggle}>
+          Set Data Dictionary
+        </Button>
+      )}
+      {validations.length > 0 && (
+        <ValidationIndicatorTooltip validations={validations}>
+          <Button
+            variant="secondary"
+            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            onClick={handleDataDictionaryToggle}
+          >
+            Set Data Dictionary
+          </Button>
+        </ValidationIndicatorTooltip>
+      )}
       <Modal
         aria-label="data-dictionary"
         title="Data Dictionary"
