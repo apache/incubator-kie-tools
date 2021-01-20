@@ -86,7 +86,11 @@ function waitForEventWithFileData() {
 }
 
 function openFileByUrl() {
-  const filePath = urlParams.get("file")!;
+  const filePath = urlParams
+    .get("file")!
+    .split("?")
+    .shift()!;
+
   if (githubService.isGist(filePath)) {
     githubService
       .fetchGistFile(filePath)
@@ -96,7 +100,7 @@ function openFileByUrl() {
           `Not able to open this Gist. If you have updated your Gist filename it can take a few seconds until the URL is available to be used.`
         );
       });
-  } else if (githubService.isGithub(filePath)) {
+  } else if (githubService.isGithub(filePath) || githubService.isGithubRaw(filePath)) {
     githubService
       .fetchGithubFile(filePath)
       .then(response => {
