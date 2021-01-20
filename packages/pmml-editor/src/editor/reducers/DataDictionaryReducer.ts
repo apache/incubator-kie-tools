@@ -17,7 +17,7 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataDictionary, DataType, FieldName, OpType } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { validateDataFieldsConstraintRanges, ValidationService } from "../validation";
+import { validateDataFields, ValidationService } from "../validation";
 
 interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
@@ -62,7 +62,7 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
             draft.DataField.splice(index, 1);
           }
           validation.clear("DataDictionary");
-          validateDataFieldsConstraintRanges(draft.DataField, validation);
+          validateDataFields(draft.DataField, validation);
         });
         break;
 
@@ -71,7 +71,7 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
           const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
           draft.DataField.splice(action.payload.newIndex, 0, removed);
           validation.clear("DataDictionary");
-          validateDataFieldsConstraintRanges(draft.DataField, validation);
+          validateDataFields(draft.DataField, validation);
         });
         break;
 
