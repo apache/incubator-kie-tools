@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const MINING_SCHEMA: string = `
-"MiningSchema": {
-  "MiningField": [$v.elements[(name = "MiningSchema")].elements[(name = "MiningField")] ~> $map(function($v, $i) {  
-    $merge([
-      $v.attributes,
-      {
-        "importance": $number($v.attributes.importance)
-      }
-    ])
-  })]
-}`;
+export const MINING_SCHEMA_1: string = `
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+  <Header copyright="DMG.org"/>
+  <DataDictionary/>
+  <Scorecard modelName="name">
+    <MiningSchema>
+      <MiningField name="field1" importance="1"/>
+    </MiningSchema>
+  </Scorecard>
+</PMML>
+`;

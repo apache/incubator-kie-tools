@@ -1,6 +1,7 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   Button,
   Form,
   FormGroup,
@@ -23,20 +24,29 @@ import {
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
+import { useValidationService } from "../../../validation";
 
 interface MiningSchemaPropertiesEditProps {
+  modelIndex: number;
+  miningFieldIndex: number;
   field: MiningField;
   onSave: (field: MiningField) => void;
   onClose: () => void;
 }
 
-const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaPropertiesEditProps) => {
+const MiningSchemaPropertiesEdit = ({
+  modelIndex,
+  miningFieldIndex,
+  field,
+  onSave,
+  onClose
+}: MiningSchemaPropertiesEditProps) => {
   const [usageType, setUsageType] = useState(field.usageType ?? "");
   const [opType, setOpType] = useState(field.optype ?? "");
-  const [importance, setImportance] = useState(field.importance ?? "");
+  const [importance, setImportance] = useState(field.importance);
   const [outliers, setOutliers] = useState(field.outliers ?? "");
-  const [lowValue, setLowValue] = useState(field.lowValue ?? "");
-  const [highValue, setHighValue] = useState(field.highValue ?? "");
+  const [lowValue, setLowValue] = useState(field.lowValue);
+  const [highValue, setHighValue] = useState(field.highValue);
   const [missingValueReplacement, setMissingValueReplacement] = useState(field.missingValueReplacement ?? "");
   const [missingValueTreatment, setMissingValueTreatment] = useState(field.missingValueTreatment ?? "");
   const [invalidValueTreatment, setInvalidValueTreatment] = useState(field.invalidValueTreatment ?? "");
@@ -52,7 +62,15 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
       updatedField.optype = opType as OpType;
     }
     if (typeof importance === "number") {
-      updatedField.importance = importance;
+      let _importance = importance;
+      if (_importance < 0) {
+        _importance = 0;
+        setImportance(_importance);
+      } else if (_importance > 1) {
+        _importance = 1;
+        setImportance(_importance);
+      }
+      updatedField.importance = _importance;
     }
     if (outliers) {
       updatedField.outliers = outliers as OutlierTreatmentMethod;
@@ -88,15 +106,30 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
   useEffect(() => {
     setUsageType(field.usageType ?? "");
     setOpType(field.optype ?? "");
-    setImportance(field.importance ?? "");
+    setImportance(field.importance);
     setOutliers(field.outliers ?? "");
-    setLowValue(field.lowValue ?? "");
-    setHighValue(field.highValue ?? "");
+    setLowValue(field.lowValue);
+    setHighValue(field.highValue);
     setMissingValueReplacement(field.missingValueReplacement ?? "");
     setMissingValueTreatment(field.missingValueTreatment ?? "");
     setInvalidValueTreatment(field.invalidValueTreatment ?? "");
     setInvalidValueReplacement(field.invalidValueReplacement ?? "");
   }, [field]);
+
+  const service = useValidationService().service;
+  const validations = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}]`),
+    [modelIndex, miningFieldIndex, field]
+  );
+  const validationsImportance = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].importance`),
+    [modelIndex, miningFieldIndex, field]
+  );
+
+  const toNumberOrUndefined = (value: string): number | undefined => {
+    const _value = Number.parseFloat(value);
+    return isNaN(_value) ? undefined : _value;
+  };
 
   return (
     <Stack hasGutter={true} className="mining-schema__edit">
@@ -108,6 +141,11 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
           &nbsp;/&nbsp;Properties
         </Title>
       </StackItem>
+      {validations.length > 0 && (
+        <StackItem>
+          <Alert variant="warning" title="Some items are invalid and need attention." />
+        </StackItem>
+      )}
       <StackItem>
         <section className="mining-schema__edit__form">
           <Form>
@@ -148,6 +186,8 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
               label="Importance"
               fieldId="importance"
               helperText="Importance is a value between 0.0 and 1.0"
+              validated={validationsImportance.length === 0 ? "default" : "error"}
+              helperTextInvalid={validationsImportance[0] ? validations[0].message : ""}
             >
               <TextInput
                 type="number"
@@ -156,8 +196,8 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                 id="importance"
                 name="importance"
                 aria-describedby="Importance"
-                value={importance}
-                onChange={value => setImportance(Number.parseFloat(value))}
+                value={importance ?? ""}
+                onChange={value => setImportance(toNumberOrUndefined(value))}
                 onBlur={handleSave}
               />
             </FormGroup>
@@ -184,8 +224,8 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                     id="lowValue"
                     name="lowValue"
                     aria-describedby="Low Value"
-                    value={lowValue}
-                    onChange={value => setLowValue(Number.parseFloat(value))}
+                    value={lowValue ?? ""}
+                    onChange={value => setLowValue(toNumberOrUndefined(value))}
                     onBlur={handleSave}
                   />
                 </FormGroup>
@@ -197,8 +237,8 @@ const MiningSchemaPropertiesEdit = ({ field, onSave, onClose }: MiningSchemaProp
                     id="highValue"
                     name="highValue"
                     aria-describedby="High Value"
-                    value={highValue}
-                    onChange={value => setHighValue(Number.parseFloat(value))}
+                    value={highValue ?? ""}
+                    onChange={value => setHighValue(toNumberOrUndefined(value))}
                     onBlur={handleSave}
                   />
                 </FormGroup>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { ScorecardReducer } from "./ScorecardReducer";
@@ -26,6 +26,7 @@ import { OutputFieldReducer } from "./OutputFieldReducer";
 import { OutputReducer } from "./OutputReducer";
 import { MiningSchemaReducer } from "./MiningSchemaReducer";
 import { MiningSchemaFieldReducer } from "./MiningSchemaFieldReducer";
+import { ValidationService } from "../validation";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -35,11 +36,14 @@ interface ModelPayload {
 
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
-export const ModelReducer: HistoryAwareReducer<Model[], AllActions> = (
-  history: HistoryService
+export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = (
+  history: HistoryService,
+  validation: ValidationService
 ): Reducer<Model[], AllActions> => {
   const scorecardReducer = mergeReducers(ScorecardReducer(history), {
-    MiningSchema: mergeReducers(MiningSchemaReducer(history), { MiningField: MiningSchemaFieldReducer(history) }),
+    MiningSchema: mergeReducers(MiningSchemaReducer(history, validation), {
+      MiningField: MiningSchemaFieldReducer(history, validation)
+    }),
     Output: mergeReducers(OutputReducer(history), { OutputField: OutputFieldReducer(history) }),
     Characteristics: mergeReducers(CharacteristicsReducer(history), {
       Characteristic: CharacteristicReducer(history)

@@ -15,7 +15,7 @@
  */
 import { Reducer } from "react";
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import {
   FieldName,
   InvalidValueTreatmentMethod,
@@ -25,6 +25,8 @@ import {
   OutlierTreatmentMethod,
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
+import { ValidationService } from "../validation";
+import { validateMiningFieldImportance, validateMiningFieldsImportances } from "../validation/MiningSchema";
 
 interface MiningSchemaFieldPayload {
   [Actions.UpdateMiningSchemaField]: {
@@ -46,8 +48,9 @@ interface MiningSchemaFieldPayload {
 
 export type MiningSchemaFieldActions = ActionMap<MiningSchemaFieldPayload>[keyof ActionMap<MiningSchemaFieldPayload>];
 
-export const MiningSchemaFieldReducer: HistoryAwareReducer<MiningField[], AllActions> = (
-  service: HistoryService
+export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField[], AllActions> = (
+  service: HistoryService,
+  validation: ValidationService
 ): Reducer<MiningField[], AllActions> => {
   return (state: MiningField[], action: AllActions) => {
     switch (action.type) {
@@ -66,6 +69,7 @@ export const MiningSchemaFieldReducer: HistoryAwareReducer<MiningField[], AllAct
 
       case Actions.UpdateMiningSchemaField:
         service.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
+          const modelIndex = action.payload.modelIndex;
           const miningSchemaIndex = action.payload.miningSchemaIndex;
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
             draft[miningSchemaIndex] = {
@@ -83,7 +87,22 @@ export const MiningSchemaFieldReducer: HistoryAwareReducer<MiningField[], AllAct
               invalidValueReplacement: action.payload.invalidValueReplacement
             };
           }
+          validation.clear(`models[${modelIndex}].MiningSchema.MiningField[${miningSchemaIndex}]`);
+          validateMiningFieldImportance(
+            action.payload.modelIndex,
+            action.payload.miningSchemaIndex,
+            validation,
+            action.payload.importance
+          );
         });
+        break;
+
+      case Actions.Validate:
+        if (action.payload.modelIndex !== undefined) {
+          const modelIndex = action.payload.modelIndex;
+          validation.clear(`models[${modelIndex}].MiningSchema`);
+          validateMiningFieldsImportances(modelIndex, state, validation);
+        }
     }
 
     return state;
