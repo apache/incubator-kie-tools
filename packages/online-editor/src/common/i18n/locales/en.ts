@@ -173,5 +173,19 @@ export const en: OnlineI18n = {
       kogitoDoc: `${en_common.names.kogito} documentation`,
       finish: "Finish the Tour"
     }
+  },
+  alerts: {
+    gistError: `Not able to open this Gist. If you have updated your Gist filename it can take a few seconds until the URL is available to be used.`,
+    goToHomePage: "Go to Home Page",
+    errorDetails: "Error details:",
+    responseError: {
+      title: "An error happened while fetching your file"
+    },
+    fetchError: {
+      title: "An unexpected error happened while trying to fetch your file",
+      possibleCauses: "Possible causes:",
+      missingGitHubToken: `If you're trying to open a private file, make sure to set your GitHub token before. To do it use one of the Editor pages and open the "Set your GitHub token" modal under the Share dropdown.`,
+      cors: "The URL to your file must allow CORS in its response, which should contain the following header:"
+    }
   }
 };
