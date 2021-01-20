@@ -62,8 +62,6 @@ public abstract class BaseKeyCloakManager {
 
     static final int STATUS_NOT_AUTHORIZED = 403;
 
-    protected static final String CLIENT_ID = "kie";
-
     protected static final String ATTRIBUTE_USER_ID = "user.id";
     protected static final String ATTRIBUTE_USER_FIRST_NAME = "user.firstName";
     protected static final String ATTRIBUTE_USER_LAST_NAME = "user.lastName";
@@ -260,7 +258,7 @@ public abstract class BaseKeyCloakManager {
         }
 
         if (getKeyCloakInstance().getUseRoleResourceMappings()) {
-            userRepresentation.setClientRoles(new Maps.Builder().put(CLIENT_ID, keycloakRoles).build());
+            userRepresentation.setClientRoles(new Maps.Builder().put(getKeyCloakInstance().getResource(), keycloakRoles).build());
         } else {
             userRepresentation.setRealmRoles(keycloakRoles);
         }
@@ -327,10 +325,10 @@ public abstract class BaseKeyCloakManager {
     }
 
     protected String getClientIdByName(RealmResource realmResource) {
-        List<ClientRepresentation> clientResource = realmResource.clients().findByClientId(CLIENT_ID);
+        List<ClientRepresentation> clientResource = realmResource.clients().findByClientId(getKeyCloakInstance().getResource());
         if (!clientResource.isEmpty()) {
             return clientResource.get(0).getId();
         }
-        throw new ClientNotFoundException(CLIENT_ID);
+        throw new ClientNotFoundException(getKeyCloakInstance().getResource());
     }
 }

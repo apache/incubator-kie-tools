@@ -25,6 +25,7 @@ public class AuthSettings {
 
     private String serverUrl;
     private String realm;
+    private String resource;
     private String username;
     private String password;
     private String clientId;
@@ -32,12 +33,14 @@ public class AuthSettings {
 
     public AuthSettings(String serverUrl,
                         String realm,
+                        String resource,
                         String username,
                         String password,
                         String clientId,
                         String clientSecret) {
         this.serverUrl = serverUrl;
         this.realm = realm;
+        this.resource = resource;
         this.username = username;
         this.password = password;
         this.clientId = clientId;
@@ -58,6 +61,14 @@ public class AuthSettings {
 
     public void setRealm(String realm) {
         this.realm = realm;
+    }
+
+    public String getResource() {
+        return resource;
+    }
+
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 
     public String getUsername() {

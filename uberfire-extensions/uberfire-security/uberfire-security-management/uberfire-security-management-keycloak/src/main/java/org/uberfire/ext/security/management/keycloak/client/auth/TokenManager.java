@@ -27,4 +27,6 @@ public interface TokenManager {
     String getAccessTokenString();
 
     String getRealm();
+
+    String getResource();
 }

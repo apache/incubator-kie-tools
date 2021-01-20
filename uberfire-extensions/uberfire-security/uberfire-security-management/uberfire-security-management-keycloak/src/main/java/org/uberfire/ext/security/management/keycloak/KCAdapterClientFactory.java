@@ -50,6 +50,7 @@ public class KCAdapterClientFactory extends BaseClientFactory {
         final KCAdapterContextTokenManager tokenManager = new KCAdapterContextTokenManager(request);
         this.client = Keycloak.getInstance(authServer.getValue(),
                                            tokenManager.getRealm(),
+                                           tokenManager.getResource(),
                                            useRoleResourceMappings.getBooleanValue(),
                                            tokenManager);
     }

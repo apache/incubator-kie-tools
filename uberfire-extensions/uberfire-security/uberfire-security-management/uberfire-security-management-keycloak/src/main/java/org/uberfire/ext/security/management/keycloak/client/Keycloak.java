@@ -35,15 +35,18 @@ public class Keycloak {
 
     private final String serverUrl;
     private final String realm;
+    private final String resource;
     private final Boolean useRoleResourceMappings;
     private final ClientRequestFactory clientRequestFactory;
 
     Keycloak(String serverUrl,
              String realm,
+             String resource,
              Boolean useRoleResourceMappings,
              TokenManager tokenManager) {
         this.serverUrl = serverUrl;
         this.realm = realm;
+        this.resource = resource;
         this.useRoleResourceMappings = useRoleResourceMappings;
         this.clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(serverUrl).build());
         ResteasyProviderFactory.getInstance().getClientExecutionInterceptorRegistry().register(new BearerAuthenticationInterceptor(tokenManager));
@@ -51,10 +54,12 @@ public class Keycloak {
 
     public static Keycloak getInstance(String serverUrl,
                                        String realm,
+                                       String resource,
                                        Boolean useRoleResourceMappings,
                                        TokenManager tokenManager) {
         return new Keycloak(serverUrl,
                             realm,
+                            resource,
                             useRoleResourceMappings,
                             tokenManager);
     }
@@ -73,6 +78,10 @@ public class Keycloak {
 
     public Boolean getUseRoleResourceMappings() {
         return useRoleResourceMappings;
+    }
+
+    public String getResource() {
+        return resource;
     }
 
     public void close() {

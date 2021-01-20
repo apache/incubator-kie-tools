@@ -25,6 +25,7 @@ import org.uberfire.ext.security.management.keycloak.client.auth.credentials.Aut
 
 /**
  * Factory that creates Keycloak clients based on using Credentials authentication settings connection settings.
+ *
  * @since 0.9.0
  */
 @Dependent
@@ -35,6 +36,8 @@ public class CredentialsClientFactory extends BaseClientFactory {
     private static final String DEFAULT_PASSWORD = "password";
     private static final String DEFAULT_CLIENT_ID = "examples-admin-client";
     private static final String DEFAULT_CLIENT_SECRET = "password";
+    private static final String DEFAULT_USE_RESOURCE_ROLE_MAPPING = "false";
+    private static final String DEFAULT_RESOURCE = "kie";
 
     public void init(final ConfigProperties config) {
         final ConfigProperties.ConfigProperty authServer = config.get("org.uberfire.ext.security.management.keycloak.authServer",
@@ -50,13 +53,17 @@ public class CredentialsClientFactory extends BaseClientFactory {
         final ConfigProperties.ConfigProperty clientSecret = config.get("org.uberfire.ext.security.management.keycloak.clientSecret",
                                                                         DEFAULT_CLIENT_SECRET);
         final ConfigProperties.ConfigProperty useRoleResourceMappings = config.get("org.uberfire.ext.security.management.keycloak.use-resource-role-mappings",
-                                                                        "false");
+                                                                                   DEFAULT_USE_RESOURCE_ROLE_MAPPING);
+        final ConfigProperties.ConfigProperty resource = config.get("org.uberfire.ext.security.management.keycloak.resource",
+                                                                    DEFAULT_RESOURCE);
 
         this.client = Keycloak.getInstance(authServer.getValue(),
                                            realm.getValue(),
+                                           resource.getValue(),
                                            useRoleResourceMappings.getBooleanValue(),
                                            new AuthTokenManager(new AuthSettings(authServer.getValue(),
                                                                                  realm.getValue(),
+                                                                                 resource.getValue(),
                                                                                  user.getValue(),
                                                                                  password.getValue(),
                                                                                  clientId.getValue(),

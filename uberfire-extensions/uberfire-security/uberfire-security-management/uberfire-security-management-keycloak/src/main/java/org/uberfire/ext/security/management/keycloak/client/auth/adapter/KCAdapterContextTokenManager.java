@@ -48,6 +48,11 @@ public class KCAdapterContextTokenManager implements TokenManager {
         return getKCSessionContext().getRealm();
     }
 
+    @Override
+    public String getResource() {
+        return getKCSessionContext().getToken().getIssuedFor();
+    }
+
     protected KeycloakSecurityContext getKCSessionContext() {
         KeycloakSecurityContext context = null;
     	

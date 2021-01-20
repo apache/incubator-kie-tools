@@ -177,6 +177,11 @@ public class AuthTokenManager implements TokenManager {
         return config.getRealm();
     }
 
+    @Override
+    public String getResource() {
+        return config.getResource();
+    }
+
     TokenService createTokenService() {
         ResteasyProviderFactory pf = ResteasyProviderFactory.getInstance();
         pf.addClientErrorInterceptor(clientErrorInterceptor);

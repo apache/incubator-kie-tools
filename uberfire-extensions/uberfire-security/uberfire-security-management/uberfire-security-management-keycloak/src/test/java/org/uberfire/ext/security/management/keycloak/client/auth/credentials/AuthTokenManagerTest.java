@@ -45,6 +45,7 @@ public class AuthTokenManagerTest {
     public void setup() throws Exception {
         when(config.getUsername()).thenReturn("user1");
         when(config.getRealm()).thenReturn("realm1");
+        when(config.getResource()).thenReturn("kie");
         when(config.getClientId()).thenReturn("clientId1");
         when(config.getClientSecret()).thenReturn("clientSecret1");
         when(config.getPassword()).thenReturn("password1");
@@ -64,6 +65,13 @@ public class AuthTokenManagerTest {
     public void testGetRealm() throws Exception {
         String r = this.tokenManager.getRealm();
         Assert.assertEquals("realm1",
+                            r);
+    }
+
+    @Test
+    public void testGetResource() throws Exception {
+        String r = this.tokenManager.getResource();
+        Assert.assertEquals("kie",
                             r);
     }
 
