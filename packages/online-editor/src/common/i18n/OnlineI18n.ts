@@ -170,6 +170,20 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       finish: string;
     };
   };
+  alerts: {
+    gistError: string;
+    goToHomePage: string;
+    errorDetails: string;
+    responseError: {
+      title: string;
+    };
+    fetchError: {
+      title: string;
+      possibleCauses: string;
+      missingGitHubToken: string;
+      cors: string;
+    };
+  };
 }
 
 export interface OnlineI18n extends OnlineDictionary, CommonI18n {}

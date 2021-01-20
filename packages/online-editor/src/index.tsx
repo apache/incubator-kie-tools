@@ -30,9 +30,13 @@ import { GithubService } from "./common/GithubService";
 import { Alert, AlertActionLink, AlertActionCloseButton, AlertVariant, List, ListItem } from "@patternfly/react-core";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import "../static/resources/style.css";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
+const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionaries, "en");
+
 const editorEnvelopeLocator: EditorEnvelopeLocator = {
   targetOrigin: window.location.origin,
   mapping: new Map([
@@ -86,6 +90,7 @@ function waitForEventWithFileData() {
 }
 
 function openFileByUrl() {
+  const i18n = onlineI18n.getCurrent();
   const filePath = urlParams
     .get("file")!
     .split("?")
@@ -96,9 +101,7 @@ function openFileByUrl() {
       .fetchGistFile(filePath)
       .then(content => openFile(filePath, Promise.resolve(content)))
       .catch(error => {
-        showFetchError(
-          `Not able to open this Gist. If you have updated your Gist filename it can take a few seconds until the URL is available to be used.`
-        );
+        showFetchError(i18n.alerts.gistError);
       });
   } else if (githubService.isGithub(filePath) || githubService.isGithubRaw(filePath)) {
     githubService
@@ -144,16 +147,17 @@ function openFile(filePath: string, getFileContent: Promise<string>) {
 }
 
 function showResponseError(statusCode: number, description: string) {
+  const i18n = onlineI18n.getCurrent();
   ReactDOM.render(
     <div className={"kogito--alert-container"}>
       <Alert
         variant={AlertVariant.danger}
-        title="An error happened while fetching your file"
-        actionLinks={<AlertActionLink onClick={goToHomePage}>Go to Home Page</AlertActionLink>}
+        title={i18n.alerts.responseError.title}
+        actionLinks={<AlertActionLink onClick={goToHomePage}>{i18n.alerts.goToHomePage}</AlertActionLink>}
         actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
       >
         <br />
-        <b>Error details: </b>
+        <b>{i18n.alerts.errorDetails}</b>
         {statusCode}
         {statusCode && description && " - "}
         {description}
@@ -164,27 +168,25 @@ function showResponseError(statusCode: number, description: string) {
 }
 
 function showFetchError(description: string) {
+  const i18n = onlineI18n.getCurrent();
   ReactDOM.render(
     <div className={"kogito--alert-container"}>
       <Alert
         variant={AlertVariant.danger}
-        title="An unexpected error happened while trying to fetch your file"
-        actionLinks={<AlertActionLink onClick={goToHomePage}>Go to Home Page</AlertActionLink>}
+        title={i18n.alerts.fetchError.title}
+        actionLinks={<AlertActionLink onClick={goToHomePage}>{i18n.alerts.goToHomePage}</AlertActionLink>}
         actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
       >
         <br />
-        <b>Error details: </b>
+        <b>{i18n.alerts.errorDetails} </b>
         {description}
         <br />
         <br />
-        <b>Possible causes: </b>
+        <b>{i18n.alerts.fetchError.possibleCauses} </b>
         <List>
+          <ListItem>{i18n.alerts.fetchError.missingGitHubToken}</ListItem>
           <ListItem>
-            If you're trying to open a private file, make sure to set your GitHub token before. To do it use one of the
-            Editor pages and open the "Set your GitHub token" modal under the Share dropdown.
-          </ListItem>
-          <ListItem>
-            The URL to your file must allow CORS in its response, which should contain the following header:
+            {i18n.alerts.fetchError.cors}
             <pre>Access-Control-Allow-Origin: *</pre>
           </ListItem>
         </List>
