@@ -13,17 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { MiningField, OutlierTreatmentMethod } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 
-export const validateMiningFieldImportance = (
+export const validateMiningField = (
   modelIndex: number,
   miningFieldIndex: number,
-  validation: ValidationService,
-  importance: number | undefined
+  miningField: MiningField,
+  validation: ValidationService
 ): void => {
+  //Importance
+  const importance = miningField.importance;
   if (importance !== undefined && (importance < 0 || importance > 1)) {
     validation.set(
       `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].importance`,
@@ -33,14 +35,31 @@ export const validateMiningFieldImportance = (
       )
     );
   }
+
+  //Low/High values
+  const { outliers, lowValue, highValue } = miningField;
+  if (areLowHighValuesRequired(outliers)) {
+    if (lowValue === undefined && highValue === undefined) {
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].values`,
+        new ValidationEntry(
+          ValidationLevel.ERROR,
+          `Mining Field[${miningFieldIndex}] Low and/or High Value must be set.`
+        )
+      );
+    }
+  }
 };
 
-export const validateMiningFieldsImportances = (
+export const validateMiningFields = (
   modelIndex: number,
   miningFields: MiningField[],
   validation: ValidationService
 ): void => {
   miningFields.forEach((miningField, miningFieldIndex) =>
-    validateMiningFieldImportance(modelIndex, miningFieldIndex, validation, miningField.importance)
+    validateMiningField(modelIndex, miningFieldIndex, miningField, validation)
   );
 };
+
+export const areLowHighValuesRequired = (outliers: OutlierTreatmentMethod | string | undefined) =>
+  outliers === "asExtremeValues" || outliers === "asMissingValues";

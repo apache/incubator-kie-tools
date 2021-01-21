@@ -37,7 +37,11 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   const { service } = useValidationService();
   const validationsImportance = useMemo(
     () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].importance`),
-    [index, modelIndex, field]
+    [modelIndex, index, field]
+  );
+  const validationsLowHighValue = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].values`),
+    [modelIndex, index, field]
   );
 
   return (
@@ -58,6 +62,11 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
           ...field,
           importance: undefined
         })}
+      {editing && validationsLowHighValue.length > 0 && (
+        <span className="constraints-label">
+          <ValidationIndicator validations={validationsLowHighValue} />
+        </span>
+      )}
       {field.outliers !== undefined && MiningLabel("Outliers", field.outliers, { ...field, outliers: undefined })}
       {field.lowValue !== undefined && MiningLabel("Low Value", field.lowValue, { ...field, lowValue: undefined })}
       {field.highValue !== undefined &&

@@ -25,6 +25,7 @@ import {
 } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
 import { useValidationService } from "../../../validation";
+import { areLowHighValuesRequired } from "../../../validation/MiningSchema";
 
 interface MiningSchemaPropertiesEditProps {
   modelIndex: number;
@@ -125,6 +126,16 @@ const MiningSchemaPropertiesEdit = ({
     () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].importance`),
     [modelIndex, miningFieldIndex, field]
   );
+  const validationsLowHighValue = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].values`),
+    [modelIndex, miningFieldIndex, field]
+  );
+
+  const _areLowHighValuesRequired = useMemo(() => areLowHighValuesRequired(outliers), [
+    modelIndex,
+    miningFieldIndex,
+    outliers
+  ]);
 
   const toNumberOrUndefined = (value: string): number | undefined => {
     const _value = Number.parseFloat(value);
@@ -197,6 +208,7 @@ const MiningSchemaPropertiesEdit = ({
                 name="importance"
                 aria-describedby="Importance"
                 value={importance ?? ""}
+                validated={validationsImportance.length === 0 ? "default" : "error"}
                 onChange={value => setImportance(toNumberOrUndefined(value))}
                 onBlur={handleSave}
               />
@@ -218,26 +230,44 @@ const MiningSchemaPropertiesEdit = ({
             </FormGroup>
             <Split hasGutter={true}>
               <SplitItem style={{ width: 320 }}>
-                <FormGroup label="Low Value" fieldId="lowValue">
+                <FormGroup
+                  label="Low Value"
+                  fieldId="lowValue"
+                  validated={validationsLowHighValue.length === 0 ? "default" : "error"}
+                  helperTextInvalid={validationsLowHighValue[0] ? validationsLowHighValue[0].message : ""}
+                >
                   <TextInput
                     type="number"
                     id="lowValue"
                     name="lowValue"
                     aria-describedby="Low Value"
                     value={lowValue ?? ""}
+                    validated={validationsLowHighValue.length === 0 ? "default" : "error"}
+                    isDisabled={!_areLowHighValuesRequired}
+                    placeholder={!_areLowHighValuesRequired ? "<Not needed>" : ""}
+                    style={!_areLowHighValuesRequired ? { backgroundColor: "var(--pf-global--BorderColor--100)" } : {}}
                     onChange={value => setLowValue(toNumberOrUndefined(value))}
                     onBlur={handleSave}
                   />
                 </FormGroup>
               </SplitItem>
               <SplitItem style={{ width: 320 }}>
-                <FormGroup label="High Value" fieldId="highValue">
+                <FormGroup
+                  label="High Value"
+                  fieldId="highValue"
+                  validated={validationsLowHighValue.length === 0 ? "default" : "error"}
+                  helperTextInvalid={validationsLowHighValue[0] ? validationsLowHighValue[0].message : ""}
+                >
                   <TextInput
                     type="number"
                     id="highValue"
                     name="highValue"
                     aria-describedby="High Value"
                     value={highValue ?? ""}
+                    validated={validationsLowHighValue.length === 0 ? "default" : "error"}
+                    isDisabled={!_areLowHighValuesRequired}
+                    placeholder={!_areLowHighValuesRequired ? "<Not needed>" : ""}
+                    style={!_areLowHighValuesRequired ? { backgroundColor: "var(--pf-global--BorderColor--100)" } : {}}
                     onChange={value => setHighValue(toNumberOrUndefined(value))}
                     onBlur={handleSave}
                   />
