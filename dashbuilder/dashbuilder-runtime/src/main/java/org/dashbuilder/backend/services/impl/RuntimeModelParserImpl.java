@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.dashbuilder.backend.RuntimeOptions;
+import org.dashbuilder.backend.helper.PartitionHelper;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.displayer.DisplayerSettings;
@@ -132,7 +133,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
 
         if (options.isMultipleImport()) {
             if (options.isDatasetPartition()) {
-                datasetContents.forEach(ds -> ds.setId(transformId(modelId, ds.getId())));
+                datasetContents.forEach(ds -> ds.setId(PartitionHelper.partition(modelId, ds.getId())));
             }
             layoutTemplates.forEach(lt -> partitionLayoutTemplate(modelId, lt));
         }
@@ -145,16 +146,12 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis());
     }
 
-    String transformId(String modelId, String id) {
-        return id + "| RuntimeModel=" + modelId;
-    }
-
     void extractComponentFile(String modelId, InputStream zis, String name) throws IOException {
         String externalComponentsDir = externalComponentLoader.getExternalComponentsDir();
         if (externalComponentsDir != null) {
             externalComponentsDir = externalComponentsDir.endsWith(File.separator) ? externalComponentsDir : externalComponentsDir + File.separator;
             String newFileName = null;
-            if (options.isComponentPartition()) {
+            if (options.isComponentPartition() && options.isMultipleImport()) {
                 newFileName = externalComponentsDir + modelId + File.separator + name.replaceAll(COMPONENTS_EXPORT_PATH, "");
             } else {
                 newFileName = externalComponentsDir + name.replaceAll(COMPONENTS_EXPORT_PATH, "");
@@ -201,7 +198,6 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private void partitionLayoutTemplate(String modelId, LayoutTemplate lt) {
@@ -226,13 +222,13 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         if (options.isDatasetPartition() &&
             settings.getDataSetLookup() != null) {
             DataSetLookup dataSetLookup = settings.getDataSetLookup();
-            String newId = transformId(modelId, dataSetLookup.getDataSetUUID());
+            String newId = PartitionHelper.partition(modelId, dataSetLookup.getDataSetUUID());
             settings.getDataSetLookup().setDataSetUUID(newId);
         }
 
         if (options.isComponentPartition() &&
             settings.getType() == DisplayerType.EXTERNAL_COMPONENT &&
-                    isExternalComponent(componentId)) {
+            isExternalComponent(componentId)) {
             settings.setComponentPartition(modelId);
         }
 
@@ -249,5 +245,5 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
     private boolean isExternalComponent(String componentId) {
         return externalComponentLoader.loadProvided().stream().noneMatch(c -> c.getId().equals(componentId));
     }
-
+    
 }

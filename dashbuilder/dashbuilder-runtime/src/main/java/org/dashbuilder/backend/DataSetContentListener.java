@@ -26,11 +26,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.backend.helper.PartitionHelper;
 import org.dashbuilder.backend.services.dataset.RuntimeCSVFileStorage;
 import org.dashbuilder.backend.services.dataset.provider.RuntimeDataSetProviderRegistry;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
+import org.dashbuilder.kieserver.RemoteDataSetDef;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.event.RemovedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DataSetContent;
@@ -112,6 +114,11 @@ public class DataSetContentListener {
         try {
             DataSetDef dataSetDef = defMarshaller.fromJson(content.getContent());
             dataSetDef.setUUID(content.getId());
+            if (dataSetDef instanceof RemoteDataSetDef) {
+                String queryName = PartitionHelper.removePartition(dataSetDef.getUUID());
+                ((RemoteDataSetDef) dataSetDef).setQueryName(queryName);
+            }
+            
             registry.registerDataSetDef(dataSetDef);
         } catch (Exception e) {
             logger.warn("Ignoring Dataset {}: error parsing Json", content.getId());

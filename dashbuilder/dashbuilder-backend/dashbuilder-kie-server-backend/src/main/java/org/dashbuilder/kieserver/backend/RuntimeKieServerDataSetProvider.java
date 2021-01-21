@@ -216,10 +216,11 @@ public class RuntimeKieServerDataSetProvider implements DataSetProvider {
                                       ConsoleDataSetLookup lookup,
                                       QueryFilterSpec filterSpec) {
         KieServerConnectionInfo connectionInfo = connectionInfoProvider.verifiedConnectionInfo(def);
+        String queryName = def.getQueryName() != null ? def.getQueryName() : def.getUUID(); 
         int pageNumber = lookup.getRowOffset() / lookup.getNumberOfRows();
         if (lookup.testMode() || connectionInfo.isReplaceQuery()) {
             QueryDefinition queryDefinition = QueryDefinition.builder()
-                                                             .name(lookup.getDataSetUUID())
+                                                             .name(queryName)
                                                              .source(def.getDataSource())
                                                              .target(def.getQueryTarget())
                                                              .expression(def.getDbSQL())
@@ -231,21 +232,21 @@ public class RuntimeKieServerDataSetProvider implements DataSetProvider {
 
             try {
                 return queryClient.query(connectionInfo,
-                                         lookup.getDataSetUUID(),
+                                         queryName,
                                          filterSpec,
                                          pageNumber,
                                          lookup.getNumberOfRows());
             } catch (Exception e) {
-                queryClient.unregisterQuery(connectionInfo, lookup.getDataSetUUID());
+                queryClient.unregisterQuery(connectionInfo, queryName);
                 throw new RuntimeException(e);
             }
         } else {
             if (def.getColumns() != null && def.getColumns().isEmpty()) {
-                QueryDefinition query = queryClient.getQuery(connectionInfo, def.getUUID());
+                QueryDefinition query = queryClient.getQuery(connectionInfo, queryName);
                 addColumnsToDefinition(def, query);
             }
             return queryClient.query(connectionInfo,
-                                     lookup.getDataSetUUID(),
+                                     queryName,
                                      filterSpec,
                                      pageNumber,
                                      lookup.getNumberOfRows());

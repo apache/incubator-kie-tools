@@ -818,7 +818,7 @@
           <runTarget>dashbuilder.html</runTarget>
           <extraJvmArgs>-Xmx4024m -XX:CompileThreshold=7000
             -Derrai.jboss.home=${errai.jboss.home}
-		  -Ddashbuilder.runtime.multi=true -Ddashbuilder.components.enable=true -Ddashbuilder.removeModelFile=true</extraJvmArgs>
+		  -Ddashbuilder.runtime.multi=true -Ddashbuilder.components.enable=true -Ddashbuilder.removeModelFile=true -Ddashbuilder.kieserver.serverTemplate.sample-server.location=http://localhost:8080/kie-server/services/rest/server -Ddashbuilder.kieserver.serverTemplate.sample-server.user=kieserver -Ddashbuilder.kieserver.serverTemplate.sample-server.password=kieserver1! -Ddashbuilder.kieserver.defaultServerTemplate=default -Ddashbuilder.kieserver.serverTemplate.sample-server.replace_query=true</extraJvmArgs>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
           <hostedWebapp>src/main/webapp</hostedWebapp>

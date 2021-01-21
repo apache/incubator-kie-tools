@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.event.Event;
 
 import org.dashbuilder.backend.RuntimeOptions;
+import org.dashbuilder.backend.helper.PartitionHelper;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.dashbuilder.external.service.ComponentLoader;
@@ -133,7 +134,7 @@ public class RuntimeModelParserImplTest {
         when(runtimeOptions.isMultipleImport()).thenReturn(true);
         when(runtimeOptions.isDatasetPartition()).thenReturn(true);
         final String runtimeModelId = "123";
-        final String transformedId = parser.transformId(runtimeModelId, "e26a81a1-5636-493c-96e0-51bc32322b17");
+        final String transformedId = PartitionHelper.partition(runtimeModelId, "e26a81a1-5636-493c-96e0-51bc32322b17");
         
         parser.init();
         InputStream validImport = this.getClass().getResourceAsStream("/valid_import.zip");
@@ -182,6 +183,7 @@ public class RuntimeModelParserImplTest {
         
         when(externalComponentLoader.getExternalComponentsDir()).thenReturn(componentPath.toString());
         when(runtimeOptions.isComponentPartition()).thenReturn(true);
+        when(runtimeOptions.isMultipleImport()).thenReturn(true);
         
         String modelId = "testModel";
         String componentFileContent1 = "This is a component file.";

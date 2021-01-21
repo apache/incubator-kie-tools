@@ -23,13 +23,15 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class RuntimeKieServerDataSetProviderType implements DataSetProviderType<RemoteDataSetDef> {
 
+    public static final String NAME = "REMOTE";
+
     public RuntimeKieServerDataSetProviderType() {
 
     }
 
     @Override
     public String getName() {
-        return "REMOTE";
+        return NAME;
     }
 
     @Override

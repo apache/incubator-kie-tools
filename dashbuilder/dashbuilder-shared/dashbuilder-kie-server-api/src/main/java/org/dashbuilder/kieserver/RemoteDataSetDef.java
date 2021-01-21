@@ -33,6 +33,8 @@ public class RemoteDataSetDef extends SQLDataSetDef {
     @NotNull(groups = {RemoteDataSetDefValidation.class})
     @Size(min = 1, groups = {RemoteDataSetDefValidation.class})
     protected String serverTemplateId;
+    
+    protected String queryName;
 
     public RemoteDataSetDef() {
         super.setProvider(new RuntimeKieServerDataSetProviderType());
@@ -53,6 +55,14 @@ public class RemoteDataSetDef extends SQLDataSetDef {
     public void setServerTemplateId(String serverTemplateId) {
         this.serverTemplateId = serverTemplateId;
     }
+    
+    public String getQueryName() {
+        return queryName;
+    }
+    
+    public void setQueryName(String queryName) {
+        this.queryName = queryName;
+    }
 
     @Override
     public int hashCode() {
@@ -60,6 +70,7 @@ public class RemoteDataSetDef extends SQLDataSetDef {
         int result = 1;
         result = prime * result + ((queryTarget == null) ? 0 : queryTarget.hashCode());
         result = prime * result + ((serverTemplateId == null) ? 0 : serverTemplateId.hashCode());
+        result = prime * result + ((queryName == null) ? 0 : queryName.hashCode());
         return result;
     }
 
@@ -82,6 +93,11 @@ public class RemoteDataSetDef extends SQLDataSetDef {
                 return false;
         } else if (!serverTemplateId.equals(other.serverTemplateId))
             return false;
+        if (queryName == null) {
+            if (other.queryName != null)
+                return false;
+        } else if (!queryName.equals(other.queryName))
+            return false;
         return true;
     }
 
@@ -93,6 +109,7 @@ public class RemoteDataSetDef extends SQLDataSetDef {
         def.setServerTemplateId(getServerTemplateId());
         def.setDbSQL(getDbSQL());
         def.setDataSource(getDataSource());
+        def.setQueryName(getQueryName());
         return def;
     }
 
@@ -109,6 +126,7 @@ public class RemoteDataSetDef extends SQLDataSetDef {
         }
         out.append("Data source=").append(dataSource).append("\n");
         out.append("Query target=").append(queryTarget).append("\n");
+        out.append("Query id=").append(queryName).append("\n");
         out.append("Server template id=").append(serverTemplateId).append("\n");
         out.append("DB SQL=").append(dbSQL).append("\n");
         out.append("Get all columns=").append(allColumnsEnabled).append("\n");
