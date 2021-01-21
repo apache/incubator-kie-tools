@@ -90,10 +90,12 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       setIsTypeSelectOpen(false);
       const updatedItem: DDDataField = { ...dataType, type: value as DDDataField["type"] };
       if (value === "string" && optypeSelection === "ordinal") {
-        updatedItem.constraints = {
-          type: "Enumeration",
-          value: [""]
-        };
+        if (updatedItem.constraints?.type !== "Enumeration") {
+          updatedItem.constraints = {
+            type: "Enumeration",
+            value: [""]
+          };
+        }
       }
       onSave(updatedItem, index);
     }
