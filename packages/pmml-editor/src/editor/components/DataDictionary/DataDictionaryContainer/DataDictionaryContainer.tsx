@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Alert, Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
@@ -144,9 +144,6 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const validationService = useValidationService().service;
-  // const validations = useMemo(() => validationService.get(`DataDictionary`), [
-  //   dataDictionary
-  // ]);
   const validations = useRef(validationService.get(`DataDictionary`));
   useEffect(() => {
     if (editing === undefined) {

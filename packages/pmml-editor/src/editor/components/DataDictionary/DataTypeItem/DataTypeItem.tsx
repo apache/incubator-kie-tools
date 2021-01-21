@@ -109,10 +109,12 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       setIsOptypeSelectOpen(false);
       const updatedItem: DDDataField = { ...dataType, optype: value as DDDataField["optype"] };
       if ((value === "ordinal" && typeSelection === "string") || (value === "ordinal" && dataType.isCyclic)) {
-        updatedItem.constraints = {
-          type: "Enumeration",
-          value: [""]
-        };
+        if (updatedItem.constraints?.type !== "Enumeration") {
+          updatedItem.constraints = {
+            type: "Enumeration",
+            value: [""]
+          };
+        }
       }
       if (value === "categorical" && dataType.isCyclic !== undefined) {
         delete updatedItem.isCyclic;

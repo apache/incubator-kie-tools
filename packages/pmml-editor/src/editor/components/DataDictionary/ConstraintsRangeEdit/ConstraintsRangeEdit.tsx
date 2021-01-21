@@ -92,7 +92,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
           onClick={addRange}
           isDisabled={countLimit !== undefined && ranges.length >= countLimit}
         >
-          Add another range
+          Add another interval
         </Button>
       </StackItem>
     </Stack>

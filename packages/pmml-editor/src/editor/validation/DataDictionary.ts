@@ -127,7 +127,7 @@ export const shouldConstraintsBeCleared = (
   optype: OpType
 ) => {
   let result = false;
-  // if not a cyclic type and has empty constraints (value or interval)
+  // if it's not a cyclic type and has empty constraints (value or interval)
   if (
     isCyclic === "1" &&
     updatedDataField.isCyclic !== "1" &&
@@ -136,7 +136,7 @@ export const shouldConstraintsBeCleared = (
   ) {
     result = true;
   }
-  // if not an ordinal string and has empty value constraints
+  // if it's not an ordinal string and has empty value constraints
   if (
     isCyclic !== "1" &&
     updatedDataField.isCyclic !== "1" &&
