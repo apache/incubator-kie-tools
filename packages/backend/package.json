@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/backend",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -11,9 +11,9 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/i18n": "0.8.2",
-    "@kogito-tooling/i18n-common-dictionary": "0.8.2",
-    "@kogito-tooling/workspace": "0.8.2",
+    "@kogito-tooling/i18n": "0.8.3",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.3",
+    "@kogito-tooling/workspace": "0.8.3",
     "@types/semver": "^7.3.3",
     "axios": "^0.19.2",
     "fast-xml-parser": "^3.17.4",
