@@ -43,22 +43,22 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
         const dataDictionaryIndex = action.payload.dataDictionaryIndex;
 
         service.batch(state, "DataDictionary.DataField", draft => {
-          if (
-            shouldConstraintsBeCleared(
-              dataField,
-              draft[dataDictionaryIndex].isCyclic,
-              draft[dataDictionaryIndex].dataType,
-              draft[dataDictionaryIndex].optype
-            )
-          ) {
-            // clearing constraints if they contain only empty values because constraints are no more required
-            // for non cyclic data types or for types different from ordinal strings)
-            delete dataField.Interval;
-            dataField.Value = dataField.Value?.filter(
-              value => value.property === "invalid" || value.property === "missing"
-            );
-          }
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
+            if (
+              shouldConstraintsBeCleared(
+                dataField,
+                draft[dataDictionaryIndex].isCyclic,
+                draft[dataDictionaryIndex].dataType,
+                draft[dataDictionaryIndex].optype
+              )
+            ) {
+              // clearing constraints if they contain only empty values because constraints are no more required
+              // for non cyclic data types or for types different from ordinal strings)
+              delete dataField.Interval;
+              dataField.Value = dataField.Value?.filter(
+                value => value.property === "invalid" || value.property === "missing"
+              );
+            }
             draft[dataDictionaryIndex] = dataField;
           }
           validation.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);
