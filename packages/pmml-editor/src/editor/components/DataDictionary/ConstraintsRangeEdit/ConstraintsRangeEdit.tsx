@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Alert,
   Button,
   Checkbox,
   Flex,
@@ -33,7 +32,6 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
-import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
 import { useValidationService } from "../../../validation";
@@ -44,12 +42,11 @@ interface ConstraintsRangeEditProps {
   onAdd: () => void;
   onChange: (ranges: RangeConstraint[]) => void;
   onDelete: (index: number) => void;
-  validation: FormValidation;
   countLimit?: number;
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, validation, countLimit } = props;
+  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, countLimit } = props;
   const [addedRange, setAddedRange] = useState<number>();
 
   const updateRange = (index: number, range: RangeConstraint) => {
@@ -69,11 +66,6 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
 
   return (
     <Stack hasGutter={true}>
-      {validation.form === "error" && (
-        <StackItem>
-          <Alert variant="danger" isInline={true} title="Please enter both start and end value." />
-        </StackItem>
-      )}
       <StackItem>
         <TextContent>
           <Text component={TextVariants.p}>At least one between Start Value and End Value is required.</Text>

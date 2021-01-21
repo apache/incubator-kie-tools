@@ -284,16 +284,14 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           editingIndex={editingIndex}
                           onPropertyDelete={handlePropertiesDelete}
                         />
-                        {dataType.constraints !== undefined && (
-                          <ConstraintsLabel
-                            editingIndex={editingIndex}
-                            constraints={dataType.constraints}
-                            onConstraintsDelete={handleConstraintsDelete}
-                          />
-                        )}
+                        <ConstraintsLabel
+                          dataType={dataType}
+                          editingIndex={editingIndex}
+                          onConstraintsDelete={handleConstraintsDelete}
+                        />
                         <Label
                           variant="outline"
-                          color="orange"
+                          color="cyan"
                           href="#"
                           icon={<ArrowAltCircleRightIcon />}
                           onClick={event => {
@@ -350,7 +348,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                 {optypeSelection}
               </Label>{" "}
               <PropertiesLabels dataType={dataType} />
-              {dataType.constraints !== undefined && <ConstraintsLabel constraints={dataType.constraints} />}
+              <ConstraintsLabel dataType={dataType} />
             </SplitItem>
             <SplitItem>
               <Button variant="plain" onClick={handleDelete}>

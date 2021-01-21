@@ -34,7 +34,6 @@ import {
 import { HelpIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
-import { useValidationService } from "../../../validation";
 import "./DataDictionaryPropertiesEdit.scss";
 
 interface DataDictionaryPropertiesEditProps {
@@ -76,8 +75,19 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
 
   const isOptypeDisabled = useMemo(() => dataType.optype === "categorical", [dataType.optype]);
 
-  const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`DataDictionary.DataField[${dataFieldIndex}]`), [dataType]);
+  const constraintAlert = useMemo(() => {
+    if (dataType.optype === "continuous" && dataType.isCyclic && dataType.constraints === undefined) {
+      return "Interval or Value constraints are required for cyclic continuous data types";
+    }
+    if (
+      dataType.isCyclic &&
+      dataType.optype === "continuous" &&
+      dataType.constraints?.type === "Range" &&
+      dataType.constraints.value?.length > 1
+    ) {
+      return "Cyclic continuous data types can only have a single interval constraint";
+    }
+  }, [dataType]);
 
   return (
     <Stack hasGutter={true} className="data-dictionary__properties-edit">
@@ -89,11 +99,6 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
           &nbsp;/&nbsp;Properties
         </Title>
       </StackItem>
-      {/*{validations.length > 0 && (*/}
-      {/*  <section className="data-dictionary__validation-alert">*/}
-      {/*    <Alert variant="warning" title="Some items are invalid and need attention." />*/}
-      {/*  </section>*/}
-      {/*)}*/}
       <StackItem className="data-dictionary__properties-edit__form">
         <Form>
           <Split hasGutter={true}>
@@ -228,7 +233,15 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                 </StackItem>
               </Stack>
             </SplitItem>
-            <SplitItem>
+            <SplitItem isFilled={true}>
+              {constraintAlert && (
+                <Alert
+                  variant="warning"
+                  isInline={true}
+                  className="data-dictionary__validation-alert"
+                  title={constraintAlert}
+                />
+              )}
               <ConstraintsEdit dataType={dataType} dataFieldIndex={dataFieldIndex} onSave={onSave} />
             </SplitItem>
           </Split>

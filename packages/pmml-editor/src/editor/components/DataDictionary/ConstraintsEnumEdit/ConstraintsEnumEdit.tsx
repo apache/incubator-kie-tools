@@ -2,7 +2,6 @@ import * as React from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import {
-  Alert,
   Button,
   ButtonVariant,
   Flex,
@@ -16,7 +15,6 @@ import {
 } from "@patternfly/react-core";
 import { GripVerticalIcon, TrashIcon } from "@patternfly/react-icons";
 import "./ConstraintsEnumEdit.scss";
-import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 
 interface ConstraintsEnumEditProps {
   enumerations: string[];
@@ -24,17 +22,10 @@ interface ConstraintsEnumEditProps {
   onChange: (value: string, index: number) => void;
   onDelete: (index: number) => void;
   onSort: (oldIndex: number, newIndex: number) => void;
-  validation: FormValidation;
 }
 
-const ConstraintsEnumEdit = ({
-  enumerations,
-  onAdd,
-  onChange,
-  onDelete,
-  onSort,
-  validation
-}: ConstraintsEnumEditProps) => {
+const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
+  const { enumerations, onAdd, onChange, onDelete, onSort } = props;
   const [enums, setEnums] = useState(enumerations);
   const [addedEnum, setAddedEnum] = useState<number>();
 
@@ -74,11 +65,6 @@ const ConstraintsEnumEdit = ({
     >
       <section className="constraints-enum">
         <Stack hasGutter={true}>
-          {validation.form === "error" && (
-            <StackItem>
-              <Alert variant="danger" isInline={true} title="Please enter at least one enumeration." />
-            </StackItem>
-          )}
           <StackItem>
             <TextContent>
               <Text component={TextVariants.p}>

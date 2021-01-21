@@ -17,7 +17,7 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { ValidationService, validateDataField, validateDataFields } from "../validation";
+import { ValidationService, validateDataField, validateDataFields, shouldConstraintsBeCleared } from "../validation";
 
 interface DataDictionaryFieldPayload {
   [Actions.UpdateDataDictionaryField]: {
@@ -41,7 +41,23 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
       case Actions.UpdateDataDictionaryField:
         const dataField = action.payload.dataField;
         const dataDictionaryIndex = action.payload.dataDictionaryIndex;
+
         service.batch(state, "DataDictionary.DataField", draft => {
+          if (
+            shouldConstraintsBeCleared(
+              dataField,
+              draft[dataDictionaryIndex].isCyclic,
+              draft[dataDictionaryIndex].dataType,
+              draft[dataDictionaryIndex].optype
+            )
+          ) {
+            // clearing constraints if they contain only empty values because constraints are no more required
+            // for non cyclic data types or for types different from ordinal strings)
+            delete dataField.Interval;
+            dataField.Value = dataField.Value?.filter(
+              value => value.property === "invalid" || value.property === "missing"
+            );
+          }
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
             draft[dataDictionaryIndex] = dataField;
           }

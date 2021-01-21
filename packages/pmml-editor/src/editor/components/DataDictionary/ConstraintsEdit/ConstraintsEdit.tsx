@@ -44,21 +44,15 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const [enums, setEnums] = useState(
     dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : undefined
   );
-  const [validation, setValidation] = useState<FormValidation>({
-    form: "default",
-    fields: { start: "default", end: "default", enums: "default" }
-  });
 
   const isConstraintOptionDisabled = (option: string) => {
-    if (dataType.isCyclic) {
-      if ((option === "" || option === "Range") && dataType.optype === "ordinal") {
-        return true;
-      }
-      if (option === "" && dataType.optype === "continuous") {
-        return true;
-      }
+    if ((option === "" || option === "Range") && dataType.type === "string" && dataType.optype === "ordinal") {
+      return true;
     }
-    if (option === "Range" && dataType.type === "string") {
+    if (option === "Range" && dataType.optype !== "continuous") {
+      return true;
+    }
+    if (option === "" && dataType.isCyclic) {
       return true;
     }
     return false;
@@ -242,7 +236,6 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
               onAdd={handleRangeAdd}
               onChange={handleRangeSave}
               onDelete={handleRangeDelete}
-              validation={validation}
               countLimit={rangeConstraintLimit}
             />
           </CardBody>
@@ -258,7 +251,6 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
               onDelete={handleEnumsDelete}
               onAdd={handleAddEnum}
               onSort={handleEnumSort}
-              validation={validation}
             />
           </CardBody>
         </Card>
