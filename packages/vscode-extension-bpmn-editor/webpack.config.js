@@ -17,6 +17,7 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const externalAssets = require("@kogito-tooling/external-assets-base");
 
 const commonConfig = {
   mode: "development",
@@ -47,7 +48,7 @@ const commonConfig = {
   }
 };
 
-module.exports = [
+module.exports = async (argv) => [
   {
     ...commonConfig,
     target: "node",
@@ -62,6 +63,10 @@ module.exports = [
     entry: {
       "webview/index": "./src/webview/index.ts"
     },
-    plugins: [new CopyWebpackPlugin([{ from: "../kie-bc-editors-unpacked/bpmn", to: "webview/editors/bpmn" }])]
+    plugins: [
+      new CopyWebpackPlugin([
+        { from: externalAssets.bpmnEditorPath(argv), to: "webview/editors/bpmn", ignore: ["WEB-INF/**/*"] }
+      ])
+    ]
   }
 ];

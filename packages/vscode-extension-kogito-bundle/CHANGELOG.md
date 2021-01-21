@@ -1,3 +1,25 @@
+# 0.8.2 (alpha)
+
+### New features:
+
+#### Editors
+*   [[KOGITO-3853](https://issues.redhat.com/browse/KOGITO-3853)] -  [DMN editor] Move the "structure" option to top of the Data Type drop-down
+*   [[KOGITO-3885](https://issues.redhat.com/browse/KOGITO-3885)] -  [DMN editor] Show parameters list for Decision Services
+
+### Fixed issues:
+
+#### Editors
+* [[KOGITO-4104](https://issues.redhat.com/browse/KOGITO-4104)] -  [DMN editor] Rename "Dismiss" to "Skip tour"
+* [[KOGITO-1429](https://issues.redhat.com/browse/KOGITO-1429)]  - DefaultXmlFormatter: Should return plain text if formatting fails
+* [[KOGITO-1677](https://issues.redhat.com/browse/KOGITO-1677)]  - [DMN editor] User cannot open DMN editor if it was previously saved in workspace
+* [[KOGITO-2187](https://issues.redhat.com/browse/KOGITO-2187)]  - DMN editor when moving DS output decision becomes encapsulated
+* [[KOGITO-2515](https://issues.redhat.com/browse/KOGITO-2515)]  - DMN Editor decision service wrong layout
+* [[KOGITO-2712](https://issues.redhat.com/browse/KOGITO-2712)] - [DMN editor] VS Code Included models self reference
+* [[KOGITO-3151](https://issues.redhat.com/browse/KOGITO-3151)]  - [DMN editor] Copied value is pasted twice
+* [[KOGITO-3476](https://issues.redhat.com/browse/KOGITO-3476)]  - DMN decision table "Unable to resolve type reference 'UNDEFINED'" in simple data types
+* [[KOGITO-4124](https://issues.redhat.com/browse/KOGITO-4124)]  - Error when adding constraints to a data type
+* [[KOGITO-4165](https://issues.redhat.com/browse/KOGITO-4165)]  - [DMN editor] 'continue' vs 'Continue'
+
 # 0.8.1 (alpha)
 
 ## New features

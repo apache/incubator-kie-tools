@@ -17,6 +17,7 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const externalAssets = require("@kogito-tooling/external-assets-base");
 
 const commonConfig = {
   mode: "development",
@@ -47,7 +48,7 @@ const commonConfig = {
   }
 };
 
-module.exports = [
+module.exports = async (argv) => [
   {
     ...commonConfig,
     target: "node",
@@ -64,8 +65,8 @@ module.exports = [
     },
     plugins: [
       new CopyWebpackPlugin([
-        { from: "../kie-bc-editors-unpacked/dmn", to: "webview/editors/dmn" },
-        { from: "../kie-bc-editors-unpacked/scesim", to: "webview/editors/scesim" }
+        { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn", ignore: ["WEB-INF/**/*"] },
+        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] }
       ])
     ]
   }
