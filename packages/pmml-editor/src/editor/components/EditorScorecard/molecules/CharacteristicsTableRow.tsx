@@ -60,10 +60,12 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
             activeCharacteristic={characteristic.characteristic}
             areReasonCodesUsed={areReasonCodesUsed}
             isBaselineScoreRequired={isBaselineScoreRequired}
+          />
+          <CharacteristicAttributesList
+            characteristic={characteristic.characteristic}
+            areReasonCodesUsed={areReasonCodesUsed}
             dataFields={dataFields}
           />
-          <br />
-          <CharacteristicAttributesList characteristic={characteristic.characteristic} dataFields={dataFields} />
         </SplitItem>
         <SplitItem>
           <CharacteristicsTableAction onDelete={onDelete} />
@@ -75,18 +77,19 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
 
 interface CharacteristicAttributesListProps {
   characteristic: Characteristic;
+  areReasonCodesUsed: boolean;
   dataFields: DataField[];
 }
 
 const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
-  const { characteristic, dataFields } = props;
+  const { characteristic, areReasonCodesUsed, dataFields } = props;
 
   return (
     <ul>
       {characteristic.Attribute.map((item, index) => (
         <li key={index}>
           {CharacteristicPredicateLabel(toText(item.predicate, dataFields))}
-          <AttributeLabels activeAttribute={item} />
+          <AttributeLabels activeAttribute={item} areReasonCodesUsed={areReasonCodesUsed} />
         </li>
       ))}
     </ul>

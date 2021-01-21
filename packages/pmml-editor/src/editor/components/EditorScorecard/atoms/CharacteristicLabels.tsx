@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
 
 interface CharacteristicLabelsProps {
   activeCharacteristic: Characteristic;
   areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
-  dataFields: DataField[];
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired, dataFields } = props;
+  const { activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired } = props;
 
   return (
     <>
-      {activeCharacteristic.baselineScore !== undefined && isBaselineScoreRequired &&
-
-      CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
-      {activeCharacteristic.reasonCode !== undefined && areReasonCodesUsed &&
+      {activeCharacteristic.baselineScore !== undefined &&
+        isBaselineScoreRequired &&
+        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
+      {activeCharacteristic.reasonCode !== undefined &&
+        areReasonCodesUsed &&
         CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
     </>
   );

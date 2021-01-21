@@ -77,7 +77,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
   const [baselineMethod, setBaselineMethod] = useState<BaselineMethod | undefined>();
   const [initialScore, setInitialScore] = useState<number | undefined>();
-  const [areReasonCodesUsed, setAreReasonCodesUsed] = useState<boolean>(props.areReasonCodesUsed);
+  const [areReasonCodesUsed, setAreReasonCodesUsed] = useState<boolean | undefined>();
   const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState<ReasonCodeAlgorithm | undefined>();
 
   useEffect(() => {
@@ -169,7 +169,8 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   {functionName !== undefined && CorePropertyLabel("Function", functionName)}
                   {algorithmName !== undefined && CorePropertyLabel("Algorithm", algorithmName)}
                   {initialScore !== undefined && CorePropertyLabel("Initial Score", initialScore)}
-                  {useReasonCodes !== undefined && CorePropertyLabel("Use Reason Codes", toYesNo(useReasonCodes))}
+                  {areReasonCodesUsed !== undefined &&
+                    CorePropertyLabel("Use Reason Codes", toYesNo(areReasonCodesUsed))}
                   {reasonCodeAlgorithm !== undefined && CorePropertyLabel("Reason Code Algorithm", reasonCodeAlgorithm)}
                   {baselineScore !== undefined && CorePropertyLabel("Baseline Score", baselineScore)}
                   {baselineMethod !== undefined && CorePropertyLabel("Baseline Method", baselineMethod)}
