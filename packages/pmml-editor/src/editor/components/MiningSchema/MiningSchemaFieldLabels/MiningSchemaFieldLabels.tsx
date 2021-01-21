@@ -43,6 +43,14 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
     () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].values`),
     [modelIndex, index, field]
   );
+  const validationsMissingValueReplacement = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].missingValueReplacement`),
+    [modelIndex, index, field]
+  );
+  const validationsInvalidValueReplacement = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].invalidValueReplacement`),
+    [modelIndex, index, field]
+  );
 
   return (
     <>
@@ -74,25 +82,35 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
           ...field,
           highValue: undefined
         })}
-      {field.missingValueReplacement !== undefined &&
-        MiningLabel("Missing Value Replacement", field.missingValueReplacement, {
-          ...field,
-          missingValueReplacement: undefined
-        })}
+      {editing && validationsMissingValueReplacement.length > 0 && (
+        <span className="constraints-label">
+          <ValidationIndicator validations={validationsMissingValueReplacement} />
+        </span>
+      )}
       {field.missingValueTreatment !== undefined &&
         MiningLabel("Missing Value Treatment", field.missingValueTreatment, {
           ...field,
           missingValueTreatment: undefined
         })}
-      {field.invalidValueReplacement !== undefined &&
-        MiningLabel("Missing Value Replacement", field.invalidValueReplacement, {
+      {field.missingValueReplacement !== undefined &&
+        MiningLabel("Missing Value Replacement", field.missingValueReplacement, {
           ...field,
-          invalidValueReplacement: undefined
+          missingValueReplacement: undefined
         })}
+      {editing && validationsInvalidValueReplacement.length > 0 && (
+        <span className="constraints-label">
+          <ValidationIndicator validations={validationsInvalidValueReplacement} />
+        </span>
+      )}
       {field.invalidValueTreatment !== undefined &&
         MiningLabel("Missing Value Treatment", field.invalidValueTreatment, {
           ...field,
           invalidValueTreatment: undefined
+        })}
+      {field.invalidValueReplacement !== undefined &&
+        MiningLabel("Missing Value Replacement", field.invalidValueReplacement, {
+          ...field,
+          invalidValueReplacement: undefined
         })}
       {editing && (
         <Label
