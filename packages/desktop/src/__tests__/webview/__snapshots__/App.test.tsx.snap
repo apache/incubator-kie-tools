@@ -8,7 +8,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
     <div
       aria-label="Danger Alert"
       class="pf-c-alert pf-m-danger"
-      data-ouia-component-id="11"
+      data-ouia-component-id="OUIA-Generated-Alert-danger-1"
       data-ouia-component-type="PF4/Alert"
       data-ouia-safe="true"
     >
@@ -26,7 +26,6 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         >
           <path
             d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
-            transform=""
           />
         </svg>
       </div>
@@ -47,7 +46,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           aria-disabled="false"
           aria-label="Close Danger alert: alert: This file extension is not supported."
           class="pf-c-button pf-m-plain"
-          data-ouia-component-id="12"
+          data-ouia-component-id="OUIA-Generated-Button-plain-3"
           data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
           type="button"
@@ -63,7 +62,6 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           >
             <path
               d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-              transform=""
             />
           </svg>
         </button>
@@ -83,12 +81,11 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           class="pf-c-page__header-brand-toggle"
         >
           <button
-            aria-controls="page-sidebar"
             aria-disabled="false"
             aria-expanded="true"
             aria-label="Global navigation"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="13"
+            data-ouia-component-id="OUIA-Generated-Button-plain-1"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             id="nav-toggle"
@@ -105,7 +102,6 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
             >
               <path
                 d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
-                transform=""
               />
             </svg>
           </button>
@@ -131,7 +127,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         <nav
           aria-label="Global"
           class="pf-c-nav"
-          data-ouia-component-id="14"
+          data-ouia-component-id="OUIA-Generated-Nav-1"
           data-ouia-component-type="PF4/Nav"
           data-ouia-safe="true"
         >
@@ -140,6 +136,9 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           >
             <li
               class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-1"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
             >
               <a
                 aria-current="page"
@@ -150,6 +149,9 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
             </li>
             <li
               class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-2"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
             >
               <a
                 class="pf-c-nav__link"
@@ -186,6 +188,10 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         >
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-1"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -208,6 +214,10 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-2"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -230,6 +240,10 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-3"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -252,6 +266,10 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-4"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -274,6 +292,10 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           </article>
           <article
             class="pf-c-card kogito--desktop__actions-card--wide"
+            data-ouia-component-id="OUIA-Generated-Card-5"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -343,7 +365,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <button
                 aria-disabled="false"
                 class="pf-c-button pf-m-secondary"
-                data-ouia-component-id="15"
+                data-ouia-component-id="OUIA-Generated-Button-secondary-1"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 type="button"
@@ -377,16 +399,17 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               >
                 <div
                   class="pf-c-select"
-                  data-ouia-component-id="18"
+                  data-ouia-component-id="OUIA-Generated-Select-single-1"
                   data-ouia-component-type="PF4/Select"
                   data-ouia-safe="true"
+                  style="width: 7em;"
                 >
                   <button
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby=" pf-toggle-id-4"
+                    aria-labelledby=" pf-select-toggle-id-4"
                     class="pf-c-select__toggle"
-                    id="pf-toggle-id-4"
+                    id="pf-select-toggle-id-4"
                     type="button"
                   >
                     <div
@@ -412,7 +435,6 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
                       >
                         <path
                           d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                          transform=""
                         />
                       </svg>
                     </span>
@@ -444,7 +466,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
                   aria-disabled="false"
                   aria-label="sort file view"
                   class="pf-c-button pf-m-plain kogito--filter-btn"
-                  data-ouia-component-id="17"
+                  data-ouia-component-id="OUIA-Generated-Button-plain-2"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   data-testid="orderAlphabeticallyButton"
@@ -461,7 +483,6 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
                   >
                     <path
                       d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-                      transform=""
                     />
                   </svg>
                 </button>
@@ -508,7 +529,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
     <div
       aria-label="Danger Alert"
       class="pf-c-alert pf-m-danger"
-      data-ouia-component-id="36"
+      data-ouia-component-id="OUIA-Generated-Alert-danger-2"
       data-ouia-component-type="PF4/Alert"
       data-ouia-safe="true"
     >
@@ -526,7 +547,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         >
           <path
             d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
-            transform=""
           />
         </svg>
       </div>
@@ -547,7 +567,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           aria-disabled="false"
           aria-label="Close Danger alert: alert: This file extension is not supported."
           class="pf-c-button pf-m-plain"
-          data-ouia-component-id="37"
+          data-ouia-component-id="OUIA-Generated-Button-plain-6"
           data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
           type="button"
@@ -563,7 +583,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           >
             <path
               d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-              transform=""
             />
           </svg>
         </button>
@@ -583,12 +602,11 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           class="pf-c-page__header-brand-toggle"
         >
           <button
-            aria-controls="page-sidebar"
             aria-disabled="false"
             aria-expanded="true"
             aria-label="Global navigation"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="38"
+            data-ouia-component-id="OUIA-Generated-Button-plain-4"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             id="nav-toggle"
@@ -605,7 +623,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
             >
               <path
                 d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
-                transform=""
               />
             </svg>
           </button>
@@ -631,7 +648,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         <nav
           aria-label="Global"
           class="pf-c-nav"
-          data-ouia-component-id="39"
+          data-ouia-component-id="OUIA-Generated-Nav-2"
           data-ouia-component-type="PF4/Nav"
           data-ouia-safe="true"
         >
@@ -640,6 +657,9 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           >
             <li
               class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-3"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
             >
               <a
                 aria-current="page"
@@ -650,6 +670,9 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
             </li>
             <li
               class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-4"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
             >
               <a
                 class="pf-c-nav__link"
@@ -686,6 +709,10 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         >
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-6"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -708,6 +735,10 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-7"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -730,6 +761,10 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-8"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -752,6 +787,10 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-ouia-component-id="OUIA-Generated-Card-9"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -774,6 +813,10 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           </article>
           <article
             class="pf-c-card kogito--desktop__actions-card--wide"
+            data-ouia-component-id="OUIA-Generated-Card-10"
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe="true"
+            id=""
           >
             <div
               class="pf-c-card__header"
@@ -843,7 +886,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <button
                 aria-disabled="false"
                 class="pf-c-button pf-m-secondary"
-                data-ouia-component-id="40"
+                data-ouia-component-id="OUIA-Generated-Button-secondary-2"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 type="button"
@@ -877,16 +920,17 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               >
                 <div
                   class="pf-c-select"
-                  data-ouia-component-id="43"
+                  data-ouia-component-id="OUIA-Generated-Select-single-2"
                   data-ouia-component-type="PF4/Select"
                   data-ouia-safe="true"
+                  style="width: 7em;"
                 >
                   <button
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby=" pf-toggle-id-11"
+                    aria-labelledby=" pf-select-toggle-id-11"
                     class="pf-c-select__toggle"
-                    id="pf-toggle-id-11"
+                    id="pf-select-toggle-id-11"
                     type="button"
                   >
                     <div
@@ -912,7 +956,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       >
                         <path
                           d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                          transform=""
                         />
                       </svg>
                     </span>
@@ -944,7 +987,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                   aria-disabled="false"
                   aria-label="sort file view"
                   class="pf-c-button pf-m-plain kogito--filter-btn"
-                  data-ouia-component-id="42"
+                  data-ouia-component-id="OUIA-Generated-Button-plain-5"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   data-testid="orderAlphabeticallyButton"
@@ -961,7 +1004,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                   >
                     <path
                       d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-                      transform=""
                     />
                   </svg>
                 </button>
@@ -1043,6 +1085,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                   data-testid="toolbar-title"
                 >
                   <h3
+                    aria-describedby="pf-tooltip-2"
                     class="pf-c-title pf-m-xl"
                   >
                     a.dmn
@@ -1062,7 +1105,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       aria-disabled="false"
                       aria-label="Save file"
                       class="pf-c-button pf-m-tertiary pf-u-display-flex-on-lg"
-                      data-ouia-component-id="46"
+                      data-ouia-component-id="OUIA-Generated-Button-tertiary-1"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe="true"
                       data-testid="save-button"
@@ -1078,7 +1121,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       aria-disabled="false"
                       aria-label="Go to homepage"
                       class="pf-c-button pf-m-plain"
-                      data-ouia-component-id="47"
+                      data-ouia-component-id="OUIA-Generated-Button-plain-7"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe="true"
                       data-testid="close-editor-button"
@@ -1090,12 +1133,11 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                         height="1em"
                         role="img"
                         style="vertical-align: -0.125em;"
-                        viewBox="0 64 731 1024"
+                        viewBox="0 0 730 1024"
                         width="1em"
                       >
                         <path
-                          d="M96.464 804.571c-4.816-0.064-9.12-1.963-12.912-5.733l-77.815-77.815c-3.769-3.794-5.669-8.096-5.735-12.91-0.032-4.839 1.815-9.113 5.543-12.823l616.603-616.606c3.71-3.714 7.986-5.577 12.823-5.541 4.834 0.039 9.138 1.957 12.91 5.73l77.817 77.819c3.769 3.769 5.691 8.066 5.73 12.912 0.037 4.839-1.829 9.106-5.538 12.825l-616.606 616.599c-3.717 3.73-7.986 5.575-12.821 5.541zM622.144 799.031l-616.603-616.601c-3.726-3.717-5.577-7.989-5.536-12.827 0.059-4.843 1.959-9.143 5.728-12.914l77.817-77.817c3.792-3.774 8.096-5.691 12.91-5.728 4.837-0.039 9.106 1.824 12.821 5.536l616.599 616.608c3.717 3.712 5.579 7.989 5.543 12.823-0.041 4.814-1.959 9.118-5.728 12.91l-77.824 77.808c-3.767 3.778-8.073 5.678-12.907 5.744-4.834 0.034-9.104-1.815-12.818-5.541z"
-                          transform="rotate(180 0 512) scale(-1 1)"
+                          d="M725.499315,767.757345 L469.242169,511.500499 L725.499315,255.243653 C729.196254,251.545719 731.096195,247.248119 731,242.4498 C731,237.653479 728.997365,233.35588 725.299427,229.558002 L647.542773,151.701495 C643.743891,147.903617 639.446287,146 634.64996,146 C629.852635,146 625.55503,147.803673 621.857092,151.500607 L365.5,407.857398 L109.241857,151.500607 C105.544917,147.803673 101.246314,145.904733 96.4499876,146 C91.6526619,146.104622 87.3550577,148.002562 83.5571748,151.701495 L5.7005771,229.457058 C1.90269428,233.255936 0,237.553535 0,242.350855 C0,247.148175 1.80175055,251.444775 5.50068853,255.143709 L261.857779,511.500499 L5.50068853,767.757345 C1.80175055,771.454279 -0.0961914123,775.752878 0,779.750645 C0.103697157,784.547965 2.00263857,788.845564 5.7005771,792.642443 L83.4572306,871.299502 C87.2541139,875.096381 91.5527176,877 96.3500433,877 C101.147369,877 105.444973,875.197325 109.142912,871.499391 L365.400058,615.241545 L621.657203,871.499391 C625.355142,875.197325 629.652746,877.095265 634.449072,877 C639.246398,877 643.545002,874.997437 647.342885,871.299502 L725.099538,793.54294 C728.896421,789.745062 730.796362,785.446463 730.796362,780.649143 C731.096195,775.752878 729.196254,771.454279 725.499315,767.757345"
                         />
                       </svg>
                     </button>

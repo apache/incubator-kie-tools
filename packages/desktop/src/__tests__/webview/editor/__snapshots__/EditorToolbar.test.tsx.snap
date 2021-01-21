@@ -6,6 +6,7 @@ exports[`EditorToolbar isDirty indicator should show the isDirty indicator when 
   data-testid="toolbar-title"
 >
   <h3
+    aria-describedby="pf-tooltip-1"
     class="pf-c-title pf-m-xl"
   >
     test.dmn
@@ -25,6 +26,7 @@ exports[`EditorToolbar isDirty indicator shouldn't show the isDirty indicator wh
   data-testid="toolbar-title"
 >
   <h3
+    aria-describedby="pf-tooltip-2"
     class="pf-c-title pf-m-xl"
   >
     test.dmn

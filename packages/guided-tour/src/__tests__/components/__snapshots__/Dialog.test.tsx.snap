@@ -11,7 +11,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
       aria-label="Close"
       class="pf-c-button pf-m-plain"
       data-kgt-close="true"
-      data-ouia-component-id="19"
+      data-ouia-component-id="OUIA-Generated-Button-plain-7"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       type="button"
@@ -27,7 +27,6 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
       >
         <path
           d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          transform=""
         />
       </svg>
     </button>
@@ -49,7 +48,6 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         >
           <path
             d="M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z"
-            transform=""
           />
         </svg>
         <h4
@@ -73,7 +71,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-link"
-            data-ouia-component-id="20"
+            data-ouia-component-id="OUIA-Generated-Button-link-12"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -98,7 +96,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
       aria-label="Close"
       class="pf-c-button pf-m-plain"
       data-kgt-close="true"
-      data-ouia-component-id="16"
+      data-ouia-component-id="OUIA-Generated-Button-plain-6"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       type="button"
@@ -114,7 +112,6 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
       >
         <path
           d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          transform=""
         />
       </svg>
     </button>
@@ -136,7 +133,6 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         >
           <path
             d="M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z"
-            transform=""
           />
         </svg>
         <h4
@@ -177,7 +173,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
           aria-disabled="false"
           class="pf-c-button pf-m-primary"
           data-kgt-continue="true"
-          data-ouia-component-id="17"
+          data-ouia-component-id="OUIA-Generated-Button-primary-2"
           data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
           type="button"
@@ -190,7 +186,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-link"
-            data-ouia-component-id="18"
+            data-ouia-component-id="OUIA-Generated-Button-link-11"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -228,7 +224,6 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
         >
           <path
             d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"
-            transform=""
           />
         </svg>
         <h4
@@ -244,7 +239,7 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
         <button
           aria-disabled="false"
           class="pf-c-button pf-m-primary"
-          data-ouia-component-id="15"
+          data-ouia-component-id="OUIA-Generated-Button-primary-1"
           data-ouia-component-type="PF4/Button"
           data-ouia-safe="true"
           type="button"
@@ -268,7 +263,7 @@ exports[`Dialog when the step loads closes when users click on the close button 
       aria-label="Close"
       class="pf-c-button pf-m-plain"
       data-kgt-close="true"
-      data-ouia-component-id="12"
+      data-ouia-component-id="OUIA-Generated-Button-plain-5"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       type="button"
@@ -284,7 +279,6 @@ exports[`Dialog when the step loads closes when users click on the close button 
       >
         <path
           d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          transform=""
         />
       </svg>
     </button>
@@ -298,7 +292,7 @@ exports[`Dialog when the step loads closes when users click on the close button 
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-prev="true"
-        data-ouia-component-id="13"
+        data-ouia-component-id="OUIA-Generated-Button-link-9"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -316,7 +310,6 @@ exports[`Dialog when the step loads closes when users click on the close button 
         >
           <path
             d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
-            transform=""
           />
         </svg>
       </button>
@@ -333,7 +326,7 @@ exports[`Dialog when the step loads closes when users click on the close button 
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-next="true"
-        data-ouia-component-id="14"
+        data-ouia-component-id="OUIA-Generated-Button-link-10"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -351,7 +344,6 @@ exports[`Dialog when the step loads closes when users click on the close button 
         >
           <path
             d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-            transform=""
           />
         </svg>
       </button>
@@ -371,7 +363,7 @@ exports[`Dialog when the step loads renders a step on auto mode 1`] = `
       aria-label="Close"
       class="pf-c-button pf-m-plain"
       data-kgt-close="true"
-      data-ouia-component-id="9"
+      data-ouia-component-id="OUIA-Generated-Button-plain-4"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       type="button"
@@ -387,7 +379,6 @@ exports[`Dialog when the step loads renders a step on auto mode 1`] = `
       >
         <path
           d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          transform=""
         />
       </svg>
     </button>
@@ -403,7 +394,7 @@ exports[`Dialog when the step loads renders a step on auto mode 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-prev="true"
-        data-ouia-component-id="10"
+        data-ouia-component-id="OUIA-Generated-Button-link-7"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -421,7 +412,6 @@ exports[`Dialog when the step loads renders a step on auto mode 1`] = `
         >
           <path
             d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
-            transform=""
           />
         </svg>
       </button>
@@ -438,7 +428,7 @@ exports[`Dialog when the step loads renders a step on auto mode 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-next="true"
-        data-ouia-component-id="11"
+        data-ouia-component-id="OUIA-Generated-Button-link-8"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -456,7 +446,6 @@ exports[`Dialog when the step loads renders a step on auto mode 1`] = `
         >
           <path
             d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-            transform=""
           />
         </svg>
       </button>
@@ -476,7 +465,7 @@ exports[`Dialog when the step loads renders function-based content 1`] = `
       aria-label="Close"
       class="pf-c-button pf-m-plain"
       data-kgt-close="true"
-      data-ouia-component-id="3"
+      data-ouia-component-id="OUIA-Generated-Button-plain-2"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       type="button"
@@ -492,7 +481,6 @@ exports[`Dialog when the step loads renders function-based content 1`] = `
       >
         <path
           d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          transform=""
         />
       </svg>
     </button>
@@ -506,7 +494,7 @@ exports[`Dialog when the step loads renders function-based content 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-prev="true"
-        data-ouia-component-id="4"
+        data-ouia-component-id="OUIA-Generated-Button-link-3"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -524,7 +512,6 @@ exports[`Dialog when the step loads renders function-based content 1`] = `
         >
           <path
             d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
-            transform=""
           />
         </svg>
       </button>
@@ -541,7 +528,7 @@ exports[`Dialog when the step loads renders function-based content 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-next="true"
-        data-ouia-component-id="5"
+        data-ouia-component-id="OUIA-Generated-Button-link-4"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -559,7 +546,6 @@ exports[`Dialog when the step loads renders function-based content 1`] = `
         >
           <path
             d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-            transform=""
           />
         </svg>
       </button>
@@ -579,7 +565,7 @@ exports[`Dialog when the step loads renders react-based content 1`] = `
       aria-label="Close"
       class="pf-c-button pf-m-plain"
       data-kgt-close="true"
-      data-ouia-component-id="0"
+      data-ouia-component-id="OUIA-Generated-Button-plain-1"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       type="button"
@@ -595,7 +581,6 @@ exports[`Dialog when the step loads renders react-based content 1`] = `
       >
         <path
           d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          transform=""
         />
       </svg>
     </button>
@@ -609,7 +594,7 @@ exports[`Dialog when the step loads renders react-based content 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-prev="true"
-        data-ouia-component-id="1"
+        data-ouia-component-id="OUIA-Generated-Button-link-1"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -627,7 +612,6 @@ exports[`Dialog when the step loads renders react-based content 1`] = `
         >
           <path
             d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
-            transform=""
           />
         </svg>
       </button>
@@ -644,7 +628,7 @@ exports[`Dialog when the step loads renders react-based content 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-next="true"
-        data-ouia-component-id="2"
+        data-ouia-component-id="OUIA-Generated-Button-link-2"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -662,7 +646,6 @@ exports[`Dialog when the step loads renders react-based content 1`] = `
         >
           <path
             d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-            transform=""
           />
         </svg>
       </button>
@@ -682,7 +665,7 @@ exports[`Dialog when the step loads renders string-based content 1`] = `
       aria-label="Close"
       class="pf-c-button pf-m-plain"
       data-kgt-close="true"
-      data-ouia-component-id="6"
+      data-ouia-component-id="OUIA-Generated-Button-plain-3"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       type="button"
@@ -698,7 +681,6 @@ exports[`Dialog when the step loads renders string-based content 1`] = `
       >
         <path
           d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          transform=""
         />
       </svg>
     </button>
@@ -714,7 +696,7 @@ exports[`Dialog when the step loads renders string-based content 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-prev="true"
-        data-ouia-component-id="7"
+        data-ouia-component-id="OUIA-Generated-Button-link-5"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -732,7 +714,6 @@ exports[`Dialog when the step loads renders string-based content 1`] = `
         >
           <path
             d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
-            transform=""
           />
         </svg>
       </button>
@@ -749,7 +730,7 @@ exports[`Dialog when the step loads renders string-based content 1`] = `
         aria-disabled="true"
         class="pf-c-button pf-m-link pf-m-disabled"
         data-kgt-next="true"
-        data-ouia-component-id="8"
+        data-ouia-component-id="OUIA-Generated-Button-link-6"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
         disabled=""
@@ -767,7 +748,6 @@ exports[`Dialog when the step loads renders string-based content 1`] = `
         >
           <path
             d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-            transform=""
           />
         </svg>
       </button>
