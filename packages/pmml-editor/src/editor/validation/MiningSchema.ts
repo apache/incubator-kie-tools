@@ -13,7 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { MiningField, OutlierTreatmentMethod } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  InvalidValueTreatmentMethod,
+  MiningField,
+  MissingValueTreatmentMethod,
+  OutlierTreatmentMethod
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
@@ -49,6 +54,34 @@ export const validateMiningField = (
       );
     }
   }
+
+  //Missing values
+  const { missingValueTreatment, missingValueReplacement } = miningField;
+  if (isMissingValueReplacementRequired(missingValueTreatment)) {
+    if (missingValueReplacement === undefined) {
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].missingValueReplacement`,
+        new ValidationEntry(
+          ValidationLevel.ERROR,
+          `Mining Field[${miningFieldIndex}] Missing Value Replacement must be set.`
+        )
+      );
+    }
+  }
+
+  //Invalid values
+  const { invalidValueTreatment, invalidValueReplacement } = miningField;
+  if (isInvalidValueReplacementRequired(invalidValueTreatment)) {
+    if (invalidValueReplacement === undefined) {
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].invalidValueReplacement`,
+        new ValidationEntry(
+          ValidationLevel.ERROR,
+          `Mining Field[${miningFieldIndex}] Invalid Value Replacement must be set.`
+        )
+      );
+    }
+  }
 };
 
 export const validateMiningFields = (
@@ -63,3 +96,11 @@ export const validateMiningFields = (
 
 export const areLowHighValuesRequired = (outliers: OutlierTreatmentMethod | string | undefined) =>
   outliers === "asExtremeValues" || outliers === "asMissingValues";
+
+export const isMissingValueReplacementRequired = (
+  missingValueTreatment: MissingValueTreatmentMethod | string | undefined
+) => missingValueTreatment === "asMean" || missingValueTreatment === "asMedian" || missingValueTreatment === "asMode";
+
+export const isInvalidValueReplacementRequired = (
+  invalidValueTreatment: InvalidValueTreatmentMethod | string | undefined
+) => invalidValueTreatment === "asValue";

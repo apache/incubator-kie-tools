@@ -25,7 +25,11 @@ import {
 } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
 import { useValidationService } from "../../../validation";
-import { areLowHighValuesRequired } from "../../../validation/MiningSchema";
+import {
+  areLowHighValuesRequired,
+  isInvalidValueReplacementRequired,
+  isMissingValueReplacementRequired
+} from "../../../validation/MiningSchema";
 
 interface MiningSchemaPropertiesEditProps {
   modelIndex: number;
@@ -130,11 +134,29 @@ const MiningSchemaPropertiesEdit = ({
     () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].values`),
     [modelIndex, miningFieldIndex, field]
   );
+  const validationsMissingValueReplacement = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].missingValueReplacement`),
+    [modelIndex, miningFieldIndex, field]
+  );
+  const validationsInvalidValueReplacement = useMemo(
+    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].invalidValueReplacement`),
+    [modelIndex, miningFieldIndex, field]
+  );
 
   const _areLowHighValuesRequired = useMemo(() => areLowHighValuesRequired(outliers), [
     modelIndex,
     miningFieldIndex,
     outliers
+  ]);
+  const _isMissingValueReplacementRequired = useMemo(() => isMissingValueReplacementRequired(missingValueTreatment), [
+    modelIndex,
+    miningFieldIndex,
+    missingValueTreatment
+  ]);
+  const _isInvalidValueReplacementRequired = useMemo(() => isInvalidValueReplacementRequired(invalidValueTreatment), [
+    modelIndex,
+    miningFieldIndex,
+    invalidValueTreatment
   ]);
 
   const toNumberOrUndefined = (value: string): number | undefined => {
@@ -276,19 +298,6 @@ const MiningSchemaPropertiesEdit = ({
             </Split>
             <Split hasGutter={true}>
               <SplitItem style={{ width: 320 }}>
-                <FormGroup label="Missing Value Replacement" fieldId="missingValueReplacement">
-                  <TextInput
-                    type="text"
-                    id="missingValueReplacement"
-                    name="missingValueReplacement"
-                    aria-describedby="Missing Value Replacement"
-                    value={missingValueReplacement}
-                    onChange={value => setMissingValueReplacement(value)}
-                    onBlur={handleSave}
-                  />
-                </FormGroup>
-              </SplitItem>
-              <SplitItem style={{ width: 320 }}>
                 <FormGroup label="Missing Value Treatment Method" fieldId="missingValueTreatment">
                   <GenericSelector
                     id="missingValueTreatment"
@@ -301,21 +310,36 @@ const MiningSchemaPropertiesEdit = ({
                   />
                 </FormGroup>
               </SplitItem>
-            </Split>
-            <Split hasGutter={true}>
               <SplitItem style={{ width: 320 }}>
-                <FormGroup label="Invalid Value Replacement" fieldId="invalidValueReplacement">
+                <FormGroup
+                  label="Missing Value Replacement"
+                  fieldId="missingValueReplacement"
+                  validated={validationsMissingValueReplacement.length === 0 ? "default" : "error"}
+                  helperTextInvalid={
+                    validationsMissingValueReplacement[0] ? validationsMissingValueReplacement[0].message : ""
+                  }
+                >
                   <TextInput
                     type="text"
-                    id="invalidValueReplacement"
-                    name="invalidValueReplacement"
-                    aria-describedby="Invalid Value Replacement"
-                    value={invalidValueReplacement}
-                    onChange={value => setInvalidValueReplacement(value)}
+                    id="missingValueReplacement"
+                    name="missingValueReplacement"
+                    aria-describedby="Missing Value Replacement"
+                    value={missingValueReplacement}
+                    validated={validationsMissingValueReplacement.length === 0 ? "default" : "error"}
+                    isDisabled={!_isMissingValueReplacementRequired}
+                    placeholder={!_isMissingValueReplacementRequired ? "<Not needed>" : ""}
+                    style={
+                      !_isMissingValueReplacementRequired
+                        ? { backgroundColor: "var(--pf-global--BorderColor--100)" }
+                        : {}
+                    }
+                    onChange={value => setMissingValueReplacement(value)}
                     onBlur={handleSave}
                   />
                 </FormGroup>
               </SplitItem>
+            </Split>
+            <Split hasGutter={true}>
               <SplitItem style={{ width: 320 }}>
                 <FormGroup label="Invalid Value Treatment Method" fieldId="invalidValueTreatment">
                   <GenericSelector
@@ -326,6 +350,34 @@ const MiningSchemaPropertiesEdit = ({
                       setSubmitChanges(true);
                     }}
                     selection={invalidValueTreatment}
+                  />
+                </FormGroup>
+              </SplitItem>
+              <SplitItem style={{ width: 320 }}>
+                <FormGroup
+                  label="Invalid Value Replacement"
+                  fieldId="invalidValueReplacement"
+                  validated={validationsInvalidValueReplacement.length === 0 ? "default" : "error"}
+                  helperTextInvalid={
+                    validationsInvalidValueReplacement[0] ? validationsInvalidValueReplacement[0].message : ""
+                  }
+                >
+                  <TextInput
+                    type="text"
+                    id="invalidValueReplacement"
+                    name="invalidValueReplacement"
+                    aria-describedby="Invalid Value Replacement"
+                    value={invalidValueReplacement}
+                    validated={validationsInvalidValueReplacement.length === 0 ? "default" : "error"}
+                    isDisabled={!_isInvalidValueReplacementRequired}
+                    placeholder={!_isInvalidValueReplacementRequired ? "<Not needed>" : ""}
+                    style={
+                      !_isInvalidValueReplacementRequired
+                        ? { backgroundColor: "var(--pf-global--BorderColor--100)" }
+                        : {}
+                    }
+                    onChange={value => setInvalidValueReplacement(value)}
+                    onBlur={handleSave}
                   />
                 </FormGroup>
               </SplitItem>

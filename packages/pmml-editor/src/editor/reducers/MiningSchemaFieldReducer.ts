@@ -26,7 +26,13 @@ import {
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationService } from "../validation";
-import { areLowHighValuesRequired, validateMiningField, validateMiningFields } from "../validation/MiningSchema";
+import {
+  areLowHighValuesRequired,
+  isInvalidValueReplacementRequired,
+  isMissingValueReplacementRequired,
+  validateMiningField,
+  validateMiningFields
+} from "../validation/MiningSchema";
 
 interface MiningSchemaFieldPayload {
   [Actions.UpdateMiningSchemaField]: {
@@ -72,6 +78,13 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
           const modelIndex = action.payload.modelIndex;
           const miningSchemaIndex = action.payload.miningSchemaIndex;
           const _areLowHighValuesRequired = areLowHighValuesRequired(action.payload.outliers);
+          const _isMissingValueReplacementRequired = isMissingValueReplacementRequired(
+            action.payload.missingValueTreatment
+          );
+          const _isInvalidValueReplacementRequired = isInvalidValueReplacementRequired(
+            action.payload.invalidValueTreatment
+          );
+
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
             draft[miningSchemaIndex] = {
               ...draft[miningSchemaIndex],
@@ -82,10 +95,14 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
               outliers: action.payload.outliers,
               lowValue: _areLowHighValuesRequired ? action.payload.lowValue : undefined,
               highValue: _areLowHighValuesRequired ? action.payload.highValue : undefined,
-              missingValueReplacement: action.payload.missingValueReplacement,
               missingValueTreatment: action.payload.missingValueTreatment,
+              missingValueReplacement: _isMissingValueReplacementRequired
+                ? action.payload.missingValueReplacement
+                : undefined,
               invalidValueTreatment: action.payload.invalidValueTreatment,
-              invalidValueReplacement: action.payload.invalidValueReplacement
+              invalidValueReplacement: _isInvalidValueReplacementRequired
+                ? action.payload.invalidValueReplacement
+                : undefined
             };
           }
           validation.clear(`models[${modelIndex}].MiningSchema.MiningField[${miningSchemaIndex}]`);
