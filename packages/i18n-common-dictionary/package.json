@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/i18n-common-dictionary",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -25,6 +25,6 @@
     ]
   },
   "dependencies": {
-    "@kogito-tooling/i18n": "0.8.2"
+    "@kogito-tooling/i18n": "0.8.3"
   }
 }

@@ -2,7 +2,7 @@
   "name": "@kogito-tooling/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,11 +24,11 @@
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "dependencies": {
-    "@kogito-tooling/backend": "0.8.2",
-    "@kogito-tooling/editor": "0.8.2",
-    "@kogito-tooling/i18n": "0.8.2",
-    "@kogito-tooling/i18n-common-dictionary": "0.8.2",
-    "@kogito-tooling/keyboard-shortcuts": "0.8.2",
-    "@kogito-tooling/workspace": "0.8.2"
+    "@kogito-tooling/backend": "0.8.3",
+    "@kogito-tooling/editor": "0.8.3",
+    "@kogito-tooling/i18n": "0.8.3",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.3",
+    "@kogito-tooling/keyboard-shortcuts": "0.8.3",
+    "@kogito-tooling/workspace": "0.8.3"
   }
 }
