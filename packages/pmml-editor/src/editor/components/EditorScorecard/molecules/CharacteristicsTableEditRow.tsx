@@ -136,7 +136,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 helperTextInvalid="Name must be unique and present"
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={name.valid ? "default" : "error"}
-                style={!areReasonCodesUsed ? { width: "16em" } : {}}
+                style={{ width: "16em" }}
               >
                 <TextInput
                   type="text"
@@ -163,66 +163,66 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
               </FormGroup>
             </SplitItem>
             {areReasonCodesUsed && (
-              <>
-                <SplitItem>
-                  <FormGroup label="Reason code" fieldId="characteristic-reason-code-helper">
-                    <TextInput
-                      type="text"
-                      id="characteristic-reason-code"
-                      name="characteristic-reason-code"
-                      aria-describedby="characteristic-reason-code-helper"
-                      value={reasonCode ?? ""}
-                      onChange={e => setReasonCode(e)}
-                      onBlur={e => {
-                        onCommit({
-                          reasonCode: reasonCode
-                        });
-                      }}
-                    />
-                  </FormGroup>
-                </SplitItem>
-                <SplitItem isFilled={true}>
-                  <FormGroup
-                    label="Baseline score"
-                    fieldId="characteristic-baseline-score-helper"
-                    isRequired={isBaselineScoreRequired}
-                    helperTextInvalid={
-                      isBaselineScoreRequired && baselineScore.value === undefined
-                        ? "Baseline score required"
-                        : !isBaselineScoreRequired && baselineScore.value !== undefined
-                        ? "Baseline score is not required"
-                        : ""
-                    }
-                    helperTextInvalidIcon={<ExclamationCircleIcon />}
+              <SplitItem isFilled={!isBaselineScoreRequired}>
+                <FormGroup label="Reason code" fieldId="characteristic-reason-code-helper" style={{ width: "16em" }}>
+                  <TextInput
+                    type="text"
+                    id="characteristic-reason-code"
+                    name="characteristic-reason-code"
+                    aria-describedby="characteristic-reason-code-helper"
+                    value={reasonCode ?? ""}
+                    onChange={e => setReasonCode(e)}
+                    onBlur={e => {
+                      onCommit({
+                        reasonCode: reasonCode
+                      });
+                    }}
+                  />
+                </FormGroup>
+              </SplitItem>
+            )}
+            {isBaselineScoreRequired && (
+              <SplitItem isFilled={true}>
+                <FormGroup
+                  label="Baseline score"
+                  fieldId="characteristic-baseline-score-helper"
+                  isRequired={isBaselineScoreRequired}
+                  helperTextInvalid={
+                    isBaselineScoreRequired && baselineScore.value === undefined
+                      ? "Baseline score required"
+                      : !isBaselineScoreRequired && baselineScore.value !== undefined
+                      ? "Baseline score is not required"
+                      : ""
+                  }
+                  helperTextInvalidIcon={<ExclamationCircleIcon />}
+                  validated={baselineScore.valid ? "default" : "error"}
+                  style={{ width: "16em" }}
+                >
+                  <TextInput
+                    type="number"
+                    id="characteristic-baseline-score"
+                    name="characteristic-baseline-score"
+                    aria-describedby="characteristic-baseline-score-helper"
+                    value={baselineScore.value ?? ""}
                     validated={baselineScore.valid ? "default" : "error"}
-                    style={{ width: "16em" }}
-                  >
-                    <TextInput
-                      type="number"
-                      id="characteristic-baseline-score"
-                      name="characteristic-baseline-score"
-                      aria-describedby="characteristic-baseline-score-helper"
-                      value={baselineScore.value ?? ""}
-                      validated={baselineScore.valid ? "default" : "error"}
-                      onChange={e =>
-                        setBaselineScore({
-                          value: toNumber(e),
-                          valid:
-                            (isBaselineScoreRequired && toNumber(e) !== undefined) ||
-                            (!isBaselineScoreRequired && toNumber(e) === undefined)
-                        })
+                    onChange={e =>
+                      setBaselineScore({
+                        value: toNumber(e),
+                        valid:
+                          (isBaselineScoreRequired && toNumber(e) !== undefined) ||
+                          (!isBaselineScoreRequired && toNumber(e) === undefined)
+                      })
+                    }
+                    onBlur={e => {
+                      if (baselineScore?.valid) {
+                        onCommit({
+                          baselineScore: baselineScore.value
+                        });
                       }
-                      onBlur={e => {
-                        if (baselineScore?.valid) {
-                          onCommit({
-                            baselineScore: baselineScore.value
-                          });
-                        }
-                      }}
-                    />
-                  </FormGroup>
-                </SplitItem>
-              </>
+                    }}
+                  />
+                </FormGroup>
+              </SplitItem>
             )}
             <SplitItem>
               <Button id="add-attribute-button" variant="primary" onClick={e => onAddAttribute()}>
