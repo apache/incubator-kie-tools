@@ -212,3 +212,10 @@
 .kogito--editor__embed-modal-embed-code-items {
   padding: var(--pf-global--spacer--xs);
 }
+
+.kogito-code {
+  font-family: var(--pf-global--FontFamily--monospace);
+  font-weight: var(--pf-global--FontWeight--normal);
+  line-height: var(--pf-global--LineHeight--md);
+  font-size: var(--pf-global--FontSize--md);
+}

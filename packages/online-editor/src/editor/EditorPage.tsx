@@ -37,7 +37,8 @@ import {
   DrawerContentBody,
   DrawerPanelContent,
   Page,
-  PageSection
+  PageSection,
+  Title
 } from "@patternfly/react-core";
 import { JitDmn, JitDmnPayload } from "../common/JitDmn";
 import { JitDmnForm } from "./JitDmnForm";
@@ -441,14 +442,38 @@ export function EditorPage(props: Props) {
           />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-        <Drawer isStatic={runJitDmn}>
+        <Drawer isInline={true} isExpanded={runJitDmn}>
           <DrawerContent
             panelContent={
-              <DrawerPanelContent style={{ padding: "20px" }}>
+              <DrawerPanelContent style={{ maxHeight: "calc(100vh - 76px)" }}>
                 {jitDmnStatus === JitDmnStatus.RUNNING && (
                   <JitDmnForm jsonSchemaBridge={jitDmnSchema} editorContent={editor?.getContent} />
                 )}
-                {jitDmnStatus === JitDmnStatus.NOT_RUNNING && <p>Failed to connect with you JIT server.</p>}
+                {jitDmnStatus === JitDmnStatus.NOT_RUNNING && (
+                  <div style={{ padding: "20px" }}>
+                    <Title headingLevel={"h2"}>JIT Server</Title>
+                    <p>It wasn't possible to connect to your local JIT Server</p>
+                    <br />
+                    <p>
+                      To use this functionality it's necessary to have a local JIT Server up running, which will be used
+                      to send information from your model to it.
+                    </p>
+                    <p style={{ display: "inline" }}>You can download the zip containing the server </p>
+                    <a
+                      style={{ display: "inline" }}
+                      href={"https://kiegroup.github.io/kogito-online-ci/temp/runner.zip"}
+                    >
+                      here
+                    </a>
+                    <br />
+                    <br />
+                    <p style={{ display: "inline" }}>To start the server you need execute the</p>
+                    <p style={{ display: "inline" }} className={"kogito-code"}>
+                      ./install.sh
+                    </p>
+                    <p style={{ display: "inline" }}> script.</p>
+                  </div>
+                )}
               </DrawerPanelContent>
             }
           >
