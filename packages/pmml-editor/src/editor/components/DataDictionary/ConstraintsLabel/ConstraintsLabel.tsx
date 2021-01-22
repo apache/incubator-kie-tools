@@ -62,26 +62,19 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
   return (
     <>
       {missingRequiredConstraints && (
-        <ValidationIndicatorLabel
-          children={<em>Missing required constraints</em>}
-          validations={validations}
-          cssClass="constraints-label"
-        />
+        <ValidationIndicatorLabel validations={validations} cssClass="constraints-label">
+          <em>Missing required constraints</em>
+        </ValidationIndicatorLabel>
       )}
       {!missingRequiredConstraints && dataType.constraints && (
         <>
           {validations.length > 0 && (
-            <ValidationIndicatorLabel
-              validations={validations}
-              children={
-                <>
-                  <strong>Constraints:</strong>&nbsp;
-                  <span>{constraintValue}</span>
-                </>
-              }
-              onClose={onClose}
-              cssClass="constraints-label"
-            />
+            <ValidationIndicatorLabel validations={validations} onClose={onClose} cssClass="constraints-label">
+              <>
+                <strong>Constraints:</strong>&nbsp;
+                <span>{constraintValue}</span>
+              </>
+            </ValidationIndicatorLabel>
           )}
           {validations.length === 0 && (
             <Label color="cyan" className="constraints-label" onClose={onClose}>
