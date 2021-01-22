@@ -34,10 +34,7 @@ export const validateMiningField = (
   if (importance !== undefined && (importance < 0 || importance > 1)) {
     validation.set(
       `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].importance`,
-      new ValidationEntry(
-        ValidationLevel.ERROR,
-        `Mining Field[${miningFieldIndex}] importance must be between 0 and 1.`
-      )
+      new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Importance must be between 0 and 1.`)
     );
   }
 
@@ -46,11 +43,25 @@ export const validateMiningField = (
   if (areLowHighValuesRequired(outliers)) {
     if (lowValue === undefined && highValue === undefined) {
       validation.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].values`,
-        new ValidationEntry(
-          ValidationLevel.ERROR,
-          `Mining Field[${miningFieldIndex}] Low and/or High Value must be set.`
-        )
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].lowValue`,
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
+      );
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].highValue`,
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
+      );
+    }
+  } else {
+    if (lowValue !== undefined) {
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].lowValue`,
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low Value is not needed.`)
+      );
+    }
+    if (highValue !== undefined) {
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].highValue`,
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" High Value is not needed.`)
       );
     }
   }
@@ -61,10 +72,14 @@ export const validateMiningField = (
     if (missingValueReplacement === undefined) {
       validation.set(
         `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].missingValueReplacement`,
-        new ValidationEntry(
-          ValidationLevel.ERROR,
-          `Mining Field[${miningFieldIndex}] Missing Value Replacement must be set.`
-        )
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Missing Value Replacement must be set.`)
+      );
+    }
+  } else {
+    if (missingValueReplacement !== undefined) {
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].missingValueReplacement`,
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Missing Value Replacement is not required.`)
       );
     }
   }
@@ -75,10 +90,14 @@ export const validateMiningField = (
     if (invalidValueReplacement === undefined) {
       validation.set(
         `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].invalidValueReplacement`,
-        new ValidationEntry(
-          ValidationLevel.ERROR,
-          `Mining Field[${miningFieldIndex}] Invalid Value Replacement must be set.`
-        )
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Invalid Value Replacement must be set.`)
+      );
+    }
+  } else {
+    if (invalidValueReplacement !== undefined) {
+      validation.set(
+        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].invalidValueReplacement`,
+        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Invalid Value Replacement is not required.`)
       );
     }
   }

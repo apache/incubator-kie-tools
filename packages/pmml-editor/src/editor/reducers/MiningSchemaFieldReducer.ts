@@ -45,8 +45,8 @@ interface MiningSchemaFieldPayload {
     readonly outliers: OutlierTreatmentMethod | undefined;
     readonly lowValue: number | undefined;
     readonly highValue: number | undefined;
-    readonly missingValueReplacement: any | undefined;
     readonly missingValueTreatment: MissingValueTreatmentMethod | undefined;
+    readonly missingValueReplacement: any | undefined;
     readonly invalidValueTreatment: InvalidValueTreatmentMethod | undefined;
     readonly invalidValueReplacement: any | undefined;
   };
@@ -86,6 +86,8 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
           );
 
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
+            const outlierChanged = draft[miningSchemaIndex].outliers !== action.payload.outliers;
+            const clearLowHighValues = outlierChanged && !_areLowHighValuesRequired;
             draft[miningSchemaIndex] = {
               ...draft[miningSchemaIndex],
               name: action.payload.name,
@@ -93,8 +95,8 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
               optype: action.payload.optype,
               importance: action.payload.importance,
               outliers: action.payload.outliers,
-              lowValue: _areLowHighValuesRequired ? action.payload.lowValue : undefined,
-              highValue: _areLowHighValuesRequired ? action.payload.highValue : undefined,
+              lowValue: clearLowHighValues ? undefined : action.payload.lowValue,
+              highValue: clearLowHighValues ? undefined : action.payload.highValue,
               missingValueTreatment: action.payload.missingValueTreatment,
               missingValueReplacement: _isMissingValueReplacementRequired
                 ? action.payload.missingValueReplacement

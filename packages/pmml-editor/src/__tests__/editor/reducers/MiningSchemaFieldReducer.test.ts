@@ -70,8 +70,8 @@ describe("MiningSchemaFieldReducer::Valid actions", () => {
         outliers: "asExtremeValues",
         lowValue: -100,
         highValue: 120,
+        missingValueTreatment: "asMean",
         missingValueReplacement: "a",
-        missingValueTreatment: "asIs",
         invalidValueTreatment: "asValue",
         invalidValueReplacement: "b"
       }
@@ -87,10 +87,10 @@ describe("MiningSchemaFieldReducer::Valid actions", () => {
     expect(miningSchema.MiningField[0].outliers).toBe("asExtremeValues");
     expect(miningSchema.MiningField[0].lowValue).toBe(-100);
     expect(miningSchema.MiningField[0].highValue).toBe(120);
+    expect(miningSchema.MiningField[0].missingValueTreatment).toBe("asMean");
     expect(miningSchema.MiningField[0].missingValueReplacement).toBe("a");
-    expect(miningSchema.MiningField[0].missingValueTreatment).toBe("asIs");
-    expect(miningSchema.MiningField[0].invalidValueReplacement).toBe("b");
     expect(miningSchema.MiningField[0].invalidValueTreatment).toBe("asValue");
+    expect(miningSchema.MiningField[0].invalidValueReplacement).toBe("b");
   });
 });
 

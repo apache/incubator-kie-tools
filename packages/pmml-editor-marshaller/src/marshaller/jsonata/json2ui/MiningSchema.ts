@@ -19,7 +19,9 @@ export const MINING_SCHEMA: string = `
     $merge([
       $v.attributes,
       {
-        "importance": $number($v.attributes.importance)
+        "importance": $number($v.attributes.importance),
+        "lowValue": $number($v.attributes.lowValue),
+        "highValue": $number($v.attributes.highValue)
       }
     ])
   })]

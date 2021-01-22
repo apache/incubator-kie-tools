@@ -36,5 +36,7 @@ describe("MiningSchema tests", () => {
     expect(model.MiningSchema.MiningField.length).toBe(1);
     expect(model.MiningSchema.MiningField[0].name).toBe("field1");
     expect(model.MiningSchema.MiningField[0].importance).toBe(1);
+    expect(model.MiningSchema.MiningField[0].lowValue).toBe(2);
+    expect(model.MiningSchema.MiningField[0].highValue).toBe(3);
   });
 });

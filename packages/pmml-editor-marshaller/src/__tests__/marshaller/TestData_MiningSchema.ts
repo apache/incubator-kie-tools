@@ -19,7 +19,7 @@ export const MINING_SCHEMA_1: string = `
   <DataDictionary/>
   <Scorecard modelName="name">
     <MiningSchema>
-      <MiningField name="field1" importance="1"/>
+      <MiningField name="field1" importance="1" lowValue="2" highValue="3"/>
     </MiningSchema>
   </Scorecard>
 </PMML>
