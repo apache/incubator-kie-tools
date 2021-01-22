@@ -32,6 +32,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
 import static org.uberfire.server.UploadUriProvider.getTargetLocation;
+import static org.uberfire.server.UploadUriProvider.isUpdate;
 
 public class FileUploadServlet
         extends BaseUploadServlet {
@@ -51,9 +52,11 @@ public class FileUploadServlet
         try {
 
             URI targetLocation = getTargetLocation(request);
+            final boolean isUpdate = isUpdate(request);
             finalizeResponse(response,
                              getFileItem(request),
-                             targetLocation);
+                             targetLocation,
+                             isUpdate);
         } catch (FileUploadException e) {
             logError(e);
             writeResponse(response,
@@ -67,7 +70,8 @@ public class FileUploadServlet
 
     private void finalizeResponse(HttpServletResponse response,
                                   FileItem fileItem,
-                                  URI uri) throws IOException {
+                                  URI uri,
+                                  boolean isUpdate) throws IOException {
         if (!validateAccess(uri,
                             response)) {
             return;
@@ -78,7 +82,8 @@ public class FileUploadServlet
         try {
             ioService.startBatch(path.getFileSystem());
 
-            if (ioService.exists(path)) {
+            if (ioService.exists(path)
+                    && !isUpdate) {
                 writeResponse(response,
                               RESPONSE_CONFLICT);
                 response.sendError(HttpServletResponse.SC_CONFLICT);

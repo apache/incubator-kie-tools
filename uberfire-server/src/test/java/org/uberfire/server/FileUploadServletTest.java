@@ -54,6 +54,7 @@ public class FileUploadServletTest {
     private static final String PARAM_PATH = "path";
     private static final String PARAM_FOLDER = "folder";
     private static final String PARAM_FILENAME = "fileName";
+    private static final String PARAM_UPDATE = "update";
 
     private static final String TEST_ROOT_PATH = "default://master@test-repository/test-project/src/main/resources/test";
     private static final String TEST_ROOT_PATH_WITH_SPACES = "default://master@mtest-repository/my test project/src/main/resources/test";
@@ -181,7 +182,9 @@ public class FileUploadServletTest {
         String fileContent = "the local file content";
 
         doUploadTestByPath(targetPath,
-                           fileContent);
+                           fileContent,
+                           false,
+                           false);
     }
 
     /**
@@ -198,7 +201,9 @@ public class FileUploadServletTest {
         String fileContent = "the local file content";
 
         doUploadTestByPath(targetPathWithSpaces,
-                           fileContent);
+                           fileContent,
+                           true,
+                           true);
     }
 
     /**
@@ -215,7 +220,27 @@ public class FileUploadServletTest {
         String fileContent = "the local file content";
 
         doUploadTestByPath(targetPath,
-                           fileContent);
+                           fileContent,
+                           false,
+                           true);
+    }
+    
+    /**
+     * Tests the upload failure of a file given the following parameters:
+     * <p>
+     * 1) a destination path, composed of a folder and a file name with no blank spaces.
+     * @throws Exception
+     */
+    @Test
+    public void failedUploadByPathWithNoSpacesAndFolderWithNoSpaces() throws Exception {
+        //test the upload of a file name with blank spaces into a given folder.
+        String targetPath = TEST_ROOT_PATH.replaceAll("\\s", "%20") + "/" + "FileNameWithNoSpaces.someextension";
+        String fileContent = "the local file content";
+    
+        doUploadTestByPath(targetPath,
+                               fileContent,
+                               true,
+                               false);
     }
 
     /**
@@ -231,7 +256,9 @@ public class FileUploadServletTest {
         String targetPathWithSpaces = TEST_ROOT_PATH_WITH_SPACES.replaceAll("\\s", "%20") + "/" + "FileNameWithNoSpaces.someextension";
         String fileContent = "the local file content";
         doUploadTestByPath(targetPathWithSpaces,
-                           fileContent);
+                           fileContent,
+                           false,
+                           false);
     }
 
     private void doUploadTestByNameAndFolder(String targetFileName,
@@ -293,7 +320,9 @@ public class FileUploadServletTest {
     }
 
     private void doUploadTestByPath(String targetPath,
-                                    String fileContent) throws Exception {
+                                    String fileContent,
+                                    boolean fileExists,
+                                    boolean isUpdate) throws Exception {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -302,6 +331,9 @@ public class FileUploadServletTest {
 
         //mock the servlet parameters
         when(request.getParameter(PARAM_PATH)).thenReturn(targetPath);
+        when(request.getParameter(PARAM_UPDATE)).thenReturn(String.valueOf(isUpdate));
+        
+        when(ioService.exists(any(Path.class))).thenReturn(fileExists);
 
         //mock the servlet multipart request
         //local file name, and local file name content are not relevant
@@ -324,23 +356,37 @@ public class FileUploadServletTest {
 
         verify(request,
                times(2)).getParameter(PARAM_PATH);
-
+        verify(request, times(1)).getParameter(PARAM_UPDATE);
+    
         //Expected URI
         URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(targetPath));
-
-        verify(ioService,
-               times(2)).startBatch(eq(fileSystem));
         verify(ioService,
                times(1)).get(eq(expectedURI));
-        verify(ioService,
-               times(1)).write(any(Path.class),
-                               eq(fileContent.getBytes()));
-        verify(ioService,
-               times(2)).endBatch();
-
-        printWriter.flush();
-        assertEquals("OK",
-                     new String(outputStream.toByteArray()));
+    
+        if(fileExists && !isUpdate) {
+            verify(ioService,
+                   times(1)).startBatch(eq(fileSystem));
+            verify(ioService, times(1)).exists(any(Path.class));
+            verify(ioService,
+                   times(1)).endBatch();
+    
+            printWriter.flush();
+            assertEquals("CONFLICT",
+                         new String(outputStream.toByteArray()));
+        } else {
+            verify(ioService,
+                   times(2)).startBatch(eq(fileSystem));
+            
+            verify(ioService,
+                   times(1)).write(any(Path.class),
+                                   eq(fileContent.getBytes()));
+            verify(ioService,
+                   times(2)).endBatch();
+        
+            printWriter.flush();
+            assertEquals("OK",
+                         new String(outputStream.toByteArray()));
+        }
     }
 
     private String mockMultipartRequestContent(String localFileName,

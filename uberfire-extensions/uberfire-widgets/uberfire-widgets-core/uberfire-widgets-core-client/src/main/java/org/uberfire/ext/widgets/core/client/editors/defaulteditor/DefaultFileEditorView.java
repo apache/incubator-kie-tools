@@ -47,7 +47,12 @@ public class DefaultFileEditorView
     public void setPath(Path path) {
         fileUpload.setPath(path);
     }
-
+    
+    @Override
+    public void setIsUpdate(boolean isUpdate) {
+        fileUpload.setIsUpdate(isUpdate);
+    }
+    
     @UiHandler("downloadButton")
     public void handleClick(ClickEvent event) {
         fileUpload.download();

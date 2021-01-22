@@ -46,6 +46,7 @@ public class DefaultFileEditorPresenter {
     public void onStartup(final ObservablePath path) {
         this.path = path;
         view.setPath(path);
+        view.setIsUpdate(true);
     }
 
     @OnClose
@@ -66,5 +67,7 @@ public class DefaultFileEditorPresenter {
     interface View {
 
         void setPath(Path path);
+        
+        void setIsUpdate(boolean isUpdate);
     }
 }

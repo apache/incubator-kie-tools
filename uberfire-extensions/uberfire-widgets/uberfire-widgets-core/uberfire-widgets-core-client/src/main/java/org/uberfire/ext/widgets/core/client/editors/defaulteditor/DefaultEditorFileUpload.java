@@ -30,8 +30,10 @@ public class DefaultEditorFileUpload
 
     private static final String DEFAULT_EDITOR = "defaulteditor/download?path=";
     private static final String PATH_PARAMETER = "path";
+    private static final String UPDATE_PARAMETER = "update";
 
     private Path path;
+    private Boolean isUpdate = false;
 
     @Override
     protected Map<String, String> getParameters() {
@@ -39,12 +41,18 @@ public class DefaultEditorFileUpload
 
         parameters.put(PATH_PARAMETER,
                        URIUtil.encodeQueryString(URIUtil.decode(path.toURI())));
+        parameters.put(UPDATE_PARAMETER,
+                       isUpdate.toString());
 
         return parameters;
     }
 
     public void setPath(Path path) {
         this.path = path;
+    }
+    
+    public void setIsUpdate(boolean isUpdate) {
+        this.isUpdate = isUpdate;
     }
 
     public void download() {

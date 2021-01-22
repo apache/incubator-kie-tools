@@ -32,6 +32,7 @@ public class UploadUriProvider {
     private static final String PARAM_PATH = "path";
     private static final String PARAM_FOLDER = "folder";
     private static final String PARAM_FILENAME = "fileName";
+    private static final String PARAM_UPDATE = "update";
 
     public static URI getTargetLocation(final HttpServletRequest request) throws URISyntaxException,
             FileUploadException {
@@ -46,5 +47,9 @@ public class UploadUriProvider {
         } else {
             throw new FileUploadException("Path to file was invalid.");
         }
+    }
+    
+    public static boolean isUpdate(final HttpServletRequest request) {
+        return Boolean.parseBoolean(request.getParameter(PARAM_UPDATE));
     }
 }
