@@ -246,6 +246,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           <CardTitle>Values Constraint</CardTitle>
           <CardBody>
             <ConstraintsEnumEdit
+              dataFieldIndex={dataFieldIndex}
               enumerations={enums}
               onChange={handleEnumsChange}
               onDelete={handleEnumsDelete}

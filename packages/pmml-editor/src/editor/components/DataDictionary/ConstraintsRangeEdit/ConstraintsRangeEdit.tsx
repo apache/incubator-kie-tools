@@ -177,15 +177,14 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="Start Value"
             fieldId={`start-value-${index}`}
-            validated={validations.length === 0 ? "default" : "error"}
-            helperTextInvalid={validations[0] ? "Please enter start and/or end value" : ""}
+            helperText={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
               id={`start-value-${index}`}
               name="start-value"
               value={rangeValues.start.value}
-              validated={validations.length === 0 ? "default" : "error"}
+              validated={validations.length === 0 ? "default" : "warning"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
@@ -208,15 +207,14 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="End Value"
             fieldId={`end-value-${index}`}
-            validated={validations.length === 0 ? "default" : "error"}
-            helperTextInvalid={validations[0] ? "Please enter start and/or end value" : ""}
+            helperText={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
               id={`end-value-${index}`}
               name="end-value"
               value={rangeValues.end.value}
-              validated={validations.length === 0 ? "default" : "error"}
+              validated={validations.length === 0 ? "default" : "warning"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}

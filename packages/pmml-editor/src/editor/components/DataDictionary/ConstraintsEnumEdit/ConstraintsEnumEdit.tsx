@@ -14,9 +14,11 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { GripVerticalIcon, TrashIcon } from "@patternfly/react-icons";
+import { useValidationService } from "../../../validation";
 import "./ConstraintsEnumEdit.scss";
 
 interface ConstraintsEnumEditProps {
+  dataFieldIndex: number | undefined;
   enumerations: string[];
   onAdd: () => void;
   onChange: (value: string, index: number) => void;
@@ -25,7 +27,7 @@ interface ConstraintsEnumEditProps {
 }
 
 const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
-  const { enumerations, onAdd, onChange, onDelete, onSort } = props;
+  const { dataFieldIndex, enumerations, onAdd, onChange, onDelete, onSort } = props;
   const [enums, setEnums] = useState(enumerations);
   const [addedEnum, setAddedEnum] = useState<number>();
 
@@ -60,7 +62,8 @@ const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
         addedEnum: addedEnum,
         updateAddedEnum: position => {
           setAddedEnum(position);
-        }
+        },
+        dataFieldIndex: dataFieldIndex
       }}
     >
       <section className="constraints-enum">
@@ -139,7 +142,7 @@ interface EnumItemProps {
 
 const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, onTab, onDelete }: EnumItemProps) => {
   const [enumeration, setEnumeration] = useState(enumValue);
-  const { addedEnum, updateAddedEnum } = useContext(EnumConstraintsContext);
+  const { dataFieldIndex, addedEnum, updateAddedEnum } = useContext(EnumConstraintsContext);
 
   const handleChange = (value: string) => {
     setEnumeration(value);
@@ -156,6 +159,12 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
       onTab();
     }
   };
+
+  const { service } = useValidationService();
+  const validations = useRef(service.get(`DataDictionary.DataField[${dataFieldIndex}].Value[${position}]`));
+  useEffect(() => {
+    validations.current = service.get(`DataDictionary.DataField[${dataFieldIndex}].Value[${position}]`);
+  }, [position, enumValue]);
 
   const enumRef = useRef<HTMLLIElement | null>(null);
   useEffect(() => {
@@ -180,15 +189,17 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
         </FlexItem>
         <FlexItem>
           <TextInput
-            className="constraints-enum__field"
+            className={
+              validations.current.length > 0 ? "constraints-enum__field pf-m-warning" : "constraints-enum__field"
+            }
             type="text"
             id={`enum-value-${position}`}
             name={`enum-value-${position}`}
+            placeholder="Please enter a value"
             value={enumeration}
             onChange={handleChange}
             onBlur={handleSave}
             onKeyDown={handleTabNavigation}
-            placeholder="Insert a value"
           />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
@@ -204,9 +215,11 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
 interface AddedEnumConstraints {
   addedEnum: number | undefined;
   updateAddedEnum: (position: number | undefined) => void;
+  dataFieldIndex: number | undefined;
 }
 
 const EnumConstraintsContext = React.createContext<AddedEnumConstraints>({
   addedEnum: undefined,
-  updateAddedEnum: () => null
+  updateAddedEnum: () => null,
+  dataFieldIndex: undefined
 });

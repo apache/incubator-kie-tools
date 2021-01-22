@@ -43,7 +43,7 @@ export const validateDataField = (
   dataField.Value?.forEach((value, index) => {
     if (value.value === "") {
       validation.set(
-        `DataDictionary.DataField[${dataDictionaryIndex}].Interval[${index}]`,
+        `DataDictionary.DataField[${dataDictionaryIndex}].Value[${index}]`,
         new ValidationEntry(
           ValidationLevel.WARNING,
           `"${dataField.name}" data type, Empty Constraint Value (${index + 1})`
