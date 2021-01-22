@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataDictionary, DataType, FieldName, OpType } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { validateDataFieldsConstraintRanges, ValidationService } from "../validation";
 
 interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
@@ -38,8 +39,9 @@ interface DataDictionaryPayload {
 
 export type DataDictionaryActions = ActionMap<DataDictionaryPayload>[keyof ActionMap<DataDictionaryPayload>];
 
-export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, AllActions> = (
-  service: HistoryService
+export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary, AllActions> = (
+  service: HistoryService,
+  validation: ValidationService
 ): Reducer<DataDictionary, AllActions> => {
   return (state: DataDictionary, action: AllActions) => {
     switch (action.type) {
@@ -59,6 +61,8 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, AllActio
           if (index >= 0 && index < draft.DataField.length) {
             draft.DataField.splice(index, 1);
           }
+          validation.clear("DataDictionary");
+          validateDataFieldsConstraintRanges(draft.DataField, validation);
         });
         break;
 
@@ -66,6 +70,8 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, AllActio
         service.batch(state, "DataDictionary", draft => {
           const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
           draft.DataField.splice(action.payload.newIndex, 0, removed);
+          validation.clear("DataDictionary");
+          validateDataFieldsConstraintRanges(draft.DataField, validation);
         });
         break;
 

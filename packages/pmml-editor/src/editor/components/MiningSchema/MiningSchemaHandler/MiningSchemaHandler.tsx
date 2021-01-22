@@ -15,8 +15,7 @@ import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContaine
 import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
-import { useBatchDispatch } from "../../../history";
-import { HistoryContext } from "../../../PMMLEditor";
+import { useBatchDispatch, useHistoryService } from "../../../history";
 
 interface MiningSchemaHandlerProps {
   miningSchema?: MiningSchema;
@@ -28,7 +27,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   const [isMiningSchemaOpen, setIsMiningSchemaOpen] = useState(false);
   const dataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
 
-  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const addMiningField = (names: string[]) => {

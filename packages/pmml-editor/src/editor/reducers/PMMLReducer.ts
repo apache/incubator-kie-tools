@@ -22,6 +22,9 @@ interface PMMLPayload {
   [Actions.Refresh]: {
     readonly pmml: PMML;
   };
+  [Actions.Validate]: {
+    readonly modelIndex?: number;
+  };
   [Actions.SetVersion]: {
     readonly version: string;
   };
@@ -37,7 +40,7 @@ interface StateControlPayload {
 export type StateControlActions = ActionMap<StateControlPayload>[keyof ActionMap<StateControlPayload>];
 
 export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
-  service: HistoryService
+  history: HistoryService
 ): Reducer<PMML, AllActions> => {
   return (state: PMML, action: AllActions) => {
     switch (action.type) {
@@ -45,16 +48,16 @@ export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
         return action.payload.pmml;
 
       case Actions.SetVersion:
-        service.batch(state, null, draft => {
+        history.batch(state, null, draft => {
           draft.version = action.payload.version;
         });
         break;
 
       case Actions.Undo:
-        return service.undo(state);
+        return history.undo(state);
 
       case Actions.Redo:
-        return service.redo(state);
+        return history.redo(state);
     }
 
     return state;

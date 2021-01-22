@@ -19,7 +19,7 @@ import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
-import { OperationContext } from "../../../PMMLEditor";
+import { useOperation } from "../OperationContext";
 
 interface AttributesTableProps {
   attributes: Attribute[];
@@ -31,7 +31,7 @@ interface AttributesTableProps {
 export const AttributesTable = (props: AttributesTableProps) => {
   const { attributes, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
 
-  const { setActiveOperation } = React.useContext(OperationContext);
+  const { setActiveOperation } = useOperation();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;

@@ -36,18 +36,18 @@ interface ModelPayload {
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
 export const ModelReducer: HistoryAwareReducer<Model[], AllActions> = (
-  service: HistoryService
+  history: HistoryService
 ): Reducer<Model[], AllActions> => {
-  const scorecardReducer = mergeReducers(ScorecardReducer(service), {
-    MiningSchema: mergeReducers(MiningSchemaReducer(service), { MiningField: MiningSchemaFieldReducer(service) }),
-    Output: mergeReducers(OutputReducer(service), { OutputField: OutputFieldReducer(service) }),
-    Characteristics: mergeReducers(CharacteristicsReducer(service), {
-      Characteristic: CharacteristicReducer(service)
+  const scorecardReducer = mergeReducers(ScorecardReducer(history), {
+    MiningSchema: mergeReducers(MiningSchemaReducer(history), { MiningField: MiningSchemaFieldReducer(history) }),
+    Output: mergeReducers(OutputReducer(history), { OutputField: OutputFieldReducer(history) }),
+    Characteristics: mergeReducers(CharacteristicsReducer(history), {
+      Characteristic: CharacteristicReducer(history)
     })
   });
 
   const delegate = DelegatingModelReducer(
-    service,
+    history,
     new Map([
       [
         "Scorecard",
@@ -67,7 +67,7 @@ export const ModelReducer: HistoryAwareReducer<Model[], AllActions> = (
   return (state: Model[], action: AllActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
-        return service.mutate(state, "models", draft => {
+        return history.mutate(state, "models", draft => {
           if (draft !== undefined) {
             const modelIndex: number = action.payload.modelIndex;
             if (modelIndex >= 0 && modelIndex < draft.length) {

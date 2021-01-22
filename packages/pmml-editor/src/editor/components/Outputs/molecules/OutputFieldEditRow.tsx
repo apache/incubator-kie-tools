@@ -39,8 +39,7 @@ import { OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import useOnclickOutside from "react-cool-onclickoutside";
-import { Operation } from "../../EditorScorecard";
-import { OperationContext } from "../../../PMMLEditor";
+import { Operation, useOperation } from "../../EditorScorecard";
 
 interface OutputFieldEditRowProps {
   outputField: OutputField | undefined;
@@ -74,7 +73,7 @@ const dataTypes = [
 const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   const { outputField, validateOutputName, viewExtendedProperties, onCommitAndClose, onCommit, onCancel } = props;
 
-  const { activeOperation } = React.useContext(OperationContext);
+  const { activeOperation } = useOperation();
 
   const [name, setName] = useState<ValidatedType<FieldName | undefined>>({
     value: undefined,

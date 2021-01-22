@@ -22,9 +22,9 @@
   "dependencies": {
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "@kogito-tooling/dmn-editor-unpacked": "7.47.0-Final",
-    "@kogito-tooling/bpmn-editor-unpacked": "7.47.0-Final",
-    "@kogito-tooling/scesim-editor-unpacked": "7.47.0-Final",
+    "@kogito-tooling/dmn-editor-unpacked": "7.48.0-Final",
+    "@kogito-tooling/bpmn-editor-unpacked": "7.48.0-Final",
+    "@kogito-tooling/scesim-editor-unpacked": "7.48.0-Final",
     "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT"
   },
   "devDependencies": {

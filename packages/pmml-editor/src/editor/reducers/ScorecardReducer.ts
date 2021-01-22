@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
@@ -51,7 +51,7 @@ export type AllScorecardActions = ScorecardActions | CharacteristicsActions | Ch
 export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> = (
   service: HistoryService
 ): Reducer<Scorecard, ScorecardActions> => {
-  return (state: Scorecard, action: ScorecardActions) => {
+  return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_SetModelName:
         service.batch(state, `models[${action.payload.modelIndex}]`, draft => {

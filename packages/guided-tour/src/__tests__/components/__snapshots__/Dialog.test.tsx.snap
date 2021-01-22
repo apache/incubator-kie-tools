@@ -76,7 +76,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
             data-ouia-safe="true"
             type="button"
           >
-            Dismiss
+            Skip tour
           </button>
         </div>
       </div>
@@ -159,7 +159,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
             >
               Click on 
               <b>
-                Dismiss
+                Skip tour
               </b>
                to stop it or 
               <b>
@@ -191,7 +191,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
             data-ouia-safe="true"
             type="button"
           >
-            Dismiss
+            Skip tour
           </button>
         </div>
       </div>
@@ -244,7 +244,7 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
           data-ouia-safe="true"
           type="button"
         >
-          Dismiss
+          Skip tour
         </button>
       </div>
     </div>

@@ -20,11 +20,11 @@ import { EmptyStateNoModels } from "../organisms";
 import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
-import { getModelName, getModelType, HistoryContext, isSupportedModelType, ModelType } from "../../..";
+import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
 import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
 import { useHistory } from "react-router";
-import { useBatchDispatch } from "../../../history";
+import { useBatchDispatch, useHistoryService } from "../../../history";
 
 interface LandingPageProps {
   path: string;
@@ -32,7 +32,7 @@ interface LandingPageProps {
 
 export const LandingPage = (props: LandingPageProps) => {
   const history = useHistory();
-  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [filter, setFilter] = useState("");

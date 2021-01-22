@@ -15,8 +15,9 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   Button,
   Form,
   FormGroup,
@@ -32,15 +33,17 @@ import {
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
+import { useValidationService } from "../../../validation";
 
 interface DataDictionaryPropertiesEditProps {
   dataType: DDDataField;
+  dataFieldIndex: number | undefined;
   onClose: () => void;
   onSave: (payload: Partial<DDDataField>) => void;
 }
 
 const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) => {
-  const { dataType, onClose, onSave } = props;
+  const { dataType, dataFieldIndex, onClose, onSave } = props;
   const [displayName, setDisplayName] = useState(dataType.displayName ?? "");
   const [isCyclic, setIsCyclic] = useState(dataType.isCyclic);
   const [missingValue, setMissingValue] = useState(dataType.missingValue ?? "");
@@ -53,6 +56,9 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
     setInvalidValue(dataType.invalidValue ?? "");
   }, [dataType]);
 
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`DataDictionary.DataField[${dataFieldIndex}]`), [dataType]);
+
   return (
     <Stack hasGutter={true} className="data-dictionary__properties-edit">
       <StackItem>
@@ -63,6 +69,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
           &nbsp;/&nbsp;Properties
         </Title>
       </StackItem>
+      {validations.length > 0 && (
+        <section className="data-dictionary__validation-alert">
+          <Alert variant="warning" title="Some items are invalid and need attention." />
+        </section>
+      )}
       <StackItem className="data-dictionary__properties-edit__form">
         <Form>
           <Split hasGutter={true}>
@@ -186,7 +197,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
               </FormGroup>
             </SplitItem>
           </Split>
-          <ConstraintsEdit dataType={dataType} onSave={onSave} />
+          <ConstraintsEdit dataType={dataType} dataFieldIndex={dataFieldIndex} onSave={onSave} />
         </Form>
       </StackItem>
     </Stack>

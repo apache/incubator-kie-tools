@@ -61,7 +61,7 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
           </Button>
           <Text>{"  "}</Text>
           <Button onClick={props.dismiss} variant="link">
-            {i18n.terms.dismiss}
+            {i18n.guidedTour.init.skipTour}
           </Button>
         </div>
       )

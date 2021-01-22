@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/pmml-editor",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -14,16 +14,16 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.8.2",
-    "@kogito-tooling/patternfly-base": "0.8.2",
-    "@kogito-tooling/pmml-editor-marshaller": "0.8.2",
+    "@kogito-tooling/editor": "0.8.3",
+    "@kogito-tooling/patternfly-base": "0.8.3",
+    "@kogito-tooling/pmml-editor-marshaller": "0.8.3",
     "@types/lodash": "^4.14.161",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "5.1.1",
     "@types/react-transition-group": "^4.4.0",
     "@types/uuid": "^8.3.0",
     "combine-reducer": "^1.0.2",
-    "immer": "^7.0.8",
+    "immer": "^8.0.1",
     "lodash": "^4.14.2",
     "react-cool-onclickoutside": "^1.5.7",
     "react-monaco-editor": "^0.40.0",

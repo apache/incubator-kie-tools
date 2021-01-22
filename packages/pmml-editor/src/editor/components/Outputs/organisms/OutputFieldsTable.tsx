@@ -18,11 +18,10 @@ import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./OutputFieldsTable.scss";
-import { Operation } from "../../EditorScorecard";
+import { Operation, useOperation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import OutputFieldRow from "../molecules/OutputFieldRow";
 import OutputFieldEditRow from "../molecules/OutputFieldEditRow";
-import { OperationContext } from "../../../PMMLEditor";
 
 interface OutputFieldsTableProps {
   modelIndex: number;
@@ -54,7 +53,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
 
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation, setActiveOperation } = useOperation();
 
   useEffect(() => {
     if (activeOperation === Operation.UPDATE_OUTPUT && addOutputRowRef.current) {

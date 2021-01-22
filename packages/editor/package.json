@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/editor",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -13,13 +13,13 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/backend": "0.8.2",
-    "@kogito-tooling/envelope": "0.8.2",
-    "@kogito-tooling/envelope-bus": "0.8.2",
-    "@kogito-tooling/guided-tour": "0.8.2",
-    "@kogito-tooling/i18n": "0.8.2",
-    "@kogito-tooling/keyboard-shortcuts": "0.8.2",
-    "@kogito-tooling/workspace": "0.8.2"
+    "@kogito-tooling/backend": "0.8.3",
+    "@kogito-tooling/envelope": "0.8.3",
+    "@kogito-tooling/envelope-bus": "0.8.3",
+    "@kogito-tooling/guided-tour": "0.8.3",
+    "@kogito-tooling/i18n": "0.8.3",
+    "@kogito-tooling/keyboard-shortcuts": "0.8.3",
+    "@kogito-tooling/workspace": "0.8.3"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

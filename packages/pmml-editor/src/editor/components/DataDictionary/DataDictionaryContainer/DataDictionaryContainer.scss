@@ -6,6 +6,11 @@
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
   }
+
+  &__validation-alert {
+    margin-bottom: 16px;
+  }
+
   &__overview {
     &-enter {
       opacity: 0;

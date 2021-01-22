@@ -23,12 +23,11 @@ import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-mars
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
-import { Operation } from "../../EditorScorecard";
+import { Operation, useOperation } from "../../EditorScorecard";
 import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import "./OutputsContainer.scss";
 import { findIncrementalName } from "../../../PMMLModelHelper";
-import { HistoryContext, OperationContext } from "../../../PMMLEditor";
-import { useBatchDispatch } from "../../../history";
+import { useBatchDispatch, useHistoryService } from "../../../history";
 import get = Reflect.get;
 import set = Reflect.set;
 
@@ -48,8 +47,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const [selectedOutputIndex, setSelectedOutputIndex] = useState<number | undefined>(undefined);
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
-  const { service, getCurrentState } = React.useContext(HistoryContext);
+  const { activeOperation, setActiveOperation } = useOperation();
+  const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const editItem: OutputField | undefined = useMemo(() => {

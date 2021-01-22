@@ -15,21 +15,22 @@
  */
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { Card, CardBody, CardTitle, FormGroup, Select, SelectOption, SelectVariant } from "@patternfly/react-core";
 
 import { DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
-import { useEffect, useState } from "react";
 import { Validated } from "../../../types";
 
 interface ConstraintsEditProps {
   dataType: DDDataField;
+  dataFieldIndex: number | undefined;
   onSave: (payload: Partial<DDDataField>) => void;
 }
 
 const ConstraintsEdit = (props: ConstraintsEditProps) => {
-  const { dataType, onSave } = props;
+  const { dataType, dataFieldIndex, onSave } = props;
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeSelectIsOpen, setTypeSelectIsOpen] = useState(false);
   const constraintsTypes = [{ value: "", isPlaceholder: true }, { value: "Range" }, { value: "Enumeration" }];
@@ -207,6 +208,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           <CardTitle>Range Constraint</CardTitle>
           <CardBody>
             <ConstraintsRangeEdit
+              dataFieldIndex={dataFieldIndex}
               ranges={ranges}
               onAdd={handleRangeAdd}
               onChange={handleRangeSave}

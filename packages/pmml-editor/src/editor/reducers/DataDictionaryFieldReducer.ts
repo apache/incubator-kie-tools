@@ -13,10 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { ActionMap, Actions, AllActions } from "./Actions";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import {
+  validateDataFieldConstraintRanges,
+  validateDataFieldsConstraintRanges,
+  ValidationService
+} from "../validation";
 
 interface DataDictionaryFieldPayload {
   [Actions.UpdateDataDictionaryField]: {
@@ -31,18 +36,27 @@ export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[k
   DataDictionaryFieldPayload
 >];
 
-export const DataDictionaryFieldReducer: HistoryAwareReducer<DataField[], DataDictionaryFieldActions> = (
-  service: HistoryService
-): Reducer<DataField[], DataDictionaryFieldActions> => {
-  return (state: DataField[], action: DataDictionaryFieldActions) => {
+export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField[], DataDictionaryFieldActions> = (
+  service: HistoryService,
+  validation: ValidationService
+): Reducer<DataField[], AllActions> => {
+  return (state: DataField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateDataDictionaryField:
+        const dataField = action.payload.dataField;
+        const dataDictionaryIndex = action.payload.dataDictionaryIndex;
         service.batch(state, "DataDictionary.DataField", draft => {
-          const dataDictionaryIndex = action.payload.dataDictionaryIndex;
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
-            draft[dataDictionaryIndex] = action.payload.dataField;
+            draft[dataDictionaryIndex] = dataField;
           }
+          validation.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);
+          validateDataFieldConstraintRanges(dataField, dataDictionaryIndex, validation);
         });
+        break;
+
+      case Actions.Validate:
+        validation.clear("DataDictionary.DataField");
+        validateDataFieldsConstraintRanges(state, validation);
     }
 
     return state;

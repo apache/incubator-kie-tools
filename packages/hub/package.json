@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/hub",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,10 +10,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/desktop": "0.8.2",
-    "@kogito-tooling/i18n": "0.8.2",
-    "@kogito-tooling/i18n-common-dictionary": "0.8.2",
-    "@kogito-tooling/patternfly-base": "0.8.2",
+    "@kogito-tooling/desktop": "0.8.3",
+    "@kogito-tooling/i18n": "0.8.3",
+    "@kogito-tooling/i18n-common-dictionary": "0.8.3",
+    "@kogito-tooling/patternfly-base": "0.8.3",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "electron": "7.2.4",

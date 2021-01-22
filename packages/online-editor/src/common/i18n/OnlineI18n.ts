@@ -152,6 +152,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       title: string;
       learnMore: string;
       letsGo: string;
+      skipTour: string;
     };
     end: {
       title: string;
@@ -167,6 +168,20 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       courseOr: string;
       kogitoDoc: string;
       finish: string;
+    };
+  };
+  alerts: {
+    gistError: string;
+    goToHomePage: string;
+    errorDetails: string;
+    responseError: {
+      title: string;
+    };
+    fetchError: {
+      title: string;
+      possibleCauses: string;
+      missingGitHubToken: string;
+      cors: string;
     };
   };
 }

@@ -24,6 +24,7 @@ interface GuidedTourDictionary extends ReferenceDictionary<GuidedTourDictionary>
   options: string;
   oops: string;
   somethingWrong: string;
+  skipTour: string;
 }
 
 export interface GuidedTourI18n extends GuidedTourDictionary, CommonI18n {}

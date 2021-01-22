@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -13,10 +13,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.8.2",
-    "@kogito-tooling/external-assets-base": "0.8.2",
-    "@kogito-tooling/i18n": "0.8.2",
-    "@kogito-tooling/kie-bc-editors": "0.8.2"
+    "@kogito-tooling/editor": "0.8.3",
+    "@kogito-tooling/external-assets-base": "0.8.3",
+    "@kogito-tooling/i18n": "0.8.3",
+    "@kogito-tooling/kie-bc-editors": "0.8.3"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

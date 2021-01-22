@@ -1287,25 +1287,25 @@
     eol "^0.9.1"
     glob "^7.1.6"
 
-"@kogito-tooling/bpmn-editor-unpacked@7.47.0-Final":
-  version "7.47.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-7.47.0-Final.tgz#0f690bb782461cd07ae4507c428acdafa4292ce0"
-  integrity sha512-5gjf89LHkmJHw2nK/E6CupHdYRG7KSADU7PyUBqWrczWUkptYpEv8AhuaJm3/AGEYV1E574Y2DsXV/Cay8nsNA==
+"@kogito-tooling/bpmn-editor-unpacked@7.48.0-Final":
+  version "7.48.0-Final"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-7.48.0-Final.tgz#3ead55108382f2c91637a642994f0e2f4b19c449"
+  integrity sha512-aIRwcxwqtYyt5lxf8mZCWOSWlyYunwTutWbSTT+IKh72OJmkSGxzBd9qEU4PNJpOfCNYiEKHJCVuCaG4gfMVfg==
 
-"@kogito-tooling/dmn-editor-unpacked@7.47.0-Final":
-  version "7.47.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-7.47.0-Final.tgz#b98d0f0e0b00348d63d94727fdcc88fa46f71c8a"
-  integrity sha512-scaqGBwRmbhfDmb1yqW11O1e9eotKvEVUiBSMAaMht7nPO/1Lr8C6Cy/mSTb0kmZkRriZ6hnSmODd689/ru1EQ==
+"@kogito-tooling/dmn-editor-unpacked@7.48.0-Final":
+  version "7.48.0-Final"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-7.48.0-Final.tgz#6c4caf5ade8486b8ba67c6c1d32cc669325a9022"
+  integrity sha512-ZsgEUhgIuIvPVyWc1jQURahwvdeO50PBAD8uBILI4AS5zGylwt3QWZLDIhIdajbcNtzAIovExwDZ5jVwT2fJew==
 
 "@kogito-tooling/quarkus-runner-unpacked@0.7.0-SNAPSHOT":
   version "0.7.0-SNAPSHOT"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/quarkus-runner-unpacked/-/quarkus-runner-unpacked-0.7.0-SNAPSHOT.tgz#5f84c2657347f82f1cab0f08cc9b430b32c9d222"
   integrity sha512-nlfngzKGZrI+P6+4dZr76FDGUoXuNsRWckNs7QS8iLTvEChi3azgFz4CBIqNB5sJjPUF4P+TAxsFlQMidIBzyA==
 
-"@kogito-tooling/scesim-editor-unpacked@7.47.0-Final":
-  version "7.47.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-7.47.0-Final.tgz#42a04c17a38aba33ced29d4b188f29d799b4f9ff"
-  integrity sha512-D1iQWyOpLGRDX0qD7UHqYYgbQ4UnJYZGa3aCOKX2hYa6iMQIQ4qXQP9bGwQuyhWDSIonBJj4qZ4bu3kqmzIA6w==
+"@kogito-tooling/scesim-editor-unpacked@7.48.0-Final":
+  version "7.48.0-Final"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-7.48.0-Final.tgz#6162e12856f5756d3dfb3cbb3751a18786a112c2"
+  integrity sha512-TRgk5Qm0aknxDwUbZzuL00d9z9t25o8/BVSAz0F1pXxU7JypOmLc/pZ4KL2l5cHFqx6V5fbOLneodmE8IOE/hw==
 
 "@lerna/add@3.18.0":
   version "3.18.0"
@@ -2542,9 +2542,9 @@
     pretty-format "^25.2.1"
 
 "@types/json-schema@^7.0.4":
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
-  integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
+  integrity sha512-cxWFQVseBm6O9Gbw1IWb8r6OS4OhSt3hPZLkFApLjM8TEXROBuQGLAH2i2gZpcXdLBIrpXuTDhH7Vbm1iXmNGA==
 
 "@types/lodash@^4.14.161":
   version "4.14.161"
@@ -5539,9 +5539,9 @@ core-js@^2.5.7, core-js@^2.6.5:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.5.0:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.2.tgz#0a1fd6709246da9ca8eff5bb0cbd15fba9ac7044"
-  integrity sha512-FfApuSRgrR6G5s58casCBd9M2k+4ikuu4wbW6pJyYU7bd9zvFc9qf7vr5xmrZOhT9nn+8uwlH1oRR9jTnFoA3A==
+  version "3.8.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.3.tgz#c21906e1f14f3689f93abcc6e26883550dd92dd0"
+  integrity sha512-KPYXeVZYemC2TkNEkX/01I+7yd+nX3KddKwZ1Ww7SKWdI2wQprSgLmrTddT8nw92AjEklTsPBoSdQBhbI1bQ6Q==
 
 core-js@^3.6.4:
   version "3.6.4"
@@ -8447,10 +8447,10 @@ immediate@~3.0.5:
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
 
-immer@^7.0.8:
-  version "7.0.8"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-7.0.8.tgz#41dcbc5669a76500d017bef3ad0d03ce0a1d7c1e"
-  integrity sha512-XnpIN8PXBBaOD43U8Z17qg6RQiKQYGDGGCIbz1ixmLGwBkSWwmrmx5X7d+hTtXDM8ur7m5OdLE0PiO+y5RB3pw==
+immer@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
+  integrity sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==
 
 import-fresh@^2.0.0:
   version "2.0.0"

@@ -36,11 +36,12 @@ import "./CorePropertiesTable.scss";
 import { Operation } from "../Operation";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { isEqual } from "lodash";
-import { OperationContext } from "../../../PMMLEditor";
+import { useOperation } from "../OperationContext";
 import set = Reflect.set;
 import get = Reflect.get;
 
 interface CoreProperties {
+  modelIndex: number;
   isScorable: boolean;
   functionName: MiningFunction;
   algorithmName: string;
@@ -66,7 +67,7 @@ const GenericSelectorEditor = (
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation, setActiveOperation } = useOperation();
 
   const [isEditing, setEditing] = useState(false);
   const [isScorable, setScorable] = useState<boolean>();
