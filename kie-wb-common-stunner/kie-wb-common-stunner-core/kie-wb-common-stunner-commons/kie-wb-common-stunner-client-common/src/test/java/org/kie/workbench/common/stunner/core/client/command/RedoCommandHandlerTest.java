@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
+import org.kie.workbench.common.stunner.core.client.registry.impl.RedoCommandRegistryProvider;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
@@ -56,6 +57,9 @@ public class RedoCommandHandlerTest {
     @Mock
     private Event<RegisterChangedEvent> registerChangedEvent;
 
+    @Mock
+    private RedoCommandRegistryProvider provider;
+
     private DefaultRegistry commandRegistry;
 
     private RedoCommandHandler tested;
@@ -64,7 +68,8 @@ public class RedoCommandHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         commandRegistry = spy(new DefaultRegistryImpl<>());
-        this.tested = new RedoCommandHandler(commandRegistry, registerChangedEvent);
+        when(provider.getCurrentCommandRegistry()).thenReturn(commandRegistry);
+        this.tested = new RedoCommandHandler(provider, registerChangedEvent);
     }
 
     @Test
@@ -101,7 +106,7 @@ public class RedoCommandHandlerTest {
         CommandManager manager = mock(CommandManager.class);
         when(commandRegistry.isEmpty()).thenReturn(true);
 
-        RedoCommandHandler tested = new RedoCommandHandler(commandRegistry, registerChangedEvent);
+        RedoCommandHandler tested = new RedoCommandHandler(provider, registerChangedEvent);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      tested.execute(obj, manager));

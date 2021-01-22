@@ -82,6 +82,11 @@ public class DMNEditorMenuSessionItems extends AbstractDiagramEditorMenuSessionI
         setItemEnabled(DMNPerformAutomaticLayoutCommand.class, enabled);
     }
 
+    @Override
+    protected void setUndoRedoCommandDisabled() {
+        // Override to keep the status of the undo/redo commands set when they are bind to session.
+    }
+
     void superSetEnabled(final boolean enabled) {
         super.setEnabled(enabled);
     }

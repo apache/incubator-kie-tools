@@ -45,6 +45,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -100,8 +101,8 @@ public class DMNEditorMenuSessionItemsTest {
         verify(menuItems).setItemEnabled(ExportToPdfSessionCommand.class, enabled);
         verify(menuItems).setItemEnabled(ExportToRawFormatSessionCommand.class, enabled);
         verify(menuItems).setItemEnabled(DeleteSelectionSessionCommand.class, false);
-        verify(menuItems).setItemEnabled(UndoSessionCommand.class, false);
-        verify(menuItems).setItemEnabled(RedoSessionCommand.class, false);
+        verify(menuItems, never()).setItemEnabled(UndoSessionCommand.class, false);
+        verify(menuItems, never()).setItemEnabled(RedoSessionCommand.class, false);
         verify(menuItems).setItemEnabled(CopySelectionSessionCommand.class, false);
         verify(menuItems).setItemEnabled(CutSelectionSessionCommand.class, false);
         verify(menuItems).setItemEnabled(PasteSelectionSessionCommand.class, false);

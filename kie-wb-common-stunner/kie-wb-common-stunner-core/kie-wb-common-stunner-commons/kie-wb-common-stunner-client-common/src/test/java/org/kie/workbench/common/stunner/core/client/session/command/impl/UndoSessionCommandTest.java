@@ -42,6 +42,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -172,8 +173,23 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     @Test
     public void testOnCurrentRegistryChanged() {
         final CurrentRegistryChangedEvent event = mock(CurrentRegistryChangedEvent.class);
-        ((UndoSessionCommand)command).onCurrentRegistryChanged(event);
+        ((UndoSessionCommand) command).onCurrentRegistryChanged(event);
 
-        verify((UndoSessionCommand)command).checkState();
+        verify((UndoSessionCommand) command).checkState();
+    }
+
+    @Test
+    public void testBind() {
+
+        final UndoSessionCommand command = ((UndoSessionCommand) this.command);
+        doNothing().when(command).superBind(session);
+        doNothing().when(command).bindCommand();
+        doNothing().when(command).checkState();
+
+        command.bind(session);
+
+        verify(command).superBind(session);
+        verify(command).bindCommand();
+        verify(command).checkState();
     }
 }

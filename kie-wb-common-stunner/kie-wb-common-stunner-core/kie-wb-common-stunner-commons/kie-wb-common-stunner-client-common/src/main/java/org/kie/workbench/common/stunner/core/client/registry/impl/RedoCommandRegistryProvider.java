@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.session;
+package org.kie.workbench.common.stunner.core.client.registry.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -27,34 +30,70 @@ import javax.inject.Inject;
 import org.appformer.client.stateControl.registry.Registry;
 import org.appformer.client.stateControl.registry.RegistryChangeListener;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.registry.impl.CommandRegistryHolder;
+import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
-public class RegistryProvider {
+public class RedoCommandRegistryProvider {
 
+    private final ManagedInstance<GraphsProvider> graphsProviderInstances;
+    private final SessionManager sessionManager;
+    private final DefinitionUtils definitionUtils;
     private final ManagedInstance<CommandRegistryHolder> registryHolders;
-    private final DMNGraphsProvider graphsProvider;
     private final Map<String, Registry<Command<AbstractCanvasHandler, CanvasViolation>>> registryMap;
+    private GraphsProvider graphsProvider;
     private RegistryChangeListener registryChangeListener;
 
+    protected RedoCommandRegistryProvider() {
+        this(null, null, null, null);
+        // CDI proxy
+    }
+
     @Inject
-    public RegistryProvider(final ManagedInstance<CommandRegistryHolder> registryHolders,
-                            final @Any DMNGraphsProvider graphsProvider) {
+    public RedoCommandRegistryProvider(final @Any ManagedInstance<GraphsProvider> graphsProviderInstances,
+                                       final @Any ManagedInstance<CommandRegistryHolder> registryHolders,
+                                       final SessionManager sessionManager,
+                                       final DefinitionUtils definitionUtils) {
+        this.graphsProviderInstances = graphsProviderInstances;
+        this.sessionManager = sessionManager;
+        this.definitionUtils = definitionUtils;
         this.registryHolders = registryHolders;
-        this.graphsProvider = graphsProvider;
         this.registryMap = new HashMap<>();
     }
 
+    @PostConstruct
+    public void init() {
+        final Diagram diagram = sessionManager.getCurrentSession()
+                .getCanvasHandler()
+                .getDiagram();
+        final Annotation qualifier = definitionUtils.getQualifier(diagram.getMetadata().getDefinitionSetId());
+        graphsProvider = InstanceUtils.lookup(graphsProviderInstances,
+                                              GraphsProvider.class,
+                                              qualifier);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        graphsProviderInstances.destroyAll();
+        registryHolders.destroyAll();
+    }
+
+    public GraphsProvider getGraphsProvider() {
+        return graphsProvider;
+    }
+
     public Registry<Command<AbstractCanvasHandler, CanvasViolation>> getCurrentCommandRegistry() {
-        if (!getRegistryMap().containsKey(graphsProvider.getCurrentDiagramId())) {
-            initializeRegistry(graphsProvider.getCurrentDiagramId());
+        if (!getRegistryMap().containsKey(getGraphsProvider().getCurrentDiagramId())) {
+            initializeRegistry(getGraphsProvider().getCurrentDiagramId());
         }
 
-        return getRegistryMap().get(graphsProvider.getCurrentDiagramId());
+        return getRegistryMap().get(getGraphsProvider().getCurrentDiagramId());
     }
 
     public void setRegistryChangeListener(final RegistryChangeListener registryChangeListener) {

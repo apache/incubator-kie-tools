@@ -19,9 +19,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.appformer.client.stateControl.registry.DefaultRegistry;
 import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
+import org.kie.workbench.common.stunner.core.client.registry.impl.RedoCommandRegistryProvider;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
@@ -42,12 +42,13 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
  * - Check <code>isEnabled</code> to figure out if a re-do operation can be done.
  * - Call <code>clear</code> to clear the internal commands registry and reset the re-do status.
  * - If <code>isEnabled</code> is <code>true</code>, you can run the <code>execute</code> method. It runs last undone command on found this handler's registry.
+ *
  * @param <C> The command type.
  */
 @Dependent
 public class RedoCommandHandler<C extends Command> {
 
-    private final DefaultRegistry<C> registry;
+    private final RedoCommandRegistryProvider provider;
     private final Event<RegisterChangedEvent> registerChangedEvent;
 
     protected RedoCommandHandler() {
@@ -55,23 +56,24 @@ public class RedoCommandHandler<C extends Command> {
     }
 
     @Inject
-    public RedoCommandHandler(final DefaultRegistry<C> registry, final Event<RegisterChangedEvent> registerChangedEvent) {
-        this.registry = registry;
+    public RedoCommandHandler(final RedoCommandRegistryProvider provider,
+                              final Event<RegisterChangedEvent> registerChangedEvent) {
+        this.provider = provider;
         this.registerChangedEvent = registerChangedEvent;
     }
 
     public boolean onUndoCommandExecuted(final C command) {
-        registry.register(command);
+        getRegistry().register(command);
         return isEnabled();
     }
 
     public boolean onCommandExecuted(final C command) {
         if (isEnabled()) {
-            final C last = registry.peek();
+            final C last = getRegistry().peek();
             if (last.equals(command)) {
                 // If the recently executed command is the same in this handler' registry, means it has been
                 // executed by this handler so it can be removed from the registry.
-                registry.pop();
+                getRegistry().pop();
             } else {
                 // Any "new" ( e.g: not a previously undone command ) executed commands cleans the registry,
                 // no re-do is possible.
@@ -84,28 +86,28 @@ public class RedoCommandHandler<C extends Command> {
     @SuppressWarnings("unchecked")
     public CommandResult<?> execute(final Object context,
                                     final CommandManager commandManager) {
-        if (registry.isEmpty()) {
+        if (getRegistry().isEmpty()) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
-        final C last = registry.peek();
+        final C last = getRegistry().peek();
         return commandManager.execute(context,
                                       last);
     }
 
     public void setSession(final ClientSession clientSession) {
-        this.registry.setRegistryChangeListener(() -> registerChangedEvent.fire(new RegisterChangedEvent(clientSession.getCanvasHandler())));
+        this.getRegistry().setRegistryChangeListener(() -> registerChangedEvent.fire(new RegisterChangedEvent(clientSession.getCanvasHandler())));
     }
 
     public boolean isEnabled() {
-        return !registry.isEmpty();
+        return !getRegistry().isEmpty();
     }
 
     public void clear() {
-        registry.clear();
+        getRegistry().clear();
     }
 
     protected Registry<C> getRegistry() {
-        return registry;
+        return (Registry<C>) provider.getCurrentCommandRegistry();
     }
 }

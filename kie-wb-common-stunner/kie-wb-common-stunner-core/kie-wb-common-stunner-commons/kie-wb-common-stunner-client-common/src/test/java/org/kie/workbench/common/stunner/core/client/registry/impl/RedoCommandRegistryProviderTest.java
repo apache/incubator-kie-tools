@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.session;
+package org.kie.workbench.common.stunner.core.client.registry.impl;
+
+import java.lang.annotation.Annotation;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.client.stateControl.registry.Registry;
@@ -23,13 +25,19 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
-import org.kie.workbench.common.stunner.core.client.registry.impl.CommandRegistryHolder;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -38,20 +46,42 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class RegistryProviderTest {
+public class RedoCommandRegistryProviderTest {
 
     @Mock
     private ManagedInstance<CommandRegistryHolder> registryHolders;
 
     @Mock
-    private DMNGraphsProvider graphsProvider;
+    private ManagedInstance<GraphsProvider> graphsProviderInstances;
 
-    private RegistryProvider provider;
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
+    private GraphsProvider graphsProvider;
+
+    private RedoCommandRegistryProvider provider;
 
     @Before
     public void setup() {
-        provider = spy(new RegistryProvider(registryHolders,
-                                            graphsProvider));
+        provider = spy(new RedoCommandRegistryProvider(graphsProviderInstances,
+                                                       registryHolders,
+                                                       sessionManager,
+                                                       definitionUtils));
+
+        doReturn(graphsProvider).when(provider).getGraphsProvider();
+    }
+
+    @Test
+    public void testDestroy() {
+
+        provider.destroy();
+
+        verify(graphsProviderInstances).destroyAll();
+        verify(registryHolders).destroyAll();
     }
 
     @Test
@@ -131,5 +161,36 @@ public class RegistryProviderTest {
 
         assertEquals(registry, createdRegistry);
         verify(createdRegistry).setRegistryChangeListener(listener);
+    }
+
+    @Test
+    public void testInit() {
+
+        final ClientSession session = mock(ClientSession.class);
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+        final Diagram diagram = mock(Diagram.class);
+        final Metadata metadata = mock(Metadata.class);
+        final String definitionId = "definitionId";
+        final Annotation qualifier = mock(Annotation.class);
+        final ManagedInstance<GraphsProvider> foundInstances = mock(ManagedInstance.class);
+        final GraphsProvider foundInstance = mock(GraphsProvider.class);
+
+        doCallRealMethod().when(provider).getGraphsProvider();
+
+        when(foundInstances.isUnsatisfied()).thenReturn(false);
+        when(foundInstances.get()).thenReturn(foundInstance);
+        when(graphsProviderInstances.select(GraphsProvider.class, qualifier)).thenReturn(foundInstances);
+        when(definitionUtils.getQualifier(definitionId)).thenReturn(qualifier);
+        when(metadata.getDefinitionSetId()).thenReturn(definitionId);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+
+        provider.init();
+
+        final GraphsProvider actualProvider = provider.getGraphsProvider();
+
+        assertEquals(actualProvider, foundInstance);
     }
 }

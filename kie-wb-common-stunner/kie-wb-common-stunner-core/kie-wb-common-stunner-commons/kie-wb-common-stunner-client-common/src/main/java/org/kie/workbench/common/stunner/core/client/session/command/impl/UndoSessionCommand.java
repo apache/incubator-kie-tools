@@ -54,9 +54,14 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
     @Override
     public void bind(final EditorSession session) {
-        super.bind(session);
+        superBind(session);
 
         bindCommand();
+        checkState();
+    }
+
+    void superBind(final EditorSession session) {
+        super.bind(session);
     }
 
     protected void bindCommand() {
@@ -117,7 +122,10 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     void checkState() {
-        if (getSession() != null) {
+        if (!Objects.isNull(getSession())
+                && !Objects.isNull(getSession().getCommandRegistry())
+                && !Objects.isNull(getSession().getCommandRegistry().getHistory())
+        ) {
             setEnabled(!getSession().getCommandRegistry().getHistory().isEmpty());
             fire();
         }

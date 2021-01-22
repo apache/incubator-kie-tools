@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.command.RedoCommandHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 
 @Dependent
 @Specializes
@@ -40,15 +41,17 @@ public class KogitoRedoSessionCommand extends RedoSessionCommand {
 
     @Inject
     public KogitoRedoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                    final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler) {
-        this(sessionCommandManager, redoCommandHandler, WindowRef::isEnvelopeAvailable, StateControl::get);
+                                    final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler,
+                                    final GraphsProvider graphsProvider) {
+        this(sessionCommandManager, redoCommandHandler, WindowRef::isEnvelopeAvailable, StateControl::get, graphsProvider);
     }
 
     KogitoRedoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                              final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler,
                              final Supplier<Boolean> envelopeAvailableSupplier,
-                             final Supplier<StateControl> stateControlSupplier) {
-        super(sessionCommandManager, redoCommandHandler);
+                             final Supplier<StateControl> stateControlSupplier,
+                             final GraphsProvider graphsProvider) {
+        super(sessionCommandManager, redoCommandHandler, graphsProvider);
         this.envelopeAvailableSupplier = envelopeAvailableSupplier;
         this.stateControlSupplier = stateControlSupplier;
     }

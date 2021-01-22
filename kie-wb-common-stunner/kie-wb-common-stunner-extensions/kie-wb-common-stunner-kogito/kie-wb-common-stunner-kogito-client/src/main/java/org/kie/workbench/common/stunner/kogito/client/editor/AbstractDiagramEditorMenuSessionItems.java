@@ -166,11 +166,15 @@ public abstract class AbstractDiagramEditorMenuSessionItems<BUILDER extends Abst
         setItemEnabled(ExportToPdfSessionCommand.class, enabled);
         setItemEnabled(ExportToRawFormatSessionCommand.class, enabled);
         setItemEnabled(DeleteSelectionSessionCommand.class, false);
-        setItemEnabled(UndoSessionCommand.class, false);
-        setItemEnabled(RedoSessionCommand.class, false);
+        setUndoRedoCommandDisabled();
         setItemEnabled(CopySelectionSessionCommand.class, false);
         setItemEnabled(CutSelectionSessionCommand.class, false);
         setItemEnabled(PasteSelectionSessionCommand.class, false);
+    }
+
+    protected void setUndoRedoCommandDisabled() {
+        setItemEnabled(UndoSessionCommand.class, false);
+        setItemEnabled(RedoSessionCommand.class, false);
     }
 
     public EditorSessionCommands getCommands() {

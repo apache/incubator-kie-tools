@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
@@ -36,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
@@ -46,25 +49,34 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
+    private final GraphsProvider graphsProvider;
+    private String diagramId;
 
     protected RedoSessionCommand() {
-        this(null, null);
+        this(null, null, null);
     }
 
     @Inject
     public RedoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler) {
+                              final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler,
+                              final GraphsProvider graphsProvider) {
         super(false);
         this.redoCommandHandler = redoCommandHandler;
         this.sessionCommandManager = sessionCommandManager;
+        this.graphsProvider = graphsProvider;
     }
 
     @Override
     public void bind(final EditorSession session) {
-        super.bind(session);
+        superBind(session);
+        diagramId = graphsProvider.getCurrentDiagramId();
         redoCommandHandler.setSession(getSession());
-
         bindCommand();
+        checkState();
+    }
+
+    void superBind(final EditorSession session) {
+        super.bind(session);
     }
 
     protected void bindCommand() {
@@ -94,6 +106,9 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     @Override
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
+        if (!isBindToCurrentDiagram()) {
+            return;
+        }
         checkNotNull("callback",
                      callback);
         if (!redoCommandHandler.isEnabled()) {
@@ -112,6 +127,9 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
     @SuppressWarnings("unchecked")
     void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
+        if (!isBindToCurrentDiagram()) {
+            return;
+        }
         checkNotNull("commandExecutedEvent",
                      commandExecutedEvent);
         if (getSession().getCanvasHandler().equals(commandExecutedEvent.getCanvasHandler())) {
@@ -124,6 +142,9 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
     @SuppressWarnings("unchecked")
     void onCommandUndoExecuted(final @Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
+        if (!isBindToCurrentDiagram()) {
+            return;
+        }
         checkNotNull("commandUndoExecutedEvent",
                      commandUndoExecutedEvent);
         CanvasHandler canvasHandler = commandUndoExecutedEvent.getCanvasHandler();
@@ -140,7 +161,18 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     void checkState() {
+        if (!isBindToCurrentDiagram()) {
+            return;
+        }
         setEnabled(null != getSession() && redoCommandHandler.isEnabled());
         fire();
+    }
+
+    boolean isBindToCurrentDiagram() {
+        return Objects.equals(getDiagramId(), graphsProvider.getCurrentDiagramId());
+    }
+
+    public String getDiagramId() {
+        return diagramId;
     }
 }
