@@ -243,6 +243,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             isOpen={isTypeSelectOpen}
                             placeholder="Type"
                             className="data-type-item__type-select"
+                            menuAppendTo={"parent"}
                           >
                             {typeOptions.map((option, optionIndex) => (
                               <SelectOption
@@ -266,6 +267,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             isOpen={isOptypeSelectOpen}
                             placeholder="Op Type"
                             className="data-type-item__type-select"
+                            menuAppendTo={"parent"}
                           >
                             {optypeOptions.map((option, optionIndex) => (
                               <SelectOption
