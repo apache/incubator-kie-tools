@@ -49,3 +49,11 @@ export const h3ComponentWithText = (text: string): string => {
 export const expandedDocksBarE = (): By => {
     return By.className('expanded-docks-bar-E')
 }
+
+/** Creates a XPATH locator that locates an editor tab element.
+* 
+* @param title title of the tab to match
+*/
+export const tabWithTitle = (title: string): By => {
+    return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id=\'${title}\']/a`);
+}

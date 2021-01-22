@@ -17,6 +17,7 @@
 import { WebView, By, SideBarView } from 'vscode-extension-tester';
 import * as path from 'path';
 import { aComponentWithText } from './helpers/CommonLocators';
+import { EditorTab } from './helpers/EditorTab';
 import { assertWebElementIsDisplayedEnabled } from './helpers/CommonAsserts'
 import VSCodeTestHelper from './helpers/VSCodeTestHelper';
 import BpmnEditorTestHelper from './helpers/BpmnEditorTestHelper';
@@ -29,6 +30,8 @@ describe("Editors are loading properly", () => {
 	const DEMO_BPMN: string = 'demo.bpmn';
     const DEMO_DMN: string = 'demo.dmn';
     const DEMO_SCESIM: string = 'demo.scesim';
+
+    const REUSABLE_DMN: string = 'reusable-model.dmn';
 
     let testHelper: VSCodeTestHelper;
     let webview : WebView;
@@ -80,6 +83,23 @@ describe("Editors are loading properly", () => {
         await dmnEditorTester.openDiagramProperties();
         await dmnEditorTester.openDiagramExplorer();
         await dmnEditorTester.openDecisionNavigator();
+     
+        await webview.switchBack();
+    });
+
+    // kiegroup/appformer#1090
+    // kiegroup/kie-wb-common#3537
+    it.skip('Include reusable-model in DMN Editor', async function () {
+        this.timeout(20000);
+        webview = await testHelper.openFileFromSidebar(DEMO_DMN); 
+        await webview.switchToFrame();
+        const dmnEditorTester = new DmnEditorTestHelper(webview);
+
+        const envelopApp = await webview.findWebElement(By.id('envelope-app'));
+        await assertWebElementIsDisplayedEnabled(envelopApp);
+
+        await dmnEditorTester.switchEditorTab(EditorTab.IncludedModels);
+        await dmnEditorTester.includeModelWithNodes(REUSABLE_DMN, 2);
      
         await webview.switchBack();
     });

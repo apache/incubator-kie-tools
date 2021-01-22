@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import { By, WebElement, WebView } from "vscode-extension-tester";
+import { expect } from "chai";
+import { By, until, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
+import { expandedDocksBarE, h3ComponentWithText, tabWithTitle } from "./CommonLocators";
+import { EditorTab } from "./EditorTab";
+
 
 /**
  * Helper class to easen work with DMN editor inside of a webview.
@@ -30,7 +33,7 @@ export default class DmnEditorTestHelper {
      * Initialize in constructor.
      */
     private webview: WebView;
-    
+
     private decisionNavigator: WebElement;
     private diagramExplorer: WebElement;
     private properties: WebElement;
@@ -67,6 +70,62 @@ export default class DmnEditorTestHelper {
     public getDecisionNavigator = async (): Promise<WebElement> => {
         this.decisionNavigator = await this.webview.findWebElement(By.className('docks-item-E-org.kie.dmn.decision.navigator'));
         return this.decisionNavigator;
+    }
+
+    /**
+     * Switch editor to other Tab
+     * @param editorTab Tab to be swithced on
+     */
+    public switchEditorTab = async (editorTab: EditorTab): Promise<void> => {
+        const tabElement = await this.webview.findWebElement(tabWithTitle(editorTab));
+        await assertWebElementIsDisplayedEnabled(tabElement);
+        await tabElement.click();
+    }
+
+    public includeModelWithNodes = async (modelName: string, nodesCount: number): Promise<void> => {
+        // Invoke Include Model pop-up
+        const includeModelButton = await this.webview.findWebElement(By.xpath("//button[@data-field='include-model']"));
+        await assertWebElementIsDisplayedEnabled(includeModelButton);
+        await includeModelButton.click();
+
+        const modelsDropDown: string = "//div[@data-i18n-prefix='KogitoKieAssetsDropdownView.']";
+
+        // Display list of available models
+        const selectorButton = await this.webview.findWebElement(
+            By.xpath(modelsDropDown + "//button[@data-toggle='dropdown']")
+        );
+        await assertWebElementIsDisplayedEnabled(selectorButton);
+        await selectorButton.click();
+
+        // Select demanded model
+        const modelOption = await this.webview.getDriver().wait(until.elementLocated(
+            By.xpath(modelsDropDown + `/label/div/div/ul/li[contains(., '${modelName}')]`)
+        ), 10000, "Model options were not shown after 10 seconds");
+        await modelOption.click();
+
+        // Provide alias for demanded model
+        const modelAliasInput = await this.webview.findWebElement(
+            By.xpath("//input[@data-field='model-name']")
+        );
+        await assertWebElementIsDisplayedEnabled(modelAliasInput);
+        await modelAliasInput.sendKeys(modelName + "-alias");
+
+        // Confirm include
+        const includeButton = await this.webview.findWebElement(
+            By.xpath("//button[@data-field='include']")
+        );
+        await assertWebElementIsDisplayedEnabled(includeButton);
+        await includeButton.click();
+        
+        // See https://issues.redhat.com/browse/KOGITO-4261
+        
+        // // Wait until card with include details is shown
+        // const includeDetails = await this.webview.getDriver().wait(until.elementLocated(
+        //     By.xpath(`//div[@data-i18n-prefix='DMNCardComponentContentView.' and contains(., '${modelName}')]`)
+        // ), 10000, "Include details was not shown after 10 seconds");
+
+        // const includedNodes = await includeDetails.findElement(By.xpath("//span[@data-field='drg-elements-count']"));
+        // expect(await includedNodes.getText()).to.equal(`${nodesCount}`, "Included model nodes count was not as expected");
     }
 
     /**
