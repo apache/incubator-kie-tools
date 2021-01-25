@@ -19,7 +19,7 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
-import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
@@ -90,9 +90,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       setIsTypeSelectOpen(false);
       const updatedItem: DDDataField = { ...dataType, type: value as DDDataField["type"] };
       if (value === "string" && optypeSelection === "ordinal") {
-        if (updatedItem.constraints?.type !== "Enumeration") {
+        if (updatedItem.constraints?.type !== ConstraintType.ENUMERATION) {
           updatedItem.constraints = {
-            type: "Enumeration",
+            type: ConstraintType.ENUMERATION,
             value: [""]
           };
         }
@@ -111,9 +111,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       setIsOptypeSelectOpen(false);
       const updatedItem: DDDataField = { ...dataType, optype: value as DDDataField["optype"] };
       if ((value === "ordinal" && typeSelection === "string") || (value === "ordinal" && dataType.isCyclic)) {
-        if (updatedItem.constraints?.type !== "Enumeration") {
+        if (updatedItem.constraints?.type !== ConstraintType.ENUMERATION) {
           updatedItem.constraints = {
-            type: "Enumeration",
+            type: ConstraintType.ENUMERATION,
             value: [""]
           };
         }

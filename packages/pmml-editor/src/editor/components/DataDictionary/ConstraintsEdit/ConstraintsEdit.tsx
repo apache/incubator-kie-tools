@@ -16,12 +16,12 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Card, CardBody, CardTitle, FormGroup, Select, SelectOption, SelectVariant } from "@patternfly/react-core";
-
-import { DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { Card, CardBody, FormGroup, Select, SelectOption, SelectVariant, Tooltip } from "@patternfly/react-core";
+import { HelpIcon } from "@patternfly/react-icons";
+import { ConstraintType, DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
-import { Validated } from "../../../types";
+import "./ConstraintsEdit.scss";
 
 interface ConstraintsEditProps {
   dataType: DDDataField;
@@ -33,30 +33,15 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const { dataType, dataFieldIndex, onSave } = props;
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
   const [typeSelectIsOpen, setTypeSelectIsOpen] = useState(false);
-  const constraintsTypes = [
-    { value: "", label: "Select a type" },
-    { value: "Range", label: "Interval" },
-    { value: "Enumeration", label: "Value" }
-  ];
+  const { typeOptions, enabledTypeOptionsCount } = useMemo(() => getConstraintsTypeOptions(dataType), [dataType]);
+  const typeDescription = useMemo(() => getConstraintsTypeDescription(dataType), [dataType]);
+
   const [ranges, setRanges] = useState<RangeConstraint[] | undefined>(
-    dataType.constraints?.type === "Range" ? dataType.constraints.value : undefined
+    dataType.constraints?.type === ConstraintType.RANGE ? dataType.constraints.value : undefined
   );
   const [enums, setEnums] = useState(
-    dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : undefined
+    dataType.constraints?.type === ConstraintType.ENUMERATION ? dataType.constraints.value : undefined
   );
-
-  const isConstraintOptionDisabled = (option: string) => {
-    if ((option === "" || option === "Range") && dataType.type === "string" && dataType.optype === "ordinal") {
-      return true;
-    }
-    if (option === "Range" && dataType.optype !== "continuous") {
-      return true;
-    }
-    if (option === "" && dataType.isCyclic) {
-      return true;
-    }
-    return false;
-  };
 
   const rangeConstraintLimit = useMemo(() => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined), [
     dataType
@@ -65,10 +50,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {
       setConstraintType(value);
-      if (value === "Range") {
+      if (value === ConstraintType.RANGE) {
         onSave({
           constraints: {
-            type: "Range",
+            type: ConstraintType.RANGE,
             value: [
               {
                 start: {
@@ -84,10 +69,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           }
         });
       }
-      if (value === "Enumeration") {
+      if (value === ConstraintType.ENUMERATION) {
         onSave({
           constraints: {
-            type: "Enumeration",
+            type: ConstraintType.ENUMERATION,
             value: [""]
           }
         });
@@ -108,7 +93,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const handleRangeSave = (updatedRanges: RangeConstraint[]) => {
     onSave({
       constraints: {
-        type: "Range",
+        type: ConstraintType.RANGE,
         value: updatedRanges
       }
     });
@@ -128,7 +113,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     });
     onSave({
       constraints: {
-        type: "Range",
+        type: ConstraintType.RANGE,
         value: updatedRanges
       }
     });
@@ -139,7 +124,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     updatedRanges.splice(index, 1);
     onSave({
       constraints: {
-        type: "Range",
+        type: ConstraintType.RANGE,
         value: updatedRanges
       }
     });
@@ -150,7 +135,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     updatedEnums[index] = value;
     onSave({
       constraints: {
-        type: "Enumeration",
+        type: ConstraintType.ENUMERATION,
         value: updatedEnums
       }
     });
@@ -161,7 +146,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     updatedEnums.splice(index, 1);
     onSave({
       constraints: {
-        type: "Enumeration",
+        type: ConstraintType.ENUMERATION,
         value: updatedEnums
       }
     });
@@ -171,7 +156,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     const updatedEnums = [...enums, ""];
     onSave({
       constraints: {
-        type: "Enumeration",
+        type: ConstraintType.ENUMERATION,
         value: updatedEnums
       }
     });
@@ -182,7 +167,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       const updatedEnums = reorderArray(enums, oldIndex, newIndex);
       onSave({
         constraints: {
-          type: "Enumeration",
+          type: ConstraintType.ENUMERATION,
           value: updatedEnums
         }
       });
@@ -191,10 +176,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
 
   useEffect(() => {
     setConstraintType(dataType.constraints?.type ?? "");
-    if (dataType.constraints?.type === "Range") {
+    if (dataType.constraints?.type === ConstraintType.RANGE) {
       setRanges(dataType.constraints.value);
     }
-    if (dataType.constraints?.type === "Enumeration") {
+    if (dataType.constraints?.type === ConstraintType.ENUMERATION) {
       setEnums(dataType.constraints.value);
     }
   }, [dataType.constraints]);
@@ -204,7 +189,25 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       <FormGroup
         fieldId="constraints-type"
         label="Constraints Type"
-        helperText="Select the type of constraint and then fill in the required fields."
+        helperText={
+          enabledTypeOptionsCount > 1 ? "Select the type of constraint and then fill in the required fields." : ""
+        }
+        labelIcon={
+          typeDescription.length > 0 ? (
+            <Tooltip content={typeDescription}>
+              <button
+                aria-label="More info for Constraints Type"
+                onClick={e => e.preventDefault()}
+                aria-describedby="constraints-type"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              </button>
+            </Tooltip>
+          ) : (
+            <></>
+          )
+        }
       >
         {/*PF 2020.08 has a bug setting width of a Select*/}
         <div style={{ width: 300 }}>
@@ -217,18 +220,18 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
             selections={constraintType}
             isOpen={typeSelectIsOpen}
             placeholderText={"Select a type"}
+            isDisabled={enabledTypeOptionsCount === 1}
           >
-            {constraintsTypes.map((item, index) => (
-              <SelectOption key={index} value={item.value} isDisabled={isConstraintOptionDisabled(item.value)}>
+            {typeOptions.map((item, index) => (
+              <SelectOption key={index} value={item.value} isDisabled={item.disabled}>
                 {item.label}
               </SelectOption>
             ))}
           </Select>
         </div>
       </FormGroup>
-      {constraintType === "Range" && ranges !== undefined && (
+      {constraintType === ConstraintType.RANGE && ranges !== undefined && (
         <Card isCompact={true} style={{ margin: "1em 0" }}>
-          <CardTitle>Interval Constraint</CardTitle>
           <CardBody>
             <ConstraintsRangeEdit
               dataFieldIndex={dataFieldIndex}
@@ -241,9 +244,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           </CardBody>
         </Card>
       )}
-      {constraintType === "Enumeration" && enums !== undefined && (
+      {constraintType === ConstraintType.ENUMERATION && enums !== undefined && (
         <Card isCompact={true} style={{ margin: "1em 0" }}>
-          <CardTitle>Values Constraint</CardTitle>
           <CardBody>
             <ConstraintsEnumEdit
               dataFieldIndex={dataFieldIndex}
@@ -262,15 +264,46 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
 
 export default ConstraintsEdit;
 
-export interface FormValidation {
-  form: Validated;
-  fields: { [key: string]: Validated };
-}
-
 const reorderArray = <T extends unknown>(list: T[], startIndex: number, endIndex: number) => {
   const result = [...list];
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
 
   return result;
+};
+
+const getConstraintsTypeOptions = (dataType: DDDataField) => {
+  const typeOptions = [
+    { value: ConstraintType.NONE, label: "Select a type", disabled: false },
+    { value: ConstraintType.RANGE, label: "Interval", disabled: false },
+    { value: ConstraintType.ENUMERATION, label: "Value", disabled: false }
+  ];
+  if (dataType.type === "string" && dataType.optype === "ordinal") {
+    typeOptions[0].disabled = true;
+    typeOptions[1].disabled = true;
+  }
+  if (dataType.optype !== "continuous") {
+    typeOptions[1].disabled = true;
+  }
+  if (dataType.isCyclic) {
+    typeOptions[0].disabled = true;
+  }
+  const enabledTypeOptionsCount = typeOptions.filter(option => !option.disabled).length;
+  return { typeOptions, enabledTypeOptionsCount };
+};
+
+const getConstraintsTypeDescription = (dataType: DDDataField) => {
+  if (dataType.optype === "ordinal" && dataType.isCyclic) {
+    return "Cyclic ordinal data types must have Value constraints";
+  }
+  if (dataType.optype === "continuous" && dataType.isCyclic) {
+    return "Cyclic continuous data types must have constraints";
+  }
+  if (dataType.type === "string" && dataType.optype === "ordinal") {
+    return "Ordinal strings must have Value constraints";
+  }
+  if (dataType.optype !== "continuous") {
+    return "Only continuous data types can have Interval constraints";
+  }
+  return "";
 };

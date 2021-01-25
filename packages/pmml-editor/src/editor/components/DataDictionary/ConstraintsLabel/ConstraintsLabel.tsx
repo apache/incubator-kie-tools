@@ -2,7 +2,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Label } from "@patternfly/react-core";
 import { every } from "lodash";
-import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { useValidationService } from "../../../validation";
 import "./ConstraintsLabel.scss";
@@ -32,7 +32,7 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
   const constraintValue = useMemo(() => {
     if (dataType.constraints) {
       switch (dataType.constraints.type) {
-        case "Range":
+        case ConstraintType.RANGE:
           return dataType.constraints.value
             .map(range => {
               return (
@@ -44,7 +44,7 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
             })
             .join(" ");
 
-        case "Enumeration":
+        case ConstraintType.ENUMERATION:
           if (every(dataType.constraints.value, value => value === "")) {
             return <em>No values</em>;
           }

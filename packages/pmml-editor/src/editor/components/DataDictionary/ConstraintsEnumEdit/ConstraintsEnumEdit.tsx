@@ -70,7 +70,7 @@ const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
         <Stack hasGutter={true}>
           <StackItem>
             <TextContent>
-              <Text component={TextVariants.p}>
+              <Text component={TextVariants.small}>
                 Add constraints values to limit and define valid inputs for the data type.
               </Text>
             </TextContent>

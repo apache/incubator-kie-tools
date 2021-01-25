@@ -1,5 +1,5 @@
 import { Closure, DataDictionary, DataField, FieldName, Interval } from "@kogito-tooling/pmml-editor-marshaller";
-import { DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
+import { ConstraintType, DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
 
 export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DDDataField[] => {
   if (PMMLDataDictionary === undefined) {
@@ -38,7 +38,7 @@ export const convertToDataField = (item: DDDataField): DataField => {
   }
 
   if (item.constraints) {
-    if (item.constraints.type === "Range" && item.constraints.value.length > 0) {
+    if (item.constraints.type === ConstraintType.RANGE && item.constraints.value.length > 0) {
       convertedField.Interval = item.constraints.value.map(range => {
         const interval: Interval = {
           closure: `${range?.start?.included ? "closed" : "open"}${range?.end?.included ? "Closed" : "Open"}` as Closure
@@ -52,7 +52,7 @@ export const convertToDataField = (item: DDDataField): DataField => {
         return interval;
       });
     }
-    if (item.constraints.type === "Enumeration" && item.constraints.value.length > 0) {
+    if (item.constraints.type === ConstraintType.ENUMERATION && item.constraints.value.length > 0) {
       convertedField.Value = (convertedField.Value || []).concat(
         item.constraints.value.map(value => {
           return { value };
@@ -100,7 +100,7 @@ export const convertFromDataField = (item: DataField) => {
       // valid values correspond to the enumeration constraint
       if (value.property === "valid" || value.property === undefined) {
         convertedField.constraints = convertedField.constraints || {
-          type: "Enumeration",
+          type: ConstraintType.ENUMERATION,
           value: []
         };
         convertedField.constraints.value.push(value.value);
@@ -109,7 +109,7 @@ export const convertFromDataField = (item: DataField) => {
   }
   if (item.Interval && item.Interval.length > 0) {
     convertedField.constraints = {
-      type: "Range",
+      type: ConstraintType.RANGE,
       value: item.Interval.map(interval => {
         /* A note about the included value and how it's calculated.
         PMML presents a single property to handle the inclusion of both interval limits called Closure.

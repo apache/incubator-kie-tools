@@ -32,7 +32,7 @@ import {
   Tooltip
 } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
-import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
 
@@ -63,9 +63,9 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
       isCyclic: value
     };
     if (value === true) {
-      if (dataType.optype === "ordinal" && dataType.constraints?.type !== "Enumeration") {
+      if (dataType.optype === "ordinal" && dataType.constraints?.type !== ConstraintType.ENUMERATION) {
         updatedDataType.constraints = {
-          type: "Enumeration",
+          type: ConstraintType.ENUMERATION,
           value: [""]
         };
       }
@@ -82,7 +82,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
     if (
       dataType.isCyclic &&
       dataType.optype === "continuous" &&
-      dataType.constraints?.type === "Range" &&
+      dataType.constraints?.type === ConstraintType.RANGE &&
       dataType.constraints.value?.length > 1
     ) {
       return "Cyclic continuous data types can only have a single interval constraint";

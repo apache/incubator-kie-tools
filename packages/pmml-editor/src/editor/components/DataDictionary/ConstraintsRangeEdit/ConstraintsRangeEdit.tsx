@@ -68,7 +68,9 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
     <Stack hasGutter={true}>
       <StackItem>
         <TextContent>
-          <Text component={TextVariants.p}>At least one between Start Value and End Value is required.</Text>
+          <Text component={TextVariants.small}>
+            At least one between Start Value and End Value is required for each interval.
+          </Text>
         </TextContent>
       </StackItem>
       <StackItem>
@@ -91,6 +93,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
           variant="secondary"
           onClick={addRange}
           isDisabled={countLimit !== undefined && ranges.length >= countLimit}
+          isSmall={true}
         >
           Add another interval
         </Button>

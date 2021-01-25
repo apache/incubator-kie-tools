@@ -273,10 +273,10 @@ type dataDictionarySection = "main" | "batch-add" | "properties";
 
 export type Constraints =
   | {
-      type: "Range";
+      type: ConstraintType.RANGE;
       value: RangeConstraint[];
     }
-  | { type: "Enumeration"; value: string[] };
+  | { type: ConstraintType.ENUMERATION; value: string[] };
 
 export interface RangeConstraint {
   start: {
@@ -287,4 +287,10 @@ export interface RangeConstraint {
     value: string;
     included: boolean;
   };
+}
+
+export enum ConstraintType {
+  RANGE = "Range",
+  ENUMERATION = "Enumeration",
+  NONE = ""
 }
