@@ -169,7 +169,7 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
   const enumRef = useRef<HTMLLIElement | null>(null);
   useEffect(() => {
     if (enumRef.current && addedEnum === position) {
-      const container = document.querySelector(".data-dictionary__properties-edit__form");
+      const container = document.querySelector(".data-dictionary__properties-edit__form .constraints__form");
       container?.scroll({ top: container?.scrollHeight, behavior: "smooth" });
       updateAddedEnum(undefined);
     }
@@ -200,6 +200,7 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
             onChange={handleChange}
             onBlur={handleSave}
             onKeyDown={handleTabNavigation}
+            autoComplete="off"
           />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>

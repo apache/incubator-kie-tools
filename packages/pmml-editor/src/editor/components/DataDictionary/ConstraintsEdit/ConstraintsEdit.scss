@@ -1,6 +1,5 @@
 .constraints {
   &__form {
-    height: calc(60vh - 90px);
     overflow-y: auto;
     background-color: var(--pf-global--BackgroundColor--200);
     // overriding disabled select background color because it doesn't play nice with --pf-global--BackgroundColor--200

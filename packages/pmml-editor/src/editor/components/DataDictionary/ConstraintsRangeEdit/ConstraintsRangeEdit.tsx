@@ -162,7 +162,7 @@ const RangeEdit = (props: RangeEditProps) => {
 
   useEffect(() => {
     if (rangeRef.current && addedRange === index) {
-      const container = document.querySelector(".data-dictionary__properties-edit__form");
+      const container = document.querySelector(".data-dictionary__properties-edit__form .constraints__form");
       container?.scroll({ top: container?.scrollHeight, behavior: "smooth" });
       updateAddedRange(undefined);
     }
@@ -191,6 +191,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
+              autoComplete="off"
             />
           </FormGroup>
           <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
@@ -221,6 +222,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}
+              autoComplete="off"
             />
           </FormGroup>
           <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">
