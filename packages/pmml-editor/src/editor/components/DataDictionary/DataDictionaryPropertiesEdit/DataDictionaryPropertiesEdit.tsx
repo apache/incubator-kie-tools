@@ -137,9 +137,8 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       dataType.optype === "categorical" ? (
                         <Tooltip content={"Categorical fields cannot be cyclic"}>
                           <button
-                            aria-label="More info for name field"
+                            aria-label="More info for Cyclic Type"
                             onClick={e => e.preventDefault()}
-                            aria-describedby="simple-form-name"
                             className="pf-c-form__group-label-help"
                           >
                             <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
