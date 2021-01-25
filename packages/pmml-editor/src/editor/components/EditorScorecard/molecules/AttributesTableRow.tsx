@@ -14,27 +14,52 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Label, Split, SplitItem } from "@patternfly/react-core";
-import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { useMemo } from "react";
+import { Flex, FlexItem, Label, Split, SplitItem } from "@patternfly/react-core";
+import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
-import { toText } from "../../../reducers";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicator } from "../../EditorCore/atoms";
+import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
-  index: number;
+  modelIndex: number;
+  characteristicIndex: number;
+  attributeIndex: number;
   attribute: Attribute;
   areReasonCodesUsed: boolean;
   dataFields: DataField[];
+  miningFields: MiningField[];
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
-  const { index, attribute, areReasonCodesUsed, dataFields, onEdit, onDelete } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    attributeIndex,
+    attribute,
+    areReasonCodesUsed,
+    dataFields,
+    miningFields,
+    onEdit,
+    onDelete
+  } = props;
+
+  const { service } = useValidationService();
+  const validations = useMemo(
+    () =>
+      service.get(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate`
+      ),
+    [modelIndex, characteristicIndex, attributeIndex, attribute, miningFields]
+  );
 
   return (
     <article
-      className={`attribute-item attribute-item-n${index} editable`}
+      className={`attribute-item attribute-item-n${attributeIndex} editable`}
       tabIndex={0}
       onClick={() => onEdit()}
       onKeyDown={e => {
@@ -46,6 +71,19 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
       }}
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
+        {validations.length > 0 && (
+          <SplitItem>
+            <Flex
+              alignItems={{ default: "alignItemsCenter" }}
+              justifyContent={{ default: "justifyContentCenter" }}
+              style={{ height: "100%" }}
+            >
+              <FlexItem>
+                <ValidationIndicator validations={validations} />
+              </FlexItem>
+            </Flex>
+          </SplitItem>
+        )}
         <SplitItem>
           <Label tabIndex={0} color="blue">
             <pre>{toText(attribute.predicate, dataFields)}</pre>

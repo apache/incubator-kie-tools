@@ -19,13 +19,13 @@ import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "
 import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
-import { toText } from "../../../reducers";
 import { PredicateEditor } from "./PredicateEditor";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 import { isEqual } from "lodash";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { useOperation } from "../OperationContext";
+import { toText } from "../organisms";
 import set = Reflect.set;
 import get = Reflect.get;
 

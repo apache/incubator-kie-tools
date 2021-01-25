@@ -28,7 +28,7 @@ interface MiningSchemaPayload {
   [Actions.DeleteMiningSchemaField]: {
     readonly modelIndex: number;
     readonly miningSchemaIndex: number;
-    readonly name: string;
+    readonly name: FieldName | undefined;
   };
 }
 
@@ -56,7 +56,6 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
             draft.MiningField.splice(miningSchemaIndex, 1);
           }
-          validation.clear(`models[${action.payload.modelIndex}].MiningSchema`);
           validateMiningFields(action.payload.modelIndex, draft.MiningField, validation);
         });
     }

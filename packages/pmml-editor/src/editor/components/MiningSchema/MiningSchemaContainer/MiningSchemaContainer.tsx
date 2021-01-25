@@ -9,7 +9,7 @@ import MiningSchemaAddFields from "../MiningSchemaAddFields/MiningSchemaAddField
 import MiningSchemaPropertiesEdit from "../MiningSchemaPropertiesEdit/MiningSchemaPropertiesEdit";
 import "./MiningSchemaContainer.scss";
 
-import { DataDictionary, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
 import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 import { useValidationService } from "../../../validation";
 
@@ -18,8 +18,8 @@ interface MiningSchemaContainerProps {
   dataDictionary?: DataDictionary;
   miningSchema?: MiningSchema;
   onAddField: (name: string[]) => void;
-  onDeleteField: (index: number, name: string) => void;
-  onUpdateField: (index: number, field: MiningField) => void;
+  onDeleteField: (index: number) => void;
+  onUpdateField: (index: number, originalName: FieldName | undefined, field: MiningField) => void;
 }
 
 const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
@@ -35,8 +35,8 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     }
   };
 
-  const handleDeleteField = (index: number, name: string) => {
-    onDeleteField(index, name);
+  const handleDeleteField = (index: number) => {
+    onDeleteField(index);
   };
 
   const handleEditField = (index: number) => {
@@ -58,7 +58,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
         pickBy(miningSchema?.MiningField[editingField], value => value !== undefined)
       )
     ) {
-      onUpdateField(editingField, field);
+      onUpdateField(editingField, miningSchema?.MiningField[editingField].name, field);
     }
   };
 
@@ -67,7 +67,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   };
 
   const handlePropertyDelete = (index: number, updatedField: MiningField) => {
-    onUpdateField(index, updatedField);
+    onUpdateField(index, miningSchema?.MiningField[editingField].name, updatedField);
   };
 
   const getTransition = (currentState: MiningSchemaSection) => {

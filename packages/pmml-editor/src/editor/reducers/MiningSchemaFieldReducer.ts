@@ -39,6 +39,7 @@ interface MiningSchemaFieldPayload {
     readonly modelIndex: number;
     readonly miningSchemaIndex: number;
     readonly name: FieldName;
+    readonly originalName: FieldName | undefined;
     readonly usageType: UsageType | undefined;
     readonly optype: OpType | undefined;
     readonly importance: number | undefined;
@@ -137,7 +138,6 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
-          validation.clear(`models[${modelIndex}].MiningSchema`);
           validateMiningFields(modelIndex, state, validation);
         }
     }

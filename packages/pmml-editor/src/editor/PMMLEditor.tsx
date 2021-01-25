@@ -74,7 +74,7 @@ export class PMMLEditor extends React.Component<Props, State> {
 
     enableAllPlugins();
 
-    this.reducer = mergeReducers(PMMLReducer(this.history), {
+    this.reducer = mergeReducers(PMMLReducer(this.history, this.validation), {
       Header: HeaderReducer(this.history),
       DataDictionary: mergeReducers(DataDictionaryReducer(this.history, this.validation), {
         DataField: DataDictionaryFieldReducer(this.history, this.validation)

@@ -15,7 +15,19 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  BaselineMethod,
+  CompoundPredicate,
+  False,
+  FieldName,
+  MiningFunction,
+  Predicate,
+  ReasonCodeAlgorithm,
+  Scorecard,
+  SimplePredicate,
+  SimpleSetPredicate,
+  True
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
@@ -23,6 +35,7 @@ import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
 import { isOutputsTargetFieldRequired, validateOutput, validateOutputs } from "../validation/Outputs";
 import { ValidationEntry, ValidationLevel, ValidationService } from "../validation";
+import { validateCharacteristics } from "../validation/Characteristics";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -56,6 +69,55 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 ): Reducer<Scorecard, AllActions> => {
   return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
+      case Actions.Scorecard_UpdateAttribute:
+        service.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
+          validation.clear(`models[${action.payload.modelIndex}].Characteristics`);
+          validateCharacteristics(
+            action.payload.modelIndex,
+            state.Characteristics.Characteristic.map((characteristic, characteristicIndex) => {
+              if (characteristicIndex === action.payload.characteristicIndex) {
+                const attributes = characteristic.Attribute.map((attribute, attributeIndex) => {
+                  if (attributeIndex === action.payload.attributeIndex) {
+                    return {
+                      ...attribute,
+                      predicate: action.payload.predicate
+                    };
+                  }
+                  return attribute;
+                });
+                return {
+                  ...characteristic,
+                  Attribute: attributes
+                };
+              }
+              return characteristic;
+            }),
+            state.MiningSchema.MiningField,
+            validation
+          );
+        });
+        break;
+
+      case Actions.UpdateDataDictionaryField:
+        if (action.payload.modelIndex !== undefined) {
+          const modelIndex = action.payload.modelIndex;
+          state.Characteristics.Characteristic.forEach((characteristic, characteristicIndex) => {
+            characteristic.Attribute.forEach((attribute, attributeIndex) => {
+              updatePredicateFieldName(
+                modelIndex,
+                characteristicIndex,
+                attributeIndex,
+                attribute.predicate,
+                action.payload.dataField.name,
+                action.payload.originalName,
+                service
+              );
+            });
+          });
+        }
+
+        break;
+
       case Actions.Scorecard_SetModelName:
         service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
           draft.modelName = action.payload.modelName;
@@ -76,6 +138,14 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         break;
 
       case Actions.DeleteMiningSchemaField:
+        validation.clear(`models[${action.payload.modelIndex}].Characteristics`);
+        validateCharacteristics(
+          action.payload.modelIndex,
+          state.Characteristics.Characteristic,
+          state.MiningSchema.MiningField.filter(mf => mf.name !== action.payload.name),
+          validation
+        );
+
         if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
           validation.clear(`models[${action.payload.modelIndex}].Output`);
           state.Output.OutputField.forEach((outputField, outputFieldIndex) => {
@@ -218,10 +288,18 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
-          validation.clear(`models[${action.payload.modelIndex}].Output`);
+          const modelIndex = action.payload.modelIndex;
+          validation.clear(`models[${modelIndex}].Output`);
           validateOutputs(
             action.payload.modelIndex,
             state.Output?.OutputField ?? [],
+            state.MiningSchema.MiningField,
+            validation
+          );
+          validation.clear(`models[${modelIndex}].Characteristics`);
+          validateCharacteristics(
+            modelIndex,
+            state.Characteristics.Characteristic,
             state.MiningSchema.MiningField,
             validation
           );
@@ -231,4 +309,49 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 
     return state;
   };
+};
+
+const updatePredicateFieldName = (
+  modelIndex: number,
+  characteristicIndex: number,
+  attributeIndex: number,
+  predicate: Predicate | undefined,
+  name: FieldName,
+  originalName: FieldName | undefined,
+  service: HistoryService
+) => {
+  if (predicate === undefined) {
+    return;
+  } else if (predicate instanceof True) {
+    return;
+  } else if (predicate instanceof False) {
+    return;
+  } else if (predicate instanceof SimpleSetPredicate) {
+    const ssp: SimpleSetPredicate = predicate as SimpleSetPredicate;
+    if (originalName === ssp.field) {
+      service.batch(
+        ssp,
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].predicate`,
+        draft => {
+          draft.field = name;
+        }
+      );
+    }
+  } else if (predicate instanceof SimplePredicate) {
+    const sp: SimplePredicate = predicate as SimplePredicate;
+    if (originalName === sp.field) {
+      service.batch(
+        sp,
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].predicate`,
+        draft => {
+          draft.field = name;
+        }
+      );
+    }
+  } else if (predicate instanceof CompoundPredicate) {
+    const cp: CompoundPredicate = predicate as CompoundPredicate;
+    cp.predicates?.forEach(p =>
+      updatePredicateFieldName(modelIndex, characteristicIndex, attributeIndex, p, name, originalName, service)
+    );
+  }
 };

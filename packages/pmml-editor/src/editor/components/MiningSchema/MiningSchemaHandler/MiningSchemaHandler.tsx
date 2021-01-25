@@ -12,7 +12,7 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
-import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, FieldName, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 import { useBatchDispatch, useHistoryService } from "../../../history";
@@ -42,24 +42,27 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
     });
   };
 
-  const deleteMiningField = (index: number, name: string) => {
-    dispatch({
-      type: Actions.DeleteMiningSchemaField,
-      payload: {
-        modelIndex: modelIndex,
-        miningSchemaIndex: index,
-        name
-      }
-    });
+  const deleteMiningField = (index: number) => {
+    if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
+      dispatch({
+        type: Actions.DeleteMiningSchemaField,
+        payload: {
+          modelIndex: modelIndex,
+          miningSchemaIndex: index,
+          name: miningSchema?.MiningField[index].name
+        }
+      });
+    }
   };
 
-  const updateField = (index: number, field: MiningField) => {
+  const updateField = (index: number, originalName: FieldName | undefined, field: MiningField) => {
     dispatch({
       type: Actions.UpdateMiningSchemaField,
       payload: {
         modelIndex: modelIndex,
         miningSchemaIndex: index,
-        ...field
+        ...field,
+        originalName
       }
     });
   };

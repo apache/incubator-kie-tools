@@ -64,6 +64,7 @@ describe("MiningSchemaFieldReducer::Valid actions", () => {
         modelIndex: 0,
         miningSchemaIndex: 0,
         name: "updated" as FieldName,
+        originalName: "field1" as FieldName,
         usageType: "active",
         optype: "ordinal",
         importance: 5,

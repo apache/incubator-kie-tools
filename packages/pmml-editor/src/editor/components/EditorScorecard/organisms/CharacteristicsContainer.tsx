@@ -33,6 +33,7 @@ import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
+import { fromText } from "./PredicateConverter";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -134,7 +135,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       payload: {
         modelIndex: modelIndex,
         characteristicIndex: selectedCharacteristicIndex,
-        text: "True",
+        predicate: fromText("True"),
         partialScore: undefined,
         reasonCode: undefined
       }
@@ -238,7 +239,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                             payload: {
                               modelIndex: modelIndex,
                               characteristicIndex: selectedCharacteristicIndex,
-                              text: _content.text,
+                              predicate: fromText(_content.text),
                               partialScore: _content.partialScore,
                               reasonCode: _content.reasonCode
                             }
@@ -250,7 +251,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                               modelIndex: modelIndex,
                               characteristicIndex: selectedCharacteristicIndex,
                               attributeIndex: selectedAttributeIndex,
-                              text: _content.text,
+                              predicate: fromText(_content.text),
                               partialScore: _content.partialScore,
                               reasonCode: _content.reasonCode
                             }

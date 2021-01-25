@@ -225,7 +225,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
               </SplitItem>
             )}
             <SplitItem>
-              <Button id="add-attribute-button" variant="primary" onClick={e => onAddAttribute()}>
+              <Button id="add-attribute-button" variant="primary" onClick={onAddAttribute}>
                 Add Attribute
               </Button>
             </SplitItem>
@@ -235,11 +235,13 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
           <StackItem>
             <FormGroup label="Attributes" fieldId="output-labels-helper">
               <AttributesTable
+                modelIndex={modelIndex}
+                characteristicIndex={characteristicIndex}
                 attributes={attributes}
                 areReasonCodesUsed={areReasonCodesUsed}
                 viewAttribute={viewAttribute}
                 deleteAttribute={attributeIndex => {
-                  if (window.confirm(`Delete Attribute "${attributeIndex}"?`)) {
+                  if (window.confirm(`Delete Attribute?`)) {
                     dispatch({
                       type: Actions.Scorecard_DeleteAttribute,
                       payload: {

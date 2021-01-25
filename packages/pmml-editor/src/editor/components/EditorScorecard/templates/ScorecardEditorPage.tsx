@@ -100,7 +100,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               output={output}
               validateOutputFieldName={validateOutputName}
               deleteOutputField={_index => {
-                if (window.confirm(`Delete Output "${_index}"?`)) {
+                if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
                   dispatch({
                     type: Actions.DeleteOutput,
                     payload: {
@@ -183,7 +183,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                 filter={filter}
                 onFilter={setFilter}
                 deleteCharacteristic={index => {
-                  if (window.confirm(`Delete Characteristic "${index}"?`)) {
+                  if (window.confirm(`Delete Characteristic "${characteristics?.Characteristic[index].name}"?`)) {
                     dispatch({
                       type: Actions.Scorecard_DeleteCharacteristic,
                       payload: {

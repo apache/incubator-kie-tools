@@ -46,7 +46,7 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
     }),
     Output: mergeReducers(OutputReducer(history), { OutputField: OutputFieldReducer(history) }),
     Characteristics: mergeReducers(CharacteristicsReducer(history), {
-      Characteristic: CharacteristicReducer(history)
+      Characteristic: CharacteristicReducer(history, validation)
     })
   });
 

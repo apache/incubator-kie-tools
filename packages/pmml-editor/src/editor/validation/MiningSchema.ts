@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 import {
+  DataField,
+  FieldName,
   InvalidValueTreatmentMethod,
   MiningField,
   MissingValueTreatmentMethod,
@@ -22,6 +24,16 @@ import {
 import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
+
+export const validateMiningFields = (
+  modelIndex: number,
+  miningFields: MiningField[],
+  validation: ValidationService
+): void => {
+  miningFields.forEach((miningField, miningFieldIndex) =>
+    validateMiningField(modelIndex, miningFieldIndex, miningField, validation)
+  );
+};
 
 export const validateMiningField = (
   modelIndex: number,
@@ -103,14 +115,31 @@ export const validateMiningField = (
   }
 };
 
-export const validateMiningFields = (
+export const validateMiningFieldsDataFieldReference = (
   modelIndex: number,
+  dataFields: DataField[],
   miningFields: MiningField[],
   validation: ValidationService
 ): void => {
+  const dataFieldNames = dataFields.map(dataField => dataField.name);
   miningFields.forEach((miningField, miningFieldIndex) =>
-    validateMiningField(modelIndex, miningFieldIndex, miningField, validation)
+    validateMiningFieldDataFieldReference(modelIndex, dataFieldNames, miningFieldIndex, miningField, validation)
   );
+};
+
+const validateMiningFieldDataFieldReference = (
+  modelIndex: number,
+  dataFieldNames: FieldName[],
+  miningFieldIndex: number,
+  miningField: MiningField,
+  validation: ValidationService
+): void => {
+  if (dataFieldNames.filter(dataFieldName => dataFieldName === miningField.name).length === 0) {
+    validation.set(
+      `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].dataFieldMissing`,
+      new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" cannot be not found in the Data Dictionary.`)
+    );
+  }
 };
 
 export const areLowHighValuesRequired = (outliers: OutlierTreatmentMethod | string | undefined) =>

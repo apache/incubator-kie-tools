@@ -56,12 +56,14 @@ const DataDictionaryHandler = () => {
   };
 
   const deleteField = (index: number) => {
-    dispatch({
-      type: Actions.DeleteDataDictionaryField,
-      payload: {
-        index
-      }
-    });
+    if (window.confirm(`Delete Output "${dictionary[index].name}"?`)) {
+      dispatch({
+        type: Actions.DeleteDataDictionaryField,
+        payload: {
+          index
+        }
+      });
+    }
   };
 
   const reorderFields = (oldIndex: number, newIndex: number) => {
