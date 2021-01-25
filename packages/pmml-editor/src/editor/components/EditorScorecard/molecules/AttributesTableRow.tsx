@@ -15,13 +15,14 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Label, Split, SplitItem } from "@patternfly/react-core";
+import { Flex, FlexItem, Label, Split, SplitItem } from "@patternfly/react-core";
 import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
@@ -78,6 +79,19 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
       }}
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
+        {validations.length > 0 && (
+          <SplitItem>
+            <Flex
+              alignItems={{ default: "alignItemsCenter" }}
+              justifyContent={{ default: "justifyContentCenter" }}
+              style={{ height: "100%" }}
+            >
+              <FlexItem>
+                <ValidationIndicator validations={validations} />
+              </FlexItem>
+            </Flex>
+          </SplitItem>
+        )}
         <SplitItem>
           <>
             {validations.length > 0 && (
