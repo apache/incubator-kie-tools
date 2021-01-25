@@ -31,6 +31,7 @@ import * as nodePath from "path";
 import { KogitoEditor } from "./KogitoEditor";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
+import * as nodePath from "path";
 
 export class KogitoEditableDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
