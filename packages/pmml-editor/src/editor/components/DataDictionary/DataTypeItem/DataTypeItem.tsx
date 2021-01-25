@@ -292,7 +292,8 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         />
                         <ConstraintsLabel
                           dataType={dataType}
-                          editingIndex={editingIndex}
+                          dataTypeIndex={index}
+                          editMode={true}
                           onConstraintsDelete={handleConstraintsDelete}
                         />
                         <Label
@@ -354,7 +355,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                 {optypeSelection}
               </Label>{" "}
               <PropertiesLabels dataType={dataType} />
-              <ConstraintsLabel dataType={dataType} />
+              <ConstraintsLabel dataType={dataType} dataTypeIndex={index} />
             </SplitItem>
             <SplitItem>
               <Button variant="plain" onClick={handleDelete}>

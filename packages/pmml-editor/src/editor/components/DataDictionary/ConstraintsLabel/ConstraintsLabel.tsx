@@ -9,21 +9,22 @@ import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {
   dataType: DDDataField;
-  editingIndex?: number;
+  dataTypeIndex: number;
+  editMode?: boolean;
   onConstraintsDelete?: () => void;
 }
 
 const ConstraintsLabel = (props: ConstraintsLabelProps) => {
-  const { dataType, editingIndex, onConstraintsDelete } = props;
+  const { dataType, dataTypeIndex, editMode = false, onConstraintsDelete } = props;
 
   const onClose = useMemo(() => {
-    if (editingIndex !== undefined && !areConstraintsRequired(dataType)) {
+    if (editMode && !areConstraintsRequired(dataType)) {
       return (event: React.MouseEvent) => {
         event.nativeEvent.stopImmediatePropagation();
         onConstraintsDelete?.();
       };
     }
-  }, [editingIndex, dataType]);
+  }, [dataTypeIndex, dataType]);
 
   const missingRequiredConstraints = useMemo(() => {
     return !dataType.constraints && areConstraintsRequired(dataType);
@@ -57,7 +58,10 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
   }, [dataType.constraints]);
 
   const { service } = useValidationService();
-  const validations = useMemo(() => service.get(`DataDictionary.DataField[${editingIndex}]`), [editingIndex, dataType]);
+  const validations = useMemo(() => service.get(`DataDictionary.DataField[${dataTypeIndex}]`), [
+    dataTypeIndex,
+    dataType
+  ]);
 
   return (
     <>
