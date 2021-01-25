@@ -15,10 +15,11 @@
 package config
 
 import (
-	"flag"
 	"path/filepath"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/version"
+
+	flag "github.com/spf13/pflag"
 )
 
 // TestConfig contains the information about the tests environment

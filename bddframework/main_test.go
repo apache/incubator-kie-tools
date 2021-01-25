@@ -15,7 +15,6 @@
 package test
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -29,6 +28,8 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps"
+
+	flag "github.com/spf13/pflag"
 )
 
 const (
@@ -50,8 +51,8 @@ var (
 )
 
 func init() {
-	godog.BindFlags("godog.", flag.CommandLine, &godogOpts)
 	config.BindFlags(flag.CommandLine)
+	godog.BindCommandLineFlags("godog.", &godogOpts)
 }
 
 func TestMain(m *testing.M) {
