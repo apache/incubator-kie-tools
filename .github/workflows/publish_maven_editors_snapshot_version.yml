@@ -62,22 +62,27 @@ jobs:
 
       - name: Build droolsjbpm-build-bootstrap
         run: |
+          cd ${{ github.workspace }}/droolsjbpm-build-bootstrap
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
       - name: Build kie-soup
         run: |
+          cd ${{ github.workspace }}/kie-soup
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
       - name: Build appformer
         run: |
+          cd ${{ github.workspace }}/appformer
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
       - name: Build kie-wb-common
         run: |
+          cd ${{ github.workspace }}/kie-wb-common
           mvn clean install -DskipTests -Denforcer.skip -T 2 -B -am -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime,kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
 
       - name: Build drools-wb
         run: |
+          cd ${{ github.workspace }}/drools-wb
           mvn clean install -DskipTests -Denforcer.skip -pl drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime -am -T 2 -B
 
       - name: Upload DMN editor
