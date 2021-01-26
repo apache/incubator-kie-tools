@@ -156,11 +156,11 @@ jobs:
           yarn run init
           #
           yarn add -W @kogito-tooling/bpmn-editor-unpacked@${{ steps.newEditorsVersionOnNpm.outputs.version }} --non-interactive || true
-          while [ -z `git diff | grep bpmn-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"` ]; do !!; done # Retry until last command succeeds
+          while [ -z `git diff | grep 'bpmn-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"'` ]; do !!; done # Retry until last command succeeds
           yarn add -W @kogito-tooling/dmn-editor-unpacked@${{ steps.newEditorsVersionOnNpm.outputs.version }} --non-interactive || true
-          while [ -z `git diff | grep dmn-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"` ]; do !!; done # Retry until last command succeeds
+          while [ -z `git diff | grep 'dmn-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"'` ]; do !!; done # Retry until last command succeeds
           yarn add -W @kogito-tooling/scesim-editor-unpacked@${{ steps.newEditorsVersionOnNpm.outputs.version }} --non-interactive || true
-          while [ -z `git diff | grep scesim-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"` ]; do !!; done # Retry until last command succeeds
+          while [ -z `git diff | grep 'scesim-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"'` ]; do !!; done # Retry until last command succeeds
           #
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
