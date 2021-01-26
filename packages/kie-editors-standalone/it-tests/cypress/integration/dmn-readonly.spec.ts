@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-describe.skip("Dmn Read Only.", () => {
+describe("Dmn Read Only.", () => {
   before("Visit page", () => {
     cy.visit("localhost:9001/dmn-read-only");
     cy.loadEditor("dmn-read-only");
   });
 
-  it.skip("Test Load File And View", () => {
+  it("Test Load File And View", () => {
     cy.editor("dmn-read-only")
       .find("[data-field='palettePanel']")
       .should("not.be.visible");
