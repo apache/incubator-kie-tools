@@ -109,8 +109,8 @@ jobs:
           MVN_VERSION=`mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec -f ${{ github.workspace }}/kie-wb-common`
           DATE=`date +"%Y%m%d"`
           TIME=`date +"%H%M%S"`
-          NPM_VERSION=`echo $MVN_VERSION+$DATE.$TIME`
-          echo 'New version is $NPM_VERSION'
+          NPM_VERSION=`echo $MVN_VERSION-$DATE.$TIME`
+          echo $NPM_VERSION
           echo ::set-output name=version::$NPM_VERSION
       
       - name: Publish BPMN Editor
@@ -157,6 +157,9 @@ jobs:
           cd ${{ github.workspace }}/kogito-tooling
           git remote add fork-to-update https://kogito-tooling-bot:${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}@github.com/${{ github.event.inputs.kogitoToolingForkToUpdate }}/kogito-tooling.git
           git fetch fork-to-update
+          git checkout .
+          git clean -fd
+          git diff
           git checkout ${{ github.event.inputs.kogitoToolingBranchToUpdate }}
           yarn run init
           #
