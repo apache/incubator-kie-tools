@@ -115,7 +115,7 @@ jobs:
       
       - name: Publish BPMN Editor
         run: |
-          cd ${{ github.workspace }}/kie-wb-common/.github/supporting-files/publish_maven_editors_snapshot_version/bpmn-editor-unpacked
+          cd ${{ github.workspace }}/kogito-tooling/.github/supporting-files/publish_maven_editors_snapshot_version/bpmn-editor-unpacked
           cp -r ${{ github.workspace }}/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime ./target/bpmn
           ls -la .
           npm version ${{ steps.newEditorsVersionOnNpm.outputs.version }}
@@ -124,7 +124,7 @@ jobs:
           
       - name: Publish DMN Editor
         run: |
-          cd ${{ github.workspace }}/kie-wb-common/.github/supporting-files/publish_maven_editors_snapshot_version/dmn-editor-unpacked
+          cd ${{ github.workspace }}/kogito-tooling/.github/supporting-files/publish_maven_editors_snapshot_version/dmn-editor-unpacked
           cp -r ${{ github.workspace }}/kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime ./target/dmn
           ls -la .
           npm version ${{ steps.newEditorsVersionOnNpm.outputs.version }}
@@ -133,7 +133,7 @@ jobs:
           
       - name: Publish SceSim Editor
         run: |
-          cd ${{ github.workspace }}/kie-wb-common/.github/supporting-files/publish_maven_editors_snapshot_version/scesim-editor-unpacked
+          cd ${{ github.workspace }}/kogito-tooling/.github/supporting-files/publish_maven_editors_snapshot_version/scesim-editor-unpacked
           cp -r ${{ github.workspace }}/drools-wb/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./target/scesim
           ls -la .
           npm version ${{ steps.newEditorsVersionOnNpm.outputs.version }}
