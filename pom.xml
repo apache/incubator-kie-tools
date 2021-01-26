@@ -3,7 +3,7 @@
   
   <groupId>org.kie</groupId>
   <artifactId>lienzo-tests</artifactId>
-  <version>7.49.0-SNAPSHOT</version>
+  <version>7.50.0-SNAPSHOT</version>
   <name>[KIE] Lienzo - Testing Framework</name>
   <description>[KIE] Lienzo - Testing Framework</description>
   <packaging>jar</packaging>
