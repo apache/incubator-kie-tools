@@ -84,7 +84,11 @@ function merge(arg: any[]): any {
     return undefined;
   }
 
-  const result = Object.create(arg[0]);
+  //See https://stackoverflow.com/a/728400
+  //We need to clone the first object being merged AND preserve it's prototype definition.
+  //Use of Object.create(..) extends the provided object (in the prototype chain) and hence fails immer's isDraftable check.
+  //Use of Object.assign(..) or {...arg[0]} does not preserve the prototype chain.
+  const result: any = clone(arg[0]);
 
   arg.forEach((obj: any) => {
     /* tslint:disable:forin */
@@ -93,7 +97,21 @@ function merge(arg: any[]): any {
     }
     /* tslint:enable:forin */
   });
+
   return result;
+}
+
+function clone(obj: any) {
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+  const temp: any = new obj.constructor(obj);
+  /* tslint:disable:forin */
+  for (const key in obj) {
+    temp[key] = clone(obj[key]);
+  }
+  /* tslint:enable:forin */
+  return temp;
 }
 
 //See https://github.com/jsonata-js/jsonata/issues/218

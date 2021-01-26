@@ -47,16 +47,7 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
       case Actions.Scorecard_DeleteAttribute:
         const characteristicIndex = action.payload.characteristicIndex;
         const attributes: Attribute[] = state[characteristicIndex].Attribute;
-        const newAttributes = attributesReducer(attributes, action);
-        if (newAttributes !== attributes) {
-          const newCharacteristics: Characteristic[] = [];
-          state.forEach(c => newCharacteristics.push(c));
-          newCharacteristics[characteristicIndex] = {
-            ...state[characteristicIndex],
-            Attribute: newAttributes
-          };
-          return newCharacteristics;
-        }
+        attributesReducer(attributes, action);
     }
 
     return state;
