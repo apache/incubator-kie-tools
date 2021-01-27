@@ -49,7 +49,7 @@
     "@types/vscode": "^1.46.0",
     "babel-loader": "8.0.6",
     "chai": "^4.2.0",
-    "chromedriver": "^86.0.0",
+    "chromedriver": "^88.0.0",
     "circular-dependency-plugin": "5.2.0",
     "compressing": "^1.5.1",
     "copy-webpack-plugin": "5.1.0",
