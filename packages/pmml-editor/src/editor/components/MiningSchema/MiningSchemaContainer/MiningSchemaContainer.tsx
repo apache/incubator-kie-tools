@@ -99,7 +99,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
           >
             <>
               {viewSection === "overview" && (
-                <Stack hasGutter={true}>
+                <Stack hasGutter={true} className="mining-schema__overview">
                   <StackItem>
                     <Title headingLevel="h4" size={TitleSizes.xl}>
                       Add Fields
@@ -108,11 +108,13 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                   <StackItem>
                     <MiningSchemaAddFields options={fields} onAdd={handleAddFields} />
                   </StackItem>
-                  <StackItem>
-                    <Title headingLevel="h4" size={TitleSizes.xl}>
-                      Fields List
-                    </Title>
-                    <section className="mining-schema__fields">
+                  {validations.length > 0 && (
+                    <section className="mining-schema__validation-alert">
+                      <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
+                    </section>
+                  )}
+                  <StackItem className="mining-schema__fields">
+                    <section>
                       {fields.length === 0 && (
                         <Bullseye style={{ height: "40vh" }}>
                           <NoMiningSchemaFieldsOptions />
@@ -128,11 +130,6 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                             ))}
                           {miningSchema && miningSchema.MiningField.length > 0 && (
                             <>
-                              {validations.length > 0 && (
-                                <section className="mining-schema__validation-alert">
-                                  <Alert variant="warning" title="Some items are invalid and need attention." />
-                                </section>
-                              )}
                               <MiningSchemaFields
                                 modelIndex={modelIndex}
                                 fields={miningSchema?.MiningField}

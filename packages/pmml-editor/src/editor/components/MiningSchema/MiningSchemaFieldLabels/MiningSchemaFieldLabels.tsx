@@ -24,13 +24,13 @@ interface MiningSchemaFieldLabelsProps {
 const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   const { index, modelIndex, field, onEdit, onDelete, editing } = props;
 
-  const BasicMiningLabel = (name: string, value: any, onClose: (() => void) | undefined) => {
+  const BasicMiningLabel = (name: string, value: any, onClose: () => void) => {
     return (
       <Label
         color="cyan"
         className="mining-schema-list__item__label"
         closeBtnProps={{ className: "ignore-onclickoutside" }}
-        onClose={onClose}
+        onClose={editing ? onClose : undefined}
       >
         <strong>{name}:</strong>
         &nbsp;
@@ -46,7 +46,11 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
     validations: ValidationEntry[]
   ) => {
     return (
-      <ValidationIndicatorLabel validations={validations} cssClass="mining-schema-list__item__label" onClose={onClose}>
+      <ValidationIndicatorLabel
+        validations={validations}
+        cssClass="mining-schema-list__item__label"
+        onClose={editing ? onClose : undefined}
+      >
         <strong>{name}:</strong>
         &nbsp;
         <span>{value}</span>
@@ -59,23 +63,13 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
     value: any,
     isValueRequired: boolean,
     validations: ValidationEntry[],
-    onClose?: () => void
+    onClose: () => void
   ) => {
     return (
       <>
-        {isValueRequired && value !== undefined && BasicMiningLabel(name, value, editing ? onClose : undefined)}
-        {isValueRequired && value === undefined && (
-          <>
-            {editing && InvalidMiningLabel(name, <em>Missing</em>, undefined, validations)}
-            {!editing && BasicMiningLabel(name, <em>Missing</em>, undefined)}
-          </>
-        )}
-        {!isValueRequired && value !== undefined && (
-          <>
-            {editing && InvalidMiningLabel(name, value, onClose, validations)}
-            {!editing && BasicMiningLabel(name, value, undefined)}
-          </>
-        )}
+        {isValueRequired && value !== undefined && BasicMiningLabel(name, value, onClose)}
+        {isValueRequired && value === undefined && InvalidMiningLabel(name, <em>Missing</em>, undefined, validations)}
+        {!isValueRequired && value !== undefined && InvalidMiningLabel(name, value, onClose, validations)}
       </>
     );
   };
@@ -117,67 +111,46 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   return (
     <>
       {field.usageType !== undefined &&
-        BasicMiningLabel(
-          "Usage Type",
-          field.usageType,
-          editing
-            ? () =>
-                onDelete({
-                  ...field,
-                  usageType: undefined
-                })
-            : undefined
+        BasicMiningLabel("Usage Type", field.usageType, () =>
+          onDelete({
+            ...field,
+            usageType: undefined
+          })
         )}
 
       {field.optype !== undefined &&
-        BasicMiningLabel(
-          "Op Type",
-          field.optype,
-          editing
-            ? () =>
-                onDelete({
-                  ...field,
-                  optype: undefined
-                })
-            : undefined
+        BasicMiningLabel("Op Type", field.optype, () =>
+          onDelete({
+            ...field,
+            optype: undefined
+          })
         )}
 
       {field.importance !== undefined && (
         <>
-          {(!editing || validationsImportance.length === 0) &&
-            BasicMiningLabel(
-              "Importance",
-              field.importance,
-              editing
-                ? () =>
-                    onDelete({
-                      ...field,
-                      importance: undefined
-                    })
-                : undefined
+          {validationsImportance.length === 0 &&
+            BasicMiningLabel("Importance", field.importance, () =>
+              onDelete({
+                ...field,
+                importance: undefined
+              })
             )}
-          {editing &&
-            validationsImportance.length > 0 &&
+          {validationsImportance.length > 0 &&
             InvalidMiningLabel(
               "Importance",
               field.importance,
-              editing ? () => onDelete({ ...field, importance: undefined }) : undefined,
+              () => onDelete({ ...field, importance: undefined }),
               validationsImportance
             )}
         </>
       )}
 
       {field.outliers !== undefined &&
-        BasicMiningLabel(
-          "Outliers",
-          field.outliers,
-          editing
-            ? () =>
-                onDelete({
-                  ...field,
-                  outliers: undefined
-                })
-            : undefined
+        BasicMiningLabel("Outliers", field.outliers, () =>
+          onDelete({
+            ...field,
+            outliers: undefined
+          })
         )}
 
       {MissingValueAwareMiningLabel("Low Value", field.lowValue, _areLowHighValuesRequired, validationsLowValue, () =>
@@ -200,16 +173,11 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
       )}
 
       {field.missingValueTreatment !== undefined &&
-        BasicMiningLabel(
-          "Missing Value Treatment",
-          field.missingValueTreatment,
-          editing
-            ? () =>
-                onDelete({
-                  ...field,
-                  missingValueTreatment: undefined
-                })
-            : undefined
+        BasicMiningLabel("Missing Value Treatment", field.missingValueTreatment, () =>
+          onDelete({
+            ...field,
+            missingValueTreatment: undefined
+          })
         )}
 
       {MissingValueAwareMiningLabel(
@@ -225,16 +193,11 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
       )}
 
       {field.invalidValueTreatment !== undefined &&
-        BasicMiningLabel(
-          "Invalid Value Treatment",
-          field.invalidValueTreatment,
-          editing
-            ? () =>
-                onDelete({
-                  ...field,
-                  invalidValueTreatment: undefined
-                })
-            : undefined
+        BasicMiningLabel("Invalid Value Treatment", field.invalidValueTreatment, () =>
+          onDelete({
+            ...field,
+            invalidValueTreatment: undefined
+          })
         )}
 
       {MissingValueAwareMiningLabel(

@@ -2,8 +2,6 @@ import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   Button,
-  Card,
-  CardBody,
   Form,
   FormGroup,
   Split,
@@ -172,10 +170,10 @@ const MiningSchemaPropertiesEdit = ({
       <StackItem>
         <section className="mining-schema__edit__form">
           <Form>
-            <Split hasGutter={true}>
-              <SplitItem style={{ width: "50%" }}>
-                <Stack hasGutter={true}>
-                  <StackItem>
+            <Stack hasGutter={true}>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
                     <FormGroup
                       className="mining-schema__properties__field"
                       label="Field Usage Type"
@@ -201,8 +199,8 @@ const MiningSchemaPropertiesEdit = ({
                         selection={usageType}
                       />
                     </FormGroup>
-                  </StackItem>
-                  <StackItem>
+                  </SplitItem>
+                  <SplitItem>
                     <FormGroup className="mining-schema__properties__field" label="Field Op Type" fieldId="opType">
                       <GenericSelector
                         id="opType"
@@ -214,251 +212,245 @@ const MiningSchemaPropertiesEdit = ({
                         selection={opType}
                       />
                     </FormGroup>
-                  </StackItem>
-                  <StackItem>
+                  </SplitItem>
+                </Split>
+              </StackItem>
+              <StackItem>
+                <FormGroup
+                  className="mining-schema__properties__field"
+                  label="Importance"
+                  fieldId="importance"
+                  helperText={validationsImportance.length === 0 ? "" : validationsImportance[0].message}
+                  validated={validationsImportance.length === 0 ? "default" : "warning"}
+                >
+                  <TextInput
+                    type="number"
+                    min={0}
+                    max={1}
+                    id="importance"
+                    name="importance"
+                    aria-describedby="Importance"
+                    value={importance ?? ""}
+                    validated={validationsImportance.length === 0 ? "default" : "warning"}
+                    onChange={value => setImportance(toNumberOrUndefined(value))}
+                    onBlur={() => {
+                      if (importance !== undefined) {
+                        let _importance = importance;
+                        if (_importance < 0) {
+                          _importance = 0;
+                          setImportance(_importance);
+                        } else if (_importance > 1) {
+                          _importance = 1;
+                          setImportance(_importance);
+                        }
+                      }
+                      handleSave();
+                    }}
+                  />
+                </FormGroup>
+              </StackItem>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
                     <FormGroup
                       className="mining-schema__properties__field"
-                      label="Importance"
-                      fieldId="importance"
-                      helperText="Importance must be between 0 and 1."
-                      validated={validationsImportance.length === 0 ? "default" : "warning"}
+                      label="Outliers Treatment Method"
+                      fieldId="outliers"
+                    >
+                      <GenericSelector
+                        id="outliers"
+                        items={["", "asIs", "asMissingValues", "asExtremeValues"]}
+                        onSelect={selection => {
+                          setOutliers(selection as OutlierTreatmentMethod);
+                          setSubmitChanges(true);
+                        }}
+                        selection={outliers}
+                      />
+                    </FormGroup>
+                  </SplitItem>
+                  <SplitItem>
+                    <FormGroup
+                      label="Low Value"
+                      fieldId="lowValue"
+                      className="mining-schema__properties__field"
+                      helperText={validationsLowValue.length === 0 ? "" : validationsLowValue[0].message}
+                      validated={validationsLowValue.length === 0 ? "default" : "warning"}
+                      labelIcon={
+                        <Tooltip
+                          content={`Low Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
+                        >
+                          <button
+                            aria-label="More information for Low Value field"
+                            onClick={e => e.preventDefault()}
+                            className="pf-c-form__group-label-help"
+                          >
+                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                          </button>
+                        </Tooltip>
+                      }
                     >
                       <TextInput
                         type="number"
-                        min={0}
-                        max={1}
-                        id="importance"
-                        name="importance"
-                        aria-describedby="Importance"
-                        value={importance ?? ""}
-                        validated={validationsImportance.length === 0 ? "default" : "warning"}
-                        onChange={value => setImportance(toNumberOrUndefined(value))}
-                        onBlur={() => {
-                          if (importance !== undefined) {
-                            let _importance = importance;
-                            if (_importance < 0) {
-                              _importance = 0;
-                              setImportance(_importance);
-                            } else if (_importance > 1) {
-                              _importance = 1;
-                              setImportance(_importance);
-                            }
-                          }
-                          handleSave();
-                        }}
+                        id="lowValue"
+                        name="lowValue"
+                        aria-describedby="Low Value"
+                        value={lowValue ?? ""}
+                        validated={validationsLowValue.length === 0 ? "default" : "warning"}
+                        isDisabled={!enableLowValueComponent}
+                        placeholder={!enableLowValueComponent ? "<Not needed>" : ""}
+                        className={!enableLowValueComponent ? "mining-schema__edit__form__disabled" : ""}
+                        onChange={value => setLowValue(toNumberOrUndefined(value))}
+                        onBlur={handleSave}
                       />
                     </FormGroup>
-                  </StackItem>
-                </Stack>
-              </SplitItem>
-              <SplitItem style={{ width: "50%" }}>
-                <Card isCompact={true} style={{ margin: "1em 0" }}>
-                  <CardBody>
-                    <Stack hasGutter={true}>
-                      <StackItem>
-                        <FormGroup
-                          className="mining-schema__properties__field"
-                          label="Outliers Treatment Method"
-                          fieldId="outliers"
+                  </SplitItem>
+                  <SplitItem>
+                    <FormGroup
+                      label="High Value"
+                      fieldId="highValue"
+                      className="mining-schema__properties__field"
+                      helperText={validationsHighValue.length === 0 ? "" : validationsHighValue[0].message}
+                      validated={validationsHighValue.length === 0 ? "default" : "warning"}
+                      labelIcon={
+                        <Tooltip
+                          content={`High Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
                         >
-                          <GenericSelector
-                            id="outliers"
-                            items={["", "asIs", "asMissingValues", "asExtremeValues"]}
-                            onSelect={selection => {
-                              setOutliers(selection as OutlierTreatmentMethod);
-                              setSubmitChanges(true);
-                            }}
-                            selection={outliers}
-                          />
-                        </FormGroup>
-                      </StackItem>
-                      <StackItem>
-                        <FormGroup
-                          label="Low Value"
-                          fieldId="lowValue"
-                          className="mining-schema__properties__field"
-                          helperText={validationsLowValue.length === 0 ? "" : validationsLowValue[0].message}
-                          validated={validationsLowValue.length === 0 ? "default" : "warning"}
-                          labelIcon={
-                            <Tooltip
-                              content={`Low Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
-                            >
-                              <button
-                                aria-label="More information for Low Value field"
-                                onClick={e => e.preventDefault()}
-                                aria-describedby="simple-form-name"
-                                className="pf-c-form__group-label-help"
-                              >
-                                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                              </button>
-                            </Tooltip>
-                          }
-                        >
-                          <TextInput
-                            type="number"
-                            id="lowValue"
-                            name="lowValue"
-                            aria-describedby="Low Value"
-                            value={lowValue ?? ""}
-                            validated={validationsLowValue.length === 0 ? "default" : "warning"}
-                            isDisabled={!enableLowValueComponent}
-                            placeholder={!enableLowValueComponent ? "<Not needed>" : ""}
-                            onChange={value => setLowValue(toNumberOrUndefined(value))}
-                            onBlur={handleSave}
-                          />
-                        </FormGroup>
-                      </StackItem>
-                      <StackItem>
-                        <FormGroup
-                          label="High Value"
-                          fieldId="highValue"
-                          className="mining-schema__properties__field"
-                          helperText={validationsHighValue.length === 0 ? "" : validationsHighValue[0].message}
-                          validated={validationsHighValue.length === 0 ? "default" : "warning"}
-                          labelIcon={
-                            <Tooltip
-                              content={`High Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
-                            >
-                              <button
-                                aria-label="More information for High Value field"
-                                onClick={e => e.preventDefault()}
-                                aria-describedby="simple-form-name"
-                                className="pf-c-form__group-label-help"
-                              >
-                                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                              </button>
-                            </Tooltip>
-                          }
-                        >
-                          <TextInput
-                            type="number"
-                            id="highValue"
-                            name="highValue"
-                            aria-describedby="High Value"
-                            value={highValue ?? ""}
-                            validated={validationsHighValue.length === 0 ? "default" : "warning"}
-                            isDisabled={!enableHighValueComponent}
-                            placeholder={!enableHighValueComponent ? "<Not needed>" : ""}
-                            onChange={value => setHighValue(toNumberOrUndefined(value))}
-                            onBlur={handleSave}
-                          />
-                        </FormGroup>
-                      </StackItem>
-                    </Stack>
-                  </CardBody>
-                </Card>
-              </SplitItem>
-            </Split>
-            <Split hasGutter={true}>
-              <SplitItem>
-                <FormGroup label="Missing Value Treatment Method" fieldId="missingValueTreatment">
-                  <GenericSelector
-                    id="missingValueTreatment"
-                    items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
-                    onSelect={selection => {
-                      setMissingValueTreatment(selection as MissingValueTreatmentMethod);
-                      setSubmitChanges(true);
-                    }}
-                    selection={missingValueTreatment}
-                  />
-                </FormGroup>
-              </SplitItem>
-              <SplitItem>
-                <FormGroup
-                  label="Missing Value Replacement"
-                  fieldId="missingValueReplacement"
-                  validated={validationsMissingValueReplacement.length === 0 ? "default" : "warning"}
-                  helperText={
-                    validationsMissingValueReplacement[0] ? validationsMissingValueReplacement[0].message : ""
-                  }
-                  labelIcon={
-                    <Tooltip
-                      content={`Missing Value Replacement is required when Missing Value Treatment is "asMean", "asMedian" or "asMode"`}
+                          <button
+                            aria-label="More information for High Value field"
+                            onClick={e => e.preventDefault()}
+                            className="pf-c-form__group-label-help"
+                          >
+                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                          </button>
+                        </Tooltip>
+                      }
                     >
-                      <button
-                        aria-label="More information for Missing Value Replacement field"
-                        onClick={e => e.preventDefault()}
-                        aria-describedby="simple-form-name"
-                        className="pf-c-form__group-label-help"
-                      >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                      </button>
-                    </Tooltip>
-                  }
-                >
-                  <TextInput
-                    type="text"
-                    id="missingValueReplacement"
-                    name="missingValueReplacement"
-                    aria-describedby="Missing Value Replacement"
-                    value={missingValueReplacement}
-                    validated={validationsMissingValueReplacement.length === 0 ? "default" : "warning"}
-                    isDisabled={!enableMissingValueComponent}
-                    placeholder={!enableMissingValueComponent ? "<Not needed>" : ""}
-                    style={
-                      !enableMissingValueComponent ? { backgroundColor: "var(--pf-global--BorderColor--100)" } : {}
-                    }
-                    onChange={value => setMissingValueReplacement(value)}
-                    onBlur={handleSave}
-                  />
-                </FormGroup>
-              </SplitItem>
-            </Split>
-            <Split hasGutter={true}>
-              <SplitItem>
-                <FormGroup label="Invalid Value Treatment Method" fieldId="invalidValueTreatment">
-                  <GenericSelector
-                    id="invalidValueTreatment"
-                    items={["", "returnInvalid", "asIs", "asMissing", "asValue"]}
-                    onSelect={selection => {
-                      setInvalidValueTreatment(selection as InvalidValueTreatmentMethod);
-                      setSubmitChanges(true);
-                    }}
-                    selection={invalidValueTreatment}
-                  />
-                </FormGroup>
-              </SplitItem>
-              <SplitItem>
-                <FormGroup
-                  label="Invalid Value Replacement"
-                  fieldId="invalidValueReplacement"
-                  validated={validationsInvalidValueReplacement.length === 0 ? "default" : "warning"}
-                  helperText={
-                    validationsInvalidValueReplacement[0] ? validationsInvalidValueReplacement[0].message : ""
-                  }
-                  labelIcon={
-                    <Tooltip
-                      content={`Invalid Value Replacement is required when Invalid Value Treatment is "asValue"`}
+                      <TextInput
+                        type="number"
+                        id="highValue"
+                        name="highValue"
+                        aria-describedby="High Value"
+                        value={highValue ?? ""}
+                        validated={validationsHighValue.length === 0 ? "default" : "warning"}
+                        isDisabled={!enableHighValueComponent}
+                        placeholder={!enableHighValueComponent ? "<Not needed>" : ""}
+                        className={!enableHighValueComponent ? "mining-schema__edit__form__disabled" : ""}
+                        onChange={value => setHighValue(toNumberOrUndefined(value))}
+                        onBlur={handleSave}
+                      />
+                    </FormGroup>
+                  </SplitItem>
+                </Split>
+              </StackItem>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    <FormGroup label="Missing Value Treatment Method" fieldId="missingValueTreatment">
+                      <GenericSelector
+                        id="missingValueTreatment"
+                        items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
+                        onSelect={selection => {
+                          setMissingValueTreatment(selection as MissingValueTreatmentMethod);
+                          setSubmitChanges(true);
+                        }}
+                        selection={missingValueTreatment}
+                      />
+                    </FormGroup>
+                  </SplitItem>
+                  <SplitItem>
+                    <FormGroup
+                      label="Missing Value Replacement"
+                      fieldId="missingValueReplacement"
+                      validated={validationsMissingValueReplacement.length === 0 ? "default" : "warning"}
+                      helperText={
+                        validationsMissingValueReplacement[0] ? validationsMissingValueReplacement[0].message : ""
+                      }
+                      labelIcon={
+                        <Tooltip
+                          content={`Missing Value Replacement is required when Missing Value Treatment is "asMean", "asMedian" or "asMode"`}
+                        >
+                          <button
+                            aria-label="More information for Missing Value Replacement field"
+                            onClick={e => e.preventDefault()}
+                            className="pf-c-form__group-label-help"
+                          >
+                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                          </button>
+                        </Tooltip>
+                      }
                     >
-                      <button
-                        aria-label="More information for Invalid Value Replacement field"
-                        onClick={e => e.preventDefault()}
-                        aria-describedby="simple-form-name"
-                        className="pf-c-form__group-label-help"
-                      >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                      </button>
-                    </Tooltip>
-                  }
-                >
-                  <TextInput
-                    type="text"
-                    id="invalidValueReplacement"
-                    name="invalidValueReplacement"
-                    aria-describedby="Invalid Value Replacement"
-                    value={invalidValueReplacement}
-                    validated={validationsInvalidValueReplacement.length === 0 ? "default" : "warning"}
-                    isDisabled={!enableInvalidValueComponent}
-                    placeholder={!enableInvalidValueComponent ? "<Not needed>" : ""}
-                    style={
-                      !enableInvalidValueComponent ? { backgroundColor: "var(--pf-global--BorderColor--100)" } : {}
-                    }
-                    onChange={value => setInvalidValueReplacement(value)}
-                    onBlur={handleSave}
-                  />
-                </FormGroup>
-              </SplitItem>
-            </Split>
+                      <TextInput
+                        type="text"
+                        id="missingValueReplacement"
+                        name="missingValueReplacement"
+                        aria-describedby="Missing Value Replacement"
+                        value={missingValueReplacement}
+                        validated={validationsMissingValueReplacement.length === 0 ? "default" : "warning"}
+                        isDisabled={!enableMissingValueComponent}
+                        placeholder={!enableMissingValueComponent ? "<Not needed>" : ""}
+                        className={!enableMissingValueComponent ? "mining-schema__edit__form__disabled" : ""}
+                        onChange={value => setMissingValueReplacement(value)}
+                        onBlur={handleSave}
+                      />
+                    </FormGroup>
+                  </SplitItem>
+                </Split>
+              </StackItem>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    <FormGroup label="Invalid Value Treatment Method" fieldId="invalidValueTreatment">
+                      <GenericSelector
+                        id="invalidValueTreatment"
+                        items={["", "returnInvalid", "asIs", "asMissing", "asValue"]}
+                        onSelect={selection => {
+                          setInvalidValueTreatment(selection as InvalidValueTreatmentMethod);
+                          setSubmitChanges(true);
+                        }}
+                        selection={invalidValueTreatment}
+                      />
+                    </FormGroup>
+                  </SplitItem>
+                  <SplitItem>
+                    <FormGroup
+                      label="Invalid Value Replacement"
+                      fieldId="invalidValueReplacement"
+                      validated={validationsInvalidValueReplacement.length === 0 ? "default" : "warning"}
+                      helperText={
+                        validationsInvalidValueReplacement[0] ? validationsInvalidValueReplacement[0].message : ""
+                      }
+                      labelIcon={
+                        <Tooltip
+                          content={`Invalid Value Replacement is required when Invalid Value Treatment is "asValue"`}
+                        >
+                          <button
+                            aria-label="More information for Invalid Value Replacement field"
+                            onClick={e => e.preventDefault()}
+                            className="pf-c-form__group-label-help"
+                          >
+                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                          </button>
+                        </Tooltip>
+                      }
+                    >
+                      <TextInput
+                        type="text"
+                        id="invalidValueReplacement"
+                        name="invalidValueReplacement"
+                        aria-describedby="Invalid Value Replacement"
+                        value={invalidValueReplacement}
+                        validated={validationsInvalidValueReplacement.length === 0 ? "default" : "warning"}
+                        isDisabled={!enableInvalidValueComponent}
+                        placeholder={!enableInvalidValueComponent ? "<Not needed>" : ""}
+                        className={!enableInvalidValueComponent ? "mining-schema__edit__form__disabled" : ""}
+                        onChange={value => setInvalidValueReplacement(value)}
+                        onBlur={handleSave}
+                      />
+                    </FormGroup>
+                  </SplitItem>
+                </Split>
+              </StackItem>
+            </Stack>
           </Form>
         </section>
         <section className="mining-schema__edit__actions">

@@ -8,18 +8,22 @@
   }
 
   &__fields {
-    margin: 1rem 0 0;
-    height: calc(60vh - 145px);
+    flex: 1 1 0;
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
   }
 
   &__validation-alert {
-    margin-bottom: 16px;
+    margin-bottom: 1em;
   }
 
   &__overview {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+
     &-enter {
       opacity: 0;
     }
