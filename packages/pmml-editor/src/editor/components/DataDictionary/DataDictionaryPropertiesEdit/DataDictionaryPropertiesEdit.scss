@@ -14,17 +14,25 @@
  *  limitations under the License.
  */
 
-.data-dictionary__properties-edit {
-  &__form {
+.data-dictionary {
+  &__properties-edit {
+    &__form {
+      height: 100%;
+      overflow-y: auto;
+      padding: 1em;
+      background-color: var(--pf-global--BackgroundColor--200);
+    }
+    &__actions {
+      margin-top: var(--pf-global--spacer--lg);
+    }
+    &__field {
+      width: 320px;
+    }
+  }
+  &__constraints-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
     height: 100%;
-    overflow-y: auto;
-    padding: 1em;
-    background-color: var(--pf-global--BackgroundColor--200);
-  }
-  &__actions {
-    margin-top: var(--pf-global--spacer--lg);
-  }
-  &__field {
-    width: 320px;
   }
 }

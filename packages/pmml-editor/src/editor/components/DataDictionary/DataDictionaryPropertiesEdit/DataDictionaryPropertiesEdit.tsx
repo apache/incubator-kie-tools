@@ -100,7 +100,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
         </Title>
       </StackItem>
       <StackItem className="data-dictionary__properties-edit__form">
-        <Form>
+        <Form style={{ height: "100%" }}>
           <Split hasGutter={true}>
             <SplitItem style={{ marginRight: "2em" }}>
               <Stack hasGutter={true}>
@@ -233,15 +233,17 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
               </Stack>
             </SplitItem>
             <SplitItem isFilled={true}>
-              {constraintAlert && (
-                <Alert
-                  variant="warning"
-                  isInline={true}
-                  className="data-dictionary__validation-alert"
-                  title={constraintAlert}
-                />
-              )}
-              <ConstraintsEdit dataType={dataType} dataFieldIndex={dataFieldIndex} onSave={onSave} />
+              <section className="data-dictionary__constraints-section">
+                {constraintAlert && (
+                  <Alert
+                    variant="warning"
+                    isInline={true}
+                    className="data-dictionary__validation-alert"
+                    title={constraintAlert}
+                  />
+                )}
+                <ConstraintsEdit dataType={dataType} dataFieldIndex={dataFieldIndex} onSave={onSave} />
+              </section>
             </SplitItem>
           </Split>
         </Form>
