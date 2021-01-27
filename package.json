@@ -20,12 +20,12 @@
     "publish:productization": "npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub --ignore @kogito-tooling/pmml-editor -- npm publish --access public"
   },
   "dependencies": {
+    "@kogito-tooling/bpmn-editor-unpacked": "7.49.0-SNAPSHOT-20210126.222335",
+    "@kogito-tooling/dmn-editor-unpacked": "7.49.0-SNAPSHOT-20210126.222335",
+    "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT",
+    "@kogito-tooling/scesim-editor-unpacked": "7.49.0-SNAPSHOT-20210126.222335",
     "react": "16.12.0",
-    "react-dom": "16.12.0",
-    "@kogito-tooling/dmn-editor-unpacked": "7.48.0-Final",
-    "@kogito-tooling/bpmn-editor-unpacked": "7.48.0-Final",
-    "@kogito-tooling/scesim-editor-unpacked": "7.48.0-Final",
-    "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT"
+    "react-dom": "16.12.0"
   },
   "devDependencies": {
     "@babel/core": "7.7.2",
@@ -49,7 +49,7 @@
     "@types/vscode": "^1.46.0",
     "babel-loader": "8.0.6",
     "chai": "^4.2.0",
-    "chromedriver": "^86.0.0",
+    "chromedriver": "^88.0.0",
     "circular-dependency-plugin": "5.2.0",
     "compressing": "^1.5.1",
     "copy-webpack-plugin": "5.1.0",

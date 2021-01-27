@@ -26,20 +26,21 @@ describe.skip("Dmn Read Only.", () => {
       .should("not.be.visible");
 
     cy.editor("dmn-read-only")
-      .find(".qe-docks-bar-W", { timeout: 10000 })
+      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W", { timeout: 10000 })
       .should("be.visible");
 
     cy.uploadFile("call centre drd.dmn");
     cy.viewFile("call centre drd.dmn");
 
     cy.editor("dmn-read-only")
-      .find(".qe-docks-bar-W button")
+      .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W")
+      .find("button")
       .first()
       .should("be.visible")
       .click(); // open DecisionNavigator
 
     cy.editor("dmn-read-only")
-      .find(".qe-docks-bar-expanded-W")
+      .ouiaId("expanded-docks-bar", "expanded-docks-bar-W")
       .within($navigator => {
         cy.wrap($navigator)
           .find("[data-field='item'][title='DRG']")
