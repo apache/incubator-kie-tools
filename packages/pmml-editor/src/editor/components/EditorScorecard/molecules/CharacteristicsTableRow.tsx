@@ -15,11 +15,16 @@
  */
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
-import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
+import {
+  AttributeLabels,
+  CharacteristicLabels,
+  CharacteristicPredicateLabel,
+  CharacteristicsTableAction
+} from "../atoms";
+import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
+import { toText } from "../../../reducers";
 import "./CharacteristicsTableRow.scss";
-import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
-import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
@@ -55,6 +60,10 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
             activeCharacteristic={characteristic.characteristic}
             areReasonCodesUsed={areReasonCodesUsed}
             isBaselineScoreRequired={isBaselineScoreRequired}
+          />
+          <CharacteristicAttributesList
+            characteristic={characteristic.characteristic}
+            areReasonCodesUsed={areReasonCodesUsed}
             dataFields={dataFields}
           />
         </SplitItem>
@@ -63,5 +72,26 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
         </SplitItem>
       </Split>
     </article>
+  );
+};
+
+interface CharacteristicAttributesListProps {
+  characteristic: Characteristic;
+  areReasonCodesUsed: boolean;
+  dataFields: DataField[];
+}
+
+const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
+  const { characteristic, areReasonCodesUsed, dataFields } = props;
+
+  return (
+    <ul>
+      {characteristic.Attribute.map((item, index) => (
+        <li key={index}>
+          {CharacteristicPredicateLabel(toText(item.predicate, dataFields))}
+          <AttributeLabels activeAttribute={item} areReasonCodesUsed={areReasonCodesUsed} />
+        </li>
+      ))}
+    </ul>
   );
 };

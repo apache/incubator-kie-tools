@@ -196,7 +196,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
           >
             <>
               {viewSection === "overview" && (
-                <Stack hasGutter={true}>
+                <Stack>
                   <StackItem>
                     <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
                   </StackItem>

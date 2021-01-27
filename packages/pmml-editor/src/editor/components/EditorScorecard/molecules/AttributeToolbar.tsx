@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, Split, SplitItem, TextContent, Title, Toolbar, ToolbarContent } from "@patternfly/react-core";
+import { Button, Split, SplitItem, Title } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
 
 interface AttributeToolbarProps {
@@ -25,39 +25,33 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
   const { viewOverview } = props;
 
   return (
-    <Toolbar id="attribute-toolbar" data-testid="attribute-toolbar">
-      <ToolbarContent>
-        <Split hasGutter={true} style={{ width: "100%" }}>
-          <SplitItem isFilled={true}>
-            <TextContent>
-              <Title size="lg" headingLevel="h1">
-                <a
-                  onClick={e => {
-                    e.preventDefault();
-                    viewOverview();
-                  }}
-                >
-                  Characteristics
-                </a>
-                &nbsp;/&nbsp;Attribute
-              </Title>
-            </TextContent>
-          </SplitItem>
-          <SplitItem>
-            <Button
-              variant="primary"
-              onClick={e => {
-                e.preventDefault();
-                viewOverview();
-              }}
-              icon={<ArrowAltCircleLeftIcon />}
-              iconPosition="left"
-            >
-              Done
-            </Button>
-          </SplitItem>
-        </Split>
-      </ToolbarContent>
-    </Toolbar>
+    <Split>
+      <SplitItem isFilled={true}>
+        <Title size="lg" headingLevel="h1">
+          <a
+            onClick={e => {
+              e.preventDefault();
+              viewOverview();
+            }}
+          >
+            Characteristics
+          </a>
+          &nbsp;/&nbsp;Attribute
+        </Title>
+      </SplitItem>
+      <SplitItem>
+        <Button
+          variant="primary"
+          onClick={e => {
+            e.preventDefault();
+            viewOverview();
+          }}
+          icon={<ArrowAltCircleLeftIcon />}
+          iconPosition="left"
+        >
+          Done
+        </Button>
+      </SplitItem>
+    </Split>
   );
 };
