@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
+import { validateOutputsRequiredTargetField } from "../validation/Outputs";
+import { ValidationService } from "../validation";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -48,9 +50,10 @@ export type ScorecardActions = ActionMap<ScorecardPayload>[keyof ActionMap<Score
 
 export type AllScorecardActions = ScorecardActions | CharacteristicsActions | CharacteristicActions | AttributesActions;
 
-export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> = (
-  service: HistoryService
-): Reducer<Scorecard, ScorecardActions> => {
+export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActions> = (
+  service: HistoryService,
+  validation: ValidationService
+): Reducer<Scorecard, AllActions> => {
   return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_SetModelName:
@@ -70,6 +73,22 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
           draft.useReasonCodes = action.payload.useReasonCodes;
           draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
         });
+        break;
+
+      case Actions.UpdateMiningSchemaField:
+        service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
+          if (draft.MiningSchema && draft.MiningSchema.MiningField.length && action.payload.usageType === "target") {
+            if (
+              draft.MiningSchema.MiningField.filter(
+                field => field.usageType === "target" && field.name !== action.payload.name
+              ).length > 0
+            ) {
+              validation.clear(`models[${action.payload.modelIndex}].Output`);
+              validateOutputsRequiredTargetField(action.payload.modelIndex, draft.Output?.OutputField, validation);
+            }
+          }
+        });
+        break;
     }
 
     return state;

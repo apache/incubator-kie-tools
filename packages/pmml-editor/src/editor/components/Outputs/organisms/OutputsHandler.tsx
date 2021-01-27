@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -25,25 +25,36 @@ import {
   Title,
   TitleSizes
 } from "@patternfly/react-core";
-import { CloseIcon } from "@patternfly/react-icons";
-import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation, useOperation } from "../../EditorScorecard";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 interface OutputsHandlerProps {
   modelIndex: number;
   output?: Output;
+  miningSchema?: MiningSchema;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
   commitOutputField: (index: number | undefined, outputField: OutputField) => void;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
-  const { modelIndex, output, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
+  const { modelIndex, output, miningSchema, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { setActiveOperation } = useOperation();
+
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`models[${modelIndex}].Output`), [
+    modelIndex,
+    output,
+    miningSchema
+  ]);
+  console.log(validations);
 
   const toggleModal = () => {
     setActiveOperation(Operation.NONE);
@@ -67,9 +78,18 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
 
   return (
     <>
-      <Button variant="secondary" onClick={toggleModal}>
-        Set Outputs
-      </Button>
+      {validations.length === 0 && (
+        <Button variant="secondary" onClick={toggleModal}>
+          Set Outputs
+        </Button>
+      )}
+      {validations.length > 0 && (
+        <ValidationIndicatorTooltip validations={validations}>
+          <Button variant="secondary" icon={<WarningTriangleIcon size={"sm"} color={"orange"} />} onClick={toggleModal}>
+            Set Outputs
+          </Button>
+        </ValidationIndicatorTooltip>
+      )}
       <Modal
         aria-label="outputs"
         title="Outputs"
@@ -82,6 +102,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         <OutputsContainer
           modelIndex={modelIndex}
           output={output}
+          miningSchema={miningSchema}
           validateOutputFieldName={validateOutputFieldName}
           deleteOutputField={deleteOutputField}
           commitOutputField={commitOutputField}

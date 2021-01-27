@@ -19,7 +19,7 @@ import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
-import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
@@ -34,6 +34,7 @@ import set = Reflect.set;
 interface OutputsContainerProps {
   modelIndex: number;
   output?: Output;
+  miningSchema?: MiningSchema;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
   commitOutputField: (index: number | undefined, outputField: OutputField) => void;
@@ -42,7 +43,7 @@ interface OutputsContainerProps {
 type OutputsViewSection = "overview" | "extended-properties" | "batch-add";
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { modelIndex, output, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
+  const { modelIndex, output, miningSchema, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
 
   const [selectedOutputIndex, setSelectedOutputIndex] = useState<number | undefined>(undefined);
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
@@ -50,6 +51,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const { activeOperation, setActiveOperation } = useOperation();
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
+
+  const targetFields = useMemo(() => getMiningSchemaTargetFields(miningSchema), [miningSchema]);
 
   const editItem: OutputField | undefined = useMemo(() => {
     if (selectedOutputIndex === undefined) {
@@ -204,7 +207,11 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                   </TextContent>
                 </StackItem>
                 <StackItem className="outputs-container__extended-properties">
-                  <OutputFieldExtendedProperties activeOutputField={editItem} commit={onCommit} />
+                  <OutputFieldExtendedProperties
+                    activeOutputField={editItem}
+                    targetFields={targetFields}
+                    commit={onCommit}
+                  />
                 </StackItem>
                 <StackItem>
                   <Button
@@ -226,4 +233,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
       </SwitchTransition>
     </div>
   );
+};
+
+const getMiningSchemaTargetFields = (miningSchema?: MiningSchema) => {
+  return miningSchema?.MiningField.filter(field => field.usageType === "target").map(field => field.name) as string[];
 };

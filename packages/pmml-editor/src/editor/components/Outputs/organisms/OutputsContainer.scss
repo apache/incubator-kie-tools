@@ -47,7 +47,10 @@
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
     height: calc(60vh - 52px);
-
+    // overriding disabled select background color because it doesn't play nice with --pf-global--BackgroundColor--200
+    .pf-c-select__toggle.pf-m-disabled {
+      --pf-c-select__toggle--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+    }
     &-enter {
       transform: translateX(100px);
       opacity: 0;

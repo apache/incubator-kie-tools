@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { ValidationService } from "../validation";
 
 interface OutputPayload {
   [Actions.AddOutput]: {
@@ -35,8 +36,9 @@ interface OutputPayload {
 
 export type OutputActions = ActionMap<OutputPayload>[keyof ActionMap<OutputPayload>];
 
-export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
-  service: HistoryService
+export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = (
+  service: HistoryService,
+  validation: ValidationService
 ): Reducer<Output, AllActions> => {
   return (state: Output, action: AllActions) => {
     switch (action.type) {
@@ -63,6 +65,8 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
           if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
             draft.OutputField.splice(outputIndex, 1);
           }
+          validation.clear(`models[${action.payload.modelIndex}].Output`);
+          // validateMiningFields(action.payload.modelIndex, draft.MiningField, validation);
         });
         break;
 

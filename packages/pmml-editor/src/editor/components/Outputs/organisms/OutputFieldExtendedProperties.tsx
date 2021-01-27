@@ -15,14 +15,15 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { Form, FormGroup, TextInput } from "@patternfly/react-core";
-import "../organisms/OutputFieldsTable.scss";
+import { useEffect, useMemo, useState } from "react";
+import { Form, FormGroup, TextInput, Tooltip } from "@patternfly/react-core";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector } from "../../EditorScorecard/atoms";
+import { HelpIcon } from "@patternfly/react-icons";
 
 interface OutputFieldExtendedPropertiesProps {
   activeOutputField: OutputField | undefined;
+  targetFields: string[];
   commit: (outputField: Partial<OutputField>) => void;
 }
 
@@ -36,7 +37,7 @@ const GenericSelectorEditor = (
 };
 
 export const OutputFieldExtendedProperties = (props: OutputFieldExtendedPropertiesProps) => {
-  const { activeOutputField, commit } = props;
+  const { activeOutputField, targetFields, commit } = props;
 
   const [optype, setOptype] = useState<OpType | undefined>();
   const [targetField, setTargetField] = useState<FieldName | undefined>();
@@ -60,6 +61,14 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
     setSegmentId(activeOutputField.segmentId);
     setIsFinalResult(activeOutputField.isFinalResult);
   }, [props]);
+
+  const targetFieldsOptions = useMemo(() => {
+    const options = [...targetFields];
+    if (options.length) {
+      options.sort().unshift("");
+    }
+    return options;
+  }, [targetFields]);
 
   const toNumber = (_value: string): number | undefined => {
     if (_value === "") {
@@ -134,19 +143,33 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Target field"
         fieldId="output-targetField-helper"
         helperText="Target field for the Output field."
+        labelIcon={
+          !targetFieldsOptions.length ? (
+            <Tooltip content={"There are no Mining Schema fields with target usage type."}>
+              <button
+                aria-label="More info for Target Field"
+                onClick={e => e.preventDefault()}
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              </button>
+            </Tooltip>
+          ) : (
+            <></>
+          )
+        }
       >
-        <TextInput
-          type="text"
+        <GenericSelector
           id="output-targetField"
-          name="output-targetField"
-          aria-describedby="output-targetField-helper"
-          value={(targetField ?? "").toString()}
-          onChange={e => setTargetField(e as FieldName)}
-          onBlur={e =>
-            commit({
-              targetField: targetField
-            })
-          }
+          items={targetFieldsOptions}
+          selection={(targetField ?? "").toString()}
+          onSelect={selection => {
+            if (selection !== targetField) {
+              setTargetField(selection === "" ? undefined : (selection as FieldName));
+              commit({ targetField: selection === "" ? undefined : (selection as FieldName) });
+            }
+          }}
+          isDisabled={!targetFieldsOptions.length}
         />
       </FormGroup>
       <FormGroup
@@ -168,7 +191,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           aria-describedby="output-value-helper"
           value={(value ?? "").toString()}
           onChange={e => setValue(e)}
-          onBlur={e =>
+          onBlur={() =>
             commit({
               value: value
             })
@@ -187,7 +210,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           aria-describedby="output-rank-helper"
           value={rank ?? ""}
           onChange={e => setRank(toNumber(e))}
-          onBlur={e =>
+          onBlur={() =>
             commit({
               rank: rank
             })
@@ -213,7 +236,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           aria-describedby="output-segmentId-helper"
           value={segmentId ?? ""}
           onChange={e => setSegmentId(e)}
-          onBlur={e =>
+          onBlur={() =>
             commit({
               segmentId: segmentId
             })
