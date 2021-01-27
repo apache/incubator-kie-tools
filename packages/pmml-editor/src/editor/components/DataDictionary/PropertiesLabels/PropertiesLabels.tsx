@@ -34,7 +34,7 @@ const PropertiesLabels = (props: PropertiesLabelsProps) => {
         className="properties-labels__item"
         color="cyan"
         closeBtnProps={{ className: "ignore-onclickoutside" }}
-        onClose={editingIndex ? () => onPropertyDelete?.(updatedField, editingIndex) : undefined}
+        onClose={editingIndex !== undefined ? () => onPropertyDelete?.(updatedField, editingIndex) : undefined}
       >
         <strong>{name}:</strong>
         &nbsp;
