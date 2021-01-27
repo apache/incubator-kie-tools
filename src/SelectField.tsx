@@ -124,7 +124,7 @@ function RenderSelect(props: SelectInputProps) {
         variant={props.fieldType === Array ? SelectVariant.typeaheadMulti : SelectVariant.single}
         name={props.name}
         placeholderText={props.placeholder}
-        
+        isOpen={expanded}
         selections={selected}
         onToggle={() => setExpanded(!expanded) }
         onSelect={handleSelect}
