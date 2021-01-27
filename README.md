@@ -58,6 +58,7 @@ Table of Contents
     - [Kogito Management Console Component Image](#kogito-management-console-component-image)
     - [Kogito Task Console Component Image](#kogito-task-console-component-image)
     - [Kogito Trusty UI Component Image](#kogito-trusty-ui-component-image)
+    - [Kogito JIT Runner Component Image](#kogito-jit-runner-component-image)
   - [Using Kogito Images to Deploy Apps on OpenShift](#using-kogito-images-to-deploy-apps-on-openshift)
     - [Using released images](#using-released-images)
     - [Pushing the built images to a local OCP registry:](#pushing-the-built-images-to-a-local-ocp-registry)
@@ -568,6 +569,7 @@ Today we have 3 Kogito Component Images:
 * [quay.io/kiegroup/kogito-management-console](https://quay.io/kiegroup/kogito-management-console)
 * [quay.io/kiegroup/kogito-task-console](https://quay.io/kiegroup/kogito-task-console)
 * [quay.io/kiegroup/kogito-trusty-ui](https://quay.io/kiegroup/kogito-trusty-ui)
+* [quay.io/kiegroup/kogito-jit-runner](https://quay.io/kiegroup/kogito-jit-runner)
 
 
 ### Kogito Data Index Component Images
@@ -753,6 +755,25 @@ To know what configurations this image accepts please take a look [here](kogito-
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Trusty UI 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
+
+### Kogito JIT Runner Component Image
+
+The Kogito JIT Runner provides a tool that allows you to submit a DMN model and evaluate it on the fly with a simple HTTP request. You can find more details on JIT [here](https://github.com/kiegroup/kogito-apps/tree/master/jitexecutor).
+
+Basic usage:
+
+```bash
+$ docker run -it quay.io/kiegroup/kogito-jit-runner:latest
+```
+
+To enable debug just use this env while running this image:
+
+```bash
+docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jit-runner:latest
+```
+You should notice a few debug messages being printed in the system output. You can then visit `localhost:8080/index.html` to test the service.
+
+To know what configurations this image accepts please take a look [here](kogito-jit-runner-overrides.yaml) on the **envs** section.
 
 ## Using Kogito Images to Deploy Apps on OpenShift
 
@@ -981,6 +1002,7 @@ With this Makefile you can:
      $ make build-image image_name=kogito-jobs-service 
      $ make build-image image_name=kogito-management-console
      $ make build-image image_name=kogito-trusty-ui
+     $ make build-image image_name=kogito-jit-runner
      ```
   
      We can ignore the build or the tests while interacting with a specific image as well, to build only:
@@ -1051,6 +1073,7 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-logging](modules/kogito-logging): Provides common logging functions.
 - [kogito-management-console](modules/kogito-management-console): Installs and Configure the management-console jar inside the image
 - [kogito-trusty-ui](modules/kogito-trusty-ui): Installs and Configure the trusty-ui jar inside the image
+- [kogito-jit-runner](modules/kogito-jit-runner): Installs and Configure the jit-runner jar inside the image
 - [kogito-maven](modules/kogito-maven): Installs and configure Maven on the S2I images, also provides custom configuration script.
 - [kogito-openjdk](modules/kogito-openjdk): Provides OpenJDK and JRE.
 - [kogito-persistence](modules/kogito-persistence): Provides the needed configuration scripts to properly configure the Kogito Services in the target image.
@@ -1072,6 +1095,7 @@ Please inspect the images overrides files to learn which modules are installed o
 - [quay.io/kiegroup/kogito-jobs-service](kogito-jobs-service-overrides.yaml)
 - [quay.io/kiegroup/kogito-management-console](kogito-management-console-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-ui](kogito-trusty-ui-overrides.yaml)
+- [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-overrides.yaml)
 - [quay.io/kiegroup/kogito-quarkus-jvm-ubi8](kogito-quarkus-jvm-overrides.yaml)
 - [quay.io/kiegroup/kogito-quarkus-ubi8](kogito-quarkus-overrides.yaml)
 - [quay.io/kiegroup/kogito-quarkus-ubi8-s2i](kogito-quarkus-s2i-overrides.yaml)

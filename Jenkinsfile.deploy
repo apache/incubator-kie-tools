@@ -149,6 +149,7 @@ pipeline {
                     sh 'cat modules/kogito-management-console/module.yaml'
                     sh 'cat modules/kogito-task-console/module.yaml'
                     sh 'cat modules/kogito-trusty-ui/module.yaml'
+                    sh 'cat modules/kogito-jit-runner/module.yaml'
 
                     if (isThereAnyChanges()) {
                         commitChanges('Updated Maven artifacts')
