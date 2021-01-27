@@ -4,7 +4,7 @@ import { connectField, filterDOMProps } from 'uniforms/es5';
 
 export type LongTextFieldProps = {
   onChange: (value: string, event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  inputRef: Ref<TextArea>;
+  inputRef: Ref<HTMLInputElement>;
   value?: string;
   prefix?: string;
 } & TextAreaProps;
