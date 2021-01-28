@@ -87,7 +87,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
           </EmptyStateBody>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">
-              {i18n.terms.dismiss}
+              {i18n.skipTour}
             </Button>
           </EmptyStateSecondaryActions>
         </EmptyState>
@@ -114,7 +114,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
           </Button>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">
-              {i18n.terms.dismiss}
+              {i18n.skipTour}
             </Button>
           </EmptyStateSecondaryActions>
         </EmptyState>
@@ -133,7 +133,7 @@ export const EmptyDialog = (onCloseAction: () => void) => {
           {i18n.oops}
         </Title>
         <EmptyStateBody>{i18n.somethingWrong}</EmptyStateBody>
-        <Button onClick={onCloseAction}>{i18n.terms.dismiss}</Button>
+        <Button onClick={onCloseAction}>{i18n.skipTour}</Button>
       </EmptyState>
     </>
   );

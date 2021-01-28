@@ -15,7 +15,6 @@
  */
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
 import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
@@ -24,11 +23,11 @@ import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-mars
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
-import { Operation } from "../../EditorScorecard";
+import { Operation, useOperation } from "../../EditorScorecard";
 import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import "./OutputsContainer.scss";
 import { findIncrementalName } from "../../../PMMLModelHelper";
-import { OperationContext } from "../../../PMMLEditor";
+import { useBatchDispatch, useHistoryService } from "../../../history";
 import get = Reflect.get;
 import set = Reflect.set;
 
@@ -48,9 +47,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const [selectedOutputIndex, setSelectedOutputIndex] = useState<number | undefined>(undefined);
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
-  const dispatch = useDispatch();
-
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation, setActiveOperation } = useOperation();
+  const { service, getCurrentState } = useHistoryService();
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const editItem: OutputField | undefined = useMemo(() => {
     if (selectedOutputIndex === undefined) {

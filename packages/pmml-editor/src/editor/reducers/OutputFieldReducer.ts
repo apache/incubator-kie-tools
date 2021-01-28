@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionMap, Actions } from "./Actions";
+import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
@@ -28,13 +28,13 @@ interface OutputFieldPayload {
 
 export type OutputFieldActions = ActionMap<OutputFieldPayload>[keyof ActionMap<OutputFieldPayload>];
 
-export const OutputFieldReducer: HistoryAwareReducer<OutputField[], OutputFieldActions> = (
+export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> = (
   service: HistoryService
-): Reducer<OutputField[], OutputFieldActions> => {
-  return (state: OutputField[], action: OutputFieldActions) => {
+): Reducer<OutputField[], AllActions> => {
+  return (state: OutputField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateOutput:
-        return service.mutate(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
+        service.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
           const outputIndex = action.payload.outputIndex;
           if (outputIndex >= 0 && outputIndex < draft.length) {
             draft[outputIndex] = {

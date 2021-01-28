@@ -1,17 +1,20 @@
 .constraints-enum {
-  &__list {
-  }
   &__item {
-    border-top: 1px solid var(--pf-global--disabled-color--200);
-    border-bottom: 1px solid var(--pf-global--disabled-color--200);
+    background-color: var(--pf-global--BackgroundColor--100);
+    border-top: 1px solid var(--pf-global--BorderColor--100);
+    &:last-of-type {
+      border-bottom: 1px solid var(--pf-global--BorderColor--100);
+    }
     list-style: none;
     pointer-events: auto !important;
     cursor: grab;
     z-index: 9999;
-    padding: 0.5rem 1rem;
-    margin-top: -1px;
+    padding: 1rem 0;
     &--sort-disabled {
       cursor: auto;
     }
+  }
+  &__field {
+    width: 320px;
   }
 }

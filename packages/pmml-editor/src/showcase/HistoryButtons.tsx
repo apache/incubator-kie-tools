@@ -83,6 +83,7 @@ const PMMLModal = (props: { get: () => Promise<string> }) => {
           </Button>
         ]}
         style={{ overflowX: "scroll" }}
+        appendTo={() => document.querySelector(".history-buttons") as HTMLElement}
       >
         <pre>
           <div ref={textRef} />

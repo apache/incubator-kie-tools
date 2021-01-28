@@ -15,7 +15,6 @@
  */
 import * as React from "react";
 import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
-
 import "./CharacteristicLabel.scss";
 
 export const CharacteristicLabel = (name: string, value: any, tooltip?: string) => {
@@ -46,19 +45,28 @@ export const CharacteristicLabel = (name: string, value: any, tooltip?: string) 
   );
 };
 
-export const CharacteristicLabelAttribute = (name: string, value: any, tooltip: string) => {
+export const CharacteristicPredicateLabel = (value: string) => {
+  const truncatedText = value.length > 32 ? value.slice(0, 29) + "..." : value;
+
   return (
-    <Tooltip
-      position={TooltipPosition.top}
-      isContentLeftAligned={true}
-      maxWidth={"100em"}
-      content={<pre>{tooltip}</pre>}
-    >
-      <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
-        <strong>{name}:</strong>
-        &nbsp;
-        <pre>{value}</pre>
-      </Label>
-    </Tooltip>
+    <>
+      {value.length > truncatedText.length && (
+        <Tooltip
+          position={TooltipPosition.top}
+          isContentLeftAligned={true}
+          maxWidth={"100em"}
+          content={<pre>{value}</pre>}
+        >
+          <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+            <pre>{truncatedText}</pre>
+          </Label>
+        </Tooltip>
+      )}
+      {value.length === truncatedText.length && (
+        <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+          <pre>{value}</pre>
+        </Label>
+      )}
+    </>
   );
 };

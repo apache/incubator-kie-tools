@@ -11,3 +11,4 @@ vsc-extension-quickstart.md
 **/*.ts
 **/*.log
 files-for-extension-testing
+test-resources/**

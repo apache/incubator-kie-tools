@@ -19,11 +19,12 @@ import { Gallery, GalleryItem, PageSection, PageSectionVariants } from "@pattern
 import { EmptyStateNoModels } from "../organisms";
 import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
 import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
 import { useHistory } from "react-router";
+import { useBatchDispatch, useHistoryService } from "../../../history";
 
 interface LandingPageProps {
   path: string;
@@ -31,7 +32,8 @@ interface LandingPageProps {
 
 export const LandingPage = (props: LandingPageProps) => {
   const history = useHistory();
-  const dispatch = useDispatch();
+  const { service, getCurrentState } = useHistoryService();
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [filter, setFilter] = useState("");
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);

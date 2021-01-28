@@ -136,6 +136,10 @@ export class GithubService {
     return /^(http:\/\/|https:\/\/)?(www\.)?github.com.*$/.test(url);
   }
 
+  public isGithubRaw(url: string): boolean {
+    return /^(http:\/\/|https:\/\/)?(raw\.)?githubusercontent.com.*$/.test(url);
+  }
+
   public isGist(url: string): boolean {
     return this.isGistDefault(url) || this.isGistRaw(url);
   }
@@ -186,11 +190,22 @@ export class GithubService {
 
   public retrieveFileInfo(fileUrl: string): FileInfo {
     const split = new URL(fileUrl).pathname.split("/");
+
+    if (this.isGithub(fileUrl)) {
+      return {
+        gitRef: split[4],
+        repo: split[2],
+        org: split[1],
+        path: split.slice(5).join("/")
+      };
+    }
+
+    // GitHub Raw
     return {
-      gitRef: split[4],
+      gitRef: split[3],
       repo: split[2],
       org: split[1],
-      path: split.slice(5).join("/")
+      path: split.slice(4).join("/")
     };
   }
 
@@ -208,17 +223,18 @@ export class GithubService {
 
   public fetchGithubFile(fileUrl: string): Promise<string> {
     const fileInfo = this.retrieveFileInfo(fileUrl);
-
-    return this.octokitGet(fileInfo)
-      .then(res => atob((res.data as any).content))
-      .catch(e => {
-        console.debug(`Error fetching ${fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-        return fetch(
-          `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
-        ).then(res => {
-          return res.ok ? res.text() : Promise.reject("Not able to retrieve file content from GitHub.");
-        });
-      });
+    return this.authenticate().then(() =>
+      this.octokitGet(fileInfo)
+        .then(res => atob((res.data as any).content))
+        .catch(e => {
+          console.debug(`Error fetching ${fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
+          return fetch(
+            `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
+          ).then(res => {
+            return res.ok ? res.text() : Promise.reject("Not able to retrieve file content from GitHub.");
+          });
+        })
+    );
   }
 
   public fetchGistFile(fileUrl: string): Promise<string> {

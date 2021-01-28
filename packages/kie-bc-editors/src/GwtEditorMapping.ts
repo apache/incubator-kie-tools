@@ -46,7 +46,6 @@ export class GwtEditorMapping {
         {
           type: "js",
           paths: [
-            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/appformer-js-monaco/monaco.min.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/ace.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/mode-xml.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/theme-chrome.js`,
@@ -74,7 +73,6 @@ export class GwtEditorMapping {
             `${editorInitArgs.resourcesPathPrefix}/model/DMN12.js`,
             `${editorInitArgs.resourcesPathPrefix}/model/KIE.js`,
             `${editorInitArgs.resourcesPathPrefix}/model/MainJs.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/appformer-js-monaco/monaco.min.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/ace.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/mode-xml.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/theme-chrome.js`,

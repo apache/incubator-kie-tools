@@ -18,18 +18,22 @@ import { Actions, AllActions, HeaderReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 
+const service = new HistoryService();
 const header: Header = { description: "" };
-
-const reducer: Reducer<Header, AllActions> = HeaderReducer(new HistoryService());
+const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: header };
+const reducer: Reducer<Header, AllActions> = HeaderReducer(service);
 
 describe("HeaderReducer::Valid actions", () => {
   test("Actions.SetHeaderDescription", () => {
-    const updated: Header = reducer(header, {
+    reducer(header, {
       type: Actions.SetHeaderDescription,
       payload: {
         description: "description"
       }
     });
+
+    const updated: Header = service.commit(pmml)?.Header as Header;
+
     expect(updated).not.toEqual(header);
     expect(updated.description).toBe("description");
   });

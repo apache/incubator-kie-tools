@@ -29,6 +29,7 @@ import {
   ToolbarItem
 } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
+import "./CharacteristicsToolbar.scss";
 
 interface CharacteristicsToolbarProps {
   onFilter: (filter: string) => void;
@@ -73,7 +74,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       data-testid="characteristics-toolbar__submit"
                       variant={ButtonVariant.control}
                       aria-label="filter button for filter input"
-                      onClick={e => onFilter(filter)}
+                      onClick={() => onFilter(filter)}
                     >
                       <SearchIcon />
                     </Button>
@@ -88,7 +89,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                 id="add-characteristic-button"
                 data-testid="characteristics-toolbar__add-characteristic"
                 variant="primary"
-                onClick={e => onAddCharacteristic()}
+                onClick={() => onAddCharacteristic()}
               >
                 Add Characteristic
               </Button>

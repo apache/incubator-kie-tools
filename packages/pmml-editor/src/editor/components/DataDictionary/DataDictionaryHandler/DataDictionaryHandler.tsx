@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Button,
   ButtonVariant,
@@ -11,41 +11,86 @@ import {
   Title,
   TitleSizes
 } from "@patternfly/react-core";
-import { CloseIcon } from "@patternfly/react-icons";
-import { isEqual } from "lodash";
-import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import { DataDictionary, FieldName, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
-import DataDictionaryContainer, { DataField } from "../DataDictionaryContainer/DataDictionaryContainer";
-import { convertDD2PMML, convertPMML2DD } from "../dataDictionaryUtils";
+import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
+import { Operation, useOperation } from "../../EditorScorecard";
+import { useBatchDispatch, useHistoryService } from "../../../history";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
-  const dispatch = useDispatch();
   const pmmlDataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
-  const [dictionary, setDictionary] = useState<DataField[]>(convertPMML2DD(pmmlDataDictionary));
-  const handleDataDictionaryUpdate = (updatedDictionary: DataField[]) => {
-    setDictionary(updatedDictionary);
-  };
+  const dictionary = useMemo(() => convertPMML2DD(pmmlDataDictionary), [pmmlDataDictionary]);
+  const { setActiveOperation } = useOperation();
+
+  const { service, getCurrentState } = useHistoryService();
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const handleDataDictionaryToggle = () => {
-    if (isDataDictionaryOpen) {
-      const convertedDataDictionary = convertDD2PMML(dictionary);
-      // temporary: checking if they are equals to prevent dispatching actions with no data changes
-      if (!isEqual(pmmlDataDictionary?.DataField, convertedDataDictionary)) {
-        dispatch({
-          type: Actions.SetDataFields,
-          payload: {
-            dataFields: convertedDataDictionary
-          }
-        });
-      }
-    }
+    setActiveOperation(Operation.NONE);
     setIsDataDictionaryOpen(!isDataDictionaryOpen);
   };
 
-  useEffect(() => {
-    setDictionary(convertPMML2DD(pmmlDataDictionary));
-  }, [pmmlDataDictionary]);
+  const addField = (name: string, type: DDDataField["type"], optype: DDDataField["optype"]) => {
+    dispatch({
+      type: Actions.AddDataDictionaryField,
+      payload: {
+        name: name,
+        type: type,
+        optype: optype
+      }
+    });
+  };
+
+  const addBatchFields = (fields: string[]) => {
+    dispatch({
+      type: Actions.AddBatchDataDictionaryFields,
+      payload: {
+        dataDictionaryFields: fields
+      }
+    });
+  };
+
+  const deleteField = (index: number) => {
+    dispatch({
+      type: Actions.DeleteDataDictionaryField,
+      payload: {
+        index
+      }
+    });
+  };
+
+  const reorderFields = (oldIndex: number, newIndex: number) => {
+    dispatch({
+      type: Actions.ReorderDataDictionaryFields,
+      payload: {
+        oldIndex,
+        newIndex
+      }
+    });
+  };
+
+  const updateField = (index: number, originalName: string, field: DDDataField) => {
+    dispatch({
+      type: Actions.UpdateDataDictionaryField,
+      payload: {
+        dataDictionaryIndex: index,
+        dataField: convertToDataField(field),
+        originalName: originalName as FieldName
+      }
+    });
+  };
+
+  const handleEditingPhase = (status: boolean) => {
+    setActiveOperation(status ? Operation.UPDATE_DATA_DICTIONARY : Operation.NONE);
+  };
+
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`DataDictionary`), [dictionary]);
 
   const header = (
     <Split hasGutter={true}>
@@ -64,9 +109,22 @@ const DataDictionaryHandler = () => {
 
   return (
     <>
-      <Button variant="secondary" onClick={handleDataDictionaryToggle}>
-        Set Data Dictionary
-      </Button>
+      {validations.length === 0 && (
+        <Button variant="secondary" onClick={handleDataDictionaryToggle}>
+          Set Data Dictionary
+        </Button>
+      )}
+      {validations.length > 0 && (
+        <ValidationIndicatorTooltip validations={validations}>
+          <Button
+            variant="secondary"
+            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            onClick={handleDataDictionaryToggle}
+          >
+            Set Data Dictionary
+          </Button>
+        </ValidationIndicatorTooltip>
+      )}
       <Modal
         aria-label="data-dictionary"
         title="Data Dictionary"
@@ -76,7 +134,15 @@ const DataDictionaryHandler = () => {
         variant={ModalVariant.large}
         onEscapePress={() => false}
       >
-        <DataDictionaryContainer dataDictionary={dictionary} onUpdate={handleDataDictionaryUpdate} />
+        <DataDictionaryContainer
+          dataDictionary={dictionary}
+          onAdd={addField}
+          onEdit={updateField}
+          onDelete={deleteField}
+          onReorder={reorderFields}
+          onBatchAdd={addBatchFields}
+          onEditingPhaseChange={handleEditingPhase}
+        />
       </Modal>
     </>
   );

@@ -15,29 +15,34 @@
  */
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
-import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
+import {
+  AttributeLabels,
+  CharacteristicLabels,
+  CharacteristicPredicateLabel,
+  CharacteristicsTableAction
+} from "../atoms";
+import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
+import { toText } from "../../../reducers";
 import "./CharacteristicsTableRow.scss";
-import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
-import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
+  areReasonCodesUsed: boolean;
+  isBaselineScoreRequired: boolean;
   dataFields: DataField[];
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
-  const { characteristic, dataFields, onEdit, onDelete } = props;
-
-  const index = characteristic.index;
+  const { characteristic, areReasonCodesUsed, isBaselineScoreRequired, dataFields, onEdit, onDelete } = props;
 
   return (
     <article
-      className={`characteristic-item characteristic-item-n${index} editable`}
-      onClick={onEdit}
+      className={"editable-item__inner"}
       tabIndex={0}
+      onClick={onEdit}
       onKeyDown={e => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -51,12 +56,42 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
           <strong>{characteristic.characteristic.name}</strong>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <CharacteristicLabels activeCharacteristic={characteristic.characteristic} dataFields={dataFields} />
+          <CharacteristicLabels
+            activeCharacteristic={characteristic.characteristic}
+            areReasonCodesUsed={areReasonCodesUsed}
+            isBaselineScoreRequired={isBaselineScoreRequired}
+          />
+          <CharacteristicAttributesList
+            characteristic={characteristic.characteristic}
+            areReasonCodesUsed={areReasonCodesUsed}
+            dataFields={dataFields}
+          />
         </SplitItem>
         <SplitItem>
           <CharacteristicsTableAction onDelete={onDelete} />
         </SplitItem>
       </Split>
     </article>
+  );
+};
+
+interface CharacteristicAttributesListProps {
+  characteristic: Characteristic;
+  areReasonCodesUsed: boolean;
+  dataFields: DataField[];
+}
+
+const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
+  const { characteristic, areReasonCodesUsed, dataFields } = props;
+
+  return (
+    <ul>
+      {characteristic.Attribute.map((item, index) => (
+        <li key={index}>
+          {CharacteristicPredicateLabel(toText(item.predicate, dataFields))}
+          <AttributeLabels activeAttribute={item} areReasonCodesUsed={areReasonCodesUsed} />
+        </li>
+      ))}
+    </ul>
   );
 };

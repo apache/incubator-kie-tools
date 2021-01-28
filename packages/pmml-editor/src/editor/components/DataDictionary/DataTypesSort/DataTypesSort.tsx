@@ -1,24 +1,24 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Button, Flex, FlexItem, Label } from "@patternfly/react-core";
 import { GripVerticalIcon } from "@patternfly/react-icons";
-import { DataField } from "../DataDictionaryContainer/DataDictionaryContainer";
-import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
+import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypesSort.scss";
 
 interface DataTypesSortProps {
-  dataTypes: DataField[];
-  onSort: (dataTypes: DataField[]) => void;
+  dataTypes: DDDataField[];
+  onReorder: (oldIndex: number, newIndex: number) => void;
 }
 
-const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
-  const [state, setState] = useState<DataField[]>(dataTypes);
+const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
+  const [state, setState] = useState<DDDataField[]>(dataTypes);
 
   const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+    // still updating the internal state before calling the callback to avoid flickering
     const newOrder = reorder(state, oldIndex, newIndex);
     setState(newOrder);
-    onSort(newOrder);
+    onReorder(oldIndex, newIndex);
   };
 
   const getHelperClass = () => {
@@ -30,12 +30,16 @@ const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
     }
   };
 
+  useEffect(() => {
+    setState(dataTypes);
+  }, [dataTypes]);
+
   return <SortableList items={state} onSortEnd={onSortEnd} lockAxis="y" helperClass={getHelperClass()} />;
 };
 
 export default DataTypesSort;
 
-const SortableList = SortableContainer(({ items }: { items: DataField[] }) => {
+const SortableList = SortableContainer(({ items }: { items: DDDataField[] }) => {
   return (
     <ul className="data-types-sorting">
       {items.map((item, index) => (
@@ -45,10 +49,9 @@ const SortableList = SortableContainer(({ items }: { items: DataField[] }) => {
   );
 });
 
-const SortableItem = SortableElement(({ item }: { item: DataField }) => (
+const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
   <li className="editable-item data-type-item__sortable">
     <section className="editable-item__inner">
-      {/*abstract data field component from DataDictionaryContainer and reuse it here*/}
       <Flex alignItems={{ default: "alignItemsCenter" }}>
         <FlexItem spacer={{ default: "spacerXs" }}>
           <Button variant="plain" aria-label="Drag to sort" component={"span"}>
@@ -59,20 +62,14 @@ const SortableItem = SortableElement(({ item }: { item: DataField }) => (
           <strong>{item.name}</strong>
         </FlexItem>
         <FlexItem>
-          <Label color="blue">{item.type}</Label>
-          {item.constraints !== undefined && (
-            <>
-              {" "}
-              <ConstraintsLabel constraints={item.constraints} />
-            </>
-          )}
+          <Label color="blue">{item.type}</Label> <Label color="blue">{item.optype}</Label>
         </FlexItem>
       </Flex>
     </section>
   </li>
 ));
 
-const reorder = (list: DataField[], startIndex: number, endIndex: number) => {
+const reorder = (list: DDDataField[], startIndex: number, endIndex: number) => {
   const result = [...list];
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);

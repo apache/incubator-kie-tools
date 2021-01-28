@@ -20,7 +20,7 @@ import { Form } from "@patternfly/react-core";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
-import { OperationContext } from "../../../PMMLEditor";
+import { useOperation } from "../OperationContext";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -29,7 +29,7 @@ export interface IndexedCharacteristic {
 
 interface CharacteristicsTableProps {
   modelIndex: number;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
   characteristics: IndexedCharacteristic[];
   selectedCharacteristicIndex: number | undefined;
@@ -46,7 +46,7 @@ interface CharacteristicsTableProps {
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const {
     modelIndex,
-    useReasonCodes,
+    areReasonCodesUsed,
     isBaselineScoreRequired,
     characteristics,
     selectedCharacteristicIndex,
@@ -62,7 +62,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation, setActiveOperation } = useOperation();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
@@ -73,6 +73,14 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
       addCharacteristicRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
+
+  //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
+  useEffect(() => {
+    if (selectedCharacteristicIndex === characteristics.length) {
+      setSelectedCharacteristicIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [characteristics, selectedCharacteristicIndex]);
 
   const onEdit = (index: number | undefined) => {
     setSelectedCharacteristicIndex(index);
@@ -98,35 +106,41 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
       }}
     >
       <section>
-        {characteristics.map(ic => {
-          if (selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC) {
-            return (
-              <CharacteristicsTableEditRow
-                key={ic.index}
-                modelIndex={modelIndex}
-                useReasonCodes={useReasonCodes}
-                isBaselineScoreRequired={isBaselineScoreRequired}
-                characteristic={ic}
-                validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
-                viewAttribute={viewAttribute}
-                onAddAttribute={onAddAttribute}
-                onCommitAndClose={onCommitAndClose}
-                onCommit={onCommit}
-                onCancel={onCancel}
-              />
-            );
-          } else {
-            return (
+        {characteristics.map(ic => (
+          <article
+            key={ic.index}
+            className={`editable-item output-item-n${selectedCharacteristicIndex} ${
+              selectedCharacteristicIndex === ic.index ? "editable-item--editing" : ""
+            }`}
+          >
+            {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
+              <div ref={addCharacteristicRowRef}>
+                <CharacteristicsTableEditRow
+                  modelIndex={modelIndex}
+                  areReasonCodesUsed={areReasonCodesUsed}
+                  isBaselineScoreRequired={isBaselineScoreRequired}
+                  characteristic={ic}
+                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                  viewAttribute={viewAttribute}
+                  onAddAttribute={onAddAttribute}
+                  onCommitAndClose={onCommitAndClose}
+                  onCommit={onCommit}
+                  onCancel={onCancel}
+                />
+              </div>
+            )}
+            {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
               <CharacteristicsTableRow
-                key={ic.index}
+                areReasonCodesUsed={areReasonCodesUsed}
+                isBaselineScoreRequired={isBaselineScoreRequired}
                 characteristic={ic}
                 dataFields={dataFields}
                 onEdit={() => onEdit(ic.index)}
                 onDelete={() => onDelete(ic.index)}
               />
-            );
-          }
-        })}
+            )}
+          </article>
+        ))}
       </section>
     </Form>
   );

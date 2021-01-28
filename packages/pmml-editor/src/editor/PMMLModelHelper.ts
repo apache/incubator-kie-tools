@@ -64,11 +64,17 @@ export type ModelType =
   | "Tree Model"
   | "<Unknown>";
 
+export enum SupportedCapability {
+  NONE,
+  VIEWER,
+  EDITOR
+}
+
 export interface PMMLModelMapping<M> {
   model: M;
   type: ModelType;
   iconUrl: string;
-  isSupported: boolean;
+  capability: SupportedCapability;
   factory: (() => M) | undefined;
 }
 
@@ -77,105 +83,105 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
     model: AnomalyDetectionModel,
     type: "Anomaly Detection Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: AssociationModel,
     type: "Association Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: BayesianNetworkModel,
     type: "Bayesian Network Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: BaselineModel,
     type: "Baseline Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: ClusteringModel,
     type: "Clustering Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: GaussianProcessModel,
     type: "Gaussian Process Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: GeneralRegressionModel,
     type: "General Regression Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: MiningModel,
     type: "Mining Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: NaiveBayesModel,
     type: "Naive Bayes Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: NearestNeighborModel,
     type: "Nearest Neighbor Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: NeuralNetwork,
     type: "Neural Network",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: RegressionModel,
     type: "Regression Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.VIEWER,
     factory: undefined
   },
   {
     model: RuleSetModel,
     type: "RuleSet Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: SequenceModel,
     type: "Sequence Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
   {
     model: Scorecard,
     type: "Scorecard",
     iconUrl: "card-icon-scorecard.svg",
-    isSupported: true,
+    capability: SupportedCapability.EDITOR,
     factory: () => {
       const model: Scorecard = new Scorecard({
         MiningSchema: { MiningField: [] },
@@ -191,18 +197,30 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
     model: SupportVectorMachineModel,
     type: "Support Vector Machine Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
-  { model: TextModel, type: "Text Model", iconUrl: "card-icon-default.svg", isSupported: false, factory: undefined },
+  {
+    model: TextModel,
+    type: "Text Model",
+    iconUrl: "card-icon-default.svg",
+    capability: SupportedCapability.NONE,
+    factory: undefined
+  },
   {
     model: TimeSeriesModel,
     type: "Time Series Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false,
+    capability: SupportedCapability.NONE,
     factory: undefined
   },
-  { model: TreeModel, type: "Tree Model", iconUrl: "card-icon-default.svg", isSupported: false, factory: undefined }
+  {
+    model: TreeModel,
+    type: "Tree Model",
+    iconUrl: "card-icon-default.svg",
+    capability: SupportedCapability.NONE,
+    factory: undefined
+  }
 );
 
 export const isCollection = <T>(collection: T[] | undefined): boolean => {
@@ -237,7 +255,7 @@ export const getModelIconUrlByType = (type: ModelType): string => {
 export const isSupportedModelType = (model: Model): boolean => {
   for (const _mapping of PMMLModels) {
     if (model instanceof _mapping.model) {
-      return _mapping.isSupported;
+      return _mapping.capability === SupportedCapability.VIEWER || _mapping.capability === SupportedCapability.EDITOR;
     }
   }
   return false;

@@ -29,9 +29,10 @@ import {
 import { CharacteristicsContainer, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "./ScorecardEditorPage.scss";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
+import { useBatchDispatch, useHistoryService } from "../../../history";
 
 interface ScorecardEditorPageProps {
   path: string;
@@ -41,7 +42,8 @@ interface ScorecardEditorPageProps {
 export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const { modelIndex } = props;
 
-  const dispatch = useDispatch();
+  const { service, getCurrentState } = useHistoryService();
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [filter, setFilter] = useState("");
 
@@ -142,13 +144,14 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
           <PageSection isFilled={false}>
             <CorePropertiesTable
+              modelIndex={modelIndex}
               isScorable={model.isScorable ?? true}
               functionName={model.functionName}
-              algorithmName={model.algorithmName ?? ""}
+              algorithmName={model.algorithmName}
               baselineScore={model.baselineScore}
               baselineMethod={model.baselineMethod ?? "other"}
               initialScore={model.initialScore}
-              useReasonCodes={model.useReasonCodes ?? true}
+              areReasonCodesUsed={model.useReasonCodes ?? true}
               reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
               commit={_props => {
                 dispatch({
@@ -161,7 +164,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                     baselineScore: _props.baselineScore,
                     baselineMethod: _props.baselineMethod,
                     initialScore: _props.initialScore,
-                    useReasonCodes: _props.useReasonCodes,
+                    useReasonCodes: _props.areReasonCodesUsed,
                     reasonCodeAlgorithm: _props.reasonCodeAlgorithm
                   }
                 });
@@ -170,53 +173,51 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           </PageSection>
 
           <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
-            <PageSection variant={PageSectionVariants.light}>
-              <div>
-                <CharacteristicsContainer
-                  modelIndex={modelIndex}
-                  useReasonCodes={model.useReasonCodes ?? true}
-                  isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
-                  characteristics={characteristics?.Characteristic ?? []}
-                  filteredCharacteristics={filteredCharacteristics}
-                  filter={filter}
-                  onFilter={setFilter}
-                  deleteCharacteristic={index => {
-                    if (window.confirm(`Delete Characteristic "${index}"?`)) {
-                      dispatch({
-                        type: Actions.Scorecard_DeleteCharacteristic,
-                        payload: {
-                          modelIndex: modelIndex,
-                          characteristicIndex: index
-                        }
-                      });
-                    }
-                  }}
-                  commit={(_index, _characteristic) => {
-                    if (_index === undefined) {
-                      dispatch({
-                        type: Actions.Scorecard_AddCharacteristic,
-                        payload: {
-                          modelIndex: modelIndex,
-                          name: _characteristic.name,
-                          reasonCode: _characteristic.reasonCode,
-                          baselineScore: _characteristic.baselineScore
-                        }
-                      });
-                    } else {
-                      dispatch({
-                        type: Actions.Scorecard_UpdateCharacteristic,
-                        payload: {
-                          modelIndex: modelIndex,
-                          characteristicIndex: _index,
-                          name: _characteristic.name,
-                          reasonCode: _characteristic.reasonCode,
-                          baselineScore: _characteristic.baselineScore
-                        }
-                      });
-                    }
-                  }}
-                />
-              </div>
+            <PageSection variant={PageSectionVariants.light} style={{ height: "100%" }}>
+              <CharacteristicsContainer
+                modelIndex={modelIndex}
+                areReasonCodesUsed={model.useReasonCodes ?? true}
+                isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
+                characteristics={characteristics?.Characteristic ?? []}
+                filteredCharacteristics={filteredCharacteristics}
+                filter={filter}
+                onFilter={setFilter}
+                deleteCharacteristic={index => {
+                  if (window.confirm(`Delete Characteristic "${index}"?`)) {
+                    dispatch({
+                      type: Actions.Scorecard_DeleteCharacteristic,
+                      payload: {
+                        modelIndex: modelIndex,
+                        characteristicIndex: index
+                      }
+                    });
+                  }
+                }}
+                commit={(_index, _characteristic) => {
+                  if (_index === undefined) {
+                    dispatch({
+                      type: Actions.Scorecard_AddCharacteristic,
+                      payload: {
+                        modelIndex: modelIndex,
+                        name: _characteristic.name,
+                        reasonCode: _characteristic.reasonCode,
+                        baselineScore: _characteristic.baselineScore
+                      }
+                    });
+                  } else {
+                    dispatch({
+                      type: Actions.Scorecard_UpdateCharacteristic,
+                      payload: {
+                        modelIndex: modelIndex,
+                        characteristicIndex: _index,
+                        name: _characteristic.name,
+                        reasonCode: _characteristic.reasonCode,
+                        baselineScore: _characteristic.baselineScore
+                      }
+                    });
+                  }
+                }}
+              />
             </PageSection>
           </PageSection>
         </>

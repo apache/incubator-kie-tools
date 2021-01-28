@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/i18n-common-dictionary",
-  "version": "0.8.1",
+  "version": "0.8.3",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -16,8 +16,7 @@
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none --passWithNoTests",
-    "build:productization": "yarn run build:prod"
+    "build:prod": "yarn run build --mode production --devtool none --passWithNoTests"
   },
   "babel": {
     "presets": [
@@ -26,6 +25,6 @@
     ]
   },
   "dependencies": {
-    "@kogito-tooling/i18n": "0.8.1"
+    "@kogito-tooling/i18n": "0.8.3"
   }
 }

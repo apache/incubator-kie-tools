@@ -21,7 +21,6 @@ import { CharacteristicsTable, IndexedCharacteristic } from "./CharacteristicsTa
 import "./CharacteristicsContainer.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Actions } from "../../../reducers";
-import { useDispatch } from "react-redux";
 import {
   AttributeEditor,
   AttributeToolbar,
@@ -32,13 +31,14 @@ import {
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
-import { OperationContext } from "../../../PMMLEditor";
+import { useBatchDispatch, useHistoryService } from "../../../history";
+import { useOperation } from "../OperationContext";
 import set = Reflect.set;
 import get = Reflect.get;
 
 interface CharacteristicsContainerProps {
   modelIndex: number;
-  useReasonCodes: boolean;
+  areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
   characteristics: Characteristic[];
   filteredCharacteristics: IndexedCharacteristic[];
@@ -53,7 +53,7 @@ type CharacteristicsViewSection = "overview" | "attribute";
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
   const {
     modelIndex,
-    useReasonCodes,
+    areReasonCodesUsed,
     isBaselineScoreRequired,
     characteristics,
     filteredCharacteristics,
@@ -63,9 +63,9 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     commit
   } = props;
 
-  const dispatch = useDispatch();
-
-  const { setActiveOperation } = React.useContext(OperationContext);
+  const { setActiveOperation } = useOperation();
+  const { service, getCurrentState } = useHistoryService();
+  const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
@@ -196,14 +196,14 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
           >
             <>
               {viewSection === "overview" && (
-                <Stack hasGutter={true}>
+                <Stack>
                   <StackItem>
                     <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
                   </StackItem>
                   <StackItem className="characteristics-container__overview">
                     <CharacteristicsTable
                       modelIndex={modelIndex}
-                      useReasonCodes={useReasonCodes}
+                      areReasonCodesUsed={areReasonCodesUsed}
                       isBaselineScoreRequired={isBaselineScoreRequired}
                       characteristics={filteredCharacteristics}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
@@ -229,7 +229,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       modelIndex={modelIndex}
                       characteristicIndex={selectedCharacteristicIndex}
                       attributeIndex={selectedAttributeIndex}
-                      useReasonCodes={useReasonCodes}
+                      areReasonCodesUsed={areReasonCodesUsed}
                       onCancel={onViewOverviewView}
                       onCommit={(_index, _content) => {
                         if (_index === undefined) {

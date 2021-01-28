@@ -18,11 +18,10 @@ import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./OutputFieldsTable.scss";
-import { Operation } from "../../EditorScorecard";
+import { Operation, useOperation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import OutputFieldRow from "../molecules/OutputFieldRow";
 import OutputFieldEditRow from "../molecules/OutputFieldEditRow";
-import { OperationContext } from "../../../PMMLEditor";
 
 interface OutputFieldsTableProps {
   modelIndex: number;
@@ -54,13 +53,21 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
 
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
 
-  const { activeOperation, setActiveOperation } = React.useContext(OperationContext);
+  const { activeOperation, setActiveOperation } = useOperation();
 
   useEffect(() => {
     if (activeOperation === Operation.UPDATE_OUTPUT && addOutputRowRef.current) {
       addOutputRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
+
+  //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
+  useEffect(() => {
+    if (selectedOutputIndex === outputs.length) {
+      setSelectedOutputIndex(undefined);
+      setActiveOperation(Operation.NONE);
+    }
+  }, [outputs, selectedOutputIndex]);
 
   const onEdit = (index: number | undefined) => {
     setSelectedOutputIndex(index);
@@ -87,24 +94,25 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
       <section>
         {outputs.map((o, index) => (
           <article
+            key={index}
             className={`editable-item output-item-n${selectedOutputIndex} ${
               selectedOutputIndex === index ? "editable-item--editing" : ""
             }`}
           >
             {selectedOutputIndex === index && (
-              <OutputFieldEditRow
-                key={index}
-                outputField={o}
-                validateOutputName={_name => onValidateOutputFieldName(index, _name)}
-                viewExtendedProperties={viewExtendedProperties}
-                onCommitAndClose={onCommitAndClose}
-                onCommit={onCommit}
-                onCancel={onCancel}
-              />
+              <div ref={addOutputRowRef}>
+                <OutputFieldEditRow
+                  outputField={o}
+                  validateOutputName={_name => onValidateOutputFieldName(index, _name)}
+                  viewExtendedProperties={viewExtendedProperties}
+                  onCommitAndClose={onCommitAndClose}
+                  onCommit={onCommit}
+                  onCancel={onCancel}
+                />
+              </div>
             )}
             {selectedOutputIndex !== index && (
               <OutputFieldRow
-                key={index}
                 outputField={o}
                 onEditOutputField={() => onEdit(index)}
                 onDeleteOutputField={() => onDelete(index)}
