@@ -53,7 +53,7 @@ export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], Al
               isFinalResult: action.payload.outputField.isFinalResult
             };
           }
-          validation.clear(`models[${action.payload.modelIndex}].Output`);
+          //validation.clear(`models[${action.payload.modelIndex}].Output`);
           // validate outputs here
         });
         break;

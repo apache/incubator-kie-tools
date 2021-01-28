@@ -39,6 +39,7 @@ interface OutputFieldsTableProps {
 
 const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   const {
+    modelIndex,
     outputs,
     selectedOutputIndex,
     setSelectedOutputIndex,
@@ -95,7 +96,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
         {outputs.map((o, index) => (
           <article
             key={index}
-            className={`editable-item output-item-n${selectedOutputIndex} ${
+            className={`editable-item output-item-n${index} ${
               selectedOutputIndex === index ? "editable-item--editing" : ""
             }`}
           >
@@ -113,6 +114,8 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
             )}
             {selectedOutputIndex !== index && (
               <OutputFieldRow
+                modelIndex={modelIndex}
+                outputFieldIndex={index}
                 outputField={o}
                 onEditOutputField={() => onEdit(index)}
                 onDeleteOutputField={() => onDelete(index)}

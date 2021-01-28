@@ -16,28 +16,22 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, TextInput, Tooltip } from "@patternfly/react-core";
+import { Form, FormSelect, FormSelectOption, FormGroup, TextInput, Tooltip } from "@patternfly/react-core";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector } from "../../EditorScorecard/atoms";
 import { HelpIcon } from "@patternfly/react-icons";
+import { useValidationService } from "../../../validation";
 
 interface OutputFieldExtendedPropertiesProps {
+  modelIndex: number;
+  activeOutputFieldIndex?: number;
   activeOutputField: OutputField | undefined;
   targetFields: string[];
   commit: (outputField: Partial<OutputField>) => void;
 }
 
-const GenericSelectorEditor = (
-  id: string,
-  items: string[],
-  selection: string,
-  onSelect: (_selection: string) => void
-) => {
-  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
-};
-
 export const OutputFieldExtendedProperties = (props: OutputFieldExtendedPropertiesProps) => {
-  const { activeOutputField, targetFields, commit } = props;
+  const { activeOutputField, activeOutputFieldIndex, modelIndex, targetFields, commit } = props;
 
   const [optype, setOptype] = useState<OpType | undefined>();
   const [targetField, setTargetField] = useState<FieldName | undefined>();
@@ -130,6 +124,12 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
     }
   );
 
+  const service = useValidationService().service;
+  const validationsTargetField = useMemo(
+    () => service.get(`models[${modelIndex}].Output.OutputField[${activeOutputFieldIndex}].targetField`),
+    [modelIndex, activeOutputFieldIndex, activeOutputField]
+  );
+
   return (
     <Form>
       <FormGroup
@@ -142,7 +142,8 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Target field"
         fieldId="output-targetField-helper"
-        helperText="Target field for the Output field."
+        helperText={validationsTargetField.length === 0 ? "" : validationsTargetField[0].message}
+        validated={validationsTargetField.length === 0 ? "default" : "warning"}
         labelIcon={
           !targetFieldsOptions.length ? (
             <Tooltip content={"There are no Mining Schema fields with target usage type."}>
@@ -159,18 +160,22 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           )
         }
       >
-        <GenericSelector
+        <FormSelect
           id="output-targetField"
-          items={targetFieldsOptions}
-          selection={(targetField ?? "").toString()}
-          onSelect={selection => {
-            if (selection !== targetField) {
+          value={(targetField ?? "").toString()}
+          onChange={selection => {
+            if (selection !== targetField?.value) {
               setTargetField(selection === "" ? undefined : (selection as FieldName));
               commit({ targetField: selection === "" ? undefined : (selection as FieldName) });
             }
           }}
           isDisabled={!targetFieldsOptions.length}
-        />
+          validated={validationsTargetField.length === 0 ? "default" : "warning"}
+        >
+          {targetFieldsOptions.map((option, index) => (
+            <FormSelectOption value={option} key={index} label={option} />
+          ))}
+        </FormSelect>
       </FormGroup>
       <FormGroup
         label="Feature"
@@ -252,4 +257,13 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       </FormGroup>
     </Form>
   );
+};
+
+const GenericSelectorEditor = (
+  id: string,
+  items: string[],
+  selection: string,
+  onSelect: (_selection: string) => void
+) => {
+  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
 };

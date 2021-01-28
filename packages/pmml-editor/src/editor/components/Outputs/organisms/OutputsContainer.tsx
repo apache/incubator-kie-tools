@@ -208,6 +208,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 </StackItem>
                 <StackItem className="outputs-container__extended-properties">
                   <OutputFieldExtendedProperties
+                    modelIndex={modelIndex}
+                    activeOutputFieldIndex={selectedOutputIndex}
                     activeOutputField={editItem}
                     targetFields={targetFields}
                     commit={onCommit}

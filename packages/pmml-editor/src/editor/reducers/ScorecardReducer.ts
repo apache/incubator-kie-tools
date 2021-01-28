@@ -21,7 +21,7 @@ import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
-import { validateOutputsRequiredTargetField } from "../validation/Outputs";
+import { validateOutputRequiredTargetField, validateOutputsRequiredTargetField } from "../validation/Outputs";
 import { ValidationService } from "../validation";
 
 // @ts-ignore
@@ -85,6 +85,28 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             ) {
               validation.clear(`models[${action.payload.modelIndex}].Output`);
               validateOutputsRequiredTargetField(action.payload.modelIndex, draft.Output?.OutputField, validation);
+            }
+          }
+        });
+        break;
+
+      case Actions.UpdateOutput:
+        service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
+          if (
+            draft.MiningSchema &&
+            draft.MiningSchema.MiningField.length &&
+            action.payload.outputField.targetField !== undefined
+          ) {
+            if (draft.MiningSchema.MiningField.filter(field => field.usageType === "target").length > 1) {
+              validation.clear(
+                `models[${action.payload.modelIndex}].Output.OutputField[${action.payload.outputIndex}].targetField`
+              );
+              validateOutputRequiredTargetField(
+                action.payload.modelIndex,
+                action.payload.outputField,
+                action.payload.outputIndex,
+                validation
+              );
             }
           }
         });

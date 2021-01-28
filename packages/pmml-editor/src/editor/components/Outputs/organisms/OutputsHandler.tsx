@@ -54,7 +54,6 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
     output,
     miningSchema
   ]);
-  console.log(validations);
 
   const toggleModal = () => {
     setActiveOperation(Operation.NONE);

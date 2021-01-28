@@ -49,14 +49,23 @@ export const validateOutputsRequiredTargetField = (
   validation: ValidationService
 ) => {
   outputFields?.forEach((field, fieldIndex) => {
-    if (field.targetField === undefined) {
-      validation.set(
-        `models[${modelIndex}].Output.OutputField[${fieldIndex}].targetField`,
-        new ValidationEntry(
-          ValidationLevel.WARNING,
-          `"${field.name}" output field, target field is required if the model has multiple target fields.`
-        )
-      );
-    }
+    validateOutputRequiredTargetField(modelIndex, field, fieldIndex, validation);
   });
+};
+
+export const validateOutputRequiredTargetField = (
+  modelIndex: number,
+  outputField: OutputField,
+  outputFieldIndex: number,
+  validation: ValidationService
+) => {
+  if (outputField.targetField === undefined) {
+    validation.set(
+      `models[${modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`,
+      new ValidationEntry(
+        ValidationLevel.WARNING,
+        `"${outputField.name}" output field, target field is required if the model has multiple target fields.`
+      )
+    );
+  }
 };
