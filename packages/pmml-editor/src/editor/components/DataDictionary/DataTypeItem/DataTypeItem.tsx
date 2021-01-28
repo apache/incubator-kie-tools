@@ -114,7 +114,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleNameSave = () => {
-    if (name.trim().length === 0 || validation !== "success") {
+    if (name.trim().length === 0 || validation === "error") {
       setName(dataType.name);
       setValidation("default");
     } else if (name !== dataType.name) {
