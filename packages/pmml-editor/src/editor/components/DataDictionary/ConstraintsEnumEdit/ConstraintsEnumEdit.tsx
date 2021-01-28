@@ -189,9 +189,7 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
         </FlexItem>
         <FlexItem>
           <TextInput
-            className={
-              validations.current.length > 0 ? "constraints-enum__field pf-m-warning" : "constraints-enum__field"
-            }
+            className="constraints-enum__field"
             type="text"
             id={`enum-value-${position}`}
             name={`enum-value-${position}`}
@@ -201,6 +199,7 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
             onBlur={handleSave}
             onKeyDown={handleTabNavigation}
             autoComplete="off"
+            validated={validations.current.length > 0 ? "warning" : "default"}
           />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>

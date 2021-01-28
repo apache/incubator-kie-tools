@@ -231,7 +231,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
         </div>
       </FormGroup>
       {constraintType === ConstraintType.RANGE && ranges !== undefined && (
-        <Card isCompact={true} style={{ marginTop: "1em" }}>
+        <Card isCompact={true} className="constraints__card">
           <CardBody>
             <ConstraintsRangeEdit
               dataFieldIndex={dataFieldIndex}
@@ -245,7 +245,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
         </Card>
       )}
       {constraintType === ConstraintType.ENUMERATION && enums !== undefined && (
-        <Card isCompact={true} style={{ marginTop: "1em" }}>
+        <Card isCompact={true} className="constraints__card">
           <CardBody>
             <ConstraintsEnumEdit
               dataFieldIndex={dataFieldIndex}

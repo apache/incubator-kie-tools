@@ -17,7 +17,14 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { ValidationService, validateDataField, validateDataFields, shouldConstraintsBeCleared } from "../validation";
+import {
+  ValidationService,
+  validateDataField,
+  validateDataFields,
+  shouldConstraintsBeCleared,
+  hasValidValues,
+  hasIntervals
+} from "../validation";
 
 interface DataDictionaryFieldPayload {
   [Actions.UpdateDataDictionaryField]: {
@@ -59,6 +66,25 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
                 value => value.property === "invalid" || value.property === "missing"
               );
             }
+
+            if (dataField.isCyclic === "1" && dataField.optype === "ordinal" && hasIntervals(dataField)) {
+              // ordinal cyclic fields cannot have interval constraints
+              delete dataField.Interval;
+            }
+            if (dataField.optype === "categorical" && dataField.isCyclic !== undefined) {
+              // categorical fields cannot be cyclic
+              delete dataField.isCyclic;
+            }
+            if (
+              ((dataField.isCyclic === "1" && dataField.optype === "ordinal") ||
+                (dataField.dataType === "string" && dataField.optype === "ordinal")) &&
+              !hasValidValues(dataField)
+            ) {
+              // add automatically an empty value when value constraint is required because we want to save the user
+              // from having to manually select the only supported constraint type in the UI ("Value")
+              dataField.Value = (dataField.Value || []).concat({ value: "" });
+            }
+
             draft[dataDictionaryIndex] = dataField;
           }
           validation.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);

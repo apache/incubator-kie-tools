@@ -69,7 +69,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
       <StackItem>
         <TextContent>
           <Text component={TextVariants.small}>
-            At least one between Start Value and End Value is required for each interval.
+            At least the Start Value or End Value is required for each interval
           </Text>
         </TextContent>
       </StackItem>

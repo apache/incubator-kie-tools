@@ -59,18 +59,9 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
 
   const saveCyclicProperty = (value: DDDataField["isCyclic"]) => {
     setIsCyclic(value);
-    const updatedDataType: Partial<DDDataField> = {
+    onSave({
       isCyclic: value
-    };
-    if (value === true) {
-      if (dataType.optype === "ordinal" && dataType.constraints?.type !== ConstraintType.ENUMERATION) {
-        updatedDataType.constraints = {
-          type: ConstraintType.ENUMERATION,
-          value: [""]
-        };
-      }
-    }
-    onSave(updatedDataType);
+    });
   };
 
   const isOptypeDisabled = useMemo(() => dataType.optype === "categorical", [dataType.optype]);
@@ -99,10 +90,10 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
           &nbsp;/&nbsp;Properties
         </Title>
       </StackItem>
-      <StackItem className="data-dictionary__properties-edit__form">
-        <Form style={{ height: "100%" }}>
+      <StackItem className="data-dictionary__properties-edit__form-container">
+        <Form className="data-dictionary__properties-edit__form">
           <Split hasGutter={true}>
-            <SplitItem style={{ marginRight: "2em" }}>
+            <SplitItem className="data-dictionary__properties-edit__form__left-column">
               <Stack hasGutter={true}>
                 <StackItem>
                   <FormGroup

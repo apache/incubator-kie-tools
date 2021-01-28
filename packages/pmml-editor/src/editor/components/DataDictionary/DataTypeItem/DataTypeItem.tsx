@@ -19,7 +19,7 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
-import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
@@ -88,16 +88,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (value !== typeSelection) {
       setTypeSelection(value as DDDataField["type"]);
       setIsTypeSelectOpen(false);
-      const updatedItem: DDDataField = { ...dataType, type: value as DDDataField["type"] };
-      if (value === "string" && optypeSelection === "ordinal") {
-        if (updatedItem.constraints?.type !== ConstraintType.ENUMERATION) {
-          updatedItem.constraints = {
-            type: ConstraintType.ENUMERATION,
-            value: [""]
-          };
-        }
-      }
-      onSave(updatedItem, index);
+      onSave({ ...dataType, type: value as DDDataField["type"] }, index);
     }
   };
 
@@ -109,19 +100,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (value !== optypeSelection) {
       setOptypeSelection(value as DDDataField["optype"]);
       setIsOptypeSelectOpen(false);
-      const updatedItem: DDDataField = { ...dataType, optype: value as DDDataField["optype"] };
-      if ((value === "ordinal" && typeSelection === "string") || (value === "ordinal" && dataType.isCyclic)) {
-        if (updatedItem.constraints?.type !== ConstraintType.ENUMERATION) {
-          updatedItem.constraints = {
-            type: ConstraintType.ENUMERATION,
-            value: [""]
-          };
-        }
-      }
-      if (value === "categorical" && dataType.isCyclic !== undefined) {
-        delete updatedItem.isCyclic;
-      }
-      onSave(updatedItem, index);
+      onSave({ ...dataType, optype: value as DDDataField["optype"] }, index);
     }
   };
 

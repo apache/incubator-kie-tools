@@ -8,4 +8,7 @@
       --pf-c-select__toggle--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
     }
   }
+  &__card {
+    margin-top: 1em;
+  }
 }
