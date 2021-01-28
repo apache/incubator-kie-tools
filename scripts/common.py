@@ -19,7 +19,7 @@ MODULES = {"kogito-data-index-common", "kogito-data-index-mongodb",
            "kogito-quarkus-jvm", "kogito-quarkus-s2i",
            "kogito-s2i-core", "kogito-springboot",
            "kogito-springboot-s2i", "kogito-system-user",
-           "kogito-jit-dmn"}
+           "kogito-jit-runner"}
 MODULE_FILENAME = "module.yaml"
 MODULES_DIR = "modules"
 

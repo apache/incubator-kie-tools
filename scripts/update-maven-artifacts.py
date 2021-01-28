@@ -33,7 +33,7 @@ Modules = {
     "management-console": "kogito-management-console",
     "task-console": "kogito-task-console",
     "trusty-ui": "kogito-trusty-ui",
-    "jit-runner": "kogito-jit-runner"
+    "jitexecutor-runner": "kogito-jit-runner"
 }
 
 def isSnapshotVersion(version):
