@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { assert } from "chai";
 import { ActivityBar, By, EditorView, InputBox, SideBarView, WebView, Workbench, Notification } from "vscode-extension-tester";
 import { DefaultWait } from "vscode-uitests-tooling";
 
@@ -24,7 +25,7 @@ import { DefaultWait } from "vscode-uitests-tooling";
  * Aquire notifications, input CLI commands etc.
  */
 export default class VSCodeTestHelper {
-    
+
     /**
      * Handle for VSCode workbench.
      * Initialized in constructor.
@@ -57,6 +58,8 @@ export default class VSCodeTestHelper {
 
         const control = new ActivityBar().getViewControl('Explorer');
         this.sidebarView = await control.openView();
+        assert.isTrue(await this.sidebarView.isDisplayed(), 'Explorer side bar view was not opened');
+
         return this.sidebarView;
     }
 
@@ -68,8 +71,11 @@ export default class VSCodeTestHelper {
      * @returns promise that resolves to WebView of the openned file.
      */
     public openFileFromSidebar = async (fileName: string): Promise<WebView> => {
-        const file = await this.sidebarView.findElement(By.linkText(fileName));
-        await file.click();
+        const workspace = await this.sidebarView.getContent().getSection('Untitled (Workspace)');
+        assert.isTrue(await workspace.isExpanded(), 'Workspace section was not expanded');
+
+        await workspace.openItem('resources', fileName);
+        
         // In cases where you have multiple KIE editors installed in VSCode
         // uncomment this to run locally without issues. 
         // const input = await InputBox.create();
@@ -92,6 +98,6 @@ export default class VSCodeTestHelper {
      * @returns a promise that resolves to array of notifications.
      */
     public getNotifications = async (): Promise<Notification[]> => {
-       return await this.workbench.getNotifications();
+        return await this.workbench.getNotifications();
     }
 }
