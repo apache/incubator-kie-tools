@@ -87,7 +87,22 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
 
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
             const outlierChanged = draft[miningSchemaIndex].outliers !== action.payload.outliers;
+            const missingValueTreatmentChanged =
+              draft[miningSchemaIndex].missingValueTreatment !== action.payload.missingValueTreatment;
+            const invalidValueTreatmentChanged =
+              draft[miningSchemaIndex].invalidValueTreatment !== action.payload.invalidValueTreatment;
             const clearLowHighValues = outlierChanged && !_areLowHighValuesRequired;
+            const clearMissingValueReplacement = missingValueTreatmentChanged && !_isMissingValueReplacementRequired;
+            const clearInvalidValueReplacement = invalidValueTreatmentChanged && !_isInvalidValueReplacementRequired;
+            const newLowValue = clearLowHighValues ? undefined : action.payload.lowValue;
+            const newHighValue = clearLowHighValues ? undefined : action.payload.highValue;
+            const newMissingValueReplacement = clearMissingValueReplacement
+              ? undefined
+              : action.payload.missingValueReplacement;
+            const newInvalidValueReplacement = clearInvalidValueReplacement
+              ? undefined
+              : action.payload.invalidValueReplacement;
+
             draft[miningSchemaIndex] = {
               ...draft[miningSchemaIndex],
               name: action.payload.name,
@@ -95,25 +110,27 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
               optype: action.payload.optype,
               importance: action.payload.importance,
               outliers: action.payload.outliers,
-              lowValue: clearLowHighValues ? undefined : action.payload.lowValue,
-              highValue: clearLowHighValues ? undefined : action.payload.highValue,
+              lowValue: newLowValue,
+              highValue: newHighValue,
               missingValueTreatment: action.payload.missingValueTreatment,
-              missingValueReplacement: _isMissingValueReplacementRequired
-                ? action.payload.missingValueReplacement
-                : undefined,
+              missingValueReplacement: newMissingValueReplacement,
               invalidValueTreatment: action.payload.invalidValueTreatment,
-              invalidValueReplacement: _isInvalidValueReplacementRequired
-                ? action.payload.invalidValueReplacement
-                : undefined
+              invalidValueReplacement: newInvalidValueReplacement
             };
+            validation.clear(`models[${modelIndex}].MiningSchema.MiningField[${miningSchemaIndex}]`);
+            validateMiningField(
+              action.payload.modelIndex,
+              action.payload.miningSchemaIndex,
+              {
+                ...action.payload,
+                lowValue: newLowValue,
+                highValue: newHighValue,
+                missingValueReplacement: newMissingValueReplacement,
+                invalidValueReplacement: newInvalidValueReplacement
+              },
+              validation
+            );
           }
-          validation.clear(`models[${modelIndex}].MiningSchema.MiningField[${miningSchemaIndex}]`);
-          validateMiningField(
-            action.payload.modelIndex,
-            action.payload.miningSchemaIndex,
-            { ...action.payload },
-            validation
-          );
         });
         break;
 
