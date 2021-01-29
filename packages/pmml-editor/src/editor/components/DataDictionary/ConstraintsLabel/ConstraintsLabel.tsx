@@ -1,64 +1,99 @@
 import * as React from "react";
 import { useMemo } from "react";
-import { Label, LabelProps } from "@patternfly/react-core";
-import { Constraints } from "../DataDictionaryContainer/DataDictionaryContainer";
-import "./ConstraintsLabel.scss";
-import { ValidationIndicator } from "../../EditorCore/atoms";
+import { Label } from "@patternfly/react-core";
+import { every } from "lodash";
+import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { useValidationService } from "../../../validation";
+import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {
-  editingIndex?: number;
-  constraints: Constraints;
+  dataType: DDDataField;
+  dataTypeIndex: number;
+  editMode?: boolean;
   onConstraintsDelete?: () => void;
 }
 
-const ConstraintsLabel = ({ editingIndex, constraints, onConstraintsDelete }: ConstraintsLabelProps) => {
-  const labelProps: Partial<LabelProps> = {};
+const ConstraintsLabel = (props: ConstraintsLabelProps) => {
+  const { dataType, dataTypeIndex, editMode = false, onConstraintsDelete } = props;
 
-  if (editingIndex !== undefined) {
-    labelProps.onClose = event => {
-      event.nativeEvent.stopImmediatePropagation();
-      onConstraintsDelete?.();
-    };
-  }
+  const onClose = useMemo(() => {
+    if (editMode && !areConstraintsRequired(dataType)) {
+      return (event: React.MouseEvent) => {
+        event.nativeEvent.stopImmediatePropagation();
+        onConstraintsDelete?.();
+      };
+    }
+  }, [dataTypeIndex, dataType]);
+
+  const missingRequiredConstraints = useMemo(() => {
+    return !dataType.constraints && areConstraintsRequired(dataType);
+  }, [dataType]);
 
   const constraintValue = useMemo(() => {
-    switch (constraints.type) {
-      case "Range":
-        return constraints.value
-          .map(range => {
-            return (
-              `${range.start.included ? "[" : "("}` +
-              `${range.start.value || `${String.fromCharCode(8722, 8734)}`}, ` +
-              `${range.end.value || `${String.fromCharCode(43, 8734)}`}` +
-              `${range.end.included ? "]" : ")"}`
-            );
-          })
-          .join(" ");
+    if (dataType.constraints) {
+      switch (dataType.constraints.type) {
+        case ConstraintType.RANGE:
+          return dataType.constraints.value
+            .map(range => {
+              return (
+                `${range.start.included ? "[" : "("}` +
+                `${range.start.value || `${String.fromCharCode(8722, 8734)}`}, ` +
+                `${range.end.value || `${String.fromCharCode(43, 8734)}`}` +
+                `${range.end.included ? "]" : ")"}`
+              );
+            })
+            .join(" ");
 
-      case "Enumeration":
-        return constraints.value.map(item => `"${item}"`).join(", ");
-      default:
-        return "";
+        case ConstraintType.ENUMERATION:
+          if (every(dataType.constraints.value, value => value === "")) {
+            return <em>No values</em>;
+          }
+          return dataType.constraints.value.map(item => `"${item}"`).join(", ");
+        default:
+          return "";
+      }
     }
-  }, [constraints]);
+    return "";
+  }, [dataType.constraints]);
 
   const { service } = useValidationService();
-  const validations = useMemo(() => service.get(`DataDictionary.DataField[${editingIndex}].Interval`), [editingIndex]);
+  const validations = useMemo(() => service.get(`DataDictionary.DataField[${dataTypeIndex}]`), [
+    dataTypeIndex,
+    dataType
+  ]);
 
   return (
     <>
-      {validations.length > 0 && (
-        <span className="constraints-label">
-          <ValidationIndicator validations={validations} />
-        </span>
+      {missingRequiredConstraints && (
+        <ValidationIndicatorLabel validations={validations} cssClass="constraints-label">
+          <em>Missing required constraints</em>
+        </ValidationIndicatorLabel>
       )}
-      <Label color="orange" className="constraints-label" {...labelProps}>
-        <strong>Constraints:</strong>&nbsp;
-        <span>{constraintValue}</span>
-      </Label>
+      {!missingRequiredConstraints && dataType.constraints && (
+        <>
+          {validations.length > 0 && (
+            <ValidationIndicatorLabel validations={validations} onClose={onClose} cssClass="constraints-label">
+              <>
+                <strong>Constraints:</strong>&nbsp;
+                <span>{constraintValue}</span>
+              </>
+            </ValidationIndicatorLabel>
+          )}
+          {validations.length === 0 && (
+            <Label color="cyan" className="constraints-label" onClose={onClose}>
+              <strong>Constraints:</strong>&nbsp;
+              <span>{constraintValue}</span>
+            </Label>
+          )}
+        </>
+      )}
     </>
   );
 };
 
 export default ConstraintsLabel;
+
+const areConstraintsRequired = (dataType: DDDataField) => {
+  return dataType.isCyclic || (dataType.type === "string" && dataType.optype === "ordinal");
+};
