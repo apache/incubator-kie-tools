@@ -22,7 +22,7 @@ fi
 
 GOPATH=$(go env GOPATH)
 
-if [[ $(which kind) ]]; then
+if [[ $(command -v kind) ]]; then
   echo "---> kind is already installed. Please make sure it is the required ${KIND_VERSION} version before proceeding"
 else
   echo "---> kind not found, installing it in \$GOPATH/bin/"

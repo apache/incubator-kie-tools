@@ -14,13 +14,13 @@
 # limitations under the License.
 
 #Make sure kubectl is installed before proceeding
-which kubectl > /dev/null || (echo "kubectl is not installed. Please install it before proceeding exiting...." && exit 1)
+command -v kubectl > /dev/null || (echo "kubectl is not installed. Please install it before proceeding exiting...." && exit 1)
 
 #Make sure docker is installed before proceeding
-which docker > /dev/null || (echo "docker is not installed. Please install it before proceeding exiting...." && exit 1)
+command -v docker > /dev/null || (echo "docker is not installed. Please install it before proceeding exiting...." && exit 1)
 
 #make sure kind is installed before proceeding
-which kind > /dev/null || (echo "kind is not installed. Please install it before proceeding exiting...." && exit 1)
+command -v kind > /dev/null || (echo "kind is not installed. Please install it before proceeding exiting...." && exit 1)
 
 default_cluster_name="operator-test"
 

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default_operator_sdk_version=v0.18.2
+default_operator_sdk_version=v1.2.0
 
 if [[ -z ${OPERATOR_SDK_VERSION} ]]; then
     OPERATOR_SDK_VERSION=$default_operator_sdk_version
@@ -21,7 +21,7 @@ fi
 
 GOPATH=$(go env GOPATH)
 
-if [[ $(which operator-sdk) ]]; then
+if [[ $(command -v operator-sdk) ]]; then
   echo "---> operator-sdk is already installed. Please make sure it is the required ${OPERATOR_SDK_VERSION} version before proceeding"
 else
   echo "---> operator-sdk not found, installing it in \$GOPATH/bin/"

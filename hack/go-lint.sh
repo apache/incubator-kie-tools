@@ -13,13 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+command -v golint > /dev/null || GO111MODULE=off go get -u golang.org/x/lint/golint
+
 golint ./... | grep -v zz_generated | tee -a golint_errors
 if [ -s golint_errors ]  ; then
     code=1
 fi
 rm -f golint_errors
 # The command in or will fetch the latest tag available for golangci-lint and install in $GOPATH/bin/
-which golangci-lint > /dev/null || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+command -v golangci-lint > /dev/null || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 golangci-lint run ./... --enable golint --timeout 10m0s
 
 exit ${code:0}

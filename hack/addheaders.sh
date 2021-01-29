@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-which addlicense > /dev/null || go get -u github.com/google/addlicense
+command -v addlicense > /dev/null || go get -u github.com/google/addlicense
 
 addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache cmd hack pkg api controllers
