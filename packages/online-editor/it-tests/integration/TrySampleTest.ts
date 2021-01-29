@@ -72,7 +72,7 @@ describe("Try sample test", () => {
         cy.getEditor().within(() => {
 
             // opens Decision navigator and checks nodes
-            cy.get(".qe-docks-bar-W > button").click();
+            cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
             cy.get("[data-i18n-prefix='DecisionNavigatorTreeView.']").then(($nodes) => {
                 expect($nodes).length(21);
                 expect($nodes.eq(0)).not.attr("title");
@@ -99,7 +99,7 @@ describe("Try sample test", () => {
             });
 
             // closes Decision navigator 
-            cy.get(".qe-docks-bar-expanded-W > div > button ").click();
+            cy.get("[data-ouia-component-id='expanded-docks-bar-W'] > div > button ").click();
 
             // opens properties panel, checks values and closes panel
             cy.get("[data-title='Properties']").click();
