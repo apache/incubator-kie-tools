@@ -106,6 +106,8 @@ public interface ElementView<T extends ElementView.Presenter> extends HasPresent
      */
     String getItemId();
 
+    void setItemSeparatorText(String itemSeparatorText);
+
     /**
      * @return the <code>LIElement</code> containing all the item properties
      */

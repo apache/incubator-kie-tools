@@ -32,6 +32,7 @@ public class KeyValueElementViewImplTest extends ElementViewImplTest<KeyValueEle
             {
                 this.presenter = elementPresenterMock;
                 this.faAngleRight = faAngleRightMock;
+                this.itemSeparatorText = itemSeparatorTextMock;
             }
         });
     }

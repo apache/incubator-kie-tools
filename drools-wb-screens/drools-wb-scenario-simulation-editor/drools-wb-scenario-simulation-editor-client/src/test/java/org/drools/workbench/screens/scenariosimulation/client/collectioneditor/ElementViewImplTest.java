@@ -34,13 +34,9 @@ public abstract class ElementViewImplTest<E extends ElementView, T extends Eleme
 
     protected E elementView;
 
-
     protected void setup() {
         super.setup();
-
-    
     }
-
 
     @Test
     public void onFaAngleRightClick() {
@@ -77,6 +73,7 @@ public abstract class ElementViewImplTest<E extends ElementView, T extends Eleme
         verify(clickEventMock, times(1)).stopPropagation();
     }
 
+
     @Test
     public void onCancelChangeButton() {
         elementView.onCancelChangeButton(clickEventMock);
@@ -105,6 +102,12 @@ public abstract class ElementViewImplTest<E extends ElementView, T extends Eleme
         verify(faAngleRightMock, times(1)).addClassName(eq(classToAdd));
         verify(faAngleRightMock, times(1)).removeClassName(eq(classToRemove));
         reset(faAngleRightMock);
+    }
+
+    @Test
+    public void setItemSeparatorText() {
+        elementView.setItemSeparatorText("itemName");
+        verify(itemSeparatorTextMock).setInnerText(eq("itemName"));
     }
 
 }
