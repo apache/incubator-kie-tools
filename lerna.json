@@ -4,5 +4,6 @@
     "packages/*"
   ],
   "npmClient": "yarn",
+  "npmClientArgs": ["--network-timeout 1000000"],
   "useWorkspaces": true
 }
