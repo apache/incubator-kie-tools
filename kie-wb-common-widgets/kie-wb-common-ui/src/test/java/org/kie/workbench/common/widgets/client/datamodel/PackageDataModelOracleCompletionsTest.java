@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.widgets.client.datamodel;
 
@@ -34,9 +34,13 @@ import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests for the ModuleDataModelOracle completions
@@ -256,16 +260,9 @@ public class PackageDataModelOracleCompletionsTest {
         Callback<String[]> personCallback = spy(new Callback<String[]>() {
             @Override
             public void callback(final String[] personThisOperators) {
-                assertEquals(4,
-                             personThisOperators.length);
-                assertEquals(personThisOperators[0],
-                             "==");
-                assertEquals(personThisOperators[1],
-                             "!=");
-                assertEquals(personThisOperators[2],
-                             "== null");
-                assertEquals(personThisOperators[3],
-                             "!= null");
+
+                assertArrayEquals(new String[]{"==", "!=", "== null", "!= null"},
+                                  personThisOperators);
             }
         });
         oracle.getOperatorCompletions("Person",
@@ -277,28 +274,8 @@ public class PackageDataModelOracleCompletionsTest {
         Callback<String[]> personAgeCallback = spy(new Callback<String[]>() {
             @Override
             public void callback(final String[] personAgeOperators) {
-                assertEquals(10,
-                             personAgeOperators.length);
-                assertEquals(personAgeOperators[0],
-                             "==");
-                assertEquals(personAgeOperators[1],
-                             "!=");
-                assertEquals(personAgeOperators[2],
-                             "<");
-                assertEquals(personAgeOperators[3],
-                             ">");
-                assertEquals(personAgeOperators[4],
-                             "<=");
-                assertEquals(personAgeOperators[5],
-                             ">=");
-                assertEquals(personAgeOperators[6],
-                             "== null");
-                assertEquals(personAgeOperators[7],
-                             "!= null");
-                assertEquals(personAgeOperators[8],
-                             "in");
-                assertEquals(personAgeOperators[9],
-                             "not in");
+                assertArrayEquals(new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null", "in", "not in"},
+                                  personAgeOperators);
             }
         });
         oracle.getOperatorCompletions("Person",
@@ -310,24 +287,8 @@ public class PackageDataModelOracleCompletionsTest {
         Callback<String[]> personRankCallback = spy(new Callback<String[]>() {
             @Override
             public void callback(final String[] personRankOperators) {
-                assertEquals(8,
-                             personRankOperators.length);
-                assertEquals(personRankOperators[0],
-                             "==");
-                assertEquals(personRankOperators[1],
-                             "!=");
-                assertEquals(personRankOperators[2],
-                             "<");
-                assertEquals(personRankOperators[3],
-                             ">");
-                assertEquals(personRankOperators[4],
-                             "<=");
-                assertEquals(personRankOperators[5],
-                             ">=");
-                assertEquals(personRankOperators[6],
-                             "== null");
-                assertEquals(personRankOperators[7],
-                             "!= null");
+                assertArrayEquals(new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"},
+                                  personRankOperators);
             }
         });
         oracle.getOperatorCompletions("Person",
@@ -339,36 +300,10 @@ public class PackageDataModelOracleCompletionsTest {
         Callback<String[]> personNameCallback = spy(new Callback<String[]>() {
             @Override
             public void callback(final String[] personNameOperators) {
-                assertEquals(14,
-                             personNameOperators.length);
-                assertEquals("==",
-                             personNameOperators[0]);
-                assertEquals("!=",
-                             personNameOperators[1]);
-                assertEquals("<",
-                             personNameOperators[2]);
-                assertEquals(">",
-                             personNameOperators[3]);
-                assertEquals("<=",
-                             personNameOperators[4]);
-                assertEquals(">=",
-                             personNameOperators[5]);
-                assertEquals("matches",
-                             personNameOperators[6]);
-                assertEquals("not matches",
-                             personNameOperators[7]);
-                assertEquals("soundslike",
-                             personNameOperators[8]);
-                assertEquals("not soundslike",
-                             personNameOperators[9]);
-                assertEquals("== null",
-                             personNameOperators[10]);
-                assertEquals("!= null",
-                             personNameOperators[11]);
-                assertEquals("in",
-                             personNameOperators[12]);
-                assertEquals("not in",
-                             personNameOperators[13]);
+                assertArrayEquals(new String[]{"==", "!=", "<", ">", "<=", ">=", "contains", "not contains",
+                                          "matches", "not matches", "soundslike", "not soundslike",
+                                          "== null", "!= null", "in", "not in"},
+                                  personNameOperators);
             }
         });
         oracle.getOperatorCompletions("Person",
