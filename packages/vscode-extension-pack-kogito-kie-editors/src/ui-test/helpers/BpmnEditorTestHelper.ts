@@ -16,7 +16,7 @@
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { h3ComponentWithText } from "./CommonLocators";
+import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
 
 /**
  * Helper class to easen work with BPMN editor inside of a webview.
@@ -41,7 +41,7 @@ export default class BpmnEditorTestHelper {
      * @returns Promise<WebElement> promise that resolves to BPMN diagram properties element. 
      */
     public getDiagramProperties = async (): Promise<WebElement> => {
-        return await this.webview.findWebElement(By.className("qe-docks-item-E-DiagramEditorPropertiesScreen"));
+        return await this.webview.findWebElement(By.className("docks-item-E-DiagramEditorPropertiesScreen"));
     }
 
     /**
@@ -50,7 +50,7 @@ export default class BpmnEditorTestHelper {
      * @returns Promise<WebElement> promise that resolves to BPMN diagram explorer element. 
      */
     public getDiagramExplorer = async (): Promise<WebElement> => {
-        return await this.webview.findWebElement(By.className("qe-docks-item-E-ProjectDiagramExplorerScreen"));
+        return await this.webview.findWebElement(By.className("docks-item-E-ProjectDiagramExplorerScreen"));
     }
 
     /**
@@ -73,9 +73,9 @@ export default class BpmnEditorTestHelper {
      */
     public openDiagramProperties = async (): Promise<WebElement> => {
         const properties = await this.getDiagramProperties();
-        await assertWebElementIsDisplayedEnabled(properties)
+        await assertWebElementIsDisplayedEnabled(properties);
         await properties.click();
-        const expandedPropertiesPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedPropertiesPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText('Properties'))));
         await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
         return expandedPropertiesPanel;
@@ -94,7 +94,7 @@ export default class BpmnEditorTestHelper {
         const explorer = await this.getDiagramExplorer();
         await assertWebElementIsDisplayedEnabled(explorer);
         await explorer.click();
-        const expandedExplorerPanel = await this.webview.findWebElement(By.className('qe-docks-bar-expanded-E'))
+        const expandedExplorerPanel = await this.webview.findWebElement(expandedDocksBarE());
         await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(h3ComponentWithText('Explore Diagram'))));
         await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
         return expandedExplorerPanel;
