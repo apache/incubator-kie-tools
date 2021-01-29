@@ -1488,7 +1488,7 @@ public class BasicExtendedMetaData implements ExtendedMetaData {
         return ePackage;
     }
 
-    protected String computePrefix(String namespace) {
+    public static String computePrefix(String namespace) {
         int index = namespace.length();
         boolean containsLetter = false;
         StringBuffer prefix = new StringBuffer(index);
@@ -1518,8 +1518,9 @@ public class BasicExtendedMetaData implements ExtendedMetaData {
         if (length == 0 || !XMLTypeUtil.isNCNameStart(prefix.charAt(length - 1))) {
             prefix.append('_');
         }
+        // Revert the "prefix" string.
         StringBuffer result = new StringBuffer(prefix.length());
-        for (int i = prefix.length() - 1; i > 0; --i) {
+        for (int i = prefix.length() - 1; i >= 0; --i) {
             result.append(prefix.charAt(i));
         }
         return result.toString();

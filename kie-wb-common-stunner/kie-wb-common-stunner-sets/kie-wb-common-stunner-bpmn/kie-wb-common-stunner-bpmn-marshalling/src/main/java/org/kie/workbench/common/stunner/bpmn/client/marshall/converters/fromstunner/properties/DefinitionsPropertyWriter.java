@@ -24,6 +24,9 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Relationship;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.emf.ecore.impl.EAttributeImpl;
+import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.util.PropertyWriterUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 
@@ -38,21 +41,20 @@ public class DefinitionsPropertyWriter {
     }
 
     private static void setSchemaLocation(Definitions definitions) {
-        // TODO: Kogito - Demanding the "xsi" feature at this point fails, as the feature/package has not yet been resolved, and results on an invalid uri generated on the XML file.
-        /*ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
+        ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
         EAttributeImpl extensionAttribute = (EAttributeImpl) metadata.demandFeature(
                 "xsi",
                 "schemaLocation",
                 false,
                 false);
-        SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(
+        EStructuralFeatureImpl.SimpleFeatureMapEntry extensionEntry = new EStructuralFeatureImpl.SimpleFeatureMapEntry(
                 extensionAttribute,
                 "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd " +
                         "http://www.jboss.org/drools drools.xsd " +
                         "http://www.bpsim.org/schemas/1.0 bpsim.xsd " +
                         "http://www.omg.org/spec/DD/20100524/DC DC.xsd " +
                         "http://www.omg.org/spec/DD/20100524/DI DI.xsd ");
-        definitions.getAnyAttribute().add(extensionEntry);*/
+        definitions.getAnyAttribute().add(extensionEntry);
     }
 
     public void setExporter(String exporter) {
