@@ -53,17 +53,21 @@ export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], Al
               isFinalResult: action.payload.outputField.isFinalResult
             };
           }
-          //validation.clear(`models[${action.payload.modelIndex}].Output`);
-          // validate outputs here
         });
         break;
 
-      case Actions.Validate:
-        if (action.payload.modelIndex !== undefined) {
-          const modelIndex = action.payload.modelIndex;
-          validation.clear(`models[${modelIndex}].Output`);
-          // validate outputs here
-        }
+      case Actions.UpdateDataDictionaryField:
+        state.forEach((outputField, index) => {
+          if (outputField.targetField === action.payload.originalName) {
+            service.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
+              draft[index] = {
+                ...draft[index],
+                targetField: action.payload.dataField.name
+              };
+            });
+          }
+        });
+        break;
     }
 
     return state;

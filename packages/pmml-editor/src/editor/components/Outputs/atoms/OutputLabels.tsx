@@ -16,10 +16,13 @@
 import * as React from "react";
 import { FieldName, OpType, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldLabel } from "./OutputFieldLabel";
+import { ValidationEntry } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 interface OutputLabelsProps {
   optype: OpType | undefined;
   targetField: FieldName | undefined;
+  targetFieldValidation: ValidationEntry[];
   feature: ResultFeature | undefined;
   value: any | undefined;
   rank: number | undefined;
@@ -29,12 +32,30 @@ interface OutputLabelsProps {
 }
 
 export const OutputLabels = (props: OutputLabelsProps) => {
-  const { optype, targetField, feature, value, rank, rankOrder, segmentId, isFinalResult } = props;
+  const {
+    optype,
+    targetField,
+    targetFieldValidation,
+    feature,
+    value,
+    rank,
+    rankOrder,
+    segmentId,
+    isFinalResult
+  } = props;
 
   return (
     <>
       {optype && OutputFieldLabel("OpType", optype)}
-      {targetField && OutputFieldLabel("TargetField", targetField)}
+      {targetFieldValidation.length > 0 ? (
+        <ValidationIndicatorLabel validations={targetFieldValidation} cssClass="output-fields-list__item__label">
+          <strong>TargetField:</strong>&nbsp;
+          <em>Missing</em>
+        </ValidationIndicatorLabel>
+      ) : (
+        targetField && OutputFieldLabel("TargetField", targetField)
+      )}
+      {/*{targetField && OutputFieldLabel("TargetField", targetField)}*/}
       {feature && OutputFieldLabel("Feature", feature)}
       {value && OutputFieldLabel("Value", value)}
       {rank !== undefined && OutputFieldLabel("Rank", rank)}

@@ -76,6 +76,10 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
     modelIndex,
     outputField
   ]);
+  const targetFieldValidation = useMemo(
+    () => service.get(`models[${modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`),
+    [outputFieldIndex, modelIndex, outputField]
+  );
 
   return (
     <section
@@ -112,6 +116,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
           <OutputLabels
             optype={optype}
             targetField={targetField}
+            targetFieldValidation={targetFieldValidation}
             feature={feature}
             value={value}
             rank={rank}

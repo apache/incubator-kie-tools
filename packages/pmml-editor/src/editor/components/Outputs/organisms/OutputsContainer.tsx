@@ -17,7 +17,7 @@ import * as React from "react";
 import { useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
+import { Alert, Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
 import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
@@ -30,6 +30,7 @@ import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import get = Reflect.get;
 import set = Reflect.set;
+import { useValidationService } from "../../../validation";
 
 interface OutputsContainerProps {
   modelIndex: number;
@@ -139,6 +140,11 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     setSelectedOutputIndex(undefined);
     setActiveOperation(Operation.NONE);
   };
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`models[${modelIndex}].Output`), [
+    modelIndex,
+    output?.OutputField
+  ]);
 
   return (
     <div className="outputs-container">
@@ -153,7 +159,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         >
           <>
             {viewSection === "overview" && (
-              <Stack hasGutter={true}>
+              <Stack hasGutter={true} className="outputs-container__overview">
                 <StackItem>
                   <Flex>
                     <FlexItem>
@@ -180,7 +186,20 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     </FlexItem>
                   </Flex>
                 </StackItem>
-                <StackItem className="outputs-container__overview">
+                {validations && validations.length > 0 && (
+                  <StackItem>
+                    <Alert
+                      variant="warning"
+                      isInline={true}
+                      title={
+                        output?.OutputField.length
+                          ? "Some items are invalid and need attention."
+                          : "At least one Output Field is required."
+                      }
+                    />
+                  </StackItem>
+                )}
+                <StackItem className="outputs-container__fields-list">
                   <OutputFieldsTable
                     modelIndex={modelIndex}
                     outputs={output?.OutputField as OutputField[]}

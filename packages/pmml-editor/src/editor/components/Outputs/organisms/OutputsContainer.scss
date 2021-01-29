@@ -18,11 +18,10 @@
   height: 60vh;
 
   &__overview {
-    height: calc(60vh - 52px);
-    overflow-y: auto;
-    padding: 1em;
-    background-color: var(--pf-global--BackgroundColor--200);
-
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
     &-enter {
       opacity: 0;
     }
@@ -40,6 +39,12 @@
       opacity: 0;
       transition: opacity 100ms;
     }
+  }
+  &__fields-list {
+    flex: 1 1 0;
+    overflow-y: auto;
+    padding: 1em;
+    background-color: var(--pf-global--BackgroundColor--200);
   }
 
   &__extended-properties {

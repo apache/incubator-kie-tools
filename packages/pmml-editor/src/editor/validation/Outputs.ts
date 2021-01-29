@@ -13,59 +13,46 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { MiningField, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 
-export const validateOutputs = (outputFields: OutputField[], validation: ValidationService): void => {
-  outputFields.forEach((outputField, dataDictionaryIndex) =>
-    validateOutput(outputField, dataDictionaryIndex, validation)
+export const validateOutputs = (
+  modelIndex: number,
+  outputFields: OutputField[],
+  miningFields: MiningField[],
+  validation: ValidationService
+): void => {
+  if (outputFields.length === 0) {
+    validation.set(
+      `models[${modelIndex}].Output`,
+      new ValidationEntry(ValidationLevel.WARNING, `At least one Output Field is required.`)
+    );
+  }
+  outputFields?.forEach((outputField, dataDictionaryIndex) =>
+    validateOutput(modelIndex, outputField, dataDictionaryIndex, miningFields, validation)
   );
 };
 
 export const validateOutput = (
-  outputField: OutputField,
-  dataDictionaryIndex: number,
-  validation: ValidationService
-): void => {
-  // required interval margins
-  // dataField.Interval?.forEach((interval, index) => {
-  //   if (interval.leftMargin === undefined && interval.rightMargin === undefined) {
-  //     validation.set(
-  //       `DataDictionary.DataField[${dataDictionaryIndex}].Interval[${index}]`,
-  //       new ValidationEntry(
-  //         ValidationLevel.WARNING,
-  //         `"${dataField.name}" data type, Interval (${index + 1}) must have the start and/or end value set.`
-  //       )
-  //     );
-  //   }
-  // });
-};
-
-export const validateOutputsRequiredTargetField = (
-  modelIndex: number,
-  outputFields: OutputField[] | undefined,
-  validation: ValidationService
-) => {
-  outputFields?.forEach((field, fieldIndex) => {
-    validateOutputRequiredTargetField(modelIndex, field, fieldIndex, validation);
-  });
-};
-
-export const validateOutputRequiredTargetField = (
   modelIndex: number,
   outputField: OutputField,
   outputFieldIndex: number,
+  miningFields: MiningField[],
   validation: ValidationService
-) => {
-  if (outputField.targetField === undefined) {
+): void => {
+  if (isOutputsTargetFieldRequired(miningFields) && outputField.targetField === undefined) {
     validation.set(
       `models[${modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`,
       new ValidationEntry(
         ValidationLevel.WARNING,
-        `"${outputField.name}" output field, target field is required if the model has multiple target fields.`
+        `"${outputField.name}": target field is required if Mining Schema has multiple target fields.`
       )
     );
   }
+};
+
+export const isOutputsTargetFieldRequired = (miningFields: MiningField[], miningSchemaCount = 1) => {
+  return miningFields.filter(field => field.usageType === "target").length > miningSchemaCount;
 };

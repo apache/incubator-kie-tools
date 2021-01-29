@@ -65,8 +65,6 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
           if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
             draft.OutputField.splice(outputIndex, 1);
           }
-          validation.clear(`models[${action.payload.modelIndex}].Output`);
-          // validateMiningFields(action.payload.modelIndex, draft.MiningField, validation);
         });
         break;
 
@@ -79,6 +77,7 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
             });
           });
         });
+        break;
     }
 
     return state;

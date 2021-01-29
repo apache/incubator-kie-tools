@@ -17,11 +17,11 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import "./OutputFieldsTable.scss";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import OutputFieldRow from "../molecules/OutputFieldRow";
 import OutputFieldEditRow from "../molecules/OutputFieldEditRow";
+import "./OutputFieldsTable.scss";
 
 interface OutputFieldsTableProps {
   modelIndex: number;
@@ -103,7 +103,9 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
             {selectedOutputIndex === index && (
               <div ref={addOutputRowRef}>
                 <OutputFieldEditRow
+                  modelIndex={modelIndex}
                   outputField={o}
+                  outputFieldIndex={index}
                   validateOutputName={_name => onValidateOutputFieldName(index, _name)}
                   viewExtendedProperties={viewExtendedProperties}
                   onCommitAndClose={onCommitAndClose}
@@ -115,8 +117,8 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
             {selectedOutputIndex !== index && (
               <OutputFieldRow
                 modelIndex={modelIndex}
-                outputFieldIndex={index}
                 outputField={o}
+                outputFieldIndex={index}
                 onEditOutputField={() => onEdit(index)}
                 onDeleteOutputField={() => onDelete(index)}
               />
