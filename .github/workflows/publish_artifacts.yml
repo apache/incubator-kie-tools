@@ -30,7 +30,9 @@ jobs:
           node-version: 12.16.3
 
       - name: Setup Yarn
-        run: npm install -g yarn@1.19.1
+        run: |
+          npm install -g yarn@${{ matrix.yarn }}
+          yarn config set network-timeout 1000000
 
       - name: Start Xvfb
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &

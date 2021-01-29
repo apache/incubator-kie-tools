@@ -148,7 +148,9 @@ jobs:
 
       - name: Setup Yarn
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
-        run: npm install -g yarn@1.19.1
+        run: |
+          npm install -g yarn@1.19.1
+          yarn config set network-timeout 1000000
 
       - name: Update kogito-tooling PR branch
         timeout-minutes: 10
