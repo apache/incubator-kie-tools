@@ -18,7 +18,7 @@ import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Form, FormSelect, FormSelectOption, FormGroup, TextInput, Tooltip } from "@patternfly/react-core";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
-import { GenericSelector } from "../../EditorScorecard/atoms";
+import { GenericSelector, GenericSelectorOption } from "../../EditorScorecard/atoms";
 import { HelpIcon } from "@patternfly/react-icons";
 import { useValidationService } from "../../../validation";
 
@@ -90,7 +90,14 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
   const featureEditor = GenericSelectorEditor(
     "output-feature",
     // See http://dmg.org/pmml/v4-4-1/Output.html#xsdType_RESULT-FEATURE ("Outputs Per Model Type")
-    ["", "decision", "predictedValue", "reasonCode", "transformedValue", "warning"],
+    [
+      { value: "" },
+      { value: "decision", isDisabled: true },
+      { value: "predictedValue" },
+      { value: "reasonCode" },
+      { value: "transformedValue", isDisabled: true },
+      { value: "warning" }
+    ],
     (feature ?? "").toString(),
     _selection => {
       setFeature(_selection === "" ? undefined : (_selection as ResultFeature));
@@ -181,6 +188,17 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Feature"
         fieldId="output-feature-helper"
         helperText="Specifies the value the output field takes from the computed mining result."
+        labelIcon={
+          <Tooltip content={"Decision and Transformed value are not supported by scorecards"}>
+            <button
+              aria-label="More info about Feature"
+              onClick={e => e.preventDefault()}
+              className="pf-c-form__group-label-help"
+            >
+              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+            </button>
+          </Tooltip>
+        }
       >
         {featureEditor}
       </FormGroup>
@@ -198,9 +216,10 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           onChange={e => setValue(e)}
           onBlur={() =>
             commit({
-              value: value
+              value: value === "" ? undefined : value
             })
           }
+          isDisabled={rank !== undefined}
         />
       </FormGroup>
       <FormGroup
@@ -220,6 +239,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
               rank: rank
             })
           }
+          isDisabled={value !== undefined}
         />
       </FormGroup>
       <FormGroup
@@ -261,7 +281,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
 
 const GenericSelectorEditor = (
   id: string,
-  items: string[],
+  items: Array<string | GenericSelectorOption>,
   selection: string,
   onSelect: (_selection: string) => void
 ) => {

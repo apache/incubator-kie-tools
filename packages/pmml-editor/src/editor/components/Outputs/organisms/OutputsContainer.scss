@@ -56,6 +56,9 @@
     .pf-c-select__toggle.pf-m-disabled {
       --pf-c-select__toggle--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
     }
+    .pf-c-form-control:disabled {
+      --pf-c-form-control--BackgroundColor: var(--pf-global--disabled-color--200);
+    }
     &-enter {
       transform: translateX(100px);
       opacity: 0;
