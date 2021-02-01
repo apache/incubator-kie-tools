@@ -4,8 +4,14 @@
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
+
+    &__disabled {
+      background-color: var(--pf-global--BorderColor--100)
+    }
   }
+
   &__actions {
     margin-top: var(--pf-global--spacer--lg);
   }
+
 }

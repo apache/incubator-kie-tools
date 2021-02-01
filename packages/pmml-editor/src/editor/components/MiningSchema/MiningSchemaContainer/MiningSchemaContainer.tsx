@@ -1,8 +1,8 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { Bullseye, Stack, StackItem, Title, TitleSizes } from "@patternfly/react-core";
+import { useEffect, useMemo, useState } from "react";
+import { Alert, Bullseye, Stack, StackItem, Title, TitleSizes } from "@patternfly/react-core";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { pickBy, isEqual } from "lodash";
+import { isEqual, pickBy } from "lodash";
 import EmptyMiningSchema from "../EmptyMiningSchema/EmptyMiningSchema";
 import MiningSchemaFields from "../MiningSchemaFields/MiningSchemaFields";
 import MiningSchemaAddFields from "../MiningSchemaAddFields/MiningSchemaAddFields";
@@ -11,8 +11,10 @@ import "./MiningSchemaContainer.scss";
 
 import { DataDictionary, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
 import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
+import { useValidationService } from "../../../validation";
 
 interface MiningSchemaContainerProps {
+  modelIndex: number;
   dataDictionary?: DataDictionary;
   miningSchema?: MiningSchema;
   onAddField: (name: string[]) => void;
@@ -21,7 +23,7 @@ interface MiningSchemaContainerProps {
 }
 
 const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
-  const { dataDictionary, miningSchema, onAddField, onDeleteField, onUpdateField } = props;
+  const { modelIndex, dataDictionary, miningSchema, onAddField, onDeleteField, onUpdateField } = props;
 
   const [fields, setFields] = useState<MiningSchemaOption[]>(prepareFieldOptions(dataDictionary, miningSchema));
   const [viewSection, setViewSection] = useState<MiningSchemaSection>("overview");
@@ -80,6 +82,9 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     setFields(prepareFieldOptions(dataDictionary, miningSchema));
   }, [dataDictionary, miningSchema]);
 
+  const validationService = useValidationService().service;
+  const validations = useMemo(() => validationService.get(`models[${modelIndex}].MiningSchema`), [miningSchema]);
+
   return (
     <section className="mining-schema">
       <MiningSchemaContext.Provider value={editingField}>
@@ -94,7 +99,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
           >
             <>
               {viewSection === "overview" && (
-                <Stack hasGutter={true}>
+                <Stack hasGutter={true} className="mining-schema__overview">
                   <StackItem>
                     <Title headingLevel="h4" size={TitleSizes.xl}>
                       Add Fields
@@ -103,11 +108,13 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                   <StackItem>
                     <MiningSchemaAddFields options={fields} onAdd={handleAddFields} />
                   </StackItem>
-                  <StackItem>
-                    <Title headingLevel="h4" size={TitleSizes.xl}>
-                      Fields List
-                    </Title>
-                    <section className="mining-schema__fields">
+                  {validations.length > 0 && (
+                    <section className="mining-schema__validation-alert">
+                      <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
+                    </section>
+                  )}
+                  <StackItem className="mining-schema__fields">
+                    <section>
                       {fields.length === 0 && (
                         <Bullseye style={{ height: "40vh" }}>
                           <NoMiningSchemaFieldsOptions />
@@ -122,14 +129,17 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                               </Bullseye>
                             ))}
                           {miningSchema && miningSchema.MiningField.length > 0 && (
-                            <MiningSchemaFields
-                              fields={miningSchema?.MiningField}
-                              onAddProperties={goToProperties}
-                              onDelete={handleDeleteField}
-                              onPropertyDelete={handlePropertyDelete}
-                              onEdit={handleEditField}
-                              onCancel={handleCancelEditing}
-                            />
+                            <>
+                              <MiningSchemaFields
+                                modelIndex={modelIndex}
+                                fields={miningSchema?.MiningField}
+                                onAddProperties={goToProperties}
+                                onDelete={handleDeleteField}
+                                onPropertyDelete={handlePropertyDelete}
+                                onEdit={handleEditField}
+                                onCancel={handleCancelEditing}
+                              />
+                            </>
                           )}
                         </>
                       )}
@@ -139,6 +149,8 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
               )}
               {viewSection === "properties" && (
                 <MiningSchemaPropertiesEdit
+                  modelIndex={modelIndex}
+                  miningFieldIndex={editingField}
                   field={miningSchema!.MiningField[editingField]}
                   onSave={handlePropertiesSave}
                   onClose={handlePropertiesClose}
@@ -168,6 +180,7 @@ const prepareFieldOptions = (dictionary: DataDictionary | undefined, miningSchem
     return [];
   }
 };
+
 export interface MiningSchemaOption {
   name: string;
   isSelected: boolean;
