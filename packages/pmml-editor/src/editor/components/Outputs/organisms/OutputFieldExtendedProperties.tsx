@@ -116,7 +116,8 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       commit({
         rankOrder: _selection === "" ? undefined : (_selection as RankOrder)
       });
-    }
+    },
+    value !== undefined && value.length > 0
   );
 
   const isFinalResultEditor = GenericSelectorEditor(
@@ -268,7 +269,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
               rank: rank
             })
           }
-          isDisabled={value !== undefined}
+          isDisabled={value !== undefined && value.length > 0}
         />
       </FormGroup>
       <FormGroup
@@ -316,7 +317,8 @@ const GenericSelectorEditor = (
   id: string,
   items: Array<string | GenericSelectorOption>,
   selection: string,
-  onSelect: (_selection: string) => void
+  onSelect: (_selection: string) => void,
+  isDisabled?: boolean
 ) => {
-  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
+  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} isDisabled={isDisabled} />;
 };

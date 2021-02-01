@@ -78,6 +78,25 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.DeleteMiningSchemaField:
         if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
           validation.clear(`models[${action.payload.modelIndex}].Output`);
+          state.Output.OutputField.forEach((outputField, outputFieldIndex) => {
+            if (outputField.targetField === action.payload.name) {
+              service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
+                draft!.Output!.OutputField[outputFieldIndex] = {
+                  ...draft!.Output!.OutputField[outputFieldIndex],
+                  targetField: undefined
+                };
+                validateOutput(
+                  action.payload.modelIndex,
+                  { ...state.Output!.OutputField[outputFieldIndex], targetField: undefined },
+                  outputFieldIndex,
+                  state.MiningSchema.MiningField.filter(
+                    (miningField, miningFieldIndex) => miningFieldIndex !== action.payload.miningSchemaIndex
+                  ),
+                  validation
+                );
+              });
+            }
+          });
           validateOutputs(
             action.payload.modelIndex,
             state.Output?.OutputField,
@@ -90,6 +109,30 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.UpdateMiningSchemaField:
         if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
           validation.clear(`models[${action.payload.modelIndex}].Output`);
+          if (action.payload.usageType !== "target") {
+            state.Output.OutputField.forEach((outputField, outputFieldIndex) => {
+              if (outputField.targetField === action.payload.name) {
+                service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
+                  draft!.Output!.OutputField[outputFieldIndex] = {
+                    ...draft!.Output!.OutputField[outputFieldIndex],
+                    targetField: undefined
+                  };
+                  validateOutput(
+                    action.payload.modelIndex,
+                    { ...state.Output!.OutputField[outputFieldIndex], targetField: undefined },
+                    outputFieldIndex,
+                    state.MiningSchema.MiningField.map((miningField, miningFieldIndex) => {
+                      if (miningFieldIndex === action.payload.miningSchemaIndex) {
+                        miningField = { ...miningField, usageType: action.payload.usageType };
+                      }
+                      return miningField;
+                    }),
+                    validation
+                  );
+                });
+              }
+            });
+          }
           validateOutputs(
             action.payload.modelIndex,
             state.Output?.OutputField,

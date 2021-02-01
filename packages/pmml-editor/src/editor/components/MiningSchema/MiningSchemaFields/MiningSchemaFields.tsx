@@ -14,7 +14,7 @@ interface MiningSchemaFieldsProps {
   modelIndex: number;
   fields: MiningField[] | undefined;
   onAddProperties: (index: number) => void;
-  onDelete: (index: number) => void;
+  onDelete: (index: number, name: string) => void;
   onPropertyDelete: (index: number, updatedField: MiningField) => void;
   onEdit: (index: number) => void;
   onCancel: () => void;
@@ -50,7 +50,7 @@ interface MiningSchemaFieldProps {
   modelIndex: number;
   field: MiningField;
   onAddProperties: (index: number) => void;
-  onDelete: (index: number) => void;
+  onDelete: (index: number, name: string) => void;
   onPropertyDelete: (index: number, field: MiningField) => void;
   onEdit: (index: number) => void;
   onCancel: () => void;
@@ -77,7 +77,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
   const deleteField = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     event.stopPropagation();
-    onDelete(index);
+    onDelete(index, field.name as string);
   };
 
   const deleteProperty = (updatedField: MiningField) => {
