@@ -55,7 +55,6 @@ export const OutputLabels = (props: OutputLabelsProps) => {
       ) : (
         targetField && OutputFieldLabel("TargetField", targetField)
       )}
-      {/*{targetField && OutputFieldLabel("TargetField", targetField)}*/}
       {feature && OutputFieldLabel("Feature", feature)}
       {value && OutputFieldLabel("Value", value)}
       {rank !== undefined && OutputFieldLabel("Rank", rank)}

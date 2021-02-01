@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareValidatingReducer, HistoryService } from "../history";
+import { HistoryAwareReducer, HistoryService } from "../history";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { ValidationService } from "../validation";
 
 interface OutputFieldPayload {
   [Actions.UpdateOutput]: {
@@ -29,9 +28,8 @@ interface OutputFieldPayload {
 
 export type OutputFieldActions = ActionMap<OutputFieldPayload>[keyof ActionMap<OutputFieldPayload>];
 
-export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> = (
+  service: HistoryService
 ): Reducer<OutputField[], AllActions> => {
   return (state: OutputField[], action: AllActions) => {
     switch (action.type) {

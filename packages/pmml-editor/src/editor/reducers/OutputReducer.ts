@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareValidatingReducer, HistoryService } from "../history";
+import { HistoryAwareReducer, HistoryService } from "../history";
 import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { ValidationService } from "../validation";
 
 interface OutputPayload {
   [Actions.AddOutput]: {
@@ -36,9 +35,8 @@ interface OutputPayload {
 
 export type OutputActions = ActionMap<OutputPayload>[keyof ActionMap<OutputPayload>];
 
-export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
+  service: HistoryService
 ): Reducer<Output, AllActions> => {
   return (state: Output, action: AllActions) => {
     switch (action.type) {
@@ -77,7 +75,6 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
             });
           });
         });
-        break;
     }
 
     return state;

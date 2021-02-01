@@ -59,6 +59,9 @@
     .pf-c-form-control:disabled {
       --pf-c-form-control--BackgroundColor: var(--pf-global--disabled-color--200);
     }
+    &__field {
+      width: 320px;
+    }
     &-enter {
       transform: translateX(100px);
       opacity: 0;

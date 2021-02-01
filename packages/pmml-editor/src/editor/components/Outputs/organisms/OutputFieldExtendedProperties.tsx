@@ -143,6 +143,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="optype"
         fieldId="output-optype-helper"
         helperText="Indicates the admissible operations on the values."
+        className="outputs-container__extended-properties__field"
       >
         {optypeEditor}
       </FormGroup>
@@ -150,6 +151,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Target field"
         fieldId="output-targetField-helper"
         helperText={validationsTargetField.length === 0 ? "" : validationsTargetField[0].message}
+        className="outputs-container__extended-properties__field"
         validated={validationsTargetField.length === 0 ? "default" : "warning"}
         labelIcon={
           !targetFieldsOptions.length ? (
@@ -188,6 +190,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Feature"
         fieldId="output-feature-helper"
         helperText="Specifies the value the output field takes from the computed mining result."
+        className="outputs-container__extended-properties__field"
         labelIcon={
           <Tooltip content={"Decision and Transformed value are not supported by scorecards"}>
             <button
@@ -206,12 +209,25 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Value"
         fieldId="output-value-helper"
         helperText="Used in conjunction with result features referring to specific values."
+        className="outputs-container__extended-properties__field"
+        labelIcon={
+          <Tooltip content={"Value property cannot be used together with Rank property"}>
+            <button
+              aria-label="More info about Feature"
+              onClick={e => e.preventDefault()}
+              className="pf-c-form__group-label-help"
+            >
+              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+            </button>
+          </Tooltip>
+        }
       >
         <TextInput
           type="text"
           id="output-value"
           name="output-value"
           aria-describedby="output-value-helper"
+          autoComplete="off"
           value={(value ?? "").toString()}
           onChange={e => setValue(e)}
           onBlur={() =>
@@ -226,12 +242,25 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Rank"
         fieldId="output-rank-helper"
         helperText="Specifies the rank of the feature value from the mining result that should be selected."
+        className="outputs-container__extended-properties__field"
+        labelIcon={
+          <Tooltip content={"Rank property cannot be used together with Value property"}>
+            <button
+              aria-label="More info about Feature"
+              onClick={e => e.preventDefault()}
+              className="pf-c-form__group-label-help"
+            >
+              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+            </button>
+          </Tooltip>
+        }
       >
         <TextInput
           type="number"
           id="output-rank"
           name="output-rank"
           aria-describedby="output-rank-helper"
+          autoComplete="off"
           value={rank ?? ""}
           onChange={e => setRank(toNumber(e))}
           onBlur={() =>
@@ -246,6 +275,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Rank order"
         fieldId="output-rankOrder-helper"
         helperText="Determines the sorting order when ranking the results."
+        className="outputs-container__extended-properties__field"
       >
         {rankOrderEditor}
       </FormGroup>
@@ -253,12 +283,14 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Segment Id"
         fieldId="output-segmentId-helper"
         helperText="Provides an approach to deliver results from Segments."
+        className="outputs-container__extended-properties__field"
       >
         <TextInput
           type="text"
           id="output-segmentId"
           name="output-segmentId"
           aria-describedby="output-segmentId-helper"
+          autoComplete="off"
           value={segmentId ?? ""}
           onChange={e => setSegmentId(e)}
           onBlur={() =>
@@ -272,6 +304,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         label="Final result?"
         fieldId="output-isFinalResult-helper"
         helperText="Should the field be returned to the user or is only used as input."
+        className="outputs-container__extended-properties__field"
       >
         {isFinalResultEditor}
       </FormGroup>

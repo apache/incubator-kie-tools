@@ -53,6 +53,6 @@ export const validateOutput = (
   }
 };
 
-export const isOutputsTargetFieldRequired = (miningFields: MiningField[], miningSchemaCount = 1) => {
-  return miningFields.filter(field => field.usageType === "target").length > miningSchemaCount;
+export const isOutputsTargetFieldRequired = (miningFields: MiningField[]) => {
+  return miningFields.filter(field => field.usageType === "target").length > 1;
 };

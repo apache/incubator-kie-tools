@@ -108,7 +108,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             value: undefined
           });
         })}
-      {rank &&
+      {rank !== undefined &&
         OutputFieldLabel("Rank", rank, () => {
           setRank(undefined);
           commit({

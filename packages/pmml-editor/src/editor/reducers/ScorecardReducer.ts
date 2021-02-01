@@ -75,6 +75,18 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         });
         break;
 
+      case Actions.DeleteMiningSchemaField:
+        if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
+          validation.clear(`models[${action.payload.modelIndex}].Output`);
+          validateOutputs(
+            action.payload.modelIndex,
+            state.Output?.OutputField,
+            state.MiningSchema.MiningField.filter((field, index) => index !== action.payload.miningSchemaIndex),
+            validation
+          );
+        }
+        break;
+
       case Actions.UpdateMiningSchemaField:
         if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
           validation.clear(`models[${action.payload.modelIndex}].Output`);
