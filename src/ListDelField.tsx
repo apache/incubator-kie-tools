@@ -9,18 +9,14 @@ export type ListDelFieldProps = {
   value?: unknown;
 } & ButtonProps;
 
-function ListDel({
-  name,
-  disabled,
-  ...props
-}: ListDelFieldProps) {
+function ListDel({ name, disabled, ...props }: ListDelFieldProps) {
   const nameParts = joinName(null, name);
   const nameIndex = +nameParts[nameParts.length - 1];
   const parentName = joinName(nameParts.slice(0, -1));
   const parent = useField<{ minCount?: number }, unknown[]>(
     parentName,
     {},
-    { absoluteName: true },
+    { absoluteName: true }
   )[0];
 
   const limitNotReached =
@@ -30,13 +26,11 @@ function ListDel({
     <Button
       disabled={!limitNotReached || disabled}
       variant="plain"
-      style={{ paddingLeft: '0', paddingRight: '0'}}
+      style={{ paddingLeft: '0', paddingRight: '0' }}
       onClick={() => {
         const value = parent.value!.slice();
         value.splice(nameIndex, 1);
-        !disabled &&
-        limitNotReached &&
-        parent.onChange(value);
+        !disabled && limitNotReached && parent.onChange(value);
       }}
       {...filterDOMProps(props)}
     >

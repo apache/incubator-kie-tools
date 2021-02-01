@@ -8,7 +8,7 @@ declare module 'uniforms' {
     minCount: never;
     autoValue: never;
     isDisabled: never;
-    checkboxes: never
+    checkboxes: never;
   }
 }
 
@@ -35,13 +35,13 @@ export default function wrapField(
     required,
     ...props
   }: WrapperProps,
-  children
+  children: React.ReactNode
 ) {
   return (
     <FormGroup
       fieldId={id}
       label={label}
-      validated={error ? "error" : "default"}
+      validated={error ? 'error' : 'default'}
       type={type}
       helperText={help}
       helperTextInvalid={errorMessage}

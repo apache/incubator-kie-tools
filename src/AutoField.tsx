@@ -56,8 +56,10 @@ export default function AutoField(originalProps: AutoFieldProps) {
       invariant(component, 'Unsupported field type: %s', fieldType);
     }
   }
-  
-  return 'options' in component && component.options?.kind === 'leaf'
+
+  return component &&
+    'options' in component &&
+    component.options?.kind === 'leaf'
     ? createElement(component.Component, props)
-    : createElement(component, originalProps);;
+    : createElement(component!, originalProps);
 }
