@@ -13,30 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Script responsible for ensuring and correcting manifests as needed.
+set -e
 
-source ./hack/env.sh
+source ./hack/ci/ensure-image.sh
 
-OUTPUT="${PWD}/build/_output/operatorhub"
+tempfolder=$(mktemp -d)
+echo "Temporary folder is ${tempfolder}"
 
-echo "---> Output dir is set to ${OUTPUT}"
-# clean up
-rm -rf "${OUTPUT}"
+version=$(getOperatorVersion)
+latest_released_version=$(getLatestOlmReleaseVersion)
 
-mkdir -p "${OUTPUT}"
+git clone https://github.com/operator-framework/community-operators.git "${tempfolder}"
+mkdir  "${tempfolder}/community-operators/kogito-operator/${version}/"
+cp -r bundle/manifests/*.yaml "${tempfolder}/community-operators/kogito-operator/${version}/"
 
-# copying all the kogito dependent operator to be added at manifests root.
-rm -rf ~/operators/
-git clone https://github.com/operator-framework/community-operators.git ~/operators/
-cp -r ~/operators/community-operators/strimzi-kafka-operator "${OUTPUT}"
-cp -r ~/operators/community-operators/keycloak-operator "${OUTPUT}"
-cp -r ~/operators/community-operators/infinispan/ "${OUTPUT}"
-cp -r ~/operators/community-operators/kogito-operator/ "${OUTPUT}"
-rm -rf ~/operators/
 
-cp -r "deploy/olm-catalog/kogito-operator/$(getOperatorVersion)/" "${OUTPUT}/kogito-operator/"
-cp "deploy/olm-catalog/kogito-operator/kogito-operator.package.yaml"  "${OUTPUT}/kogito-operator/"
+#replace image in target CSV
+sed -i  "s|${OPERATOR_IMAGE}|${KIND_IMAGE}|g"  "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml"
+#
+##ensure correct replace field is there
+sed -i "s|replace.*|replaces: kogito-operator.v${latest_released_version}|g" "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml"
+#
+sed -i "s|${latest_released_version}|${version}|g" "${tempfolder}/community-operators/kogito-operator/kogito-operator.package.yaml"
+#
+echo "---> verify CSV updates"
+cat "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml" | grep "${KIND_IMAGE}"
+cat "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml" | grep replaces
 
-echo "---> Manifest files in the output directory for OLM verification"
-ls -l "${OUTPUT}"
-echo "---> Manifest files in kogito-operator directory for OLM verification"
-ls -l "${OUTPUT}/kogito-operator/"
+echo "---> Verify package.yaml updates"
+cat "${tempfolder}/community-operators/kogito-operator/kogito-operator.package.yaml"

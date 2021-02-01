@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2019 Red Hat, Inc. and/or its affiliates
+# Copyright 2021 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +14,20 @@
 # limitations under the License.
 
 
-command -v  addlicense > /dev/null || go get -modfile=go.tools.mod -u github.com/google/addlicense
+set -e
 
-addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache cmd hack pkg api controllers
+source ./hack/env.sh
+
+version=$(getOperatorVersion)
+if [[ -n ${IMAGE} ]]; then
+    OPERATOR_IMAGE=${IMAGE}
+else
+    OPERATOR_IMAGE=quay.io/kiegroup/kogito-cloud-operator:${version}
+fi
+echo "======> Using ${OPERATOR_IMAGE} make sure it exists in docker-daemon"
+KIND_IMAGE=kind-registry:5000/kiegroup/kogito-cloud-operator
+echo "=====> tagging image"
+docker tag ${OPERATOR_IMAGE} ${KIND_IMAGE}
+
+echo "======> verifying image exists"
+docker images ${KIND_IMAGE}

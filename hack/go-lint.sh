@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-command -v golint > /dev/null || GO111MODULE=off go get -u golang.org/x/lint/golint
+command -v golint > /dev/null || go get -u -modfile=go.tools.mod golang.org/x/lint/golint
 
 golint ./... | grep -v zz_generated | tee -a golint_errors
 if [ -s golint_errors ]  ; then

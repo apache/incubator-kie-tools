@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2020 Red Hat, Inc. and/or its affiliates
+# Copyright 2021 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,19 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 set -e
+source ./hack/ci/operator-ensure-manifests.sh
 
-default_cluster_name="operator-test"
+export OP_TEST_PRETEST_CUSTOM_SCRIPT=${PWD}/hack/ci/olm-pretest.sh
 
-if [[ -z ${CLUSTER_NAME} ]]; then
-    CLUSTER_NAME=$default_cluster_name
-fi
+echo "\n=======> Pretest script path set to ${OP_TEST_PRETEST_CUSTOM_SCRIPT}"
 
-source ./hack/env.sh
-docker images
-echo "---> Loading Operator Image into Kind"
-kind load docker-image quay.io/kiegroup/kogito-cloud-operator:"$(getOperatorVersion)" --name ${CLUSTER_NAME}
+cd "${tempfolder}"
 
-node_name=$(kubectl get nodes -o jsonpath="{.items[0].metadata.name}")
-echo "---> Checking internal loaded images on node ${node_name}"
-docker exec "${node_name}" crictl images
+bash <(curl -sL https://cutt.ly/WhkV76k) all  community-operators/kogito-operator/"${version}"

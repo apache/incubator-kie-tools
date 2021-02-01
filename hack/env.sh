@@ -17,7 +17,7 @@ CSV_DIR="config/manifests/bases"
 TEST_CONFIG_FILE="test/.default_config"
 
 getOperatorVersion() {
-  local version=$(grep -m 1 'Version =' pkg/version/version.go) && version=$(echo ${version#*=} | tr -d '"')
+  local version=$(grep -m 1 'Version =' pkg/version/version.go) && version=$(echo ${version#*=} | tr -d '"' | tr -d ' ')
   echo "${version}"
 }
 
