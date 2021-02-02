@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.registry.impl;
+package org.kie.workbench.common.dmn.client.session;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.appformer.client.stateControl.registry.Registry;
@@ -26,7 +25,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 
 @Dependent
-@Default
 public class CommandRegistryHolder {
 
     public Registry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {

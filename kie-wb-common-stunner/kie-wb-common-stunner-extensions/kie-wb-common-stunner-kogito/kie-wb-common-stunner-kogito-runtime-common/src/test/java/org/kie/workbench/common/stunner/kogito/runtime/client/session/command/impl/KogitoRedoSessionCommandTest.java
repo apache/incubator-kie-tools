@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -61,14 +60,11 @@ public class KogitoRedoSessionCommandTest {
 
     private KogitoRedoSessionCommand redoSessionCommand;
 
-    @Mock
-    private GraphsProvider graphsProvider;
-
     @Before
     public void setup() {
         when(session.getKeyboardControl()).thenReturn(keyboardControl);
 
-        redoSessionCommand = new KogitoRedoSessionCommand(sessionCommandManager, redoCommandHandler, () -> envelopeAvailable, () -> stateControl, graphsProvider);
+        redoSessionCommand = new KogitoRedoSessionCommand(sessionCommandManager, redoCommandHandler, () -> envelopeAvailable, () -> stateControl);
     }
 
     @Test

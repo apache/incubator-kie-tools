@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
-import org.kie.workbench.common.stunner.core.client.registry.impl.CommandRegistryHolder;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
