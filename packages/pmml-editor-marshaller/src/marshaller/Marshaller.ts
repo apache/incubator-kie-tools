@@ -91,11 +91,9 @@ function merge(arg: any[]): any {
   const result: any = clone(arg[0]);
 
   arg.forEach((obj: any) => {
-    /* tslint:disable:forin */
     for (const prop in obj) {
       result[prop] = obj[prop];
     }
-    /* tslint:enable:forin */
   });
 
   return result;
@@ -106,11 +104,9 @@ function clone(obj: any) {
     return obj;
   }
   const temp: any = new obj.constructor(obj);
-  /* tslint:disable:forin */
   for (const key in obj) {
     temp[key] = clone(obj[key]);
   }
-  /* tslint:enable:forin */
   return temp;
 }
 
