@@ -9,11 +9,11 @@
     "importHelpers": true,
     "jsx": "react",
     "moduleResolution": "node",
-    "noImplicitAny": false,
+    "skipLibCheck": true,
     "paths": {
-      "uniforms": ["/node_modules/uniforms/es5"],
+      "uniforms": ["/node_modules/uniforms/es5"]
     },
-    "strict": false
+    "strict": true
   },
   "exclude": [
     "node_modules",
@@ -22,6 +22,6 @@
     "examples",
     "__tests__",
     "__mocks__",
-    "__dep",
-  ]	  
+    "__dep"
+  ]
 }

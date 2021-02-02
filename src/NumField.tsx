@@ -15,13 +15,14 @@ export type NumFieldProps = {
 } & Omit<TextInputProps, 'isDisabled'>;
 
 const Num = (props: NumFieldProps) => {
-
-  const onChange = (value, event) => {
+  const onChange = (
+    value: string,
+    event: React.FormEvent<HTMLInputElement>
+  ) => {
     const parse = props.decimal ? parseFloat : parseInt;
-    const v = parse(event.target.value);
-    // @ts-ignore
+    const v = parse((event.target as any).value);
     props.onChange(isNaN(v) ? undefined : v);
-  }
+  };
 
   return wrapField(
     props,
@@ -39,6 +40,6 @@ const Num = (props: NumFieldProps) => {
       value={props.value ?? ''}
     />
   );
-}
+};
 
 export default connectField(Num);

@@ -1,13 +1,20 @@
-import React, { Ref } from 'react';
-import { TextArea, TextAreaProps } from '@patternfly/react-core';
-import { connectField, filterDOMProps } from 'uniforms/es5';
+import React from 'react';
+import { TextArea } from '@patternfly/react-core';
+import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms/es5';
 
-export type LongTextFieldProps = {
-  onChange: (value: string, event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  inputRef: Ref<HTMLInputElement>;
-  value?: string;
-  prefix?: string;
-} & TextAreaProps;
+export type LongTextFieldProps = HTMLFieldProps<
+  string,
+  HTMLDivElement,
+  {
+    inputRef: React.RefObject<HTMLInputElement>;
+    onChange: (
+      value: string,
+      event: React.ChangeEvent<HTMLTextAreaElement>
+    ) => void;
+    value?: string;
+    prefix?: string;
+  }
+>;
 
 const LongText = ({
   disabled,
@@ -19,7 +26,7 @@ const LongText = ({
   placeholder,
   value,
   ...props
-}) => (
+}: LongTextFieldProps) => (
   <div {...filterDOMProps(props)}>
     {label && <label htmlFor={id}>{label}</label>}
     <TextArea
@@ -27,7 +34,6 @@ const LongText = ({
       disabled={disabled}
       name={name}
       aria-label={name}
-      // @ts-ignore
       onChange={(value, event) => onChange(event.target.value)}
       placeholder={placeholder}
       ref={inputRef}

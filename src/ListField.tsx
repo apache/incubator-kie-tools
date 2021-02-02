@@ -1,27 +1,16 @@
-import React, { Children, HTMLProps, ReactNode, isValidElement, cloneElement } from 'react';
+import React, {
+  Children,
+  ReactNode,
+  isValidElement,
+  cloneElement,
+} from 'react';
 import { Tooltip, Split, SplitItem } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { HTMLFieldProps, connectField, filterDOMProps, joinName } from 'uniforms/es5';
+import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms/es5';
 
 import ListItemField from './ListItemField';
 import ListAddField from './ListAddField';
-import { ListDelField } from '.';
-
-// export type ListFieldProps = {
-//   value: unknown[];
-//   children?: ReactNode;
-//   addIcon?: any;
-//   error?: boolean;
-//   info?: boolean;
-//   errorMessage?: string;
-//   initialCount?: number;
-//   itemProps?: {};
-//   labelCol?: any;
-//   label: string;
-//   wrapperCol?: any;
-//   name: string;
-//   showInlineError?: boolean;
-// } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'name'>;
+import ListDelField from './ListDelField';
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -84,17 +73,17 @@ function ListField({
       </Split>
 
       <div>
-          {value?.map((item, itemIndex) =>
-            Children.map(children, (child, childIndex) =>
-              isValidElement(child)
-                ? cloneElement(child, {
-                    key: `${itemIndex}-${childIndex}`,
-                    name: child.props.name?.replace('$', '' + itemIndex),
-                    ...itemProps,
-                  })
-                : child,
-            ),
-          )}
+        {value?.map((item, itemIndex) =>
+          Children.map(children, (child, childIndex) =>
+            isValidElement(child)
+              ? cloneElement(child, {
+                  key: `${itemIndex}-${childIndex}`,
+                  name: child.props.name?.replace('$', '' + itemIndex),
+                  ...itemProps,
+                })
+              : child
+          )
+        )}
       </div>
     </div>
   );

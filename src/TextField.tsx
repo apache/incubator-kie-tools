@@ -21,15 +21,14 @@ const Text = (props: TextFieldProps) =>
       id={props.id}
       name={props.name}
       isDisabled={props.disabled}
-      validated={props.error ? "error" : "default"}
-      // @ts-ignore
-      onChange={(value, event) => props.onChange(event.target.value)}
+      validated={props.error ? 'error' : 'default'}
+      onChange={(value, event) => props.onChange((event.target as any).value)}
       placeholder={props.placeholder}
       ref={props.inputRef}
       type={props.type ?? 'text'}
       value={props.value ?? ''}
       {...filterDOMProps(props)}
-    />,
+    />
   );
 
 export default connectField(Text);

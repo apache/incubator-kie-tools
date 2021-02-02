@@ -1,17 +1,29 @@
 import React from 'react';
-import { Checkbox, CheckboxProps, Switch } from '@patternfly/react-core';
-import { connectField, filterDOMProps } from 'uniforms/es5';
+import {
+  Checkbox,
+  CheckboxProps,
+  Switch,
+  SwitchProps,
+} from '@patternfly/react-core';
+import { connectField, FieldProps, filterDOMProps } from 'uniforms/es5';
 
-export type BoolFieldProps = {
-  appearance?: 'checkbox' | 'switch';
-  label?: string;
-  legend?: string;
-  onChange?: (value: any) => void;
-  transform?: (label?: string) => string;
-  disabled: boolean;
-} & Omit<CheckboxProps, 'isDisabled'>;
+enum ComponentType {
+  checkbox = 'checkbox',
+  switch = 'switch',
+}
 
-const Bool = ({
+export type BoolFieldProps = FieldProps<
+  boolean,
+  CheckboxProps & SwitchProps,
+  {
+    appearance?: ComponentType;
+    inputRef: React.RefObject<Switch | Checkbox> &
+      React.RefObject<HTMLInputElement>;
+  }
+>;
+
+function Bool({
+  appearance,
   disabled,
   id,
   inputRef,
@@ -19,14 +31,13 @@ const Bool = ({
   name,
   onChange,
   value,
-  toggle,
   ...props
-}) => {
-  const Component = (props.appearance === 'switch') ? Switch : Checkbox;
+}: BoolFieldProps) {
+  const Component = appearance === ComponentType.switch ? Switch : Checkbox;
   return (
     <div {...filterDOMProps(props)}>
       <Component
-        isChecked={!!value}
+        isChecked={value || false}
         isDisabled={disabled}
         id={id}
         name={name}
@@ -36,10 +47,8 @@ const Bool = ({
       />
     </div>
   );
-};
+}
 
-Bool.defaultProps = {
-  appearance: 'checkbox'
-};
+Bool.defaultProps = { appearance: ComponentType.checkbox };
 
 export default connectField(Bool);

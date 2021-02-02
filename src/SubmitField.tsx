@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button, ButtonProps } from '@patternfly/react-core';
-import { useForm, filterDOMProps } from 'uniforms/es5';
+import { Button } from '@patternfly/react-core';
+import { filterDOMProps, HTMLFieldProps, useForm } from 'uniforms/es5';
 
-export type SubmitFieldProps = {
-  inputRef: undefined;
-  name: string;
-  disabled: boolean;
-} & Omit<ButtonProps, 'isDisabled'>;
+export type SubmitFieldProps = HTMLFieldProps<
+  number | string | undefined,
+  HTMLDivElement,
+  { inputRef: React.RefObject<HTMLButtonElement> }
+>;
 
 function SubmitField({
   disabled,
@@ -17,7 +17,6 @@ function SubmitField({
   const { error, state } = useForm();
 
   return (
-    // @ts-ignore
     <div {...filterDOMProps(props)}>
       <Button
         isDisabled={
@@ -30,8 +29,8 @@ function SubmitField({
         {value}
       </Button>
     </div>
-  )
-} 
+  );
+}
 
 SubmitField.defaultProps = { value: 'Submit' };
 

@@ -13,13 +13,13 @@ export type ListItemFieldProps = {
 
 export default function ListItemField(props: ListItemFieldProps) {
   return (
-    <div style={{ marginBottom: '1rem'}}>
+    <div style={{ marginBottom: '1rem' }}>
       {props.children ? (
-        Children.map(props.children as JSX.Element, child =>
+        Children.map(props.children as JSX.Element, (child) =>
           React.cloneElement(child, {
             name: joinName(props.name, child.props.name),
             label: null,
-          }),
+          })
         )
       ) : (
         <AutoField {...props} />
