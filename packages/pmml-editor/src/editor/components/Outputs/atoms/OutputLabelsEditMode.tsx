@@ -145,7 +145,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
         <Label
           style={PADDING}
           variant="outline"
-          color="orange"
+          color="cyan"
           href="#outline"
           icon={<ArrowAltCircleRightIcon />}
           onClick={e => {
@@ -153,7 +153,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             viewExtendedProperties();
           }}
         >
-          Edit properties...
+          Edit properties
         </Label>
       )}
     </>
