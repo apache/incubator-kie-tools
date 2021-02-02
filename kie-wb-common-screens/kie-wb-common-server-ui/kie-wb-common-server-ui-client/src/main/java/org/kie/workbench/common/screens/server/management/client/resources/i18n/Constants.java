@@ -254,4 +254,6 @@ public class Constants {
     @TranslationKey(defaultValue = "")
     public static final String NewContainer_FailedContainer = "NewContainer.FailedContainer";
 
+    @TranslationKey(defaultValue = "")
+    public static final String CanNot_Stop_Container = "CanNot_Stop_Container";
 }
