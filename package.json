@@ -29,6 +29,7 @@
     "raw-loader": "^4.0.1",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.3",
+    "source-map-loader": "^1",
     "string-replace-loader": "^2.3.0",
     "style-loader": "^1.2.1",
     "ts-loader": "^8.0.3",

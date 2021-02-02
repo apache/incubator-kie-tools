@@ -18,7 +18,8 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
-module.exports = {
+module.exports = [
+{
   mode: "development",
   devtool: "inline-source-map",
   entry: {
@@ -36,6 +37,9 @@ module.exports = {
   stats: {
     excludeAssets: [(name) => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
     excludeModules: true,
+    warningsFilter: [
+        'Failed to parse source map from'
+    ]
   },
   performance: {
     maxAssetSize: 30000000,
@@ -47,6 +51,11 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        enforce: "pre",
+        use: ["source-map-loader"]
+      },
       {
         test: /\.tsx?$/,
         loader: "ts-loader",
@@ -71,4 +80,4 @@ module.exports = {
     compress: true,
     port: 9001,
   },
-};
+}];
