@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build --incremental",
-    "buildProd": "yarn run lint && yarn run test && tsc --build",
+    "buildProd": "tsc --build",
     "watch": "tsc --watch --incremental",
     "clean": "rimraf dist coverage tsconfig.tsbuildinfo && tsc",
     "coverage": "jest --coverage",
