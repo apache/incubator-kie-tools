@@ -110,6 +110,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -142,6 +143,10 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
     public static final String ASSOCIATION_ID = getDefinitionId(Association.class);
 
     private static final double CENTRE_TOLERANCE = 1.0;
+
+    private static final String AUTO_SOURCE_CONNECTION = "#AUTO-SOURCE";
+
+    private static final String AUTO_TARGET_CONNECTION = "#AUTO-TARGET";
 
     private XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
     private FactoryManager factoryManager;
@@ -647,14 +652,16 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
             if (null != sourceNode) {
                 setConnectionMagnet(sourceNode,
                                     source,
-                                    connectionContent::setSourceConnection);
+                                    connectionContent::setSourceConnection,
+                                    isSourceAutoConnectionEdge(e));
             }
             final Point target = e.getWaypoint().get(e.getWaypoint().size() - 1);
             final Node<View<?>, Edge> targetNode = edge.getTargetNode();
             if (null != targetNode) {
                 setConnectionMagnet(targetNode,
                                     target,
-                                    connectionContent::setTargetConnection);
+                                    connectionContent::setTargetConnection,
+                                    isTargetAutoConnectionEdge(e));
             }
             if (e.getWaypoint().size() > 2) {
                 connectionContent.setControlPoints(e.getWaypoint()
@@ -679,7 +686,8 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
     private void setConnectionMagnet(final Node<View<?>, Edge> node,
                                      final Point magnetPoint,
-                                     final Consumer<Connection> connectionConsumer) {
+                                     final Consumer<Connection> connectionConsumer,
+                                     final boolean isAutoConnection) {
         final View<?> view = node.getContent();
         final double viewX = xOfBound(upperLeftBound(view));
         final double viewY = yOfBound(upperLeftBound(view));
@@ -691,9 +699,9 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                      magnetRelativeY,
                      viewWidth,
                      viewHeight)) {
-            connectionConsumer.accept(MagnetConnection.Builder.atCenter(node));
+            connectionConsumer.accept(MagnetConnection.Builder.atCenter(node).setAuto(isAutoConnection));
         } else {
-            connectionConsumer.accept(MagnetConnection.Builder.at(magnetRelativeX, magnetRelativeY).setAuto(true));
+            connectionConsumer.accept(MagnetConnection.Builder.at(magnetRelativeX, magnetRelativeY).setAuto(isAutoConnection));
         }
     }
 
@@ -703,6 +711,23 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                              final double viewHeight) {
         return Math.abs((viewWidth / 2) - magnetRelativeX) < CENTRE_TOLERANCE &&
                 Math.abs((viewHeight / 2) - magnetRelativeY) < CENTRE_TOLERANCE;
+    }
+
+    private boolean isSourceAutoConnectionEdge(DMNEdge dmnEdge) {
+        return isAutoConnection(dmnEdge, AUTO_SOURCE_CONNECTION);
+    }
+
+    private boolean isTargetAutoConnectionEdge(DMNEdge dmnEdge) {
+        return isAutoConnection(dmnEdge, AUTO_TARGET_CONNECTION);
+    }
+
+    protected boolean isAutoConnection(DMNEdge dmnEdge, String autoConnectionID) {
+        String dmnEdgeID = dmnEdge.getId();
+        if (dmnEdgeID != null) {
+            return dmnEdgeID.contains(autoConnectionID);
+        } else {
+            return false;
+        }
     }
 
     private Optional<ComponentsWidthsExtension> findComponentsWidthsExtension(final Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> dmnDDDiagram) {
@@ -795,9 +820,11 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                 for (Edge<?, ?> e : inEdges) {
                     if (e.getContent() instanceof ViewConnector) {
                         final ViewConnector connectionContent = (ViewConnector) e.getContent();
-                        if (connectionContent.getSourceConnection().isPresent() && connectionContent.getTargetConnection().isPresent()) {
-                            Point2D sourcePoint = ((Connection) connectionContent.getSourceConnection().get()).getLocation();
-                            Point2D targetPoint = ((Connection) connectionContent.getTargetConnection().get()).getLocation();
+                        DiscreteConnection sourceConnection = (DiscreteConnection) connectionContent.getSourceConnection().orElse(null);
+                        DiscreteConnection targetConnection = (DiscreteConnection) connectionContent.getTargetConnection().orElse(null);
+                        if (sourceConnection != null && targetConnection != null) {
+                            Point2D sourcePoint = sourceConnection.getLocation();
+                            Point2D targetPoint = targetConnection.getLocation();
                             final Node<?, ?> sourceNode = e.getSourceNode();
                             final View<?> sourceView = (View<?>) sourceNode.getContent();
                             double xSource = xOfBound(upperLeftBound(sourceView));
@@ -839,7 +866,14 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
                                     uuid = ((Association) edgeView.getDefinition()).getId().getValue();
                                 }
                             }
-                            dmnEdge.setId("dmnedge-" + uuid);
+                            String autoConnectionId = "";
+                            if (sourceConnection.isAuto()) {
+                                autoConnectionId += AUTO_SOURCE_CONNECTION;
+                            }
+                            if (targetConnection.isAuto()) {
+                                autoConnectionId += AUTO_TARGET_CONNECTION;
+                            }
+                            dmnEdge.setId("dmnedge-" + uuid + autoConnectionId);
                             dmnEdge.setDmnElementRef(new QName(uuid));
 
                             dmnEdge.getWaypoint().add(PointUtils.point2dToDMNDIPoint(sourcePoint));

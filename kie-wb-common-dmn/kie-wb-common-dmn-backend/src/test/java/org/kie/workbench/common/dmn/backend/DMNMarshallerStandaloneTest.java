@@ -684,11 +684,11 @@ public class DMNMarshallerStandaloneTest {
 
         final Connection sourceConnection = connectionContent.getSourceConnection().get();
         assertTrue(sourceConnection instanceof MagnetConnection);
-        assertTrue(((MagnetConnection) sourceConnection).isAuto());
+        assertFalse(((MagnetConnection) sourceConnection).isAuto());
 
         final Connection targetConnection = connectionContent.getTargetConnection().get();
         assertTrue(targetConnection instanceof MagnetConnection);
-        assertTrue(((MagnetConnection) targetConnection).isAuto());
+        assertFalse(((MagnetConnection) targetConnection).isAuto());
     }
 
     @SuppressWarnings("unchecked")
@@ -1955,11 +1955,15 @@ public class DMNMarshallerStandaloneTest {
         final String decisionNode1UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
         final String decisionNode2UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
         final String edgeUUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final MagnetConnection sourceConnection = mock(MagnetConnection.class);
+        final MagnetConnection targetConnection = mock(MagnetConnection.class);
 
         final ViewConnector edgeView = marshallAndUnMarshallConnectors(bounds,
                                                                        decisionNode1UUID,
                                                                        decisionNode2UUID,
                                                                        edgeUUID,
+                                                                       sourceConnection,
+                                                                       targetConnection,
                                                                        (sc) -> {
                                                                            when(sc.getMagnetIndex()).thenReturn(OptionalInt.of(MagnetConnection.MAGNET_RIGHT));
                                                                            when(sc.getLocation()).thenReturn(new Point2D(bounds.getWidth(), bounds.getHeight() / 2));
@@ -1969,17 +1973,17 @@ public class DMNMarshallerStandaloneTest {
                                                                            when(tc.getLocation()).thenReturn(new Point2D(0, bounds.getHeight() / 2));
                                                                        });
 
-        final MagnetConnection sourceConnection = (MagnetConnection) edgeView.getSourceConnection().get();
-        assertEquals(bounds.getWidth(), sourceConnection.getLocation().getX(), 0.0);
-        assertEquals(bounds.getHeight() / 2, sourceConnection.getLocation().getY(), 0.0);
-        assertFalse(sourceConnection.getMagnetIndex().isPresent());
-        assertTrue(sourceConnection.isAuto());
+        final MagnetConnection sourceConnectionResult = (MagnetConnection) edgeView.getSourceConnection().get();
+        assertEquals(bounds.getWidth(), sourceConnectionResult.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, sourceConnectionResult.getLocation().getY(), 0.0);
+        assertFalse(sourceConnectionResult.getMagnetIndex().isPresent());
+        assertFalse(sourceConnectionResult.isAuto());
 
-        final MagnetConnection targetConnection = (MagnetConnection) edgeView.getTargetConnection().get();
-        assertEquals(0, targetConnection.getLocation().getX(), 0.0);
-        assertEquals(bounds.getHeight() / 2, targetConnection.getLocation().getY(), 0.0);
-        assertFalse(targetConnection.getMagnetIndex().isPresent());
-        assertTrue(targetConnection.isAuto());
+        final MagnetConnection targetConnectionResult = (MagnetConnection) edgeView.getTargetConnection().get();
+        assertEquals(0, targetConnectionResult.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, targetConnectionResult.getLocation().getY(), 0.0);
+        assertFalse(targetConnectionResult.getMagnetIndex().isPresent());
+        assertFalse(targetConnectionResult.isAuto());
     }
 
     @Test
@@ -1988,27 +1992,106 @@ public class DMNMarshallerStandaloneTest {
         final String decisionNode1UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
         final String decisionNode2UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
         final String edgeUUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final MagnetConnection sourceConnection = mock(MagnetConnection.class);
+        final MagnetConnection targetConnection = mock(MagnetConnection.class);
 
         final ViewConnector edgeView = marshallAndUnMarshallConnectors(bounds,
                                                                        decisionNode1UUID,
                                                                        decisionNode2UUID,
                                                                        edgeUUID,
+                                                                       sourceConnection,
+                                                                       targetConnection,
                                                                        (sc) -> {/*NOP*/},
                                                                        (tc) -> {/*NOP*/});
 
-        final MagnetConnection sourceConnection = (MagnetConnection) edgeView.getSourceConnection().get();
-        assertEquals(bounds.getWidth() / 2, sourceConnection.getLocation().getX(), 0.0);
-        assertEquals(bounds.getHeight() / 2, sourceConnection.getLocation().getY(), 0.0);
-        assertTrue(sourceConnection.getMagnetIndex().isPresent());
-        assertEquals(MagnetConnection.MAGNET_CENTER, sourceConnection.getMagnetIndex().getAsInt());
-        assertFalse(sourceConnection.isAuto());
+        final MagnetConnection sourceConnectionResult = (MagnetConnection) edgeView.getSourceConnection().get();
+        assertEquals(bounds.getWidth() / 2, sourceConnectionResult.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, sourceConnectionResult.getLocation().getY(), 0.0);
+        assertTrue(sourceConnectionResult.getMagnetIndex().isPresent());
+        assertEquals(MagnetConnection.MAGNET_CENTER, sourceConnectionResult.getMagnetIndex().getAsInt());
+        assertFalse(sourceConnectionResult.isAuto());
 
-        final MagnetConnection targetConnection = (MagnetConnection) edgeView.getTargetConnection().get();
-        assertEquals(bounds.getWidth() / 2, targetConnection.getLocation().getX(), 0.0);
-        assertEquals(bounds.getHeight() / 2, targetConnection.getLocation().getY(), 0.0);
-        assertTrue(targetConnection.getMagnetIndex().isPresent());
-        assertEquals(MagnetConnection.MAGNET_CENTER, targetConnection.getMagnetIndex().getAsInt());
-        assertFalse(targetConnection.isAuto());
+        final MagnetConnection targetConnectionResult = (MagnetConnection) edgeView.getTargetConnection().get();
+        assertEquals(bounds.getWidth() / 2, targetConnectionResult.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, targetConnectionResult.getLocation().getY(), 0.0);
+        assertTrue(targetConnectionResult.getMagnetIndex().isPresent());
+        assertEquals(MagnetConnection.MAGNET_CENTER, targetConnectionResult.getMagnetIndex().getAsInt());
+        assertFalse(targetConnectionResult.isAuto());
+    }
+
+    @Test
+    public void testAutoConnector() throws Exception {
+        final org.kie.workbench.common.stunner.core.graph.content.Bounds bounds = org.kie.workbench.common.stunner.core.graph.content.Bounds.create(0, 0, 100, 50);
+        final String decisionNode1UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String decisionNode2UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String edgeUUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final MagnetConnection sourceConnection = mock(MagnetConnection.class);
+        final MagnetConnection targetConnection = mock(MagnetConnection.class);
+
+        final ViewConnector edgeView = marshallAndUnMarshallConnectors(bounds,
+                                                                       decisionNode1UUID,
+                                                                       decisionNode2UUID,
+                                                                       edgeUUID,
+                                                                       sourceConnection,
+                                                                       targetConnection,
+                                                                       (sc) -> when(sc.isAuto()).thenReturn(true),
+                                                                       (tc) -> when(tc.isAuto()).thenReturn(true));
+
+        final MagnetConnection sourceConnectionResult = (MagnetConnection) edgeView.getSourceConnection().get();
+        assertEquals(bounds.getWidth() / 2, sourceConnectionResult.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, sourceConnectionResult.getLocation().getY(), 0.0);
+        assertTrue(sourceConnectionResult.getMagnetIndex().isPresent());
+        assertEquals(MagnetConnection.MAGNET_CENTER, sourceConnectionResult.getMagnetIndex().getAsInt());
+        assertTrue(sourceConnectionResult.isAuto());
+
+        final MagnetConnection targetConnectionResult = (MagnetConnection) edgeView.getTargetConnection().get();
+        assertEquals(bounds.getWidth() / 2, targetConnectionResult.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, targetConnectionResult.getLocation().getY(), 0.0);
+        assertTrue(targetConnectionResult.getMagnetIndex().isPresent());
+        assertEquals(MagnetConnection.MAGNET_CENTER, targetConnectionResult.getMagnetIndex().getAsInt());
+        assertTrue(targetConnectionResult.isAuto());
+    }
+
+    @Test
+    public void testIncompleteConnector() throws Exception {
+        final org.kie.workbench.common.stunner.core.graph.content.Bounds bounds = org.kie.workbench.common.stunner.core.graph.content.Bounds.create(0, 0, 100, 50);
+        final String decisionNode1UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String decisionNode2UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String edgeUUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+
+        final ViewConnector edgeView1 = marshallAndUnMarshallConnectors(bounds,
+                                                                        decisionNode1UUID,
+                                                                        decisionNode2UUID,
+                                                                        edgeUUID,
+                                                                        null,
+                                                                        null,
+                                                                        (sc) -> {/*NOP*/},
+                                                                        (tc) -> {/*NOP*/});
+
+        final ViewConnector edgeView2 = marshallAndUnMarshallConnectors(bounds,
+                                                                        decisionNode1UUID,
+                                                                        decisionNode2UUID,
+                                                                        edgeUUID,
+                                                                        mock(MagnetConnection.class),
+                                                                        null,
+                                                                        (sc) -> {/*NOP*/},
+                                                                        (tc) -> {/*NOP*/});
+
+        final MagnetConnection sourceConnectionResult1 = (MagnetConnection) edgeView1.getSourceConnection().get();
+        assertFalse(sourceConnectionResult1.isAuto());
+        assertTrue(sourceConnectionResult1.getMagnetIndex().isPresent());
+
+        final MagnetConnection targetConnectionResult1 = (MagnetConnection) edgeView1.getTargetConnection().get();
+        assertFalse(targetConnectionResult1.isAuto());
+        assertTrue(targetConnectionResult1.getMagnetIndex().isPresent());
+
+        final MagnetConnection sourceConnectionResult2 = (MagnetConnection) edgeView2.getSourceConnection().get();
+        assertFalse(sourceConnectionResult2.isAuto());
+        assertTrue(sourceConnectionResult2.getMagnetIndex().isPresent());
+
+        final MagnetConnection targetConnectionResult2 = (MagnetConnection) edgeView2.getTargetConnection().get();
+        assertFalse(targetConnectionResult2.isAuto());
+        assertTrue(targetConnectionResult2.getMagnetIndex().isPresent());
     }
 
     @Test
@@ -2225,6 +2308,27 @@ public class DMNMarshallerStandaloneTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void testIsAutoConnection() {
+        String id = "DMNEdge-ID";
+        String autoConnectionID = "#AUTO-CONNECTION";
+
+        DMNEdge dmnEdge1 = mock(DMNEdge.class);
+        when(dmnEdge1.getId()).thenReturn(id);
+
+        DMNEdge dmnEdge2 = mock(DMNEdge.class);
+        when(dmnEdge2.getId()).thenReturn(id + autoConnectionID);
+
+        DMNEdge dmnEdge3 = mock(DMNEdge.class);
+        when(dmnEdge3.getId()).thenReturn(null);
+
+        DMNMarshallerStandalone dmnMarshallerStandalone = new DMNMarshallerStandalone();
+
+        assertFalse(dmnMarshallerStandalone.isAutoConnection(dmnEdge1, autoConnectionID));
+        assertTrue(dmnMarshallerStandalone.isAutoConnection(dmnEdge2, autoConnectionID));
+        assertFalse(dmnMarshallerStandalone.isAutoConnection(dmnEdge3, autoConnectionID));
+    }
+
     @SuppressWarnings("unchecked")
     private void checkImports(final Graph<?, Node<?, ?>> graph) {
         assertNotNull(graph);
@@ -2254,6 +2358,8 @@ public class DMNMarshallerStandaloneTest {
                                                           final String decisionNode1UUID,
                                                           final String decisionNode2UUID,
                                                           final String edgeUUID,
+                                                          final MagnetConnection edgeSourceConnection,
+                                                          final MagnetConnection edgeTargetConnection,
                                                           final Consumer<MagnetConnection> sourceMagnetConsumer,
                                                           final Consumer<MagnetConnection> targetMagnetConsumer) throws Exception {
         final DMNMarshallerStandalone marshaller = getDMNMarshaller();
@@ -2262,6 +2368,8 @@ public class DMNMarshallerStandaloneTest {
                                                                        decisionNode1UUID,
                                                                        decisionNode2UUID,
                                                                        edgeUUID,
+                                                                       edgeSourceConnection,
+                                                                       edgeTargetConnection,
                                                                        sourceMagnetConsumer,
                                                                        targetMagnetConsumer);
 
@@ -2294,6 +2402,8 @@ public class DMNMarshallerStandaloneTest {
                                                      final String decisionNode1UUID,
                                                      final String decisionNode2UUID,
                                                      final String edgeUUID,
+                                                     final MagnetConnection edgeSourceConnection,
+                                                     final MagnetConnection edgeTargetConnection,
                                                      final Consumer<MagnetConnection> sourceMagnetConsumer,
                                                      final Consumer<MagnetConnection> targetMagnetConsumer) {
         final DiagramImpl diagram = createDiagram();
@@ -2323,12 +2433,18 @@ public class DMNMarshallerStandaloneTest {
 
         final Edge edge = mock(Edge.class);
         final ViewConnector edgeView = mock(ViewConnector.class);
+        Optional edgeSourceConnectionOptional = Optional.empty();
+        if (edgeSourceConnection != null) {
+            edgeSourceConnectionOptional = Optional.of(edgeSourceConnection);
+        }
+        Optional edgeTargetConnectionOptional = Optional.empty();
+        if (edgeTargetConnection != null) {
+            edgeTargetConnectionOptional = Optional.of(edgeTargetConnection);
+        }
         when(edge.getUUID()).thenReturn(edgeUUID);
         when(edge.getContent()).thenReturn(edgeView);
-        final MagnetConnection edgeSourceConnection = mock(MagnetConnection.class);
-        final MagnetConnection edgeTargetConnection = mock(MagnetConnection.class);
-        when(edgeView.getSourceConnection()).thenReturn(Optional.of(edgeSourceConnection));
-        when(edgeView.getTargetConnection()).thenReturn(Optional.of(edgeTargetConnection));
+        when(edgeView.getSourceConnection()).thenReturn(edgeSourceConnectionOptional);
+        when(edgeView.getTargetConnection()).thenReturn(edgeTargetConnectionOptional);
         when(edgeView.getControlPoints()).thenReturn(new ControlPoint[]{});
         when(decisionNode1.getOutEdges()).thenReturn(Collections.singletonList(edge));
         when(decisionNode2.getInEdges()).thenReturn(Collections.singletonList(edge));

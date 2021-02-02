@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.InformationRequirement;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIPoint;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElementReference;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNEdge;
@@ -35,13 +36,20 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
 
 import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.AUTO_SOURCE_CONNECTION;
+import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.AUTO_TARGET_CONNECTION;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -146,8 +154,18 @@ public class NodeConnectorTest {
     @Test
     public void testConnectEdgeToNodesWhenNodeEntriesIsEmpty() {
 
+        when(jsiDMNElementReference.getHref()).thenReturn("#123");
+        entriesById.put("123", new ArrayList<>());
+
+        nodeConnector.connectEdgeToNodes(connectorTypeId, jsiDMNElement, jsiDMNElementReference, entriesById, diagramId, edges, isDMNDIPresent, currentNode);
+
+        verify(nodeConnector, never()).connectWbEdge(any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void testConnectEdgeToNodesWhenNodeEntriesIsNull() {
+
         when(jsiDMNElementReference.getHref()).thenReturn("#456");
-        entriesById.put("123", singletonList(nodeEntry));
 
         nodeConnector.connectEdgeToNodes(connectorTypeId, jsiDMNElement, jsiDMNElementReference, entriesById, diagramId, edges, isDMNDIPresent, currentNode);
 
@@ -173,5 +191,93 @@ public class NodeConnectorTest {
 
         verify(nodeConnector).connectEdge(wbEdge, requiredNode, currentNode);
         verify(nodeConnector).setConnectionMagnets(wbEdge, viewConnector, edge);
+    }
+
+    @Test
+    public void testSetConnectionMagnets() {
+        Edge edge = mock(Edge.class);
+        ViewConnector viewConnector = mock(ViewConnector.class);
+        JSIDMNEdge jsidmnEdge = mock(JSIDMNEdge.class);
+        Node sourceNode = mock(Node.class);
+        Node targetNode = mock(Node.class);
+        View<?> view = mock(View.class);
+        Bounds bounds = mock(Bounds.class);
+        JSIPoint start = mock(JSIPoint.class);
+        JSIPoint waypoint = mock(JSIPoint.class);
+        JSIPoint end = mock(JSIPoint.class);
+
+        List<JSIPoint> waypoints = new ArrayList<>();
+        waypoints.add(start);
+        waypoints.add(waypoint);
+        waypoints.add(end);
+
+        NodeConnector nodeConnector = mock(NodeConnector.class);
+        doCallRealMethod().when(nodeConnector).setConnectionMagnets(eq(edge), eq(viewConnector), eq(jsidmnEdge));
+
+        when(jsidmnEdge.getWaypoint()).thenReturn(waypoints);
+        when(jsidmnEdge.getId()).thenReturn(AUTO_SOURCE_CONNECTION + AUTO_TARGET_CONNECTION);
+
+        when(edge.getSourceNode()).thenReturn(sourceNode);
+        when(edge.getTargetNode()).thenReturn(targetNode);
+
+        when(sourceNode.getContent()).thenReturn(view);
+        when(targetNode.getContent()).thenReturn(view);
+        when(view.getBounds()).thenReturn(bounds);
+        when(bounds.getWidth()).thenReturn(0.0);
+        when(bounds.getHeight()).thenReturn(0.0);
+        when(start.getX()).thenReturn(0.0);
+        when(start.getY()).thenReturn(0.0);
+        when(waypoint.getX()).thenReturn(1.0);
+        when(waypoint.getY()).thenReturn(1.0);
+        when(start.getX()).thenReturn(1.0);
+        when(start.getY()).thenReturn(1.0);
+
+        nodeConnector.setConnectionMagnets(edge, viewConnector, jsidmnEdge);
+        verify(nodeConnector).isSourceAutoConnectionEdge(jsidmnEdge);
+        verify(nodeConnector).isTargetAutoConnectionEdge(jsidmnEdge);
+        verify(viewConnector).setControlPoints(any());
+    }
+
+    @Test
+    public void testIsSourceAutoConnectionEdge() {
+        String edgeId = "edge-name";
+        JSIDMNEdge edge = mock(JSIDMNEdge.class);
+
+        when(edge.getId()).thenReturn(edgeId);
+        assertFalse(nodeConnector.isSourceAutoConnectionEdge(edge));
+
+        when(edge.getId()).thenReturn(edgeId + AUTO_SOURCE_CONNECTION);
+        assertTrue(nodeConnector.isSourceAutoConnectionEdge(edge));
+    }
+
+    @Test
+    public void testIsTargetAutoConnectionEdge() {
+        String edgeId = "edge-name";
+        JSIDMNEdge edge = mock(JSIDMNEdge.class);
+
+        when(edge.getId()).thenReturn(edgeId);
+        assertFalse(nodeConnector.isTargetAutoConnectionEdge(edge));
+
+        when(edge.getId()).thenReturn(edgeId + AUTO_TARGET_CONNECTION);
+        assertTrue(nodeConnector.isTargetAutoConnectionEdge(edge));
+    }
+
+    @Test
+    public void testIsAutoConnection() {
+        String id = "DMNEdge-ID";
+        String autoConnectionID = "#AUTO-CONNECTION";
+
+        JSIDMNEdge jsiDMNEdge1 = mock(JSIDMNEdge.class);
+        when(jsiDMNEdge1.getId()).thenReturn(id);
+
+        JSIDMNEdge jsiDMNEdge2 = mock(JSIDMNEdge.class);
+        when(jsiDMNEdge2.getId()).thenReturn(id + autoConnectionID);
+
+        JSIDMNEdge jsiDMNEdge3 = mock(JSIDMNEdge.class);
+        when(jsiDMNEdge3.getId()).thenReturn(null);
+
+        assertFalse(nodeConnector.isAutoConnection(jsiDMNEdge1, autoConnectionID));
+        assertTrue(nodeConnector.isAutoConnection(jsiDMNEdge2, autoConnectionID));
+        assertFalse(nodeConnector.isAutoConnection(jsiDMNEdge3, autoConnectionID));
     }
 }

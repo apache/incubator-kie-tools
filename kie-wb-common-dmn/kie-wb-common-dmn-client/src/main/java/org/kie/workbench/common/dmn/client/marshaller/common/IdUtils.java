@@ -31,8 +31,12 @@ public class IdUtils {
 
     private static String COMBINER_DELIMITER = "-";
 
-    public static String getPrefixedId(final String prefixId,
-                                       final String rawId) {
+    public static final String AUTO_SOURCE_CONNECTION = "#AUTO-SOURCE";
+
+    public static final String AUTO_TARGET_CONNECTION = "#AUTO-TARGET";
+
+    public static final String getPrefixedId(final String prefixId,
+                                             final String rawId) {
         return Stream.of(prefixId, rawId)
                 .filter(s -> !isEmpty(s))
                 .collect(Collectors.joining(SEPARATOR_DELIMITER));
@@ -72,10 +76,22 @@ public class IdUtils {
 
     public static String getEdgeId(final JSIDMNDiagram diagram,
                                    final List<String> dmnElementIds,
-                                   final String dmnElementId) {
+                                   final String dmnElementId,
+                                   final boolean autoSourceConnection,
+                                   final boolean autoTargetConnection) {
 
         final String diagramName = lower(diagram.getName());
-        return getUniqueId("dmnedge", diagramName, dmnElementId, 1, dmnElementIds);
+        final String uniqueId = getUniqueId("dmnedge", diagramName, dmnElementId, 1, dmnElementIds);
+
+        String autoConnectionId = "";
+        if (autoSourceConnection) {
+            autoConnectionId += AUTO_SOURCE_CONNECTION;
+        }
+        if (autoTargetConnection) {
+            autoConnectionId += AUTO_TARGET_CONNECTION;
+        }
+
+        return uniqueId + autoConnectionId;
     }
 
     private static String getUniqueId(final String prefix,

@@ -81,8 +81,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
-import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -443,27 +443,26 @@ public class DMNMarshaller {
         return StreamSupport.stream(graph.nodes().spliterator(), false).collect(Collectors.toList());
     }
 
-    private void connect(final JSIDMNDiagram diagram,
-                         final List<String> dmnDiagramElementIds,
-                         final Definitions definitionsStunnerPojo,
-                         final List<JSIDMNEdge> dmnEdges,
-                         final Node<?, ?> node,
-                         final View<?> view) {
+    protected void connect(final JSIDMNDiagram diagram,
+                           final List<String> dmnDiagramElementIds,
+                           final Definitions definitionsStunnerPojo,
+                           final List<JSIDMNEdge> dmnEdges,
+                           final Node<?, ?> node,
+                           final View<?> view) {
 
         // DMNDI Edge management.
         final List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {
             if (e.getContent() instanceof ViewConnector) {
                 final ViewConnector connectionContent = (ViewConnector) e.getContent();
-                if (connectionContent.getSourceConnection().isPresent() && connectionContent.getTargetConnection().isPresent()) {
-                    Point2D sourcePoint = ((Connection) connectionContent.getSourceConnection().get()).getLocation();
-                    Point2D targetPoint = ((Connection) connectionContent.getTargetConnection().get()).getLocation();
+                DiscreteConnection sourceConnection = (DiscreteConnection) connectionContent.getSourceConnection().orElse(null);
+                DiscreteConnection targetConnection = (DiscreteConnection) connectionContent.getTargetConnection().orElse(null);
+                if (sourceConnection != null && targetConnection != null) {
                     final Node<?, ?> sourceNode = e.getSourceNode();
                     final View<?> sourceView = (View<?>) sourceNode.getContent();
+                    Point2D sourcePoint = sourceConnection.getLocation();
                     double xSource = xOfBound(upperLeftBound(sourceView));
                     double ySource = yOfBound(upperLeftBound(sourceView));
-                    double xTarget = xOfBound(upperLeftBound(view));
-                    double yTarget = yOfBound(upperLeftBound(view));
                     if (Objects.isNull(sourcePoint)) {
                         // If the "connection source/target location is null" assume it's the centre of the shape.
                         if (sourceView.getDefinition() instanceof DMNViewDefinition) {
@@ -476,6 +475,10 @@ public class DMNMarshaller {
                         // If it is non-null it is relative to the source/target shape location.
                         sourcePoint = Point2D.create(xSource + sourcePoint.getX(), ySource + sourcePoint.getY());
                     }
+
+                    Point2D targetPoint = targetConnection.getLocation();
+                    double xTarget = xOfBound(upperLeftBound(view));
+                    double yTarget = yOfBound(upperLeftBound(view));
                     if (Objects.isNull(targetPoint)) {
                         // If the "connection source/target location is null" assume it's the centre of the shape.
                         if (view.getDefinition() instanceof DMNViewDefinition) {
@@ -493,7 +496,11 @@ public class DMNMarshaller {
                     // DMNDI edge elementRef is uuid of Stunner edge,
                     // with the only exception when edge contains as content a DMN Association (Association is an edge)
                     final String uuid = getRawId(getUUID(e));
-                    final String edgeId = getEdgeId(diagram, dmnDiagramElementIds, uuid);
+                    final String edgeId = getEdgeId(diagram,
+                                                    dmnDiagramElementIds,
+                                                    uuid,
+                                                    sourceConnection.isAuto(),
+                                                    targetConnection.isAuto());
 
                     dmnEdge.setId(edgeId);
                     final String namespaceURI = definitionsStunnerPojo.getDefaultNamespace();
