@@ -25,7 +25,6 @@ import {
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic, toText } from "../organisms";
 import "./CharacteristicsTableRow.scss";
-import { ValidationIndicator } from "../../EditorCore/atoms";
 import { useValidationService } from "../../../validation";
 
 interface CharacteristicsTableRowProps {
@@ -115,12 +114,7 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
     <ul>
       {characteristic.Attribute.map((item, index) => (
         <li key={index}>
-          {validations(index).length > 0 && (
-            <span className="characteristic-list__item__label">
-              <ValidationIndicator validations={validations(index)} />
-            </span>
-          )}
-          {CharacteristicPredicateLabel(toText(item.predicate, dataFields))}
+          {CharacteristicPredicateLabel(toText(item.predicate, dataFields), validations(index))}
           <AttributeLabels activeAttribute={item} areReasonCodesUsed={areReasonCodesUsed} />
         </li>
       ))}

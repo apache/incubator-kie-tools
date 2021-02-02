@@ -20,6 +20,7 @@ import {
   CompoundPredicate,
   False,
   FieldName,
+  MiningField,
   MiningFunction,
   Predicate,
   ReasonCodeAlgorithm,
@@ -69,6 +70,18 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 ): Reducer<Scorecard, AllActions> => {
   return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
+      case Actions.AddMiningSchemaFields:
+        service.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
+          validation.clear(`models[${action.payload.modelIndex}].Characteristics`);
+          validateCharacteristics(
+            action.payload.modelIndex,
+            state.Characteristics.Characteristic,
+            state.MiningSchema.MiningField.concat(action.payload.names.map(n => new MiningField({ name: n }))),
+            validation
+          );
+        });
+        break;
+
       case Actions.Scorecard_UpdateAttribute:
         service.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
           validation.clear(`models[${action.payload.modelIndex}].Characteristics`);
@@ -327,10 +340,9 @@ const updatePredicateFieldName = (
   } else if (predicate instanceof False) {
     return;
   } else if (predicate instanceof SimpleSetPredicate) {
-    const ssp: SimpleSetPredicate = predicate as SimpleSetPredicate;
-    if (originalName === ssp.field) {
+    if (originalName === predicate.field) {
       service.batch(
-        ssp,
+        predicate,
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].predicate`,
         draft => {
           draft.field = name;
@@ -338,10 +350,9 @@ const updatePredicateFieldName = (
       );
     }
   } else if (predicate instanceof SimplePredicate) {
-    const sp: SimplePredicate = predicate as SimplePredicate;
-    if (originalName === sp.field) {
+    if (originalName === predicate.field) {
       service.batch(
-        sp,
+        predicate,
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].predicate`,
         draft => {
           draft.field = name;

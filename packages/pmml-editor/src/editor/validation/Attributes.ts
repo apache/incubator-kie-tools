@@ -69,24 +69,21 @@ const validatePredicate = (
   } else if (predicate instanceof False) {
     return;
   } else if (predicate instanceof SimpleSetPredicate) {
-    const ssp: SimpleSetPredicate = predicate as SimpleSetPredicate;
-    if (fieldNames.filter(fieldName => fieldName === ssp.field).length === 0) {
+    if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
       validation.set(
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate[${nesting}].fieldName`,
-        new ValidationEntry(ValidationLevel.WARNING, `"${ssp.field}" cannot be not found in the Mining Schema.`)
+        new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof SimplePredicate) {
-    const sp: SimplePredicate = predicate as SimplePredicate;
-    if (fieldNames.filter(fieldName => fieldName === sp.field).length === 0) {
+    if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
       validation.set(
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate[${nesting}].fieldName`,
-        new ValidationEntry(ValidationLevel.WARNING, `"${sp.field}" cannot be not found in the Mining Schema.`)
+        new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof CompoundPredicate) {
-    const cp: CompoundPredicate = predicate as CompoundPredicate;
-    cp.predicates?.forEach(p =>
+    predicate.predicates?.forEach(p =>
       validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validation, nesting + 1)
     );
   }

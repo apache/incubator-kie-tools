@@ -16,6 +16,8 @@
 import * as React from "react";
 import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
 import "./CharacteristicLabel.scss";
+import { ValidationEntry } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 export const CharacteristicLabel = (name: string, value: any, tooltip?: string) => {
   return (
@@ -45,7 +47,7 @@ export const CharacteristicLabel = (name: string, value: any, tooltip?: string) 
   );
 };
 
-export const CharacteristicPredicateLabel = (value: string) => {
+export const CharacteristicPredicateLabel = (value: string, validations: ValidationEntry[]) => {
   const truncatedText = value.length > 32 ? value.slice(0, 29) + "..." : value;
 
   return (
@@ -57,15 +59,35 @@ export const CharacteristicPredicateLabel = (value: string) => {
           maxWidth={"100em"}
           content={<pre>{value}</pre>}
         >
-          <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
-            <pre>{truncatedText}</pre>
-          </Label>
+          <>
+            {validations.length > 0 && (
+              <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
+                <pre>{truncatedText}</pre>
+              </ValidationIndicatorLabel>
+            )}
+            {validations.length === 0 && (
+              <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+                <pre>{truncatedText}</pre>
+              </Label>
+            )}
+          </>
         </Tooltip>
       )}
       {value.length === truncatedText.length && (
-        <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
-          <pre>{value}</pre>
-        </Label>
+        <>
+          {validations.length > 0 && (
+            <span className="characteristic-list__item__label">
+              <ValidationIndicatorLabel validations={validations}>
+                <pre>{value}</pre>
+              </ValidationIndicatorLabel>
+            </span>
+          )}
+          {validations.length === 0 && (
+            <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+              <pre>{value}</pre>
+            </Label>
+          )}
+        </>
       )}
     </>
   );

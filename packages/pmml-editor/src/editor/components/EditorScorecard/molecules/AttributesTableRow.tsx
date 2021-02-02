@@ -15,12 +15,12 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Flex, FlexItem, Label, Split, SplitItem } from "@patternfly/react-core";
+import { Label, Split, SplitItem } from "@patternfly/react-core";
 import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { useValidationService } from "../../../validation";
-import { ValidationIndicator } from "../../EditorCore/atoms";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
@@ -71,23 +71,19 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
       }}
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
-        {validations.length > 0 && (
-          <SplitItem>
-            <Flex
-              alignItems={{ default: "alignItemsCenter" }}
-              justifyContent={{ default: "justifyContentCenter" }}
-              style={{ height: "100%" }}
-            >
-              <FlexItem>
-                <ValidationIndicator validations={validations} />
-              </FlexItem>
-            </Flex>
-          </SplitItem>
-        )}
         <SplitItem>
-          <Label tabIndex={0} color="blue">
-            <pre>{toText(attribute.predicate, dataFields)}</pre>
-          </Label>
+          <>
+            {validations.length > 0 && (
+              <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
+                <pre>{toText(attribute.predicate, dataFields)}</pre>
+              </ValidationIndicatorLabel>
+            )}
+            {validations.length === 0 && (
+              <Label tabIndex={0} color="blue">
+                <pre>{toText(attribute.predicate, dataFields)}</pre>
+              </Label>
+            )}
+          </>
         </SplitItem>
         <SplitItem isFilled={true}>
           <AttributeLabels activeAttribute={attribute} areReasonCodesUsed={areReasonCodesUsed} />
