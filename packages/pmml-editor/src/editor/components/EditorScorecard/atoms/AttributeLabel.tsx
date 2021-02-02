@@ -20,7 +20,7 @@ import "./AttributeLabel.scss";
 
 export const AttributeLabel = (name: string, value: any) => {
   return (
-    <Label color="orange" className="attribute-list__item__label">
+    <Label color="cyan" className="attribute-list__item__label">
       <strong>{name}:</strong>
       &nbsp;
       <span>{value}</span>
