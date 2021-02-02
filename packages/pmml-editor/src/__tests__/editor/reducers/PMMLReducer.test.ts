@@ -17,10 +17,12 @@ import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions, PMMLReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
+import { ValidationService } from "../../../editor/validation";
 
-const service = new HistoryService();
+const historyService = new HistoryService();
+const validationService = new ValidationService();
 const pmml: PMML = { Header: {}, DataDictionary: { DataField: [] }, version: "" };
-const reducer: Reducer<PMML, AllActions> = PMMLReducer(service);
+const reducer: Reducer<PMML, AllActions> = PMMLReducer(historyService, validationService);
 
 describe("PMMLReducer::Valid actions", () => {
   test("Actions.SetVersion", () => {
@@ -31,7 +33,7 @@ describe("PMMLReducer::Valid actions", () => {
       }
     });
 
-    const updated: PMML = service.commit(pmml) as PMML;
+    const updated: PMML = historyService.commit(pmml) as PMML;
 
     expect(updated).not.toEqual(pmml);
     expect(updated.version).toBe("1.0");
