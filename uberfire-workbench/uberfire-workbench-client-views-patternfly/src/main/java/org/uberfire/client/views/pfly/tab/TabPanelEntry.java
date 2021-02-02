@@ -16,6 +16,8 @@
 
 package org.uberfire.client.views.pfly.tab;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -28,6 +30,10 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.gwtbootstrap3.client.ui.TabPane;
 import org.gwtbootstrap3.client.ui.base.HasActive;
+import org.uberfire.client.workbench.ouia.OuiaAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponent;
+import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 
 /**
  * Represents an entry in a {@link TabPanelWithDropdowns}. Keeps track of the current title, the tab widget (which could
@@ -52,6 +58,7 @@ public class TabPanelEntry implements HasActive {
         this.title = title;
         this.tab = GWT.create(DropDownTabListItem.class);
         this.tab.setText(title);
+        this.tab.initOuiaComponentAttributes();
         this.contents = contents;
 
         contentPane = GWT.create(TabPane.class);
@@ -121,7 +128,8 @@ public class TabPanelEntry implements HasActive {
      * Represents the tab widget that lives in the tab bar or under a dropdown tab.
      */
     public static class DropDownTabListItem extends TabListItem implements HasClickHandlers,
-                                                                           HasMouseDownHandlers {
+                                                                           HasMouseDownHandlers,
+                                                                           OuiaComponent {
 
         public DropDownTabListItem() {
             this(null);
@@ -156,6 +164,22 @@ public class TabPanelEntry implements HasActive {
         public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
             return addDomHandler(handler,
                                  MouseDownEvent.getType());
+        }
+
+        @Override
+        public OuiaComponentTypeAttribute ouiaComponentType() {
+            return new OuiaComponentTypeAttribute("editor-nav-tab");
+        }
+
+        @Override
+        public OuiaComponentIdAttribute ouiaComponentId() {
+            return new OuiaComponentIdAttribute(getText());
+        }
+
+        @Override
+        public Consumer<OuiaAttribute> ouiaAttributeRenderer() {
+            return ouiaAttribute -> getElement().setAttribute(ouiaAttribute.getName(),
+                                                              ouiaAttribute.getValue());
         }
     }
 }
