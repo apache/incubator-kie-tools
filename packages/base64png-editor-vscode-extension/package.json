@@ -4,7 +4,7 @@
   "displayName": "Kogito Base64 PNG Editor",
   "description": "",
   "main": "./dist/extension.js",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -110,9 +110,9 @@
     "vscode-test": "1.0.0"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.8.1",
-    "@kogito-tooling/patternfly-base": "0.8.1",
-    "@kogito-tooling/vscode-extension": "0.8.1",
-    "base64png-editor": "0.8.1"
+    "@kogito-tooling/editor": "0.8.2",
+    "@kogito-tooling/patternfly-base": "0.8.2",
+    "@kogito-tooling/vscode-extension": "0.8.2",
+    "base64png-editor": "0.8.2"
   }
 }
