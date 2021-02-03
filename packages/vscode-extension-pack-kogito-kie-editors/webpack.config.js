@@ -60,5 +60,28 @@ module.exports = async (argv, env) => [
         { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] }
       ])
     ]
+  }),
+  merge(common, {
+    output: {
+      library: "AppFormer.VsCodePackWebview",
+      libraryTarget: "umd",
+      umdNamedDefine: true
+    },
+    externals: {
+      vscode: "commonjs vscode"
+    },
+    target: "web",
+    entry: {
+      "webview/PMMLEditorEnvelopeApp": "./src/webview/PMMLEditorEnvelopeApp.ts"
+    },
+    module: {
+      rules: [
+        {
+          test: /\.ttf$/,
+          use: ["file-loader"]
+        },
+        ...pfWebpackOptions.patternflyRules
+      ]
+    }
   })
 ];
