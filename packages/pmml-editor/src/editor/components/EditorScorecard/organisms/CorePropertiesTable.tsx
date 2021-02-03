@@ -324,7 +324,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
 const CorePropertyLabel = (name: string, value: any) => {
   return (
-    <Label color="orange" className="core-properties__label">
+    <Label color="cyan" className="core-properties__label">
       <strong>{name}:</strong>
       &nbsp;
       <span>{value}</span>

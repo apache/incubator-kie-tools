@@ -21,7 +21,7 @@ export const CharacteristicLabel = (name: string, value: any, tooltip?: string) 
   return (
     <>
       {!tooltip && (
-        <Label color="orange" className="characteristic-list__item__label">
+        <Label color="cyan" className="characteristic-list__item__label">
           <strong>{name}:</strong>
           &nbsp;
           <span>{value}</span>
@@ -34,7 +34,7 @@ export const CharacteristicLabel = (name: string, value: any, tooltip?: string) 
           maxWidth={"100em"}
           content={<pre>{tooltip}</pre>}
         >
-          <Label tabIndex={0} color="orange" className="characteristic-list__item__label">
+          <Label tabIndex={0} color="cyan" className="characteristic-list__item__label">
             <strong>{name}:</strong>
             &nbsp;
             <span>{value}</span>
