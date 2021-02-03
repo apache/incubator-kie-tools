@@ -15,6 +15,11 @@
  */
 package org.kie.workbench.common.stunner.kogito.client.editor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -30,6 +35,7 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerVie
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -43,9 +49,14 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormsFlushManager;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPreviewAndExplorerDock;
@@ -77,8 +88,11 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.lifecycle.SetContent;
+import org.uberfire.lifecycle.Validate;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.bridge.Notification;
+import org.uberfire.workbench.model.bridge.NotificationSeverity;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
@@ -96,8 +110,15 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     protected final FormsFlushManager formsFlushManager;
     private final CanvasFileExport canvasFileExport;
     private final Promises promises;
+    private CanvasDiagramValidator<AbstractCanvasHandler> validator;
 
     protected String formElementUUID;
+
+    private static final Map<Violation.Type, String> validationSeverityTable = new HashMap<Violation.Type, String>() {{
+        put(Violation.Type.INFO, NotificationSeverity.INFO);
+        put(Violation.Type.WARNING, NotificationSeverity.WARNING);
+        put(Violation.Type.ERROR, NotificationSeverity.ERROR);
+    }};
 
     @Inject
     public BPMNDiagramEditor(final View view,
@@ -122,7 +143,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final AbstractKogitoClientDiagramService diagramServices,
                              final FormsFlushManager formsFlushManager,
                              final CanvasFileExport canvasFileExport,
-                             final Promises promises) {
+                             final Promises promises,
+                             final CanvasDiagramValidator<AbstractCanvasHandler> validator) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -146,6 +168,7 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         this.canvasFileExport = canvasFileExport;
         this.formsFlushManager = formsFlushManager;
         this.promises = promises;
+        this.validator = validator;
     }
 
     @OnStartup
@@ -187,7 +210,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     @Override
     public void onDiagramLoad() {
         final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
-
         canvasHandler.ifPresent(c -> {
             final Metadata metadata = c.getDiagram().getMetadata();
             metadata.setPath(makeMetadataPath(metadata.getRoot(), metadata.getTitle()));
@@ -274,6 +296,40 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         } else {
             return Promise.resolve("");
         }
+    }
+
+    @Validate
+    public Promise validate() {
+        CanvasHandler canvasHandler = getCanvasHandler();
+        getSessionPresenter().displayNotifications(t -> false);
+
+        List<Notification> violationMessages = new ArrayList<>();
+
+        validator.validate((AbstractCanvasHandler) canvasHandler, violations -> {
+
+            if (!violations.isEmpty()) {
+                for (DiagramElementViolation<RuleViolation> next : violations) {
+                    final Collection<DomainViolation> domainViolations = next.getDomainViolations();
+                    domainViolations.forEach(item -> violationMessages.add(createNotification(item)));
+                }
+            }
+        });
+
+        return Promise.resolve(violationMessages.toArray(new Notification[0]));
+    }
+
+    private Notification createNotification(DomainViolation item) {
+        CanvasHandler canvasHandler = getCanvasHandler();
+        String errorMessage = getTranslationService().getValue(StunnerWidgetsConstants.MarshallingResponsePopup_ErrorMessageLabel);
+        Notification notification = new Notification();
+        notification.setMessage(errorMessage + ": " + item.getUUID() + " - " + item.getMessage());
+        notification.setSeverity(translateViolationType(item.getViolationType()));
+        notification.setPath(canvasHandler.getDiagram().getMetadata().getPath().toString());
+        return notification;
+    }
+
+    private String translateViolationType(Violation.Type violationType) {
+        return this.validationSeverityTable.getOrDefault(violationType, NotificationSeverity.INFO);
     }
 
     @Override
