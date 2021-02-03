@@ -119,7 +119,9 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                     if (attributeIndex === action.payload.attributeIndex) {
                       return {
                         ...attribute,
-                        predicate: action.payload.predicate
+                        predicate: action.payload.predicate,
+                        reasonCode: action.payload.reasonCode,
+                        partialScore: action.payload.partialScore
                       };
                     }
                     return attribute;
@@ -185,6 +187,12 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             draft.initialScore = action.payload.initialScore;
             draft.useReasonCodes = action.payload.useReasonCodes;
             draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
+            if (action.payload.useReasonCodes === false) {
+              draft.Characteristics.Characteristic.forEach(characteristic => {
+                characteristic.reasonCode = undefined;
+                characteristic.Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+              });
+            }
 
             validationRegistry.clear(
               Builder()
@@ -453,12 +461,9 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
               if (characteristicIndex === action.payload.characteristicIndex) {
                 characteristic = {
                   ...characteristic,
-                  ...{
-                    name: action.payload.name,
-                    reasonCode: action.payload.reasonCode,
-                    baselineScore: action.payload.baselineScore,
-                    Attribute: []
-                  }
+                  name: action.payload.name,
+                  reasonCode: action.payload.reasonCode,
+                  baselineScore: action.payload.baselineScore
                 };
               }
               return characteristic;

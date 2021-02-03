@@ -176,7 +176,11 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 style={{ width: "16em" }}
                 labelIcon={
                   <Tooltip
-                    content={"Reason code is required when Use reason codes property inside Model Setup is true"}
+                    content={
+                      "Reason code is required when Use reason codes property inside Model Setup is yes.\
+                      You can enter Reason code here or provide a Reason code for all the Attributes of this\
+                      characteristic as an alternative."
+                    }
                   >
                     <button
                       aria-label="More information for Reason code"
@@ -260,7 +264,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
               <AttributesTable
                 modelIndex={modelIndex}
                 characteristicIndex={characteristicIndex}
-                attributes={attributes}
+                characteristic={characteristic.characteristic}
                 areReasonCodesUsed={areReasonCodesUsed}
                 viewAttribute={viewAttribute}
                 deleteAttribute={attributeIndex => {

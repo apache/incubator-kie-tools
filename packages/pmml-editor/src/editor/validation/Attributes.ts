@@ -15,6 +15,7 @@
  */
 import {
   Attribute,
+  Characteristic,
   CompoundPredicate,
   False,
   FieldName,
@@ -30,12 +31,36 @@ import { Builder } from "../paths";
 
 export const validateAttribute = (
   modelIndex: number,
+  scorecardProperties: {
+    baselineScore: number | undefined;
+    useReasonCodes: boolean | undefined;
+  },
   characteristicIndex: number,
+  characteristic: Characteristic,
+  isPartialScoreRequired: boolean,
   attributeIndex: number,
   attribute: Attribute,
   miningFields: MiningField[],
   validationRegistry: ValidationRegistry
 ): void => {
+  if (
+    scorecardProperties.useReasonCodes !== false &&
+    characteristic.reasonCode === undefined &&
+    attribute.reasonCode === undefined
+  ) {
+    validationRegistry.set(
+      `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].reasonCode`,
+      new ValidationEntry(ValidationLevel.WARNING, `"${characteristic.name} attribute: Reason code is required.`)
+    );
+  }
+
+  if (isPartialScoreRequired && attribute.partialScore === undefined) {
+    validationRegistry.set(
+      `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].partialScore`,
+      new ValidationEntry(ValidationLevel.WARNING, `"${characteristic.name} attribute: Partial score is required.`)
+    );
+  }
+
   //Predicates
   const fieldNames = miningFields.map(miningField => miningField.name);
   validatePredicate(
@@ -51,13 +76,32 @@ export const validateAttribute = (
 
 export const validateAttributes = (
   modelIndex: number,
+  scorecardProperties: {
+    baselineScore: number | undefined;
+    useReasonCodes: boolean | undefined;
+  },
   characteristicIndex: number,
-  attributes: Attribute[],
+  characteristic: Characteristic,
   miningFields: MiningField[],
   validationRegistry: ValidationRegistry
 ): void => {
-  attributes.forEach((attribute, attributeIndex) =>
-    validateAttribute(modelIndex, characteristicIndex, attributeIndex, attribute, miningFields, validationRegistry)
+  const isPartialScoreRequired =
+    characteristic.Attribute.find(attribute => attribute.partialScore !== undefined) !== undefined &&
+    characteristic.Attribute.filter(attribute => attribute.partialScore !== undefined).length <
+      characteristic.Attribute.length;
+
+  characteristic.Attribute.forEach((attribute, attributeIndex) =>
+    validateAttribute(
+      modelIndex,
+      scorecardProperties,
+      characteristicIndex,
+      characteristic,
+      isPartialScoreRequired,
+      attributeIndex,
+      attribute,
+      miningFields,
+      validationRegistry
+    )
   );
 };
 
@@ -109,4 +153,11 @@ const validatePredicate = (
       validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validationRegistry, nesting + 1)
     );
   }
+};
+
+export const areAttributesReasonCodesMissing = (attributes: Attribute[]) => {
+  if (attributes.length === 0) {
+    return true;
+  }
+  return !attributes.every(attribute => attribute.reasonCode !== undefined);
 };

@@ -14,23 +14,77 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
+import { useValidationService } from "../../../validation";
+import { useMemo } from "react";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 interface AttributeLabelsProps {
+  modelIndex: number;
+  characteristicIndex: number;
+  activeAttributeIndex: number;
   activeAttribute: Attribute;
   areReasonCodesUsed: boolean;
+  characteristicReasonCode: Characteristic["reasonCode"];
 }
 
 export const AttributeLabels = (props: AttributeLabelsProps) => {
-  const { activeAttribute, areReasonCodesUsed } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    activeAttributeIndex,
+    activeAttribute,
+    areReasonCodesUsed,
+    characteristicReasonCode
+  } = props;
+
+  const validationService = useValidationService().service;
+  const reasonCodeValidation = useMemo(
+    () =>
+      validationService.get(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${activeAttributeIndex}].reasonCode`
+      ),
+    [
+      modelIndex,
+      characteristicIndex,
+      areReasonCodesUsed,
+      activeAttribute,
+      activeAttributeIndex,
+      characteristicReasonCode
+    ]
+  );
+  const partialScoreValidation = useMemo(
+    () =>
+      validationService.get(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${activeAttributeIndex}].partialScore`
+      ),
+    [modelIndex, characteristicIndex, activeAttribute, activeAttributeIndex]
+  );
 
   return (
     <>
-      {activeAttribute.reasonCode !== undefined &&
-        areReasonCodesUsed &&
+      {areReasonCodesUsed &&
+        activeAttribute.reasonCode !== undefined &&
+        reasonCodeValidation.length === 0 &&
         CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
-      {activeAttribute.partialScore !== undefined && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
+      {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Reason code:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
+      {partialScoreValidation.length === 0 && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
+      {partialScoreValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={partialScoreValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Partial score:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
     </>
   );
 };

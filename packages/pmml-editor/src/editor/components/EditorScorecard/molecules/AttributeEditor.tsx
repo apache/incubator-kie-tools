@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
+import { useEffect, useMemo, useState } from "react";
+import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
 import {
   Attribute,
   Characteristic,
@@ -25,7 +25,7 @@ import {
   Predicate,
   Scorecard
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon, HelpIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import { PredicateEditor } from "./PredicateEditor";
 import { Operation } from "../Operation";
@@ -36,6 +36,7 @@ import { useOperation } from "../OperationContext";
 import { fromText, toText } from "../organisms";
 import set = Reflect.set;
 import get = Reflect.get;
+import { useValidationService } from "../../../validation";
 
 interface AttributeEditorContent {
   partialScore?: number;
@@ -95,7 +96,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   // When there is a click-away from the Attribute editor the Predicate
   // text will be committed if it has changed from the original..
   const ref = useOnclickOutside(
-    event => {
+    () => {
       if (text?.valid) {
         if (text.value !== originalText) {
           commit({ predicate: fromText(text.value) });
@@ -108,6 +109,22 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
       disabled: activeOperation !== Operation.UPDATE_ATTRIBUTE,
       eventTypes: ["click"]
     }
+  );
+
+  const validationService = useValidationService().service;
+  const reasonCodeValidation = useMemo(
+    () =>
+      validationService.get(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].reasonCode`
+      ),
+    [modelIndex, characteristicIndex, areReasonCodesUsed, attribute.reasonCode]
+  );
+  const partialScoreValidation = useMemo(
+    () =>
+      validationService.get(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].partialScore`
+      ),
+    [modelIndex, characteristicIndex, attribute.partialScore]
   );
 
   useEffect(() => {
@@ -159,9 +176,74 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
             <Stack hasGutter={true}>
               <StackItem>
                 <FormGroup
+                  label="Reason code"
+                  fieldId="attribute-reason-code-helper"
+                  validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
+                  helperText="A Reason Code is mapped to a Business reason."
+                  helperTextInvalid={reasonCodeValidation.length > 0 ? reasonCodeValidation[0].message : undefined}
+                  labelIcon={
+                    areReasonCodesUsed ? (
+                      <Tooltip
+                        content={`When Use Reason Codes is set to yes in the Model Setup, a reason code must
+                       be provided for characteristics or it must be provided for all its attributes.`}
+                      >
+                        <button
+                          aria-label="More information for Partial Score"
+                          onClick={e => e.preventDefault()}
+                          className="pf-c-form__group-label-help"
+                        >
+                          <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        </button>
+                      </Tooltip>
+                    ) : (
+                      <></>
+                    )
+                  }
+                >
+                  <TextInput
+                    type="text"
+                    id="attribute-reason-code"
+                    name="attribute-reason-code"
+                    aria-describedby="attribute-reason-code-helper"
+                    value={reasonCode ?? ""}
+                    onChange={e => setReasonCode(e)}
+                    onBlur={() => {
+                      commit({ reasonCode: reasonCode !== "" ? reasonCode : undefined });
+                    }}
+                    validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
+                    isDisabled={!areReasonCodesUsed}
+                  />
+                </FormGroup>
+              </StackItem>
+              <StackItem>
+                <FormGroup
                   label="Partial score"
                   fieldId="attribute-partial-score-helper"
-                  helperText="Defines the score points awarded to the Attribute."
+                  validated={partialScoreValidation.length > 0 ? "warning" : "default"}
+                  helperText={
+                    partialScoreValidation.length > 0
+                      ? partialScoreValidation[0].message
+                      : "Defines the score points awarded to the Attribute."
+                  }
+                  labelIcon={
+                    partialScoreValidation.length > 0 ? (
+                      <Tooltip
+                        content={
+                          "If one of the Attributes of a Characteristic provides a Partial score value, all the attributes are required to provide a Partial score as well."
+                        }
+                      >
+                        <button
+                          aria-label="More information for Partial Score"
+                          onClick={e => e.preventDefault()}
+                          className="pf-c-form__group-label-help"
+                        >
+                          <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        </button>
+                      </Tooltip>
+                    ) : (
+                      <></>
+                    )
+                  }
                 >
                   <TextInput
                     type="number"
@@ -170,35 +252,15 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     aria-describedby="attribute-partial-score-helper"
                     value={partialScore ?? ""}
                     onChange={e => setPartialScore(toNumber(e))}
-                    onBlur={e => {
+                    onBlur={() => {
                       commit({
                         partialScore: partialScore
                       });
                     }}
+                    validated={partialScoreValidation.length > 0 ? "warning" : "default"}
                   />
                 </FormGroup>
               </StackItem>
-              {areReasonCodesUsed && (
-                <StackItem>
-                  <FormGroup
-                    label="Reason code"
-                    fieldId="attribute-reason-code-helper"
-                    helperText="A Reason Code is mapped to a Business reason."
-                  >
-                    <TextInput
-                      type="text"
-                      id="attribute-reason-code"
-                      name="attribute-reason-code"
-                      aria-describedby="attribute-reason-code-helper"
-                      value={reasonCode ?? ""}
-                      onChange={e => setReasonCode(e)}
-                      onBlur={e => {
-                        commit({ reasonCode: reasonCode !== "" ? reasonCode : undefined });
-                      }}
-                    />
-                  </FormGroup>
-                </StackItem>
-              )}
             </Stack>
           </SplitItem>
         </Split>

@@ -125,7 +125,14 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
       {characteristic.Attribute.map((item, index) => (
         <li key={index}>
           {CharacteristicPredicateLabel(toText(item.predicate, dataFields), validations(index))}
-          <AttributeLabels activeAttribute={item} areReasonCodesUsed={areReasonCodesUsed} />
+          <AttributeLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            activeAttributeIndex={index}
+            activeAttribute={item}
+            areReasonCodesUsed={areReasonCodesUsed}
+            characteristicReasonCode={characteristic.reasonCode}
+          />
         </li>
       ))}
     </ul>

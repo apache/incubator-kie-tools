@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, DataField, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic, DataField, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";
@@ -24,14 +24,14 @@ import { useOperation } from "../OperationContext";
 interface AttributesTableProps {
   modelIndex: number;
   characteristicIndex: number;
-  attributes: Attribute[];
+  characteristic: Characteristic;
   areReasonCodesUsed: boolean;
   viewAttribute: (index: number | undefined) => void;
   deleteAttribute: (index: number) => void;
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { modelIndex, characteristicIndex, attributes, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
+  const { modelIndex, characteristicIndex, characteristic, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
 
   const { setActiveOperation } = useOperation();
 
@@ -59,7 +59,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
 
   return (
     <section>
-      {attributes.map((attribute, index) => {
+      {characteristic.Attribute.map((attribute, index) => {
         return (
           <AttributesTableRow
             key={index}
@@ -68,6 +68,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
             attributeIndex={index}
             attribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}
+            characteristicReasonCode={characteristic.reasonCode}
             dataFields={dataFields}
             miningFields={miningFields}
             onEdit={() => onEdit(index)}

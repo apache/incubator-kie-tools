@@ -15,7 +15,7 @@
  */
 import { Characteristic, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationRegistry } from "./ValidationRegistry";
-import { validateAttributes } from "./Attributes";
+import { areAttributesReasonCodesMissing, validateAttributes } from "./Attributes";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 
@@ -31,7 +31,7 @@ export const validateCharacteristic = (
   validationRegistry: ValidationRegistry
 ): void => {
   if (scorecardProperties.useReasonCodes !== false) {
-    if (characteristic.reasonCode === undefined) {
+    if (characteristic.reasonCode === undefined && areAttributesReasonCodesMissing(characteristic.Attribute)) {
       validationRegistry.set(
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].reasonCode`,
         new ValidationEntry(ValidationLevel.WARNING, `${characteristic.name}: Reason code is required`)
@@ -45,7 +45,7 @@ export const validateCharacteristic = (
     }
   }
   //Attributes
-  validateAttributes(modelIndex, characteristicIndex, characteristic.Attribute, miningFields, validationRegistry);
+  validateAttributes(modelIndex, scorecardProperties, characteristicIndex, characteristic, miningFields, validationRegistry);
 };
 
 export const validateCharacteristics = (
