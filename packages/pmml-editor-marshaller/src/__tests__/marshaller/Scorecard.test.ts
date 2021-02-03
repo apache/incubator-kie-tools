@@ -18,12 +18,14 @@ import { PMML2XML, XML2PMML } from "../../marshaller";
 import {
   Attribute,
   Characteristic,
+  Characteristics,
   CompoundPredicate,
   DataDictionary,
   False,
   FieldName,
   MiningField,
   Model,
+  Output,
   OutputField,
   PMML,
   Predicate,
@@ -36,6 +38,7 @@ import {
   SCORE_CARD_COMPOUND_PREDICATE,
   SCORE_CARD_NESTED_COMPLEX_PARTIAL_SCORE,
   SCORE_CARD_NESTED_COMPOUND_PREDICATE,
+  SCORE_CARD_PROTOTYPES,
   SCORE_CARD_SIMPLE_PREDICATE,
   SCORE_CARD_SIMPLE_PREDICATE_SINGLE
 } from "./TestData_ScoreCards";
@@ -602,6 +605,38 @@ describe("Scorecard tests", () => {
 
     const pmml2: PMML = XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
+  });
+
+  test("Scorecard::prototype::preservation", () => {
+    const pmml: PMML = XML2PMML(SCORE_CARD_PROTOTYPES);
+    const models: Model[] = pmml.models ?? [];
+    const scorecard: Scorecard = models[0] as Scorecard;
+    const miningSchema = scorecard.MiningSchema;
+    const miningFields: MiningField[] = scorecard.MiningSchema.MiningField;
+    const output: Output = scorecard.Output as Output;
+    const outputFields: OutputField[] = output.OutputField;
+    const characteristics: Characteristics = scorecard.Characteristics;
+    const characteristicFields: Characteristic[] = characteristics.Characteristic;
+
+    expect(Object.getPrototypeOf(scorecard)).toBe(Scorecard.prototype);
+
+    expect(Object.getPrototypeOf(miningSchema)).toBe(Object.prototype);
+    expect(Object.getPrototypeOf(miningFields)).toBe(Array.prototype);
+    expect(Object.getPrototypeOf(miningFields[0])).toBe(Object.prototype);
+    miningFields.push({ name: "mf" as FieldName });
+    expect(Object.getPrototypeOf(miningFields[1])).toBe(Object.prototype);
+
+    expect(Object.getPrototypeOf(output)).toBe(Object.prototype);
+    expect(Object.getPrototypeOf(outputFields)).toBe(Array.prototype);
+    expect(Object.getPrototypeOf(outputFields[0])).toBe(Object.prototype);
+    outputFields.push({ name: "mf" as FieldName, dataType: "string" });
+    expect(Object.getPrototypeOf(outputFields[1])).toBe(Object.prototype);
+
+    expect(Object.getPrototypeOf(characteristics)).toBe(Object.prototype);
+    expect(Object.getPrototypeOf(characteristicFields)).toBe(Array.prototype);
+    expect(Object.getPrototypeOf(characteristicFields[0])).toBe(Object.prototype);
+    characteristicFields.push({ name: "test", Attribute: [] });
+    expect(Object.getPrototypeOf(characteristicFields[1])).toBe(Object.prototype);
   });
 
   function assertSimplePredicate(actualPredicate: Predicate | undefined, expectedPredicate: SimplePredicate): void {
