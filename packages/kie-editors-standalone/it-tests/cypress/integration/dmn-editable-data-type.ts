@@ -20,7 +20,8 @@ describe("Dmn Editable Data Type.", () => {
     cy.loadEditor("dmn-editable");
   });
 
-  it("Test Add New Data Type And Save", () => {
+  // Currently skipped due to https://issues.redhat.com/browse/KOGITO-3909
+  it.skip("Test Add New Data Type And Check Dirty Indicator", () => {
     cy.editor("dmn-editable")
       .find("[data-field='kie-palette']")
       .should("be.visible");
