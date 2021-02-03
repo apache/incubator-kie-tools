@@ -25,10 +25,7 @@
     "react-router-dom": "5.1.1",
     "uniforms": "^3.0.0",
     "uniforms-bridge-json-schema": "^3.0.0",
-    "uniforms-material": "^3.0.0",
-    "uniforms-patternfly": "^4.0.0",
-    "uniforms-semantic": "^3.0.0",
-    "uniforms-unstyled": "^3.0.0"
+    "uniforms-patternfly": "^4.1.2"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

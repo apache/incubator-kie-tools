@@ -40,11 +40,9 @@ import {
   PageSection,
   Title
 } from "@patternfly/react-core";
-import { JitDmn, JitDmnPayload } from "../common/JitDmn";
+import { JitDmn } from "../common/JitDmn";
 import { JitDmnForm } from "./JitDmnForm";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { AutoForm } from "uniforms-unstyled";
-import set = Reflect.set;
 
 export enum Alerts {
   NONE,

@@ -206,11 +206,11 @@ export function EditorToolbar(props: Props) {
                 }}
               >
                 <Button
-                  data-testid="save-button"
-                  variant={"primary"}
+                  data-testid="run-button"
+                  variant={"tertiary"}
                   onClick={onRun}
-                  aria-label={"Save and Download button"}
-                  className={"kogito--editor__toolbar button"}
+                  aria-label={"Run"}
+                  className={"kogito--editor__toolbar"}
                 >
                   {runLabel}
                 </Button>

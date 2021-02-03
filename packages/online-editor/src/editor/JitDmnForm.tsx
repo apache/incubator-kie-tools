@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
 import { JitDmn } from "../common/JitDmn";
-import { AutoForm } from "uniforms-patternfly";
+import { AutoForm, ErrorField, ErrorsField, HiddenField, RadioField } from "uniforms-patternfly";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
   Alert,
@@ -42,6 +42,7 @@ interface Props {
 export function JitDmnForm(props: Props) {
   const [jitResponse, setJitResponse] = useState();
   const [jitResponseStatus, setJitResponseStatus] = useState(JitResponseStatus.NONE);
+  const autoFormRef = useRef<HTMLFormElement>();
 
   const alertMessage = useMemo(() => {
     switch (jitResponseStatus) {
@@ -55,7 +56,7 @@ export function JitDmnForm(props: Props) {
   }, [jitResponseStatus]);
 
   const onSubmit = useCallback(
-    ({ context }: any) => {
+    ({ context }) => {
       if (props.editorContent) {
         props.editorContent().then((model: string) => {
           JitDmn.validateForm({ context, model })
@@ -72,12 +73,33 @@ export function JitDmnForm(props: Props) {
   );
 
   useEffect(() => {
-    console.log(jitResponse);
-  }, [jitResponse]);
+    if (props.jsonSchemaBridge) {
+      const form = document.getElementById("form") as HTMLFormElement;
+      Array.from(form.getElementsByTagName("input")).forEach(input =>
+        input.addEventListener("change", () => autoFormRef.current!.onSubmit())
+      );
+      (form.querySelector("button[type='submit']")! as HTMLButtonElement).style.display = "none";
+
+      const observables = Array.from(form.querySelectorAll(".pf-c-select")).map(select => {
+        const observer = new MutationObserver(() => autoFormRef.current!.onSubmit());
+        observer.observe(select, {
+          childList: true,
+          subtree: true
+        });
+        return observer;
+      });
+
+      return () => {
+        observables.forEach(observable => observable.disconnect());
+      };
+    }
+  }, [props.jsonSchemaBridge, autoFormRef]);
 
   return (
     <div>
-      {props.jsonSchemaBridge && <AutoForm schema={props.jsonSchemaBridge} onSubmit={onSubmit} />}
+      {props.jsonSchemaBridge && (
+        <AutoForm id={"form"} ref={autoFormRef} schema={props.jsonSchemaBridge} onSubmit={onSubmit} />
+      )}
       {alertMessage}
       {jitResponse && (
         <DescriptionList isHorizontal={true}>
@@ -96,13 +118,13 @@ interface RecursiveJitResponseProps {
 function JitResponse(props: RecursiveJitResponseProps) {
   return (
     <div style={{ padding: "10px" }}>
-      {[...Object.entries(props.responseObject)].map(([key, value]: any[]) => (
-        <>
+      {[...Object.entries(props.responseObject)].map(([key, value]: any[], index) => (
+        <div key={`${key}-${index}-jit-response`}>
           {typeof value === "object" && value !== null ? (
-            <>
+            <div>
               <Title headingLevel={"h5"}>{key}</Title>
               <JitResponse responseObject={value} withoutPadding={true} />
-            </>
+            </div>
           ) : (
             <div style={props.withoutPadding ? {} : { padding: "10px" }}>
               <DescriptionListGroup>
@@ -115,7 +137,7 @@ function JitResponse(props: RecursiveJitResponseProps) {
               </DescriptionListGroup>
             </div>
           )}
-        </>
+        </div>
       ))}
     </div>
   );
