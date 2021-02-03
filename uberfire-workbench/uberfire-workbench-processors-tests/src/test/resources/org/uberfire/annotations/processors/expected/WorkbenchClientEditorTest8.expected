@@ -41,14 +41,14 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchClientEditorTest7Activity extends AbstractWorkbenchClientEditorActivity {
+public class WorkbenchClientEditorTest8Activity extends AbstractWorkbenchClientEditorActivity {
 
     @Inject
-    private WorkbenchClientEditorTest7 realPresenter;
+    private WorkbenchClientEditorTest8 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public WorkbenchClientEditorTest7Activity(final PlaceManager placeManager) {
+    public WorkbenchClientEditorTest8Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
@@ -72,12 +72,12 @@ public class WorkbenchClientEditorTest7Activity extends AbstractWorkbenchClientE
     }
     @Override
     public Promise<String> getPreview() {
-        return realPresenter.getPreview();
+        return null;
     }
 
     @Override
     public Promise validate() {
-        return null;
+        return realPresenter.validate();
     }
 
     @Override

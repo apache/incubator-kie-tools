@@ -143,6 +143,11 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                                                                                           processingEnvironment);
         final String getPreviewMethodName = getPreviewMethod == null ? null : getPreviewMethod.getSimpleName().toString();
 
+        final ExecutableElement validateMethod = GeneratorUtils.getValidateMethodName(classElement,
+                                                                                       processingEnvironment);
+
+        final String validateMethodName = validateMethod == null ? null : validateMethod.getSimpleName().toString();
+
         final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType(classElement);
 
         if (GeneratorUtils.debugLoggingEnabled()) {
@@ -192,6 +197,8 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                                   "getPreviewMethodName: " + getPreviewMethodName);
             messager.printMessage(Kind.NOTE,
                                   "isDirtyMethodName: " + isDirtyMethodName);
+            messager.printMessage(Kind.NOTE,
+                                  "validateMethodName: " + validateMethodName);
             messager.printMessage(Kind.NOTE,
                                   "Qualifiers: " + String.join(", ",
                                                                qualifiers));
@@ -280,6 +287,8 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                  getPreviewMethodName);
         root.put("isDynamic",
                  isDynamic);
+        root.put("validateMethodName",
+                 validateMethodName);
         root.put("qualifiers",
                  qualifiers);
 

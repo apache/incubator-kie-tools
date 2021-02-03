@@ -74,6 +74,12 @@ public class WorkbenchClientEditorTest6Activity extends AbstractWorkbenchClientE
     public Promise<String> getPreview() {
         return null;
     }
+
+    @Override
+    public Promise validate() {
+        return null;
+    }
+
     @Override
     public String getIdentifier() {
         return "editor";

@@ -60,6 +60,11 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Test dependencies -->
 

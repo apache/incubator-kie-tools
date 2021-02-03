@@ -40,8 +40,10 @@ public class APIModule {
     public static final String onStartup = "org.uberfire.lifecycle.OnStartup";
     public static final String onContextAttach = "org.uberfire.lifecycle.OnContextAttach";
     public static final String activatedBy = "org.jboss.errai.ioc.client.api.ActivatedBy";
+    public static final String validate = "org.uberfire.lifecycle.Validate";
 
-    private APIModule() {}
+    private APIModule() {
+    }
 
     public static String getPanelDefinitionClass() {
         return panelDefinition;
@@ -105,5 +107,9 @@ public class APIModule {
 
     public static String getOnSaveClass() {
         return onSave;
+    }
+
+    public static String getValidateClass() {
+        return validate;
     }
 }

@@ -33,7 +33,7 @@ import org.junit.Test;
 public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
 
     Result result = new Result();
-    
+
     @Override
     protected AbstractErrorAbsorbingProcessor getProcessorUnderTest() {
         return new WorkbenchClientEditorProcessor(code -> result.setActualCode(code));
@@ -47,7 +47,7 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation(diagnostics);
         assertNull(result.getActualCode());
     }
-    
+
     @Test
     public void testDoNotExtendWidgetOrProvideElement() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
@@ -61,7 +61,7 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
                                  "org.uberfire.annotations.processors.WorkbenchClientEditorTest2Activity: The WorkbenchClientEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.");
         assertNull(result.getActualCode());
     }
-    
+
     @Test
     public void testMissingWorkbenchPartTitle() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
@@ -75,7 +75,7 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
                                  "org.uberfire.annotations.processors.WorkbenchClientEditorTest3Activity: The WorkbenchClientEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.");
         assertNull(result.getActualCode());
     }
-    
+
     @Test
     public void testMissingSetContent() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
@@ -89,7 +89,7 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
                                  "org.uberfire.annotations.processors.WorkbenchClientEditorTest4Activity: The WorkbenchClientEditor must provide a @SetContent annotated method that has two java.lang.String (path and content) as parameters.");
         assertNull(result.getActualCode());
     }
-    
+
     @Test
     public void testMissingGetContent() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
@@ -103,8 +103,7 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
                                  "org.uberfire.annotations.processors.WorkbenchClientEditorTest5Activity: The WorkbenchClientEditor must provide a @GetContent annotated method to return a elemental2.promise.Promise");
         assertNull(result.getActualCode());
     }
-    
-    
+
     @Test
     public void testSuccessContent() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
@@ -119,13 +118,28 @@ public class WorkbenchClientEditorProcessorTest extends AbstractProcessorTest {
         assertEquals(result.getExpectedCode(),
                      result.getActualCode());
     }
-    
+
     @Test
     public void testSuccessContentWithGetPreview() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchClientEditorTest7");
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchClientEditorTest7.expected";
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
+
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
+    }
+
+    @Test
+    public void testSuccessContentWithValidate() throws FileNotFoundException {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                "org/uberfire/annotations/processors/WorkbenchClientEditorTest8");
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchClientEditorTest8.expected";
         result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         assertSuccessfulCompilation(diagnostics);
