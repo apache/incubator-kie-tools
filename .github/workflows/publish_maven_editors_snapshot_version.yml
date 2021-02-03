@@ -16,6 +16,10 @@ jobs:
     timeout-minutes: 90
 
     steps:
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+
       - name: Checkout droolsjbpm-build-bootstrap
         uses: actions/checkout@v2
         with:
