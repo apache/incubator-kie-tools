@@ -239,7 +239,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                             payload: {
                               modelIndex: modelIndex,
                               characteristicIndex: selectedCharacteristicIndex,
-                              predicate: fromText(_content.text),
+                              predicate: _content.predicate,
                               partialScore: _content.partialScore,
                               reasonCode: _content.reasonCode
                             }
@@ -251,7 +251,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                               modelIndex: modelIndex,
                               characteristicIndex: selectedCharacteristicIndex,
                               attributeIndex: selectedAttributeIndex,
-                              predicate: fromText(_content.text),
+                              predicate: _content.predicate,
                               partialScore: _content.partialScore,
                               reasonCode: _content.reasonCode
                             }

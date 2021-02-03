@@ -16,7 +16,15 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput } from "@patternfly/react-core";
-import { Attribute, Characteristic, DataField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  Characteristic,
+  DataField,
+  Model,
+  PMML,
+  Predicate,
+  Scorecard
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import { PredicateEditor } from "./PredicateEditor";
@@ -25,14 +33,14 @@ import { useSelector } from "react-redux";
 import { isEqual } from "lodash";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { useOperation } from "../OperationContext";
-import { toText } from "../organisms";
+import { fromText, toText } from "../organisms";
 import set = Reflect.set;
 import get = Reflect.get;
 
 interface AttributeEditorContent {
   partialScore?: number;
   reasonCode?: string;
-  text?: string;
+  predicate?: Predicate;
 }
 
 interface AttributeEditorProps {
@@ -90,7 +98,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     event => {
       if (text?.valid) {
         if (text.value !== originalText) {
-          commit({ text: text.value });
+          commit({ predicate: fromText(text.value) });
         }
       } else {
         onCancel();
@@ -185,7 +193,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       value={reasonCode ?? ""}
                       onChange={e => setReasonCode(e)}
                       onBlur={e => {
-                        commit({ reasonCode: reasonCode });
+                        commit({ reasonCode: reasonCode !== "" ? reasonCode : undefined });
                       }}
                     />
                   </FormGroup>
