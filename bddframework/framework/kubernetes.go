@@ -48,7 +48,7 @@ func InitKubeClient() error {
 	mux.Lock()
 	defer mux.Unlock()
 	if kubeClient == nil {
-		newClient, err := client.NewClientBuilder().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
+		newClient, err := client.NewClientBuilder().UseControllerDynamicMapper().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
 		if err != nil {
 			return fmt.Errorf("Error initializing kube client: %v", err)
 		}

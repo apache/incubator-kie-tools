@@ -144,7 +144,7 @@ func DeployClusterWideKogitoOperatorFromYaml(deploymentNamespace string) error {
 		return err
 	}
 
-	_, err = CreateCommand("oc", "apply", "-f", tempFilePath).WithLoggerContext(deploymentNamespace).Execute()
+	_, err = CreateCommand("oc", "apply", "-f", tempFilePath, "-n", deploymentNamespace).WithLoggerContext(deploymentNamespace).Execute()
 	if err != nil {
 		GetLogger(deploymentNamespace).Error(err, "Error while installing Kogito operator from YAML file")
 		return err
@@ -461,21 +461,7 @@ func DeployMongoDBOperatorFromYaml(namespace string) error {
 	GetLogger(namespace).Info("Deploy MongoDB from yaml files", "file uri", mongoDBOperatorDeployFilesURI)
 
 	if !infra.IsMongoDBAvailable(kubeClient) {
-		if err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"crds/mongodb.com_mongodb_crd.yaml", &apiextensionsv1beta1.CustomResourceDefinition{}, func(object interface{}) {
-			// Short fix as 'plural' from mongodb is not mongodbs ...
-			// https://github.com/mongodb/mongodb-kubernetes-operator/issues/237
-			crdName := object.(*apiextensionsv1beta1.CustomResourceDefinition).Spec.Names.Plural
-			if !strings.HasSuffix(crdName, "s") {
-				crdName += "s"
-				metadataName := fmt.Sprintf("%s.%s", crdName, object.(*apiextensionsv1beta1.CustomResourceDefinition).Spec.Group)
-
-				GetLogger(namespace).Info("MongoDB Crd, changing plural", "from", object.(*apiextensionsv1beta1.CustomResourceDefinition).Spec.Names.Plural, "to", crdName)
-				GetLogger(namespace).Info("MongoDB Crd, changing metadata name", "from", object.(*apiextensionsv1beta1.CustomResourceDefinition).ObjectMeta.Name, "to", metadataName)
-
-				object.(*apiextensionsv1beta1.CustomResourceDefinition).Spec.Names.Plural = crdName
-				object.(*apiextensionsv1beta1.CustomResourceDefinition).ObjectMeta.Name = metadataName
-			}
-		}); err != nil {
+		if err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"crds/mongodb.com_mongodb_crd.yaml", &apiextensionsv1beta1.CustomResourceDefinition{}, nil); err != nil {
 			return err
 		}
 	}
