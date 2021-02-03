@@ -16,25 +16,49 @@
 import { Characteristic, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationRegistry } from "./ValidationRegistry";
 import { validateAttributes } from "./Attributes";
+import { ValidationEntry } from "./ValidationRegistry";
+import { ValidationLevel } from "./ValidationLevel";
 
 export const validateCharacteristic = (
   modelIndex: number,
+  scorecardProperties: {
+    baselineScore: number | undefined;
+    useReasonCodes: boolean | undefined;
+  },
   characteristicIndex: number,
   characteristic: Characteristic,
   miningFields: MiningField[],
   validationRegistry: ValidationRegistry
 ): void => {
+  if (scorecardProperties.useReasonCodes !== false) {
+    if (characteristic.reasonCode === undefined) {
+      validationRegistry.set(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].reasonCode`,
+        new ValidationEntry(ValidationLevel.WARNING, `${characteristic.name}: Reason code is required`)
+      );
+    }
+    if (scorecardProperties.baselineScore === undefined && characteristic.baselineScore === undefined) {
+      validationRegistry.set(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].baselineScore`,
+        new ValidationEntry(ValidationLevel.WARNING, `${characteristic.name}: Baseline score is required`)
+      );
+    }
+  }
   //Attributes
   validateAttributes(modelIndex, characteristicIndex, characteristic.Attribute, miningFields, validationRegistry);
 };
 
 export const validateCharacteristics = (
   modelIndex: number,
+  scorecardProperties: {
+    baselineScore: number | undefined;
+    useReasonCodes: boolean | undefined;
+  },
   characteristics: Characteristic[],
   miningFields: MiningField[],
   validationRegistry: ValidationRegistry
 ): void => {
   characteristics.forEach((characteristic, characteristicIndex) =>
-    validateCharacteristic(modelIndex, characteristicIndex, characteristic, miningFields, validationRegistry)
+    validateCharacteristic(modelIndex, scorecardProperties, characteristicIndex, characteristic, miningFields, validationRegistry)
   );
 };

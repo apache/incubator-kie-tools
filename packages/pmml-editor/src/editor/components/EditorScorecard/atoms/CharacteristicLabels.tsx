@@ -14,26 +14,61 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useMemo } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
+import { useValidationService } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 interface CharacteristicLabelsProps {
+  modelIndex: number;
+  characteristicIndex: number;
   activeCharacteristic: Characteristic;
   areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired } = props;
+  const { modelIndex, characteristicIndex, activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired } = props;
 
+  const validationService = useValidationService().service;
+  const reasonCodeValidation = useMemo(
+    () =>
+      validationService.get(`models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].reasonCode`),
+    [modelIndex, characteristicIndex, areReasonCodesUsed, activeCharacteristic]
+  );
+  const baselineScoreValidation = useMemo(
+    () =>
+      validationService.get(
+        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].baselineScore`
+      ),
+    [modelIndex, characteristicIndex, isBaselineScoreRequired, activeCharacteristic]
+  );
   return (
     <>
-      {activeCharacteristic.baselineScore !== undefined &&
-        isBaselineScoreRequired &&
-        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
-      {activeCharacteristic.reasonCode !== undefined &&
-        areReasonCodesUsed &&
+      {areReasonCodesUsed &&
+        reasonCodeValidation.length === 0 &&
         CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
+      {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Reason code:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
+
+      {activeCharacteristic.baselineScore !== undefined &&
+        baselineScoreValidation.length === 0 &&
+        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
+      {isBaselineScoreRequired && baselineScoreValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Baseline score:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
     </>
   );
 };

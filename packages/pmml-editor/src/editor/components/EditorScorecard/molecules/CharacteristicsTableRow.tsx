@@ -71,6 +71,8 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
         </SplitItem>
         <SplitItem isFilled={true}>
           <CharacteristicLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
             activeCharacteristic={characteristic.characteristic}
             areReasonCodesUsed={areReasonCodesUsed}
             isBaselineScoreRequired={isBaselineScoreRequired}

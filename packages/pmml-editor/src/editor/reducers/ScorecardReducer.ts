@@ -87,6 +87,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             );
             validateCharacteristics(
               action.payload.modelIndex,
+              { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
               state.Characteristics.Characteristic,
               state.MiningSchema.MiningField.concat(action.payload.names.map(n => new MiningField({ name: n }))),
               validationRegistry
@@ -111,6 +112,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             );
             validateCharacteristics(
               action.payload.modelIndex,
+              { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
               state.Characteristics.Characteristic.map((characteristic, characteristicIndex) => {
                 if (characteristicIndex === action.payload.characteristicIndex) {
                   const attributes = characteristic.Attribute.map((attribute, attributeIndex) => {
@@ -183,6 +185,20 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             draft.initialScore = action.payload.initialScore;
             draft.useReasonCodes = action.payload.useReasonCodes;
             draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
+
+            validationRegistry.clear(
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forCharacteristics()
+                .build()
+            );
+            validateCharacteristics(
+              action.payload.modelIndex,
+              { baselineScore: action.payload.baselineScore, useReasonCodes: action.payload.useReasonCodes },
+              state.Characteristics.Characteristic,
+              state.MiningSchema.MiningField,
+              validationRegistry
+            );
           }
         );
         break;
@@ -236,6 +252,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         );
         validateCharacteristics(
           action.payload.modelIndex,
+          { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
           state.Characteristics.Characteristic,
           state.MiningSchema.MiningField.filter(mf => mf.name !== action.payload.name),
           validationRegistry
@@ -394,6 +411,64 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         );
         break;
 
+      case Actions.Scorecard_AddCharacteristic:
+        if (action.payload.modelIndex !== undefined) {
+          const modelIndex = action.payload.modelIndex;
+          validationRegistry.clear(
+            Builder()
+              .forModel(modelIndex)
+              .forCharacteristics()
+              .build()
+          );
+          validateCharacteristics(
+            modelIndex,
+            { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
+            [
+              ...state.Characteristics.Characteristic,
+              {
+                name: action.payload.name,
+                reasonCode: action.payload.reasonCode,
+                baselineScore: action.payload.baselineScore,
+                Attribute: []
+              }
+            ],
+            state.MiningSchema.MiningField,
+            validationRegistry
+          );
+        }
+        break;
+      case Actions.Scorecard_UpdateCharacteristic:
+        if (action.payload.modelIndex !== undefined) {
+          const modelIndex = action.payload.modelIndex;
+          validationRegistry.clear(
+            Builder()
+              .forModel(modelIndex)
+              .forCharacteristics()
+              .build()
+          );
+          validateCharacteristics(
+            modelIndex,
+            { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
+            state.Characteristics.Characteristic.map((characteristic, characteristicIndex) => {
+              if (characteristicIndex === action.payload.characteristicIndex) {
+                characteristic = {
+                  ...characteristic,
+                  ...{
+                    name: action.payload.name,
+                    reasonCode: action.payload.reasonCode,
+                    baselineScore: action.payload.baselineScore,
+                    Attribute: []
+                  }
+                };
+              }
+              return characteristic;
+            }),
+            state.MiningSchema.MiningField,
+            validationRegistry
+          );
+        }
+        break;
+
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
@@ -418,6 +493,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
           );
           validateCharacteristics(
             modelIndex,
+            { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
             state.Characteristics.Characteristic,
             state.MiningSchema.MiningField,
             validationRegistry
