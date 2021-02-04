@@ -219,3 +219,27 @@
   line-height: var(--pf-global--LineHeight--md);
   font-size: var(--pf-global--FontSize--md);
 }
+
+@media screen and (min-width: 1200px) {
+  .kogito--editor__jit-dmn {
+    max-height: calc(100% - 108px);
+  }
+
+  .kogito--editor__jit-dmn-width {
+    flex-basis: 700px;
+  }
+}
+
+@media screen and (max-width: 0px) and (min-width: 1200px) {
+  .kogito--editor__jit-dmn {
+    max-height: calc(100% - 108px);
+  }
+
+  .kogito--editor__jit-dmn-width {
+    flex-basis: 350px;
+  }
+}
+
+.kogito--editor__jit-dmn-closed {
+  flex-basis: 0;
+}

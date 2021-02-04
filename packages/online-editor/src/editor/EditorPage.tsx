@@ -32,6 +32,7 @@ import {
   Alert,
   AlertActionCloseButton,
   AlertActionLink,
+  Card,
   Drawer,
   DrawerContent,
   DrawerContentBody,
@@ -443,7 +444,9 @@ export function EditorPage(props: Props) {
         <Drawer isInline={true} isExpanded={runJitDmn}>
           <DrawerContent
             panelContent={
-              <DrawerPanelContent style={{ maxHeight: "calc(100vh - 76px)" }}>
+              <DrawerPanelContent
+                className={runJitDmn ? "kogito--editor__jit-dmn-width" : "kogito--editor__jit-dmn-closed"}
+              >
                 {jitDmnStatus === JitDmnStatus.RUNNING && (
                   <JitDmnForm jsonSchemaBridge={jitDmnSchema} editorContent={editor?.getContent} />
                 )}

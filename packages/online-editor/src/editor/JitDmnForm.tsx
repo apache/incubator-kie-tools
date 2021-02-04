@@ -17,7 +17,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
 import { JitDmn } from "../common/JitDmn";
-import { AutoForm, ErrorField, ErrorsField, HiddenField, RadioField } from "uniforms-patternfly";
+import { AutoForm } from "uniforms-patternfly";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
   Alert,
@@ -25,7 +25,15 @@ import {
   DescriptionListTerm,
   DescriptionListGroup,
   DescriptionListDescription,
-  Title
+  EmptyState,
+  Title,
+  Flex,
+  FlexItem,
+  Divider,
+  DrawerContent,
+  DrawerContentBody,
+  Drawer,
+  DrawerPanelContent
 } from "@patternfly/react-core";
 
 enum JitResponseStatus {
@@ -38,6 +46,12 @@ interface Props {
   editorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
 }
+
+const PF_BREAKPOINT_SM = 576;
+const PF_BREAKPOINT_MD = 768;
+const PF_BREAKPOINT_LG = 992;
+const PF_BREAKPOINT_XL = 1200;
+const PF_BREAKPOINT_2XL = 1450;
 
 export function JitDmnForm(props: Props) {
   const [jitResponse, setJitResponse] = useState();
@@ -95,20 +109,57 @@ export function JitDmnForm(props: Props) {
     }
   }, [props.jsonSchemaBridge, autoFormRef]);
 
+  const [drawerPosition, setDrawerPosition] = useState<"right" | "bottom">("right");
+
+  const handleResize = useCallback(() => {
+    const width = window.innerWidth;
+
+    if (width <= PF_BREAKPOINT_XL) {
+      setDrawerPosition("bottom");
+    } else {
+      setDrawerPosition("right");
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div>
-      {props.jsonSchemaBridge && (
-        <AutoForm id={"form"} ref={autoFormRef} schema={props.jsonSchemaBridge} onSubmit={onSubmit} />
-      )}
-      {alertMessage}
-      {jitResponse && (
-        <DescriptionList isHorizontal={true}>
-          <JitResponse responseObject={jitResponse!} withoutPadding={false} />
-        </DescriptionList>
-      )}
-    </div>
+    <Drawer isStatic={true} position={drawerPosition}>
+      <DrawerContent
+        panelContent={
+          <DrawerPanelContent widths={{ default: "width_50" }}>
+            <p>Response Empty State</p>
+          </DrawerPanelContent>
+        }
+      >
+        <DrawerContentBody>
+          {props.jsonSchemaBridge ? (
+            <AutoForm id={"form"} ref={autoFormRef} schema={props.jsonSchemaBridge} onSubmit={onSubmit} />
+          ) : (
+            <p>Form Empty State</p>
+          )}
+        </DrawerContentBody>
+      </DrawerContent>
+    </Drawer>
   );
 }
+
+// {/*<div style={{ display: "flex" }}>*/}
+// {/*    */}
+//
+// {/*  /!*{alertMessage}*!/*/}
+// {/*  <Divider isVertical={true} />*/}
+// {/*    */}
+// {/*  /!*{jitResponse ? (*!/*/}
+// {/*  /!*  <DescriptionList isHorizontal={true}>*!/*/}
+// {/*  /!*    <JitResponse responseObject={jitResponse!} withoutPadding={false} />*!/*/}
+// {/*  /!*  </DescriptionList>*!/*/}
+// {/*  /!*) : (*!/*/}
+// {/*  /!*  <p>Response Empty State</p>*!/*/}
+// {/*  /!*)}*!/*/}
+// {/*</div>*/}
 
 interface RecursiveJitResponseProps {
   responseObject: object;
