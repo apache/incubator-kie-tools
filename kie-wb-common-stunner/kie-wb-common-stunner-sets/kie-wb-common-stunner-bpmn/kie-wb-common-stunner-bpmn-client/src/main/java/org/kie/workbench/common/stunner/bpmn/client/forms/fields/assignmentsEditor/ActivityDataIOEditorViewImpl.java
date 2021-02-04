@@ -58,7 +58,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private Column column = new Column(ColumnSize.MD_12);
 
-    public static final int EXPRESSION_MAX_DISPLAY_LENGTH = 10;
+    public static final int EXPRESSION_MAX_DISPLAY_LENGTH = 65;
 
     public ActivityDataIOEditorViewImpl() {
         super();
@@ -93,6 +93,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnCancel.addClickHandler(event -> presenter.handleCancelClick());
         btnColumn.add(btnCancel);
         container.add(btnRow);
+        setWidth("1200px");
         setBody(container);
     }
 

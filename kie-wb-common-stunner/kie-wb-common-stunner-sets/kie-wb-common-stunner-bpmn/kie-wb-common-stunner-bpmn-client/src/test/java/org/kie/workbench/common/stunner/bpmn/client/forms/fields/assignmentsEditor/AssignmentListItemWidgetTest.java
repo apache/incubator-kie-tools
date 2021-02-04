@@ -339,7 +339,7 @@ public class AssignmentListItemWidgetTest {
                                                                   ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH);
         processVarComboBox.setAddCustomValues(true);
         processVarComboBox.setListBoxValues(processVarListBoxValues);
-        String sConstant = "\"abcdeabcde12345\"";
+        String sConstant = "\"abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcde1234567890\"";
         widget.setExpression(sConstant);
         widget.setProcessVariables(processVarListBoxValues);
         verify(processVarComboBox,
@@ -348,6 +348,6 @@ public class AssignmentListItemWidgetTest {
                times(2)).setListBoxValues(any(ListBoxValues.class));
         verify(processVarComboBox).addCustomValueToListBoxValues(sConstant,
                                                                  "");
-        verify(processVar).setValue("\"abcdeabcde...\"");
+        verify(processVar).setValue("\"abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcde12345...\"");
     }
 }
