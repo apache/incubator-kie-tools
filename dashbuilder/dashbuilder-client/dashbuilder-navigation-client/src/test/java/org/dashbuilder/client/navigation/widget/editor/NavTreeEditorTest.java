@@ -418,7 +418,7 @@ public class NavTreeEditorTest {
         navTreeEditor.saveDefaultNavTree();
 
         verify(navTreeEditor).showLoading();
-        verify(navigationManager).saveNavTree(any(NavTree.class), any(Command.class));
+        verify(navigationManager).saveNavTree(any(), any(Command.class));
     }
 
     @Test

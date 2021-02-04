@@ -104,7 +104,7 @@ public class DataSetExplorerTest {
         assertEquals(1, presenter.panels.size());
         assertEquals(dataSetPanel, presenter.panels.get(0));
         verify(view, times(1)).clear();
-        verify(view, times(1)).addPanel(any(DataSetPanel.View.class));
+        verify(view, times(1)).addPanel(any());
         verify(dataSetPanel, times(1)).show(dataSetDef, "dataSetsExplorerPanelGroup");
     }
 
@@ -116,7 +116,7 @@ public class DataSetExplorerTest {
         assertEquals(1, presenter.panels.size());
         assertEquals(dataSetPanel, presenter.panels.get(0));
         verify(view, times(1)).clear();
-        verify(view, times(1)).addPanel(any(DataSetPanel.View.class));
+        verify(view, times(1)).addPanel(any());
         verify(dataSetPanel, times(1)).show(dataSetDef, "dataSetsExplorerPanelGroup");
     }
 
@@ -128,7 +128,7 @@ public class DataSetExplorerTest {
         assertEquals(1, presenter.panels.size());
         assertEquals(dataSetPanel, presenter.panels.get(0));
         verify(view).clear();
-        verify(view).addPanel(any(DataSetPanel.View.class));
+        verify(view).addPanel(any());
         verify(dataSetPanel).show(dataSetDef, "dataSetsExplorerPanelGroup");
     }
 
@@ -160,7 +160,7 @@ public class DataSetExplorerTest {
         assertEquals(1, presenter.panels.size());
         assertEquals(dataSetPanel, presenter.panels.get(0));
         verify(view, times(1)).clear();
-        verify(view, times(1)).addPanel(any(DataSetPanel.View.class));
+        verify(view, times(1)).addPanel(any());
         verify(dataSetPanel, times(1)).show(dataSetDef, "dataSetsExplorerPanelGroup");
     }
     

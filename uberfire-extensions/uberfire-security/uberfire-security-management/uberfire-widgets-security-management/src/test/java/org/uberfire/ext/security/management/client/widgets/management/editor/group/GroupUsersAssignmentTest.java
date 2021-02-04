@@ -61,7 +61,7 @@ public class GroupUsersAssignmentTest {
         verify(view,
                times(1)).init(tested);
         verify(view,
-               times(1)).configure(any(EntitiesExplorerView.class));
+               times(1)).configure(any());
         verify(view,
                times(1)).configureSave(anyString(),
                                        any(Command.class));

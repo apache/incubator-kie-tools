@@ -56,7 +56,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -136,7 +136,6 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
                                          "file:///branchRoot/");
         space = new Space("test-realm");
 
-        doReturn(ou).when(organizationalUnitService).getParentOrganizationalUnit(repository);
         doReturn(space.getName()).when(ou).getName();
         doReturn(ou).when(organizationalUnitService).getOrganizationalUnit(space.getName());
 
@@ -152,10 +151,6 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
                                   path);
 
         doReturn(moduleService).when(moduleServices).get();
-
-        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
-        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
-        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
 
         workspaceProjectService = new WorkspaceProjectServiceImpl(organizationalUnitService,
                                                                   repositoryService,
@@ -339,11 +334,7 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
 
         Repository project1 = mock(Repository.class);
         when(project1.getAlias()).thenReturn("project1");
-        when(project1.getSpace()).thenReturn(space);
         when(project1.getDefaultBranch()).thenReturn(Optional.of(branch1));
-        when(project1.getBranches())
-            .thenReturn(Arrays.asList(branch1,
-                                      branch2));
 
         Repository project2 = mock(Repository.class);
         when(project2.getAlias()).thenReturn("project2");

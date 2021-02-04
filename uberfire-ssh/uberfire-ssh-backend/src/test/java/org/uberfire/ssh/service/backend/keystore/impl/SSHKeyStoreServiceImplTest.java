@@ -21,7 +21,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ssh.service.backend.keystore.SSHKeyStore;
 import org.uberfire.ssh.service.backend.keystore.impl.storage.DefaultSSHKeyStore;
 import org.uberfire.ssh.service.backend.test.AbstractSSHKeyStoreServiceImplTest;

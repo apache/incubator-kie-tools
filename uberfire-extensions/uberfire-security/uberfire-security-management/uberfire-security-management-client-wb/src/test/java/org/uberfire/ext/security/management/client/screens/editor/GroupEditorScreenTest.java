@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
@@ -129,6 +130,6 @@ public class GroupEditorScreenTest {
         tested.groupName = "group1";
         tested.onGroupDeleted(deleteGroupEvent);
         verify(placeManager,
-               times(1)).closePlace(any(PlaceRequest.class));
+               times(1)).closePlace(Mockito.<PlaceRequest>any());
     }
 }

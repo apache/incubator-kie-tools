@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.LeafPermissionNodeEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.MultiplePermissionNodeEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionExceptionSwitch;
@@ -346,7 +346,6 @@ public class MultiplePermissionNodeEditorTest {
     @Test
     public void testSwitchInitDependencies() {
         when(permissionSwitchReadView.isOn()).thenReturn(false);
-        when(permissionSwitchUpdateView.isOn()).thenReturn(true);
 
         presenter.edit(permissionGroupNode);
 
@@ -422,7 +421,6 @@ public class MultiplePermissionNodeEditorTest {
         reset(permissionSwitchRead);
         reset(permissionSwitchUpdate);
         reset(permissionSwitchUpdateView1);
-        when(permissionSwitchUpdateView.isOn()).thenReturn(false);
         permissionSwitchRead.onChange();
 
         // Children update exception flag hidden as parent has been denied

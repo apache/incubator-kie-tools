@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -83,8 +83,6 @@ public class PerspectiveTreeProviderTest {
         beanDefs.add(bean2);
         beanDefs.add(bean3);
         beanDefs.add(bean4);
-        when(activityBeansCache.getActivity("Perspective1")).thenReturn(bean1);
-        when(activityBeansCache.getActivity("Perspective2")).thenReturn(bean2);
         when(activityBeansCache.getActivity("org.Perspective3")).thenReturn(bean3);
         when(activityBeansCache.getActivity("org.Perspective4")).thenReturn(bean4);
         when(activityBeansCache.getPerspectiveActivities()).thenReturn(beanDefs);

@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -65,9 +65,6 @@ public class ExportModelValidationServiceImplTest {
         String ds1 = "ds1";
         String json1 = "json1";
 
-        DataSetDef def = mock(DataSetDef.class);
-        when(def.getUUID()).thenReturn(ds1);
-        
         DisplayerSettings ds = registerDSMock(ds1);
         when(marshaller.fromJsonString(json1)).thenReturn(ds);
         

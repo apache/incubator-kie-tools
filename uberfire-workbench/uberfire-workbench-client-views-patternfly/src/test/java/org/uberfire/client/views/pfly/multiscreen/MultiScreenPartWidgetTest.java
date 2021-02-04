@@ -62,7 +62,7 @@ public class MultiScreenPartWidgetTest {
         when(multiScreenViews.get()).thenReturn(multiScreenView);
         final WorkbenchPartPresenter presenter = mock(WorkbenchPartPresenter.class);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(presenter).getMenus(any());
         when(view.getPresenter()).thenReturn(presenter);

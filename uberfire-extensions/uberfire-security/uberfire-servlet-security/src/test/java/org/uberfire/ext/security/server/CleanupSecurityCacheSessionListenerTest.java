@@ -28,7 +28,7 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Arrays.asList;
@@ -71,12 +71,6 @@ public class CleanupSecurityCacheSessionListenerTest {
     @Test
     public void testSessionCleanupNPE() {
         final CleanupSecurityCacheSessionListener listener = new CleanupSecurityCacheSessionListener();
-
-        final User user = new UserImpl("user", ImmutableSet.of(new RoleImpl("author")));
-
-        when(evt.getSession()).thenReturn(session);
-        when(session.getAttribute(ServletSecurityAuthenticationService.USER_SESSION_ATTR_NAME)).thenReturn(user);
-
         listener.sessionDestroyed(evt);
     }
 }

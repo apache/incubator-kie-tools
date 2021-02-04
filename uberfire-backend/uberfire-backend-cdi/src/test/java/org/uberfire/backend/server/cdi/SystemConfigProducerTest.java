@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.IOService;
@@ -88,11 +88,11 @@ public class SystemConfigProducerTest {
         when(bm.getBeans("configIO")).thenReturn(configIOBeans);
         when(bm.getReference(eq(ioServiceBean),
                              eq(IOService.class),
-                             any(CreationalContext.class)))
+                             any()))
                 .thenReturn(ioServiceMock);
 
-        when(ioServiceMock.newFileSystem(any(URI.class),
-                                         any(Map.class)))
+        when(ioServiceMock.newFileSystem(any(),
+                                         any()))
                 .thenReturn(fs);
 
         final Bean fileSystemBean = producer.createFileSystemBean(bm,

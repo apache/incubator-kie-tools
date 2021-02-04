@@ -60,8 +60,8 @@ public class WorkbenchDragAndDropManagerTest {
     public void assertMakeDraggableDelegation() {
         wrapper.makeDraggable(mock(IsWidget.class),
                               mock(IsWidget.class));
-        verify(dragController).makeDraggable(any(Widget.class),
-                                             any(Widget.class));
+        verify(dragController).makeDraggable(any(),
+                                             any());
     }
 
     @Test

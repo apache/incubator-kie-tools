@@ -41,7 +41,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
@@ -70,7 +70,7 @@ import static org.mockito.Mockito.when;
 /**
  * This tests create temporary working copy of the "application-users.properties" file as the tests are run using the real wildfly admin api for realm management.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class WildflyUsersPropertiesManagerTest extends BaseTest {
 
     protected static final String ADMIN = "admin";
@@ -263,7 +263,6 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
     @Test
     public void testAssignGroups() {
         final User user = mock(User.class);
-        when(user.getIdentifier()).thenReturn("user1");
         when(user.getRoles()).thenReturn(new HashSet<Role>());
         UserManager userManagerMock = mock(UserManager.class);
         doAnswer(new Answer<User>() {
@@ -291,7 +290,6 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
     @Test
     public void testAssignRoles() {
         final User user = mock(User.class);
-        when(user.getIdentifier()).thenReturn("user1");
         when(user.getGroups()).thenReturn(new HashSet<Group>());
         UserManager userManagerMock = mock(UserManager.class);
         doAnswer(new Answer<User>() {

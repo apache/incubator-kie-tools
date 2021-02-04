@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -130,8 +130,6 @@ public class WorkbenchMenuBarPresenterTest {
                                                                           null,
                                                                           PERSPECTIVE_ID);
 
-        when(perspectiveActivity.getPlace()).thenReturn(placeRequest);
-        when(perspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         when(authzManager.authorize(any(Resource.class),
                                     eq(identity))).thenReturn(true);
 
@@ -185,7 +183,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
@@ -204,8 +202,8 @@ public class WorkbenchMenuBarPresenterTest {
         verify(view).addContextMenuItem(eq(PERSPECTIVE_ID),
                                         anyString(),
                                         eq(NAME),
-                                        isNull(String.class),
-                                        any(Command.class),
+                                        isNull(),
+                                        any(),
                                         eq(position));
     }
 
@@ -217,7 +215,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
@@ -303,7 +301,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);

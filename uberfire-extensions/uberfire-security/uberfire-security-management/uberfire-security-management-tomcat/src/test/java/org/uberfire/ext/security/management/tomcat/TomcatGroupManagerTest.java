@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.*;
 /**
  * This tests create temporary working copy of the "tomcat-users.xml" file as the tests are run using the real tomcat admin api for realm management.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class TomcatGroupManagerTest extends BaseTest {
 
     protected static final String ADMIN = "admin";
@@ -178,7 +178,6 @@ public class TomcatGroupManagerTest extends BaseTest {
     @Test(expected = UnsupportedServiceCapabilityException.class)
     public void testUpdateGroup() {
         Group group = mock(Group.class);
-        when(group.getName()).thenReturn("role10");
         groupsManager.update(group);
     }
 

@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionExceptionSwitch;
 import org.uberfire.mvp.Command;
 
@@ -74,7 +74,6 @@ public class PermissionExceptionSwitchTest {
         verify(onChange).execute();
 
         reset(view);
-        when(view.isOn()).thenReturn(true);
         presenter.onChange();
     }
 

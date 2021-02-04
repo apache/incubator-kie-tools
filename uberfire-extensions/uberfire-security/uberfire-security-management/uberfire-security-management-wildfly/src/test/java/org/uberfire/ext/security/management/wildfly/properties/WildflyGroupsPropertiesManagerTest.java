@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
@@ -48,7 +48,7 @@ import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class WildflyGroupsPropertiesManagerTest extends BaseTest {
 
     protected static final String ADMIN = "admin";
@@ -181,7 +181,6 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
     @Test(expected = UnsupportedServiceCapabilityException.class)
     public void testUpdateGroup() {
         Group group = mock(Group.class);
-        when(group.getName()).thenReturn("role10");
         groupsPropertiesManager.update(group);
     }
 

@@ -26,7 +26,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.ResourceType;

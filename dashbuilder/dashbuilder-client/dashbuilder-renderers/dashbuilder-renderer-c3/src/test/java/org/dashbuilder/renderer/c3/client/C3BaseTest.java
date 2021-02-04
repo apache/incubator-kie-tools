@@ -16,6 +16,7 @@
 package org.dashbuilder.renderer.c3.client;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
@@ -33,8 +34,11 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartData;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class C3BaseTest extends AbstractDisplayerTest {
 
     @Mock
@@ -87,7 +91,7 @@ public class C3BaseTest extends AbstractDisplayerTest {
     
     private C3JsTypesFactory mockC3JsTypesFactory() {
         when(c3AxisInfo.getX()).thenReturn(c3AxisX);
-        when(c3AxisInfo.getY()).thenReturn(c3AxisY);
+        lenient().when(c3AxisInfo.getY()).thenReturn(c3AxisY);
         when(c3AxisX.getTick()).thenReturn(c3Tick);
         when(c3Conf.getAxis()).thenReturn(c3AxisInfo);
         when(c3Factory.c3ChartData(any(), any(), any(), any(), any())).thenReturn(c3ChartData);

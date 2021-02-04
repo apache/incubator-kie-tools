@@ -91,15 +91,15 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(aclSettings.getHomePerspective()).thenReturn(homePerspective);
         when(roleEditor.getAclSettings()).thenReturn(aclSettings);
         when(role.getName()).thenReturn("role1");
-        when(view.setWidget(any(IsWidget.class))).thenReturn(view);
+        when(view.setWidget(any())).thenReturn(view);
         when(view.clearNotifications()).thenReturn(view);
-        when(view.setCallback(any(EntityWorkflowView.Callback.class))).thenReturn(view);
+        when(view.setCallback(any())).thenReturn(view);
         when(view.setCancelButtonVisible(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonEnabled(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonVisible(anyBoolean())).thenReturn(view);
-        when(view.setSaveButtonText(anyString())).thenReturn(view);
-        when(view.showNotification(anyString())).thenReturn(view);
-        when(rolesManagerService.get(anyString())).thenReturn(role);
+        when(view.setSaveButtonText(any())).thenReturn(view);
+        when(view.showNotification(any())).thenReturn(view);
+        when(rolesManagerService.get(any())).thenReturn(role);
 
         tested = spy(new RoleEditorWorkflow(userSystemManager,
                                             authorizationService,
@@ -147,7 +147,7 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view).setCancelButtonVisible(false);
         verify(view).setCallback(any(EntityWorkflowView.Callback.class));
         verify(view).setSaveButtonText(anyString());
-        verify(view).setWidget(any(IsWidget.class));
+        verify(view).setWidget(any());
         verify(view).setSaveButtonVisible(false);
         verify(view).setSaveButtonEnabled(false);
         verify(view,

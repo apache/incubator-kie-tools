@@ -56,7 +56,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -292,21 +292,6 @@ public class OrganizationalUnitServiceTest {
 
         ConfigGroup configGroup = new ConfigGroup();
         configGroup.setName(SPACE_NAME);
-        when(configurationService.getConfiguration(ConfigType.SPACE)).thenReturn(Collections.singletonList(configGroup));
-
-        final JGitPathImpl configPath = mock(JGitPathImpl.class);
-        final JGitFileSystem fileSystem = mock(JGitFileSystem.class);
-        final Git git = mock(Git.class);
-        final org.eclipse.jgit.lib.Repository repository = mock(org.eclipse.jgit.lib.Repository.class);
-        final File directory = mock(File.class);
-        final Path fsPath = mock(Path.class);
-        doReturn(directory).when(directory).getParentFile();
-        doReturn(directory).when(repository).getDirectory();
-        doReturn(repository).when(git).getRepository();
-        doReturn(git).when(fileSystem).getGit();
-        doReturn(fsPath).when(fileSystem).getPath("");
-        doReturn(fileSystem).when(configPath).getFileSystem();
-        doReturn(configPath).when(ioService).get(any(URI.class));
 
         doReturn(orgUnit).when(organizationalUnitService).getOrganizationalUnit(SPACE_NAME);
 
@@ -507,8 +492,5 @@ public class OrganizationalUnitServiceTest {
     }
 
     private void setOUCreationPermission(final boolean hasPermission) {
-        when(authorizationManager.authorize(eq(OrganizationalUnit.RESOURCE_TYPE),
-                                            eq(OrganizationalUnitAction.CREATE),
-                                            any(User.class))).thenReturn(hasPermission);
     }
 }

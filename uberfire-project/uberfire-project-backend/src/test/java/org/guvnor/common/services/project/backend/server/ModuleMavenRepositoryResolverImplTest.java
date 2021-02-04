@@ -40,7 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -976,10 +976,6 @@ public class ModuleMavenRepositoryResolverImplTest {
                 "  <version>0.0.15</version>\n" +
                 "</project>";
 
-        when(module.getPomXMLPath()).thenReturn(pomXmlPath);
-        when(pomXmlPath.toURI()).thenReturn("file://p0/pom.xml");
-        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
-
         final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
@@ -1011,10 +1007,6 @@ public class ModuleMavenRepositoryResolverImplTest {
                     "  <artifactId>test</artifactId>\n" +
                     "  <version>0.0.16</version>\n" +
                     "</project>";
-
-            when(module.getPomXMLPath()).thenReturn(vfsPomXmlPath);
-            when(vfsPomXmlPath.toURI()).thenReturn("file://p0/pom.xml");
-            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
             System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                settingsXmlPath.toString());
@@ -1065,10 +1057,6 @@ public class ModuleMavenRepositoryResolverImplTest {
                     "    </repository>\n" +
                     "  </distributionManagement>\n" +
                     "</project>";
-
-            when(module.getPomXMLPath()).thenReturn(vfsPomXmlPath);
-            when(vfsPomXmlPath.toURI()).thenReturn("file://p0/pom.xml");
-            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
             System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                settingsXmlPath.toString());
@@ -1128,10 +1116,6 @@ public class ModuleMavenRepositoryResolverImplTest {
                     "    </repository>\n" +
                     "  </distributionManagement>\n" +
                     "</project>";
-
-            when(module.getPomXMLPath()).thenReturn(vfsPomXmlPath);
-            when(vfsPomXmlPath.toURI()).thenReturn("file://p0/pom.xml");
-            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
             System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                settingsXmlPath.toString());
@@ -1195,10 +1179,6 @@ public class ModuleMavenRepositoryResolverImplTest {
                     "    </repository>\n" +
                     "  </distributionManagement>\n" +
                     "</project>";
-
-            when(module.getPomXMLPath()).thenReturn(vfsPomXmlPath);
-            when(vfsPomXmlPath.toURI()).thenReturn("file://p0/pom.xml");
-            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
             System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                settingsXmlPath.toString());
@@ -1294,10 +1274,6 @@ public class ModuleMavenRepositoryResolverImplTest {
                                     "test",
                                     "0.0.21");
 
-            when(module.getPomXMLPath()).thenReturn(vfsPomXmlPath);
-            when(vfsPomXmlPath.toURI()).thenReturn("file://p0/pom.xml");
-            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
-
             System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                settingsXmlPath.toString());
             doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
@@ -1337,10 +1313,6 @@ public class ModuleMavenRepositoryResolverImplTest {
                     "  <artifactId>test</artifactId>\n" +
                     "  <version>0.0.22</version>\n" +
                     "</project>";
-
-            when(module.getPomXMLPath()).thenReturn(vfsPomXmlPath);
-            when(vfsPomXmlPath.toURI()).thenReturn("file://p0/pom.xml");
-            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
             System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                settingsXmlPath.toString());

@@ -20,7 +20,7 @@ import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GitRepositoryFactoryHelperNoIndexTest extends GitRepositoryFactoryHelperBaseTest {

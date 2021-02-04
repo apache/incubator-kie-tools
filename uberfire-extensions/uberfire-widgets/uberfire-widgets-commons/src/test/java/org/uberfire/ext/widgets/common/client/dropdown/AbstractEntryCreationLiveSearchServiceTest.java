@@ -64,9 +64,9 @@ public abstract class AbstractEntryCreationLiveSearchServiceTest<EDITOR extends 
 
         verify(dropDown).addNewItem(entry);
         verify(searchSelectionHandler).selectItem(any());
-        verify(dropDown).search(anyString());
-        verify(dropDown).doSearch(anyString());
-        verify(view).searchInProgress(anyString());
+        verify(dropDown).search(any());
+        verify(dropDown).doSearch(any());
+        verify(view).searchInProgress(any());
         verify(searchService).search(anyString(), anyInt(), any());
         verify(view).restoreFooter();
     }

@@ -166,7 +166,6 @@ public abstract class ImageListEditorTest extends AbstractEditorTest {
         final String name = type.getName();
         final SafeUri uri = mock(SafeUri.class);
         final SafeHtml safeHtml = mock(SafeHtml.class);
-        doReturn(name).when(safeHtml).asString();
         ImageListEditor<DataSetProviderType>.Entry entry = mock(ImageListEditor.Entry.class);
         doReturn(type).when(entry).getValue();
         doReturn(safeHtml).when(entry).getHeading();

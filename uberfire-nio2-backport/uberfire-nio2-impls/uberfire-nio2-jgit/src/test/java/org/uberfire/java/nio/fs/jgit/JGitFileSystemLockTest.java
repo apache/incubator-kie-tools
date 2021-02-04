@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
 import static org.junit.Assert.*;
@@ -56,7 +56,6 @@ public class JGitFileSystemLockTest {
         Git gitMock = mock(Git.class);
         Repository repo = mock(Repository.class);
         File directory = mock(File.class);
-        when(directory.isDirectory()).thenReturn(true);
         when(directory.toURI()).thenReturn(URI.create(""));
         when(repo.getDirectory()).thenReturn(directory);
         when(gitMock.getRepository()).thenReturn(repo);

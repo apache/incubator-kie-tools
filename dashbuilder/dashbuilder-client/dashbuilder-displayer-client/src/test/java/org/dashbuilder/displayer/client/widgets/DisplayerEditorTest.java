@@ -127,7 +127,7 @@ public class DisplayerEditorTest {
 
     @Before
     public void init() throws Exception {
-        when(displayerPrototypes.getProto(any(DisplayerType.class), any(DisplayerSubType.class))).thenReturn(displayerSettings);
+        when(displayerPrototypes.getProto(any(), any())).thenReturn(displayerSettings);
         when(displayerSettings.cloneInstance()).thenReturn(tableSettings);
         when(displayerLocator.lookupDisplayer(displayerSettings)).thenReturn(displayer);
         when(displayerLocator.lookupDisplayer(tableSettings)).thenReturn(tableDisplayer);
@@ -154,7 +154,7 @@ public class DisplayerEditorTest {
         verify(displayerLocator).lookupDisplayer(displayerSettings);
         verify(displayer).draw();
 
-        verify(typeSelector).init(any(DisplayerType.class), any(DisplayerSubType.class));
+        verify(typeSelector).init(any(), any());
         verify(lookupEditor).init(lookupConstraints, null);
         verify(settingsEditor).init(displayer);
 
@@ -168,22 +168,22 @@ public class DisplayerEditorTest {
         presenter.setDisplaySettingsEnabled(true);
 
         // Default
-        when(editorStatus.getSelectedOption(anyString())).thenReturn(-1);
+        when(editorStatus.getSelectedOption(any())).thenReturn(-1);
         presenter.init(null);
         verify(view).goToTypeSelection(typeSelector);
 
         // Type selector
-        when(editorStatus.getSelectedOption(anyString())).thenReturn(0);
+        when(editorStatus.getSelectedOption(any())).thenReturn(0);
         presenter.init(null);
         verify(view).goToTypeSelection(typeSelector);
 
         // Data lookup conf
-        when(editorStatus.getSelectedOption(anyString())).thenReturn(1);
+        when(editorStatus.getSelectedOption(any())).thenReturn(1);
         presenter.init(null);
         verify(view).goToDataSetLookupConf(lookupEditor);
 
         // Display settings
-        when(editorStatus.getSelectedOption(anyString())).thenReturn(2);
+        when(editorStatus.getSelectedOption(any())).thenReturn(2);
         presenter.init(null);
         verify(view).goToDisplaySettings(settingsEditor);
     }
@@ -194,7 +194,7 @@ public class DisplayerEditorTest {
         presenter.setDataSetLookupConfEnabled(true);
         presenter.setDisplaySettingsEnabled(true);
 
-        when(editorStatus.getSelectedOption(anyString())).thenReturn(-1);
+        when(editorStatus.getSelectedOption(any())).thenReturn(-1);
         presenter.init(null);
         verify(view).goToDataSetLookupConf(lookupEditor);
         verify(view, never()).goToTypeSelection(typeSelector);
@@ -207,7 +207,7 @@ public class DisplayerEditorTest {
         presenter.setDataSetLookupConfEnabled(false);
         presenter.setDisplaySettingsEnabled(true);
 
-        when(editorStatus.getSelectedOption(anyString())).thenReturn(-1);
+        when(editorStatus.getSelectedOption(any())).thenReturn(-1);
         presenter.init(null);
         verify(view, never()).goToDataSetLookupConf(lookupEditor);
         verify(view, never()).goToTypeSelection(typeSelector);

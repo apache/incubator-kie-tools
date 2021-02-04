@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.experimental.service.definition.impl.ExperimentalFeatureDefRegistryImpl;
 import org.uberfire.experimental.service.events.PortableExperimentalFeatureModifiedEvent;
 import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
@@ -113,9 +113,9 @@ public class ExperimentalFeaturesStorageImplTest {
         fileSystem = fileSystemTestingUtils.getFileSystem();
         ioService = spy(fileSystemTestingUtils.getIoService());
 
-        doNothing().when(ioService).startBatch(any(FileSystem.class));
+        doNothing().when(ioService).startBatch(any());
         doNothing().when(ioService).endBatch();
-        doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class), anyMap());
+        doReturn(fileSystem).when(ioService).newFileSystem(any(), anyMap());
 
         defRegistry = TestUtils.getRegistry();
 

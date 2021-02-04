@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -313,9 +313,6 @@ public class AppFormerJsActivityLoaderTest {
         AppFormerComponentsRegistry.Entry entry2 = getEntry("my-other-editor", EDITOR, "foo.js");
         doReturn(true).when(entry2).matches("my-asset.txt");
         appFormerJsActivityLoader.registerEditor(entry2);
-
-        final Promise<Object> p1 = promises.resolve();
-        doReturn(p1).when(appFormerJsActivityLoader).loadScriptFor("my-editor");
 
         final Promise<Object> p2 = promises.resolve();
         doReturn(p2).when(appFormerJsActivityLoader).loadScriptFor("my-other-editor");

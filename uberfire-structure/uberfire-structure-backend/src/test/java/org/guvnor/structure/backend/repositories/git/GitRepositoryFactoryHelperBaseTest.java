@@ -114,9 +114,6 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
         when(normal.newFileSystem(any(URI.class),
                                   anyMap())
         ).thenReturn(fileSystem);
-
-        when(withException.newFileSystem(any(URI.class),
-                                         anyMap())).thenThrow(new RuntimeException());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -159,7 +156,7 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
         verify(passwordService).decrypt(anyString());
 
         verify(service,
-               times(1)).delete(any(Path.class));
+               times(1)).delete(any());
         verify(service,
                times(2)).newFileSystem(any(URI.class),
                                        anyMap());

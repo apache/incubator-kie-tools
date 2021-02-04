@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.validation.EntityValidator;
@@ -204,7 +204,6 @@ public class UserEditorDriverTest {
     public void testFlush() {
         final User user = mock(User.class);
         final Set<Role> roles = new HashSet<Role>();
-        when(user.getRoles()).thenReturn(roles);
         final UserEditor userEditor = mock(UserEditor.class);
         final UserAttributesEditor attributesEditor = mock(UserAttributesEditor.class);
         final UserAssignedGroupsExplorer groupsExplorer = mock(UserAssignedGroupsExplorer.class);

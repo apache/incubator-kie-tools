@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
@@ -135,12 +135,6 @@ public class MetadataCreatorTest {
 
         //Mock FileSystem operations
         final AtomicBoolean exists = new AtomicBoolean(false);
-        when(configIOService.exists(any(Path.class))).<Boolean>thenAnswer(new Answer<Boolean>() {
-            @Override
-            public Boolean answer(InvocationOnMock invocation) throws Throwable {
-                return exists.get();
-            }
-        });
         when(configIOService.write(any(Path.class),
                                    any(String.class))).<Path>thenAnswer(new Answer<Path>() {
             @Override

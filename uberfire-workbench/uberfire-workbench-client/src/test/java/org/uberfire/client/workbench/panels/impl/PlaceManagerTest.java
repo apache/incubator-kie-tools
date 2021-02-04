@@ -16,7 +16,7 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HasWidgets;
 import org.assertj.core.api.Assertions;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -29,10 +29,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.*;
 import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.client.workbench.LayoutSelection;
@@ -72,7 +71,7 @@ import static org.mockito.Matchers.isNull;
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PlaceManagerTest {
 
     /**
@@ -138,19 +137,19 @@ public class PlaceManagerTest {
 
         when(defaultPerspective.getIdentifier())
                 .thenReturn("DefaultPerspective");
-        when(defaultPerspective.isType(any(String.class)))
+        when(defaultPerspective.isType(any()))
                 .thenReturn(true);
         when(perspectiveManager.getCurrentPerspective())
                 .thenReturn(defaultPerspective);
 
-        when(activityManager.getActivities(any(PlaceRequest.class))).thenReturn(singleton(notFoundActivity));
+        when(activityManager.getActivities(Mockito.<PlaceRequest>any())).thenReturn(singleton(notFoundActivity));
 
         doReturn(false).when(appFormerActivityLoader).triggerLoadOfMatchingEditors(any(), any());
 
         // for now (and this will have to change for UF-61), PathPlaceRequest performs an IOC lookup for ObservablePath in its constructor
         // as part of UF-61, we'll need to refactor ObservablePath and PathFactory so they ask for any beans they need as constructor params.
         final ObservablePath mockObservablePath = mock(ObservablePath.class);
-        when(mockObservablePath.wrap(any(Path.class))).thenReturn(mockObservablePath);
+        when(mockObservablePath.wrap(any())).thenReturn(mockObservablePath);
         IOC.getBeanManager().registerBean(new MockIOCBeanDef<ObservablePath, ObservablePath>(mockObservablePath,
                                                                                              ObservablePath.class,
                                                                                              Dependent.class,
@@ -177,7 +176,7 @@ public class PlaceManagerTest {
         when(kansasActivity.preferredHeight()).thenReturn(456);
 
         when(placeHistoryHandler.getPerspectiveFromPlace(any()))
-                .thenAnswer(i -> i.getArgumentAt(0,
+                .thenAnswer(i -> i.getArgument(0,
                                                  PlaceRequest.class));
         // arrange for the mock PerspectiveManager to invoke the doWhenFinished callbacks
         doAnswer(new Answer<Void>() {
@@ -189,9 +188,9 @@ public class PlaceManagerTest {
                 callback.execute(perspectiveActivity.getDefaultPerspectiveLayout());
                 return null;
             }
-        }).when(perspectiveManager).switchToPerspective(any(PlaceRequest.class),
-                                                        any(PerspectiveActivity.class),
-                                                        any(ParameterizedCommand.class));
+        }).when(perspectiveManager).switchToPerspective(any(),
+                                                        any(),
+                                                        any());
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -199,7 +198,7 @@ public class PlaceManagerTest {
                 callback.execute();
                 return null;
             }
-        }).when(perspectiveManager).savePerspectiveState(any(Command.class));
+        }).when(perspectiveManager).savePerspectiveState(any());
         doReturn(new DefaultPlaceRequest("lastPlaceRequest"))
                 .when(defaultPerspective).getPlace();
         doReturn(defaultPerspective).when(perspectiveManager)
@@ -228,12 +227,12 @@ public class PlaceManagerTest {
 
     private void setupPanelManagerMock() {
         when(panelManager.getRoot()).thenReturn(rootPanel);
-        when(panelManager.addWorkbenchPanel(any(PanelDefinition.class),
-                                            any(Position.class),
-                                            any(Integer.class),
-                                            any(Integer.class),
-                                            any(Integer.class),
-                                            any(Integer.class)))
+        when(panelManager.addWorkbenchPanel(any(),
+                                            any(),
+                                            any(),
+                                            any(),
+                                            any(),
+                                            any()))
                 .thenAnswer(new Answer<PanelDefinition>() {
                     @Override
                     public PanelDefinition answer(InvocationOnMock invocation) throws Throwable {
@@ -260,7 +259,7 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity doraActivity = mock(WorkbenchScreenActivity.class);
         when(doraActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(doraActivity).getMenus(any());
         when(activityManager.getActivities(dora)).thenReturn(singleton((Activity) doraActivity));
@@ -284,11 +283,11 @@ public class PlaceManagerTest {
         when(doraActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         when(otherActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(doraActivity).getMenus(any());
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(otherActivity).getMenus(any());
         when(activityManager.getActivities(dora)).thenReturn(singleton((Activity) doraActivity));
@@ -314,7 +313,7 @@ public class PlaceManagerTest {
         when(ozActivity.preferredWidth()).thenReturn(-1);
         when(ozActivity.preferredHeight()).thenReturn(-1);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(ozActivity).getMenus(any());
         when(activityManager.getActivities(oz)).thenReturn(singleton((Activity) ozActivity));
@@ -381,7 +380,7 @@ public class PlaceManagerTest {
 
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(ozActivity).getMenus(any());
         when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
@@ -774,7 +773,7 @@ public class PlaceManagerTest {
         when(ozPerspectiveActivity.getPlace()).thenReturn(ozPerspectivePlace);
         when(ozPerspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(ozPerspectiveActivity).getMenus(any());
 
@@ -785,7 +784,7 @@ public class PlaceManagerTest {
         when(emeraldCityActivity.getOwningPlace()).thenReturn(ozPerspectivePlace);
         when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(emeraldCityActivity).getMenus(any());
 
@@ -859,7 +858,7 @@ public class PlaceManagerTest {
         when(perspectiveActivity.getDefaultPerspectiveLayout()).thenReturn(perspectiveDef);
         when(perspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(perspectiveActivity).getMenus(any());
         when(activityManager.getActivities(perspectivePlace))
@@ -877,7 +876,7 @@ public class PlaceManagerTest {
         when(splashScreenActivity2.isType(ActivityResourceType.SPLASH.name())).thenReturn(true);
         when(kansasActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(kansasActivity).getMenus(any());
 
@@ -915,7 +914,7 @@ public class PlaceManagerTest {
         when(activityManager.getActivities(oz)).thenReturn(singleton((Activity) ozActivity));
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(ozActivity).getMenus(any());
 
@@ -947,7 +946,7 @@ public class PlaceManagerTest {
         when(activityManager.getSplashScreenInterceptor(oz)).thenReturn(lollipopGuildActivity);
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(ozActivity).getMenus(any());
 
@@ -1101,7 +1100,7 @@ public class PlaceManagerTest {
         when(emeraldCityActivity.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(emeraldCityActivity).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace))
@@ -1146,7 +1145,7 @@ public class PlaceManagerTest {
                 .thenReturn(singleton((Activity) emeraldCityActivity));
         when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(emeraldCityActivity).getMenus(any());
 
@@ -1158,7 +1157,7 @@ public class PlaceManagerTest {
                 .thenReturn(singleton((Activity) emeraldCityActivity2));
         when(emeraldCityActivity2.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(emeraldCityActivity2).getMenus(any());
 
@@ -1221,7 +1220,7 @@ public class PlaceManagerTest {
         when(emeraldCityActivity.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(emeraldCityActivity).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace))
@@ -1233,7 +1232,7 @@ public class PlaceManagerTest {
         when(emeraldCityActivity2.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity2.preferredHeight()).thenReturn(-1);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(emeraldCityActivity2).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace2))
@@ -1361,7 +1360,7 @@ public class PlaceManagerTest {
         when(emeraldCityActivity.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(emeraldCityActivity).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace))
@@ -1459,7 +1458,7 @@ public class PlaceManagerTest {
         when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(ozActivity).getMenus(any());
 
@@ -1488,7 +1487,7 @@ public class PlaceManagerTest {
         when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            invocationOnMock.getArgument(0, Consumer.class).accept(null);
             return null;
         }).when(ozActivity).getMenus(any());
 

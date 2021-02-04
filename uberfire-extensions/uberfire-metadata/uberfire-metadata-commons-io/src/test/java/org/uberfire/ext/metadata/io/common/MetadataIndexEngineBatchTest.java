@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.engine.MetaModelStore;
 import org.uberfire.ext.metadata.io.index.MetadataIndexEngine;
@@ -187,7 +187,7 @@ public class MetadataIndexEngineBatchTest {
     public void indexIsReadyForOtherIndexerDuringCommit() throws Exception {
         when(provider.isFreshIndex(cluster)).thenReturn(false);
         // Simulate commit in progress by making lock appear held.
-        when(lock.isLockedBy(any())).then(inv -> TEST_INDEXER.equals(inv.getArgumentAt(0, String.class)));
+        when(lock.isLockedBy(any())).then(inv -> TEST_INDEXER.equals(inv.getArgument(0, String.class)));
 
         indexEngine.startBatch(cluster);
 

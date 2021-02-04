@@ -33,6 +33,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -187,7 +188,7 @@ public class PerspectiveEditorPresenterTest {
     public void testInitLayoutEditor() {
         presenter.onStartup(observablePath, placeRequest);
 
-        verify(layoutEditorPlugin).init(anyString(), anyString(), anyString(), eq(LayoutTemplate.Style.PAGE));
+        verify(layoutEditorPlugin).init(any(), anyString(), anyString(), eq(LayoutTemplate.Style.PAGE));
         verify(layoutEditorPlugin).setPreviewEnabled(true);
         verify(layoutEditorPlugin).setElementSelectionEnabled(true);
     }
@@ -213,10 +214,10 @@ public class PerspectiveEditorPresenterTest {
         presenter.onStartup(observablePath, placeRequest);
 
         verify(menuBuilder).addSave(any(Command.class));
-        verify(menuBuilder).addCopy(any(Path.class), any(Validator.class), any(Caller.class));
+        verify(menuBuilder).addCopy(Mockito.<Path>any(), any(), any(Caller.class));
         verify(menuBuilder).addRename(any(Command.class));
-        verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
-        verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
+        verify(menuBuilder).addDelete(Mockito.<Path>any(), any(Caller.class));
+        verify(menuBuilder).addDelete(Mockito.<Path>any(), any(Caller.class));
         verify(menuBuilder, never()).addNewTopLevelMenu(any());
     }
 
@@ -226,10 +227,10 @@ public class PerspectiveEditorPresenterTest {
         presenter.onStartup(observablePath, placeRequest);
 
         verify(menuBuilder).addSave(any(Command.class));
-        verify(menuBuilder).addCopy(any(Path.class), any(Validator.class), any(Caller.class));
+        verify(menuBuilder).addCopy(Mockito.<Path>any(), any(), any(Caller.class));
         verify(menuBuilder).addRename(any(Command.class));
-        verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
-        verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
+        verify(menuBuilder).addDelete(Mockito.<Path>any(), any(Caller.class));
+        verify(menuBuilder).addDelete(Mockito.<Path>any(), any(Caller.class));
         verify(menuBuilder).addNewTopLevelMenu(any());
     }
 
@@ -252,8 +253,8 @@ public class PerspectiveEditorPresenterTest {
 
     private void mockSaveAndRenameCommandBuilder() {
         when(saveAndRenameCommandBuilder.addPathSupplier(any())).thenReturn(saveAndRenameCommandBuilder);
-        when(saveAndRenameCommandBuilder.addValidator(any(Validator.class))).thenReturn(saveAndRenameCommandBuilder);
-        when(saveAndRenameCommandBuilder.addValidator(any(Supplier.class))).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addValidator(Mockito.<Validator>any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addValidator(Mockito.<Supplier<Boolean>>any())).thenReturn(saveAndRenameCommandBuilder);
         when(saveAndRenameCommandBuilder.addRenameService(any())).thenReturn(saveAndRenameCommandBuilder);
         when(saveAndRenameCommandBuilder.addMetadataSupplier(any())).thenReturn(saveAndRenameCommandBuilder);
         when(saveAndRenameCommandBuilder.addContentSupplier(any())).thenReturn(saveAndRenameCommandBuilder);

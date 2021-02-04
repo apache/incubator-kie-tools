@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.views.pfly.widgets.D3;
 
 import static org.dashbuilder.renderer.c3.client.charts.map.geojson.impl.CountriesGeoJsonServiceImpl.COUNTRY_NAME_PROPERTY;
@@ -77,10 +77,8 @@ public class CountriesGeoJsonServiceImplTest {
     public void setup() {
         when(properties.get(COUNTRY_NAME_PROPERTY)).thenReturn(COUNTRY_NAME);
         when(feature.getProperties()).thenReturn(properties);
-        when(feature.getGeometry()).thenReturn(geometry);
         when(feature.getId()).thenReturn(COUNTRY_CODE);
         when(featureCollection.getFeatures()).thenReturn(new Feature[]{feature});
-        when(geoJsonLoader.load()).thenReturn(featureCollection);
     }
 
     @Test

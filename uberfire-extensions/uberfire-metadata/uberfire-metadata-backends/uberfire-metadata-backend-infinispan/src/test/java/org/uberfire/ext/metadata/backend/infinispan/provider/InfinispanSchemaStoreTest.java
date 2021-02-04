@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.metadata.backend.infinispan.proto.schema.Field;
 import org.uberfire.ext.metadata.backend.infinispan.proto.schema.Message;
 import org.uberfire.ext.metadata.backend.infinispan.proto.schema.ProtobufScope;

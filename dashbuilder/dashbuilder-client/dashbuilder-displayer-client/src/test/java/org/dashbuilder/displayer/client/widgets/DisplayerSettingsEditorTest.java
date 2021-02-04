@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 import org.uberfire.mocks.EventSourceMock;
@@ -82,7 +82,6 @@ public class DisplayerSettingsEditorTest {
         when(rendererB.getUUID()).thenReturn("rendererB");
         when(rendererManager.getRendererForDisplayer(any(DisplayerSettings.class))).thenReturn(rendererB);
 
-        when(displayerLocator.lookupDisplayer(any(DisplayerSettings.class))).thenReturn(displayer);
         when(displayer.getDataSetHandler()).thenReturn(dataSetHandler);
         when(displayer.getDisplayerConstraints()).thenReturn(new DisplayerConstraints(null)
                 .supportsAttribute(TYPE)
@@ -150,7 +149,7 @@ public class DisplayerSettingsEditorTest {
         verify(view).addTextProperty(eq(CHART_MARGIN_LEFT), eq("80"), any(DisplayerSettingsEditor.LongValidator.class));
         verify(view).addTextProperty(eq(CHART_MARGIN_RIGHT), eq("100"), any(DisplayerSettingsEditor.LongValidator.class));
         verify(view).addBooleanProperty(CHART_SHOWLEGEND, true);
-        verify(view).addListProperty(eq(CHART_LEGENDPOSITION), anyListOf(String.class), anyString());
+        verify(view).addListProperty(eq(CHART_LEGENDPOSITION), anyList(), any());
         verify(view).addBooleanProperty(XAXIS_SHOWLABELS, true);
         verify(view).addTextProperty(XAXIS_LABELSANGLE, "0");
         verify(view).addTextProperty(XAXIS_TITLE, "Depts");

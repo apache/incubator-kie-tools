@@ -43,7 +43,7 @@ public class DataSetDefColumnsFilterEditorTest {
     public void testInit() throws Exception {
         tested.init();
         verify(view, times(1)).init(tested);
-        verify(view, times(1)).initWidgets(any(IsWidget.class), any(DataSetDefFilterEditor.View.class));
+        verify(view, times(1)).initWidgets(any(), any());
         verify(view, times(0)).setMaxHeight(anyString());
     }
 

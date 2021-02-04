@@ -37,7 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
@@ -94,10 +94,6 @@ public class RepositoryServiceImplTest {
 
     @Test
     public void testNotCreateNewAliasIfNecessary() {
-        when(configuredRepositories.getRepositoryByRepositoryAlias(any(),
-                                                                   eq("other-name"))).thenReturn(repository);
-        doReturn(Optional.of(mock(Branch.class))).when(repository).getDefaultBranch();
-        doReturn("alias").when(repository).getAlias();
         String newAlias = repositoryService.createFreshRepositoryAlias("alias",
                                                                        new Space("alias"));
 
@@ -110,8 +106,6 @@ public class RepositoryServiceImplTest {
         when(configuredRepositories.getRepositoryByRepositoryAlias(any(),
                                                                    eq("alias"),
                                                                    eq(true))).thenReturn(repository);
-        doReturn(Optional.of(mock(Branch.class))).when(repository).getDefaultBranch();
-        doReturn("alias").when(repository).getAlias();
         String newAlias = repositoryService.createFreshRepositoryAlias("alias",
                                                                        new Space("alias"));
 
@@ -127,8 +121,6 @@ public class RepositoryServiceImplTest {
         when(configuredRepositories.getRepositoryByRepositoryAlias(any(),
                                                                    eq("alias-1"),
                                                                    eq(true))).thenReturn(repository);
-        doReturn(Optional.of(mock(Branch.class))).when(repository).getDefaultBranch();
-        doReturn("alias").when(repository).getAlias();
         String newAlias = repositoryService.createFreshRepositoryAlias("alias",
                                                                        new Space("alias"));
 
@@ -155,8 +147,6 @@ public class RepositoryServiceImplTest {
                                                                                 false,
                                                                                 new RepositoryConfiguration()))),
                                Collections.emptyList())).when(spaceConfigStorage).loadSpaceInfo();
-        doReturn(true)
-                .when(spaceConfigStorage).isInitialized();
 
         when(registry.get(anyString())).thenReturn(spaceConfigStorage);
         when(registry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));

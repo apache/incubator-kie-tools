@@ -18,7 +18,6 @@ package org.guvnor.rest.backend;
 
 import java.util.Arrays;
 
-import javax.jws.soap.SOAPBinding;
 import javax.ws.rs.core.Response;
 
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
@@ -38,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.kie.soup.commons.util.Lists;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.authz.AuthorizationService;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
@@ -53,10 +52,6 @@ import org.uberfire.security.authz.VotingStrategy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -138,9 +133,7 @@ public class UserManagementHelperTest {
 
     @Test
     public void testCreateUserWithInvalidGroup() {
-        doThrow(UserNotFoundException.class).when(userManagerService).get("testUser");
         doThrow(GroupNotFoundException.class).when(groupManagerService).get("testGroup");
-        when(userManagerService.create(new UserImpl("testUser"))).thenReturn(mock(User.class));
         NewUser newUser = new NewUser();
         newUser.setName("testUser");
         newUser.setGroups(new Lists.Builder<String>().add("testGroup").build());
@@ -216,7 +209,6 @@ public class UserManagementHelperTest {
     @Test
     public void testGetGroupPermission() {
         Group group = mock(Group.class);
-        when(group.getName()).thenReturn("testGroup");
         AuthorizationPolicy authz = mock(AuthorizationPolicy.class);
         when(authz.getHomePerspective(group)).thenReturn("Home");
         when(authz.getPriority(group)).thenReturn(10);
@@ -234,7 +226,6 @@ public class UserManagementHelperTest {
     @Test
     public void testGetRolePermission() {
         Role role = mock(Role.class);
-        when(role.getName()).thenReturn("testRole");
         AuthorizationPolicy authz = mock(AuthorizationPolicy.class);
         when(authz.getHomePerspective(role)).thenReturn("Home");
         when(authz.getPriority(role)).thenReturn(10);

@@ -9,7 +9,7 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -208,7 +208,6 @@ public class ChangeRequestPredicatesTest {
     public void matchSourceOrTargetBranchTest() {
         ChangeRequest crOne = mock(ChangeRequest.class);
         doReturn("branch").when(crOne).getSourceBranch();
-        doReturn("targetBranch1").when(crOne).getTargetBranch();
 
         ChangeRequest crTwo = mock(ChangeRequest.class);
         doReturn("sourceBranch2").when(crTwo).getSourceBranch();
@@ -243,8 +242,6 @@ public class ChangeRequestPredicatesTest {
 
         ChangeRequest crThree = mock(ChangeRequest.class);
         doReturn("sourceBranch3").when(crThree).getSourceBranch();
-        doReturn("targetBranch3").when(crThree).getTargetBranch();
-        doReturn(ChangeRequestStatus.REJECTED).when(crThree).getStatus();
 
         List<ChangeRequest> changeRequests = Stream.of(crOne,
                                                        crTwo,
@@ -262,17 +259,14 @@ public class ChangeRequestPredicatesTest {
     @Test
     public void matchTargetBranchListAndOtherPredicateTest() {
         ChangeRequest crOne = mock(ChangeRequest.class);
-        doReturn("sourceBranch1").when(crOne).getSourceBranch();
         doReturn("targetBranch1").when(crOne).getTargetBranch();
         doReturn(ChangeRequestStatus.OPEN).when(crOne).getStatus();
 
         ChangeRequest crTwo = mock(ChangeRequest.class);
-        doReturn("sourceBranch2").when(crTwo).getSourceBranch();
         doReturn("targetBranch2").when(crTwo).getTargetBranch();
         doReturn(ChangeRequestStatus.OPEN).when(crTwo).getStatus();
 
         ChangeRequest crThree = mock(ChangeRequest.class);
-        doReturn("sourceBranch3").when(crThree).getSourceBranch();
         doReturn("targetBranch3").when(crThree).getTargetBranch();
         doReturn(ChangeRequestStatus.REJECTED).when(crThree).getStatus();
 

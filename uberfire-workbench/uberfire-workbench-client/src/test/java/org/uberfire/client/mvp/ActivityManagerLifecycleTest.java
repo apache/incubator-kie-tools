@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.util.MockIOCBeanDef;
@@ -309,7 +309,6 @@ public class ActivityManagerLifecycleTest {
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
         SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts(kansas);
-        when(expectedSplashScreenActivity.getPlace()).thenReturn(kansas);
         splashScreenList.add(expectedSplashScreenActivity);
 
         when(activityBeansCache.getSplashScreens()).thenReturn(splashScreenList);
@@ -367,7 +366,6 @@ public class ActivityManagerLifecycleTest {
         ;
         final String myPerspectiveId = "myPerspectiveId";
         final MyPerspectiveActivity activity = mock(MyPerspectiveActivity.class);
-        when(activity.getIdentifier()).thenReturn(myPerspectiveId);
         when(activity.getPlace()).thenReturn(new DefaultPlaceRequest(myPerspectiveId));
 
         // note that we're telling the bean manager this bean is of concrete type PerspectiveActivity.
@@ -398,7 +396,6 @@ public class ActivityManagerLifecycleTest {
         SplashScreenActivity splashScreenActivity = mock(SplashScreenActivity.class);
         when(splashScreenActivity.isEnabled()).thenReturn(enabled);
         when(splashScreenActivity.intercept(place)).thenReturn(true);
-        when(splashScreenActivity.getPlace()).thenReturn(new DefaultPlaceRequest(splashActivityName));
         makeSingletonBean(SplashScreenActivity.class,
                           splashScreenActivity);
         return splashScreenActivity;

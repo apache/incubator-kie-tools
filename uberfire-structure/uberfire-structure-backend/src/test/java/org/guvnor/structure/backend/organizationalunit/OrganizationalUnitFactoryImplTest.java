@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
@@ -65,10 +65,9 @@ public class OrganizationalUnitFactoryImplTest {
     public void setup() {
         doAnswer(invocationOnMock -> {
             final Repository repository = mock(Repository.class);
-            doReturn(invocationOnMock.getArgumentAt(0, Space.class)).when(repository).getSpace();
-            doReturn(invocationOnMock.getArgumentAt(1, String.class)).when(repository).getAlias();
+            doReturn(invocationOnMock.getArgument(1, String.class)).when(repository).getAlias();
             return repository;
-        }).when(repositoryService).getRepositoryFromSpace(any(Space.class), anyString());
+        }).when(repositoryService).getRepositoryFromSpace(any(), any());
 
         factory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
                                                         spacesAPI));

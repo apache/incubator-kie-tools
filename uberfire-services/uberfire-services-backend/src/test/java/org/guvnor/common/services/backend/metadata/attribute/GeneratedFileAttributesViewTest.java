@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.base.AttrsStorage;
 import org.uberfire.java.nio.file.FileSystem;

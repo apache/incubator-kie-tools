@@ -49,7 +49,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
@@ -98,7 +98,6 @@ public class JobRequestHelperTest {
     public void setUp() throws Exception {
         when(workspaceProjectService.resolveProject(eq(space), eq("project"))).thenReturn(workspaceProject);
         when(workspaceProjectService.resolveProject(eq(space), eq("project"), any())).thenReturn(workspaceProject);
-        when(repositoryService.getRepositoryFromSpace(eq(space), eq("repositoryAlias"))).thenReturn(repository);
         when(spaces.getSpace(eq("space"))).thenReturn(space);
     }
 
@@ -139,17 +138,6 @@ public class JobRequestHelperTest {
 
     @Test
     public void projectDoesNotExist() throws Exception {
-
-        final Path path = mock(Path.class);
-        when(path.getFileName()).thenReturn("");
-        when(path.toURI()).thenReturn("file://project/");
-
-        final Branch masterBranch = new Branch("master",
-                                               path);
-
-        when(repository.getDefaultBranch()).thenReturn(Optional.of(masterBranch));
-
-        when(repository.getBranch("master")).thenReturn(Optional.of(masterBranch));
 
         final JobResult jobResult = helper.testProject(null,
                                                        space.getName(),
@@ -310,7 +298,7 @@ public class JobRequestHelperTest {
 
     @Test
     public void testAddBranchFail() {
-        doThrow(Exception.class).when(workspaceProjectService).addBranch(any(), any(), any(), any());
+        doThrow(RuntimeException.class).when(workspaceProjectService).addBranch(any(), any(), any(), any());
 
         JobResult jobResult = helper.addBranch(null,
                                                space.getName(),
@@ -390,7 +378,7 @@ public class JobRequestHelperTest {
 
     @Test
     public void testRemoveBranchFail() {
-        doThrow(Exception.class).when(workspaceProjectService).removeBranch(any(), any(), any());
+        doThrow(RuntimeException.class).when(workspaceProjectService).removeBranch(any(), any(), any());
 
         JobResult jobResult = helper.removeBranch(null,
                                                   space.getName(),
@@ -422,7 +410,7 @@ public class JobRequestHelperTest {
                                                        null);
 
         verify(testService).runAllTests(eq("JobRequestHelper"),
-                                        any(Path.class),
+                                        any(),
                                         captor.capture());
 
         captor.getValue().fire(message);

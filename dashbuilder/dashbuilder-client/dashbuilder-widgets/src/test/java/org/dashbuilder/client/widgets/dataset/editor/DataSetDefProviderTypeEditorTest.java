@@ -57,7 +57,7 @@ public class DataSetDefProviderTypeEditorTest {
     public void testInit() throws Exception {
         tested.init();
         verify(view, times(1)).init(tested);
-        verify(view, times(1)).initWidgets(any(IsWidget.class));
+        verify(view, times(1)).initWidgets(any());
         final ArgumentCaptor<Collection> actualEntriesCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(provider, times(1)).setEntries(actualEntriesCaptor.capture());
         final Collection actualEntries = actualEntriesCaptor.getValue();
@@ -88,7 +88,7 @@ public class DataSetDefProviderTypeEditorTest {
         
         tested.init();
         verify(view, times(1)).init(tested);
-        verify(view, times(1)).initWidgets(any(IsWidget.class));
+        verify(view, times(1)).initWidgets(any());
         final ArgumentCaptor<Collection> actualEntriesCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(provider, times(1)).setEntries(actualEntriesCaptor.capture());
         final Collection actualEntries = actualEntriesCaptor.getValue();

@@ -23,7 +23,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.commons.cluster.ClusterJMSService;
 import org.uberfire.commons.cluster.ClusterParameters;
 import org.uberfire.commons.cluster.ClusterService;

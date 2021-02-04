@@ -19,6 +19,8 @@ package org.uberfire.ext.layout.editor.client.components.container;
 import java.util.function.Supplier;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -38,6 +40,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ContainerTest extends AbstractLayoutEditorTest {
 
     @Test

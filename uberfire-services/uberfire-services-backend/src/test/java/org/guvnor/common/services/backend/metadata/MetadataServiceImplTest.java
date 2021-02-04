@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
@@ -29,8 +30,12 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -43,13 +48,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(IOUtils.class)
 public class MetadataServiceImplTest {
 
     private SimpleFileSystemProvider fileSystemProvider;
@@ -122,11 +127,9 @@ public class MetadataServiceImplTest {
 
             doReturn(is).when(ioService).newInputStream(any(),
                                                         any());
+            PowerMockito.mockStatic(IOUtils.class);
+            BDDMockito.given(IOUtils.toByteArray(Mockito.<InputStream>any())).willThrow(IOException.class);
 
-            doThrow(IOException.class).when(ioService).write(any(org.uberfire.java.nio.file.Path.class),
-                                                             any(byte[].class),
-                                                             anyMap(),
-                                                             any());
             service.saveMetadata(Paths.convert(path),
                                  new Metadata(),
                                  "comment");

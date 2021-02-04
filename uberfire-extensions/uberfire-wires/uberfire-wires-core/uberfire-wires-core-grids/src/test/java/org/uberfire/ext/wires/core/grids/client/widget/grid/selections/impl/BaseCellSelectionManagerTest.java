@@ -779,11 +779,11 @@ public class BaseCellSelectionManagerTest {
         cellSelectionManager.startEditingCell(editedAtPoint);
 
         verify(col2,
-               times(1)).edit(any(GridCell.class),
+               times(1)).edit(any(),
                               contextArgumentCaptor.capture(),
                               any(Consumer.class));
         verify(col2,
-               times(1)).edit(any(GridCell.class),
+               times(1)).edit(any(),
                               editContextArgumentCaptor.capture(),
                               any(Consumer.class));
 
@@ -841,11 +841,11 @@ public class BaseCellSelectionManagerTest {
                                               1);
 
         verify(col2,
-               times(1)).edit(any(GridCell.class),
+               times(1)).edit(any(),
                               contextArgumentCaptor.capture(),
                               any(Consumer.class));
         verify(col2,
-               times(1)).edit(any(GridCell.class),
+               times(1)).edit(any(),
                               editContextArgumentCaptor.capture(),
                               any(Consumer.class));
 

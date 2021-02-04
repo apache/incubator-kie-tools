@@ -46,6 +46,12 @@
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-external-backend</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

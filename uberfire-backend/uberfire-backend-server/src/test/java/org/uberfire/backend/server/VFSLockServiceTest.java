@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.LockInfo;
@@ -247,7 +247,6 @@ public class VFSLockServiceTest {
     @Test
     public void retrieveLockInfoForUnlockedFile() {
         when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
-        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn(null);
 
         final LockInfo info = lockService.retrieveLockInfo(path);
         assertFalse(info.isLocked());

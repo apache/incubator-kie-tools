@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.ssh.client.editor.component.creation.NewSSHKeyModal;
 import org.uberfire.ssh.client.editor.component.empty.SSHKeysEditorEmptyStateDisplayer;

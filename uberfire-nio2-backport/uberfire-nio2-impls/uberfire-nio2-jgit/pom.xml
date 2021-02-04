@@ -78,6 +78,11 @@
 
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
       <artifactId>org.eclipse.jgit.http.server</artifactId>
       <exclusions>
         <exclusion>
@@ -149,6 +154,12 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-server</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
@@ -181,6 +192,7 @@
           <useSystemClassLoader>true</useSystemClassLoader>
           <useManifestOnlyJar>true</useManifestOnlyJar>
           <forkMode>once</forkMode>
+          <argLine>-Djdk.attach.allowAttachSelf=true</argLine>
           <!--<parallel>false</parallel>-->
           <!-- ensure we don't inherit a byteman jar from any env settings -->
           <environmentVariables>

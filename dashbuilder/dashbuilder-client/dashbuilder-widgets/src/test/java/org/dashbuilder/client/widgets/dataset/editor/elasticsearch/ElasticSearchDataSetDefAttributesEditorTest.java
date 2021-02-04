@@ -35,8 +35,7 @@ public class ElasticSearchDataSetDefAttributesEditorTest {
     public void testInit() {
         presenter.init();
         verify(view, times(1)).init(presenter);
-        verify(view, times(1)).initWidgets(any(ValueBoxEditor.View.class), any(ValueBoxEditor.View.class),
-                any(ValueBoxEditor.View.class), any(ValueBoxEditor.View.class));
+        verify(view, times(1)).initWidgets(any(), any(), any(), any());
         verify(serverURL, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));
         verify(clusterName, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));
         verify(index, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));

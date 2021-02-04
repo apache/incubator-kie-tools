@@ -27,7 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSLockService;
@@ -91,6 +92,6 @@ public class ReleaseUserLocksServletTest {
         releaseUserLocksServlet.doGet(request,
                                       response);
 
-        verify(vfsLockService).releaseLock(any(Path.class));
+        verify(vfsLockService).releaseLock(any());
     }
 }

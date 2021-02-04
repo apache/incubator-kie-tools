@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
@@ -67,9 +67,9 @@ public class POMEditorPanelTest {
         doAnswer(invocationOnMock -> {
             ((ParameterizedCommand<GAVPreferences>) invocationOnMock.getArguments()[1]).execute(gavPreferences);
             return null;
-        }).when(gavPreferences).load(any(PreferenceScopeResolutionStrategyInfo.class),
-                                     any(ParameterizedCommand.class),
-                                     any(ParameterizedCommand.class));
+        }).when(gavPreferences).load(any(),
+                                     any(),
+                                     any());
     }
 
     @Test

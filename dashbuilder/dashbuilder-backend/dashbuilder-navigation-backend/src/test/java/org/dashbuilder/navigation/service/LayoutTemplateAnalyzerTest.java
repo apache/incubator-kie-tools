@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -106,7 +106,6 @@ public class LayoutTemplateAnalyzerTest {
         when(pluginServices.getLayoutTemplate("B")).thenReturn(layoutB);
         when(pluginServices.getLayoutTemplate("C")).thenReturn(layoutC);
         when(pluginServices.getLayoutTemplate("D")).thenReturn(layoutD);
-        when(pluginServices.getLayoutTemplate("E")).thenReturn(layoutE);
     }
 
     @Test

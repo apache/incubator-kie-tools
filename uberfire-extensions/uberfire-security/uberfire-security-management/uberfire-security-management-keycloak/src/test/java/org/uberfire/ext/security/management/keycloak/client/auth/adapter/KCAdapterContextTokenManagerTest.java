@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.KeycloakSecurityContext;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
@@ -46,8 +46,6 @@ public class KCAdapterContextTokenManagerTest {
     @Before
     public void setup() throws Exception {
         when(request.getAttribute(KeycloakSecurityContext.class.getName())).thenReturn(context);
-        when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(KeycloakSecurityContext.class.getName())).thenReturn(context);
         when(context.getTokenString()).thenReturn("token1");
         when(context.getRealm()).thenReturn("realm1");
         this.tested = new KCAdapterContextTokenManager(request);

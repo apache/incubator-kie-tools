@@ -33,7 +33,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.kie.soup.commons.util.Lists;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.ext.security.management.keycloak.client.resource.ClientResource;
@@ -42,16 +42,15 @@ import org.uberfire.ext.security.management.keycloak.client.resource.RoleResourc
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * <p>It provides a default set of users and roles for mocking a keycloak service.</p>
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
 
     public static final String USERNAME = "user";
@@ -79,7 +78,7 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
         }
         addRole("admin");
         addRole("developer");
-        when(rolesResource.get(anyString())).thenAnswer(new Answer<RoleResource>() {
+        when(rolesResource.get(any())).thenAnswer(new Answer<RoleResource>() {
             @Override
             public RoleResource answer(InvocationOnMock invocationOnMock) throws Throwable {
                 String name = (String) invocationOnMock.getArguments()[0];
@@ -107,7 +106,7 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
             userResources.add(userResource);
             userRepresentations.add(userResource.toRepresentation());
         }
-        when(usersResource.get(anyString())).thenAnswer(new Answer<UserResource>() {
+        when(usersResource.get(any())).thenAnswer(new Answer<UserResource>() {
             @Override
             public UserResource answer(InvocationOnMock invocationOnMock) throws Throwable {
                 String id = (String) invocationOnMock.getArguments()[0];
@@ -115,9 +114,9 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
                                id);
             }
         });
-        when(usersResource.search(anyString(),
-                                  anyInt(),
-                                  anyInt())).thenAnswer(new Answer<List<UserRepresentation>>() {
+        when(usersResource.search(any(),
+                                  any(),
+                                  any())).thenAnswer(new Answer<List<UserRepresentation>>() {
             @Override
             public List<UserRepresentation> answer(InvocationOnMock invocationOnMock) throws Throwable {
                 String pattern = (String) invocationOnMock.getArguments()[0];
@@ -140,12 +139,12 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
                 return userRepresentations;
             }
         });
-        when(usersResource.search(anyString(),
-                                  anyString(),
-                                  anyString(),
-                                  anyString(),
-                                  anyInt(),
-                                  anyInt())).thenAnswer(new Answer<List<UserRepresentation>>() {
+        when(usersResource.search(any(),
+                                  any(),
+                                  any(),
+                                  any(),
+                                  any(),
+                                  any())).thenAnswer(new Answer<List<UserRepresentation>>() {
             @Override
             public List<UserRepresentation> answer(InvocationOnMock invocationOnMock) throws Throwable {
                 String pattern = (String) invocationOnMock.getArguments()[0];
@@ -159,7 +158,7 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
         });
         ClientResponse response = mock(ClientResponse.class);
         when(response.getStatus()).thenReturn(200);
-        when(usersResource.create(any(UserRepresentation.class))).thenReturn(response);
+        when(usersResource.create(any())).thenReturn(response);
     }
 
     protected ClientResponseFailure mockForbiddenResponse() {

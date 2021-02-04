@@ -42,14 +42,14 @@ import org.uberfire.backend.server.security.adapter.WebSphereGroupsAdapter;
 import org.uberfire.security.authz.adapter.GroupsAdapter;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({JAASAuthenticationService.class})
-@PowerMockIgnore("javax.security.*")
+@PowerMockIgnore({"javax.security.*", "javax.naming.*"})
 public class JAASAuthenticationServiceTest {
 
     private JAASAuthenticationService tested;

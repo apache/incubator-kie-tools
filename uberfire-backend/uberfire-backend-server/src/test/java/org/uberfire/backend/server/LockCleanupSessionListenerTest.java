@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSessionEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.LockInfo;

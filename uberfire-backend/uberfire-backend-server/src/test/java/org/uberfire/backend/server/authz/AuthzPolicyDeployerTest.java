@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
 import org.uberfire.backend.server.WebAppSettings;
@@ -94,9 +94,8 @@ public class AuthzPolicyDeployerTest {
         fileSystemTestingUtils.setup();
         fileSystem = fileSystemTestingUtils.getFileSystem();
         ioService = spy(fileSystemTestingUtils.getIoService());
-        doNothing().when(ioService).startBatch(any(FileSystem.class));
         doNothing().when(ioService).endBatch();
-        doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class), anyMap());
+        doReturn(fileSystem).when(ioService).newFileSystem(any(), anyMap());
         PermissionTypeRegistry permissionTypeRegistry = new DefaultPermissionTypeRegistry();
         permissionManager = spy(new DefaultPermissionManager(permissionTypeRegistry));
 

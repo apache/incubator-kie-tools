@@ -22,14 +22,14 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class EntitiesPagedListTest extends EntitiesListTest {
 
     private final static int PAGE_SIZE = 5;
@@ -125,7 +125,7 @@ public class EntitiesPagedListTest extends EntitiesListTest {
 
         // Verify view configuration.
         verify(view,
-               times(1)).configure(anyString(),
+               times(1)).configure(any(),
                                    any(EntitiesList.PaginationConstraints.class));
 
         // Verify adding entities to the view. 

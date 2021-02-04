@@ -100,7 +100,7 @@ public class HtmlEditorTest {
 
         verify(baseViewMock).hideBusyIndicator();
         verify(htmlEditorService).load(path);
-        verify(presenter).setContent(anyString());
+        verify(presenter).setContent(any());
     }
 
     @Test
@@ -117,6 +117,6 @@ public class HtmlEditorTest {
         htmlEditor.save();
 
         verify(htmlEditorService).save(path, content, null, null);
-        verify(successCallback).callback(any(Path.class));
+        verify(successCallback).callback(any());
     }
 }

@@ -33,9 +33,9 @@ import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.renderer.c3.client.C3BaseTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class C3MeterDisplayerTest extends C3BaseTest {
     
     private static final String CL1 = "CL1";

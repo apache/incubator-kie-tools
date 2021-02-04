@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 
@@ -50,11 +50,9 @@ public class PerspectiveDropDownTest {
 
         SyncBeanDef mock1 = mock(SyncBeanDef.class);
         when(mock1.getName()).thenReturn("A");
-        when(mock1.isAssignableTo(PerspectiveActivity.class)).thenReturn(true);
 
         SyncBeanDef mock2 = mock(SyncBeanDef.class);
         when(mock2.getName()).thenReturn("B");
-        when(mock2.isAssignableTo(PerspectiveActivity.class)).thenReturn(true);
 
         when(activityBeansCache.getPerspectiveActivities()).thenReturn(Arrays.asList(mock1, mock2));
     }

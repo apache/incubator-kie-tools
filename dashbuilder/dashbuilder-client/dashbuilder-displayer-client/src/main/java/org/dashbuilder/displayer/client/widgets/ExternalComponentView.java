@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLIFrameElement;
 import elemental2.dom.HTMLParagraphElement;
@@ -67,16 +68,7 @@ public class ExternalComponentView extends Composite implements ExternalComponen
     public void setComponentURL(String url) {
         externalComponentIFrame.src = url;
         componentLoaded = false;
-        externalComponentIFrame.onload = e -> {
-            componentLoaded = true;
-            if (initMessage != null) {
-                postMessageToComponent(initMessage);
-            }
-            if (lastMessage != null) {
-                postMessageToComponent(lastMessage);
-            }
-            return null;
-        };
+        externalComponentIFrame.onload = this::onInvoke;
     }
 
     @Override
@@ -124,4 +116,17 @@ public class ExternalComponentView extends Composite implements ExternalComponen
         externalComponentIFrame.style.display = "block";
     }
 
+    /**
+     * Workaround to resolve generics after GWT upgrade. See https://issues.redhat.com/browse/AF-2542
+     */
+    private Object onInvoke(Event e) {
+        componentLoaded = true;
+        if (initMessage != null) {
+            postMessageToComponent(initMessage);
+        }
+        if (lastMessage != null) {
+            postMessageToComponent(lastMessage);
+        }
+        return null;
+    }
 }

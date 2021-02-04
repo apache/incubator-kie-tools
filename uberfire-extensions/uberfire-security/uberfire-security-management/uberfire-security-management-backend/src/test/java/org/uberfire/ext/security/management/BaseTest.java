@@ -18,7 +18,7 @@ package org.uberfire.ext.security.management;
 
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.UserSystemManager;
 
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 /**
  * <p>Base test class for users/groups/roles manager based services.</p>
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class BaseTest {
 
     @Mock

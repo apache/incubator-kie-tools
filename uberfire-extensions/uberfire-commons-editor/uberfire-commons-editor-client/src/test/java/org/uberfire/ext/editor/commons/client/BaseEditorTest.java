@@ -564,7 +564,7 @@ public class BaseEditorTest {
         itemMap.put(SAVE, menuItem);
         when(menus.getItemsMap()).thenReturn(itemMap);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(menus);
             return null;
         }).when(editor).getMenus(any());
 
@@ -583,7 +583,7 @@ public class BaseEditorTest {
         itemMap.put(SAVE, menuItem);
         when(menus.getItemsMap()).thenReturn(itemMap);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(menus);
             return null;
         }).when(editor).getMenus(any());
 

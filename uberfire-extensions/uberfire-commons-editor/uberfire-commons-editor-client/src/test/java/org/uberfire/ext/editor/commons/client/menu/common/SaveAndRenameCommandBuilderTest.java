@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.RenameInProgressEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -183,7 +183,6 @@ public class SaveAndRenameCommandBuilderTest {
         final FileNameAndCommitMessage message = new FileNameAndCommitMessage(newFileName, commitMessage);
 
         doNothing().when(builder).showBusyIndicator();
-        doReturn(path).when(service).saveAndRename(path, newFileName, metadata, content, commitMessage);
 
         builder
                 .addRenameService(renameCaller)

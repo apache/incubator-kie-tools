@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.model.KCluster;
@@ -55,7 +55,6 @@ public class DirectoryFactoryTest {
 
     @Before
     public void setup() {
-        when(hostingDir.isDirectory()).thenReturn(true);
         when(hostingDir.listFiles()).thenReturn(new File[]{spaceDir});
 
         when(spaceDir.isDirectory()).thenReturn(true);
@@ -67,11 +66,9 @@ public class DirectoryFactoryTest {
         when(projectDir.getName()).thenReturn("myproject");
         when(projectDir.getParentFile()).thenReturn(spaceDir);
 
-        when(masterBranchDir.isDirectory()).thenReturn(true);
         when(masterBranchDir.getName()).thenReturn("master");
         when(masterBranchDir.getParentFile()).thenReturn(projectDir);
 
-        when(developBranchDir.isDirectory()).thenReturn(true);
         when(developBranchDir.getName()).thenReturn("develop");
         when(developBranchDir.getParentFile()).thenReturn(projectDir);
 

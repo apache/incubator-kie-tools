@@ -19,7 +19,7 @@ package org.uberfire.ext.security.management.keycloak;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.keycloak.client.Keycloak;
 import org.uberfire.ext.security.management.keycloak.client.resource.ClientsResource;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
  * <p>Base test class for KeyCloak based services.</p>
  * <p>It provides a mocked service for the remote KeyCloak Admin API for version <code>1.2.0.Final</code>.</p>
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class BaseKeyCloakTest extends BaseTest {
 
     public static final String REALM = "testRealm";

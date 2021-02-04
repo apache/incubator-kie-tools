@@ -51,21 +51,20 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.dashbuilder.dataset.filter.FilterFactory.OR;
 import static org.dashbuilder.dataset.filter.FilterFactory.likeTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class RuntimeKieServerDataSetProviderTest {
 
     private static final String SERVER_TEMPLATE = "serverTemplate";
@@ -191,8 +190,6 @@ public class RuntimeKieServerDataSetProviderTest {
         filter.addFilterColumn(testFilter);
         lookup.addOperation(filter);
         
-        when(queryClient.replaceQuery(eq(connectionInfo), any())).thenReturn(definition);
-
         when(queryClient.getQuery(eq(connectionInfo), any())).thenReturn(definition);
         
         kieServerDataSetProvider.lookupDataSet(dataSetDef,
@@ -201,7 +198,7 @@ public class RuntimeKieServerDataSetProviderTest {
 
         final ArgumentCaptor<QueryFilterSpec> captorEdit = ArgumentCaptor.forClass(QueryFilterSpec.class);
         verify(queryClient).query(eq(connectionInfo),
-                                  anyString(),
+                                  any(),
                                   captorEdit.capture(),
                                   anyInt(),
                                   anyInt());
@@ -303,7 +300,7 @@ public class RuntimeKieServerDataSetProviderTest {
         verify(queryClient).replaceQuery(eq(connectionInfo), any());
 
         verify(queryClient).query(eq(connectionInfo),
-                                  anyString(),
+                                  any(),
                                   any(QueryFilterSpec.class),
                                   anyInt(),
                                   anyInt());
@@ -329,7 +326,7 @@ public class RuntimeKieServerDataSetProviderTest {
         verify(queryClient).replaceQuery(eq(connectionInfoWithQueryReplace), any());
 
         verify(queryClient).query(eq(connectionInfoWithQueryReplace),
-                                  anyString(),
+                                  any(),
                                   any(QueryFilterSpec.class),
                                   anyInt(),
                                   anyInt());
@@ -345,7 +342,6 @@ public class RuntimeKieServerDataSetProviderTest {
         when(dataSetLookup.getRowOffset()).thenReturn(1);
         when(dataSetLookup.getDataSetUUID()).thenReturn("");
         
-        when(queryClient.replaceQuery(eq(connectionInfo), any())).thenReturn(definition);
         when(queryClient.getQuery(eq(connectionInfo), any())).thenReturn(definition);
 
         when(kieServerConnectionInfoProvider.verifiedConnectionInfo(dataSetDef)).thenReturn(connectionInfo);
@@ -357,7 +353,7 @@ public class RuntimeKieServerDataSetProviderTest {
         verify(queryClient, times(0)).replaceQuery(eq(connectionInfo), any());
 
         verify(queryClient).query(eq(connectionInfo),
-                                  anyString(),
+                                  any(),
                                   any(QueryFilterSpec.class),
                                   anyInt(),
                                   anyInt());
@@ -369,14 +365,13 @@ public class RuntimeKieServerDataSetProviderTest {
 
 
         when(dataSetDef.getColumns()).thenReturn(null, new ArrayList<>());
-        when(dataSetDef.getServerTemplateId()).thenReturn(SERVER_TEMPLATE);
-        when(queryClient.getQuery(eq(connectionInfo), anyString())).thenReturn(definition);
+        when(queryClient.getQuery(eq(connectionInfo), any())).thenReturn(definition);
 
         kieServerDataSetProvider.getDataSetMetadata(dataSetDef);
 
         verify(dataSetDef, times(1)).addColumn(eq("test"), eq(ColumnType.NUMBER));
 
-        verify(queryClient).getQuery(eq(connectionInfo), anyString());
+        verify(queryClient).getQuery(eq(connectionInfo), any());
     }
 
     @Test
@@ -393,7 +388,6 @@ public class RuntimeKieServerDataSetProviderTest {
         DataSetLookup dataSetLookup = Mockito.mock(DataSetLookup.class);
         when(dataSetDef.getDataSetFilter()).thenReturn(Mockito.mock(DataSetFilter.class));
         when(dataSetDef.getServerTemplateId()).thenReturn("servereTemplateId");
-        when(dataSetLookup.cloneInstance()).thenReturn(dataSetLookup);
 
         ConsoleDataSetLookup adopted = kieServerDataSetProvider.adoptLookup(dataSetDef, dataSetLookup);
 

@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
@@ -65,7 +65,6 @@ public class SpaceConfigStorageRegistryImplTest {
         final SpaceConfigStorage spaceConfigStorage1 = spaceConfigStorageRegistry.get(SPACE_NAME);
         assertSame(mySpaceConfigStorage, spaceConfigStorage1);
 
-        doReturn(otherSpaceConfigStorage).when(spaceConfigStorages).get();
         final SpaceConfigStorage spaceConfigStorage2 = spaceConfigStorageRegistry.get(SPACE_NAME);
         assertSame(mySpaceConfigStorage, spaceConfigStorage2);
     }
@@ -75,8 +74,6 @@ public class SpaceConfigStorageRegistryImplTest {
         doReturn(mySpaceConfigStorage).when(spaceConfigStorages).get();
 
         final SpaceInfo spaceInfo = mock(SpaceInfo.class);
-
-        when(mySpaceConfigStorage.loadSpaceInfo()).thenReturn(spaceInfo);
 
         SpaceConfigStorageBatch batch = spy(spaceConfigStorageRegistry.getBatch(SPACE_NAME));
 

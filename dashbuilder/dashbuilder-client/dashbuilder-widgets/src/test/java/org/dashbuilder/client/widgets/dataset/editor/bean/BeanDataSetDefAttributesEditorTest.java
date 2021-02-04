@@ -35,7 +35,7 @@ public class BeanDataSetDefAttributesEditorTest {
     public void testInit() {
         presenter.init();
         verify(view, times(1)).init(presenter);
-        verify(view, times(1)).initWidgets(any(ValueBoxEditor.View.class), any(IsWidget.class));
+        verify(view, times(1)).initWidgets(any(), any());
         verify(generatorClass, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));
     }
     

@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
@@ -354,7 +354,7 @@ public class AdminPageImplTest {
                                                                                                         null)));
         verify(uberfireBreadcrumbs).clearBreadcrumbs(PreferencesCentralPerspective.IDENTIFIER);
         verify(uberfireBreadcrumbs).addBreadCrumb(eq(PreferencesCentralPerspective.IDENTIFIER),
-                                                  anyString(),
+                                                  any(),
                                                   eq(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER)),
                                                   any(Command.class));
         verify(uberfireBreadcrumbs).addBreadCrumb(eq(PreferencesCentralPerspective.IDENTIFIER),

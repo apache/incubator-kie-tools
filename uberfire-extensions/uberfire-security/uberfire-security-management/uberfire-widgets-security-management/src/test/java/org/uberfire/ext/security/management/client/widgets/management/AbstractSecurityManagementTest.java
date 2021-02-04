@@ -71,7 +71,7 @@ public abstract class AbstractSecurityManagementTest {
     protected ClientUserSystemManager userSystemManager;
 
     protected void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         usersManagerServiceCaller = new CallerMock<UserManagerService>(userManagerService);
         groupsManagerServiceCaller = new CallerMock<GroupManagerService>(groupsManagerService);
         rolesManagerServiceCaller = new CallerMock<RoleManagerService>(rolesManagerService);

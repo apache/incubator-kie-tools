@@ -15,16 +15,14 @@
  */
 package org.uberfire.java.nio.base.dotfiles;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
 import static org.uberfire.java.nio.base.GeneralPathImpl.create;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,11 +30,6 @@ public class DotFileUtilsTest {
 
     @Mock
     FileSystem fs;
-
-    @Before
-    public void setup() {
-        when(fs.getSeparator()).thenReturn("/");
-    }
 
     @Test
     public void undotNonDotFile() {

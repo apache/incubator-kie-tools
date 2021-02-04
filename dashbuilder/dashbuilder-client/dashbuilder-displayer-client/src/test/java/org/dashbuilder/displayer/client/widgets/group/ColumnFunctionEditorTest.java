@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -65,7 +65,6 @@ public class ColumnFunctionEditorTest {
         when(metadata.getColumnType(2)).thenReturn(ColumnType.DATE);
         when(metadata.getColumnType("column1")).thenReturn(ColumnType.LABEL);
         when(metadata.getColumnType("column2")).thenReturn(ColumnType.NUMBER);
-        when(metadata.getColumnType("column3")).thenReturn(ColumnType.DATE);
     }
 
     @Test
