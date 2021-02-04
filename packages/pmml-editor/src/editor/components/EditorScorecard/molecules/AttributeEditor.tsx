@@ -179,8 +179,11 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                   label="Reason code"
                   fieldId="attribute-reason-code-helper"
                   validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                  helperText="A Reason Code is mapped to a Business reason."
-                  helperTextInvalid={reasonCodeValidation.length > 0 ? reasonCodeValidation[0].message : undefined}
+                  helperText={
+                    reasonCodeValidation.length > 0
+                      ? reasonCodeValidation[0].message
+                      : "A Reason Code is mapped to a Business reason."
+                  }
                   labelIcon={
                     areReasonCodesUsed ? (
                       <Tooltip

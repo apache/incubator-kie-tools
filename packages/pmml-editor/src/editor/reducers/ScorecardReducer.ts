@@ -38,6 +38,7 @@ import { isOutputsTargetFieldRequired, validateOutput, validateOutputs } from ".
 import { ValidationEntry, ValidationLevel, ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 import { validateCharacteristic, validateCharacteristics } from "../validation/Characteristics";
+import { validateBaselineScore } from "../validation/ModelCoreProperties";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -238,13 +239,20 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             draft.initialScore = action.payload.initialScore;
             draft.useReasonCodes = action.payload.useReasonCodes;
             draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
-            if (action.payload.useReasonCodes === false) {
+            if (!(action.payload.useReasonCodes === undefined || action.payload.useReasonCodes)) {
               draft.Characteristics.Characteristic.forEach(characteristic => {
                 characteristic.reasonCode = undefined;
                 characteristic.Attribute.forEach(attribute => (attribute.reasonCode = undefined));
               });
             }
-
+            validationRegistry.clear(`models[${action.payload.modelIndex}].baselineScore`);
+            validateBaselineScore(
+              action.payload.modelIndex,
+              action.payload.useReasonCodes,
+              action.payload.baselineScore,
+              state.Characteristics.Characteristic,
+              validationRegistry
+            );
             validationRegistry.clear(
               Builder()
                 .forModel(action.payload.modelIndex)
@@ -473,6 +481,15 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Scorecard_AddCharacteristic:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
+          const characteristicsPlusAdded = [
+            ...state.Characteristics.Characteristic,
+            {
+              name: action.payload.name,
+              reasonCode: action.payload.reasonCode,
+              baselineScore: action.payload.baselineScore,
+              Attribute: []
+            }
+          ];
           validationRegistry.clear(
             Builder()
               .forModel(modelIndex)
@@ -482,33 +499,41 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
           validateCharacteristics(
             modelIndex,
             { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
-            [
-              ...state.Characteristics.Characteristic,
-              {
-                name: action.payload.name,
-                reasonCode: action.payload.reasonCode,
-                baselineScore: action.payload.baselineScore,
-                Attribute: []
-              }
-            ],
+            characteristicsPlusAdded,
             state.MiningSchema.MiningField,
+            validationRegistry
+          );
+          validationRegistry.clear(`models[${action.payload.modelIndex}].baselineScore`);
+          validateBaselineScore(
+            action.payload.modelIndex,
+            state.useReasonCodes,
+            state.baselineScore,
+            characteristicsPlusAdded,
             validationRegistry
           );
         }
         break;
+
+      case Actions.Scorecard_DeleteCharacteristic:
+        if (action.payload.modelIndex !== undefined) {
+          validationRegistry.clear(`models[${action.payload.modelIndex}].baselineScore`);
+          validateBaselineScore(
+            action.payload.modelIndex,
+            state.useReasonCodes,
+            state.baselineScore,
+            state.Characteristics.Characteristic.filter(
+              (characteristic, characteristicIndex) => characteristicIndex !== action.payload.characteristicIndex
+            ),
+            validationRegistry
+          );
+        }
+        break;
+
       case Actions.Scorecard_UpdateCharacteristic:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
-          validationRegistry.clear(
-            Builder()
-              .forModel(modelIndex)
-              .forCharacteristics()
-              .build()
-          );
-          validateCharacteristics(
-            modelIndex,
-            { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
-            state.Characteristics.Characteristic.map((characteristic, characteristicIndex) => {
+          const updatedCharacteristics = state.Characteristics.Characteristic.map(
+            (characteristic, characteristicIndex) => {
               if (characteristicIndex === action.payload.characteristicIndex) {
                 characteristic = {
                   ...characteristic,
@@ -518,8 +543,27 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                 };
               }
               return characteristic;
-            }),
+            }
+          );
+          validationRegistry.clear(
+            Builder()
+              .forModel(modelIndex)
+              .forCharacteristics()
+              .build()
+          );
+          validateCharacteristics(
+            modelIndex,
+            { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
+            updatedCharacteristics,
             state.MiningSchema.MiningField,
+            validationRegistry
+          );
+          validationRegistry.clear(`models[${action.payload.modelIndex}].baselineScore`);
+          validateBaselineScore(
+            modelIndex,
+            state.useReasonCodes,
+            state.baselineScore,
+            updatedCharacteristics,
             validationRegistry
           );
         }
@@ -528,6 +572,15 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
+          validationRegistry.clear(`models[${action.payload.modelIndex}].baselineScore`);
+          validateBaselineScore(
+            modelIndex,
+            state.useReasonCodes,
+            state.baselineScore,
+            state.Characteristics.Characteristic,
+            validationRegistry
+          );
+
           validationRegistry.clear(
             Builder()
               .forModel(modelIndex)
