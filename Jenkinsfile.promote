@@ -33,6 +33,7 @@ pipeline {
 
         // Promote images information
         booleanParam(name: 'PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Set to true if base image should be deployed in Openshift registry.In this case, PROMOTE_IMAGE_REGISTRY_CREDENTIALS, PROMOTE_IMAGE_REGISTRY and PROMOTE_IMAGE_NAMESPACE parameters will be ignored')
+        string(name: 'PROMOTE_QUAY_TOKEN_CREDENTIALS', defaultValue: '', description: 'quay.io access token credentials to use to set images\' visibility. Will be ignored if PROMOTE_IMAGE_REGISTRY is different from quay.io.')
         string(name: 'PROMOTE_IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
         string(name: 'PROMOTE_IMAGE_REGISTRY', defaultValue: '', description: 'Promote image registry')
         string(name: 'PROMOTE_IMAGE_NAMESPACE', defaultValue: '', description: 'Promote image namespace')
@@ -164,7 +165,7 @@ pipeline {
                 }
             }
         }
-        stage('Pushing') {
+        stage('Pushing "new" images') {
             steps {
                 script {
                     if (isNewImageInOpenshiftRegistry()) {
@@ -174,6 +175,10 @@ pipeline {
                     }
                     dir('kogito-images') {
                         pushImages()
+
+                        if (isQuayRegistry(getNewImageRegistry()) && getNewImageQuayTokenCredentials()) {
+                            makeQuayNewImagesPublic()
+                        }
                     }
                 }
             }
@@ -304,20 +309,30 @@ void pushImages() {
     }
 }
 
+// Set images public on quay. Useful when new images are introduced.
+void makeQuayNewImagesPublic() {
+    String namespace = getNewImageNamespace()
+    for (String imageName : getImages()) {
+        String repository = getFinalImageName(imageName, getNewImageNameSuffix())
+        echo "Check and set public if needed Quay repository ${namespace}/${repository}"
+        try {
+            cloud.makeQuayImagePublic(namespace, repository, getNewImageQuayTokenCredentials())
+        } catch (err) {
+            echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
+        }
+    }
+}
+
 String getOldImageFullTag(String imageName) {
-    return "${getOldImageRegistry()}/${getOldImageNamespace()}/${buildImageNameWithSuffix(imageName, getOldImageNameSuffix())}:${getOldImageTag()}"
+    return "${getOldImageRegistry()}/${getOldImageNamespace()}/${getFinalImageName(imageName, getOldImageNameSuffix())}:${getOldImageTag()}"
 }
 
 String getNewImageFullTag(String imageName, String tag) {
-    return "${getNewImageRegistry()}/${getNewImageNamespace()}/${buildImageNameWithSuffix(imageName, getNewImageNameSuffix())}:${tag}"
+    return "${getNewImageRegistry()}/${getNewImageNamespace()}/${getFinalImageName(imageName, getNewImageNameSuffix())}:${tag}"
 }
 
-String buildImageNameWithSuffix(String imageName, String suffix) {
-    String finalImageName = imageName
-    if (suffix != null && suffix != '') {
-        finalImageName += '-' + suffix
-    }
-    return finalImageName
+String getFinalImageName(String imageName, String suffix) {
+    return suffix ? "${imageName}-${suffix}" : imageName
 }
 
 boolean isDeployLatestTag() {
@@ -437,6 +452,10 @@ String getSnapshotBranch() {
     return "${getNextVersion()}-${env.BOT_BRANCH_HASH}"
 }
 
+boolean isQuayRegistry(String registry) {
+    return registry == 'quay.io'
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Old image information
 ////////////////////////////////////////////////////////////////////////
@@ -450,7 +469,7 @@ boolean isOldImageInOpenshiftRegistry() {
 }
 
 String getOldImageRegistryCredentials() {
-    return isOldImageInOpenshiftRegistry() ? '' : params.BASE_IMAGE_REGISTRY_CREDENTIALS
+    return params.BASE_IMAGE_REGISTRY_CREDENTIALS
 }
 
 String getOldImageRegistry() {
@@ -477,8 +496,12 @@ boolean isNewImageInOpenshiftRegistry() {
     return params.PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
+String getNewImageQuayTokenCredentials() {
+    return params.PROMOTE_QUAY_TOKEN_CREDENTIALS
+}
+
 String getNewImageRegistryCredentials() {
-    return isNewImageInOpenshiftRegistry() ? '' : params.PROMOTE_IMAGE_REGISTRY_CREDENTIALS
+    return params.PROMOTE_IMAGE_REGISTRY_CREDENTIALS
 }
 
 String getNewImageRegistry() {

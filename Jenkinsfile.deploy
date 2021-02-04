@@ -34,6 +34,7 @@ pipeline {
 
         // Deploy information
         booleanParam(name: 'IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
+        string(name: 'QUAY_TOKEN_CREDENTIALS', defaultValue: '', description: 'quay.io access token credentials to use to push/pull images and set images\' visibility. Will be ignored if IMAGE_REGISTRY is different from quay.io. Else IMAGE_REGISTRY_CREDENTIALS is ignored if that one is set.')
         string(name: 'IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
         string(name: 'IMAGE_REGISTRY', defaultValue: '', description: 'Image registry to use to deploy images')
         string(name: 'IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Image namespace to use to deploy images')
@@ -263,10 +264,14 @@ pipeline {
                 script {
                     if (isDeployImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                    } else if (getDeployImageRegistryCredentials() != '') {
+                    } else if (getDeployImageRegistryCredentials()) {
                         loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials())
                     }
                     pushImages()
+
+                    if (isQuayRegistry() && getDeployQuayTokenCredentials()) {
+                        makeQuayImagesPublic()
+                    }
                 }
             }
             post {
@@ -390,12 +395,26 @@ void pushImages() {
     }
 }
 
-String buildImageName(String imageName) {
-    String finalImageName = imageName
-    if (getDeployImageNameSuffix() != '') {
-        finalImageName += '-' + getDeployImageNameSuffix()
+// Set images public on quay. Useful when new images are introduced.
+void makeQuayImagesPublic() {
+    String namespace = getDeployImageNamespace()
+    for (String imageName : getImages()) {
+        String repository = getFinalImageName(imageName)
+        echo "Check and set public if needed Quay repository ${namespace}/${repository}"
+        try {
+            cloud.makeQuayImagePublic(namespace, repository, getDeployQuayTokenCredentials())
+        } catch (err) {
+            echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
+        }
     }
-    return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${finalImageName}:${getDeployImageTag()}"
+}
+
+String buildImageName(String imageName) {
+    return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${getFinalImageName(imageName)}:${getDeployImageTag()}"
+}
+
+String getFinalImageName(String imageName) {
+    return getDeployImageNameSuffix() ? "${imageName}-${getDeployImageNameSuffix()}" : imageName
 }
 
 void loginOpenshift() {
@@ -430,8 +449,12 @@ boolean isDeployImageInOpenshiftRegistry() {
     return params.IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
+String getDeployQuayTokenCredentials() {
+    return params.QUAY_TOKEN_CREDENTIALS
+}
+
 String getDeployImageRegistryCredentials() {
-    return isDeployImageInOpenshiftRegistry() ? '' : params.IMAGE_REGISTRY_CREDENTIALS
+    return params.IMAGE_REGISTRY_CREDENTIALS
 }
 
 String getDeployImageRegistry() {
@@ -452,6 +475,10 @@ String getDeployImageTag() {
     } else {
         return sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
     }
+}
+
+boolean isQuayRegistry() {
+    return getDeployImageRegistry() == 'quay.io'
 }
 
 ////////////////////////////////////////////////////////////////////////
