@@ -162,3 +162,14 @@ function copy_kogito_app() {
         cp -v $artifactDir/*.jar "${KOGITO_HOME}"/bin
     fi
 }
+
+function get_runtime_type() {
+    allowed_runtime_values=("$QUARKUS_RUNTIME_TYPE" "$SPRINGBOOT_RUNTIME_TYPE")
+    local runtime_type="${RUNTIME_TYPE:-$QUARKUS_RUNTIME_TYPE}"
+
+    if [[ ! "${allowed_runtime_values[*]}" =~ ${RUNTIME_TYPE} ]]; then
+        log_warning "RUNTIME_TYPE ${RUNTIME_TYPE} is not allowed, the allowed types are [${allowed_runtime_values[*]}]. Application might fail"
+    fi
+    log_info "---> Setting RUNTIME_TYPE to ${runtime_type}"
+    echo "${runtime_type}"
+}

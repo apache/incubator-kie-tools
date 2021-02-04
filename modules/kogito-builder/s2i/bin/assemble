@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+#
+# S2I assemble script for the 'kogito-builder' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+set -e
+
+source ${S2I_MODULE_LOCATION}/s2i-core
+
+
+runtime_type=$(get_runtime_type)
+
+log_info "----> RUNTIME_TYPE has been set to $runtime_type"
+
+#############################################
+# Configure maven - for a complete list of
+# supported values, please refer the module.yaml
+# file.
+# Configure GraalVM memory limits
+
+case ${runtime_type} in 
+    "quarkus") 
+              CONFIGURE_SCRIPTS=(
+                "${KOGITO_HOME}"/launch/configure-maven.sh
+                "${KOGITO_HOME}"/launch/memory-limit.sh
+              )
+    ;;
+    "springboot") 
+              CONFIGURE_SCRIPTS=(
+                "${KOGITO_HOME}"/launch/configure-maven.sh
+              )
+    ;;
+    *)
+              log_error "${runtime_type} is not supported."
+              exit 1
+esac
+
+
+source "${KOGITO_HOME}"/launch/configure.sh
+#############################################
+
+
+# incremental builds
+manage_incremental_build
+
+# kogito app build
+build_kogito_app "${runtime_type}"
+
+# copy kogito app to "${KOGITO_HOME}"/bin dir
+copy_kogito_app
+
+# handle persistence files
+copy_persistence_files

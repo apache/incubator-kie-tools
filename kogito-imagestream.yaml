@@ -9,7 +9,7 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-quarkus-ubi8
+      name: kogito-runtime-native
       annotations:
         openshift.io/display-name: Runtime image for Kogito based on Quarkus native image
         openshift.io/provider-display-name: Kie Group.
@@ -26,91 +26,49 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-quarkus-ubi8:2.0.0-snapshot
+            name: quay.io/kiegroup/kogito-runtime-native:2.0.0-snapshot
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-quarkus-jvm-ubi8
+      name: kogito-runtime-jvm
       annotations:
-        openshift.io/display-name: Runtime image for Kogito based on Quarkus JVM image
+        openshift.io/display-name: Runtime image for Kogito based on Quarkus or Springboot JVM image
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
         - name: '2.0.0-snapshot'
           annotations:
-            description: Runtime image for Kogito based on Quarkus JVM image
+            description: Runtime image for Kogito based on Quarkus or Springboot JVM image
             iconClass: icon-jbpm
-            tags: runtime,kogito,quarkus,jvm
+            tags: runtime,kogito,quarkus,springboot,jvm
             supports: quarkus
             version: '2.0.0-snapshot'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-quarkus-jvm-ubi8:2.0.0-snapshot
+            name: quay.io/kiegroup/kogito-runtime-jvm:2.0.0-snapshot
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-quarkus-ubi8-s2i
+      name: kogito-builder
       annotations:
-        openshift.io/display-name: Platform for building Kogito based on Quarkus
+        openshift.io/display-name: Platform for building Kogito based on Quarkus or Springboot
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
         - name: '2.0.0-snapshot'
           annotations:
-            description: Platform for building Kogito based on Quarkus
+            description: Platform for building Kogito based on Quarkus or Springboot
             iconClass: icon-jbpm
-            tags: builder,kogito,quarkus
+            tags: builder,kogito,quarkus,springboot
             supports: quarkus
             version: '2.0.0-snapshot'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-quarkus-ubi8-s2i:2.0.0-snapshot
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-springboot-ubi8
-      annotations:
-        openshift.io/display-name: Runtime image for Kogito based on SpringBoot
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '2.0.0-snapshot'
-          annotations:
-            description: Runtime image for Kogito based on SpringBoot
-            iconClass: icon-jbpm
-            tags: runtime,kogito,springboot
-            supports: springboot
-            version: '2.0.0-snapshot'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-springboot-ubi8:2.0.0-snapshot
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-springboot-ubi8-s2i
-      annotations:
-        openshift.io/display-name: Platform for building Kogito based on SpringBoot
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '2.0.0-snapshot'
-          annotations:
-            description: Platform for building Kogito based on Quarkus
-            iconClass: icon-jbpm
-            tags: builder,kogito,springboot
-            supports: springboot
-            version: '2.0.0-snapshot'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-springboot-ubi8-s2i:2.0.0-snapshot
+            name: quay.io/kiegroup/kogito-builder:2.0.0-snapshot
   - kind: ImageStream
     apiVersion: v1
     metadata:

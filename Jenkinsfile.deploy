@@ -207,8 +207,7 @@ pipeline {
 
                     // Debug purpose in case of issue
                     sh 'cat tests/test-apps/clone-repo.sh'
-                    sh 'cat tests/features/kogito-quarkus-ubi8-s2i.feature'
-                    sh 'cat tests/features/kogito-springboot-ubi8-s2i.feature'
+                    sh 'cat tests/features/kogito-builder.feature'
 
                     // Prepare local examples
                     sh 'make clone-repos'

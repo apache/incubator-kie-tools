@@ -1,4 +1,4 @@
-@quay.io/kiegroup/kogito-springboot-ubi8-s2i @quay.io/kiegroup/kogito-springboot-ubi8 @quay.io/kiegroup/kogito-quarkus-ubi8-s2i @quay.io/kiegroup/kogito-quarkus-ubi8 @quay.io/kiegroup/kogito-quarkus-jvm-ubi8
+@quay.io/kiegroup/kogito-builder @quay.io/kiegroup/kogito-runtime-native @quay.io/kiegroup/kogito-runtime-jvm
 Feature: Common tests for Kogito builder and runtime images
 
   Scenario: Verify if usage help is correctly called
