@@ -32,7 +32,7 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.org.kie.lienzo>${project.version}</version.org.kie.lienzo>
-    <version.com.google.gwt>2.7.0</version.com.google.gwt>
+    <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.junit>4.11</version.junit>
     <version.org.mockito>1.10.19</version.org.mockito>
     <version.org.javassist>3.22.0-GA</version.org.javassist>
@@ -135,8 +135,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.2</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <plugin>
