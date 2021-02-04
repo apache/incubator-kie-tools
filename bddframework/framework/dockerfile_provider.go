@@ -44,19 +44,19 @@ type kogitoApplicationDockerfileProviderStruct struct {
 }
 
 var quarkusNonNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               infrastructure.KogitoQuarkusJVMUbi8Image,
+	imageName:               infrastructure.KogitoRuntimeJVM,
 	applicationBinarySuffix: quarkusJVMApplicationBinarySuffix,
 	libFolderNeeded:         true,
 }
 
 var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               infrastructure.KogitoQuarkusUbi8Image,
+	imageName:               infrastructure.KogitoRuntimeNative,
 	applicationBinarySuffix: quarkusNativeApplicationBinarySuffix,
 	libFolderNeeded:         false,
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               infrastructure.KogitoSpringBootUbi8Image,
+	imageName:               infrastructure.KogitoRuntimeJVM,
 	applicationBinarySuffix: springBootApplicationBinarySuffix,
 	libFolderNeeded:         false,
 }

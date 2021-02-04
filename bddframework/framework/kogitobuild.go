@@ -111,25 +111,27 @@ func GetKogitoBuild(namespace, buildName string) (*v1beta1.KogitoBuild, error) {
 
 // SetupKogitoBuildImageStreams sets the correct images for the KogitoBuild
 func SetupKogitoBuildImageStreams(kogitoBuild *v1beta1.KogitoBuild) {
-	kogitoBuild.Spec.BuildImage = getKogitoBuildS2IImage(kogitoBuild)
+	kogitoBuild.Spec.BuildImage = getKogitoBuildS2IImage()
 	kogitoBuild.Spec.RuntimeImage = getKogitoBuildRuntimeImage(kogitoBuild)
 }
 
-func getKogitoBuildS2IImage(kogitoBuild *v1beta1.KogitoBuild) string {
+func getKogitoBuildS2IImage() string {
 	if len(config.GetBuildS2IImageStreamTag()) > 0 {
 		return config.GetBuildS2IImageStreamTag()
 	}
 
-	return getKogitoBuildImage(infrastructure.KogitoImages[kogitoBuild.Spec.Runtime][true])
+	return getKogitoBuildImage(infrastructure.KogitoBuilderImage)
 }
 
 func getKogitoBuildRuntimeImage(kogitoBuild *v1beta1.KogitoBuild) string {
+	var imageName string
 	if len(config.GetBuildRuntimeImageStreamTag()) > 0 {
 		return config.GetBuildRuntimeImageStreamTag()
 	}
-	imageName := infrastructure.KogitoImages[kogitoBuild.Spec.Runtime][false]
 	if kogitoBuild.Spec.Native {
-		imageName = infrastructure.KogitoQuarkusUbi8Image
+		imageName = infrastructure.KogitoRuntimeNative
+	} else {
+		imageName = infrastructure.KogitoRuntimeJVM
 	}
 	return getKogitoBuildImage(imageName)
 }
