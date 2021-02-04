@@ -38,6 +38,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.VALUE_CLASS_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -162,8 +163,8 @@ public class ListGroupItemPresenterTest extends AbstractTestToolsTest {
         when(listGroupItemViewMock.isToExpand()).thenReturn(true);
         when(testToolsPresenterMock.getFactModelTreeFromFactTypeMap(anyString())).thenReturn(Optional.empty());
         listGroupItemPresenter.onToggleRowExpansion(listGroupItemViewMock, false);
-        verify(testToolsPresenterMock, times(1)).getFactModelTreeFromFactTypeMap(anyString());
-        verify(testToolsPresenterMock, times(1)).getFactModelTreeFromHiddenMap(anyString());
+        verify(testToolsPresenterMock, times(1)).getFactModelTreeFromFactTypeMap(any());
+        verify(testToolsPresenterMock, times(1)).getFactModelTreeFromHiddenMap(any());
         verify(listGroupItemViewMock, times(1)).expandRow();
     }
 

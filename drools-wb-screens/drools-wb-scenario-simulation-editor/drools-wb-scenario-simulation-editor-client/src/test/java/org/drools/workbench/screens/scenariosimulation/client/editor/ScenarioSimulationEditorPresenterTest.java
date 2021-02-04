@@ -624,7 +624,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Test
     public void setSettings() {
         presenterSpy.setSettings(settingsPresenterMock);
-        verify(settingsPresenterMock, times(1)).setScenarioType(isA(ScenarioSimulationModel.Type.class), any(), anyString());
+        verify(settingsPresenterMock, times(1)).setScenarioType(isA(ScenarioSimulationModel.Type.class), any(), any());
     }
 
     @Test

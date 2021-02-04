@@ -26,7 +26,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,7 +51,7 @@ public class SummaryPageViewTest {
         when( validationServiceCaller.call( callbackCaptor.capture() ) ).thenReturn( validationService );
 
         page.stateChanged();
-        verify( validationService ).isFileNameValid( anyString() );
+        verify( validationService ).isFileNameValid( any() );
 
         callbackCaptor.getValue().callback( Boolean.FALSE );
         verify( view ).setValidBaseFileName( false );

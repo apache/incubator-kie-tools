@@ -36,7 +36,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -80,7 +79,7 @@ public class ActionInsertFactWidgetTest {
         value.setNature(FieldNatureType.TYPE_LITERAL);
         value.setField("a");
         final ActionValueEditor editor = mock(ActionValueEditor.class);
-        doReturn(editor).when(testedWidget).actionValueEditor(anyString(),
+        doReturn(editor).when(testedWidget).actionValueEditor(any(),
                                                               eq(value),
                                                               any(),
                                                               eq(readOnly));
@@ -89,7 +88,7 @@ public class ActionInsertFactWidgetTest {
         valueTwo.setNature(FieldNatureType.TYPE_LITERAL);
         valueTwo.setField("b");
         final ActionValueEditor editorTwo = mock(ActionValueEditor.class);
-        doReturn(editorTwo).when(testedWidget).actionValueEditor(anyString(),
+        doReturn(editorTwo).when(testedWidget).actionValueEditor(any(),
                                                                  eq(valueTwo),
                                                                  any(),
                                                                  eq(readOnly));

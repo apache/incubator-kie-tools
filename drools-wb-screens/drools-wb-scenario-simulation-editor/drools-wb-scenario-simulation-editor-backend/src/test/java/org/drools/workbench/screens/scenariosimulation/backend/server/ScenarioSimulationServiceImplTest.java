@@ -47,6 +47,7 @@ import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -56,9 +57,7 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.OpenOption;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import static org.junit.Assert.assertEquals;
@@ -163,10 +162,9 @@ public class ScenarioSimulationServiceImplTest {
         Package testPackage = new Package(path, path, path, path, path, "Test", "", "");
         testPackages.add(testPackage);
         when(kieModuleServiceMock.resolveModule(any())).thenReturn(kieModuleMock);
-        when(kieModuleServiceMock.resolvePackages(any(KieModule.class))).thenReturn(testPackages);
-        when(kieModuleServiceMock.newPackage(any(), anyString())).thenReturn(testPackage);
+        when(kieModuleServiceMock.resolvePackages(Mockito.<KieModule>any())).thenReturn(testPackages);
+        when(kieModuleServiceMock.newPackage(any(), any())).thenReturn(testPackage);
         when(kieModuleServiceMock.resolveDefaultPackage(any())).thenReturn(testPackage);
-        when(ioServiceMock.exists(activatorPathMock)).thenReturn(false);
 
         when(kieModuleServiceMock.resolveModule(any())).thenReturn(kieModuleMock);
         when(kieModuleMock.getPom()).thenReturn(projectPomMock);
@@ -174,7 +172,7 @@ public class ScenarioSimulationServiceImplTest {
         when(gavMock.getGroupId()).thenReturn("Test");
         when(projectPomMock.getDependencies()).thenReturn(dependenciesMock);
         when(dependenciesMock.iterator()).thenReturn(new Dependencies().iterator());
-        when(ioServiceMock.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
+        when(ioServiceMock.exists(any())).thenReturn(false);
         when(packageMock.getPackageTestSrcPath()).thenReturn(path);
         when(scenarioSimulationBuilderMock.createSimulation(any(), any(), any())).thenReturn(new Simulation());
         when(scenarioSimulationBuilderMock.createBackground(any(), any(), any())).thenReturn(new Background());
@@ -258,7 +256,7 @@ public class ScenarioSimulationServiceImplTest {
         verify(ioServiceMock).write(any(org.uberfire.java.nio.file.Path.class),
                                     anyString(),
                                     anyMap(),
-                                    any(CommentedOption.class));
+                                    any());
     }
 
     @Test
@@ -281,7 +279,7 @@ public class ScenarioSimulationServiceImplTest {
         assertNotNull(model.getSettings());
         verify(ioServiceMock, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
                                               anyString(),
-                                              any(CommentedOption.class));
+                                              any());
     }
 
     @Test
@@ -304,7 +302,7 @@ public class ScenarioSimulationServiceImplTest {
         assertNotNull(model.getSettings());
         verify(ioServiceMock, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
                                               anyString(),
-                                              any(CommentedOption.class));
+                                              any());
     }
 
     @Test(expected = FileAlreadyExistsException.class)
@@ -343,7 +341,7 @@ public class ScenarioSimulationServiceImplTest {
         verify(ioServiceMock, times(1))
                 .write(any(org.uberfire.java.nio.file.Path.class),
                        anyString(),
-                       any(OpenOption.class));
+                       any());
 
         reset(ioServiceMock);
         when(ioServiceMock.exists(any())).thenReturn(true);
@@ -352,7 +350,7 @@ public class ScenarioSimulationServiceImplTest {
         verify(ioServiceMock, never())
                 .write(any(org.uberfire.java.nio.file.Path.class),
                        anyString(),
-                       any(OpenOption.class));
+                       any());
     }
 
     @Test
@@ -383,9 +381,9 @@ public class ScenarioSimulationServiceImplTest {
     public void ensureDependenciesTest() {
         service.ensureDependencies(kieModuleMock);
 
-        verify(pomServiceMock, times(1)).save(any(Path.class),
+        verify(pomServiceMock, times(1)).save(any(),
                                               any(POM.class),
-                                              any(Metadata.class),
+                                              any(),
                                               anyString());
 
         reset(pomServiceMock);
@@ -393,9 +391,9 @@ public class ScenarioSimulationServiceImplTest {
 
         service.ensureDependencies(kieModuleMock);
 
-        verify(pomServiceMock, never()).save(any(Path.class),
+        verify(pomServiceMock, never()).save(any(),
                                              any(POM.class),
-                                             any(Metadata.class),
+                                             any(),
                                              anyString());
     }
 
@@ -442,9 +440,9 @@ public class ScenarioSimulationServiceImplTest {
         ScenarioSimulationModel model = service.load(path);
 
         assertEquals(Type.DMN, model.getSettings().getType());
-        verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(any(), any(), anyString());
+        verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(any(), any(), any());
 
-        doThrow(new ImpossibleToFindDMNException("")).when(dmnTypeServiceMock).initializeNameAndNamespace(any(), any(), anyString());
+        doThrow(new ImpossibleToFindDMNException("")).when(dmnTypeServiceMock).initializeNameAndNamespace(any(), any(), any());
 
         try {
             service.load(path);

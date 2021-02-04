@@ -25,7 +25,6 @@ import java.util.List;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
@@ -36,7 +35,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
@@ -69,14 +67,7 @@ public class IndexDecisionTableXLSInvalidDrlTest extends BaseIndexingTest<Decisi
                     .build();
             searchFor(index, query, 0);
 
-            verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
-
-                @Override
-                public boolean matches( final Object argument ) {
-                    return ( (ILoggingEvent) argument ).getMessage().startsWith( "Unable to parse DRL" );
-                }
-
-            } ) );
+            verify( mockAppender ).doAppend( argThat(argument -> argument.getMessage().startsWith("Unable to parse DRL" )) );
         }
 
     }

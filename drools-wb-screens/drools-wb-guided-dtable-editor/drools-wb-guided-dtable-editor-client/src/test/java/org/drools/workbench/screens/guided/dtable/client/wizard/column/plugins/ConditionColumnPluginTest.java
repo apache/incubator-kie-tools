@@ -429,8 +429,8 @@ public class ConditionColumnPluginTest {
     @Test
     public void testConstraintValueWhenItHasEnums() throws Exception {
         doReturn(oracle).when(presenter).getDataModelOracle();
-        doReturn(true).when(oracle).hasEnums(anyString(),
-                                             anyString());
+        doReturn(true).when(oracle).hasEnums(any(),
+                                             any());
 
         final int constraintValue = plugin.constraintValue();
 

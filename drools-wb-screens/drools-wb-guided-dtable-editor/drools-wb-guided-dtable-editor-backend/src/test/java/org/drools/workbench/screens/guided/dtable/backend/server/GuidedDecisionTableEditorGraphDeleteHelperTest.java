@@ -35,7 +35,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
@@ -121,7 +120,6 @@ public class GuidedDecisionTableEditorGraphDeleteHelperTest {
 
     @Test
     public void checkRemoveReferencesNoFiles() {
-        when( path.getFileName() ).thenReturn( "dtable.gdst" );
         when( path.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         helper.postProcess( path );
@@ -139,7 +137,6 @@ public class GuidedDecisionTableEditorGraphDeleteHelperTest {
         when( dtGraphPath.getFileSystem() ).thenReturn( fileSystem );
         paths.add( dtGraphPath );
 
-        when( path.getFileName() ).thenReturn( "dtable.gdst" );
         when( path.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         final GuidedDecisionTableEditorGraphModel model = new GuidedDecisionTableEditorGraphModel();
@@ -159,7 +156,7 @@ public class GuidedDecisionTableEditorGraphDeleteHelperTest {
         verify( ioService,
                 times( 1 ) ).write( dtGraphPathCaptor.capture(),
                                     modelXmlCaptor.capture(),
-                                    any( CommentedOption.class ) );
+                                    any() );
 
         final org.uberfire.java.nio.file.Path dtGraphPath2 = dtGraphPathCaptor.getValue();
         assertEquals( dtGraphPath.toUri().getPath(),
@@ -179,7 +176,6 @@ public class GuidedDecisionTableEditorGraphDeleteHelperTest {
         when( dtPath.getFileSystem() ).thenReturn( fileSystem );
         paths.add( dtPath );
 
-        when( path.getFileName() ).thenReturn( "dtable.gdst" );
         when( path.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         helper.postProcess( path );

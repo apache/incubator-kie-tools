@@ -99,7 +99,6 @@ public class DecisionTableGuidedToDecisionTableXLSConverterTest {
 
         doReturn(mock(PackageDataModelOracle.class)).when(dataModelService).getDataModel(any());
         doReturn(table52).when(guidedDecisionTableEditorService).load(path);
-        doReturn("id").when(sessionInfo).getId();
 
         final XLSConversionResult convert = converter.convert(path);
 

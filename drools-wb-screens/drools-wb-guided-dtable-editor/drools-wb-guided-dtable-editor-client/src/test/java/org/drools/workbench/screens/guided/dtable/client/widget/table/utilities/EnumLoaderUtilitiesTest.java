@@ -157,9 +157,9 @@ public class EnumLoaderUtilitiesTest {
         final DropDownData enumDefinition = DropDownData.create("expression",
                                                                 valuePairs);
 
-        when(enumDropdownService.loadDropDownExpression(any(Path.class),
-                                                        any(String[].class),
-                                                        any(String.class))).thenReturn(fixedList);
+        when(enumDropdownService.loadDropDownExpression(any(),
+                                                        any(),
+                                                        any())).thenReturn(fixedList);
 
         //Call twice to check caching
         enumLoaderUtilities.getEnums(enumDefinition,
@@ -174,7 +174,7 @@ public class EnumLoaderUtilitiesTest {
                                      onFetchCompleteCommand);
 
         verify(enumDropdownService,
-               times(1)).loadDropDownExpression(any(Path.class),
+               times(1)).loadDropDownExpression(any(),
                                                 any(String[].class),
                                                 any(String.class));
         verify(onFetchCommand,

@@ -43,6 +43,7 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -165,7 +166,7 @@ public class GlobalsEditorPresenterTest {
         verify(view,
                times(1)).showLoading();
         verify(globalsEditorService,
-               times(1)).loadContent(any(Path.class));
+               times(1)).loadContent(any());
 
         when(versionRecordManager.getCurrentPath()).thenReturn(mock(ObservablePath.class));
 
@@ -195,23 +196,23 @@ public class GlobalsEditorPresenterTest {
         presenter.save();
 
         verify(validationService,
-               times(1)).validateForSave(any(Path.class),
-                                         any(GlobalsModel.class));
+               times(1)).validateForSave(any(),
+                                         any());
         verify(savePopUpPresenter,
-               times(1)).show(any(Path.class),
+               times(1)).show(any(),
                               any(ParameterizedCommand.class));
     }
 
     @Test
     public void saveValidationErrors() {
-        when(validationService.validateForSave(any(Path.class),
-                                               any(GlobalsModel.class))).thenReturn(Arrays.asList(new ValidationMessage()));
+        when(validationService.validateForSave(any(),
+                                               any())).thenReturn(Arrays.asList(new ValidationMessage()));
 
         presenter.save();
 
         verify(validationService,
-               times(1)).validateForSave(any(Path.class),
-                                         any(GlobalsModel.class));
+               times(1)).validateForSave(any(),
+                                         any());
         verify(validationPopup,
                times(1)).showSaveValidationMessages(any(Command.class),
                                                     any(Command.class),
@@ -225,7 +226,7 @@ public class GlobalsEditorPresenterTest {
         presenter.onDelete();
 
         verify(validationService,
-               times(1)).validateForDelete(any(Path.class));
+               times(1)).validateForDelete(any());
         verify(deletePopUpPresenter,
                times(1)).show(eq(assetUpdateValidator),
                               any(ParameterizedCommand.class));
@@ -233,12 +234,12 @@ public class GlobalsEditorPresenterTest {
 
     @Test
     public void deleteValidationErrors() {
-        when(validationService.validateForDelete(any(Path.class))).thenReturn(Arrays.asList(new ValidationMessage()));
+        when(validationService.validateForDelete(any())).thenReturn(Arrays.asList(new ValidationMessage()));
 
         presenter.onDelete();
 
         verify(validationService,
-               times(1)).validateForDelete(any(Path.class));
+               times(1)).validateForDelete(any());
         verify(validationPopup,
                times(1)).showDeleteValidationMessages(any(Command.class),
                                                       any(Command.class),
@@ -252,8 +253,8 @@ public class GlobalsEditorPresenterTest {
 
         presenter.makeMenuBar();
 
-        verify(fileMenuBuilder).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder).addCopy(any(Path.class),
+        verify(fileMenuBuilder).addSave(Mockito.<MenuItem>any());
+        verify(fileMenuBuilder).addCopy(Mockito.<Path>any(),
                                         any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Command.class));

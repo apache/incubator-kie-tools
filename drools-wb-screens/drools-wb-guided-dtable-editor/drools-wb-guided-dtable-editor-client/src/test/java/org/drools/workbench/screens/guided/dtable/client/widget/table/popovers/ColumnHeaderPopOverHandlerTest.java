@@ -195,7 +195,7 @@ public class ColumnHeaderPopOverHandlerTest {
         handler.onNodeMouseMove(event);
 
         verify(columnPopOverPresenter,
-               times(1)).show(any(GuidedDecisionTableModellerView.class),
+               times(1)).show(any(),
                               eq(dtPresenter1),
                               eq(0));
     }
@@ -216,7 +216,7 @@ public class ColumnHeaderPopOverHandlerTest {
         handler.onNodeMouseMove(event);
 
         verify(columnPopOverPresenter,
-               times(1)).show(any(GuidedDecisionTableModellerView.class),
+               times(1)).show(any(),
                               eq(dtPresenter1),
                               eq(0));
 
@@ -225,7 +225,7 @@ public class ColumnHeaderPopOverHandlerTest {
         handler.onNodeMouseMove(event);
 
         verify(columnPopOverPresenter,
-               times(1)).show(any(GuidedDecisionTableModellerView.class),
+               times(1)).show(any(),
                               eq(dtPresenter2),
                               eq(0));
     }

@@ -33,8 +33,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BRLActionColumnDefinitionBuilderTest extends BaseColumnDefinitionBuilderTest {
@@ -102,10 +100,5 @@ public class BRLActionColumnDefinitionBuilderTest extends BaseColumnDefinitionBu
         brl.getChildColumns().add(new BRLActionVariableColumn("f2",
                                                               DataType.TYPE_NUMERIC_INTEGER));
         model.getActionCols().add(brl);
-
-        when(dmo.getFieldType(eq("Person"),
-                              eq("name"))).thenReturn(DataType.TYPE_STRING);
-        when(dmo.getFieldType(eq("Person"),
-                              eq("age"))).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
     }
 }

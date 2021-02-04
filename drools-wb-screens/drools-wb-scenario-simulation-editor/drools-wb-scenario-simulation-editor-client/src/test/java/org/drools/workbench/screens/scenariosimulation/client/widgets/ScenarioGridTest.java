@@ -394,7 +394,7 @@ public class ScenarioGridTest {
 
         verify(scenarioGridSpy).signalTestTools();
         verify(scenarioGridSpy).setSelectedColumn(eq(uiColumnIndex));
-        verify(eventBusMock).fireEvent(any(EnableTestToolsEvent.class));
+        verify(eventBusMock).fireEvent(any());
 
         // context menus could be shown
         verify(scenarioContextMenuRegistryMock, times(1)).hideMenus();

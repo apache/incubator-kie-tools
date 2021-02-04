@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.kogito.client.editor;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -43,6 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.kogito.client.editor.BaseKogitoEditor;
+import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.kogito.client.resources.i18n.KogitoClientConstants;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
@@ -51,7 +53,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -72,7 +73,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
@@ -241,11 +241,11 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
 
     @Test
     public void prepareContent_Exception() {
-        willThrow(Exception.class).given(scenarioSimulationEditorKogitoWrapperSpy).marshallContent(any(), any());
+        willThrow(RuntimeException.class).given(scenarioSimulationEditorKogitoWrapperSpy).marshallContent(any(), any());
         scenarioSimulationEditorKogitoWrapperSpy.prepareContent(resolveCallBackMock, rejectCallbackFnMock);
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).synchronizeColumnsDimension(eq(simulationGridPanelMock), eq(backgroundGridPanelMock));
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).marshallContent(eq(scenarioSimulationModelMock), eq(resolveCallBackMock));
-        verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(anyString(), eq(NotificationEvent.NotificationType.ERROR));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(any(), eq(NotificationEvent.NotificationType.ERROR));
     }
 
     @Test
@@ -323,8 +323,11 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     }
 
     @Test
-    public void onStartup() {
-        Whitebox.setInternalState(scenarioSimulationEditorKogitoWrapperSpy, "multiPageEditorContainerView", multiPageEditorContainerViewMock);
+    public void onStartup() throws IllegalAccessException, NoSuchFieldException {
+        final Field field = MultiPageEditorContainerPresenter.class.getDeclaredField("multiPageEditorContainerView");
+        field.setAccessible(true);
+        field.set(scenarioSimulationEditorKogitoWrapperSpy, multiPageEditorContainerViewMock);
+
         scenarioSimulationEditorKogitoWrapperSpy.onStartup(placeRequestMock);
         verify(authoringEditorDockMock, times(1)).setup(eq("AuthoringPerspective"), eq(placeRequestMock));
         verify(scenarioSimulationEditorPresenterMock, times(1)).setWrapper(eq(scenarioSimulationEditorKogitoWrapperSpy));

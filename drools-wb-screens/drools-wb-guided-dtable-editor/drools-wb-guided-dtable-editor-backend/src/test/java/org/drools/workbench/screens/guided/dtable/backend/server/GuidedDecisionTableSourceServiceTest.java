@@ -100,8 +100,6 @@ public class GuidedDecisionTableSourceServiceTest {
 
         // Simulates that no DSL files are present
         when(moduleService.resolvePackage(any())).thenReturn(packageMock);
-        when(discoveryService.discoverFiles(any(),
-                                            any())).thenReturn(new ArrayList<Path>());
         when(fileSystem.supportedFileAttributeViews()).thenReturn(new HashSet<String>());
         when(path.getFileSystem()).thenReturn(fileSystem);
         when(path.toString()).thenReturn("/");

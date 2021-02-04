@@ -53,7 +53,6 @@ import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -245,7 +244,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         verify(importsService,
                times(1)).save(projectImportsPathArgumentCaptor.capture(),
                               projectImportsArgumentCaptor.capture(),
-                              any(Metadata.class),
+                              any(),
                               any(String.class));
         assertNotNull(projectImportsPathArgumentCaptor.getValue());
         final Path actualProjectImportsPath = projectImportsPathArgumentCaptor.getValue();

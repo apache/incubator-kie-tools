@@ -25,7 +25,7 @@ import com.google.web.bindery.event.shared.Event;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
@@ -61,10 +61,10 @@ public abstract class AbstractMenuTest {
 
     protected void setup() {
         when(elementsByTagNameMock.getItem(0)).thenReturn(itemMock);
-        doReturn(menuItemMock).when(menuItemPresenterMock).getLabelMenuElement(anyString(), anyString());
-        doReturn(gridTitleElementMock).when(menuItemPresenterMock).getLabelMenuElement(anyString(), eq("scenario"));
-        doReturn(executableMenuItemMock).when(executableMenuItemPresenterMock).getLExecutableMenuElement(anyString(), anyString(), isA(Event.class));
-        doReturn(executableMenuItemMock).when(executableMenuItemPresenterMock).getLExecutableMenuElement(anyString(), anyString());
+        doReturn(menuItemMock).when(menuItemPresenterMock).getLabelMenuElement(any(), any());
+        doReturn(gridTitleElementMock).when(menuItemPresenterMock).getLabelMenuElement(any(), eq("scenario"));
+        doReturn(executableMenuItemMock).when(executableMenuItemPresenterMock).getLExecutableMenuElement(any(), any(), isA(Event.class));
+        doReturn(executableMenuItemMock).when(executableMenuItemPresenterMock).getLExecutableMenuElement(any(), any());
         //doReturn(du).when(executableMenuItemPresenterMock).getLExecutableMenuElement(anyString(), eq("duplicateInstance"));
 
         when(menuItemMock.getElementsByTagName("span")).thenReturn(elementsByTagNameMock);

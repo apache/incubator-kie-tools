@@ -87,7 +87,6 @@ public class ScenarioRunnerServiceImplTest {
         backgroundLocal = new Background();
         settingsLocal = new Settings();
         settingsLocal.setType(Type.RULE);
-        when(classLoaderHelperMock.getModuleClassLoader(any())).thenReturn(ClassLoader.getSystemClassLoader());
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
     }

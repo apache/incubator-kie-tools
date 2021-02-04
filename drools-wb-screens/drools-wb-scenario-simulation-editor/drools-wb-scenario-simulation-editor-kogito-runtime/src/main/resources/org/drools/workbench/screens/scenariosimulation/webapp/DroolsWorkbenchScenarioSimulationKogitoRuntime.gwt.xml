@@ -40,4 +40,8 @@
     <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler"/>
   </replace-with>
 
+  <!-- Temporary workaround for ClassCastExceptions happening on DMN Marshaller models -->
+  <set-property name="jre.checks.type" value="DISABLED" />
+  <set-property name="jre.checkedMode" value="DISABLED" />
+
 </module>

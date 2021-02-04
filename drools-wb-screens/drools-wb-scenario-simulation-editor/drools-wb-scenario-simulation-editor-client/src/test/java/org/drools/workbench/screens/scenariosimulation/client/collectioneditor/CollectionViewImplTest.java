@@ -37,6 +37,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -300,7 +301,7 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
     public void checkExpressionSyntax_Rule() {
         collectionEditorViewImplSpy.scenarioType = ScenarioSimulationModel.Type.RULE;
         collectionEditorViewImplSpy.ensureExpressionSyntax();
-        verify(expressionElementMock, times(1)).setValue(anyString());
+        verify(expressionElementMock, times(1)).setValue(any());
     }
 
     @Test

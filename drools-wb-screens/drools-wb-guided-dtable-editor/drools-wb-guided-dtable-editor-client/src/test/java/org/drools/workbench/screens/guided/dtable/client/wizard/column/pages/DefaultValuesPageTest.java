@@ -104,7 +104,7 @@ public class DefaultValuesPageTest {
         doReturn(defaultValueOneWidget).when(factory).getWidget(brlActionVariableColumn1,
                                                                 defaultValue);
         doReturn(defaultValueTwoWidget).when(factory).getWidget(eq(brlActionVariableColumn2),
-                                                                any(DTCellValue52.class));
+                                                                any());
     }
 
     @Test

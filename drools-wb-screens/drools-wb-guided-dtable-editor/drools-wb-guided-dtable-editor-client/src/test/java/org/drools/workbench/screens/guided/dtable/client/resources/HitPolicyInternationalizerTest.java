@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.resources;
 
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
@@ -27,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(GwtMockitoTestRunner.class)
 public class HitPolicyInternationalizerTest {
 
-    @GwtMock
     GuidedDecisionTableConstants constants;
 
     @Test

@@ -32,7 +32,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
@@ -67,14 +66,7 @@ public class IndexGlobalsInvalidDrlTest extends BaseIndexingTest<GlobalResourceT
                     .build();
             searchFor(index, query, 0);
 
-            verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
-
-                @Override
-                public boolean matches( final Object argument ) {
-                    return ( (ILoggingEvent) argument ).getMessage().startsWith( "Unable to parse DRL" );
-                }
-
-            } ) );
+            verify( mockAppender ).doAppend( argThat(argument -> argument.getMessage().startsWith("Unable to parse DRL" )) );
         }
     }
 

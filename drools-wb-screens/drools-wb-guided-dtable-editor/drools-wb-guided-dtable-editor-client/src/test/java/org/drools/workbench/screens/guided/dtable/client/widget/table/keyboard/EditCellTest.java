@@ -17,6 +17,8 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation.TriStateBoolean;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
@@ -26,6 +28,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class EditCellTest extends BaseKeyboardOperationTest<EditCell> {
 
     @Override

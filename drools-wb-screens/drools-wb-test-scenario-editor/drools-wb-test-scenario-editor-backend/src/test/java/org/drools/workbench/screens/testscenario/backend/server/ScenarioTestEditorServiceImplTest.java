@@ -184,7 +184,6 @@ public class ScenarioTestEditorServiceImplTest {
         final Path scenarioPath = getEmptyScenarioPath();
         final Map<String, Object> emptyMap = Collections.emptyMap();
 
-        doReturn(metadata).when(metadataService).getMetadata(scenarioPath);
         doReturn(emptyMap).when(metadataService).setUpAttributes(scenarioPath,
                                                                  metadata);
         doReturn(commentedOption).when(commentedOptionFactory).makeCommentedOption(COMMENT);
@@ -206,7 +205,6 @@ public class ScenarioTestEditorServiceImplTest {
         final Path scenarioPath = getEmptyScenarioPath();
         final Map<String, Object> emptyMap = Collections.emptyMap();
 
-        doReturn(metadata).when(metadataService).getMetadata(scenarioPath);
         doReturn(emptyMap).when(metadataService).setUpAttributes(scenarioPath,
                                                                  metadata);
         doReturn(commentedOption).when(commentedOptionFactory).makeCommentedOption(COMMENT);

@@ -242,7 +242,7 @@ public class EnumEditorPresenterTest {
         verify(enumService,
                times(1)).save(eq(path),
                               enumStringArgumentCaptor.capture(),
-                              any(Metadata.class),
+                              any(),
                               eq("message"));
         final String enumString = enumStringArgumentCaptor.getValue();
         assertNotNull(enumString);

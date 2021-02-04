@@ -31,7 +31,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -106,7 +105,7 @@ public class GuidedRuleEditorRenameHelperTest {
         verify(ioService,
                times(1)).write(any(org.uberfire.java.nio.file.Path.class),
                                drlArgumentCaptor.capture(),
-                               any(CommentedOption.class));
+                               any());
 
         final String newDrl = drlArgumentCaptor.getValue();
         assertNotNull(newDrl);
@@ -129,7 +128,7 @@ public class GuidedRuleEditorRenameHelperTest {
         verify(ioService,
                times(1)).write(any(org.uberfire.java.nio.file.Path.class),
                                drlArgumentCaptor.capture(),
-                               any(CommentedOption.class));
+                               any());
 
         final String newDrl = drlArgumentCaptor.getValue();
         assertNotNull(newDrl);

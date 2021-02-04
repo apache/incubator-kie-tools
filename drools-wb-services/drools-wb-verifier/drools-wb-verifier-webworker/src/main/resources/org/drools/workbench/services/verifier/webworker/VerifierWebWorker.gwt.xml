@@ -8,6 +8,7 @@
 
   <inherits name="org.drools.workbench.services.verifier.plugin.DroolsWorkbenchVerifierPlugin"/>
   <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
+  <inherits name="org.jboss.errai.ioc.Container"/>
   <inherits name="org.uberfire.commons.UberfireCommons"/>
 
   <inherits name="org.kie.workbench.common.services.verifier.api.VerifierApi"/>

@@ -17,12 +17,15 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation.TriStateBoolean;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class BaseKeyboardOperationTest<H extends KeyboardOperation> extends BaseKeyboardTest {
 
     protected H handler;

@@ -50,7 +50,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
@@ -67,6 +66,7 @@ import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -227,19 +227,19 @@ public class ScenarioEditorPresenterTest {
                                                                                                "org.test",
                                                                                                new PackageDataModelOracleBaselinePayload());
 
-        when(service.loadContent(any(Path.class))).thenReturn(testScenarioModelContent);
+        when(service.loadContent(any())).thenReturn(testScenarioModelContent);
 
         final TestScenarioResult result = new TestScenarioResult(scenarioRunResult,
                                                                  Collections.EMPTY_SET,
                                                                  mock(TestResultMessage.class));
         when(service.runScenario(eq("userName"),
-                                 any(Path.class),
+                                 any(),
                                  eq(scenario))).thenReturn(result);
 
         final AsyncPackageDataModelOracle dmo = mock(AsyncPackageDataModelOracle.class);
-        when(modelOracleFactory.makeAsyncPackageDataModelOracle(any(Path.class),
-                                                                any(HasImports.class),
-                                                                any(PackageDataModelOracleBaselinePayload.class))
+        when(modelOracleFactory.makeAsyncPackageDataModelOracle(any(),
+                                                                any(),
+                                                                any())
         ).thenReturn(dmo);
 
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
@@ -320,7 +320,7 @@ public class ScenarioEditorPresenterTest {
 
         verify(service).save(any(Path.class),
                              scenarioArgumentCaptor.capture(),
-                             any(Metadata.class),
+                             any(),
                              anyString());
 
         assertEquals(scenarioRunResult,
@@ -389,12 +389,12 @@ public class ScenarioEditorPresenterTest {
                 .error(any(Message.class),
                        any(RuntimeException.class));
         doReturn(callback).when(editor).getTestRunFailedCallback();
-        doThrow(new RuntimeException("some problem")).when(service).runScenario(anyString(),
-                                                                                any(Path.class),
-                                                                                any(Scenario.class));
+        doThrow(new RuntimeException("some problem")).when(service).runScenario(any(),
+                                                                                any(),
+                                                                                any());
         editor.onRunScenario();
 
-        verify(callback).error(any(Message.class),
+        verify(callback).error(any(),
                                any(RuntimeException.class));
         verify(view).showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
     }
@@ -406,12 +406,12 @@ public class ScenarioEditorPresenterTest {
 
         editor.makeMenuBar();
 
-        verify(fileMenuBuilder).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder).addCopy(any(Path.class),
-                                        any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addSave(Mockito.<MenuItem>any());
+        verify(fileMenuBuilder).addCopy(Mockito.<Path>any(),
+                                        any());
         verify(fileMenuBuilder).addRename(any(Command.class));
-        verify(fileMenuBuilder).addDelete(any(Path.class),
-                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addDelete(Mockito.<Path>any(),
+                                          any());
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
         verify(editor).addDownloadMenuItem(fileMenuBuilder);
     }

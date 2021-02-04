@@ -35,7 +35,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
@@ -124,7 +123,6 @@ public class GuidedDecisionTableEditorGraphRenameHelperTest {
 
     @Test
     public void checkUpdateReferencesNoFiles() {
-        when( source.getFileName() ).thenReturn( "dtable.gdst" );
         when( source.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         helper.postProcess( source,
@@ -144,9 +142,7 @@ public class GuidedDecisionTableEditorGraphRenameHelperTest {
         when( dtGraphPath.getFileSystem() ).thenReturn( fileSystem );
         paths.add( dtGraphPath );
 
-        when( source.getFileName() ).thenReturn( "dtable.gdst" );
         when( source.toURI() ).thenReturn( "file://test/dtable.gdst" );
-        when( destination.getFileName() ).thenReturn( "dtable-renamed.gdst" );
         when( destination.toURI() ).thenReturn( "file://test/dtable-renamed.gdst" );
 
         final GuidedDecisionTableEditorGraphModel model = new GuidedDecisionTableEditorGraphModel();
@@ -168,7 +164,7 @@ public class GuidedDecisionTableEditorGraphRenameHelperTest {
         verify( ioService,
                 times( 1 ) ).write( dtGraphPathCaptor.capture(),
                                     modelXmlCaptor.capture(),
-                                    any( CommentedOption.class ) );
+                                    any() );
 
         final org.uberfire.java.nio.file.Path dtGraphPath2 = dtGraphPathCaptor.getValue();
         assertEquals( dtGraphPath.toUri().getPath(),
@@ -190,7 +186,6 @@ public class GuidedDecisionTableEditorGraphRenameHelperTest {
         when( dtPath.getFileSystem() ).thenReturn( fileSystem );
         paths.add( dtPath );
 
-        when( source.getFileName() ).thenReturn( "dtable.gdst" );
         when( source.toURI() ).thenReturn( "file://test/dtable.gdst" );
 
         helper.postProcess( source,

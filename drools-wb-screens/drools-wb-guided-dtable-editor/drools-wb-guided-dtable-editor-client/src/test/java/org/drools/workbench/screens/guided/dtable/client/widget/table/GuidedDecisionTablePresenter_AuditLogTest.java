@@ -62,7 +62,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
@@ -210,7 +209,7 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
                                                          overview,
                                                          dmoBaseline);
 
-        when(oracleFactory.makeAsyncPackageDataModelOracle(any(Path.class),
+        when(oracleFactory.makeAsyncPackageDataModelOracle(any(),
                                                            any(GuidedDecisionTable52.class),
                                                            eq(dmoBaseline))).thenReturn(dmo);
 

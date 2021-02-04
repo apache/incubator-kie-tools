@@ -164,7 +164,7 @@ public class GuidedDecisionTableRendererTest {
 
         command.execute(makeGridRendererContext(false));
 
-        verify(parent).add(any(Group.class));
+        verify(parent).add(any());
     }
 
     private GridRendererContext makeGridRendererContext(final boolean isSelectionLayer) {

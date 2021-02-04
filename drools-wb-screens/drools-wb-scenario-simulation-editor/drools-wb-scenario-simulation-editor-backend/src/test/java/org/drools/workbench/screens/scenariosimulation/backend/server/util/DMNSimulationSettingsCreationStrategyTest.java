@@ -108,7 +108,6 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
         FactModelTuple factModelTuple = getFactModelTuple();
         final Path pathMock = mock(Path.class);
         final String dmnFilePath = "test";
-        doReturn(factModelTuple).when(dmnSimulationCreationStrategy).getFactModelTuple(any(), any());
         final Background retrieved = dmnSimulationCreationStrategy.createBackground(pathMock, dmnFilePath);
 
         assertNotNull(retrieved);

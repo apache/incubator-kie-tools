@@ -36,7 +36,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -93,7 +92,7 @@ public class GlobalsEditorServiceTest {
         verify(ioService,
                times(1)).write(any(org.uberfire.java.nio.file.Path.class),
                                anyString(),
-                               any(CommentedOption.class));
+                               any());
     }
 
     @Test
@@ -125,7 +124,7 @@ public class GlobalsEditorServiceTest {
                times(1)).write(any(org.uberfire.java.nio.file.Path.class),
                                anyString(),
                                mapArgumentCaptor.capture(),
-                               any(CommentedOption.class));
+                               any());
 
         Map capturedMap = mapArgumentCaptor.getValue();
         assertEquals(metadataMap,
