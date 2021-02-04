@@ -76,7 +76,9 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
           </>
         </ValidationIndicatorLabel>
       )}
-      {partialScoreValidation.length === 0 && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
+      {partialScoreValidation.length === 0 &&
+        activeAttribute.partialScore !== undefined &&
+        CharacteristicLabel("Partial score", activeAttribute.partialScore)}
       {partialScoreValidation.length > 0 && (
         <ValidationIndicatorLabel validations={partialScoreValidation} cssClass="characteristic-list__item__label">
           <>

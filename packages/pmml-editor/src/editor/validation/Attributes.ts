@@ -86,9 +86,7 @@ export const validateAttributes = (
   validationRegistry: ValidationRegistry
 ): void => {
   const isPartialScoreRequired =
-    characteristic.Attribute.find(attribute => attribute.partialScore !== undefined) !== undefined &&
-    characteristic.Attribute.filter(attribute => attribute.partialScore !== undefined).length <
-      characteristic.Attribute.length;
+    characteristic.Attribute.filter(attribute => attribute.partialScore !== undefined).length > 0;
 
   characteristic.Attribute.forEach((attribute, attributeIndex) =>
     validateAttribute(

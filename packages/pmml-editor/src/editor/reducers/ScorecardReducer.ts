@@ -37,7 +37,7 @@ import { AttributesActions } from "./AttributesReducer";
 import { isOutputsTargetFieldRequired, validateOutput, validateOutputs } from "../validation/Outputs";
 import { ValidationEntry, ValidationLevel, ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
-import { validateCharacteristics } from "../validation/Characteristics";
+import { validateCharacteristic, validateCharacteristics } from "../validation/Characteristics";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -93,6 +93,57 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
               validationRegistry
             );
           }
+        );
+        break;
+
+      case Actions.Scorecard_AddAttribute:
+        validationRegistry.clear(
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .build()
+        );
+        validateCharacteristic(
+          action.payload.modelIndex,
+          { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
+          action.payload.characteristicIndex,
+          {
+            ...state.Characteristics.Characteristic[action.payload.characteristicIndex],
+            Attribute: [
+              ...state.Characteristics.Characteristic[action.payload.characteristicIndex].Attribute,
+              {
+                predicate: action.payload.predicate,
+                partialScore: action.payload.partialScore,
+                reasonCode: action.payload.reasonCode
+              }
+            ]
+          },
+          state.MiningSchema.MiningField,
+          validationRegistry
+        );
+        break;
+
+      case Actions.Scorecard_DeleteAttribute:
+        validationRegistry.clear(
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .build()
+        );
+        validateCharacteristic(
+          action.payload.modelIndex,
+          { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
+          action.payload.characteristicIndex,
+          {
+            ...state.Characteristics.Characteristic[action.payload.characteristicIndex],
+            Attribute: state.Characteristics.Characteristic[action.payload.characteristicIndex].Attribute.filter(
+              (attribute, attributeIndex) => attributeIndex !== action.payload.attributeIndex
+            )
+          },
+          state.MiningSchema.MiningField,
+          validationRegistry
         );
         break;
 

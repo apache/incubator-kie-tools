@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareValidatingReducer, HistoryService } from "../history";
+import { HistoryAwareReducer, HistoryService } from "../history";
 import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
@@ -55,9 +55,8 @@ interface AttributesPayload {
 
 export type AttributesActions = ActionMap<AttributesPayload>[keyof ActionMap<AttributesPayload>];
 
-export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllActions> = (
-  historyService: HistoryService,
-  validationRegistry: ValidationRegistry
+export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
+  historyService: HistoryService
 ): Reducer<Attribute[], AllActions> => {
   return (state: Attribute[], action: AllActions) => {
     switch (action.type) {
@@ -94,14 +93,6 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft.splice(attributeIndex, 1);
             }
-            validationRegistry.clear(
-              Builder()
-                .forModel(action.payload.modelIndex)
-                .forCharacteristics()
-                .forCharacteristic(action.payload.characteristicIndex)
-                .forAttribute(action.payload.attributeIndex)
-                .build()
-            );
           }
         );
         break;
