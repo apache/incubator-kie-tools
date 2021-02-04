@@ -375,6 +375,13 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-Xms3000m -Xmx3000m</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>

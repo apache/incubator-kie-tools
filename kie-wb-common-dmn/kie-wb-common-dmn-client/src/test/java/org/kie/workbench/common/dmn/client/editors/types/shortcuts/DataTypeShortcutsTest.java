@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
@@ -35,7 +36,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts.MODAL_FOOTER;
 import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts.SELECT_DATATYPE_MENU;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -63,7 +63,7 @@ public class DataTypeShortcutsTest {
 
     @Test
     public void testSetup() {
-        doNothing().when(shortcuts).addEventListener(anyString(), any());
+        doNothing().when(shortcuts).addEventListener(Mockito.<String>any(), any());
 
         doReturn(false).when(shortcuts).isLoaded();
 
@@ -75,7 +75,7 @@ public class DataTypeShortcutsTest {
 
     @Test
     public void testSetupWhenItIsLoaded() {
-        doNothing().when(shortcuts).addEventListener(anyString(), any());
+        doNothing().when(shortcuts).addEventListener(Mockito.<String>any(), any());
 
         doReturn(true).when(shortcuts).isLoaded();
 
@@ -87,7 +87,7 @@ public class DataTypeShortcutsTest {
 
     @Test
     public void testTeardown() {
-        doNothing().when(shortcuts).removeEventListener(anyString(), any());
+        doNothing().when(shortcuts).removeEventListener(Mockito.<String>any(), any());
 
         doReturn(true).when(shortcuts).isLoaded();
 
@@ -99,7 +99,7 @@ public class DataTypeShortcutsTest {
 
     @Test
     public void testTeardownWhenItIsNotLoaded() {
-        doNothing().when(shortcuts).removeEventListener(anyString(), any());
+        doNothing().when(shortcuts).removeEventListener(Mockito.<String>any(), any());
 
         doReturn(false).when(shortcuts).isLoaded();
 

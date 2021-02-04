@@ -27,8 +27,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -52,18 +52,18 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CanvasLayoutUtilsTest {
 
     private final static String NODE_UUID = "uuid";
@@ -98,7 +98,7 @@ public class CanvasLayoutUtilsTest {
     private Index graphIndex;
 
     @Mock
-    private Canvas canvas;
+    private AbstractCanvas canvas;
 
     @Mock
     private GraphBoundsIndexer graphBoundsIndexer;
@@ -282,7 +282,7 @@ public class CanvasLayoutUtilsTest {
     @SuppressWarnings("unchecked")
     public void getNextOutOfCanvas() {
         when(ruleManager.evaluate(eq(ruleSet),
-                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+                                  Mockito.<RuleEvaluationContext>any())).thenReturn(ruleViolations);
 
         when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
         when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);
@@ -332,7 +332,7 @@ public class CanvasLayoutUtilsTest {
     @SuppressWarnings("unchecked")
     public void getNextFromNewTaskWithNonEmptyPositionWithParent() {
         when(ruleManager.evaluate(eq(ruleSet),
-                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+                                  Mockito.<RuleEvaluationContext>any())).thenReturn(ruleViolations);
 
         when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
         when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);
@@ -372,7 +372,7 @@ public class CanvasLayoutUtilsTest {
     public void getNextNewTaskWithNonEmptyPosition() {
 
         when(ruleManager.evaluate(eq(ruleSet),
-                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+                                  Mockito.<RuleEvaluationContext>any())).thenReturn(ruleViolations);
 
         when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
         when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);

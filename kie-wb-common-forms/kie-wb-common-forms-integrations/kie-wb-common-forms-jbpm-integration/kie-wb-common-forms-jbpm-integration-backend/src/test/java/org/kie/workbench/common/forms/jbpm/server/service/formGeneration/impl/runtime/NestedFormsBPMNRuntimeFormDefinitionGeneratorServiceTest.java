@@ -24,11 +24,11 @@ import org.kie.workbench.common.forms.data.modeller.service.impl.ext.dmo.runtime
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Client;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Expense;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Line;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,7 +48,7 @@ public class NestedFormsBPMNRuntimeFormDefinitionGeneratorServiceTest extends BP
 
     @Test
     public void testCreateNewProcessFormNestedFormsFromProjectClassLoader() throws ClassNotFoundException {
-        when(source.loadClass(anyString())).then(invocationOnMock -> loadClass(invocationOnMock.getArguments()[0].toString()));
+        when(source.loadClass(Mockito.<String>any())).then(invocationOnMock -> loadClass(invocationOnMock.getArguments()[0].toString()));
 
         launchNestedFormTestWithGeneratedFormsValidation();
     }

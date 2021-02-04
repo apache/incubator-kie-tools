@@ -49,7 +49,6 @@ import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -116,7 +115,7 @@ public class DelegateNativeContext2DTest {
     public void setUp() throws Exception {
         htmlElement = new HTMLCanvasElement();
         element = GWT.create(Element.class);
-        when(nativeClassConverter.convert(any(Element.class), eq(HTMLCanvasElement.class))).thenReturn(htmlElement);
+        when(nativeClassConverter.convert(Mockito.<Element>any(), eq(HTMLCanvasElement.class))).thenReturn(htmlElement);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
@@ -443,9 +442,9 @@ public class DelegateNativeContext2DTest {
     @Test
     public void setShadow() {
         delegateNativeContext2D.setShadow(null);
-        verify(context).setShadowColor(Mockito.anyString());
-        verify(context).setShadowOffsetX(Mockito.anyInt());
-        verify(context).setShadowOffsetY(Mockito.anyInt());
+        verify(context).setShadowColor(Mockito.any());
+        verify(context).setShadowOffsetX(Mockito.anyDouble());
+        verify(context).setShadowOffsetY(Mockito.anyDouble());
         verify(context).setShadowBlur(Mockito.anyInt());
 
         delegateNativeContext2D.setShadow(null);

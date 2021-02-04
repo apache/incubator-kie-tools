@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Branch;
@@ -32,6 +33,7 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestDiff;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +43,8 @@ import org.kie.workbench.common.screens.library.client.screens.project.changereq
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
@@ -55,7 +57,6 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -137,14 +138,12 @@ public class SubmitChangeRequestScreenPresenterTest {
         presenter.postConstruct();
 
         verify(view).init(presenter);
-        verify(view).setTitle(anyString());
+        verify(view).setTitle(Mockito.<String> any());
     }
 
     @Test
-    public void refreshOnFocusTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+    public void refreshOnFocusTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
         PlaceRequest place = mock(PlaceRequest.class);
         doReturn(LibraryPlaces.SUBMIT_CHANGE_REQUEST).when(place).getIdentifier();
@@ -153,16 +152,14 @@ public class SubmitChangeRequestScreenPresenterTest {
 
         verify(projectController).getReadableBranches(workspaceProject);
         verify(view).resetAll();
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String> any());
         verify(view).clearDiffList();
-        verify(changeRequestService).getDiff(anyString(), anyString(), anyString(), anyString());
+        verify(changeRequestService).getDiff(Mockito.<String> any(), Mockito.<String> any(), Mockito.<String> any(), Mockito.<String> any());
     }
 
     @Test
-    public void refreshOnFocusWhenOtherPlaceTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+    public void refreshOnFocusWhenOtherPlaceTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
         PlaceRequest place = mock(PlaceRequest.class);
         doReturn(LibraryPlaces.PROJECT_SCREEN).when(place).getIdentifier();
@@ -173,10 +170,8 @@ public class SubmitChangeRequestScreenPresenterTest {
     }
 
     @Test
-    public void cancelTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+    public void cancelTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
         presenter.cancel();
 
@@ -193,12 +188,12 @@ public class SubmitChangeRequestScreenPresenterTest {
         verify(view).clearErrors();
         verify(view).setSummaryError();
         verify(view).setDescriptionError();
-        verify(changeRequestService, never()).createChangeRequest(anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString());
+        verify(changeRequestService, never()).createChangeRequest(Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any());
     }
 
     @Test
@@ -211,12 +206,12 @@ public class SubmitChangeRequestScreenPresenterTest {
         verify(view).clearErrors();
         verify(view, never()).setSummaryError();
         verify(view).setDescriptionError();
-        verify(changeRequestService, never()).createChangeRequest(anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString());
+        verify(changeRequestService, never()).createChangeRequest(Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any());
     }
 
     @Test
@@ -229,24 +224,20 @@ public class SubmitChangeRequestScreenPresenterTest {
         verify(view).clearErrors();
         verify(view).setSummaryError();
         verify(view, never()).setDescriptionError();
-        verify(changeRequestService, never()).createChangeRequest(anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString());
+        verify(changeRequestService, never()).createChangeRequest(Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any());
     }
 
     @Test
-    public void submitWhenCannotUpdateBranchTest() throws NoSuchFieldException {
+    public void submitWhenCannotUpdateBranchTest() {
         final String destinationBranch = "destinationBranch";
 
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("selectedBranch"))
-                .set(destinationBranch);
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("selectedBranch", destinationBranch);
 
         doReturn("summary").when(view).getSummary();
         doReturn("description").when(view).getDescription();
@@ -256,24 +247,20 @@ public class SubmitChangeRequestScreenPresenterTest {
                                         destinationBranch);
         presenter.submit();
 
-        verify(changeRequestService, never()).createChangeRequest(anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString(),
-                                                                  anyString());
+        verify(changeRequestService, never()).createChangeRequest(Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any(),
+                                                                  Mockito.<String> any());
     }
 
     @Test
-    public void submitSuccessTest() throws NoSuchFieldException {
+    public void submitSuccessTest() {
         final String destinationBranch = "destinationBranch";
 
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("selectedBranch"))
-                .set(destinationBranch);
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("selectedBranch", destinationBranch);
 
         doReturn("summary").when(view).getSummary();
         doReturn("description").when(view).getDescription();
@@ -283,54 +270,50 @@ public class SubmitChangeRequestScreenPresenterTest {
                                         destinationBranch);
 
         ChangeRequest cr = mock(ChangeRequest.class);
-        doReturn(cr).when(changeRequestService).createChangeRequest(anyString(),
-                                                                    anyString(),
-                                                                    anyString(),
-                                                                    anyString(),
-                                                                    anyString(),
-                                                                    anyString());
+        doReturn(cr).when(changeRequestService).createChangeRequest(Mockito.<String> any(),
+                                                                    Mockito.<String> any(),
+                                                                    Mockito.<String> any(),
+                                                                    Mockito.<String> any(),
+                                                                    Mockito.<String> any(),
+                                                                    Mockito.<String> any());
         presenter.submit();
 
         verify(view).clearErrors();
         verify(view, never()).setSummaryError();
         verify(view, never()).setDescriptionError();
-        verify(changeRequestService).createChangeRequest(anyString(),
-                                                         anyString(),
-                                                         anyString(),
-                                                         anyString(),
-                                                         anyString(),
-                                                         anyString());
+        verify(changeRequestService).createChangeRequest(Mockito.<String> any(),
+                                                         Mockito.<String> any(),
+                                                         Mockito.<String> any(),
+                                                         Mockito.<String> any(),
+                                                         Mockito.<String> any(),
+                                                         Mockito.<String> any());
         verify(libraryPlaces).goToChangeRequestReviewScreen(anyLong());
     }
 
     @Test
-    public void updateDiffListWhenEmptyTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+    public void updateDiffListWhenEmptyTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
-        doReturn(Collections.emptyList()).when(changeRequestService).getDiff(anyString(),
-                                                                             anyString(),
-                                                                             anyString(),
-                                                                             anyString());
+        doReturn(Collections.emptyList()).when(changeRequestService).getDiff(Mockito.<String> any(),
+                                                                             Mockito.<String> any(),
+                                                                             Mockito.<String> any(),
+                                                                             Mockito.<String> any());
 
         presenter.updateDiffContainer();
 
         verify(view).clearDiffList();
         verify(view, never()).addDiffItem(any(),
                                           any());
-        verify(changeRequestService).getDiff(anyString(),
-                                             anyString(),
-                                             anyString(),
-                                             anyString());
+        verify(changeRequestService).getDiff(Mockito.<String> any(),
+                                             Mockito.<String> any(),
+                                             Mockito.<String> any(),
+                                             Mockito.<String> any());
         verify(view).enableSubmitButton(false);
     }
 
     @Test
-    public void updateDiffListWhenPopulatedTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+    public void updateDiffListWhenPopulatedTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
         ChangeRequestDiff crDiff = mock(ChangeRequestDiff.class);
         doReturn(10).when(crDiff).getDeletedLinesCount();
@@ -338,21 +321,29 @@ public class SubmitChangeRequestScreenPresenterTest {
 
         List<ChangeRequestDiff> diffList = Collections.nCopies(5, crDiff);
 
-        doReturn(diffList).when(changeRequestService).getDiff(anyString(),
-                                                              anyString(),
-                                                              anyString(),
-                                                              anyString());
+        doReturn(diffList).when(changeRequestService).getDiff(Mockito.<String> any(),
+                                                              Mockito.<String> any(),
+                                                              Mockito.<String> any(),
+                                                              Mockito.<String> any());
 
         presenter.updateDiffContainer();
 
         verify(view).clearDiffList();
         verify(view, times(diffList.size())).addDiffItem(any(),
                                                          any());
-        verify(changeRequestService).getDiff(anyString(),
-                                             anyString(),
-                                             anyString(),
-                                             anyString());
+        verify(changeRequestService).getDiff(Mockito.<String> any(),
+                                             Mockito.<String> any(),
+                                             Mockito.<String> any(),
+                                             Mockito.<String> any());
         verify(view).enableSubmitButton(true);
         verify(view).showDiff(true);
+    }
+
+    private void setPresenterPrivateField(final String fieldName, final Object value) {
+        try {
+            FieldUtils.writeField(SubmitChangeRequestScreenPresenter.class.getDeclaredField(fieldName), presenter, value, true);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
     }
 }

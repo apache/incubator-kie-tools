@@ -39,13 +39,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.mockProviderKeyList;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.mockProviderTypeList;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.anyCollectionOf;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ProvisioningManagementBrowserPresenterTest {
@@ -174,7 +180,7 @@ public class ProvisioningManagementBrowserPresenterTest {
         verify(providerTypeNavigationPresenter,
                times(1)).clear();
         verify(providerTypeNavigationPresenter,
-               times(0)).setup(any(ProviderType.class),
+               times(0)).setup(Mockito.<ProviderType>any(),
                                anyCollectionOf(ProviderType.class));
     }
 
@@ -227,9 +233,9 @@ public class ProvisioningManagementBrowserPresenterTest {
                times(1)).setContent(providerEmptyPresenterView);
 
         verify(providerTypePresenter,
-               times(1)).setup(any(ProviderType.class),
+               times(1)).setup(Mockito.<ProviderType>any(),
                                anyCollectionOf(ProviderKey.class),
-                               any(ProviderKey.class));
+                               Mockito.<ProviderKey>any());
     }
 
     @Test

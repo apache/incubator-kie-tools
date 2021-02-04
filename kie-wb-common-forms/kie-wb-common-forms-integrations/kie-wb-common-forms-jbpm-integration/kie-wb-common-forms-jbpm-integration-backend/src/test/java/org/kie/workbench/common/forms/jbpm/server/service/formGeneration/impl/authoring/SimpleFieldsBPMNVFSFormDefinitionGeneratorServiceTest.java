@@ -23,15 +23,15 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SimpleFieldsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVFSFormDefinitionGeneratorServiceTest {
 
     @Test
@@ -57,7 +57,7 @@ public class SimpleFieldsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNV
 
         verify(ioService,
                never()).write(any(),
-                              anyString(),
+                              Mockito.<String>any(),
                               any());
         verify(formFinderService,
                never()).findFormsForType(any(),

@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext
 import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
 import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class StatefulGraphEvaluationContextsTests {
 
     private static final Object RESULT = mock(Object.class);

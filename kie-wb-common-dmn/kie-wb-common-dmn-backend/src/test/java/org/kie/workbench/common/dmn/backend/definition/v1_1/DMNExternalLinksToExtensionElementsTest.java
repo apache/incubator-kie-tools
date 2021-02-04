@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.DRGElement;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ExternalLink;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

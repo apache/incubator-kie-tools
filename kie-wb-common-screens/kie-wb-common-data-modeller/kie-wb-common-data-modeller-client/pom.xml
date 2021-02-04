@@ -20,6 +20,10 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
 
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>

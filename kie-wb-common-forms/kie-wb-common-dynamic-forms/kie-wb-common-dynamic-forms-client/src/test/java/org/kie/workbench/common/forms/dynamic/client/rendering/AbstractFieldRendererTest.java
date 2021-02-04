@@ -31,9 +31,9 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -79,7 +79,7 @@ public abstract class AbstractFieldRendererTest<R extends FieldRenderer, F exten
         renderer.renderWidget();
 
         verify(errorDisplayer, never()).render(anyList());
-        verify(wrapperWidgetUtil).getWidget(eq(renderer), any(HTMLElement.class));
+        verify(wrapperWidgetUtil).getWidget(eq(renderer), Mockito.<HTMLElement>any());
     }
 
     @Test
@@ -102,7 +102,7 @@ public abstract class AbstractFieldRendererTest<R extends FieldRenderer, F exten
                 .hasSize(1)
                 .containsExactly(expectedError);
 
-        verify(wrapperWidgetUtil, never()).getWidget(eq(renderer), any(HTMLElement.class));
+        verify(wrapperWidgetUtil, never()).getWidget(eq(renderer), Mockito.<HTMLElement>any());
     }
 
     @Test

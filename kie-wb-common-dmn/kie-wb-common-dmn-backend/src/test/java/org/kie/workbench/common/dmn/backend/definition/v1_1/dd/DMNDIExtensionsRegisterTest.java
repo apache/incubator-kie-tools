@@ -31,7 +31,8 @@ import org.kie.dmn.model.v1_2.TDefinitions;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
@@ -39,7 +40,6 @@ import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExten
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENT_WIDTHS_ALIAS;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENT_WIDTH_ALIAS;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.EXTERNAL_LINK_ALIAS;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -87,7 +87,7 @@ public class DMNDIExtensionsRegisterTest {
     @Test
     public void testBeforeMarshal() {
         final DMNModelInstrumentedBase base = mock(TDefinitions.class);
-        when(base.getPrefixForNamespaceURI(anyString())).thenReturn(Optional.empty());
+        when(base.getPrefixForNamespaceURI(Mockito.<String>any())).thenReturn(Optional.empty());
 
         register.beforeMarshal(base, qmap);
 

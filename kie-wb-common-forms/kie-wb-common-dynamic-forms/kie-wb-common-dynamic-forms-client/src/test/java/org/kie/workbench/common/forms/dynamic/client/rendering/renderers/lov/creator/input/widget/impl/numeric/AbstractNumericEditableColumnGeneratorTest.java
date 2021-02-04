@@ -20,11 +20,11 @@ import org.junit.Test;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.TableEntry;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.impl.AbstractEditableColumnGeneratorTest;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -40,7 +40,7 @@ public abstract class AbstractNumericEditableColumnGeneratorTest<TYPE, GENERATOR
 
         assertTrue(generator.doValidate(correctFlatValue, tableEntry, cellEditionHandler));
 
-        verify(cellEditionHandler, never()).showValidationError(anyString());
+        verify(cellEditionHandler, never()).showValidationError(Mockito.<String>any());
     }
 
     @Test
@@ -49,7 +49,7 @@ public abstract class AbstractNumericEditableColumnGeneratorTest<TYPE, GENERATOR
 
         assertFalse(generator.doValidate(wrongFlatValue, tableEntry, cellEditionHandler));
 
-        verify(cellEditionHandler, times(1)).showValidationError(anyString());
+        verify(cellEditionHandler, times(1)).showValidationError(Mockito.<String>any());
     }
 
     @Test

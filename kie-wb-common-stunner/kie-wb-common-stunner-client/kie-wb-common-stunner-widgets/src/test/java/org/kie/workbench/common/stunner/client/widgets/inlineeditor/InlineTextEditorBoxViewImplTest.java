@@ -94,7 +94,7 @@ public class InlineTextEditorBoxViewImplTest {
         doAnswer(i -> {
             ((Scheduler.ScheduledCommand) i.getArguments()[0]).execute();
             return null;
-        }).when(tested).scheduleDeferredCommand(any(Scheduler.ScheduledCommand.class));
+        }).when(tested).scheduleDeferredCommand(any());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class InlineTextEditorBoxViewImplTest {
         tested.onChangeName(event);
 
         verify(presenter,
-               times(1)).onChangeName(anyString());
+               times(1)).onChangeName(any());
         verify(presenter,
                times(1)).onSave();
     }
@@ -198,7 +198,7 @@ public class InlineTextEditorBoxViewImplTest {
         tested.onChangeName(event);
 
         verify(presenter,
-               times(1)).onChangeName(anyString());
+               times(1)).onChangeName(any());
         verify(presenter,
                times(1)).onSave();
     }

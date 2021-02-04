@@ -22,13 +22,13 @@ import elemental2.dom.HTMLInputElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.MinMaxValueHelper.OLD_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.MinMaxValueHelper.isValidValue;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.MinMaxValueHelper.setupMinMaxHandlers;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,7 +67,7 @@ public class MinMaxValueHelperTest {
         final Object result = input.onkeydown.onInvoke(event);
 
         assertEquals(result, true);
-        verify(input, never()).setAttribute(anyString(), anyString());
+        verify(input, never()).setAttribute(Mockito.<String>any(), Mockito.<String>any());
     }
 
     @Test

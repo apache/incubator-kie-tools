@@ -22,7 +22,7 @@ import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionC
 import org.kie.workbench.common.dmn.client.editors.expressions.types.list.ListUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClearExpressionTypeCommandTest extends BaseClearExpressionCommandTest<ClearExpressionTypeCommand, List, ListUIModelMapper> {

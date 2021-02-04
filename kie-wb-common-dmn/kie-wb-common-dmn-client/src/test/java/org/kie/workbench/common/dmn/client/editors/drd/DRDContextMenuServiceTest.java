@@ -48,12 +48,11 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -120,9 +119,9 @@ public class DRDContextMenuServiceTest {
 
         drdContextMenuService.addToNewDRD(nodes);
 
-        verify(diagramElements, times(1)).add(any(DMNDiagramElement.class));
-        verify(dmnDiagramsSession, times(1)).add(any(DMNDiagramElement.class), any(Diagram.class));
-        verify(selectedEvent, times(1)).fire(any(DMNDiagramSelected.class));
+        verify(diagramElements, times(1)).add(Mockito.<DMNDiagramElement>any());
+        verify(dmnDiagramsSession, times(1)).add(Mockito.<DMNDiagramElement>any(), Mockito.<Diagram>any());
+        verify(selectedEvent, times(1)).fire(Mockito.<DMNDiagramSelected>any());
     }
 
     @Test
@@ -144,8 +143,8 @@ public class DRDContextMenuServiceTest {
 
         drdContextMenuService.addToExistingDRD(diagramTuple, selectedNodes);
 
-        verify(graph).addNode(any(Node.class));
-        verify(selectedEvent, times(1)).fire(any(DMNDiagramSelected.class));
+        verify(graph).addNode(Mockito.<Node>any());
+        verify(selectedEvent, times(1)).fire(Mockito.<DMNDiagramSelected>any());
     }
 
     @Test
@@ -162,7 +161,7 @@ public class DRDContextMenuServiceTest {
         drdContextMenuService.removeFromCurrentDRD(singleton(node));
 
         verify(graph, times(1)).removeNode(nodeUUID);
-        verify(selectedEvent, times(1)).fire(any(DMNDiagramSelected.class));
+        verify(selectedEvent, times(1)).fire(Mockito.<DMNDiagramSelected>any());
     }
 
     private Collection<Node<? extends Definition<?>, Edge>> mockNodes() {
@@ -183,7 +182,7 @@ public class DRDContextMenuServiceTest {
         when(content.getBounds()).thenReturn(bounds);
         when(bounds.getUpperLeft()).thenReturn(upperLeft);
         when(bounds.getLowerRight()).thenReturn(lowerRight);
-        when(factoryManager.newElement(anyString(), anyString())).thenReturn(clonedNode);
+        when(factoryManager.newElement(Mockito.<String>any(), Mockito.<String>any())).thenReturn(clonedNode);
         when(clonedNode.asNode()).thenReturn(clonedNode);
         when(clonedNode.getContent()).thenReturn(clonedContent);
         when(clonedContent.getDefinition()).thenReturn(clonedInputData);
@@ -200,7 +199,6 @@ public class DRDContextMenuServiceTest {
         final Id diagramId = new Id("DIAGRAM_ID");
         when(dmnDiagramTuple.getStunnerDiagram()).thenReturn(diagram);
         when(dmnDiagramTuple.getDMNDiagram()).thenReturn(dmnDiagram);
-        when(diagram.getGraph()).thenReturn(graph);
         when(dmnDiagram.getId()).thenReturn(diagramId);
         return dmnDiagramTuple;
     }

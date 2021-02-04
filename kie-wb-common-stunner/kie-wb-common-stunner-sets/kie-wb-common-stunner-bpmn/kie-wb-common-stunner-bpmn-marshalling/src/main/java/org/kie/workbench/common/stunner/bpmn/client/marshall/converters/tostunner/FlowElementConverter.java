@@ -44,7 +44,7 @@ public class FlowElementConverter extends AbstractConverter {
     }
 
     public Result<BpmnNode> convertNode(FlowElement flowElement) {
-        return Match.<FlowElement, Result<BpmnNode>>of()
+        return (Result<BpmnNode>) Match.<FlowElement, Result<BpmnNode>>of()
                 .<StartEvent>when(e -> e instanceof StartEvent,
                                   converterFactory.startEventConverter()::convert)
                 .<EndEvent>when(e -> e instanceof EndEvent,
@@ -58,15 +58,15 @@ public class FlowElementConverter extends AbstractConverter {
                 .<Task>when(e -> e instanceof Task,
                             converterFactory.taskConverter()::convert)
                 .<Gateway>when(e -> e instanceof Gateway,
-                               converterFactory.gatewayConverter()::convert)
+                               element -> converterFactory.gatewayConverter().convert((Gateway) element))
                 .<SubProcess>when(e -> e instanceof SubProcess,
-                                  converterFactory.subProcessConverter()::convertSubProcess)
+                                  element -> converterFactory.subProcessConverter().convertSubProcess((SubProcess) element))
                 .<CallActivity>when(e -> e instanceof CallActivity,
-                                    converterFactory.callActivityConverter()::convert)
+                                    element -> converterFactory.callActivityConverter().convert((CallActivity) element))
                 .<TextAnnotation>when(e -> e instanceof TextAnnotation,
-                                      converterFactory.textAnnotationConverter()::convert)
+                                      element -> converterFactory.textAnnotationConverter().convert((TextAnnotation) element))
                 .<DataObjectReference>when(e -> e instanceof DataObjectReference,
-                                  converterFactory.dataObjectConverter()::convert)
+                                           element -> converterFactory.dataObjectConverter().convert((DataObjectReference) element))
                 .ignore(e -> e instanceof DataStoreReference, DataStoreReference.class)
                 .ignore(e -> e instanceof DataObject, DataObject.class)
                 .defaultValue(Result.ignored("FlowElement not found", getNotFoundMessage(flowElement)))

@@ -28,6 +28,7 @@ import org.assertj.core.api.Condition;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDe
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
 import org.kie.workbench.common.migration.cli.MigrationServicesCDIWrapper;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;

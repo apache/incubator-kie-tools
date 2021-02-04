@@ -23,10 +23,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.mockito.Mockito;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -57,7 +57,7 @@ public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeader
                 return POPOVER_TITLE;
             }
         };
-        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(translationService.getTranslation(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Test

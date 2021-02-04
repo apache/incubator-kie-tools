@@ -58,8 +58,8 @@ public class AssetQueryServiceTest {
 
         when(caller.call(any(), any()))
         .then(inv -> {
-            remoteCallbacks.add(inv.getArgumentAt(0, RemoteCallback.class));
-            errorCallbacks.add(inv.getArgumentAt(1, ErrorCallback.class));
+            remoteCallbacks.add(inv.getArgument(0, RemoteCallback.class));
+            errorCallbacks.add(inv.getArgument(1, ErrorCallback.class));
 
             return libraryService;
         });

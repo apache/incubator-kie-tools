@@ -56,7 +56,8 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,9 +65,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -74,7 +72,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DMNDomainValidatorImplTest {
 
     private static final String DMN_XML = "<Some XML/>";
@@ -138,9 +136,9 @@ public class DMNDomainValidatorImplTest {
 
         when(dmnMarshaller.marshall(diagram)).thenReturn(DMN_XML);
         when(dmnDiagramUtils.getDefinitions(diagram)).thenReturn(definitions);
-        when(dmnValidator.validateUsing(anyVararg())).thenReturn(dmnValidatorBuilder);
+        when(dmnValidator.validateUsing(any())).thenReturn(dmnValidatorBuilder);
         when(dmnValidatorBuilder.usingImports(resolver)).thenReturn(dmnValidatorBuilder);
-        when(dmnValidatorBuilder.theseModels(any(Reader.class))).thenReturn(validationMessages);
+        when(dmnValidatorBuilder.theseModels(Mockito.<Reader>any())).thenReturn(validationMessages);
         when(diagram.getMetadata()).thenReturn(metadata);
     }
 
@@ -200,7 +198,7 @@ public class DMNDomainValidatorImplTest {
 
         doReturn(resolver).when(domainValidator).getValidatorImportReaderResolver(metadata);
 
-        when(domainValidator.getStringReader(anyString())).thenReturn(stringReader);
+        doReturn(stringReader).when(domainValidator).getStringReader(Mockito.any());
 
         domainValidator.validate(diagram,
                                  resultConsumer);
@@ -226,11 +224,11 @@ public class DMNDomainValidatorImplTest {
 
         doReturn(resolver).when(domainValidator).getValidatorImportReaderResolver(metadata);
 
-        when(domainValidator.getStringReader(anyString())).thenReturn(stringReader1, stringReader2);
+        doReturn(stringReader1, stringReader2).when(domainValidator).getStringReader(Mockito.any());
 
         definitions.getImport().add(new Import());
 
-        when(importsHelper.getImportXML(eq(metadata), anyList())).thenAnswer(i -> {
+        when(importsHelper.getImportXML(eq(metadata), Mockito.<List>any())).thenAnswer(i -> {
             final Map<org.kie.dmn.model.api.Import, String> importedModels = new HashMap<>();
             final List<org.kie.dmn.model.api.Import> imports = (List) i.getArguments()[1];
             importedModels.put(imports.get(0), IMPORTED_DMN_XML);

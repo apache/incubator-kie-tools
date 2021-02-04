@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -53,7 +52,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertFalse;
@@ -120,7 +119,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     protected AbstractCanvasHandler canvasHandler;
 
     @Mock
-    protected Canvas canvas;
+    protected AbstractCanvas canvas;
 
     @Mock
     protected AbstractCanvas abstractCanvas;

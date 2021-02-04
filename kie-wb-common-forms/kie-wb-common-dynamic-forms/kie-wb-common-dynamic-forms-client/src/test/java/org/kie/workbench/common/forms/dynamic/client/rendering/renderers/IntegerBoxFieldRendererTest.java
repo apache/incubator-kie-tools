@@ -34,10 +34,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,7 +76,7 @@ public class IntegerBoxFieldRendererTest extends AbstractFieldRendererTest<Integ
 
         verify(integerBox).asWidget();
 
-        verify(formGroup).render(anyString(), any(), eq(fieldDefinition));
+        verify(formGroup).render(Mockito.<String>any(), any(), eq(fieldDefinition));
     }
 
     @Test

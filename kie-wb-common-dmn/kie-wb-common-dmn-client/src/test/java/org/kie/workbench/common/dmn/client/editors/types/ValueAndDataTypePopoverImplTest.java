@@ -26,13 +26,13 @@ import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverImpl.BINDING_EXCEPTION;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -66,8 +66,8 @@ public class ValueAndDataTypePopoverImplTest {
 
         when(bound.asDMNModelInstrumentedBase()).thenReturn(decision);
         when(bound.toWidgetValue(any(Name.class))).thenAnswer(i -> ((Name) i.getArguments()[0]).getValue());
-        when(bound.toModelValue(anyString())).thenAnswer(i -> new Name((String) i.getArguments()[0]));
-        when(bound.normaliseValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(bound.toModelValue(Mockito.<String>any())).thenAnswer(i -> new Name((String) i.getArguments()[0]));
+        when(bound.normaliseValue(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
         when(bound.getValueLabel()).thenReturn(NAME_LABEL);
         when(bound.getValue()).thenReturn(new Name(NAME));
         when(bound.getTypeRef()).thenReturn(typeRef);

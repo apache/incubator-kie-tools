@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

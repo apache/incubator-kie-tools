@@ -57,18 +57,18 @@ import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class IntermediateThrowEventConverterTest {
 
     private static final String UUID = "THROWING EVENT UUID";
@@ -101,7 +101,7 @@ public class IntermediateThrowEventConverterTest {
                                                                     new HashSet<>()));
 
         propertyWriterFactory = mock(PropertyWriterFactory.class);
-        when(propertyWriterFactory.of(any(ThrowEvent.class))).thenReturn(throwEventPropertyWriter);
+        when(propertyWriterFactory.of(Mockito.<ThrowEvent>any())).thenReturn(throwEventPropertyWriter);
 
         generalSet = new BPMNGeneralSet(NAME, DOCUMENTATION);
 

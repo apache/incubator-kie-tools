@@ -37,12 +37,12 @@ import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class VFSFormGenerationWithWrongTypesTest extends BPMNVFSFormDefinitionGeneratorServiceTest {
 
     public static final String TASK_NAME = "task";

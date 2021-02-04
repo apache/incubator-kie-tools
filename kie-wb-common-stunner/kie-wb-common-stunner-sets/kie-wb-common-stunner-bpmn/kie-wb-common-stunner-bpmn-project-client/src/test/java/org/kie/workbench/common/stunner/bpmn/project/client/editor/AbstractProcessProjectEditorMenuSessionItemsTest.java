@@ -90,7 +90,7 @@ public class AbstractProcessProjectEditorMenuSessionItemsTest {
         when(sessionCommands.getCommands()).thenReturn(commands);
 
         when(itemsBuilder.getTranslationService()).thenReturn(translationService);
-        when(translationService.getValue(anyString())).thenAnswer(invocation -> invocation.getArgumentAt(0, String.class));
+        when(translationService.getValue(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
 
         when(menuBuilder.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(menuBuilder);
 

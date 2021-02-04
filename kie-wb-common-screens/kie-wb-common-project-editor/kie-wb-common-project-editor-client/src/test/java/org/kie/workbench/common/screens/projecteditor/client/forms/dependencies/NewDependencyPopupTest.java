@@ -34,10 +34,8 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class NewDependencyPopupTest {
 
-    @GwtMock
     ProjectEditorResources resources;
 
-    @GwtMock
     ProjectEditorConstants constants;
 
     @Mock

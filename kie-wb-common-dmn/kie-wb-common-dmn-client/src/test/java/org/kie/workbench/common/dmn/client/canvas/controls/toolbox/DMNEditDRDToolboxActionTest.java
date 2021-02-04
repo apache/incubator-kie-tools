@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -35,10 +37,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
-import org.powermock.reflect.Whitebox;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -90,17 +91,26 @@ public class DMNEditDRDToolboxActionTest {
     }
 
     @Test
-    public void testOnMouseClick() {
+    public void testOnMouseClick() throws NoSuchFieldException, IllegalAccessException {
         final HTMLElement htmlElement = new HTMLElement();
         htmlElement.style = new CSSStyleDeclaration();
         final HTMLDocument htmlDocument = new HTMLDocument();
         htmlDocument.body = new HTMLBodyElement();
-        Whitebox.setInternalState(DomGlobal.class, "document", htmlDocument);
+
+        final Field field = DomGlobal.class.getDeclaredField("document");
+        field.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+        field.set(DomGlobal.class, htmlDocument);
+
         when(drdContextMenu.getElement()).thenReturn(htmlElement);
 
         dmnEditDRDToolboxAction.onMouseClick(canvasHandler, UUID, mouseClickEvent);
 
-        verify(drdContextMenu, times(1)).show(any(Collection.class));
+        verify(drdContextMenu, times(1)).show(Mockito.<Collection>any());
     }
 
 }

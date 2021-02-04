@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DomainLookupFunctionsTest {
 
     private static final String DEF_ID1 = "defId1";

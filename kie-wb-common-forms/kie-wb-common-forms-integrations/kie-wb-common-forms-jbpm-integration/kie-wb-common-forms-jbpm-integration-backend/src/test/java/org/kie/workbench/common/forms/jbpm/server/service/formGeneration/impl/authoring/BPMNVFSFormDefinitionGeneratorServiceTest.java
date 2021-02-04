@@ -40,12 +40,12 @@ import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -97,8 +97,8 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
 
         when(source.toURI()).thenReturn("default:///src/main/resources/test.frm");
 
-        when(commentedOptionFactory.makeCommentedOption(anyString())).then(invocationOnMock -> new CommentedOption("1",
-                                                                                                                   invocationOnMock.getArguments()[0].toString()));
+        when(commentedOptionFactory.makeCommentedOption(Mockito.<String>any())).then(invocationOnMock -> new CommentedOption("1",
+                                                                                                                             invocationOnMock.getArguments()[0].toString()));
 
         formModelHandlerManager = new TestFormModelHandlerManager(projectService, projectClassLoaderHelper, fieldManager, modelFinderService);
 

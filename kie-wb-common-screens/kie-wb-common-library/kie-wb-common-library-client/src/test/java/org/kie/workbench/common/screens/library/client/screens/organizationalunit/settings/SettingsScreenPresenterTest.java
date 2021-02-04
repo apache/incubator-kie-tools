@@ -39,7 +39,8 @@ import org.kie.workbench.common.screens.library.client.settings.util.sections.Se
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionManager;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionView;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.promise.SyncPromises;
@@ -48,7 +49,6 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -57,7 +57,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SettingsScreenPresenterTest {
 
     private SettingsScreenPresenter presenter;
@@ -137,7 +137,7 @@ public class SettingsScreenPresenterTest {
         presenter.setupUsingCurrentSection();
 
         verify(view).init(eq(presenter));
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String> any());
         verify(view).enableActions(eq(true));
         verify(presenter).setupSections(any());
         verify(sectionManager).goToCurrentSection();
@@ -158,7 +158,7 @@ public class SettingsScreenPresenterTest {
         presenter.setupUsingCurrentSection();
 
         verify(view).init(eq(presenter));
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String> any());
         verify(view).enableActions(eq(false));
         verify(presenter).setupSections(any());
         verify(sectionManager).goToCurrentSection();
@@ -181,7 +181,7 @@ public class SettingsScreenPresenterTest {
         presenter.setupUsingCurrentSection();
 
         verify(view).init(eq(presenter));
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String> any());
         verify(presenter).setupSections(any());
         verify(sectionManager).goToFirstAvailable();
         verify(busyIndicatorView).hideBusyIndicator();
@@ -200,7 +200,7 @@ public class SettingsScreenPresenterTest {
         presenter.setupUsingCurrentSection();
 
         verify(view).init(eq(presenter));
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String> any());
         verify(presenter).setupSections(any());
         verify(notificationEvent).fire(any());
     }

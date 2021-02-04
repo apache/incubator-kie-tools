@@ -26,16 +26,20 @@ import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.FlowElement;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.PostConverterProcessor;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.events.IntermediateCompensationEventPostConverter;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class IntermediateCompensationEventPostConverterTest
         extends AbstractCompensationEventPostConverterTest<IntermediateCompensationEvent, CatchEvent> {
 

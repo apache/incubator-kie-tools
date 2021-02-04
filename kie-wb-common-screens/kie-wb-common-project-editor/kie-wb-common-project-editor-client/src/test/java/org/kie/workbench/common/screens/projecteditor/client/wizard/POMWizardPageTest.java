@@ -117,7 +117,7 @@ public class POMWizardPageTest {
                 gavEditor.setArtifactID( artifactId );
                 return null;
             }
-        } ).when( pomEditorView ).setArtifactID( any( String.class ) );
+        } ).when( pomEditorView ).setArtifactID( any() );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -127,7 +127,7 @@ public class POMWizardPageTest {
                 gavEditor.setGAV( gav );
                 return null;
             }
-        } ).when( pomEditorView ).setGAV( any( GAV.class ) );
+        } ).when( pomEditorView ).setGAV( any() );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -137,7 +137,7 @@ public class POMWizardPageTest {
                 gavEditor.addArtifactIdChangeHandler( handler );
                 return null;
             }
-        } ).when( pomEditorView ).addArtifactIdChangeHandler( any( ArtifactIdChangeHandler.class ) );
+        } ).when( pomEditorView ).addArtifactIdChangeHandler( any() );
 
         page = spy( new POMWizardPage( pomEditor,
                                        view,
@@ -149,7 +149,7 @@ public class POMWizardPageTest {
         doAnswer( invocationOnMock -> {
             ( (ParameterizedCommand<GAVPreferences>) invocationOnMock.getArguments()[1] ).execute( gavPreferences );
             return null;
-        } ).when( gavPreferences ).load( any( PreferenceScopeResolutionStrategyInfo.class ), any( ParameterizedCommand.class ), any( ParameterizedCommand.class ) );
+        } ).when( gavPreferences ).load( any(), any(), any() );
     }
 
     @Test
@@ -197,13 +197,13 @@ public class POMWizardPageTest {
         page.setPom( pom );
 
         verify( page,
-                times( 1 ) ).validateName( any( String.class ) );
+                times( 1 ) ).validateName( any() );
         verify( page,
-                times( 1 ) ).validateGroupId( any( String.class ) );
+                times( 1 ) ).validateGroupId( any() );
         verify( page,
-                times( 1 ) ).validateArtifactId( any( String.class ) );
+                times( 1 ) ).validateArtifactId( any() );
         verify( page,
-                times( 1 ) ).validateVersion( any( String.class ) );
+                times( 1 ) ).validateVersion( any() );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( false ) );
@@ -229,13 +229,13 @@ public class POMWizardPageTest {
         page.setPom( new POM() );
 
         verify( page,
-                times( 1 ) ).validateName( any( String.class ) );
+                times( 1 ) ).validateName( any() );
         verify( page,
-                times( 1 ) ).validateGroupId( any( String.class ) );
+                times( 1 ) ).validateGroupId( any() );
         verify( page,
-                times( 1 ) ).validateArtifactId( any( String.class ) );
+                times( 1 ) ).validateArtifactId( any() );
         verify( page,
-                times( 1 ) ).validateVersion( any( String.class ) );
+                times( 1 ) ).validateVersion( any() );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( false ) );
@@ -256,13 +256,13 @@ public class POMWizardPageTest {
         page.setPom( pom );
 
         verify( page,
-                times( 1 ) ).validateName( any( String.class ) );
+                times( 1 ) ).validateName( any() );
         verify( page,
-                times( 1 ) ).validateGroupId( any( String.class ) );
+                times( 1 ) ).validateGroupId( any() );
         verify( page,
-                times( 1 ) ).validateArtifactId( any( String.class ) );
+                times( 1 ) ).validateArtifactId( any() );
         verify( page,
-                times( 1 ) ).validateVersion( any( String.class ) );
+                times( 1 ) ).validateVersion( any() );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( true ) );
@@ -280,13 +280,13 @@ public class POMWizardPageTest {
         page.setPom( new POM() );
 
         verify( page,
-                times( 1 ) ).validateName( any( String.class ) );
+                times( 1 ) ).validateName( any() );
         verify( page,
-                times( 1 ) ).validateGroupId( any( String.class ) );
+                times( 1 ) ).validateGroupId( any() );
         verify( page,
-                times( 1 ) ).validateArtifactId( any( String.class ) );
+                times( 1 ) ).validateArtifactId( any() );
         verify( page,
-                times( 1 ) ).validateVersion( any( String.class ) );
+                times( 1 ) ).validateVersion( any() );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( true ) );
@@ -444,7 +444,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testIsComplete() {
-        when( validationService.validate( any( POM.class ) ) ).thenReturn( true );
+        when( validationService.validate( any() ) ).thenReturn( true );
         Callback<Boolean> callback = mock( Callback.class );
         page.isComplete( callback );
         verify( callback, times( 1 ) ).callback( true );
@@ -452,16 +452,16 @@ public class POMWizardPageTest {
 
     @Test
     public void testIsNotComplete() {
-        when( validationService.validate( any( POM.class ) ) ).thenReturn( false );
+        when( validationService.validate( any() ) ).thenReturn( false );
         Callback<Boolean> callback = mock( Callback.class );
         page.isComplete( callback );
         verify( callback, times( 1 ) ).callback( false );
     }
 
     private void mockValidationOfPom( boolean isValid ) {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( isValid );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( isValid );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( isValid );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( isValid );
+        when( validationService.validateGroupId( any() ) ).thenReturn( isValid );
+        when( validationService.validateArtifactId( any() ) ).thenReturn( isValid );
+        when( validationService.validateGAVVersion( any() ) ).thenReturn( isValid );
+        when( validationService.isProjectNameValid( any() ) ).thenReturn( isValid );
     }
 }

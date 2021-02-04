@@ -18,9 +18,9 @@ package org.kie.workbench.common.forms.dynamic.backend.server.context.generation
 
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.selector.impl.DateMultipleSelectorFieldDefinition;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DateMultipleSelectorFieldValueMarshallerTest extends AbstractDateMultipleFieldValueMarshallerTest<DateMultipleSelectorFieldDefinition, DateMultipleSelectorFieldValueMarshaller> {
 
     @Override

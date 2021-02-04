@@ -48,7 +48,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.ERROR_MESSAGE;
@@ -56,11 +57,19 @@ import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.PROVIDER_ID;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.PROVIDER_NAME;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.PROVIDER_VERSION;
 import static org.guvnor.ala.ui.backend.service.RuntimeListItemBuilderTest.mockPipelineStageItemList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class RuntimeServiceImplTest {
 
     private static final int QUERY_ITEMS_SIZE = 5;
@@ -187,7 +196,7 @@ public class RuntimeServiceImplTest {
         when(pipelineService.getPipelineNames(any(org.guvnor.ala.runtime.providers.ProviderType.class),
                                               anyInt(),
                                               anyInt(),
-                                              anyString(),
+                                              Mockito.<String>any(),
                                               anyBoolean())).thenReturn(pipelineNames);
         Collection<PipelineKey> result = service.getPipelines(providerTypeKey);
         assertEquals(pipelineKeys,
@@ -241,8 +250,8 @@ public class RuntimeServiceImplTest {
                               null);
 
         verify(pipelineService,
-               never()).runPipeline(anyString(),
-                                    any(Input.class),
+               never()).runPipeline(Mockito.<String>any(),
+                                    Mockito.<Input>any(),
                                     eq(true));
     }
 
@@ -270,8 +279,8 @@ public class RuntimeServiceImplTest {
                               mock(Map.class));
 
         verify(pipelineService,
-               never()).runPipeline(anyString(),
-                                    any(Input.class),
+               never()).runPipeline(Mockito.<String>any(),
+                                    Mockito.<Input>any(),
                                     eq(true));
     }
 
@@ -284,8 +293,8 @@ public class RuntimeServiceImplTest {
         ProviderKey providerKey = new ProviderKey(providerTypeKey,
                                                   PROVIDER_ID);
         when(providerService.getProvider(providerKey)).thenReturn(provider);
-        when(pipelineService.runPipeline(anyString(),
-                                         any(Input.class),
+        when(pipelineService.runPipeline(Mockito.<String>any(),
+                                         Mockito.<Input>any(),
                                          eq(true))).thenThrow(new RuntimeException(ERROR_MESSAGE));
 
         expectedException.expectMessage(ERROR_MESSAGE);

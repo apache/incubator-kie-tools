@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Repository;
@@ -30,6 +31,7 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestSta
 import org.guvnor.structure.repositories.changerequest.portable.PaginatedChangeRequestList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +42,7 @@ import org.kie.workbench.common.screens.library.client.util.DateUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
+import org.mockito.Mockito;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.select.SelectOption;
@@ -52,7 +54,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -99,7 +100,7 @@ public class PopulatedChangeRequestListPresenterTest {
     private Promises promises;
 
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         promises = new SyncPromises();
 
         doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
@@ -113,19 +114,19 @@ public class PopulatedChangeRequestListPresenterTest {
                                                                                   0);
 
         doReturn(paginatedList).when(changeRequestService)
-                .getChangeRequests(anyString(),
-                                   anyString(),
+                .getChangeRequests(Mockito.<String> any(),
+                                   Mockito.<String> any(),
                                    anyInt(),
                                    anyInt(),
                                    anyListOf(ChangeRequestStatus.class),
-                                   anyString());
+                                   Mockito.<String> any());
 
         doReturn(paginatedList).when(changeRequestService)
-                .getChangeRequests(anyString(),
-                                   anyString(),
+                .getChangeRequests(Mockito.<String> any(),
+                                   Mockito.<String> any(),
                                    anyInt(),
                                    anyInt(),
-                                   anyString());
+                                   Mockito.<String> any());
 
         this.presenter = spy(new PopulatedChangeRequestListPresenter(view,
                                                                      projectController,
@@ -138,9 +139,7 @@ public class PopulatedChangeRequestListPresenterTest {
                                                                      busyIndicatorView,
                                                                      dateUtils));
 
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        setPresenterPrivateField("workspaceProject", workspaceProject);
     }
 
     @Test
@@ -161,12 +160,12 @@ public class PopulatedChangeRequestListPresenterTest {
         doReturn(promises.resolve(false))
                 .when(projectController).canSubmitChangeRequest(workspaceProject);
         doReturn(mock(PaginatedChangeRequestList.class)).when(changeRequestService)
-                .getChangeRequests(anyString(),
-                                   anyString(),
+                .getChangeRequests(Mockito.<String> any(),
+                                   Mockito.<String> any(),
                                    anyInt(),
                                    anyInt(),
                                    anyListOf(ChangeRequestStatus.class),
-                                   anyString());
+                                   Mockito.<String> any());
 
         presenter.postConstruct();
 
@@ -175,7 +174,7 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void refreshListTest() {
-        doReturn(LibraryConstants.ChangeRequestFilesSummaryManyFiles).when(ts).format(anyString(), anyInt());
+        doReturn(LibraryConstants.ChangeRequestFilesSummaryManyFiles).when(ts).format(Mockito.<String> any(), anyInt());
 
         doReturn(promises.resolve(true))
                 .when(projectController).canSubmitChangeRequest(workspaceProject);
@@ -192,12 +191,12 @@ public class PopulatedChangeRequestListPresenterTest {
                                                                                   10,
                                                                                   10);
 
-        doReturn(paginatedList).when(changeRequestService).getChangeRequests(anyString(),
-                                                                             anyString(),
+        doReturn(paginatedList).when(changeRequestService).getChangeRequests(Mockito.<String> any(),
+                                                                             Mockito.<String> any(),
                                                                              anyInt(),
                                                                              anyInt(),
                                                                              anyListOf(ChangeRequestStatus.class),
-                                                                             anyString());
+                                                                             Mockito.<String> any());
 
         presenter.postConstruct();
 
@@ -206,16 +205,10 @@ public class PopulatedChangeRequestListPresenterTest {
     }
 
     @Test
-    public void nextPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(1);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+    public void nextPageTest() {
+        setPresenterPrivateField("currentPage", 1);
+        setPresenterPrivateField("totalPages", 10);
+        setPresenterPrivateField("filterType", "ALL");
 
         presenter.nextPage();
 
@@ -223,16 +216,10 @@ public class PopulatedChangeRequestListPresenterTest {
     }
 
     @Test
-    public void nextPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+    public void nextPageDoNothingTest() {
+        setPresenterPrivateField("currentPage", 10);
+        setPresenterPrivateField("totalPages", 10);
+        setPresenterPrivateField("filterType", "ALL");
 
         presenter.nextPage();
 
@@ -240,16 +227,10 @@ public class PopulatedChangeRequestListPresenterTest {
     }
 
     @Test
-    public void prevPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(5);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+    public void prevPageTest() {
+        setPresenterPrivateField("currentPage", 5);
+        setPresenterPrivateField("totalPages", 10);
+        setPresenterPrivateField("filterType", "ALL");
 
         presenter.prevPage();
 
@@ -257,16 +238,10 @@ public class PopulatedChangeRequestListPresenterTest {
     }
 
     @Test
-    public void prevPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(1);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+    public void prevPageDoNothingTest() {
+        setPresenterPrivateField("currentPage", 1);
+        setPresenterPrivateField("totalPages", 10);
+        setPresenterPrivateField("filterType", "ALL");
 
         presenter.prevPage();
 
@@ -274,13 +249,9 @@ public class PopulatedChangeRequestListPresenterTest {
     }
 
     @Test
-    public void setCurrentPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+    public void setCurrentPageTest() {
+        setPresenterPrivateField("totalPages", 10);
+        setPresenterPrivateField("filterType", "ALL");
 
         presenter.setCurrentPage(5);
 
@@ -289,13 +260,9 @@ public class PopulatedChangeRequestListPresenterTest {
     }
 
     @Test
-    public void setCurrentPageOutRangeTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
+    public void setCurrentPageOutRangeTest() {
+        setPresenterPrivateField("currentPage", 10);
+        setPresenterPrivateField("totalPages", 10);
 
         presenter.setCurrentPage(50);
 
@@ -309,11 +276,11 @@ public class PopulatedChangeRequestListPresenterTest {
         presenter.setFilterType("ALL");
 
         verify(view).clearSearch();
-        verify(changeRequestService).getChangeRequests(anyString(),
-                                                       anyString(),
+        verify(changeRequestService).getChangeRequests(Mockito.<String> any(),
+                                                       Mockito.<String> any(),
                                                        anyInt(),
                                                        anyInt(),
-                                                       anyString());
+                                                       Mockito.<String> any());
     }
 
     @Test
@@ -321,24 +288,22 @@ public class PopulatedChangeRequestListPresenterTest {
         presenter.setFilterType("OPEN");
 
         verify(view).clearSearch();
-        verify(changeRequestService).getChangeRequests(anyString(),
-                                                       anyString(),
+        verify(changeRequestService).getChangeRequests(Mockito.<String> any(),
+                                                       Mockito.<String> any(),
                                                        anyInt(),
                                                        anyInt(),
                                                        anyListOf(ChangeRequestStatus.class),
-                                                       anyString());
+                                                       Mockito.<String> any());
     }
 
     @Test
-    public void searchTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+    public void searchTest() {
+        setPresenterPrivateField("filterType", "ALL");
 
         presenter.search("value");
 
-        verify(changeRequestService).getChangeRequests(anyString(),
-                                                       anyString(),
+        verify(changeRequestService).getChangeRequests(Mockito.<String> any(),
+                                                       Mockito.<String> any(),
                                                        anyInt(),
                                                        anyInt(),
                                                        eq("value"));
@@ -349,7 +314,15 @@ public class PopulatedChangeRequestListPresenterTest {
         presenter.showSearchHitNothing();
 
         verify(emptyState).clear();
-        verify(emptyState).setMessage(anyString(), anyString());
+        verify(emptyState).setMessage(Mockito.<String> any(), Mockito.<String> any());
         verify(view).showEmptyState(emptyState);
+    }
+
+    private void setPresenterPrivateField(final String fieldName, final Object value) {
+        try {
+            FieldUtils.writeField(PopulatedChangeRequestListPresenter.class.getDeclaredField(fieldName), presenter, value, true);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
     }
 }

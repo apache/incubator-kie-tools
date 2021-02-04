@@ -32,7 +32,7 @@ import org.kie.server.controller.api.service.SpecManagementService;
 import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.workbench.common.screens.server.management.service.ContainerService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ContainerServiceImplTest {
 
     @Mock

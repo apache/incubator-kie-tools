@@ -64,7 +64,8 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
@@ -95,7 +96,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectImportServiceImplTest {
 
     @Mock
@@ -172,10 +173,10 @@ public class ProjectImportServiceImplTest {
         when(organizationalUnit.getSpace()).thenReturn(space);
         when(space.getName()).thenReturn("ou");
 
-        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(service).getProjectRoot(any(ImportProject.class));
-        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
+        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(service).getProjectRoot(Mockito.<ImportProject>any());
+        doReturn(mock(org.uberfire.java.nio.file.Path.class)).when(pathUtil).convert(Mockito.<org.uberfire.backend.vfs.Path>any());
 
-        doReturn(emptyList()).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class), any());
+        doReturn(emptyList()).when(service).getBranches(Mockito.<org.uberfire.java.nio.file.Path>any(), any());
     }
 
     @Test
@@ -204,7 +205,7 @@ public class ProjectImportServiceImplTest {
 
     @Test(expected = EmptyRemoteRepositoryException.class)
     public void testGetProjects_EmptyRepository() {
-        doReturn(mock(GitRepository.class)).when(repositoryFactory).newRepository(any(RepositoryInfo.class));
+        doReturn(mock(GitRepository.class)).when(repositoryFactory).newRepository(Mockito.<RepositoryInfo>any());
 
         service.getProjects(organizationalUnit,
                             new ExampleRepository("https://github.com/myuser/myRepository"));
@@ -225,17 +226,17 @@ public class ProjectImportServiceImplTest {
         when(module.getRootPath()).thenReturn(moduleRoot);
         when(module.getModuleName()).thenReturn("module1");
         when(moduleRoot.toURI()).thenReturn("default:///module1");
-        when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
-                                                                                "tag2"));
-        when(pathUtil.convert(any(Path.class))).thenCallRealMethod();
+        when(metadataService.getTags(Mockito.<Path>any())).thenReturn(Arrays.asList("tag1",
+                                                                                    "tag2"));
+        when(pathUtil.convert(Mockito.<Path>any())).thenCallRealMethod();
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
-        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+        when(repositoryFactory.newRepository(Mockito.<RepositoryInfo>any())).thenReturn(repository);
+        when(moduleService.getAllModules(Mockito.<Branch>any())).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
-        doReturn(Collections.singletonList("master")).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class),
-                                                                                any(Path.class));
+        doReturn(Collections.singletonList("master")).when(service).getBranches(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                                                                Mockito.<Path>any());
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(origin));
@@ -260,19 +261,19 @@ public class ProjectImportServiceImplTest {
         when(module.getRootPath()).thenReturn(moduleRoot);
         when(module.getModuleName()).thenReturn("module1");
         when(moduleRoot.toURI()).thenReturn("default:///module1");
-        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
-        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("This is custom description.\n\n This is a new line.");
-        when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
-                                                                                "tag2"));
-        when(pathUtil.convert(any(Path.class))).thenCallRealMethod();
+        when(ioService.exists(Mockito.<org.uberfire.java.nio.file.Path>any())).thenReturn(true);
+        when(ioService.readAllString(Mockito.<org.uberfire.java.nio.file.Path>any())).thenReturn("This is custom description.\n\n This is a new line.");
+        when(metadataService.getTags(Mockito.<Path>any())).thenReturn(Arrays.asList("tag1",
+                                                                                    "tag2"));
+        when(pathUtil.convert(Mockito.<Path>any())).thenCallRealMethod();
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
-        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+        when(repositoryFactory.newRepository(Mockito.<RepositoryInfo>any())).thenReturn(repository);
+        when(moduleService.getAllModules(Mockito.<Branch>any())).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
-        doReturn(Collections.singletonList("master")).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class),
-                                                                                any(Path.class));
+        doReturn(Collections.singletonList("master")).when(service).getBranches(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                                                                Mockito.<Path>any());
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(origin));
@@ -300,17 +301,17 @@ public class ProjectImportServiceImplTest {
         when(module.getModuleName()).thenReturn("module1");
         when(module.getPom()).thenReturn(pom);
         when(moduleRoot.toURI()).thenReturn("default:///module1");
-        when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
-                                                                                "tag2"));
-        when(pathUtil.convert(any(Path.class))).thenCallRealMethod();
+        when(metadataService.getTags(Mockito.<Path>any())).thenReturn(Arrays.asList("tag1",
+                                                                                    "tag2"));
+        when(pathUtil.convert(Mockito.<Path>any())).thenCallRealMethod();
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
-        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+        when(repositoryFactory.newRepository(Mockito.<RepositoryInfo>any())).thenReturn(repository);
+        when(moduleService.getAllModules(Mockito.<Branch>any())).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
-        doReturn(Collections.singletonList("master")).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class),
-                                                                                any(Path.class));
+        doReturn(Collections.singletonList("master")).when(service).getBranches(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                                                                Mockito.<Path>any());
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final Set<ImportProject> modules = service.getProjects(organizationalUnit, new ExampleRepository(origin));
@@ -420,8 +421,8 @@ public class ProjectImportServiceImplTest {
 
         org.uberfire.java.nio.file.Path p = mock(org.uberfire.java.nio.file.Path.class);
         when(p.getFileSystem()).thenReturn(mock(FileSystem.class));
-        doReturn(p).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
-        when(service.getProjectRoot(any(ImportProject.class))).thenReturn(p);
+        doReturn(p).when(pathUtil).convert(Mockito.<org.uberfire.backend.vfs.Path>any());
+        when(service.getProjectRoot(Mockito.<ImportProject>any())).thenReturn(p);
 
         final ArgumentCaptor<RepositoryEnvironmentConfigurations> configCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
 
@@ -467,6 +468,7 @@ public class ProjectImportServiceImplTest {
         final Path rootPath = mock(Path.class);
 
         final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(pathUtil.convert(Mockito.<Path>any())).thenReturn(convertedRootPath);
         when(convertedRootPath.getFileSystem()).thenReturn(mock(FileSystem.class));
 
         when(service.getProjectRoot(rootPath)).thenReturn(convertedRootPath);
@@ -504,6 +506,7 @@ public class ProjectImportServiceImplTest {
         final ImportProject importProject = mock(ImportProject.class);
         final Path rootPath = mock(Path.class);
         final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(pathUtil.convert(Mockito.<Path>any())).thenReturn(convertedRootPath);
         when(convertedRootPath.getFileSystem()).thenReturn(mock(FileSystem.class));
 
         when(service.getProjectRoot(rootPath)).thenReturn(convertedRootPath);
@@ -547,8 +550,8 @@ public class ProjectImportServiceImplTest {
 
         org.uberfire.java.nio.file.Path p = mock(org.uberfire.java.nio.file.Path.class);
         when(p.getFileSystem()).thenReturn(mock(FileSystem.class));
-        doReturn(p).when(pathUtil).convert(any(org.uberfire.backend.vfs.Path.class));
-        when(service.getProjectRoot(any(ImportProject.class))).thenReturn(p);
+        doReturn(p).when(pathUtil).convert(Mockito.<org.uberfire.backend.vfs.Path>any());
+        when(service.getProjectRoot(Mockito.<ImportProject>any())).thenReturn(p);
 
         when(repoService.createRepository(any(),
                                           any(),
@@ -647,7 +650,7 @@ public class ProjectImportServiceImplTest {
                                                               "description",
                                                               repoURL,
                                                               emptyList());
-        doReturn(emptyList()).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class), any());
+        doReturn(emptyList()).when(service).getBranches(Mockito.<org.uberfire.java.nio.file.Path>any(), any());
         when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
 
         final Repository repository = new GitRepository("example",
@@ -699,13 +702,13 @@ public class ProjectImportServiceImplTest {
         final org.uberfire.java.nio.file.Path repoRoot = exampleRootNioPath.getParent();
         when(fs.getRootDirectories()).thenReturn(() -> Stream.of(repoRoot).iterator());
 
-        when(pathUtil.stripProtocolAndBranch(any())).then(inv -> realPathUtil.stripProtocolAndBranch(inv.getArgumentAt(0,
+        when(pathUtil.stripProtocolAndBranch(any())).then(inv -> realPathUtil.stripProtocolAndBranch(inv.getArgument(0,
                                                                                                                        String.class)));
-        when(pathUtil.stripRepoNameAndSpace(any())).then(inv -> realPathUtil.stripRepoNameAndSpace(inv.getArgumentAt(0,
+        when(pathUtil.stripRepoNameAndSpace(any())).then(inv -> realPathUtil.stripRepoNameAndSpace(inv.getArgument(0,
                                                                                                                      String.class)));
-        when(pathUtil.convert(any(org.uberfire.java.nio.file.Path.class))).then(inv -> realPathUtil.convert(inv.getArgumentAt(0,
-                                                                                                                              org.uberfire.java.nio.file.Path.class)));
-        when(pathUtil.extractBranch(any())).then(inv -> realPathUtil.extractBranch(inv.getArgumentAt(0,
+        when(pathUtil.convert(Mockito.<org.uberfire.java.nio.file.Path>any())).then(inv -> realPathUtil.convert(inv.getArgument(0,
+                                                                                                                                org.uberfire.java.nio.file.Path.class)));
+        when(pathUtil.extractBranch(any())).then(inv -> realPathUtil.extractBranch(inv.getArgument(0,
                                                                                                      String.class)));
 
         String repoURL = "file:///some/repo/url";

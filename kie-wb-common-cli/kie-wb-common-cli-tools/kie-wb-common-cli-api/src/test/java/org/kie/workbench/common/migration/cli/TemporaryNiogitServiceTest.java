@@ -82,20 +82,20 @@ public class TemporaryNiogitServiceTest {
         target = new File("fake/path").toPath();
 
         when(ouService.createOrganizationalUnit(any(), any(), any(), any())).then(inv -> {
-            String name = inv.getArgumentAt(0, String.class);
-            String defaultGroupId = inv.getArgumentAt(1, String.class);
+            String name = inv.getArgument(0, String.class);
+            String defaultGroupId = inv.getArgument(1, String.class);
             return new OrganizationalUnitImpl(name, defaultGroupId);
         });
 
         when(repoService.createRepository(any(), any(), any(), any())).then(inv -> {
-            String alias = inv.getArgumentAt(2, String.class);
-            Space space = new Space(inv.getArgumentAt(0, OrganizationalUnit.class).getName());
+            String alias = inv.getArgument(2, String.class);
+            Space space = new Space(inv.getArgument(0, OrganizationalUnit.class).getName());
             return new GitRepository(alias, space);
         });
 
         when(projectService.resolveProject(any(Repository.class))).then(inv -> {
             WorkspaceProject project = mock(WorkspaceProject.class);
-            when(project.getRepository()).thenReturn(inv.getArgumentAt(0, Repository.class));
+            when(project.getRepository()).thenReturn(inv.getArgument(0, Repository.class));
 
             return project;
         });

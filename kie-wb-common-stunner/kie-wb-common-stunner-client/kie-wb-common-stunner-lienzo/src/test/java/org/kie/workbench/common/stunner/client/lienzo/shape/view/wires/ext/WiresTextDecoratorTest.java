@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandle
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -81,9 +80,6 @@ public class WiresTextDecoratorTest {
     private WiresTextDecorator decorator;
 
     @Mock
-    private NFastArrayList<WiresShape> children;
-
-    @Mock
     private WiresShape child1;
 
     @Mock
@@ -96,10 +92,6 @@ public class WiresTextDecoratorTest {
         when(shape.getLabelContainerLayout()).thenReturn(Optional.of(layout));
         when(path.getBoundingBox()).thenReturn(bb);
         when(layout.getMaxSize(any())).thenReturn(bb);
-        when(shape.getChildShapes()).thenReturn(children);
-        when(children.toList()).thenReturn(Arrays.asList(child1, child2));
-        when(child1.getGroup()).thenReturn(mock(Group.class));
-        when(child2.getGroup()).thenReturn(mock(Group.class));
 
         decorator = spy(new WiresTextDecorator(eventHandlerManager, shape));
     }
@@ -190,11 +182,21 @@ public class WiresTextDecoratorTest {
     }
 
     @Test
-    public void testMoveTitleToFront() {
-        Text text = spy(new Text(""));
-        Whitebox.setInternalState(decorator, "text", text);
+    public void testMoveTitleToFront() throws NoSuchFieldException, IllegalAccessException {
+        final Text text = spy(new Text(""));
+        final WiresTextDecorator localDecorator = new WiresTextDecorator(eventHandlerManager, shape);
+        final NFastArrayList<WiresShape> children = new NFastArrayList<>();
+        children.add(child1);
+        children.add(child2);
+        when(child1.getGroup()).thenReturn(mock(Group.class));
+        when(child2.getGroup()).thenReturn(mock(Group.class));
+        when(shape.getChildShapes()).thenReturn(children);
 
-        decorator.moveTitleToTop();
+        final Field field = localDecorator.getClass().getDeclaredField("text");
+        field.setAccessible(true);
+        field.set(localDecorator, text);
+
+        localDecorator.moveTitleToTop();
 
         InOrder order = inOrder(text, child1.getGroup(), child2.getGroup());
         order.verify(text).moveToTop();
@@ -238,11 +240,15 @@ public class WiresTextDecoratorTest {
     }
 
     @Test
-    public void testBatch() {
+    public void testBatch() throws IllegalAccessException, NoSuchFieldException {
         Text text = spy(new Text(""));
-        Whitebox.setInternalState(decorator, "text", text);
 
-        decorator.batch();
+        final WiresTextDecorator localDecorator = new WiresTextDecorator(eventHandlerManager, shape);
+        final Field field = localDecorator.getClass().getDeclaredField("text");
+        field.setAccessible(true);
+        field.set(localDecorator, text);
+
+        localDecorator.batch();
 
         verify(text).batch();
     }

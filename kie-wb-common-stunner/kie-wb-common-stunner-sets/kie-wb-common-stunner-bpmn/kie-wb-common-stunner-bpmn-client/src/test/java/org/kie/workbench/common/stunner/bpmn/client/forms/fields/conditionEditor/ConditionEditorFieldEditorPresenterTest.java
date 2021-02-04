@@ -33,8 +33,10 @@ import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionEditorFieldEditorPresenter.SCRIPT_PARSING_ERROR;
@@ -50,7 +52,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ConditionEditorFieldEditorPresenterTest {
 
     private static final String TRANSLATED_MESSAGE = "TRANSLATED_MESSAGE";
@@ -100,6 +102,8 @@ public class ConditionEditorFieldEditorPresenterTest {
 
     @Captor
     private ArgumentCaptor<ScriptTypeValue> scriptTypeValueCaptor;
+
+    private Promises promises = new SyncPromises();
 
     @Before
     public void setUp() {
@@ -267,9 +271,7 @@ public class ConditionEditorFieldEditorPresenterTest {
         presenter.onScriptChange(mock(ScriptTypeValue.class), value);
         //and the user wants to go to the condition editor.
         when(translationService.getValue(UNEXPECTED_SCRIPT_PARSING_ERROR, ERROR)).thenReturn(TRANSLATED_MESSAGE);
-        doReturn(PromiseMock.error(new Throwable(ERROR)))
-                .when(conditionEditorParsingService)
-                .call(any());
+        when(conditionEditorParsingService.call(any())).thenReturn(promises.reject(new Throwable(ERROR)));
         presenter.onSimpleConditionSelected();
 
         verify(errorPopup).showMessage(TRANSLATED_MESSAGE);
@@ -344,9 +346,7 @@ public class ConditionEditorFieldEditorPresenterTest {
     @Test
     public void testOnSimpleConditionChangeWithServiceError() {
         when(translationService.getValue(UNEXPECTED_SCRIPT_GENERATION_ERROR, ERROR)).thenReturn(TRANSLATED_MESSAGE);
-        doReturn(PromiseMock.error(new Throwable(ERROR)))
-                .when(conditionEditorGeneratorService)
-                .call(any());
+        when(conditionEditorGeneratorService.call(any())).thenReturn(promises.reject(new Throwable(ERROR)));
         when(simpleConditionEditor.isValid()).thenReturn(true);
         presenter.onSimpleConditionChange(mock(Condition.class), mock(Condition.class));
         verify(errorPopup).showMessage(TRANSLATED_MESSAGE);

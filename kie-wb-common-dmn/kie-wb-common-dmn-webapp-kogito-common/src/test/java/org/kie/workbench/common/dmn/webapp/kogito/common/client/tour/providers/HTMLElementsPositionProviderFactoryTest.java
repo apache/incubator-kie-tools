@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.providers;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.ClientRect;
+import elemental2.dom.DOMRect;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDocument;
 import org.appformer.kogito.bridge.client.guided.tour.service.api.Rect;
@@ -51,7 +51,7 @@ public class HTMLElementsPositionProviderFactoryTest {
 
         final String selector = ".my-button--inside-of-iframe";
         final Element element = mock(Element.class);
-        final ClientRect clientRect = mock(ClientRect.class);
+        final DOMRect clientRect = mock(DOMRect.class);
         final Rect expected = mock(Rect.class);
 
         clientRect.bottom = 60;

@@ -59,7 +59,6 @@ public class CaseFileVariableReaderTest {
         properties.add(property4);
 
         when(property1.getName()).thenReturn(CaseFileVariables.CASE_FILE_PREFIX + "CFV1");
-        when(property1.getId()).thenReturn(CaseFileVariables.CASE_FILE_PREFIX + "CFV1");
         when(property1.getItemSubjectRef()).thenReturn(definition);
 
         when(property2.getName()).thenReturn(null);
@@ -69,7 +68,6 @@ public class CaseFileVariableReaderTest {
         when(definition.getStructureRef()).thenReturn("Boolean");
 
         when(property3.getName()).thenReturn("PV1");
-        when(property3.getId()).thenReturn("PV1");
 
         when(property4.getName()).thenReturn(null);
         when(property4.getId()).thenReturn("PV2");

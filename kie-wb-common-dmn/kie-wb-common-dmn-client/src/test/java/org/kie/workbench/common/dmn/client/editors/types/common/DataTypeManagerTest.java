@@ -60,7 +60,6 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -119,7 +118,7 @@ public class DataTypeManagerTest {
         when(translationService.format(DataTypeManager_None)).thenReturn(NONE);
         when(translationService.format(DataTypeManager_Structure)).thenReturn(STRUCTURE);
         when(itemDefinitionStore.get("uuid")).thenReturn(mock(ItemDefinition.class));
-        when(itemDefinitionUtils.findByName(anyString())).thenReturn(Optional.empty());
+        when(itemDefinitionUtils.findByName(Mockito.<String>any())).thenReturn(Optional.empty());
 
         dataTypeNameValidator = spy(new DataTypeNameValidator(flashMessageEvent, blankErrorMessage, notUniqueErrorMessage, nameIsDefaultTypeMessage, dataTypeStore));
         manager = spy(new DataTypeManagerFake());
@@ -217,7 +216,7 @@ public class DataTypeManagerTest {
         final List<DataType> newSubDataTypes = singletonList(mock(DataType.class));
 
         when(topLevelDataType.getSubDataTypes()).thenReturn(singletonList(subLevelDataType));
-        when(itemDefinitionUtils.findByName(anyString())).thenReturn(Optional.empty());
+        when(itemDefinitionUtils.findByName(Mockito.<String>any())).thenReturn(Optional.empty());
 
         manager.withDataType(topLevelDataType);
         manager.withSubDataTypes(newSubDataTypes);
@@ -243,8 +242,8 @@ public class DataTypeManagerTest {
         manager.withDataType(topLevelDataType);
         manager.withSubDataTypes(newSubDataTypes);
 
-        verify(dataTypeStore, never()).unIndex(anyString());
-        verify(itemDefinitionStore, never()).unIndex(anyString());
+        verify(dataTypeStore, never()).unIndex(Mockito.<String>any());
+        verify(itemDefinitionStore, never()).unIndex(Mockito.<String>any());
         verify(topLevelDataType, never()).setSubDataTypes(anyListOf(DataType.class));
     }
 
@@ -268,8 +267,8 @@ public class DataTypeManagerTest {
         manager.withDataType(topLevelDataType);
         manager.withSubDataTypes(newSubDataTypes);
 
-        verify(dataTypeStore, never()).unIndex(anyString());
-        verify(itemDefinitionStore, never()).unIndex(anyString());
+        verify(dataTypeStore, never()).unIndex(Mockito.<String>any());
+        verify(itemDefinitionStore, never()).unIndex(Mockito.<String>any());
         verify(topLevelDataType, never()).setSubDataTypes(anyListOf(DataType.class));
     }
 
@@ -505,7 +504,7 @@ public class DataTypeManagerTest {
         doReturn(manager).when(manager).anotherManager();
         doReturn(manager).when(manager).newDataType(anyBoolean());
         doReturn(manager).when(manager).withUUID();
-        doReturn(manager).when(manager).withParentUUID(anyString());
+        doReturn(manager).when(manager).withParentUUID(Mockito.<String>any());
         doReturn(manager).when(manager).withItemDefinition(any());
         doReturn(manager).when(manager).withItemDefinition(any());
         doReturn(manager).when(manager).withItemDefinitionName();

@@ -40,12 +40,12 @@ import org.kie.workbench.common.forms.jbpm.client.resources.i18n.Constants;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -228,7 +228,7 @@ public class DocumentUploadTest {
     public void testSetMaxElements() {
         documentUpload.setMaxDocuments(5);
         verify(translationService).format(eq(Constants.DocumentUploadViewImplMaxDocuments), eq(5));
-        verify(view).setMaxDocuments(anyString());
+        verify(view).setMaxDocuments(Mockito.<String>any());
 
         documentUpload.setMaxDocuments(0);
         verify(view).setMaxDocuments(eq(""));

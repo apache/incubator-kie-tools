@@ -41,8 +41,8 @@ import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage.UploadedDocumentStorage;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -94,7 +94,7 @@ public class DocumentCollectionFieldValueMarshallerTest {
         form = mock(FormDefinition.class);
         context = mock(BackendFormRenderingContext.class);
 
-        when(documentStorage.getContent(anyString())).thenReturn(new byte[]{});
+        when(documentStorage.getContent(Mockito.<String>any())).thenReturn(new byte[]{});
 
         field = new DocumentCollectionFieldDefinition();
         field.setBinding("documents");
@@ -198,9 +198,9 @@ public class DocumentCollectionFieldValueMarshallerTest {
 
         DocumentCollection<Document> documents = marshaller.toRawValue(Collections.singletonList(data));
 
-        verify(documentStorage).getContent(anyString());
+        verify(documentStorage).getContent(Mockito.<String>any());
 
-        verify(documentStorage).removeContent(anyString());
+        verify(documentStorage).removeContent(Mockito.<String>any());
 
         Assertions.assertThat(documents)
                 .isNotNull()
@@ -229,9 +229,9 @@ public class DocumentCollectionFieldValueMarshallerTest {
                 .isSameAs(documentCollection)
                 .isInstanceOf(expectedType);
 
-        verify(documentStorage, never()).getContent(anyString());
+        verify(documentStorage, never()).getContent(Mockito.<String>any());
 
-        verify(documentStorage, never()).removeContent(anyString());
+        verify(documentStorage, never()).removeContent(Mockito.<String>any());
     }
 
     @Test
@@ -250,9 +250,9 @@ public class DocumentCollectionFieldValueMarshallerTest {
 
         DocumentCollection<Document> rawDocuments = marshaller.toRawValue(Arrays.asList(data1, data2, data3));
 
-        verify(documentStorage, times(2)).getContent(anyString());
+        verify(documentStorage, times(2)).getContent(Mockito.<String>any());
 
-        verify(documentStorage, times(2)).removeContent(anyString());
+        verify(documentStorage, times(2)).removeContent(Mockito.<String>any());
 
         Assertions.assertThat(rawDocuments)
                 .isNotSameAs(documentCollection)
@@ -280,9 +280,9 @@ public class DocumentCollectionFieldValueMarshallerTest {
 
         DocumentCollection<Document> rawDocuments = marshaller.toRawValue(Arrays.asList(data1, data2));
 
-        verify(documentStorage, times(2)).getContent(anyString());
+        verify(documentStorage, times(2)).getContent(Mockito.<String>any());
 
-        verify(documentStorage, times(2)).removeContent(anyString());
+        verify(documentStorage, times(2)).removeContent(Mockito.<String>any());
 
         Assertions.assertThat(rawDocuments)
                 .isNotSameAs(documentCollection)

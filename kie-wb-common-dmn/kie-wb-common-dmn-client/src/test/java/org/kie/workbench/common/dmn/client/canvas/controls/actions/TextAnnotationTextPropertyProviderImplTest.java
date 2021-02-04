@@ -31,12 +31,12 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,8 +86,8 @@ public class TextAnnotationTextPropertyProviderImplTest {
         when(definition.getText()).thenReturn(text);
         when(definitionUtils.getNameIdentifier(eq(definition))).thenReturn(NAME_FIELD);
         when(canvasCommandFactory.updatePropertyValue(eq(element),
-                                                      anyString(),
-                                                      anyString())).thenReturn(command);
+                                                      Mockito.<String>any(),
+                                                      Mockito.<String>any())).thenReturn(command);
     }
 
     @Test

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,14 +32,10 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -46,7 +43,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class ParametersPopoverImplTest {
 
     private static final int ROW_INDEX = 0;
@@ -118,7 +115,7 @@ public class ParametersPopoverImplTest {
     public void setup() {
         this.presenter = new ParametersPopoverImpl(view, translationService);
 
-        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(translationService.getTranslation(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Test
@@ -135,7 +132,7 @@ public class ParametersPopoverImplTest {
                        ROW_INDEX,
                        COLUMN_INDEX);
 
-        verify(view, never()).setParameters(anyList());
+        verify(view, never()).setParameters(Mockito.<List>any());
     }
 
     @Test
@@ -152,8 +149,8 @@ public class ParametersPopoverImplTest {
     public void testShowNullControl() {
         presenter.show();
 
-        verify(view, never()).show(any(Optional.class));
-        verify(view, never()).focusParameter(anyInt());
+        verify(view, never()).show(Mockito.<Optional>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -164,7 +161,7 @@ public class ParametersPopoverImplTest {
         presenter.show();
 
         verify(view).show(eq(Optional.ofNullable(presenter.getPopoverTitle())));
-        verify(view, never()).focusParameter(anyInt());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -201,8 +198,8 @@ public class ParametersPopoverImplTest {
     public void testAddParameterNullControl() {
         presenter.addParameter();
 
-        verify(control, never()).addParameter(any(Command.class));
-        verify(view, never()).focusParameter(anyInt());
+        verify(control, never()).addParameter(Mockito.<Command>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -227,9 +224,9 @@ public class ParametersPopoverImplTest {
     public void testRemoveParameterNullControl() {
         presenter.removeParameter(parameter);
 
-        verify(control, never()).removeParameter(any(InformationItem.class),
-                                                 any(Command.class));
-        verify(view, never()).focusParameter(anyInt());
+        verify(control, never()).removeParameter(Mockito.<InformationItem>any(),
+                                                 Mockito.<Command>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -250,7 +247,7 @@ public class ParametersPopoverImplTest {
         commandCaptor.getValue().execute();
 
         verify(view).setParameters(eq(parameters));
-        verify(view, never()).focusParameter(anyInt());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -280,9 +277,9 @@ public class ParametersPopoverImplTest {
         presenter.updateParameterName(parameter,
                                       PARAMETER_NAME);
 
-        verify(control, never()).updateParameterName(any(InformationItem.class),
-                                                     any(String.class),
-                                                     any(Command.class));
+        verify(control, never()).updateParameterName(Mockito.<InformationItem>any(),
+                                                     Mockito.<String>any(),
+                                                     Mockito.<Command>any());
     }
 
     @Test
@@ -334,9 +331,9 @@ public class ParametersPopoverImplTest {
         presenter.updateParameterName(parameter,
                                       PARAMETER_NAME);
 
-        verify(control, never()).updateParameterName(any(InformationItem.class),
-                                                     anyString(),
-                                                     any(Command.class));
+        verify(control, never()).updateParameterName(Mockito.<InformationItem>any(),
+                                                     Mockito.<String>any(),
+                                                     Mockito.<Command>any());
     }
 
     @Test
@@ -360,8 +357,8 @@ public class ParametersPopoverImplTest {
         presenter.updateParameterTypeRef(parameter,
                                          PARAMETER_TYPE_REF);
 
-        verify(control, never()).updateParameterTypeRef(any(InformationItem.class),
-                                                        any(QName.class));
+        verify(control, never()).updateParameterTypeRef(Mockito.<InformationItem>any(),
+                                                        Mockito.<QName>any());
     }
 
     @Test

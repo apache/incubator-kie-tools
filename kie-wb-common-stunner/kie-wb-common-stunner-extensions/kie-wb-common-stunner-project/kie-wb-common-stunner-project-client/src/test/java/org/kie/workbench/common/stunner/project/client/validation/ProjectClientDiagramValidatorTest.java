@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DomainValidator;
@@ -38,14 +39,16 @@ import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.impl.ElementViolationImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectValidationService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectClientDiagramValidatorTest {
 
     private ProjectClientDiagramValidator clientDiagramValidator;
@@ -84,6 +87,7 @@ public class ProjectClientDiagramValidatorTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(validationService.validate(diagram)).thenReturn(violations);
         when(validators.spliterator()).thenReturn(Spliterators.emptySpliterator());
+        when(graphTestHandler.getRuleManager().evaluate(any(), any())).thenReturn(mock(RuleViolations.class));
         clientDiagramValidator = new ProjectClientDiagramValidator(graphTestHandler.getDefinitionManager(),
                                                                    graphTestHandler.getRuleManager(),
                                                                    treeWalkTraverseProcessor,

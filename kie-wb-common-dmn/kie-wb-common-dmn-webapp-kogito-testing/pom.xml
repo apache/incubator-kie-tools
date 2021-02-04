@@ -66,6 +66,7 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
+      <classifier>no_aop</classifier>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -150,7 +151,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.powermock</groupId>
-          <artifactId>powermock-api-mockito</artifactId>
+          <artifactId>powermock-api-mockito2</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.powermock</groupId>

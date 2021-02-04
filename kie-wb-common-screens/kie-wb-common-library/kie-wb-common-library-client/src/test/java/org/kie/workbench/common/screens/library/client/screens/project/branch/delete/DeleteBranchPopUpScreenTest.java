@@ -17,11 +17,9 @@
 package org.kie.workbench.common.screens.library.client.screens.project.branch.delete;
 
 import java.util.Optional;
-import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,14 +27,15 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteBranchPopUpScreenTest {
@@ -82,7 +81,7 @@ public class DeleteBranchPopUpScreenTest {
         this.presenter.show(branch);
         this.presenter.delete();
 
-        verify(this.view).showError(anyString());
+        verify(this.view).showError(Mockito.<String>any());
     }
 
     @Test
@@ -91,7 +90,7 @@ public class DeleteBranchPopUpScreenTest {
         this.presenter.show(branch);
         this.presenter.delete();
 
-        verify(this.view, never()).showError(anyString());
+        verify(this.view, never()).showError(Mockito.<String>any());
         verify(this.libraryService).removeBranch(project, branch);
     }
 

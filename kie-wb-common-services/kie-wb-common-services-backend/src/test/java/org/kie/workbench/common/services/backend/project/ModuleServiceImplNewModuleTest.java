@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.refactoring.service.PackageServiceLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
@@ -69,7 +69,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ModuleServiceImplNewModuleTest {
 
     @Mock

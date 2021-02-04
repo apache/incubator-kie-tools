@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -33,13 +34,17 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({InternalMigrationService.class})
+@PrepareForTest({InternalMigrationService.class, Files.class})
 public class MigrateAllProjectsTest {
+
     private static final String SPACE_CONTRIBUTORS = "space-contributors";
     private static final String SECURITY_GROUPS = "security:groups";
 
@@ -93,8 +98,8 @@ public class MigrateAllProjectsTest {
     public List<ConfigGroup> initConfigGroups() {
         List<ConfigGroup> spaceConfigs = new ArrayList<>();
 
-        List<String> spaceARepos = Arrays.asList(new String[]{REPO_A});
-        List<String> spaceBRepos = Arrays.asList(new String[]{REPO_B, REPO_C});
+        List<String> spaceARepos = Collections.singletonList(REPO_A);
+        List<String> spaceBRepos = Arrays.asList(REPO_B, REPO_C);
 
         ConfigItem<List<String>> spaceAConfig = new ConfigItem<>();
         spaceAConfig.setName("repositories");
@@ -187,10 +192,6 @@ public class MigrateAllProjectsTest {
         when(niogitDir.resolve(anyString())).thenReturn(niogitDir);
 
         service.migrateAllProjects(niogitDir);
-
-        PowerMockito.verifyStatic(times(NUMBER_OF_REPOS));
-        Files.move(any(Path.class),
-                   any(Path.class));
 
         verify(projectMigrationService,
                times(workspaceProjects.size())).migrate(any(WorkspaceProject.class));

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import elemental2.promise.Promise;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -43,8 +44,8 @@ import org.kie.workbench.common.screens.archetype.mgmt.shared.model.PaginatedArc
 import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.ArchetypePreferences;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
@@ -57,9 +58,9 @@ import org.uberfire.security.authz.AuthorizationManager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -122,8 +123,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void onArchetypeListUpdatedEventWhenIsNotSetupTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("setup")).set(false);
+    public void onArchetypeListUpdatedEventWhenIsNotSetupTest() {
+        setPresenterPrivateField("setup", false);
 
         presenter.onArchetypeListUpdatedEvent(new ArchetypeListUpdatedEvent(ArchetypeListOperation.ADD));
 
@@ -133,8 +134,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void onArchetypeListUpdatedEventWhenIsSetupTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("setup")).set(true);
+    public void onArchetypeListUpdatedEventWhenIsSetupTest() {
+        setPresenterPrivateField("setup", true);
 
         doReturn(promises.resolve()).when(presenter).loadList(false);
 
@@ -160,15 +161,15 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void isEmptyShouldBeTrueWhenIsNotSetupTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("setup")).set(false);
+    public void isEmptyShouldBeTrueWhenIsNotSetupTest() {
+        setPresenterPrivateField("setup", false);
 
         assertTrue(presenter.isEmpty());
     }
 
     @Test
-    public void isEmptyWhenTrueTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("setup")).set(true);
+    public void isEmptyWhenTrueTest() {
+        setPresenterPrivateField("setup", true);
 
         doReturn(Collections.emptyList()).when(archetypeListPresenter).getObjectsList();
 
@@ -176,8 +177,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void resetTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("setup")).set(true);
+    public void resetTest() {
+        setPresenterPrivateField("setup", true);
 
         presenter.reset();
 
@@ -185,8 +186,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void isEmptyWhenFalseTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("setup")).set(true);
+    public void isEmptyWhenFalseTest() {
+        setPresenterPrivateField("setup", true);
 
         doReturn(Collections.singletonList(mock(ArchetypeItem.class))).when(archetypeListPresenter).getObjectsList();
 
@@ -216,8 +217,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void setCurrentPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("totalPages")).set(10);
+    public void setCurrentPageTest() {
+        setPresenterPrivateField("totalPages", 10);
 
         doNothing().when(presenter).updateList();
 
@@ -228,9 +229,9 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void setCurrentPageOutRangeTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage")).set(10);
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("totalPages")).set(10);
+    public void setCurrentPageOutRangeTest() {
+        setPresenterPrivateField("currentPage", 10);
+        setPresenterPrivateField("totalPages", 10);
 
         presenter.setCurrentPage(50);
 
@@ -238,9 +239,9 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void goToPreviousPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage")).set(5);
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("totalPages")).set(10);
+    public void goToPreviousPageTest() {
+        setPresenterPrivateField("currentPage", 5);
+        setPresenterPrivateField("totalPages", 10);
 
         doNothing().when(presenter).updateList();
 
@@ -251,9 +252,9 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void goToPreviousPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage")).set(1);
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("totalPages")).set(10);
+    public void goToPreviousPageDoNothingTest() {
+        setPresenterPrivateField("currentPage", 1);
+        setPresenterPrivateField("totalPages", 10);
 
         presenter.goToPreviousPage();
 
@@ -263,9 +264,9 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void goToNextPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage")).set(1);
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("totalPages")).set(10);
+    public void goToNextPageTest() {
+        setPresenterPrivateField("currentPage", 1);
+        setPresenterPrivateField("totalPages", 10);
 
         doNothing().when(presenter).updateList();
 
@@ -276,9 +277,9 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void goToNextPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage")).set(10);
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("totalPages")).set(10);
+    public void goToNextPageDoNothingTest() {
+        setPresenterPrivateField("currentPage", 10);
+        setPresenterPrivateField("totalPages", 10);
 
         presenter.goToNextPage();
 
@@ -297,8 +298,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void goToLastPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, AbstractArchetypeTablePresenter.class.getDeclaredField("totalPages")).set(10);
+    public void goToLastPageTest() {
+        setPresenterPrivateField("totalPages", 10);
 
         doNothing().when(presenter).updateList();
 
@@ -495,12 +496,10 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void setSelectedWhenKeyIsPresentTest() throws NoSuchFieldException {
+    public void setSelectedWhenKeyIsPresentTest() {
         final Runnable callback = () -> {
         };
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("onChangedCallback"))
-                .set(callback);
+        setPresenterPrivateField("onChangedCallback", callback);
 
         final Map<String, Boolean> selectionMap = new HashMap<>();
         selectionMap.put("myArchetype", true);
@@ -509,7 +508,7 @@ public class AbstractArchetypeTablePresenterTest {
         presenter.setSelected(createArchetypeItem(),
                               true);
 
-        verify(view).setSelectionCounter(anyString());
+        verify(view).setSelectionCounter(Mockito.<String>any());
     }
 
     @Test
@@ -523,7 +522,7 @@ public class AbstractArchetypeTablePresenterTest {
 
         presenter.updateSelectionCounter();
 
-        verify(view).setSelectionCounter(anyString());
+        verify(view).setSelectionCounter(Mockito.<String>any());
     }
 
     @Test
@@ -642,7 +641,7 @@ public class AbstractArchetypeTablePresenterTest {
         verify(archetypeListPresenter).setup(any(),
                                              any(),
                                              any());
-        verify(view).setSelectionCounter(anyString());
+        verify(view).setSelectionCounter(Mockito.<String>any());
         verify(busyIndicatorView).hideBusyIndicator();
         verify(view).show(true);
     }
@@ -676,10 +675,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void configureViewWhenSearchEmptyTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("searchFilter"))
-                .set("keyword");
+    public void configureViewWhenSearchEmptyTest() {
+        setPresenterPrivateField("searchFilter", "keyword");
 
         final ArchetypeTableConfiguration config = new ArchetypeTableConfiguration.Builder()
                 .withAddAction()
@@ -737,36 +734,30 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void getPreferencesTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("archetypePreferences"))
-                .set(archetypePreferences);
+    public void getPreferencesTest() {
+        setPresenterPrivateField("archetypePreferences", archetypePreferences);
 
         assertEquals(archetypePreferences, presenter.getPreferences());
     }
 
     @Test
-    public void getViewTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("view"))
-                .set(view);
+    public void getViewTest() {
+        setPresenterPrivateField("view", view);
 
         assertEquals(view, presenter.getView());
     }
 
     @Test
-    public void setupCountersWhenEmptyListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage"))
-                .set(10);
+    public void setupCountersWhenEmptyListTest() {
+        setPresenterPrivateField("currentPage", 10);
 
         presenter.setupCounters(0);
 
         assertEquals(0, presenter.currentPage);
         assertEquals(0, presenter.totalPages);
 
-        verify(view).setPageIndicator(anyString());
-        verify(view).setTotalPages(anyString());
+        verify(view).setPageIndicator(Mockito.<String>any());
+        verify(view).setTotalPages(Mockito.<String>any());
         verify(view).setCurrentPage(0);
         verify(view).enablePreviousButton(false);
         verify(view).enableNextButton(false);
@@ -775,18 +766,16 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void setupCountersWhenPopulatedListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage"))
-                .set(1);
+    public void setupCountersWhenPopulatedListTest() {
+        setPresenterPrivateField("currentPage", 1);
 
         presenter.setupCounters(100);
 
         assertEquals(1, presenter.currentPage);
         assertEquals(10, presenter.totalPages);
 
-        verify(view).setPageIndicator(anyString());
-        verify(view).setTotalPages(anyString());
+        verify(view).setPageIndicator(Mockito.<String>any());
+        verify(view).setTotalPages(Mockito.<String>any());
         verify(view).setCurrentPage(1);
         verify(view).enablePreviousButton(false);
         verify(view).enableNextButton(true);
@@ -795,10 +784,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void setupCountersWhenInLastPageListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage"))
-                .set(10);
+    public void setupCountersWhenInLastPageListTest() {
+        setPresenterPrivateField("currentPage", 10);
 
         presenter.setupCounters(100);
 
@@ -812,10 +799,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void setupCountersWhenInFirstPageListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage"))
-                .set(1);
+    public void setupCountersWhenInFirstPageListTest() {
+        setPresenterPrivateField("currentPage", 1);
 
         presenter.setupCounters(100);
 
@@ -829,10 +814,8 @@ public class AbstractArchetypeTablePresenterTest {
     }
 
     @Test
-    public void setupCountersWhenInMiddlePageListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        AbstractArchetypeTablePresenter.class.getDeclaredField("currentPage"))
-                .set(5);
+    public void setupCountersWhenInMiddlePageListTest() {
+        setPresenterPrivateField("currentPage", 5);
 
         presenter.setupCounters(100);
 
@@ -857,5 +840,13 @@ public class AbstractArchetypeTablePresenterTest {
                              mock(GAV.class),
                              new Date(),
                              ArchetypeStatus.VALID);
+    }
+
+    private void setPresenterPrivateField(final String fieldName, final Object value) {
+        try {
+            FieldUtils.writeField(AbstractArchetypeTablePresenter.class.getDeclaredField(fieldName), presenter, value, true);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
     }
 }

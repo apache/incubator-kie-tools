@@ -192,15 +192,15 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         widget.activityDataIOEditor = activityDataIOEditor;
         widget.canvasSessionManager = canvasSessionManager;
         activityDataIOEditor.view = activityDataIOEditorView;
-        doCallRealMethod().when(widget).getVariableCountsString(anyString(),
-                                                                anyString(),
-                                                                anyString(),
-                                                                anyString(),
-                                                                anyString(),
-                                                                anyString(),
-                                                                anyString());
+        doCallRealMethod().when(widget).getVariableCountsString(any(),
+                                                                any(),
+                                                                any(),
+                                                                any(),
+                                                                any(),
+                                                                any(),
+                                                                any());
         doCallRealMethod().when(widget).showAssignmentsDialog();
-        doCallRealMethod().when(widget).showDataIOEditor(anyString());
+        doCallRealMethod().when(widget).showDataIOEditor(any());
         doCallRealMethod().when(widget).setBPMNModel(any(BPMNDefinition.class));
         doCallRealMethod().when(widget).formatDataTypes(any(List.class));
         doCallRealMethod().when(widget).getTaskName();
@@ -233,7 +233,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         doCallRealMethod().when(endNoneEvent).isSingleInputVar();
         doCallRealMethod().when(endNoneEvent).hasOutputVars();
         doCallRealMethod().when(endNoneEvent).isSingleOutputVar();
-        doCallRealMethod().when(activityDataIOEditor).configureDialog(anyString(),
+        doCallRealMethod().when(activityDataIOEditor).configureDialog(any(),
                                                                       anyBoolean(),
                                                                       anyBoolean(),
                                                                       anyBoolean(),

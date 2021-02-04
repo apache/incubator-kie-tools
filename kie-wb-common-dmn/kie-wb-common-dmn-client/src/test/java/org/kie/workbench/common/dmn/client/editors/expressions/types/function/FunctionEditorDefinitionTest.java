@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -63,7 +64,6 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -180,8 +180,8 @@ public class FunctionEditorDefinitionTest {
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(expressionEditorDefinitions).when(supplementaryEditorDefinitionsSupplier).get();
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(Mockito.<String>any());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     @Test

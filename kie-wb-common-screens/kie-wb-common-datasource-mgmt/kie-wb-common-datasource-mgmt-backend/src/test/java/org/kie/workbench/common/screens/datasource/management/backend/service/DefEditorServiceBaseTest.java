@@ -28,14 +28,19 @@ import org.kie.workbench.common.screens.datasource.management.util.MavenArtifact
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public abstract class DefEditorServiceBaseTest {
 
@@ -167,7 +172,7 @@ public abstract class DefEditorServiceBaseTest {
         verify(ioService,
                times(1)).write(eq(targetNioPath),
                                eq(source),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         // 2) the definition was registered
         verify(defRegistry,
                times(1)).setEntry(Paths.convert(targetNioPath),
@@ -202,7 +207,7 @@ public abstract class DefEditorServiceBaseTest {
         verify(ioService,
                times(1)).write(eq(targetNioPath),
                                eq(getExpectedDefString()),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(optionsFactory,
                times(1)).makeCommentedOption(COMMENT);
         // 2) the new definition was registered.
@@ -241,12 +246,12 @@ public abstract class DefEditorServiceBaseTest {
         verify(ioService,
                times(1)).write(eq(targetNioPath),
                                eq(getExpectedDefString()),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         //2) the expected file was renamed and the new definition was registered.
         verify(ioService,
                timeout(1)).move(eq(targetNioPath),
                                 eq(renamedNioPath),
-                                any(CommentedOption.class));
+                                Mockito.<CommentedOption>any());
         verify(optionsFactory,
                times(2)).makeCommentedOption(COMMENT);
         verify(defRegistry,
@@ -282,7 +287,7 @@ public abstract class DefEditorServiceBaseTest {
         //1) the file was deleted, and the definition was un-registered
         verify(ioService,
                times(1)).delete(eq(Paths.convert(path)),
-                                any(CommentedOption.class));
+                                Mockito.<CommentedOption>any());
         verify(optionsFactory,
                times(1)).makeCommentedOption(COMMENT);
         verify(defRegistry,

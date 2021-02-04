@@ -38,12 +38,12 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSou
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.kie.workbench.common.stunner.core.TestingGraphInstances.assertRuleFailedResult;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstances.assertSuccessfullResult;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ConnectorParentsMatchLevel1Tests {
 
     private TestingGraphMockHandler graphTestHandler;

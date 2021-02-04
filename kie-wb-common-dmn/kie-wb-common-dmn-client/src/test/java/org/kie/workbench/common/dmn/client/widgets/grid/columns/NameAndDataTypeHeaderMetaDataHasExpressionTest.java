@@ -22,9 +22,9 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -55,7 +55,7 @@ public class NameAndDataTypeHeaderMetaDataHasExpressionTest extends BaseNameAndD
                 return POPOVER_TITLE;
             }
         };
-        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(translationService.getTranslation(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Override

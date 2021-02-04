@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.ERROR;
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.SUCCESS;
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.WARNING;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -137,8 +136,8 @@ public class FlashMessagesTest {
         flashMessages.showFlashMessage(flashMessage);
 
         verify(view).showErrorMessage(strongMessage, regularMessage);
-        verify(view, never()).showWarningMessage(anyString(), anyString());
-        verify(view, never()).showSuccessMessage(anyString(), anyString());
+        verify(view, never()).showWarningMessage(Mockito.<String>any(), Mockito.<String>any());
+        verify(view, never()).showSuccessMessage(Mockito.<String>any(), Mockito.<String>any());
     }
 
     @Test
@@ -155,8 +154,8 @@ public class FlashMessagesTest {
         flashMessages.showFlashMessage(flashMessage);
 
         verify(view).showWarningMessage(strongMessage, regularMessage);
-        verify(view, never()).showErrorMessage(anyString(), anyString());
-        verify(view, never()).showSuccessMessage(anyString(), anyString());
+        verify(view, never()).showErrorMessage(Mockito.<String>any(), Mockito.<String>any());
+        verify(view, never()).showSuccessMessage(Mockito.<String>any(), Mockito.<String>any());
     }
 
     @Test
@@ -173,8 +172,8 @@ public class FlashMessagesTest {
         flashMessages.showFlashMessage(flashMessage);
 
         verify(view).showSuccessMessage(strongMessage, regularMessage);
-        verify(view, never()).showWarningMessage(anyString(), anyString());
-        verify(view, never()).showErrorMessage(anyString(), anyString());
+        verify(view, never()).showWarningMessage(Mockito.<String>any(), Mockito.<String>any());
+        verify(view, never()).showErrorMessage(Mockito.<String>any(), Mockito.<String>any());
     }
 
     @Test
@@ -189,7 +188,7 @@ public class FlashMessagesTest {
         flashMessages.highlighElement(flashMessage);
 
         verify(view).showErrorHighlight(elementSelector);
-        verify(view, never()).showWarningHighlight(anyString());
+        verify(view, never()).showWarningHighlight(Mockito.<String>any());
     }
 
     @Test
@@ -204,7 +203,7 @@ public class FlashMessagesTest {
         flashMessages.highlighElement(flashMessage);
 
         verify(view).showWarningHighlight(elementSelector);
-        verify(view, never()).showErrorHighlight(anyString());
+        verify(view, never()).showErrorHighlight(Mockito.<String>any());
     }
 
     @Test

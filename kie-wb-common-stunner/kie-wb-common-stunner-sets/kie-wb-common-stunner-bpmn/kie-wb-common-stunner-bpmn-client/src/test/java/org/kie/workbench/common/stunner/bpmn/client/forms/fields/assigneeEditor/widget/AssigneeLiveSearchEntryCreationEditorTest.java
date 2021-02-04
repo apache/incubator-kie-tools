@@ -107,7 +107,7 @@ public class AssigneeLiveSearchEntryCreationEditorTest {
         verify(view).getValue();
         verify(view).clearErrors();
         verify(translationService).getTranslation(StunnerBPMNConstants.ASSIGNEE_CANNOT_BE_EMPTY);
-        verify(view).showError(anyString());
+        verify(view).showError(any());
         verify(customEntryCommand, never()).execute(any());
         verify(okCommand, never()).execute(any());
     }

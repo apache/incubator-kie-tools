@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import elemental2.dom.ClientRect;
+import elemental2.dom.DOMRect;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import org.appformer.kogito.bridge.client.guided.tour.GuidedTourCustomSelectorPositionProvider.PositionProviderFunction;
@@ -67,7 +67,7 @@ public class GraphElementsPositionProviderFactory implements PositionProviderFac
     private Rect calculateNodeRelativePosition(final NodeImpl<View> node) {
 
         final Bounds bounds = node.getContent().getBounds();
-        final Optional<ClientRect> containerRect = getContainerRect();
+        final Optional<DOMRect> containerRect = getContainerRect();
         final double canvasLeft = containerRect.map(rect -> rect.left).orElse(0d);
         final double canvasTop = containerRect.map(rect -> rect.top).orElse(0d);
 
@@ -95,7 +95,7 @@ public class GraphElementsPositionProviderFactory implements PositionProviderFac
         return rect;
     }
 
-    private Optional<ClientRect> getContainerRect() {
+    private Optional<DOMRect> getContainerRect() {
         final Optional<HTMLElement> containerElement = getWiresCanvas().map(wiresCanvas -> elemental2DomUtil.asHTMLElement(wiresCanvas.getView().getElement()));
         return containerElement.map(Element::getBoundingClientRect);
     }

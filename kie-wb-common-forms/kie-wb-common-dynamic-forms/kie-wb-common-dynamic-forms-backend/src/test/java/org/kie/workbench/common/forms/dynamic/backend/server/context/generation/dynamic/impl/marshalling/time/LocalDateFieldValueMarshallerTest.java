@@ -21,22 +21,25 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.TemporalUnitWithinOffset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class LocalDateFieldValueMarshallerTest {
 
     private LocalDateFieldValueMarshaller marshaller = new LocalDateFieldValueMarshaller();
@@ -113,13 +116,16 @@ public class LocalDateFieldValueMarshallerTest {
         Date flatValue = marshaller.toFlatValue();
 
         assertNotNull(flatValue);
-        assertEquals(originalValue, flatValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
-        Object rawValue = marshaller.toRawValue(flatValue);
+        Assertions.assertThat(flatValue.toInstant())
+                .isCloseTo(originalValue.atZone(ZoneId.systemDefault()).toInstant(), new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
+
+        LocalDateTime rawValue = (LocalDateTime) marshaller.toRawValue(flatValue);
 
         assertNotNull(rawValue);
 
-        assertEquals(originalValue, rawValue);
+        Assertions.assertThat(rawValue)
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
     }
 
     @Test
@@ -134,13 +140,15 @@ public class LocalDateFieldValueMarshallerTest {
 
         assertNotNull(flatValue);
 
-        assertEquals(originalValue, flatValue.toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+        Assertions.assertThat(LocalTime.from(flatValue.toInstant().atZone(ZoneId.systemDefault())))
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
 
-        Object rawValue = marshaller.toRawValue(flatValue);
+        LocalTime rawValue = (LocalTime) marshaller.toRawValue(flatValue);
 
         assertNotNull(rawValue);
 
-        assertEquals(originalValue, rawValue);
+        Assertions.assertThat(rawValue)
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
     }
 
     @Test
@@ -155,12 +163,14 @@ public class LocalDateFieldValueMarshallerTest {
 
         assertNotNull(flatValue);
 
-        assertEquals(originalValue, flatValue.toInstant().atZone(ZoneId.systemDefault()).toOffsetDateTime());
+        Assertions.assertThat(flatValue.toInstant())
+                .isCloseTo(originalValue.toInstant(), new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
 
-        Object rawValue = marshaller.toRawValue(flatValue);
+        OffsetDateTime rawValue = (OffsetDateTime) marshaller.toRawValue(flatValue);
 
         assertNotNull(rawValue);
-        assertEquals(originalValue,
-                     rawValue);
+
+        Assertions.assertThat(rawValue)
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
     }
 }

@@ -34,12 +34,12 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -95,7 +95,7 @@ public class FieldLayoutComponentTest {
 
         when(renderer.renderWidget()).thenReturn(mock(IsWidget.class));
         when(renderer.getFieldParts()).thenReturn(parts);
-        when(renderer.getFieldPartWidget(anyString())).thenAnswer(invocation -> {
+        when(renderer.getFieldPartWidget(Mockito.<String>any())).thenAnswer(invocation -> {
             String partId = invocation.getArguments()[0].toString();
 
             if (parts.contains(partId)) {
@@ -147,7 +147,7 @@ public class FieldLayoutComponentTest {
         String result = component.getDragComponentTitle();
 
         verify(renderer, never()).getName();
-        verify(translationService, never()).getTranslation(anyString());
+        verify(translationService, never()).getTranslation(Mockito.<String>any());
 
         Assertions.assertThat(result)
                 .isEqualTo(NAME);
@@ -161,19 +161,19 @@ public class FieldLayoutComponentTest {
         component.getDragComponentTitle();
 
         verify(renderer, times(2)).getName();
-        verify(translationService).getTranslation(anyString());
+        verify(translationService).getTranslation(Mockito.<String>any());
     }
 
     @Test
     public void testUnBoundGetDragComponentTitleWithoutTranslation() {
 
-        when(translationService.getTranslation(anyString())).thenReturn(NAME);
+        when(translationService.getTranslation(Mockito.<String>any())).thenReturn(NAME);
         field.setBinding(null);
 
         component.getDragComponentTitle();
 
         verify(renderer).getName();
-        verify(translationService).getTranslation(anyString());
+        verify(translationService).getTranslation(Mockito.<String>any());
     }
 
     @Test

@@ -44,6 +44,7 @@ import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPre
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
@@ -93,13 +94,13 @@ public class KieMultipleDocumentEditorTest
 
         editor.setupMenuBar();
 
-        verify(fileMenuBuilder).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder).addSave(Mockito.<MenuItem>any());
         verify(fileMenuBuilder).addCopy(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
         verify(fileMenuBuilder).addRename(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
         verify(fileMenuBuilder).addDelete(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
         verify(fileMenuBuilder).addValidate(any(Command.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(downloadMenuItemButton);
-        verify(fileMenuBuilder, times(3)).addNewTopLevelMenu(any(MenuItem.class));
+        verify(fileMenuBuilder, times(3)).addNewTopLevelMenu(Mockito.<MenuItem>any());
     }
 
     @Test
@@ -109,13 +110,13 @@ public class KieMultipleDocumentEditorTest
 
         editor.setupMenuBar();
 
-        verify(fileMenuBuilder, never()).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder, never()).addSave(Mockito.<MenuItem>any());
         verify(fileMenuBuilder, never()).addCopy(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
         verify(fileMenuBuilder, never()).addRename(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
         verify(fileMenuBuilder, never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
         verify(fileMenuBuilder).addValidate(any(Command.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(downloadMenuItemButton);
-        verify(fileMenuBuilder, times(3)).addNewTopLevelMenu(any(MenuItem.class));
+        verify(fileMenuBuilder, times(3)).addNewTopLevelMenu(Mockito.<MenuItem>any());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -170,9 +171,9 @@ public class KieMultipleDocumentEditorTest
         renameCommand.execute();
 
         verify(editorView,
-               times(2)).refreshTitle(any(String.class));
+               times(2)).refreshTitle(Mockito.<String>any());
         verify(editorView,
-               times(1)).showBusyIndicator(any(String.class));
+               times(1)).showBusyIndicator(Mockito.<String>any());
         verify(editor,
                times(2)).getDocumentTitle(eq(document));
         verify(editor,
@@ -235,9 +236,9 @@ public class KieMultipleDocumentEditorTest
         verify(document,
                times(1)).setConcurrentUpdateSessionInfo(eq(null));
         verify(editorView,
-               times(2)).refreshTitle(any(String.class));
+               times(2)).refreshTitle(Mockito.<String>any());
         verify(editorView,
-               times(1)).showBusyIndicator(any(String.class));
+               times(1)).showBusyIndicator(Mockito.<String>any());
         verify(editor,
                times(2)).getDocumentTitle(eq(document));
         verify(editor,
@@ -561,7 +562,7 @@ public class KieMultipleDocumentEditorTest
 
         final ArgumentCaptor<com.google.gwt.user.client.Command> onFocusCommandCaptor = ArgumentCaptor.forClass(com.google.gwt.user.client.Command.class);
         verify(kieEditorWrapperView,
-               times(1)).addOverviewPage(any(OverviewWidgetPresenter.class),
+               times(1)).addOverviewPage(Mockito.<OverviewWidgetPresenter>any(),
                                          onFocusCommandCaptor.capture());
 
         final com.google.gwt.user.client.Command onFocusCommand = onFocusCommandCaptor.getValue();
@@ -584,7 +585,7 @@ public class KieMultipleDocumentEditorTest
         editor.getTitleWidget(null);
 
         verify(editorView,
-               never()).refreshTitle(any(String.class));
+               never()).refreshTitle(Mockito.<String>any());
         verify(editorView,
                never()).getTitleWidget();
     }
@@ -596,7 +597,7 @@ public class KieMultipleDocumentEditorTest
         editor.getTitleWidget(document);
 
         verify(editorView,
-               times(1)).refreshTitle(any(String.class));
+               times(1)).refreshTitle(Mockito.<String>any());
         verify(editorView,
                times(1)).getTitleWidget();
     }

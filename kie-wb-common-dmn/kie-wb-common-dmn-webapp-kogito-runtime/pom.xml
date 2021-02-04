@@ -70,6 +70,7 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
+      <classifier>no_aop</classifier>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -141,7 +142,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.powermock</groupId>
-          <artifactId>powermock-api-mockito</artifactId>
+          <artifactId>powermock-api-mockito2</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.powermock</groupId>
@@ -452,6 +453,12 @@
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>

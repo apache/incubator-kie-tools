@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 
 import static org.mockito.Mockito.doReturn;
@@ -62,5 +63,10 @@ public class DMNCardComponentTest extends BaseCardComponentTest<DMNCardComponent
         verify(cardView).setPath("...111111222222222222222333333333333333444444444444444/file.dmn");
         verify(cardView).setDataTypesCount(dataTypesCount);
         verify(cardView).setDrgElementsCount(drgElementsCount);
+    }
+
+    @Override
+    protected BaseIncludedModelActiveRecord prepareIncludedModelMock() {
+        return mock(DMNIncludedModelActiveRecord.class);
     }
 }

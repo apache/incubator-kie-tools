@@ -23,7 +23,11 @@
   <groupId>org.kie</groupId>
   <artifactId>kie-maven-plugin-test-kjar-2</artifactId>
   <version>1.0.0.Final</version>
-
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <packaging>kjar</packaging>
   <dependencies>
     <dependency>
@@ -40,8 +44,8 @@
         <version>${version.io.takari.maven.plugins.compiler}</version>
         <configuration>
           <compilerId>jdt</compilerId>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
           <failOnError>false</failOnError>
         </configuration>
         <extensions>true</extensions>

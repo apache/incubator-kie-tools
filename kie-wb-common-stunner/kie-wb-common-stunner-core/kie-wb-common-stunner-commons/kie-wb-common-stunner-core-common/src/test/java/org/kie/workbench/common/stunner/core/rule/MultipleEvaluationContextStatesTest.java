@@ -32,13 +32,13 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCo
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.kie.workbench.common.stunner.core.command.util.CommandUtils.isError;
 import static org.kie.workbench.common.stunner.core.command.util.CommandUtils.isWarn;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MultipleEvaluationContextStatesTest {
 
     private TestGraph graph1Instance;

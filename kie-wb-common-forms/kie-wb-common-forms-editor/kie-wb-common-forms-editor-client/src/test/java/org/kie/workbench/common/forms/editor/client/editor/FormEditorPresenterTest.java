@@ -34,6 +34,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
+import org.mockito.Mockito;
 import org.mockito.verification.VerificationMode;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
@@ -51,11 +52,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -315,8 +313,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testRemoveAllDraggableGroupComponent() {
         loadContent();
         addAllFields();
-        when(layoutDragComponentPaletteMock.hasDraggableComponent(anyString(),
-                                                                  anyString())).thenReturn(true);
+        when(layoutDragComponentPaletteMock.hasDraggableComponent(Mockito.<String>any(),
+                                                                  Mockito.<String>any())).thenReturn(true);
         List<FieldDefinition> fieldList = presenter.getFormDefinition().getFields();
 
         presenter.removeAllDraggableGroupComponent(fieldList);
@@ -325,8 +323,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                times(1)).getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
 
         verify(layoutDragComponentPaletteMock,
-               times(fieldList.size())).removeDraggableComponent(anyString(),
-                                                                 anyString());
+               times(fieldList.size())).removeDraggableComponent(Mockito.<String>any(),
+                                                                 Mockito.<String>any());
     }
 
     @Test
@@ -336,8 +334,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         List<FieldDefinition> fieldList = presenter.getFormDefinition().getFields();
         presenter.addAllDraggableGroupComponent(fieldList);
         verify(layoutDragComponentPaletteMock,
-               times(fieldList.size())).addDraggableComponent(anyString(),
-                                                              anyString(),
+               times(fieldList.size())).addDraggableComponent(Mockito.<String>any(),
+                                                              Mockito.<String>any(),
                                                               any());
     }
 
@@ -372,8 +370,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         verify(presenterSpy,
                count).onSyncPalette(formId);
         verify(editorHelper,
-               count).removeField(anyString(),
-                                  anyBoolean());
+               count).removeField(Mockito.<String>any(),
+                                  Mockito.anyBoolean());
     }
 
     @Test
@@ -388,10 +386,10 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         presenterSpy.onRemoveComponent(event);
 
         verify(presenterSpy,
-               never()).onSyncPalette(anyString());
+               never()).onSyncPalette(Mockito.<String>any());
         verify(editorHelper,
-               never()).removeField(anyString(),
-                                    anyBoolean());
+               never()).removeField(Mockito.<String>any(),
+                                    Mockito.anyBoolean());
     }
 
     @Test
@@ -412,10 +410,10 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         assertNotNull(editorHelper.getFormDefinition().getFieldById(field.getId()));
 
         verify(presenterSpy,
-               never()).onSyncPalette(anyString());
+               never()).onSyncPalette(Mockito.<String>any());
         verify(editorHelper,
-               never()).removeField(anyString(),
-                                    anyBoolean());
+               never()).removeField(Mockito.<String>any(),
+                                    Mockito.anyBoolean());
     }
 
     @Test
@@ -452,7 +450,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testGetTitleText() {
         loadContent();
         presenter.getTitleText();
-        verify(translationService).format(anyString(),
+        verify(translationService).format(Mockito.<String>any(),
                                           any());
     }
 
@@ -463,10 +461,10 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         loadContent();
 
-        verify(menuBuilderMock).addSave(any(MenuItem.class));
-        verify(menuBuilderMock).addCopy(any(Command.class));
-        verify(menuBuilderMock).addRename(any(Command.class));
-        verify(menuBuilderMock).addDelete(any(Command.class));
+        verify(menuBuilderMock).addSave(Mockito.<MenuItem>any());
+        verify(menuBuilderMock).addCopy(Mockito.<Command>any());
+        verify(menuBuilderMock).addRename(Mockito.<Command>any());
+        verify(menuBuilderMock).addDelete(Mockito.<Command>any());
         verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
         verify(menuBuilderMock).addNewTopLevelMenu(downloadMenuItem);
 
@@ -483,16 +481,16 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         loadContent();
 
         verify(menuBuilderMock,
-               never()).addSave(any(MenuItem.class));
+               never()).addSave(Mockito.<MenuItem>any());
         verify(menuBuilderMock,
-               never()).addCopy(any(Path.class),
-                                any(AssetUpdateValidator.class));
+               never()).addCopy(Mockito.<Path>any(),
+                                Mockito.<AssetUpdateValidator>any());
         verify(menuBuilderMock,
-               never()).addRename(any(Path.class),
-                                  any(AssetUpdateValidator.class));
+               never()).addRename(Mockito.<Path>any(),
+                                  Mockito.<AssetUpdateValidator>any());
         verify(menuBuilderMock,
-               never()).addDelete(any(Path.class),
-                                  any(AssetUpdateValidator.class));
+               never()).addDelete(Mockito.<Path>any(),
+                                  Mockito.<AssetUpdateValidator>any());
         verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
 
         presenter.getMenus(Assert::assertNotNull);
@@ -506,14 +504,14 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         presenter.safeDelete();
 
-        verify(showAssetUsagesDisplayer).showAssetUsages(anyString(),
+        verify(showAssetUsagesDisplayer).showAssetUsages(Mockito.<String>any(),
                                                          any(),
                                                          any(),
                                                          any(),
                                                          any(),
                                                          any());
 
-        verify(deletePopUpPresenter).show(any(AssetUpdateValidator.class),
+        verify(deletePopUpPresenter).show(Mockito.<AssetUpdateValidator>any(),
                                           any());
 
         deletePopUpPresenter.delete();
@@ -532,7 +530,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         presenter.safeDelete();
 
-        verify(showAssetUsagesDisplayer).showAssetUsages(anyString(),
+        verify(showAssetUsagesDisplayer).showAssetUsages(Mockito.<String>any(),
                                                          any(),
                                                          any(),
                                                          any(),
@@ -545,7 +543,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         showAssetUsagesDisplayer.onOk();
         showAssetUsagesDisplayer.onClose();
 
-        verify(deletePopUpPresenter).show(any(AssetUpdateValidator.class),
+        verify(deletePopUpPresenter).show(Mockito.<AssetUpdateValidator>any(),
                                           any());
 
         deletePopUpPresenter.delete();
@@ -560,9 +558,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testSafeRenameDirtySaving() {
         FormEditorPresenter presenterSpy = triggerSafeRename(true,
                                                              true);
-        verify(view).showSavePopup(any(Path.class),
-                                   any(Command.class),
-                                   any(Command.class));
+        verify(view).showSavePopup(Mockito.<Path>any(),
+                                   Mockito.<Command>any(),
+                                   Mockito.<Command>any());
         verify(presenterSpy).rename(eq(true));
     }
 
@@ -571,9 +569,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         FormEditorPresenter presenterSpy = triggerSafeRename(true,
                                                              false);
 
-        verify(view).showSavePopup(any(Path.class),
-                                   any(Command.class),
-                                   any(Command.class));
+        verify(view).showSavePopup(Mockito.<Path>any(),
+                                   Mockito.<Command>any(),
+                                   Mockito.<Command>any());
         verify(presenterSpy).rename(eq(false));
     }
 
@@ -583,9 +581,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                                                              false);
 
         verify(view,
-               never()).showSavePopup(any(Path.class),
-                                      any(Command.class),
-                                      any(Command.class));
+               never()).showSavePopup(Mockito.<Path>any(),
+                                      Mockito.<Command>any(),
+                                      Mockito.<Command>any());
         verify(presenterSpy).rename(eq(false));
     }
 
@@ -593,8 +591,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                                                   boolean saving) {
         loadContent();
         FormEditorPresenter presenterSpy = spy(presenter);
-        doNothing().when(presenterSpy).rename(anyBoolean());
-        doReturn(dirty).when(presenterSpy).isDirty(anyInt());
+        doNothing().when(presenterSpy).rename(Mockito.anyBoolean());
+        doReturn(dirty).when(presenterSpy).isDirty(Mockito.<Integer>any());
 
         presenterSpy.safeRename();
 
@@ -608,7 +606,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testSafeCopyDirtySaving() {
         FormEditorPresenter presenterSpy = triggerSafeCopy(true, true);
 
-        verify(view).showSavePopup(any(Path.class), any(Command.class), any(Command.class));
+        verify(view).showSavePopup(Mockito.<Path>any(), Mockito.<Command>any(), Mockito.<Command>any());
 
         verify(presenterSpy).copy(eq(true));
     }
@@ -617,7 +615,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testSafeCopyDirtyNotSaving() {
         FormEditorPresenter presenterSpy = triggerSafeCopy(true, false);
 
-        verify(view).showSavePopup(any(Path.class), any(Command.class), any(Command.class));
+        verify(view).showSavePopup(Mockito.<Path>any(), Mockito.<Command>any(), Mockito.<Command>any());
 
         verify(presenterSpy).copy(eq(false));
     }
@@ -626,7 +624,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testSafeCopyNotDirty() {
         FormEditorPresenter presenterSpy = triggerSafeCopy(false, false);
 
-        verify(view, never()).showSavePopup(any(Path.class), any(Command.class), any(Command.class));
+        verify(view, never()).showSavePopup(Mockito.<Path>any(), Mockito.<Command>any(), Mockito.<Command>any());
 
         verify(presenterSpy).copy(eq(false));
     }
@@ -636,9 +634,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         FormEditorPresenter presenterSpy = spy(presenter);
 
-        doNothing().when(presenterSpy).copy(anyBoolean());
+        doNothing().when(presenterSpy).copy(Mockito.anyBoolean());
 
-        doReturn(dirty).when(presenterSpy).isDirty(anyInt());
+        doReturn(dirty).when(presenterSpy).isDirty(Mockito.<Integer>any());
 
         presenterSpy.safeCopy();
 
@@ -661,9 +659,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     private void testRename(boolean saving) {
         loadContent();
         presenter.rename(saving);
-        verify(renamePopUpPresenter).show(any(Path.class),
-                                          any(DefaultFileNameValidator.class),
-                                          any(CommandWithFileNameAndCommitMessage.class));
+        verify(renamePopUpPresenter).show(Mockito.<Path>any(),
+                                          Mockito.<DefaultFileNameValidator>any(),
+                                          Mockito.<CommandWithFileNameAndCommitMessage>any());
     }
 
     @Test
@@ -672,14 +670,14 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         FormEditorPresenter presenterSpy = spy(presenter);
         FileNameAndCommitMessage details = mock(FileNameAndCommitMessage.class);
         when(renamePopUpPresenter.getView()).thenReturn(mock(RenamePopUpPresenter.View.class));
-        doNothing().when(presenterSpy).doLoadContent(any(FormModelerContent.class));
+        doNothing().when(presenterSpy).doLoadContent(Mockito.<FormModelerContent>any());
 
         presenterSpy.renameCommand(details,
                                    true);
 
-        verify(view).showBusyIndicator(anyString());
-        verify(presenterSpy).getRenameErrorCallback(any(RenamePopUpPresenter.View.class));
-        verify(presenterSpy).getRenameSuccessCallback(any(RenamePopUpPresenter.View.class));
+        verify(view).showBusyIndicator(Mockito.<String>any());
+        verify(presenterSpy).getRenameErrorCallback(Mockito.<RenamePopUpPresenter.View>any());
+        verify(presenterSpy).getRenameSuccessCallback(Mockito.<RenamePopUpPresenter.View>any());
     }
 
     @Test

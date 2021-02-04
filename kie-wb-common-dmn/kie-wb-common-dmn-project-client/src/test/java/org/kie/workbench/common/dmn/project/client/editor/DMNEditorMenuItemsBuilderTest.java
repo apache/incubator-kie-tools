@@ -22,10 +22,10 @@ import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClie
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,7 +43,7 @@ public class DMNEditorMenuItemsBuilderTest {
     public void setup() {
         this.builder = new DMNEditorMenuItemsBuilder(translationService, popupUtil);
 
-        when(translationService.getValue(anyString())).thenAnswer(i -> i.getArguments()[0].toString());
+        when(translationService.getValue(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0].toString());
     }
 
     @Test

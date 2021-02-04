@@ -24,7 +24,8 @@ import org.kie.workbench.common.screens.explorer.client.widgets.business.Busines
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.*;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ExplorerPresenterTest {
 
     private ExplorerPresenter explorer;
@@ -90,8 +91,8 @@ public class ExplorerPresenterTest {
         when( activeOptions.isBusinessViewActive() ).thenReturn( true );
 
         PlaceRequest placeRequest = mock( PlaceRequest.class );
-        when( placeRequest.getParameter( eq( "init_path" ),
-                                         anyString() ) ).thenReturn( "something" );
+        when( placeRequest.getParameter(eq( "init_path" ),
+                                        Mockito.<String>any() ) ).thenReturn("something" );
 
         ArgumentCaptor<Command> argumentCaptor = ArgumentCaptor.forClass( Command.class );
 

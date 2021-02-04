@@ -21,11 +21,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.data.TemporalUnitWithinOffset;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
@@ -140,22 +142,19 @@ public abstract class AbstractDateMultipleFieldValueMarshallerTest<F extends Fie
         marshaller.init(originalValues, field, form, context);
 
         List<Date> flatValue = marshaller.toFlatValue();
-
         Assertions.assertThat(flatValue)
-                .isNotNull()
-                .isNotEmpty()
                 .hasSize(1);
 
-        LocalDateTime newValue = flatValue.get(0).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        Assertions.assertThat(flatValue.get(0).toInstant())
+                .isCloseTo(originalValue.atZone(ZoneId.systemDefault()).toInstant(), new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
 
-        assertEquals(originalValue, newValue);
+        List<LocalDateTime> rawValue = (List<LocalDateTime>) marshaller.toRawValue(flatValue);
 
-        List rawValue = marshaller.toRawValue(flatValue);
         Assertions.assertThat(rawValue)
-                .isNotNull()
-                .isNotEmpty()
-                .containsOnly(originalValue)
-                .isEqualTo(originalValues);
+                .hasSize(1);
+
+        Assertions.assertThat(rawValue.get(0))
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
     }
 
     @Test
@@ -171,21 +170,18 @@ public abstract class AbstractDateMultipleFieldValueMarshallerTest<F extends Fie
 
         List<Date> flatValue = marshaller.toFlatValue();
         Assertions.assertThat(flatValue)
-                .isNotNull()
-                .isNotEmpty()
                 .hasSize(1);
 
-        LocalTime newValue = flatValue.get(0).toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        Assertions.assertThat(LocalTime.from(flatValue.get(0).toInstant().atZone(ZoneId.systemDefault())))
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
 
-        assertEquals(originalValue, newValue);
-
-        List rawValue = marshaller.toRawValue(flatValue);
+        List<LocalTime> rawValue = (List<LocalTime>) marshaller.toRawValue(flatValue);
 
         Assertions.assertThat(rawValue)
-                .isNotNull()
-                .isNotEmpty()
-                .containsOnly(originalValue)
-                .isEqualTo(originalValues);
+                .hasSize(1);
+
+        Assertions.assertThat(rawValue.get(0))
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
     }
 
     @Test
@@ -200,18 +196,19 @@ public abstract class AbstractDateMultipleFieldValueMarshallerTest<F extends Fie
         marshaller.init(originalValues, field, form, context);
 
         List<Date> flatValue = marshaller.toFlatValue();
+        Assertions.assertThat(flatValue)
+                .hasSize(1);
 
-        OffsetDateTime newValue = flatValue.get(0).toInstant().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        Assertions.assertThat(flatValue.get(0).toInstant())
+                .isCloseTo(originalValue.toInstant(), new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
 
-        assertEquals(originalValue, newValue);
-
-        List rawValue = marshaller.toRawValue(flatValue);
+        List<OffsetDateTime> rawValue = (List<OffsetDateTime>) marshaller.toRawValue(flatValue);
 
         Assertions.assertThat(rawValue)
-                .isNotNull()
-                .isNotEmpty()
-                .containsOnly(originalValue)
-                .isEqualTo(originalValues);
+                .hasSize(1);
+
+        Assertions.assertThat(rawValue.get(0))
+                .isCloseTo(originalValue, new TemporalUnitWithinOffset(0, ChronoUnit.MILLIS));
     }
 
     abstract MARSHALLER getMarshaller();

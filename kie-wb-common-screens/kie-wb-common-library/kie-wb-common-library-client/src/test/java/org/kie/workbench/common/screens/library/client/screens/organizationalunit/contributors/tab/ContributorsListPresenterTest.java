@@ -81,13 +81,13 @@ public class ContributorsListPresenterTest {
         contributors.add(new Contributor("user", ContributorType.CONTRIBUTOR));
         contributors.add(new Contributor("Director", ContributorType.ADMIN));
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contributors);
             return null;
         }).when(contributorsListService).getContributors(any());
 
         final List<String> userNames = Arrays.asList("admin", "user", "Director");
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(userNames);
+            invocationOnMock.getArgument(0, Consumer.class).accept(userNames);
             return null;
         }).when(contributorsListService).getValidUsernames(any());
     }

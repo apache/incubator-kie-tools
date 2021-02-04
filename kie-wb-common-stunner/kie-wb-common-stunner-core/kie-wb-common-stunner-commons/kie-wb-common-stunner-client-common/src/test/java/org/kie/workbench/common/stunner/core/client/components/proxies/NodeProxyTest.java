@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -102,7 +103,7 @@ public class NodeProxyTest {
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
-    private Canvas canvas;
+    private AbstractCanvas canvas;
 
     @Mock
     private Diagram diagram;
@@ -145,7 +146,6 @@ public class NodeProxyTest {
         when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
         when(canvas.getShape(eq(EDGE_ID))).thenReturn(connector);
         when(canvas.getShape(eq(TARGET_NODE_ID))).thenReturn(targetShape);
-        when(definitionUtils.getDefinitionManager()).thenReturn(definitionManager);
         tested = new NodeProxy(proxy, view)
                 .setCanvasHandler(canvasHandler)
                 .setSourceNode(sourceNode)
@@ -168,7 +168,7 @@ public class NodeProxyTest {
         CanvasCommand<AbstractCanvasHandler> setTargetNode = mock(CanvasCommand.class);
         doReturn(addConnector).when(commandFactory).addConnector(eq(sourceNode),
                                                                  eq(edge),
-                                                                 any(MagnetConnection.class),
+                                                                 Mockito.<MagnetConnection>any(),
                                                                  eq(SHAPE_SET_ID));
         doReturn(addNode).when(commandFactory).addNode(eq(targetNode),
                                                        eq(SHAPE_SET_ID));
@@ -194,7 +194,7 @@ public class NodeProxyTest {
         CanvasCommand<AbstractCanvasHandler> setTargetNode = mock(CanvasCommand.class);
         doReturn(addConnector).when(commandFactory).addConnector(eq(sourceNode),
                                                                  eq(edge),
-                                                                 any(MagnetConnection.class),
+                                                                 Mockito.<MagnetConnection>any(),
                                                                  eq(SHAPE_SET_ID));
         doReturn(addNode).when(commandFactory).addChildNode(eq(parentNode),
                                                             eq(targetNode),

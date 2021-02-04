@@ -134,6 +134,11 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
@@ -289,7 +294,7 @@
 
     <dependency>
       <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito</artifactId>
+      <artifactId>powermock-api-mockito2</artifactId>
       <scope>test</scope>
     </dependency>
 

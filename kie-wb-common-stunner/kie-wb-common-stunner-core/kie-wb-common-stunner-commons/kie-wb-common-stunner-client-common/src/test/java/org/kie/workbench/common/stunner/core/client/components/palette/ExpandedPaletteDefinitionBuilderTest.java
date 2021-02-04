@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -45,7 +45,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ExpandedPaletteDefinitionBuilderTest {
 
     private static final String DEF1_ID = "def1";

@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
@@ -31,7 +32,6 @@ import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.ext.widgets.common.client.dropdown.MultipleLiveSearchSelectionHandler;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -101,7 +101,7 @@ public class MultipleSelectorInputTest {
         input.setValue(values);
 
         verify(searchSelectionHandler, never()).clearSelection();
-        verify(dropDown, never()).setSelectedItem(anyString());
+        verify(dropDown, never()).setSelectedItem(Mockito.<String>any());
     }
 
     @Test
@@ -111,6 +111,6 @@ public class MultipleSelectorInputTest {
         input.setValue(values);
 
         verify(dropDown, times(1)).clearSelection();
-        verify(dropDown, times(3)).setSelectedItem(anyString());
+        verify(dropDown, times(3)).setSelectedItem(Mockito.<String>any());
     }
 }

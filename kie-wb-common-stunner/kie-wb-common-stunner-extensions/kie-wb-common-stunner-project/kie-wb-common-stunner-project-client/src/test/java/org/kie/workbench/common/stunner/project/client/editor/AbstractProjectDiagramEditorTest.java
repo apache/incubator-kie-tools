@@ -86,6 +86,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -116,7 +117,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
@@ -272,9 +272,9 @@ public class AbstractProjectDiagramEditorTest {
         sessionEditorPresenters = new ManagedInstanceStub<>(sessionEditorPresenter);
         sessionViewerPresenters = new ManagedInstanceStub<>(sessionViewerPresenter);
         when(sessionEditorPresenter.getInstance()).thenReturn(editorSession);
-        when(sessionEditorPresenter.withToolbar(anyBoolean())).thenReturn(sessionEditorPresenter);
-        when(sessionEditorPresenter.withPalette(anyBoolean())).thenReturn(sessionEditorPresenter);
-        when(sessionEditorPresenter.displayNotifications(any(Predicate.class))).thenReturn(sessionEditorPresenter);
+        when(sessionEditorPresenter.withToolbar(Mockito.anyBoolean())).thenReturn(sessionEditorPresenter);
+        when(sessionEditorPresenter.withPalette(Mockito.anyBoolean())).thenReturn(sessionEditorPresenter);
+        when(sessionEditorPresenter.displayNotifications(Mockito.<Predicate>any())).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionEditorPresenter.getSession()).thenReturn(Optional.of(editorSession));
         when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -286,12 +286,12 @@ public class AbstractProjectDiagramEditorTest {
             callback.afterSessionOpened();
             callback.onSuccess();
             return null;
-        }).when(sessionEditorPresenter).open(any(Diagram.class),
-                                             any(SessionPresenter.SessionPresenterCallback.class));
+        }).when(sessionEditorPresenter).open(Mockito.<Diagram>any(),
+                                             Mockito.<SessionPresenter.SessionPresenterCallback>any());
         when(sessionViewerPresenter.getInstance()).thenReturn(viewerSession);
-        when(sessionViewerPresenter.withToolbar(anyBoolean())).thenReturn(sessionViewerPresenter);
-        when(sessionViewerPresenter.withPalette(anyBoolean())).thenReturn(sessionViewerPresenter);
-        when(sessionViewerPresenter.displayNotifications(any(Predicate.class))).thenReturn(sessionViewerPresenter);
+        when(sessionViewerPresenter.withToolbar(Mockito.anyBoolean())).thenReturn(sessionViewerPresenter);
+        when(sessionViewerPresenter.withPalette(Mockito.anyBoolean())).thenReturn(sessionViewerPresenter);
+        when(sessionViewerPresenter.displayNotifications(Mockito.<Predicate>any())).thenReturn(sessionViewerPresenter);
         when(sessionViewerPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionViewerPresenter.getSession()).thenReturn(Optional.of(viewerSession));
         when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -304,12 +304,12 @@ public class AbstractProjectDiagramEditorTest {
             callback.afterSessionOpened();
             callback.onSuccess();
             return null;
-        }).when(sessionViewerPresenter).open(any(Diagram.class),
-                                             any(SessionPresenter.SessionPresenterCallback.class));
+        }).when(sessionViewerPresenter).open(Mockito.<Diagram>any(),
+                                             Mockito.<SessionPresenter.SessionPresenterCallback>any());
         when(versionRecordManager.getPathToLatest()).thenReturn(filePath);
-        when(getMenuSessionItems().setErrorConsumer(any(Consumer.class))).thenReturn(getMenuSessionItems());
-        when(getMenuSessionItems().setLoadingCompleted(any(Command.class))).thenReturn(getMenuSessionItems());
-        when(getMenuSessionItems().setLoadingStarts(any(Command.class))).thenReturn(getMenuSessionItems());
+        when(getMenuSessionItems().setErrorConsumer(Mockito.<Consumer>any())).thenReturn(getMenuSessionItems());
+        when(getMenuSessionItems().setLoadingCompleted(Mockito.<Command>any())).thenReturn(getMenuSessionItems());
+        when(getMenuSessionItems().setLoadingStarts(Mockito.<Command>any())).thenReturn(getMenuSessionItems());
 
         resourceType = mockResourceType();
         presenter = createDiagramEditor();
@@ -414,12 +414,12 @@ public class AbstractProjectDiagramEditorTest {
         presenter.makeMenuBar();
 
         verify(getMenuSessionItems()).populateMenu(eq(fileMenuBuilder));
-        verify(fileMenuBuilder).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder).addCopy(any(Path.class),
-                                        any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addSave(Mockito.<MenuItem>any());
+        verify(fileMenuBuilder).addCopy(Mockito.<Path>any(),
+                                        Mockito.<AssetUpdateValidator>any());
         verify(fileMenuBuilder).addRename(saveAndRenameCommand);
-        verify(fileMenuBuilder).addDelete(any(Path.class),
-                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addDelete(Mockito.<Path>any(),
+                                          Mockito.<AssetUpdateValidator>any());
         verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
 
@@ -433,16 +433,16 @@ public class AbstractProjectDiagramEditorTest {
 
         verify(getMenuSessionItems()).populateMenu(eq(fileMenuBuilder));
         verify(fileMenuBuilder,
-               never()).addSave(any(MenuItem.class));
+               never()).addSave(Mockito.<MenuItem>any());
         verify(fileMenuBuilder,
-               never()).addCopy(any(Path.class),
-                                any(AssetUpdateValidator.class));
+               never()).addCopy(Mockito.<Path>any(),
+                                Mockito.<AssetUpdateValidator>any());
         verify(fileMenuBuilder,
-               never()).addRename(any(Path.class),
-                                  any(AssetUpdateValidator.class));
+               never()).addRename(Mockito.<Path>any(),
+                                  Mockito.<AssetUpdateValidator>any());
         verify(fileMenuBuilder,
-               never()).addDelete(any(Path.class),
-                                  any(AssetUpdateValidator.class));
+               never()).addDelete(Mockito.<Path>any(),
+                                  Mockito.<AssetUpdateValidator>any());
     }
 
     @Test
@@ -464,7 +464,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(sessionEditorPresenter).withToolbar(eq(false));
         verify(sessionEditorPresenter).withPalette(eq(true));
         verify(sessionEditorPresenter).open(eq(diagram),
-                                            any(SessionPresenter.SessionPresenterCallback.class));
+                                            Mockito.<SessionPresenter.SessionPresenterCallback>any());
 
         assertEquals(diagram.hashCode(),
                      presenter.getCurrentDiagramHash());
@@ -476,7 +476,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(kieView).clear();
         verify(kieView).addMainEditorPage(eq(view));
         verify(kieView).addOverviewPage(eq(overviewWidget),
-                                        any(com.google.gwt.user.client.Command.class));
+                                        Mockito.<com.google.gwt.user.client.Command>any());
 
         verify(saveAndRenameCommandBuilderMock).addContentSupplier(any());
     }
@@ -514,7 +514,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(kieView).clear();
         verify(kieView).addMainEditorPage(eq(view));
         verify(kieView).addOverviewPage(eq(overviewWidget),
-                                        any(com.google.gwt.user.client.Command.class));
+                                        Mockito.<com.google.gwt.user.client.Command>any());
 
         assertEquals(sessionViewerPresenter,
                      presenterCore.getSessionPresenter());
@@ -528,7 +528,7 @@ public class AbstractProjectDiagramEditorTest {
 
         assertEquals(VIEWER_SESSION_XML.hashCode(),
                      presenter.getCurrentDiagramHash());
-        verify(view).setWidget(any(IsWidget.class));
+        verify(view).setWidget(Mockito.<IsWidget>any());
         verify(view).hideBusyIndicator();
 
         //Verify Overview widget was setup. It'd be nice to just verify(presenter).resetEditorPages(..) but it is protected
@@ -537,7 +537,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(kieView).clear();
         verify(kieView).addMainEditorPage(eq(view));
         verify(kieView).addOverviewPage(eq(overviewWidget),
-                                        any(com.google.gwt.user.client.Command.class));
+                                        Mockito.<com.google.gwt.user.client.Command>any());
 
         verify(getMenuSessionItems()).setEnabled(eq(false));
         verify(xmlEditorView).setReadOnly(eq(false));
@@ -563,8 +563,8 @@ public class AbstractProjectDiagramEditorTest {
             final ServiceCallback serviceCallback = (ServiceCallback) i.getArguments()[1];
             serviceCallback.onError(clientRuntimeError);
             return null;
-        }).when(clientProjectDiagramService).getByPath(any(Path.class),
-                                                       any(ServiceCallback.class));
+        }).when(clientProjectDiagramService).getByPath(Mockito.<Path>any(),
+                                                       Mockito.<ServiceCallback>any());
 
         presenter.loadContent();
 
@@ -584,7 +584,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(sessionEditorPresenter).withToolbar(eq(false));
         verify(sessionEditorPresenter).withPalette(eq(true));
         verify(sessionEditorPresenter).open(eq(diagram),
-                                            any(SessionPresenter.SessionPresenterCallback.class));
+                                            Mockito.<SessionPresenter.SessionPresenterCallback>any());
 
         assertEquals(diagram.hashCode(),
                      presenter.getCurrentDiagramHash());
@@ -596,7 +596,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(kieView).clear();
         verify(kieView).addMainEditorPage(eq(view));
         verify(kieView).addOverviewPage(eq(overviewWidget),
-                                        any(com.google.gwt.user.client.Command.class));
+                                        Mockito.<com.google.gwt.user.client.Command>any());
     }
 
     @SuppressWarnings("unchecked")
@@ -618,8 +618,8 @@ public class AbstractProjectDiagramEditorTest {
             final ServiceCallback serviceCallback = (ServiceCallback) i.getArguments()[1];
             serviceCallback.onSuccess(diagram);
             return null;
-        }).when(clientProjectDiagramService).getByPath(any(Path.class),
-                                                       any(ServiceCallback.class));
+        }).when(clientProjectDiagramService).getByPath(Mockito.<Path>any(),
+                                                       Mockito.<ServiceCallback>any());
 
         presenter.loadContent();
 
@@ -702,7 +702,7 @@ public class AbstractProjectDiagramEditorTest {
                 callback.onError(Collections.singletonList(violation));
             }
             return null;
-        }).when(validateSessionCommand).execute(any(ClientSessionCommand.Callback.class));
+        }).when(validateSessionCommand).execute(Mockito.<ClientSessionCommand.Callback>any());
         presenter.save();
 
         return overview;
@@ -748,7 +748,7 @@ public class AbstractProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     public void testStunnerSave_ValidationUnsuccessful() {
         assertBasicStunnerSaveOperation(false);
-        verify(presenterCore).onValidationFailed(any(Collection.class));
+        verify(presenterCore).onValidationFailed(Mockito.<Collection>any());
         verify(view, atLeastOnce()).hideBusyIndicator();
     }
 
@@ -858,7 +858,7 @@ public class AbstractProjectDiagramEditorTest {
             ClientSessionCommand.Callback callback = (ClientSessionCommand.Callback) invocation.getArguments()[0];
             callback.onSuccess();
             return null;
-        }).when(validateSessionCommand).execute(any(ClientSessionCommand.Callback.class));
+        }).when(validateSessionCommand).execute(Mockito.<ClientSessionCommand.Callback>any());
         doReturn(xml).when(xmlEditorView).getContent();
 
         presenter.save();

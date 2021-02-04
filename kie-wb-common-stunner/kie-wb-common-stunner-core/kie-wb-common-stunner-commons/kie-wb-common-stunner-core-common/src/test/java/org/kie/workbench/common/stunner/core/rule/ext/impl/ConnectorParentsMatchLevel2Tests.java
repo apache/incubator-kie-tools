@@ -30,14 +30,14 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSou
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.ContextOperationNotAllowedViolation;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstances.assertRuleFailedResult;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstances.assertSuccessfullResult;
 import static org.kie.workbench.common.stunner.core.command.util.CommandUtils.isError;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ConnectorParentsMatchLevel2Tests {
 
     private TestingGraphMockHandler graphTestHandler;

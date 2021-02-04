@@ -36,7 +36,8 @@ import org.kie.workbench.common.screens.examples.service.ProjectImportService;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -144,7 +145,7 @@ public class ImportRepositoryPopUpPresenterTest {
 
         verify(view).hideBusyIndicator();
         verify(view).getNoProjectsToImportMessage();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
     }
 
     @Test
@@ -156,7 +157,7 @@ public class ImportRepositoryPopUpPresenterTest {
 
         verify(view).hideBusyIndicator();
         verify(view).getNoProjectsToImportMessage();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
     }
 
     @Test
@@ -175,7 +176,7 @@ public class ImportRepositoryPopUpPresenterTest {
         verify(view).hideBusyIndicator();
         verify(view).hide();
         verify(notificationEvent).fire(any(NotificationEvent.class));
-        verify(libraryPlaces).goToProject(any(WorkspaceProject.class));
+        verify(libraryPlaces).goToProject(Mockito.<WorkspaceProject>any());
     }
 
     @Test
@@ -192,11 +193,11 @@ public class ImportRepositoryPopUpPresenterTest {
 
         presenter.importRepository();
 
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(view).hideBusyIndicator();
         verify(view, never()).hide();
         verify(notificationEvent, never()).fire(any(NotificationEvent.class));
-        verify(libraryPlaces, never()).goToProject(any(WorkspaceProject.class));
+        verify(libraryPlaces, never()).goToProject(Mockito.<WorkspaceProject>any());
     }
 
     @Test

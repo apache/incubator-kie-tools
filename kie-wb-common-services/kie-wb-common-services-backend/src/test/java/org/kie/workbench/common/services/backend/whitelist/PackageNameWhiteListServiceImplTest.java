@@ -29,7 +29,7 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.*;
  * <p/>
  * See See https://en.wikipedia.org/wiki/Newline#Representations
  **/
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PackageNameWhiteListServiceImplTest {
 
     @Mock

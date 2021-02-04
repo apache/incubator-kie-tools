@@ -65,13 +65,7 @@ public class IndexDrlInvalidDrlTest extends BaseIndexingTest<TestDrlFileTypeDefi
         {
             final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant", ResourceType.JAVA ) ).build();
             searchFor(index, query, 0);
-            verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
-
-                @Override
-                public boolean matches( final Object argument ) {
-                    return ( (ILoggingEvent) argument ).getMessage().startsWith( "Unable to parse DRL" );
-                }
-            } ) );
+            verify( mockAppender ).doAppend( argThat(argument -> argument.getMessage().startsWith("Unable to parse DRL" )) );
         }
 
     }

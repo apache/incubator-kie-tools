@@ -86,7 +86,7 @@ import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation
 import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -98,7 +98,7 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class JavaRoasterModelDriverTest {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaRoasterModelDriverTest.class);

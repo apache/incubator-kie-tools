@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
 import com.google.gwt.core.client.Callback;
@@ -49,7 +50,8 @@ import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.client.mvp.ResourceTypeManagerCache;
@@ -62,12 +64,22 @@ import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.category.Others;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
     private PopulatedAssetsScreen populatedAssetsScreen;
@@ -280,7 +292,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         populatedAssetsScreen.search("");
 
         verify(view).clear();
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String> any());
         verify(populatedAssetsScreen).update(any());
         verify(busyIndicatorView).hideBusyIndicator();
     }
@@ -505,7 +517,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentSuccess() {
         doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onSuccess(false);
             return null;
@@ -519,7 +531,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentSuccessWithPermission() {
         doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onSuccess(true);
             return null;
@@ -532,7 +544,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentSuccessWithoutPermission() {
         doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onSuccess(true);
             return null;
@@ -545,7 +557,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentFailure() {
         doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onFailure(null);
             return null;

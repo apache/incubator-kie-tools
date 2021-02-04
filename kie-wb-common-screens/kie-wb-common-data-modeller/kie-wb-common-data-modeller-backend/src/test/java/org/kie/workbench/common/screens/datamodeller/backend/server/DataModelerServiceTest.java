@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 
@@ -35,6 +36,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -49,8 +51,6 @@ import org.uberfire.java.nio.file.FileSystem;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -185,8 +185,8 @@ public class DataModelerServiceTest {
         when(packageMock.getPackageMainSrcPath()).thenReturn(srcPath);
         when(moduleService.resolvePackage(dataObjectPath)).thenReturn(packageMock);
         when(packageMock.getPackageName()).thenReturn("dataobjects");
-        when(serviceHelper.ensurePackageStructure(any(Module.class),
-                                                  anyString())).thenReturn(packageMock);
+        when(serviceHelper.ensurePackageStructure(Mockito.<Module>any(),
+                                                  Mockito.<String>any())).thenReturn(packageMock);
 
         DataModelerSaveHelper saveHelper = mock(DataModelerSaveHelper.class);
         List<DataModelerSaveHelper> saveHelpers = Arrays.asList(saveHelper);
@@ -201,44 +201,44 @@ public class DataModelerServiceTest {
                                       newFileName);
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
 
         if (newPackageName == null && newFileName == null) {
             verify(ioService,
-                   times(1)).write(any(org.uberfire.java.nio.file.Path.class),
-                                   anyString(),
-                                   anyMap(),
-                                   any(CommentedOption.class));
+                   times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                   Mockito.<String>any(),
+                                   Mockito.<Map>any(),
+                                   Mockito.<CommentedOption>any());
         } else if (newPackageName != null && newFileName != null) {
             verify(ioService,
-                   times(1)).write(any(org.uberfire.java.nio.file.Path.class),
-                                   anyString(),
-                                   anyMap(),
-                                   any(CommentedOption.class));
+                   times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                   Mockito.<String>any(),
+                                   Mockito.<Map>any(),
+                                   Mockito.<CommentedOption>any());
             verify(ioService,
-                   times(1)).move(any(org.uberfire.java.nio.file.Path.class),
-                                  any(org.uberfire.java.nio.file.Path.class),
-                                  any(CommentedOption.class));
+                   times(1)).move(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                  Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                  Mockito.<CommentedOption>any());
         } else if (newPackageName != null) {
             verify(ioService,
-                   times(1)).write(any(org.uberfire.java.nio.file.Path.class),
-                                   anyString(),
-                                   anyMap(),
-                                   any(CommentedOption.class));
+                   times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                   Mockito.<String>any(),
+                                   Mockito.<Map>any(),
+                                   Mockito.<CommentedOption>any());
             verify(ioService,
-                   times(1)).move(any(org.uberfire.java.nio.file.Path.class),
-                                  any(org.uberfire.java.nio.file.Path.class),
-                                  any(CommentedOption.class));
+                   times(1)).move(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                  Mockito.<org.uberfire.java.nio.file.Path>any(),
+                                  Mockito.<CommentedOption>any());
         } else {
             verify(renameService,
-                   times(1)).rename(any(Path.class),
-                                    anyString(),
-                                    anyString());
+                   times(1)).rename(Mockito.<Path>any(),
+                                    Mockito.<String>any(),
+                                    Mockito.<String>any());
         }
 
         verify(saveHelper,
-               times(1)).postProcess(any(Path.class),
-                                     any(Path.class));
+               times(1)).postProcess(Mockito.<Path>any(),
+                                     Mockito.<Path>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -259,18 +259,18 @@ public class DataModelerServiceTest {
                                             "Comment");
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).move(any(org.uberfire.java.nio.file.Path.class),
-                              any(org.uberfire.java.nio.file.Path.class),
-                              any(CommentedOption.class));
+               times(1)).move(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                              Mockito.<org.uberfire.java.nio.file.Path>any(),
+                              Mockito.<CommentedOption>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
-                                         eq("New content"),
-                                         any(CommentedOption.class));
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                               eq("New content"),
+                               Mockito.<CommentedOption>any());
         verify(renameHelper,
-               times(1)).postProcess(any(Path.class),
-                                     any(Path.class));
+               times(1)).postProcess(Mockito.<Path>any(),
+                                     Mockito.<Path>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -291,18 +291,18 @@ public class DataModelerServiceTest {
                                             "Comment");
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).move(any(org.uberfire.java.nio.file.Path.class),
-                              any(org.uberfire.java.nio.file.Path.class),
-                              any(CommentedOption.class));
+               times(1)).move(Mockito.<org.uberfire.java.nio.file.Path>any(),
+                              Mockito.<org.uberfire.java.nio.file.Path>any(),
+                              Mockito.<CommentedOption>any());
         verify(ioService,
-               times(0)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(0)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                any(String.class),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(renameHelper,
-               times(1)).postProcess(any(Path.class),
-                                     any(Path.class));
+               times(1)).postProcess(Mockito.<Path>any(),
+                                     Mockito.<Path>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -311,7 +311,7 @@ public class DataModelerServiceTest {
     public void testCreateDataObjectAlreadyExists() {
         final Path path = PathFactory.newPath("DataObject.java", "file:///DataObject.java");
 
-        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
+        when(ioService.exists(Mockito.<org.uberfire.java.nio.file.Path>any())).thenReturn(true);
         assertThatThrownBy(() -> dataModelerService.createJavaFile(path, "", ""))
                 .isInstanceOf(FileAlreadyExistsException.class);
     }

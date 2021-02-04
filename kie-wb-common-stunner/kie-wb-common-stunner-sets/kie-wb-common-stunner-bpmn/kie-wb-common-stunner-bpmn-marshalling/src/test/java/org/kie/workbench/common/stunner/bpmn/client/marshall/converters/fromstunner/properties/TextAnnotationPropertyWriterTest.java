@@ -64,7 +64,6 @@ public class TextAnnotationPropertyWriterTest {
     public void setUp() {
         when(element.getExtensionValues()).thenReturn(ECollections.asEList(extensionAttributeValue));
         when(extensionAttributeValue.getValue()).thenReturn(valueMap);
-        when(metaDataType.getName()).thenReturn(CustomElement.name.name());
         tested = new TextAnnotationPropertyWriter(element, variableScope);
     }
 

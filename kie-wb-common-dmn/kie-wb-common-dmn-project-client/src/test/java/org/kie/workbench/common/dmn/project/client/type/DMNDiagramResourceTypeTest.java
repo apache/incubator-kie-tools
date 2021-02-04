@@ -25,10 +25,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.resource.DMNDefinitionSetResourceType;
 import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
@@ -48,7 +48,7 @@ public class DMNDiagramResourceTypeTest {
         this.definitionSetResourceType = new DMNDefinitionSetResourceType(category);
         this.resourceType = new DMNDiagramResourceType(category, translationService);
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     @Test

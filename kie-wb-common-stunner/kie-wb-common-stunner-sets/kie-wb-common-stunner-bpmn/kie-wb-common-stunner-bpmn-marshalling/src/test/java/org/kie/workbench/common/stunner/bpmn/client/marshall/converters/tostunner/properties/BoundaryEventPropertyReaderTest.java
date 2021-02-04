@@ -132,7 +132,6 @@ public class BoundaryEventPropertyReaderTest extends CatchEventPropertyReaderTes
         when(sourceActivity.getId()).thenReturn(activityId);
         when(sourceActivityShape.getBounds()).thenReturn(activityBounds);
         when(definitionResolver.getShape(activityId)).thenReturn(sourceActivityShape);
-        when(definitionResolver.getResolutionFactor()).thenReturn(1d);
         when(boundaryEvent.getAttachedToRef()).thenReturn(sourceActivity);
 
         float eventWidth = 56;

@@ -67,6 +67,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
@@ -84,7 +85,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -228,11 +228,11 @@ public abstract class BaseLiteralExpressionGridTest<G extends BaseDelegatingExpr
         when(graph.nodes()).thenReturn(Collections.singletonList(node));
 
         when(canvasHandler.getGraphIndex()).thenReturn(index);
-        when(index.get(anyString())).thenReturn(element);
+        when(index.get(Mockito.<String>any())).thenReturn(element);
         when(element.getContent()).thenReturn(mock(Definition.class));
         when(definitionUtils.getNameIdentifier(any())).thenReturn("name");
         when(canvasCommandFactory.updatePropertyValue(any(Element.class),
-                                                      anyString(),
+                                                      Mockito.<String>any(),
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
 
         parentGridWidget = getParentGridWidget();
@@ -243,7 +243,7 @@ public abstract class BaseLiteralExpressionGridTest<G extends BaseDelegatingExpr
         when(parent.getRowIndex()).thenReturn(PARENT_ROW_INDEX);
         when(parent.getColumnIndex()).thenReturn(PARENT_COLUMN_INDEX);
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     protected abstract BaseEditorDefinition<? extends LiteralExpression, DMNGridData> getDefinition();

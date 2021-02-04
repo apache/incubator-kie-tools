@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ModelBeanViolationImpl;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.ELEMENT;
@@ -44,7 +44,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CoreTranslationMessagesTest {
 
     public static final String HTML_NEW_LINE = "<br>";

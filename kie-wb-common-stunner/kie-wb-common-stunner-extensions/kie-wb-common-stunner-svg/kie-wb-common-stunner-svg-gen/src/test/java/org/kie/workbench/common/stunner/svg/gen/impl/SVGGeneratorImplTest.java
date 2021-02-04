@@ -71,7 +71,6 @@ public class SVGGeneratorImplTest {
 
     @Test
     public void testGenerate() throws Exception {
-        when(viewDefinition.getId()).thenReturn("svg-cancel");
         doAnswer(new Answer<StringBuffer>() {
             @Override
             public StringBuffer answer(final InvocationOnMock invocationOnMock) throws Throwable {

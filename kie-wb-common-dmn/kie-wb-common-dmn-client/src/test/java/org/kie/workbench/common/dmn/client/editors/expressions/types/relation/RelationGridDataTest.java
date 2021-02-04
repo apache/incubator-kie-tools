@@ -32,11 +32,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
@@ -98,7 +98,7 @@ public class RelationGridDataTest {
                           gridRow);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(MoveRowsCommand.class));
+                                              Mockito.<MoveRowsCommand>any());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class RelationGridDataTest {
                            Collections.singletonList(gridRow));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(MoveRowsCommand.class));
+                                              Mockito.<MoveRowsCommand>any());
     }
 
     @Test
@@ -116,7 +116,7 @@ public class RelationGridDataTest {
                              gridColumn1);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(MoveColumnsCommand.class));
+                                              Mockito.<MoveColumnsCommand>any());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class RelationGridDataTest {
                               Collections.singletonList(gridColumn1));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(MoveColumnsCommand.class));
+                                              Mockito.<MoveColumnsCommand>any());
     }
 
     @Test

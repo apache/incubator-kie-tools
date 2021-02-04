@@ -74,7 +74,6 @@ public class VariableProviderTest
         super.setUp();
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_NODE_UUID);
         when(diagram.getMetadata()).thenReturn(metadata);
-        when(view.getDefinition()).thenReturn(definition);
     }
 
     @Mock
@@ -128,7 +127,6 @@ public class VariableProviderTest
         Node<Element, ?> objectNode2 = new NodeImpl<>(UUID.uuid());
         Element someElement = mock(Element.class);
         objectNode2.setContent(someElement);
-        when(otherView.getDefinition()).thenReturn(new Object());
 
         isBPMNDefinition = ((VariablesProvider) provider).isBPMNDefinition(objectNode2);
         assertFalse(" Must not be a BPMN Definition", isBPMNDefinition);

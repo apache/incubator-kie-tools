@@ -27,9 +27,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -126,7 +126,7 @@ public class DMNCanvasHandlerTest {
 
         canvasHandler.updateDiagramId(element);
 
-        verify(hasContentDefinitionId, never()).setDiagramId(anyString());
+        verify(hasContentDefinitionId, never()).setDiagramId(Mockito.<String>any());
     }
 
     @Test

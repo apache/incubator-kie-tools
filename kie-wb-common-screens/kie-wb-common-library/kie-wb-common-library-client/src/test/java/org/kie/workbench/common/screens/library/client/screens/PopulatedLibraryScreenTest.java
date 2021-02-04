@@ -45,7 +45,7 @@ import org.kie.workbench.common.screens.library.client.widgets.library.AddProjec
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.spaces.Space;
@@ -64,7 +64,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PopulatedLibraryScreenTest {
 
     private static final String SPACE_NAME = "dora";
@@ -150,7 +150,7 @@ public class PopulatedLibraryScreenTest {
             doReturn(mock(TileWidget.View.class)).when(tile).getView();
 
             doAnswer((Answer<Void>) invocationOnMock1 -> {
-                when(tile.getContent()).thenReturn(invocationOnMock1.getArgumentAt(0, WorkspaceProject.class));
+                when(tile.getContent()).thenReturn(invocationOnMock1.getArgument(0, WorkspaceProject.class));
                 return null;
             }).when(tile).setContent(any());
 

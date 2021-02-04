@@ -23,8 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
-import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static java.util.Collections.emptyList;
@@ -32,7 +32,6 @@ import static org.gwtbootstrap3.client.ui.constants.IconType.DOWNLOAD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -61,6 +60,8 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
     protected abstract Class<R> getActiveRecordClass();
 
+    protected abstract BaseIncludedModelActiveRecord prepareIncludedModelMock();
+
     @Test
     public void testInit() {
         card.init();
@@ -86,7 +87,7 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
     @Test
     public void testRefreshView() {
-        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
         final String path = "/bla/bla/bla/111111111111111222222222222222333333333333333444444444444444/file.dmn";
 
         when(includedModel.getNamespace()).thenReturn(path);
@@ -107,7 +108,7 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
     @Test
     public void testGetTitle() {
-        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
         final String expectedTitle = "file";
 
         when(includedModel.getName()).thenReturn(expectedTitle);
@@ -120,7 +121,7 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
     @Test
     public void testGetUUID() {
-        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
         final String expectedUUID = "123";
 
         when(includedModel.getUUID()).thenReturn(expectedUUID);
@@ -155,7 +156,9 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
     private void doTestOnTitleChangedWhenIncludedModelIsValid(final String newName,
                                                               final String expectedNewName) {
         final DMNCardsGridComponent grid = mock(DMNCardsGridComponent.class);
-        final DMNIncludedModelActiveRecord includedModel = spy(new DMNIncludedModelActiveRecord(null));
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
+
+        when(includedModel.getName()).thenReturn(expectedNewName);
 
         doReturn(true).when(includedModel).isValid();
         doReturn(emptyList()).when(includedModel).update();
@@ -174,11 +177,11 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
     @Test
     public void testOnTitleChangedWhenIncludedModelIsNotValid() {
         final DMNCardsGridComponent grid = mock(DMNCardsGridComponent.class);
-        final DMNIncludedModelActiveRecord includedModel = spy(new DMNIncludedModelActiveRecord(null));
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
         final String newName = "newName";
         final String oldName = "oldName";
 
-        includedModel.setName(oldName);
+        when(includedModel.getName()).thenReturn(oldName);
         doReturn(false).when(includedModel).isValid();
         doReturn(includedModel).when(card).getIncludedModel();
         doReturn(grid).when(card).getGrid();
@@ -211,7 +214,7 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
     @Test
     public void testRemove() {
         final DMNCardsGridComponent grid = mock(DMNCardsGridComponent.class);
-        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
 
         doReturn(includedModel).when(card).getIncludedModel();
         doReturn(grid).when(card).getGrid();
@@ -220,12 +223,12 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
         verify(includedModel).destroy();
         verify(grid).refresh();
-        verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
+        verify(refreshDecisionComponentsEvent).fire(Mockito.<RefreshDecisionComponents>any());
     }
 
     @Test
     public void testGetSubTitleWhenPathIsNotEmpty() {
-        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
         final String expected = "/src/path/kie/dmn";
 
         doReturn(includedModel).when(card).getIncludedModel();
@@ -238,7 +241,7 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
     @Test
     public void testGetSubTitleWhenPathIsEmpty() {
-        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
         final String expected = "://namespace";
 
         doReturn(includedModel).when(card).getIncludedModel();

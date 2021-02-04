@@ -26,14 +26,14 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
 import org.kie.workbench.common.stunner.core.rule.impl.CanDock;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class NodeDockingEvaluationHandlerTest extends AbstractGraphRuleHandlerTest {
 
     private final static CanDock RULE = new CanDock("r1",

@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -134,7 +135,7 @@ public class ContainerProcessConfigPresenterTest {
         when( serverTemplateKey.getId() ).thenReturn( templateKey );
         when( containerSpecKey.getId() ).thenReturn( containerKey );
         when( view.getSaveErrorMessage() ).thenReturn( "ERROR" );
-        doThrow( new RuntimeException() ).when( specManagementService ).updateContainerConfig( anyString(), anyString(), any( Capability.class ), any( ContainerConfig.class ) );
+        doThrow( new RuntimeException() ).when( specManagementService ).updateContainerConfig(Mockito.<String>any(), Mockito.<String>any(), Mockito.<Capability>any(), Mockito.<ContainerConfig>any() );
 
         presenter.save();
 

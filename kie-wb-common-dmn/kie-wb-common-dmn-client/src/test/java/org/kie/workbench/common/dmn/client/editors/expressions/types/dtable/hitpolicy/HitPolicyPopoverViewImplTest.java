@@ -32,11 +32,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.client.views.pfly.widgets.Select;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -106,7 +106,7 @@ public class HitPolicyPopoverViewImplTest {
         doReturn(element).when(view).getElement();
         when(jQueryProducer.wrap(element)).thenReturn(popover);
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     @Test

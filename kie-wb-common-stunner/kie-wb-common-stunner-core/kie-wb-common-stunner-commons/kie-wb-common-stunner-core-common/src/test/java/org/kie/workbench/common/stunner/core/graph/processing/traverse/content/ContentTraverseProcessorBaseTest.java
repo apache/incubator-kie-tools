@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.core.graph.processing.traverse.content;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class ContentTraverseProcessorBaseTest<T extends ContentTraverseProcessor, C extends ContentTraverseCallback> {
 
     protected TestingGraphMockHandler graphTestHandler;

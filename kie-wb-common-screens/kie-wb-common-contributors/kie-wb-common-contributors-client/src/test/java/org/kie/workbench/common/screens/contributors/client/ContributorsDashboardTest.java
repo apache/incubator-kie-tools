@@ -34,7 +34,7 @@ import org.kie.workbench.common.screens.contributors.client.screens.Contributors
 import org.kie.workbench.common.screens.contributors.client.screens.ContributorsView;
 import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
 import static org.dashbuilder.dataset.Assertions.*;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ContributorsDashboardTest extends AbstractDisplayerTest {
 
     @Mock

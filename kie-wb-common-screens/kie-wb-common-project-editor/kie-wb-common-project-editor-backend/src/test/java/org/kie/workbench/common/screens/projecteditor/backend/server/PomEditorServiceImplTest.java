@@ -53,7 +53,8 @@ import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -75,7 +76,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PomEditorServiceImplTest {
 
     @Mock
@@ -215,12 +216,12 @@ public class PomEditorServiceImplTest {
                      resolvedRepositories.size());
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -245,12 +246,12 @@ public class PomEditorServiceImplTest {
                never()).getRepositoriesResolvingArtifact(eq(pomXml));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -299,12 +300,12 @@ public class PomEditorServiceImplTest {
                      repositoryMetadata.getSource());
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -330,12 +331,12 @@ public class PomEditorServiceImplTest {
                                                          any(MavenRepositoryMetadata.class));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -398,12 +399,12 @@ public class PomEditorServiceImplTest {
                      repositoryMetadata.getSource());
 
         verify(ioService,
-               never()).startBatch(any(FileSystem.class));
+               never()).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               never()).write(any(org.uberfire.java.nio.file.Path.class),
+               never()).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                               eq(pomXml),
                               eq(attributes),
-                              any(CommentedOption.class));
+                              Mockito.<CommentedOption>any());
         verify(ioService,
                never()).endBatch();
     }
@@ -438,10 +439,10 @@ public class PomEditorServiceImplTest {
         verify(ioService,
                never()).startBatch(any());
         verify(ioService,
-               never()).write(any(org.uberfire.java.nio.file.Path.class),
+               never()).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                never()).endBatch();
     }
@@ -472,12 +473,12 @@ public class PomEditorServiceImplTest {
                                                          any(MavenRepositoryMetadata.class));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -523,12 +524,12 @@ public class PomEditorServiceImplTest {
                                                          any(MavenRepositoryMetadata.class));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                times(1)).endBatch();
     }
@@ -556,12 +557,12 @@ public class PomEditorServiceImplTest {
                                                          any(MavenRepositoryMetadata.class));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+               times(1)).startBatch(Mockito.<FileSystem>any());
         verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+               times(1)).write(Mockito.<org.uberfire.java.nio.file.Path>any(),
                                eq(pomXml),
                                eq(attributes),
-                               any(CommentedOption.class));
+                               Mockito.<CommentedOption>any());
         verify(ioService,
                times(1)).endBatch();
     }

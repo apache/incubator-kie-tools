@@ -29,7 +29,8 @@ import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -39,14 +40,13 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class KieServiceTest {
 
     private SimpleFileSystemProvider fileSystemProvider;
@@ -121,11 +121,11 @@ public class KieServiceTest {
     @Test
     public void testProjectName() throws Exception {
         final KieModule module = mock(KieModule.class);
-        doReturn(module).when(moduleService).resolveModule(any(Path.class));
+        doReturn(module).when(moduleService).resolveModule(Mockito.<Path>any());
 
         final WorkspaceProject project = mock(WorkspaceProject.class);
         doReturn("test name").when(project).getName();
-        doReturn(project).when(projectService).resolveProject(any(Path.class));
+        doReturn(project).when(projectService).resolveProject(Mockito.<Path>any());
 
         final TestModel testModel = kieService.loadContent(Paths.convert(mainFilePath));
 

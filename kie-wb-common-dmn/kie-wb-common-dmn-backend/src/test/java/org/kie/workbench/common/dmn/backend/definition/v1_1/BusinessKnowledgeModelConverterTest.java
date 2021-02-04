@@ -44,11 +44,11 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -99,7 +99,7 @@ public class BusinessKnowledgeModelConverterTest {
         final View<BusinessKnowledgeModel> view = new ViewImpl<>(new BusinessKnowledgeModel(), Bounds.create());
         factoryNode.setContent(view);
 
-        when(factoryManager.newElement(anyString(), eq(getDefinitionId(BusinessKnowledgeModel.class)))).thenReturn(element);
+        when(factoryManager.newElement(Mockito.<String>any(), eq(getDefinitionId(BusinessKnowledgeModel.class)))).thenReturn(element);
         when(element.asNode()).thenReturn(factoryNode);
 
         final org.kie.dmn.model.api.BusinessKnowledgeModel dmn = new TBusinessKnowledgeModel();

@@ -24,10 +24,6 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.toolbox.grid.Point2DGrid;
-import com.ait.lienzo.client.core.shape.toolbox.items.DecoratorItem;
-import com.ait.lienzo.client.core.shape.toolbox.items.LayerToolbox;
-import com.ait.lienzo.client.core.shape.toolbox.items.TooltipItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.decorator.BoxDecorator;
 import com.ait.lienzo.client.core.shape.toolbox.items.decorator.DecoratorsFactory;
 import com.ait.lienzo.client.core.shape.toolbox.items.impl.ButtonItemImpl;
@@ -39,20 +35,17 @@ import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.ToolboxTextTooltip
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.TooltipFactory;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.shared.core.types.Direction;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -109,36 +102,36 @@ public abstract class AbstractActionsToolboxViewTest {
         when(toolboxFactory.buttons()).thenReturn(buttonsFactory);
         when(toolboxFactory.decorators()).thenReturn(decoratorsFactory);
         when(toolboxFactory.tooltips()).thenReturn(tooltipFactory);
-        when(toolboxFactory.forWiresShape(any(WiresShape.class)))
+        when(toolboxFactory.forWiresShape(any()))
                 .thenReturn(toolboxView);
-        when(buttonsFactory.button(any(Group.class))).thenReturn(buttonItem);
+        when(buttonsFactory.button(Mockito.<Group>any())).thenReturn(buttonItem);
         when(decoratorsFactory.box()).thenReturn(boxDecorator);
-        when(tooltipFactory.forToolbox(any(LayerToolbox.class))).thenReturn(toolboxTooltip);
-        when(boxDecorator.configure(any(com.ait.tooling.common.api.java.util.function.Consumer.class))).thenReturn(boxDecorator);
+        when(tooltipFactory.forToolbox(any())).thenReturn(toolboxTooltip);
+        when(boxDecorator.configure(any())).thenReturn(boxDecorator);
         when(boxDecorator.copy()).thenReturn(boxDecorator);
         when(toolboxViewBoundingBox.getWidth()).thenReturn(300d);
         when(toolboxViewBoundingBox.getHeight()).thenReturn(600d);
         when(toolboxView.getBoundingBox()).thenReturn(toolboxViewBoundingBox);
-        when(toolboxView.attachTo(any(Layer.class))).thenReturn(toolboxView);
-        when(toolboxView.decorate(any(DecoratorItem.class))).thenReturn(toolboxView);
-        when(toolboxView.offset(any(Point2D.class))).thenReturn(toolboxView);
-        when(toolboxView.at(any(Direction.class))).thenReturn(toolboxView);
-        when(toolboxView.grid(any(Point2DGrid.class))).thenReturn(toolboxView);
-        when(toolboxView.useShowExecutor(any(com.ait.tooling.common.api.java.util.function.BiConsumer.class))).thenReturn(toolboxView);
-        when(toolboxView.useHideExecutor(any(com.ait.tooling.common.api.java.util.function.BiConsumer.class))).thenReturn(toolboxView);
-        when(buttonItem.tooltip(any(TooltipItem.class))).thenReturn(buttonItem);
-        when(buttonItem.decorate(any(DecoratorItem.class))).thenReturn(buttonItem);
-        when(buttonItem.onMouseEnter(any(NodeMouseEnterHandler.class))).thenReturn(buttonItem);
-        when(buttonItem.onMouseExit(any(NodeMouseExitHandler.class))).thenReturn(buttonItem);
-        when(buttonItem.onClick(any(com.ait.tooling.common.api.java.util.function.Consumer.class))).thenReturn(buttonItem);
-        when(toolboxTooltip.at(any(Direction.class))).thenReturn(toolboxTooltip);
-        when(toolboxTooltip.towards(any(Direction.class))).thenReturn(toolboxTooltip);
-        when(toolboxTooltip.setText(anyString())).thenReturn(toolboxTooltip);
-        when(toolboxTooltip.forComputedBoundingBox(any(com.ait.tooling.common.api.java.util.function.Supplier.class))).thenReturn(toolboxTooltip);
-        when(toolboxTooltip.withText(any(com.ait.tooling.common.api.java.util.function.Consumer.class))).thenReturn(toolboxTooltip);
+        when(toolboxView.attachTo(any())).thenReturn(toolboxView);
+        when(toolboxView.decorate(any())).thenReturn(toolboxView);
+        when(toolboxView.offset(any())).thenReturn(toolboxView);
+        when(toolboxView.at(any())).thenReturn(toolboxView);
+        when(toolboxView.grid(any())).thenReturn(toolboxView);
+        when(toolboxView.useShowExecutor(any())).thenReturn(toolboxView);
+        when(toolboxView.useHideExecutor(any())).thenReturn(toolboxView);
+        when(buttonItem.tooltip(any())).thenReturn(buttonItem);
+        when(buttonItem.decorate(any())).thenReturn(buttonItem);
+        when(buttonItem.onMouseEnter(any())).thenReturn(buttonItem);
+        when(buttonItem.onMouseExit(any())).thenReturn(buttonItem);
+        when(buttonItem.onClick(any())).thenReturn(buttonItem);
+        when(toolboxTooltip.at(any())).thenReturn(toolboxTooltip);
+        when(toolboxTooltip.towards(any())).thenReturn(toolboxTooltip);
+        when(toolboxTooltip.setText(any())).thenReturn(toolboxTooltip);
+        when(toolboxTooltip.forComputedBoundingBox(any())).thenReturn(toolboxTooltip);
+        when(toolboxTooltip.withText(any())).thenReturn(toolboxTooltip);
         when(toolbox.size()).thenReturn(0);
         when(toolbox.iterator()).thenReturn(Collections.emptyIterator());
-        when(glyphRenderers.render(any(Glyph.class),
+        when(glyphRenderers.render(any(),
                                    anyDouble(),
                                    anyDouble()))
                 .thenReturn(glyphView);
@@ -150,7 +143,7 @@ public abstract class AbstractActionsToolboxViewTest {
         verify(toolboxTooltip,
                times(1)).createItem(eq(title));
         verify(buttonItem,
-               times(1)).tooltip(any(TooltipItem.class));
+               times(1)).tooltip(any());
         // Verify mouse enter.
         final ArgumentCaptor<NodeMouseEnterHandler> enterHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(NodeMouseEnterHandler.class);

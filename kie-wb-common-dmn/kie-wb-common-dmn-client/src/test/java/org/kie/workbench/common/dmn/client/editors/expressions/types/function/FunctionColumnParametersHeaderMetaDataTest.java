@@ -31,9 +31,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -67,7 +67,7 @@ public class FunctionColumnParametersHeaderMetaDataTest {
                                                                  parametersEditor,
                                                                  gridWidget);
 
-        when(translationService.getTranslation(anyString())).thenAnswer((i) -> i.getArguments()[0]);
+        when(translationService.getTranslation(Mockito.<String>any())).thenAnswer((i) -> i.getArguments()[0]);
     }
 
     @Test(expected = UnsupportedOperationException.class)

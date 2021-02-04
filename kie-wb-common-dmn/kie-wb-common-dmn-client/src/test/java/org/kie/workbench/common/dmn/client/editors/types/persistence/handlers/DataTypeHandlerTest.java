@@ -38,7 +38,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -193,7 +192,7 @@ public class DataTypeHandlerTest {
         final DataType dataType = makeDataType();
         final String type = "type";
 
-        doNothing().when(handler).refreshSubDataTypes(any(), anyString());
+        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
         when(dataTypeManager.withDataType(dataType)).thenReturn(dataTypeManagerWithDataType);
         when(dataTypeManagerWithDataType.getTypeName()).thenReturn(type);
 
@@ -209,7 +208,7 @@ public class DataTypeHandlerTest {
         final String newType = "newType";
 
         when(dataTypeManager.from(any(DataType.class))).thenReturn(dataTypeManager);
-        when(dataTypeManager.withRefreshedSubDataTypes(anyString())).thenReturn(dataTypeManager);
+        when(dataTypeManager.withRefreshedSubDataTypes(Mockito.<String>any())).thenReturn(dataTypeManager);
 
         handler.refreshSubDataTypes(dataType, newType);
 

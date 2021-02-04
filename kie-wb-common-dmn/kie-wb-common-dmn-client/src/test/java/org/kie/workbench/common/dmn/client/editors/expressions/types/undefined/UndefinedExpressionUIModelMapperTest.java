@@ -30,7 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;

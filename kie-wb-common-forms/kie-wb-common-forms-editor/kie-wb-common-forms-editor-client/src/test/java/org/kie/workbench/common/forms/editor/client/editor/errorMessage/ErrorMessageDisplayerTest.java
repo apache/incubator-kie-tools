@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ErrorMessageDisplayerTest {
 
     private static final String MESSAGE = "message";

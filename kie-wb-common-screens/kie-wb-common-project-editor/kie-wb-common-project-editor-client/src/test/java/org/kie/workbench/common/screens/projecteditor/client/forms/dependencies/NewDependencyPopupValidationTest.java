@@ -28,6 +28,7 @@ import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.Proj
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
@@ -36,10 +37,8 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class NewDependencyPopupValidationTest {
 
-    @GwtMock
     ProjectEditorResources resources;
 
-    @GwtMock
     ProjectEditorConstants constants;
 
     @Mock
@@ -87,7 +86,7 @@ public class NewDependencyPopupValidationTest {
 
         newDependencyPopup.onOkClicked();
 
-        verify( callback, never() ).callback( any( Dependency.class ) );
+        verify( callback, never() ).callback(Mockito.<Dependency>any() );
         verify( view, never() ).hide();
     }
 

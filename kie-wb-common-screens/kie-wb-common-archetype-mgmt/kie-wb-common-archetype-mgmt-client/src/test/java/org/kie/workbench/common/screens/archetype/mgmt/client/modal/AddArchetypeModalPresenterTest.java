@@ -26,12 +26,12 @@ import org.kie.workbench.common.screens.archetype.mgmt.shared.exceptions.Invalid
 import org.kie.workbench.common.screens.archetype.mgmt.shared.exceptions.MavenExecutionException;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -120,7 +120,7 @@ public class AddArchetypeModalPresenterTest {
         presenter.add();
 
         verify(view).clearErrors();
-        verify(view).showArchetypeGroupIdError(anyString());
+        verify(view).showArchetypeGroupIdError(Mockito.<String>any());
         verify(archetypeService, never()).add(any(GAV.class));
     }
 
@@ -133,7 +133,7 @@ public class AddArchetypeModalPresenterTest {
         presenter.add();
 
         verify(view).clearErrors();
-        verify(view).showArchetypeArtifactIdError(anyString());
+        verify(view).showArchetypeArtifactIdError(Mockito.<String>any());
         verify(archetypeService, never()).add(any(GAV.class));
     }
 
@@ -146,7 +146,7 @@ public class AddArchetypeModalPresenterTest {
         presenter.add();
 
         verify(view).clearErrors();
-        verify(view).showArchetypeVersionError(anyString());
+        verify(view).showArchetypeVersionError(Mockito.<String>any());
         verify(archetypeService, never()).add(any(GAV.class));
     }
 
@@ -159,9 +159,9 @@ public class AddArchetypeModalPresenterTest {
         presenter.add();
 
         verify(view).clearErrors();
-        verify(view).showArchetypeGroupIdError(anyString());
-        verify(view).showArchetypeArtifactIdError(anyString());
-        verify(view).showArchetypeVersionError(anyString());
+        verify(view).showArchetypeGroupIdError(Mockito.<String>any());
+        verify(view).showArchetypeArtifactIdError(Mockito.<String>any());
+        verify(view).showArchetypeVersionError(Mockito.<String>any());
         verify(archetypeService, never()).add(any(GAV.class));
     }
 
@@ -177,7 +177,7 @@ public class AddArchetypeModalPresenterTest {
 
         verify(view).enableAddButton(false);
         verify(view).enableFields(false);
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String>any());
 
         verify(archetypeService).add(gav);
 
@@ -187,9 +187,9 @@ public class AddArchetypeModalPresenterTest {
 
         verify(view).hide();
 
-        verify(view, never()).showArchetypeGroupIdError(anyString());
-        verify(view, never()).showArchetypeArtifactIdError(anyString());
-        verify(view, never()).showArchetypeVersionError(anyString());
+        verify(view, never()).showArchetypeGroupIdError(Mockito.<String>any());
+        verify(view, never()).showArchetypeArtifactIdError(Mockito.<String>any());
+        verify(view, never()).showArchetypeVersionError(Mockito.<String>any());
     }
 
     @Test
@@ -206,7 +206,7 @@ public class AddArchetypeModalPresenterTest {
 
         verify(view).enableAddButton(false);
         verify(view).enableFields(false);
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String>any());
 
         verify(archetypeService).add(gav);
 
@@ -216,9 +216,9 @@ public class AddArchetypeModalPresenterTest {
 
         verify(view).hide();
 
-        verify(view, never()).showArchetypeGroupIdError(anyString());
-        verify(view, never()).showArchetypeArtifactIdError(anyString());
-        verify(view, never()).showArchetypeVersionError(anyString());
+        verify(view, never()).showArchetypeGroupIdError(Mockito.<String>any());
+        verify(view, never()).showArchetypeArtifactIdError(Mockito.<String>any());
+        verify(view, never()).showArchetypeVersionError(Mockito.<String>any());
     }
 
     @Test
@@ -241,11 +241,11 @@ public class AddArchetypeModalPresenterTest {
         doReturn(ARTIFACT_ID).when(view).getArchetypeArtifactId();
         doReturn(VERSION).when(view).getArchetypeVersion();
 
-        doThrow(throwable).when(archetypeService).add(any(GAV.class));
+        doThrow(throwable).when(archetypeService).add(Mockito.<GAV>any());
 
         presenter.add();
 
-        verify(view).showGeneralError(anyString());
+        verify(view).showGeneralError(Mockito.<String>any());
     }
 
     private GAV createGav() {

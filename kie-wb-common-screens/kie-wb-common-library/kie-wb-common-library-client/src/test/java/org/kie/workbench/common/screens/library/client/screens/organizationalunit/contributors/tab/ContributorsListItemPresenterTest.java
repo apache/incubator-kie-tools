@@ -31,16 +31,24 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ContributorsListItemPresenterTest {
 
     @Mock
@@ -76,7 +84,7 @@ public class ContributorsListItemPresenterTest {
         doAnswer(invocationOnMock -> {
             final List<Contributor> contributors = new ArrayList<>();
             contributors.add(persistedContributor);
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contributors);
             return null;
         }).when(contributorsListService).getContributors(any());
     }
@@ -228,7 +236,7 @@ public class ContributorsListItemPresenterTest {
             final List<Contributor> contributors = new ArrayList<>();
             contributors.add(contributor1);
             contributors.add(contributor2);
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contributors);
             return null;
         }).when(contributorsListService).getContributors(any());
 
@@ -240,7 +248,7 @@ public class ContributorsListItemPresenterTest {
                         contributorsListService);
         presenter.remove();
 
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(contributorsListService).saveContributors(any(), any(), any());
     }
 
@@ -250,7 +258,7 @@ public class ContributorsListItemPresenterTest {
         final ContributorsListService contributorsListService = mock(ContributorsListService.class);
 
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(Collections.singletonList(contributor));
+            invocationOnMock.getArgument(0, Consumer.class).accept(Collections.singletonList(contributor));
             return null;
         }).when(contributorsListService).getContributors(any());
 

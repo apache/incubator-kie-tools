@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.URL;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,11 +46,11 @@ public class AssignmentBaseTest {
 
         // Prevent GWT calls in StringUtils
         URL url = mock(URL.class);
-        when(url.decodeQueryString(anyString())).thenAnswer(invocation -> {
+        when(url.decodeQueryString(any())).thenAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             return urlDecode((String) args[0]);
         });
-        when(url.encodeQueryString(anyString())).thenAnswer(invocation -> {
+        when(url.encodeQueryString(any())).thenAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             return urlEncode((String) args[0]);
         });

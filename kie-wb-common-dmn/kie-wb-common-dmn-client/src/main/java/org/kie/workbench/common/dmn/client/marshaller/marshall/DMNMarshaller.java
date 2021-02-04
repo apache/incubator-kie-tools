@@ -33,6 +33,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import jsinterop.base.Js;
+import jsinterop.base.JsArrayLike;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.Association;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
@@ -163,8 +164,10 @@ public class DMNMarshaller {
             definitions.setExtensionElements(jsiExtensionElements);
         }
 
-        final List<JSIDMNDiagram> dmnDiagrams = definitions.getDMNDI().getDMNDiagram();
-        forEach(dmnDiagrams, diagram -> {
+        final JsArrayLike<JSIDMNDiagram> dmnDiagrams = definitions.getDMNDI().getNativeDMNDiagram();
+
+        for (int i = 0; i < dmnDiagrams.getLength(); i++) {
+            JSIDMNDiagram diagram = Js.uncheckedCast(dmnDiagrams.getAt(i));
 
             final String elementDiagramId = diagram.getId();
             final List<JSIDMNEdge> dmnEdges = new ArrayList<>();
@@ -275,7 +278,7 @@ public class DMNMarshaller {
             for (final Node<?, ?> node : diagramNodes) {
                 PointUtils.convertToRelativeBounds(node);
             }
-        });
+        };
 
         return definitions;
     }

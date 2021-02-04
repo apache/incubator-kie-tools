@@ -82,6 +82,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
@@ -97,7 +98,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.project.client.editor.DMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
@@ -347,7 +347,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         errorConsumerCaptor.getValue().accept("ERROR");
 
         verify(view).hideBusyIndicator();
-        verify(errorPopupPresenter, never()).showMessage(anyString());
+        verify(errorPopupPresenter, never()).showMessage(Mockito.<String>any());
         verify(editorSearchIndex).setIsDataTypesTabActiveSupplier(isDataTypesTabActiveSupplier);
         verify(editorSearchIndex).setCurrentAssetHashcodeSupplier(currentContentHashSupplier);
     }
@@ -425,7 +425,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         open();
 
         verify(decisionNavigatorDock, atLeast(1)).reload();
-        verify(expressionEditor, atLeast(1)).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
+        verify(expressionEditor, atLeast(1)).setToolbarStateHandler(Mockito.<DMNProjectToolbarStateHandler>any());
         verify(dataTypesPage, atLeast(1)).reload();
         verify(layoutHelper).applyLayout(diagram, layoutExecutor);
         verify(includedModelsPage, atLeast(1)).reload();
@@ -437,7 +437,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     public void testOnDiagramLoadWhenCanvasHandlerIsNull() {
         diagramEditor.onDiagramLoad();
 
-        verify(expressionEditor, never()).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
+        verify(expressionEditor, never()).setToolbarStateHandler(Mockito.<DMNProjectToolbarStateHandler>any());
         verify(decisionNavigatorDock, never()).reload();
         verify(decisionNavigatorDock, never()).open();
         verify(dataTypesPage, never()).reload();
@@ -476,7 +476,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(searchBarComponent).disableSearch();
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(NavigateToExpressionEditorCommand.class));
+                                              Mockito.<NavigateToExpressionEditorCommand>any());
     }
 
     @Test
@@ -537,7 +537,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testParsingErrorMessage() {
-        doAnswer(i -> i.getArguments()[0]).when(translationService).getValue(anyString());
+        doAnswer(i -> i.getArguments()[0]).when(translationService).getValue(Mockito.<String>any());
 
         final String xml = "xml";
 
@@ -609,10 +609,10 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         final InOrder inOrder = inOrder(kieView, multiPage);
         inOrder.verify(kieView).addMainEditorPage(view);
-        inOrder.verify(kieView).addPage(any(DocumentationPage.class));
+        inOrder.verify(kieView).addPage(Mockito.<DocumentationPage>any());
         inOrder.verify(multiPage).addPage(dataTypesPage);
         inOrder.verify(multiPage).addPage(includedModelsPage);
-        inOrder.verify(kieView).addOverviewPage(eq(overviewWidget), any(Command.class));
+        inOrder.verify(kieView).addOverviewPage(eq(overviewWidget), Mockito.<Command>any());
     }
 
     @Test

@@ -34,7 +34,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +68,7 @@ public class TextAnnotationConverterTest {
         element = Bpmn2Factory.eINSTANCE.createTextAnnotation();
         tested = new TextAnnotationConverter(typedFactoryManager, propertyReaderFactory);
 
-        when(typedFactoryManager.newNode(anyString(),
+        when(typedFactoryManager.newNode(any(),
                                          eq(org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation.class))).thenReturn(node);
         when(node.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(def);

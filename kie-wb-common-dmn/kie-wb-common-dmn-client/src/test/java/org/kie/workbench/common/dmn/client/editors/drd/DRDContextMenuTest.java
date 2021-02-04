@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.drd;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,15 +44,13 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.mockito.Mock;
-import org.powermock.reflect.Whitebox;
-import org.uberfire.mvp.Command;
+import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.kie.workbench.common.dmn.client.editors.drd.DRDContextMenu.DRDACTIONS_CONTEXT_MENU_TITLE;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -111,7 +111,7 @@ public class DRDContextMenuTest {
     public void testShow() {
         drdContextMenu.show(new ArrayList<>());
 
-        verify(contextMenu).show(any(Consumer.class));
+        verify(contextMenu).show(Mockito.<Consumer>any());
     }
 
     @Test
@@ -122,26 +122,40 @@ public class DRDContextMenuTest {
         final List<DMNDiagramTuple> diagrams = asList(diagramTuple1, diagramTuple2);
         final DMNDiagramElement diagramElement = mock(DMNDiagramElement.class);
 
-        when(translationService.getValue(anyString())).thenReturn(StringUtils.EMPTY);
+        when(translationService.getValue(Mockito.<String>any())).thenReturn(StringUtils.EMPTY);
         when(drdContextMenuService.getDiagrams()).thenReturn(diagrams);
         when(dmnDiagramsSession.getDRGDiagramElement()).thenReturn(diagramElement);
         when(dmnDiagramsSession.getCurrentDMNDiagramElement()).thenReturn(Optional.of(diagramElement));
 
         drdContextMenu.setDRDContextMenuHandler(contextMenu, Collections.singletonList(node));
 
-        verify(contextMenu).setHeaderMenu(anyString(), anyString());
-        verify(contextMenu, times(4)).addTextMenuItem(anyString(), anyBoolean(), any(Command.class));
+        verify(contextMenu).setHeaderMenu(any(), any());
+        verify(contextMenu, times(4)).addTextMenuItem(any(), anyBoolean(), any());
     }
 
     @Test
-    public void testAppendContextMenuToTheDOM() {
+    public void testAppendContextMenuToTheDOM() throws NoSuchFieldException, IllegalAccessException {
         when(contextMenu.getElement()).thenReturn(element);
-        Whitebox.setInternalState(element, "style", styleDeclaration);
-        Whitebox.setInternalState(DomGlobal.class, "document", htmlDocument);
-        Whitebox.setInternalState(htmlDocument, "body", body);
+
+        final Field field = HTMLElement.class.getDeclaredField("style");
+        field.setAccessible(true);
+        field.set(element, styleDeclaration);
+
+        final Field field2 = DomGlobal.class.getDeclaredField("document");
+        field2.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field2, field2.getModifiers() & ~Modifier.FINAL);
+
+        field2.set(DomGlobal.class, htmlDocument);
+
+        final Field field3 = HTMLDocument.class.getDeclaredField("body");
+        field3.setAccessible(true);
+        field3.set(htmlDocument, body);
 
         drdContextMenu.appendContextMenuToTheDOM(10, 10);
 
-        verify(body).appendChild(any(HTMLElement.class));
+        verify(body).appendChild(Mockito.<HTMLElement>any());
     }
 }

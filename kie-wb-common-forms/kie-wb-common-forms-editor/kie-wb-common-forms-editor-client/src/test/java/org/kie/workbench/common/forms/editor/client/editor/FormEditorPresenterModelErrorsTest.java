@@ -21,9 +21,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
+import org.mockito.Mockito;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -54,7 +54,7 @@ public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstr
         verify(errorMessageDisplayer, never()).show(any(), any());
 
         verify(layoutEditorMock).clear();
-        verify(layoutEditorMock).init(anyString(), anyString(), anyString(), any());
+        verify(layoutEditorMock).init(Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), any());
         verify(layoutEditorMock).loadLayout(any());
 
 
@@ -77,7 +77,7 @@ public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstr
         verify(errorMessageDisplayer).show(any(), any());
 
         verify(layoutEditorMock).clear();
-        verify(layoutEditorMock).init(anyString(), anyString(), anyString(), any());
+        verify(layoutEditorMock).init(Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), any());
         verify(layoutEditorMock).loadLayout(any());
 
 
@@ -100,7 +100,7 @@ public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstr
         verify(errorMessageDisplayer).show(any(), any());
 
         verify(layoutEditorMock, never()).clear();
-        verify(layoutEditorMock, never()).init(anyString(), anyString(), anyString(), any());
+        verify(layoutEditorMock, never()).init(Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), any());
         verify(layoutEditorMock, never()).loadLayout(any());
 
 

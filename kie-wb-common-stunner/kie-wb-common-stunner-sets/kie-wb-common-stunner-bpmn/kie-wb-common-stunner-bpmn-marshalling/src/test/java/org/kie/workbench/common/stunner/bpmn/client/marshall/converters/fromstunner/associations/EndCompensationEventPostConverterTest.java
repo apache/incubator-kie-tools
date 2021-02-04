@@ -16,14 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.associations;
 
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.PostConverterProcessor;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events.EndCompensationEventPostConverter;
 import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.CompensationEventExecutionSet;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class EndCompensationEventPostConverterTest
         extends AbstractThrowCompensationEventPostConverterTest<EndCompensationEvent> {
 

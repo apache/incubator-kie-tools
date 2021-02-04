@@ -6,6 +6,11 @@
   <artifactId>kie-maven-plugin-test-kjar-2</artifactId>
   <version>1.0.0.Final</version>
   <packaging>kjar</packaging>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -22,14 +27,13 @@
         <extensions>true</extensions>
         <configuration>
           <compilerId>jdt</compilerId>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
           <failOnError>true</failOnError>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.5</version>
         <configuration>
           <goalPrefix>kie</goalPrefix>
         </configuration>

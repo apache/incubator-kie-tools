@@ -50,6 +50,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -66,8 +67,14 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseViewPresenterTest {
@@ -161,7 +168,7 @@ public class BaseViewPresenterTest {
         presenter.deleteItem(item);
 
         verify(notification,
-               times(1)).fire(any(NotificationEvent.class));
+               times(1)).fire(Mockito.<NotificationEvent>any());
     }
 
     @Test
@@ -173,7 +180,7 @@ public class BaseViewPresenterTest {
         presenter.copyItem(item);
 
         verify(notification,
-               times(1)).fire(any(NotificationEvent.class));
+               times(1)).fire(Mockito.<NotificationEvent>any());
     }
 
     @Test
@@ -185,7 +192,7 @@ public class BaseViewPresenterTest {
         presenter.renameItem(item);
 
         verify(notification,
-               times(1)).fire(any(NotificationEvent.class));
+               times(1)).fire(Mockito.<NotificationEvent>any());
     }
 
     @Test
@@ -213,7 +220,7 @@ public class BaseViewPresenterTest {
         presenter.doContentCallback(content);
 
         verify(buildServiceActual,
-               never()).build(any(Module.class));
+               never()).build(Mockito.<Module>any());
     }
 
     @Test
@@ -269,7 +276,7 @@ public class BaseViewPresenterTest {
             presenter.doContentCallback(content);
 
             verify(buildServiceActual,
-                   never()).build(any(Module.class));
+                   never()).build(Mockito.<Module>any());
         } finally {
             if (spBuildDisableModuleExplorer != null) {
                 System.setProperty(ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
@@ -336,8 +343,8 @@ public class BaseViewPresenterTest {
             commandCaptor.getValue().execute(new FileNameAndCommitMessage("fileName",
                                                                           "message"));
             return null;
-        }).when(copyPopUpPresenterMock).show(any(Path.class),
-                                             any(Validator.class),
+        }).when(copyPopUpPresenterMock).show(Mockito.<Path>any(),
+                                             Mockito.<Validator>any(),
                                              commandCaptor.capture());
     }
 
@@ -348,8 +355,8 @@ public class BaseViewPresenterTest {
             commandCaptor.getValue().execute(new FileNameAndCommitMessage("fileName",
                                                                           "message"));
             return null;
-        }).when(renamePopUpPresenterMock).show(any(Path.class),
-                                               any(Validator.class),
+        }).when(renamePopUpPresenterMock).show(Mockito.<Path>any(),
+                                               Mockito.<Validator>any(),
                                                commandCaptor.capture());
     }
 

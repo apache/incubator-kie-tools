@@ -23,12 +23,12 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ClientDiagramServiceTest extends AbstractClientDiagramServiceTest<Metadata, Diagram<Graph, Metadata>, DiagramService, ClientDiagramServiceImpl<Metadata, Diagram<Graph, Metadata>, DiagramService>> {
 
     @Override

@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.rule.context.impl.StatelessGraphEva
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class BaseGraphRuleTest<T extends RuleExtensionHandler> {
 
     @Mock

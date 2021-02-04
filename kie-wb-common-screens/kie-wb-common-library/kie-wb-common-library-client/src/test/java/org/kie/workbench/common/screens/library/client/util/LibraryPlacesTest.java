@@ -66,7 +66,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -117,7 +118,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class LibraryPlacesTest {
 
     public static final String OTHER_PERSPECTIVE = "OtherPerspective";
@@ -508,7 +509,7 @@ public class LibraryPlacesTest {
         assertNull(event.getWorkspaceProject());
         verify(placeManager).closeAllPlaces();
         verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+                                  Mockito.<PanelDefinition> any());
         verify(libraryBreadcrumbs).setupForSpacesScreen();
     }
 
@@ -649,7 +650,7 @@ public class LibraryPlacesTest {
 
         verify(placeManager).closeAllPlaces();
         verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+                                  Mockito.<PanelDefinition> any());
         verify(libraryBreadcrumbs).setupForSpacesScreen();
         verify(projectContextChangeEvent,
                times(1)).fire(any(WorkspaceProjectContextChangeEvent.class));
@@ -670,7 +671,7 @@ public class LibraryPlacesTest {
         libraryPlaces.goToLibrary();
 
         verify(placeManager).closePlace(LibraryPlaces.LIBRARY_SCREEN);
-        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(placeManager).goTo(eq(part), Mockito.<PanelDefinition> any());
         verify(libraryBreadcrumbs).setupForSpacesScreen();
         verify(projectContextChangeEvent, times(2)).fire(projectContextChangeEventArgumentCaptor.capture());
         assertNotNull(projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
@@ -698,7 +699,7 @@ public class LibraryPlacesTest {
         verify(libraryPlaces).goToProject(activeSpace.getName(), activeProject.getName(), activeBranch.getName());
         verify(libraryPlaces).goToProject(activeProject);
         verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+                                  Mockito.<PanelDefinition> any());
         verify(projectContextChangeEvent,
                never()).fire(any(WorkspaceProjectContextChangeEvent.class));
         verify(libraryBreadcrumbs).setupForProject(activeProject);
@@ -731,7 +732,7 @@ public class LibraryPlacesTest {
 
         verify(libraryPlaces).closeLibraryPlaces();
         verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+                                  Mockito.<PanelDefinition> any());
         verify(libraryBreadcrumbs).setupForSpace(activeOrganizationalUnit);
         verify(projectContextChangeEvent,
                times(1)).fire(any(WorkspaceProjectContextChangeEvent.class));
@@ -754,7 +755,7 @@ public class LibraryPlacesTest {
         libraryPlaces.goToLibrary();
 
         verify(libraryPlaces).closeLibraryPlaces();
-        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(placeManager).goTo(eq(part), Mockito.<PanelDefinition> any());
         verify(libraryBreadcrumbs).setupForSpace(activeOrganizationalUnit);
         verify(projectContextChangeEvent, never()).fire(any(WorkspaceProjectContextChangeEvent.class));
     }
@@ -776,7 +777,7 @@ public class LibraryPlacesTest {
         libraryPlaces.goToProject();
 
         verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+                                  Mockito.<PanelDefinition> any());
         verify(projectContextChangeEvent,
                never()).fire(any(WorkspaceProjectContextChangeEvent.class));
         verify(libraryBreadcrumbs).setupForProject(activeProject);
@@ -792,14 +793,14 @@ public class LibraryPlacesTest {
 
         verify(libraryPlaces).closeAllPlacesOrNothing(any());
         verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+                                  Mockito.<PanelDefinition> any());
         verify(libraryBreadcrumbs).setupForTrySamples(activeOrganizationalUnit);
     }
 
     @Test
     public void goToExternalImportProjectsTest() {
         doAnswer(inv -> {
-            final Command command = inv.getArgumentAt(0,
+            final Command command = inv.getArgument(0,
                                                       Command.class);
             command.execute();
             return null;
@@ -818,7 +819,7 @@ public class LibraryPlacesTest {
         libraryPlaces.goToExternalImportPresenter(projects);
 
         verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+                                  Mockito.<PanelDefinition> any());
         verify(libraryPlaces).setupExternalImportBreadCrumbs();
     }
 

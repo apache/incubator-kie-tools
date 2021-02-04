@@ -33,12 +33,12 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -193,13 +193,13 @@ public class ParametersPopoverViewImplTest {
         reset(parameterView1, parameterView2);
         view.updateParameterName(-1, "cheese");
 
-        verify(parameterView1, never()).setName(anyString());
-        verify(parameterView2, never()).setName(anyString());
+        verify(parameterView1, never()).setName(Mockito.<String>any());
+        verify(parameterView2, never()).setName(Mockito.<String>any());
 
         view.updateParameterName(2, "cheese");
 
-        verify(parameterView1, never()).setName(anyString());
-        verify(parameterView2, never()).setName(anyString());
+        verify(parameterView1, never()).setName(Mockito.<String>any());
+        verify(parameterView2, never()).setName(Mockito.<String>any());
     }
 
     @Test

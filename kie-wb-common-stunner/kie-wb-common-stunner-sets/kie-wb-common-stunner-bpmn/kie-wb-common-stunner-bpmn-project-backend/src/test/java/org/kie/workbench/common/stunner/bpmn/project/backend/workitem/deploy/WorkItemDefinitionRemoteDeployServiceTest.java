@@ -81,7 +81,6 @@ public class WorkItemDefinitionRemoteDeployServiceTest {
 
     @Before
     public void init() {
-        when(metadata.getRoot()).thenReturn(root);
         when(remoteLookupService.execute(any(WorkItemDefinitionRemoteRequest.class)))
                 .thenReturn(Collections.singleton(WID));
         tested = new WorkItemDefinitionRemoteDeployService(remoteLookupService,

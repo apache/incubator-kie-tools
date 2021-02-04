@@ -31,7 +31,8 @@ import org.kie.workbench.common.screens.archetype.mgmt.shared.model.PaginatedArc
 import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.ArchetypePreferences;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -46,14 +47,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class GlobalArchetypeTablePresenterTest {
 
     private GlobalArchetypeTablePresenter presenter;
@@ -158,7 +158,7 @@ public class GlobalArchetypeTablePresenterTest {
             return promises.resolve();
         });
 
-        verify(archetypePreferences, never()).setDefaultSelection(anyString());
+        verify(archetypePreferences, never()).setDefaultSelection(Mockito.<String>any());
         verify(presenter, never()).savePreferences(anyBoolean());
     }
 
@@ -202,7 +202,7 @@ public class GlobalArchetypeTablePresenterTest {
     @Test
     public void savePreferencesWhenListIsUpdatedTest() {
         doReturn(true).when(presenter).canMakeChanges();
-        doReturn(promises.resolve()).when(presenter).savePreferences(any(PreferenceScope.class),
+        doReturn(promises.resolve()).when(presenter).savePreferences(Mockito.<PreferenceScope> any(),
                                                                      eq(true));
 
         presenter.savePreferences(true).catch_(i -> {
@@ -211,14 +211,14 @@ public class GlobalArchetypeTablePresenterTest {
         });
 
         verify(preferenceScopeFactory).createScope(GuvnorPreferenceScopes.GLOBAL);
-        verify(presenter).savePreferences(any(PreferenceScope.class),
+        verify(presenter).savePreferences(Mockito.<PreferenceScope> any(),
                                           eq(true));
     }
 
     @Test
     public void savePreferencesWhenListIsNotUpdatedTest() {
         doReturn(true).when(presenter).canMakeChanges();
-        doReturn(promises.resolve()).when(presenter).savePreferences(any(PreferenceScope.class),
+        doReturn(promises.resolve()).when(presenter).savePreferences(Mockito.<PreferenceScope> any(),
                                                                      eq(false));
 
         presenter.savePreferences(false).catch_(i -> {
@@ -227,7 +227,7 @@ public class GlobalArchetypeTablePresenterTest {
         });
 
         verify(preferenceScopeFactory).createScope(GuvnorPreferenceScopes.GLOBAL);
-        verify(presenter).savePreferences(any(PreferenceScope.class),
+        verify(presenter).savePreferences(Mockito.<PreferenceScope> any(),
                                           eq(false));
     }
 

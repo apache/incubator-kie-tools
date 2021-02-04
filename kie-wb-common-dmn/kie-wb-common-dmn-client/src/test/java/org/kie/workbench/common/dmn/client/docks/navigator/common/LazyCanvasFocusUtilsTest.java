@@ -21,8 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -42,7 +42,7 @@ public class LazyCanvasFocusUtilsTest {
     @Test
     public void testFocusWhenLazyLoadIsEmpty() {
         utils.releaseFocus();
-        verify(canvasFocusUtils, never()).focus(anyString());
+        verify(canvasFocusUtils, never()).focus(Mockito.<String>any());
     }
 
     @Test

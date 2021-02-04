@@ -62,7 +62,8 @@ import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
@@ -71,10 +72,21 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.spaces.Space;
 
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectScreenServiceImplTest {
 
     @Mock
@@ -325,8 +337,8 @@ public class ProjectScreenServiceImplTest {
                                                           eq(module));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class),
-                                    any(CommentedOption.class));
+               times(1)).startBatch(Mockito.<FileSystem>any(),
+                                    Mockito.<CommentedOption>any());
         verify(pomService,
                times(1)).save(eq(pathToPom),
                               eq(model.getPOM()),
@@ -381,8 +393,8 @@ public class ProjectScreenServiceImplTest {
                                                          eq(module));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class),
-                                    any(CommentedOption.class));
+               times(1)).startBatch(Mockito.<FileSystem>any(),
+                                    Mockito.<CommentedOption>any());
         verify(pomService,
                times(1)).save(eq(pathToPom),
                               eq(model.getPOM()),
@@ -604,8 +616,8 @@ public class ProjectScreenServiceImplTest {
                                                           eq(module));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class),
-                                    any(CommentedOption.class));
+               times(1)).startBatch(Mockito.<FileSystem>any(),
+                                    Mockito.<CommentedOption>any());
         verify(pomService,
                times(1)).save(eq(pathToPom),
                               eq(model.getPOM()),
@@ -681,8 +693,8 @@ public class ProjectScreenServiceImplTest {
                                                          eq(module));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class),
-                                    any(CommentedOption.class));
+               times(1)).startBatch(Mockito.<FileSystem>any(),
+                                    Mockito.<CommentedOption>any());
         verify(pomService,
                times(1)).save(eq(pathToPom),
                               eq(model.getPOM()),

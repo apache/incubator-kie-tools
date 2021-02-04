@@ -33,16 +33,22 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ModuleRepositoriesSynchronizerTest {
 
     @Mock
@@ -97,8 +103,8 @@ public class ModuleRepositoriesSynchronizerTest {
         when(pomPath.getFileName()).thenReturn("pom.xml");
         when(pomPath.toURI()).thenReturn("default://p0/pom.xml");
 
-        when(ioService.get(any(URI.class))).thenReturn(pomNioPath);
-        when(moduleFactory.simpleModuleInstance(any(org.uberfire.java.nio.file.Path.class))).thenReturn(module);
+        when(ioService.get(Mockito.<URI>any())).thenReturn(pomNioPath);
+        when(moduleFactory.simpleModuleInstance(Mockito.<org.uberfire.java.nio.file.Path>any())).thenReturn(module);
         when(module.getRepositoriesPath()).thenReturn(moduleRepositoriesPath);
     }
 
@@ -122,7 +128,7 @@ public class ModuleRepositoriesSynchronizerTest {
         verify(moduleRepositoriesService,
                times(1)).save(eq(moduleRepositoriesPath),
                               moduleRepositoriesArgumentCaptor.capture(),
-                              any(String.class));
+                              Mockito.<String>any());
 
         final ModuleRepositories saved = moduleRepositoriesArgumentCaptor.getValue();
         assertNotNull(saved);
@@ -160,7 +166,7 @@ public class ModuleRepositoriesSynchronizerTest {
         verify(moduleRepositoriesService,
                times(1)).save(eq(moduleRepositoriesPath),
                               moduleRepositoriesArgumentCaptor.capture(),
-                              any(String.class));
+                              Mockito.<String>any());
 
         final ModuleRepositories saved = moduleRepositoriesArgumentCaptor.getValue();
         assertNotNull(saved);
@@ -194,7 +200,7 @@ public class ModuleRepositoriesSynchronizerTest {
         verify(moduleRepositoriesService,
                times(1)).save(eq(moduleRepositoriesPath),
                               moduleRepositoriesArgumentCaptor.capture(),
-                              any(String.class));
+                              Mockito.<String>any());
 
         final ModuleRepositories saved = moduleRepositoriesArgumentCaptor.getValue();
         assertNotNull(saved);

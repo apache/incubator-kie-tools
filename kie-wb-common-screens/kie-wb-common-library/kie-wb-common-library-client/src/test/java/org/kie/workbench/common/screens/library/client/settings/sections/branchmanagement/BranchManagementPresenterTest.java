@@ -42,7 +42,7 @@ import org.kie.workbench.common.screens.library.client.settings.util.sections.Me
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
@@ -50,12 +50,18 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class BranchManagementPresenterTest {
 
     @Mock

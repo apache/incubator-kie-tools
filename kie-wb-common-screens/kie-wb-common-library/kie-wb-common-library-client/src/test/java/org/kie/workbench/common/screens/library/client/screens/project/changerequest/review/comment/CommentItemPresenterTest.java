@@ -18,10 +18,12 @@ package org.kie.workbench.common.screens.library.client.screens.project.changere
 
 import java.util.Date;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,21 +31,19 @@ import org.kie.workbench.common.screens.library.client.util.DateUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CommentItemPresenterTest {
 
     private CommentItemPresenter presenter;
@@ -113,28 +113,34 @@ public class CommentItemPresenterTest {
     }
 
     @Test
-    public void deleteWhenAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        CommentItemPresenter.class.getDeclaredField("authorId")).set("admin");
+    public void deleteWhenAuthorTest() {
+        setPresenterPrivateField("authorId", "admin");
 
         presenter.delete();
 
-        verify(changeRequestService).deleteComment(anyString(),
-                                                   anyString(),
-                                                   anyLong(),
-                                                   anyLong());
+        verify(changeRequestService).deleteComment(Mockito.<String>any(),
+                                                   Mockito.<String>any(),
+                                                   Mockito.<Long>any(),
+                                                   Mockito.<Long>any());
     }
 
     @Test
-    public void deleteWhenNotAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        CommentItemPresenter.class.getDeclaredField("authorId")).set("user");
+    public void deleteWhenNotAuthorTest() {
+        setPresenterPrivateField("authorId", "user");
 
         presenter.delete();
 
-        verify(changeRequestService, never()).deleteComment(anyString(),
-                                                            anyString(),
-                                                            anyLong(),
-                                                            anyLong());
+        verify(changeRequestService, never()).deleteComment(Mockito.<String>any(),
+                                                            Mockito.<String>any(),
+                                                            Mockito.<Long>any(),
+                                                            Mockito.<Long>any());
+    }
+
+    private void setPresenterPrivateField(final String fieldName, final Object value) {
+        try {
+            FieldUtils.writeField(CommentItemPresenter.class.getDeclaredField(fieldName), presenter, value, true);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
     }
 }

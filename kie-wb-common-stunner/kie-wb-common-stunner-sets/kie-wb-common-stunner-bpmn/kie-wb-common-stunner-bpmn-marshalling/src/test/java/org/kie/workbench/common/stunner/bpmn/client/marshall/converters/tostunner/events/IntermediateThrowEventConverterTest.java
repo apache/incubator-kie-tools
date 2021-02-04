@@ -52,12 +52,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -84,7 +85,7 @@ public class IntermediateThrowEventConverterTest {
         propertyReader = mock(ThrowEventPropertyReader.class);
         eventDefinitions = new ArrayList<>();
         when(propertyReader.getEventDefinitions()).thenReturn(eventDefinitions);
-        when(propertyReaderFactory.of(any(ThrowEvent.class))).thenReturn(propertyReader);
+        when(propertyReaderFactory.of(Mockito.<ThrowEvent>any())).thenReturn(propertyReader);
 
         view = mock(View.class);
 
@@ -97,7 +98,7 @@ public class IntermediateThrowEventConverterTest {
     public void convert() {
         eventDefinitions.clear();
         try {
-            tested.convert(any(IntermediateThrowEvent.class));
+            tested.convert(Mockito.<IntermediateThrowEvent>any());
             fail("Exception expected");
         } catch (Exception exception) {
             assertTrue(exception instanceof UnsupportedOperationException);
@@ -114,7 +115,7 @@ public class IntermediateThrowEventConverterTest {
         eventDefinitions.add(mock(EventDefinition.class));
         eventDefinitions.add(mock(EventDefinition.class));
         try {
-            tested.convert(any(IntermediateThrowEvent.class));
+            tested.convert(Mockito.<IntermediateThrowEvent>any());
             fail("Exception expected");
         } catch (Exception exception) {
             assertTrue(exception instanceof UnsupportedOperationException);
@@ -195,23 +196,23 @@ public class IntermediateThrowEventConverterTest {
 
     private void verifyCommonProperties(BaseThrowingIntermediateEvent definition) {
         verify(propertyReader).getBounds();
-        verify(view).setBounds(any(Bounds.class));
+        verify(view).setBounds(Mockito.<Bounds>any());
 
         verify(propertyReader).getName();
         verify(propertyReader).getDocumentation();
-        verify(definition).setGeneral(any(BPMNGeneralSet.class));
+        verify(definition).setGeneral(Mockito.<BPMNGeneralSet>any());
 
         verify(propertyReader).getBackgroundSet();
-        verify(definition).setBackgroundSet(any(BackgroundSet.class));
+        verify(definition).setBackgroundSet(Mockito.<BackgroundSet>any());
 
         verify(propertyReader).getFontSet();
-        verify(definition).setFontSet(any(FontSet.class));
+        verify(definition).setFontSet(Mockito.<FontSet>any());
 
         verify(propertyReader).getCircleDimensionSet();
-        verify(definition).setDimensionsSet(any(CircleDimensionSet.class));
+        verify(definition).setDimensionsSet(Mockito.<CircleDimensionSet>any());
 
         verify(propertyReader).getAssignmentsInfo();
-        verify(definition).setDataIOSet(any(DataIOSet.class));
+        verify(definition).setDataIOSet(Mockito.<DataIOSet>any());
     }
 
     private void verifyMessageEventConvert() {

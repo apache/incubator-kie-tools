@@ -44,7 +44,8 @@ import org.kie.workbench.common.screens.library.client.screens.organizationaluni
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
@@ -52,7 +53,6 @@ import org.uberfire.promise.SyncPromises;
 import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doAnswer;
@@ -66,7 +66,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class LibraryScreenTest {
 
     @Mock
@@ -434,7 +434,7 @@ public class LibraryScreenTest {
     public void testUpdateSpaceDescription() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         when(organizationalUnit.getDescription()).thenReturn("newdescription");
-        doReturn(organizationalUnit).when(organizationalUnitService).updateOrganizationalUnit(anyString(), anyString(), any(), anyString());
+        doReturn(organizationalUnit).when(organizationalUnitService).updateOrganizationalUnit(Mockito.<String> any(), Mockito.<String> any(), any(), Mockito.<String> any());
         libraryScreen.changeDescription("newdescription");
 
         verify(this.view, times(1)).setDescription("newdescription");

@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
 
 import static org.mockito.Mockito.mock;
@@ -38,5 +39,10 @@ public class DefaultCardComponentTest extends BaseCardComponentTest<DefaultCardC
     @Override
     protected Class<DefaultIncludedModelActiveRecord> getActiveRecordClass() {
         return DefaultIncludedModelActiveRecord.class;
+    }
+
+    @Override
+    protected BaseIncludedModelActiveRecord prepareIncludedModelMock() {
+        return mock(DefaultIncludedModelActiveRecord.class);
     }
 }

@@ -32,13 +32,13 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDefEditorContent;
 import org.kie.workbench.common.screens.datasource.management.util.DriverDefSerializer;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DriverDefEditorServiceTest
         extends DefEditorServiceBaseTest {
 

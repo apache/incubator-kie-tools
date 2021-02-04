@@ -7,6 +7,11 @@
   <version>1.0.0.Final</version>
   <name>Dummy Deps</name>
   <description>Dummy Deps</description>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -31,8 +36,8 @@
         <version>${version.io.takari.maven.plugins.compiler}</version>
         <configuration>
           <compilerId>jdt</compilerId>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
           <failOnError>true</failOnError>
         </configuration>
         <executions>

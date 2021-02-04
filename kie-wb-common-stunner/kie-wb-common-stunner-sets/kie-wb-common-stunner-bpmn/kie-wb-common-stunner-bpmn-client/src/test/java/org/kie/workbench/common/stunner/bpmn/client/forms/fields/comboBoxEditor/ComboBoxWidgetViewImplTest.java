@@ -17,23 +17,23 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor;
 
 import com.google.gwtmockito.GwtMockito;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class ComboBoxWidgetViewImplTest {
 
     TextBox customValueField;
@@ -56,10 +56,10 @@ public class ComboBoxWidgetViewImplTest {
         view.valueComboBox = valueComboBox;
         view.dataModel = dataModel;
         doCallRealMethod().when(view).init();
-        doCallRealMethod().when(view).setValue(anyString());
-        doCallRealMethod().when(view).setValue(anyString(),
+        doCallRealMethod().when(view).setValue(any());
+        doCallRealMethod().when(view).setValue(any(),
                                                anyBoolean());
-        doCallRealMethod().when(view).setComboBoxValues(any(ListBoxValues.class));
+        doCallRealMethod().when(view).setComboBoxValues(Mockito.<ListBoxValues>any());
     }
 
     @Test
@@ -73,8 +73,8 @@ public class ComboBoxWidgetViewImplTest {
                               any(),
                               anyBoolean(),
                               anyBoolean(),
-                              anyString(),
-                              anyString());
+                              any(),
+                              any());
     }
 
     @Test

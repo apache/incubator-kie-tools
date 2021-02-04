@@ -32,12 +32,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeploymentVerifierTest {
@@ -158,6 +162,6 @@ public class DeploymentVerifierTest {
         when(moduleRepositoriesService.load(path)).thenReturn(moduleRepositories);
         when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav),
                                                                  eq(module),
-                                                                 any(MavenRepositoryMetadata[].class))).thenReturn(repositories);
+                                                                 Mockito.<MavenRepositoryMetadata[]>any())).thenReturn(repositories);
     }
 }

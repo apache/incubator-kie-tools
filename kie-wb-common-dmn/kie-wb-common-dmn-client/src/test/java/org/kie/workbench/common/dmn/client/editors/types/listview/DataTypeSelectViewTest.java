@@ -43,6 +43,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
 
@@ -51,7 +52,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHel
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSelectView_CustomTitle;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSelectView_DefaultTitle;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -379,7 +379,7 @@ public class DataTypeSelectViewTest {
         final DataType dataType = makeDataType(type);
 
         doNothing().when(view).showSelectPicker();
-        doNothing().when(view).setPickerValue(anyString());
+        doNothing().when(view).setPickerValue(Mockito.<String>any());
         when(presenter.getDataType()).thenReturn(dataType);
         typeText.classList = mock(DOMTokenList.class);
 

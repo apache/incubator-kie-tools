@@ -33,10 +33,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -142,7 +142,7 @@ public class NameFieldRendererTest {
         renderer.getFormGroup(mode);
 
         verify(textBox).setEnabled(enabled);
-        verify(formGroup).render(anyString(), eq(textBox), eq(definition));
+        verify(formGroup).render(Mockito.<String>any(), eq(textBox), eq(definition));
     }
 
     @Test

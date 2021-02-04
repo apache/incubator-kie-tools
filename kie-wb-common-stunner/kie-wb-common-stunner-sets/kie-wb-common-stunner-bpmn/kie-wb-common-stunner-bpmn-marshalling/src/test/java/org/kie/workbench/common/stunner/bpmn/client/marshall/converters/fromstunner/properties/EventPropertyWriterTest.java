@@ -61,8 +61,6 @@ public abstract class EventPropertyWriterTest {
         propertyWriter.addMessage(messageRef);
         assertEquals(messageRef.getStructure(), SAMPLE_STRUCTURE_REF);
 
-        when(itemDefinition.getStructureRef()).thenReturn(SAMPLE_STRUCTURE_REF);
-
         messageRef.setStructure("nonEmpty");
         propertyWriter.addMessage(messageRef);
         assertEquals(messageRef.getStructure(), "nonEmpty");

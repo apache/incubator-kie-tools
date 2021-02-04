@@ -40,7 +40,7 @@ public class StyleHelperTest {
         PowerMockito.mockStatic(DOMUtil.class);
         StyleHelper.setFormStatus(form,
                                   FormStatus.VALID);
-        verifyStatic();
+        verifyStatic(DOMUtil.class);
         DOMUtil.addUniqueEnumStyleName(form,
                                        ValidationState.class,
                                        ValidationState.NONE);
@@ -51,7 +51,7 @@ public class StyleHelperTest {
         PowerMockito.mockStatic(DOMUtil.class);
         StyleHelper.setFormStatus(form,
                                   FormStatus.ERROR);
-        verifyStatic();
+        verifyStatic(DOMUtil.class);
         DOMUtil.addUniqueEnumStyleName(form,
                                        ValidationState.class,
                                        ValidationState.ERROR);

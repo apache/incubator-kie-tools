@@ -17,11 +17,8 @@
 package org.kie.workbench.common.screens.library.client.util.breadcrumb;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -36,12 +33,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.promise.SyncPromises;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -54,7 +50,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectBranchBreadcrumbTest {
 
     @Mock

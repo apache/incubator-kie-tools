@@ -49,10 +49,10 @@ import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -88,7 +88,7 @@ public class DMNEditorMenuSessionItemsTest {
 
         when(fileMenuBuilder.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(fileMenuBuilder);
         when(sessionItems.getTranslationService()).thenReturn(translationService);
-        when(translationService.getValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(translationService.getValue(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Test

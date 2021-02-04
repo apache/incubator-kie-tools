@@ -44,9 +44,9 @@ import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeFactory
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -84,9 +84,9 @@ public class DMNShapeFactoryTest {
                                            dmnDecisionServiceShapeFactory,
                                            delegateShapeFactory);
 
-        when(delegateShapeFactory.delegate(any(Class.class),
-                                           any(ShapeDef.class),
-                                           any(Supplier.class))).thenReturn(delegateShapeFactory);
+        when(delegateShapeFactory.delegate(Mockito.<Class>any(),
+                                           Mockito.<ShapeDef>any(),
+                                           Mockito.<Supplier>any())).thenReturn(delegateShapeFactory);
     }
 
     @Test
@@ -95,57 +95,57 @@ public class DMNShapeFactoryTest {
         factory.init();
 
         verify(delegateShapeFactory).delegate(eq(DMNDiagram.class),
-                                              any(DMNSVGShapeDefImpl.class),
+                                              Mockito.<DMNSVGShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(InputData.class),
-                                              any(DMNSVGShapeDefImpl.class),
+                                              Mockito.<DMNSVGShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(KnowledgeSource.class),
-                                              any(DMNSVGShapeDefImpl.class),
+                                              Mockito.<DMNSVGShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(BusinessKnowledgeModel.class),
-                                              any(DMNSVGShapeDefImpl.class),
+                                              Mockito.<DMNSVGShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(Decision.class),
-                                              any(DMNSVGShapeDefImpl.class),
+                                              Mockito.<DMNSVGShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(TextAnnotation.class),
-                                              any(DMNSVGShapeDefImpl.class),
+                                              Mockito.<DMNSVGShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(Association.class),
-                                              any(DMNConnectorShapeDefImpl.class),
+                                              Mockito.<DMNConnectorShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(dmnConnectorShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(AuthorityRequirement.class),
-                                              any(DMNConnectorShapeDefImpl.class),
+                                              Mockito.<DMNConnectorShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(dmnConnectorShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(InformationRequirement.class),
-                                              any(DMNConnectorShapeDefImpl.class),
+                                              Mockito.<DMNConnectorShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(dmnConnectorShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(KnowledgeRequirement.class),
-                                              any(DMNConnectorShapeDefImpl.class),
+                                              Mockito.<DMNConnectorShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(dmnConnectorShapeFactory, shapeDefFactoryCaptor.getValue().get());
 
         verify(delegateShapeFactory).delegate(eq(DecisionService.class),
-                                              any(DMNSVGShapeDefImpl.class),
+                                              Mockito.<DMNSVGShapeDefImpl>any(),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(dmnDecisionServiceShapeFactory, shapeDefFactoryCaptor.getValue().get());
     }

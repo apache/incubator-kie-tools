@@ -24,13 +24,12 @@ import java.util.TreeMap;
 
 import io.fabric8.openshift.api.model.Route;
 import io.fabric8.openshift.api.model.RouteList;
-import sun.net.spi.nameservice.NameService;
 
 /**
  * OpenShiftNameService.
  */
 @SuppressWarnings("restriction")
-public class OpenShiftNameService implements NameService {
+public class OpenShiftNameService {
 
     private static final Map<String, InetAddress> ROUTING = Collections.synchronizedMap(new TreeMap<String, InetAddress>());
 
@@ -67,23 +66,4 @@ public class OpenShiftNameService implements NameService {
             return ROUTING.containsKey(host);
         }
     }
-
-    @Override
-    public InetAddress[] lookupAllHostAddr(String host) throws UnknownHostException {
-        synchronized (ROUTING) {
-            if (host != null) {
-                InetAddress routerAddr = ROUTING.get(host);
-                if (routerAddr != null) {
-                    return new InetAddress[] { InetAddress.getByAddress(host, routerAddr.getAddress()) };
-                }
-            }
-            throw new UnknownHostException(host);
-        }
-    }
-
-    @Override
-    public String getHostByAddr(byte[] addr) throws UnknownHostException {
-        throw new UnknownHostException();
-    }
-
 }

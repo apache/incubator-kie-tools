@@ -158,7 +158,6 @@ public class StartEventFilterProviderFactoryTest {
     @Test
     public void testStartEventFilterProviderParentNull() {
         when(parentNode.asNode()).thenReturn(null);
-        when(parentNode.getContent()).thenReturn(null);
 
         Class<?> filterClass = StartErrorEvent.class;
 

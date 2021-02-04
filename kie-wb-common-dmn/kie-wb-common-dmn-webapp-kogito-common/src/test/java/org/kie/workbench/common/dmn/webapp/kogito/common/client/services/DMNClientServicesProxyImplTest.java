@@ -35,7 +35,7 @@ import org.kie.workbench.common.dmn.client.marshaller.included.DMNMarshallerImpo
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;

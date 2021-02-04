@@ -239,8 +239,6 @@ public class ConfigGroupsMigrationServiceTest {
 
         doNothing().when(ioService).startBatch(any(FileSystem.class));
         doNothing().when(ioService).endBatch();
-        doReturn(fileSystemTestingUtils.getFileSystem()).when(ioService).newFileSystem(any(URI.class),
-                                                                                       anyMap());
 
         return ioService;
     }

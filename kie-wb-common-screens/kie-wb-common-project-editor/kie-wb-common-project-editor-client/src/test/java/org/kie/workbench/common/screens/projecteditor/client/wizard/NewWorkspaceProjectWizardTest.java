@@ -51,6 +51,7 @@ import org.kie.workbench.common.screens.projecteditor.client.util.KiePOMDefaultO
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -254,7 +255,7 @@ public class NewWorkspaceProjectWizardTest {
                times(1)).hideBusyIndicator();
         verify(conflictingRepositoriesPopup,
                times(1)).setContent(eq(gav),
-                                    any(Set.class),
+                                    Mockito.<Set>any(),
                                     commandArgumentCaptor.capture());
         verify(conflictingRepositoriesPopup,
                times(1)).show();

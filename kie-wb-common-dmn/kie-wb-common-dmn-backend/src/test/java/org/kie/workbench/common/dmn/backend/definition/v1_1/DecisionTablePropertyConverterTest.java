@@ -23,7 +23,7 @@ import org.kie.dmn.model.v1_2.TDecisionTable;
 import org.kie.dmn.model.v1_2.TOutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;

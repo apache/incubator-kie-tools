@@ -84,8 +84,8 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -171,7 +171,7 @@ public class ObserverBuilderControlTest {
         when(clientDefinitionManager.adapters()).thenReturn(adapters);
         when(clientDefinitionManager.definitionSets()).thenReturn(mock(TypeDefinitionSetRegistry.class));
 
-        when(canvasCommandFactory.addNode(any(Node.class), anyString())).thenAnswer(new Answer<Command>() {
+        when(canvasCommandFactory.addNode(any(Node.class), any())).thenAnswer(new Answer<Command>() {
 
             @Override
             public Command answer(InvocationOnMock invocationOnMock) {
@@ -198,8 +198,8 @@ public class ObserverBuilderControlTest {
         when(shapeFactory.newShape(any())).thenReturn(mock(ElementShape.class));
         when(shapeSet.getShapeFactory()).thenReturn(shapeFactory);
 
-        when(shapeManager.getShapeSet(anyString())).thenReturn(shapeSet);
-        when(shapeManager.getDefaultShapeSet(anyString())).thenReturn(shapeSet);
+        when(shapeManager.getShapeSet(any())).thenReturn(shapeSet);
+        when(shapeManager.getDefaultShapeSet(any())).thenReturn(shapeSet);
 
         tested = new ObserverBuilderControl(clientDefinitionManager,
                                             clientFactoryServices,
@@ -331,7 +331,7 @@ public class ObserverBuilderControlTest {
 
     @Test
     public void testTransformedLocationWithPan() {
-        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgumentAt(0, Double.class) + 5, invocation.getArgumentAt(1, Double.class) - 10)));
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgument(0, Double.class) + 5, invocation.getArgument(1, Double.class) - 10)));
         Point2D location1 = tested.getTransformedLocation(0d, 0d);
         assertEquals(5d, location1.getX(), 0d);
         assertEquals(-10d, location1.getY(), 0d);
@@ -342,7 +342,7 @@ public class ObserverBuilderControlTest {
 
     @Test
     public void testTransformedLocationWithZoom() {
-        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgumentAt(0, Double.class) * 0.5, invocation.getArgumentAt(1, Double.class) * 2)));
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgument(0, Double.class) * 0.5, invocation.getArgument(1, Double.class) * 2)));
         Point2D location1 = tested.getTransformedLocation(0d, 0d);
         assertEquals(0d, location1.getX(), 0d);
         assertEquals(0d, location1.getY(), 0d);
@@ -353,7 +353,7 @@ public class ObserverBuilderControlTest {
 
     @Test
     public void testTransformedLocationWithPanAndZoom() {
-        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D((invocation.getArgumentAt(0, Double.class) + 5) * 0.5, (invocation.getArgumentAt(1, Double.class) - 5) * 2)));
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D((invocation.getArgument(0, Double.class) + 5) * 0.5, (invocation.getArgument(1, Double.class) - 5) * 2)));
         Point2D location1 = tested.getTransformedLocation(0d, 0d);
         assertEquals(2.5d, location1.getX(), 0d);
         assertEquals(-10d, location1.getY(), 0d);

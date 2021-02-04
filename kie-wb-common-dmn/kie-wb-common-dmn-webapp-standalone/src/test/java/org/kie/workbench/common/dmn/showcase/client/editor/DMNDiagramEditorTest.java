@@ -65,6 +65,7 @@ import org.kie.workbench.common.widgets.client.search.component.SearchBarCompone
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
@@ -80,7 +81,6 @@ import static org.kie.workbench.common.dmn.showcase.client.editor.DMNDiagramEdit
 import static org.kie.workbench.common.dmn.showcase.client.editor.DMNDiagramEditor.MAIN_EDITOR_PAGE_INDEX;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -459,7 +459,7 @@ public class DMNDiagramEditorTest {
         when(menus.getItems()).thenReturn(items);
         when(event.isEditModeEnabled()).thenReturn(true);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(menus);
             return null;
         }).when(editor).getMenu(any());
 
@@ -480,7 +480,7 @@ public class DMNDiagramEditorTest {
         when(menus.getItems()).thenReturn(items);
         when(event.isEditModeEnabled()).thenReturn(false);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(menus);
             return null;
         }).when(editor).getMenu(any());
 
@@ -496,7 +496,7 @@ public class DMNDiagramEditorTest {
         final Metadata metadata = mock(Metadata.class);
         final String title = "title";
 
-        doNothing().when(editor).updateTitle(anyString());
+        doNothing().when(editor).updateTitle(Mockito.<String>any());
         doReturn(diagram).when(editor).getDiagram();
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getTitle()).thenReturn(title);

@@ -17,11 +17,13 @@
 package org.kie.workbench.common.screens.library.client.screens.project.changerequest.list;
 
 import elemental2.dom.HTMLElement;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestCountSummary;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,20 +31,19 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.spaces.Space;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ChangeRequestListPresenterTest {
 
     private ChangeRequestListPresenter presenter;
@@ -113,13 +114,11 @@ public class ChangeRequestListPresenterTest {
     }
 
     @Test
-    public void showEmptyListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestListPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+    public void showEmptyListTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
-        doReturn(mock(ChangeRequestCountSummary.class)).when(changeRequestService).countChangeRequests(anyString(),
-                                                                                                       anyString());
+        doReturn(mock(ChangeRequestCountSummary.class)).when(changeRequestService).countChangeRequests(Mockito.<String>any(),
+                                                                                                       Mockito.<String>any());
 
         presenter.setupList(i -> {
         });
@@ -133,13 +132,11 @@ public class ChangeRequestListPresenterTest {
     }
 
     @Test
-    public void showPopulatedListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestListPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+    public void showPopulatedListTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
         ChangeRequestCountSummary countSummary = new ChangeRequestCountSummary(10, 10);
-        doReturn(countSummary).when(changeRequestService).countChangeRequests(anyString(), anyString());
+        doReturn(countSummary).when(changeRequestService).countChangeRequests(Mockito.<String>any(), Mockito.<String>any());
 
         presenter.setupList(i -> {
         });
@@ -150,5 +147,13 @@ public class ChangeRequestListPresenterTest {
         verify(emptyChangeRequestListPresenter, never()).getView();
         verify(populatedChangeRequestListPresenter).getView();
         verify(view).setContent(populatedChangeRequestListPresenter.getView().getElement());
+    }
+
+    private void setPresenterPrivateField(final String fieldName, final Object value) {
+        try {
+            FieldUtils.writeField(ChangeRequestListPresenter.class.getDeclaredField(fieldName), presenter, value, true);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
     }
 }

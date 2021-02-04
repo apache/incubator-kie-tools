@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
@@ -69,7 +69,7 @@ public class PreviewDiagramScreenTest {
     private DMNDiagramsSession dmnDiagramsSession;
 
     @Mock
-    private CanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private Diagram diagram;

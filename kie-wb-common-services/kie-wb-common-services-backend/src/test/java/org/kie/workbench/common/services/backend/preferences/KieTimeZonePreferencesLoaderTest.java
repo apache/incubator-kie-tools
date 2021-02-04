@@ -19,16 +19,15 @@ package org.kie.workbench.common.services.backend.preferences;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.gwtbootstrap3.client.ui.Modal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.KIE_TIMEZONE_OFFSET;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -69,7 +68,7 @@ public class KieTimeZonePreferencesLoaderTest {
 
         mockStatic(TimeZone.class);
         when(TimeZone.getDefault()).thenReturn(timeZone);
-        when(timeZone.getOffset(anyInt())).thenReturn(expectedOffset);
+        when(timeZone.getOffset(Mockito.anyLong())).thenReturn(expectedOffset);
 
         assertEquals(String.valueOf(expectedOffset), getLoaderOffset());
     }

@@ -75,7 +75,7 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
@@ -107,7 +107,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class LibraryServiceImplTest {
 
     @Mock
@@ -208,7 +208,7 @@ public class LibraryServiceImplTest {
                                                          makeBranch("repo1-branch2",
                                                                     repo1.getAlias()));
         when(repo1.getBranches()).thenReturn(repo1Branches);
-        when(repo1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgumentAt(0, String.class))).findFirst());
+        when(repo1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgument(0, String.class))).findFirst());
         when(repo2Default.getAlias()).thenReturn("ou2-repo-alias");
         final List<Branch> repo2Branches = Collections.singletonList(makeBranch("repo2-branch1",
                                                                                 repo2Default.getAlias()));

@@ -35,13 +35,13 @@ import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentatio
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -124,9 +124,9 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
                                 eq(name),
                                 eq(defSetId));
         verify(callback,
-               times(1)).onSuccess(any(Path.class));
+               times(1)).onSuccess(Mockito.<Path>any());
         verify(callback,
-               times(0)).onError(any(ClientRuntimeError.class));
+               times(0)).onError(Mockito.<ClientRuntimeError>any());
     }
 
     @Test
@@ -142,7 +142,7 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         verify(callback,
                times(1)).onSuccess(eq(diagram));
         verify(callback,
-               times(0)).onError(any(ClientRuntimeError.class));
+               times(0)).onError(Mockito.<ClientRuntimeError>any());
     }
 
     @Test
@@ -158,7 +158,7 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         verify(callback,
                times(1)).onSuccess(eq(diagram));
         verify(callback,
-               times(0)).onError(any(ClientRuntimeError.class));
+               times(0)).onError(Mockito.<ClientRuntimeError>any());
     }
 
     @Test
@@ -182,7 +182,7 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         verify(callback,
                times(1)).onSuccess(eq(diagram));
         verify(callback,
-               times(0)).onError(any(ClientRuntimeError.class));
+               times(0)).onError(Mockito.<ClientRuntimeError>any());
     }
 
     @Test
@@ -197,9 +197,9 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         verify(diagramLookupService,
                times(1)).lookup(eq(request));
         verify(callback,
-               times(1)).onSuccess(any(LookupManager.LookupResponse.class));
+               times(1)).onSuccess(Mockito.<LookupManager.LookupResponse>any());
         verify(callback,
-               times(0)).onError(any(ClientRuntimeError.class));
+               times(0)).onError(Mockito.<ClientRuntimeError>any());
     }
 
     @Test
@@ -209,7 +209,7 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         final ShapeSet shapeSet = mock(ShapeSet.class);
         final ServiceCallback<D> callback = mock(ServiceCallback.class);
         when(shapeSet.getId()).thenReturn(ssid);
-        when(shapeManager.getDefaultShapeSet(anyString())).thenReturn(shapeSet);
+        when(shapeManager.getDefaultShapeSet(Mockito.<String>any())).thenReturn(shapeSet);
         when(metadata.getShapeSetId()).thenReturn(null);
         when(diagramService.getDiagramByPath(eq(path))).thenReturn(diagram);
 
@@ -235,9 +235,9 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         verify(diagramService,
                times(1)).getRawContent(eq(diagram));
         verify(callback,
-               times(1)).onSuccess(any(String.class));
+               times(1)).onSuccess(Mockito.<String>any());
         verify(callback,
-               times(0)).onError(any(ClientRuntimeError.class));
+               times(0)).onError(Mockito.<ClientRuntimeError>any());
     }
 
     @Test
@@ -258,6 +258,6 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         ServiceCallback serviceCallback = mock(ServiceCallback.class);
         when(diagramService.saveOrUpdate(any())).thenReturn(metadata);
         tested.saveOrUpdate(diagram, serviceCallback);
-        verify(sessionDiagramSavedEvent, never()).fire(any(SessionDiagramSavedEvent.class));
+        verify(sessionDiagramSavedEvent, never()).fire(Mockito.<SessionDiagramSavedEvent>any());
     }
 }

@@ -52,7 +52,7 @@ public class GatewayConverter extends AbstractConverter implements NodeConverter
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    public Result<BpmnNode> convert(org.eclipse.bpmn2.Gateway gateway) {
+    public Result<BpmnNode> convert(Gateway gateway) {
         return Match.<Gateway, Result<BpmnNode>>of()
                 .<org.eclipse.bpmn2.ParallelGateway>when(e -> e instanceof org.eclipse.bpmn2.ParallelGateway,
                                                          this::parallelGateway)

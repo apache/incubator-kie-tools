@@ -31,6 +31,7 @@ import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
 import org.uberfire.experimental.service.registry.ExperimentalFeature;
@@ -117,8 +118,8 @@ public class DefaultAdminPageHelperTest {
 
     @Test
     public void securityShortcutsAreAddedWhenUserHasPermission() {
-        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
-                                                            any(User.class));
+        doReturn(true).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
+                                                            Mockito.<User>any());
 
         defaultAdminPageHelper.setup();
 
@@ -149,8 +150,8 @@ public class DefaultAdminPageHelperTest {
 
     @Test
     public void securityShortcutsAreNotAddedWhenUserHasNoPermission() {
-        doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class),
-                                                             any(User.class));
+        doReturn(false).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
+                                                             Mockito.<User>any());
 
         defaultAdminPageHelper.setup();
 
@@ -184,8 +185,8 @@ public class DefaultAdminPageHelperTest {
 
     @Test
     public void perspectivesAreAddedWhenUserHasPermission() {
-        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
-                                                            any(User.class));
+        doReturn(true).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
+                                                            Mockito.<User>any());
 
         defaultAdminPageHelper.setup();
 
@@ -213,8 +214,8 @@ public class DefaultAdminPageHelperTest {
 
     @Test
     public void perspectivesAreNotAddedWhenUserHasNoPermission() {
-        doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class),
-                                                             any(User.class));
+        doReturn(false).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
+                                                             Mockito.<User>any());
 
         defaultAdminPageHelper.setup();
 
@@ -325,7 +326,7 @@ public class DefaultAdminPageHelperTest {
                                   eq(title),
                                   any(),
                                   eq("general"),
-                                  any(Command.class));
+                                  Mockito.<Command>any());
     }
 
     @Test
@@ -405,21 +406,21 @@ public class DefaultAdminPageHelperTest {
 
     private void verifyDataTransferAdded(boolean expected) {
         verify(adminPage, expected ? times(1) : never())
-            .addTool(eq("root"), eq(DATA_TRANSFER), any(), eq("services"), any(Command.class));
+            .addTool(eq("root"), eq(DATA_TRANSFER), any(), eq("services"), Mockito.<Command>any());
     }
 
     @Test
     public void archetypesAllowedTest() {
-        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
-                                                            any(User.class));
+        doReturn(true).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
+                                                            Mockito.<User>any());
         defaultAdminPageHelper.setup();
         verifyArchetypesAdded(true);
     }
 
     @Test
     public void archetypesNotAllowedTest() {
-        doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class),
-                                                             any(User.class));
+        doReturn(false).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
+                                                             Mockito.<User>any());
         defaultAdminPageHelper.setup();
         verifyArchetypesAdded(false);
     }
@@ -436,11 +437,11 @@ public class DefaultAdminPageHelperTest {
                          eq(ARCHETYPES),
                          any(),
                          eq("advanced"),
-                         any(Command.class));
+                         Mockito.<Command>any());
     }
 
     private void verifyExperimentalFeatureAdded(final boolean addExperimental, final boolean addFeatures) {
-        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class), any(User.class));
+        doReturn(true).when(authorizationManager).authorize(Mockito.<ResourceRef>any(), Mockito.<User>any());
 
         List<ExperimentalFeature> definitions = new ArrayList<>();
         ExperimentalFeaturesRegistry registry = mock(ExperimentalFeaturesRegistry.class);
@@ -464,17 +465,17 @@ public class DefaultAdminPageHelperTest {
                                                                         eq(EXPERIMENTAL_SETTINGS),
                                                                         any(),
                                                                         eq("advanced"),
-                                                                        any(Command.class));
+                                                                        Mockito.<Command>any());
     }
 
     private void verifyProfilePreferenceAdded(boolean authorized) {
         verify(adminPage, authorized ? times(1) : never()).addPreference(eq("root"),
-                                        eq(PROFILE_PREFERENCES),
-                                        any(),
-                                        any(),
-                                        eq("advanced"),
-                                        any(PreferenceScope.class),
-                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
+                                                                         eq(PROFILE_PREFERENCES),
+                                                                         any(),
+                                                                         any(),
+                                                                         eq("advanced"),
+                                                                         Mockito.<PreferenceScope>any(),
+                                                                         eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 
     private void verifyLibraryPreferencesWasAddedInGlobalScope() {
@@ -495,7 +496,7 @@ public class DefaultAdminPageHelperTest {
                                       any(),
                                       any(),
                                       any(),
-                                      any(PreferenceScope.class),
+                                      Mockito.<PreferenceScope>any(),
                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 
@@ -539,7 +540,7 @@ public class DefaultAdminPageHelperTest {
                                       any(),
                                       any(),
                                       any(),
-                                      any(PreferenceScope.class),
+                                      Mockito.<PreferenceScope>any(),
                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 
@@ -550,7 +551,7 @@ public class DefaultAdminPageHelperTest {
                                                 any(),
                                                 any(),
                                                 any(),
-                                                any(PreferenceScope.class),
+                                                Mockito.<PreferenceScope>any(),
                                                 eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 

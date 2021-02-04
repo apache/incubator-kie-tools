@@ -33,17 +33,17 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.U
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class UndefinedExpressionSelectorPopoverImplTest {
 
     @Mock
@@ -98,7 +98,7 @@ public class UndefinedExpressionSelectorPopoverImplTest {
 
         when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
 
-        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(translationService.getTranslation(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
 
         this.popover = new UndefinedExpressionSelectorPopoverImpl(view, translationService, expressionEditorDefinitionsSupplier);
     }

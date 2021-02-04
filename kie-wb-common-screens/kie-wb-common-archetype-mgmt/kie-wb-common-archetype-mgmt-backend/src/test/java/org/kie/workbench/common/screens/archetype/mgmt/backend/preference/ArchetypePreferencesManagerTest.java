@@ -29,14 +29,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.ArchetypePreferences;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -86,11 +86,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.addArchetype(ARCHETYPE_ALIAS);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, times(3)).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, times(3)).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
     }
 
     @Test
@@ -100,11 +100,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.addArchetype(ARCHETYPE_ALIAS);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences, never()).save(any(PreferenceScope.class));
+        verify(archetypePreferences, never()).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, never()).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, never()).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
     }
 
     @Test
@@ -114,11 +114,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.addArchetype(ARCHETYPE_ALIAS);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, times(3)).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, times(3)).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
 
         verify(archetypePreferences, times(4)).setDefaultSelection(ARCHETYPE_ALIAS);
     }
@@ -130,11 +130,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.removeArchetype(ARCHETYPE_ALIAS);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, times(3)).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, times(3)).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
     }
 
     @Test
@@ -145,11 +145,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.removeArchetype(ARCHETYPE_ALIAS);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, times(3)).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, times(3)).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
 
         verify(archetypePreferences, times(4)).setDefaultSelection(anyString());
     }
@@ -161,11 +161,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.setDefaultArchetype(ARCHETYPE_ALIAS);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, times(3)).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, times(3)).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
 
         verify(archetypePreferences, times(4)).setDefaultSelection(anyString());
     }
@@ -177,11 +177,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.setDefaultArchetype(ARCHETYPE_ALIAS);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences, never()).save(any(PreferenceScope.class));
+        verify(archetypePreferences, never()).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, never()).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, never()).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
 
         verify(archetypePreferences, never()).setDefaultSelection(anyString());
     }
@@ -198,8 +198,8 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.initializeCustomPreference("identifier");
 
         verify(workbenchPreferenceScopeResolutionStrategies).getSpaceInfoFor(anyString());
-        verify(archetypePreferences).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
     }
 
     @Test
@@ -209,11 +209,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.enableArchetype(ARCHETYPE_ALIAS, true, true);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, times(3)).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, times(3)).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
     }
 
     @Test
@@ -223,11 +223,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.enableArchetype(ARCHETYPE_ALIAS, true, false);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, never()).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, never()).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, never()).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, never()).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, never()).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
     }
 
     @Test
@@ -237,11 +237,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.enableArchetype(ARCHETYPE_ALIAS, true, true);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences, never()).save(any(PreferenceScope.class));
+        verify(archetypePreferences, never()).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, never()).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, never()).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
     }
 
     @Test
@@ -252,11 +252,11 @@ public class ArchetypePreferencesManagerTest {
         archetypePreferencesManager.enableArchetype(ARCHETYPE_ALIAS, false, true);
 
         verify(archetypePreferences).load();
-        verify(archetypePreferences).save(any(PreferenceScope.class));
+        verify(archetypePreferences).save(Mockito.<PreferenceScope>any());
 
         verify(workbenchPreferenceScopeResolutionStrategies, times(3)).getSpaceInfoFor(anyString());
-        verify(archetypePreferences, times(3)).load(any(PreferenceScopeResolutionStrategyInfo.class));
-        verify(archetypePreferences, times(3)).save(any(PreferenceScopeResolutionStrategyInfo.class));
+        verify(archetypePreferences, times(3)).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
+        verify(archetypePreferences, times(3)).save(Mockito.<PreferenceScopeResolutionStrategyInfo>any());
 
         verify(archetypePreferences, times(4)).setDefaultSelection(anyString());
     }

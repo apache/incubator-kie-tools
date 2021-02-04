@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext
 import org.kie.workbench.common.stunner.core.rule.violations.ContainmentRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.mockito.ArgumentCaptor;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,7 +51,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
 
     private static final String PARENT_UUID = "parentUUID";

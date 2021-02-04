@@ -32,11 +32,12 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.ClientRect;
+import elemental2.dom.DOMRect;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLLabelElement;
+import elemental2.dom.MouseEvent;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
@@ -65,7 +66,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -170,21 +170,21 @@ public class VariableListItemWidgetViewImplTest {
         view.tagNamesList = new ArrayList<>();
         doCallRealMethod().when(view).init();
         doCallRealMethod().when(view).getCustomDataType();
-        doCallRealMethod().when(view).setCustomDataType(anyString());
+        doCallRealMethod().when(view).setCustomDataType(any());
         doCallRealMethod().when(view).getModel();
         doCallRealMethod().when(view).setModel(any(VariableRow.class));
-        doCallRealMethod().when(view).getModelValue(any(ValueListBox.class));
+        doCallRealMethod().when(view).getModelValue(any());
         doCallRealMethod().when(view).setTextBoxModelValue(any(TextBox.class),
-                                                           anyString());
-        doCallRealMethod().when(view).setListBoxModelValue(any(ValueListBox.class),
-                                                           anyString());
+                                                           any());
+        doCallRealMethod().when(view).setListBoxModelValue(any(),
+                                                           any());
         doCallRealMethod().when(view).getDataTypeDisplayName();
-        doCallRealMethod().when(view).setDataTypeDisplayName(anyString());
+        doCallRealMethod().when(view).setDataTypeDisplayName(any());
         doCallRealMethod().when(view).getVariableType();
-        doCallRealMethod().when(view).setParentWidget(any(VariablesEditorWidgetView.Presenter.class));
-        doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
-        doCallRealMethod().when(view).handleCloseButton(any(ClickEvent.class));
-        doCallRealMethod().when(view).handleAcceptButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).setParentWidget(any());
+        doCallRealMethod().when(view).handleDeleteButton(any());
+        doCallRealMethod().when(view).handleCloseButton(any());
+        doCallRealMethod().when(view).handleAcceptButton(any());
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
         doCallRealMethod().when(view).notifyModelChanged();
         doCallRealMethod().when(view).setTagsNotEnabled();
@@ -327,11 +327,11 @@ public class VariableListItemWidgetViewImplTest {
         final HTMLDivElement overlayDiv = mock(HTMLDivElement.class);
         final Element lastNode = mock(Element.class);
 
-        final ClientRect rect = mock(ClientRect.class);
+        final DOMRect rect = mock(DOMRect.class);
         rect.left = 100;
         rect.top = 100;
 
-        final ClientRect rect2 = mock(ClientRect.class);
+        final DOMRect rect2 = mock(DOMRect.class);
         rect2.left = 150;
         rect2.top = 150;
 
@@ -432,7 +432,7 @@ public class VariableListItemWidgetViewImplTest {
     @Test
     public void testHandleCloseButton() {
         view.handleCloseButton(null);
-        verify(variableTagsSettings).click();
+        verify(variableTagsSettings, times(1)).dispatchEvent(any(MouseEvent.class));
     }
 
     @Test

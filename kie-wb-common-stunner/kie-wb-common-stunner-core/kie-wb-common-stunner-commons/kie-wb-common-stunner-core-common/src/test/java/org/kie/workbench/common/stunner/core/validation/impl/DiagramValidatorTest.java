@@ -37,8 +37,6 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
-import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
-import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -49,7 +47,7 @@ import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -62,7 +60,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DiagramValidatorTest {
 
     public static final String MODEL_VIOLATION = "model violation";
@@ -195,8 +193,8 @@ public class DiagramValidatorTest {
         RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
-        when(graphTestHandler.getRuleManager().evaluate(any(RuleSet.class),
-                                                        any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+        when(graphTestHandler.getRuleManager().evaluate(any(),
+                                                        any())).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
 
         tested.validate(diagram,
                         violations -> assertElementError(violations,
@@ -234,14 +232,14 @@ public class DiagramValidatorTest {
             validationsConsumer.accept(Collections.emptyList());
             return null;
         }).when(modelValidator).validate(eq(graph1.intermNode),
-                                         any(Consumer.class));
+                                         any());
 
         //graph violation
         RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
-        when(graphTestHandler.getRuleManager().evaluate(any(RuleSet.class),
-                                                        any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+        when(graphTestHandler.getRuleManager().evaluate(any(),
+                                                        any())).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
 
         tested.validate(diagram,
                         violations -> assertElementError(violations,
