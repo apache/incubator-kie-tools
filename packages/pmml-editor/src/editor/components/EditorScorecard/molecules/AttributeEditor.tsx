@@ -34,9 +34,9 @@ import { isEqual } from "lodash";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { useOperation } from "../OperationContext";
 import { fromText, toText } from "../organisms";
+import { useValidationService } from "../../../validation";
 import set = Reflect.set;
 import get = Reflect.get;
-import { useValidationService } from "../../../validation";
 
 interface AttributeEditorContent {
   partialScore?: number;
@@ -70,17 +70,18 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     return state.DataDictionary.DataField;
   });
 
-  const attribute: Attribute = useSelector<PMML, Attribute>((state: PMML) => {
+  const characteristic = useSelector<PMML, Characteristic | undefined>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
     if (model instanceof Scorecard && characteristicIndex !== undefined) {
-      const scorecard: Scorecard = model as Scorecard;
-      const _characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
-      if (_characteristic && attributeIndex !== undefined) {
-        return _characteristic.Attribute[attributeIndex];
-      }
+      return model.Characteristics.Characteristic[characteristicIndex]!;
     }
-    return new Attribute({});
   });
+
+  const attribute = useMemo(() => {
+    return characteristic && attributeIndex !== undefined
+      ? characteristic.Attribute[attributeIndex]
+      : new Attribute({});
+  }, [characteristic, attributeIndex]);
 
   const commit = (partial: Partial<AttributeEditorContent>) => {
     const existingPartial: Partial<AttributeEditorContent> = {};
@@ -185,10 +186,15 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       : "A Reason Code is mapped to a Business reason."
                   }
                   labelIcon={
-                    areReasonCodesUsed ? (
+                    (areReasonCodesUsed && reasonCodeValidation.length > 0) ||
+                    characteristic?.reasonCode !== undefined ? (
                       <Tooltip
-                        content={`When Use Reason Codes is set to yes in the Model Setup, a reason code must
-                       be provided for characteristics or it must be provided for all its attributes.`}
+                        content={
+                          characteristic?.reasonCode !== undefined
+                            ? `Reason code already provided at the Characteristic level (${characteristic.reasonCode})`
+                            : `When Use Reason Codes is set to yes in the Model Setup, a reason code must be provided \
+                              for characteristics or it must be provided for all its attributes.`
+                        }
                       >
                         <button
                           aria-label="More information for Partial Score"
@@ -214,7 +220,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       commit({ reasonCode: reasonCode !== "" ? reasonCode : undefined });
                     }}
                     validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                    isDisabled={!areReasonCodesUsed}
+                    isDisabled={!areReasonCodesUsed || characteristic?.reasonCode !== undefined}
                   />
                 </FormGroup>
               </StackItem>

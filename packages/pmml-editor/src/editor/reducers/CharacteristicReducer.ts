@@ -75,6 +75,9 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
                 baselineScore: action.payload.baselineScore
               };
             }
+            if (action.payload.reasonCode !== undefined) {
+              draft[characteristicIndex].Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+            }
           }
         );
         return state;

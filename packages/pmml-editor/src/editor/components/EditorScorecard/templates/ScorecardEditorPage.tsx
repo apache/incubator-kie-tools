@@ -17,7 +17,15 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
-import { MiningSchema, Model, Output, OutputField, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Characteristics,
+  MiningSchema,
+  Model,
+  Output,
+  OutputField,
+  PMML,
+  Scorecard
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicsContainer, CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
@@ -45,6 +53,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return undefined;
   });
 
+  const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
   const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
 
@@ -60,6 +69,14 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     [output]
   );
 
+  const isBaselineScoreDisabled = useMemo(() => {
+    return (
+      characteristics?.Characteristic !== undefined &&
+      characteristics.Characteristic.length > 0 &&
+      characteristics.Characteristic.every(characteristic => characteristic.baselineScore !== undefined)
+    );
+  }, [characteristics]);
+  
   return (
     <div data-testid="editor-page" className={"editor"}>
       {!model && <EmptyStateModelNotFound />}
@@ -122,6 +139,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               functionName={model.functionName}
               algorithmName={model.algorithmName}
               baselineScore={model.baselineScore}
+              isBaselineScoreDisabled={isBaselineScoreDisabled}
               baselineMethod={model.baselineMethod ?? "other"}
               initialScore={model.initialScore}
               areReasonCodesUsed={model.useReasonCodes ?? true}
@@ -150,7 +168,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               <CharacteristicsContainer
                 modelIndex={modelIndex}
                 areReasonCodesUsed={model.useReasonCodes ?? true}
-                isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
+                scorecardBaselineScore={model.baselineScore}
               />
             </PageSection>
           </PageSection>

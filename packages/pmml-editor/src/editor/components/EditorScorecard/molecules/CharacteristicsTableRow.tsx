@@ -34,7 +34,7 @@ interface CharacteristicsTableRowProps {
   characteristicIndex: number;
   characteristic: IndexedCharacteristic;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
   dataFields: DataField[];
   onEdit: () => void;
   onDelete: () => void;
@@ -46,7 +46,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
     characteristicIndex,
     characteristic,
     areReasonCodesUsed,
-    isBaselineScoreRequired,
+    scorecardBaselineScore,
     dataFields,
     onEdit,
     onDelete
@@ -75,7 +75,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
             characteristicIndex={characteristicIndex}
             activeCharacteristic={characteristic.characteristic}
             areReasonCodesUsed={areReasonCodesUsed}
-            isBaselineScoreRequired={isBaselineScoreRequired}
+            scorecardBaselineScore={scorecardBaselineScore}
           />
           <CharacteristicAttributesList
             modelIndex={modelIndex}

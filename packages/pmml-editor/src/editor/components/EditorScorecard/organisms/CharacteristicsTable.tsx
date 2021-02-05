@@ -30,7 +30,7 @@ export interface IndexedCharacteristic {
 interface CharacteristicsTableProps {
   modelIndex: number;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
   characteristics: IndexedCharacteristic[];
   selectedCharacteristicIndex: number | undefined;
   setSelectedCharacteristicIndex: (index: number | undefined) => void;
@@ -47,7 +47,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const {
     modelIndex,
     areReasonCodesUsed,
-    isBaselineScoreRequired,
+    scorecardBaselineScore,
     characteristics,
     selectedCharacteristicIndex,
     setSelectedCharacteristicIndex,
@@ -120,7 +120,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 <CharacteristicsTableEditRow
                   modelIndex={modelIndex}
                   areReasonCodesUsed={areReasonCodesUsed}
-                  isBaselineScoreRequired={isBaselineScoreRequired}
+                  scorecardBaselineScore={scorecardBaselineScore}
                   characteristic={ic}
                   validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
                   viewAttribute={viewAttribute}
@@ -136,7 +136,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 modelIndex={modelIndex}
                 characteristicIndex={ic.index}
                 areReasonCodesUsed={areReasonCodesUsed}
-                isBaselineScoreRequired={isBaselineScoreRequired}
+                scorecardBaselineScore={scorecardBaselineScore}
                 characteristic={ic}
                 dataFields={dataFields}
                 onEdit={() => onEdit(ic.index)}

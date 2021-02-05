@@ -245,6 +245,11 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                 characteristic.Attribute.forEach(attribute => (attribute.reasonCode = undefined));
               });
             }
+            if (action.payload.baselineScore !== undefined) {
+              draft.Characteristics.Characteristic.forEach(characteristic => {
+                characteristic.baselineScore = undefined;
+              });
+            }
             validationRegistry.clear(`models[${action.payload.modelIndex}].baselineScore`);
             validateBaselineScore(
               action.payload.modelIndex,

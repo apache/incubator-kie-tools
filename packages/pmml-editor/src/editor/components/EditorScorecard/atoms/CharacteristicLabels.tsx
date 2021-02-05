@@ -25,11 +25,11 @@ interface CharacteristicLabelsProps {
   characteristicIndex: number;
   activeCharacteristic: Characteristic;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { modelIndex, characteristicIndex, activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired } = props;
+  const { modelIndex, characteristicIndex, activeCharacteristic, areReasonCodesUsed, scorecardBaselineScore } = props;
 
   const validationService = useValidationService().service;
   const reasonCodeValidation = useMemo(
@@ -42,11 +42,12 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
       validationService.get(
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].baselineScore`
       ),
-    [modelIndex, characteristicIndex, isBaselineScoreRequired, activeCharacteristic]
+    [modelIndex, characteristicIndex, areReasonCodesUsed, scorecardBaselineScore, activeCharacteristic]
   );
   return (
     <>
       {areReasonCodesUsed &&
+        activeCharacteristic.reasonCode !== undefined &&
         reasonCodeValidation.length === 0 &&
         CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
       {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
@@ -61,7 +62,7 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
       {activeCharacteristic.baselineScore !== undefined &&
         baselineScoreValidation.length === 0 &&
         CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
-      {isBaselineScoreRequired && baselineScoreValidation.length > 0 && (
+      {areReasonCodesUsed && activeCharacteristic.baselineScore === undefined && baselineScoreValidation.length > 0 && (
         <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="characteristic-list__item__label">
           <>
             <strong>Baseline score:</strong>&nbsp;

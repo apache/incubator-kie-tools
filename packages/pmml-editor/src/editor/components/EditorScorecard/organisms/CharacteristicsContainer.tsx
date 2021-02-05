@@ -41,13 +41,13 @@ import get = Reflect.get;
 interface CharacteristicsContainerProps {
   modelIndex: number;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
 }
 
 type CharacteristicsViewSection = "overview" | "attribute";
 
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
-  const { modelIndex, areReasonCodesUsed, isBaselineScoreRequired } = props;
+  const { modelIndex, areReasonCodesUsed, scorecardBaselineScore } = props;
 
   const { setActiveOperation } = useOperation();
   const { service, getCurrentState } = useHistoryService();
@@ -132,7 +132,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
         payload: {
           modelIndex: modelIndex,
           name: newCharacteristicName,
-          baselineScore: 0,
+          baselineScore: undefined,
           reasonCode: undefined,
           Attribute: []
         }
@@ -263,7 +263,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                     <CharacteristicsTable
                       modelIndex={modelIndex}
                       areReasonCodesUsed={areReasonCodesUsed}
-                      isBaselineScoreRequired={isBaselineScoreRequired}
+                      scorecardBaselineScore={scorecardBaselineScore}
                       characteristics={filteredCharacteristics}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
                       setSelectedCharacteristicIndex={setSelectedCharacteristicIndex}

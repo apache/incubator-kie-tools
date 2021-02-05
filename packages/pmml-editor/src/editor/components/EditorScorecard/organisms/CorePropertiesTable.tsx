@@ -58,6 +58,7 @@ interface CoreProperties {
 }
 
 interface CorePropertiesTableProps extends CoreProperties {
+  isBaselineScoreDisabled: boolean;
   commit: (props: CoreProperties) => void;
 }
 
@@ -304,10 +305,16 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
                       helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
                       labelIcon={
-                        areReasonCodesUsed ? (
+                        areReasonCodesUsed || props.isBaselineScoreDisabled ? (
                           <Tooltip
-                            content={`When Use Reason Codes is set to yes, a Baseline score value must be provided. \
-                            Alternatively you can provide a baseline score for all the characteristics`}
+                            content={
+                              props.isBaselineScoreDisabled
+                                ? `A Baseline score is already provided inside all Characteristics`
+                                : `
+                                When Use Reason Codes is set to yes, a Baseline score value must be provided. \
+                                Alternatively you can provide a Baseline score for all the characteristics
+                                `
+                            }
                           >
                             <button
                               aria-label="More information for Baseline score"
@@ -324,13 +331,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     >
                       <TextInput
                         id="core-baselineScore"
-                        value={baselineScore}
+                        value={baselineScore ?? ""}
                         onChange={e => setBaselineScore(toNumber(e))}
                         onBlur={() => {
                           onCommit({ baselineScore: baselineScore });
                         }}
                         type="number"
                         validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                        isDisabled={props.isBaselineScoreDisabled}
                       />
                     </FormGroup>
                   </LevelItem>
