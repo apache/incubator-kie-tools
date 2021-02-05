@@ -36,6 +36,7 @@ import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.stra
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMODataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.handlers.ScenarioSimulationKogitoDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.popup.ScenarioSimulationKogitoCreationPopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.gwtbootstrap3.client.ui.NavTabs;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -43,6 +44,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.kie.workbench.common.kogito.client.editor.BaseKogitoEditor;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -141,6 +143,8 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     private ScenarioSimulationKogitoDocksHandler scenarioSimulationKogitoDocksHandlerMock;
     @Mock
     private AuthoringEditorDock authoringEditorDockMock;
+    @Mock
+    private ScenarioSimulationKogitoDMNMarshallerService scenarioSimulationKogitoDMNMarshallerServiceMock;
     @Captor
     private ArgumentCaptor<DataManagementStrategy> dataManagementStrategyCaptor;
     @Captor
@@ -186,6 +190,7 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
                 this.scenarioSimulationBuilder = kogitoScenarioSimulationBuilderMock;
                 this.authoringWorkbenchDocks = authoringEditorDockMock;
                 this.scenarioSimulationKogitoDocksHandler = scenarioSimulationKogitoDocksHandlerMock;
+                this.scenarioSimulationKogitoDMNMarshallerService = scenarioSimulationKogitoDMNMarshallerServiceMock;
             }
 
             @Override
@@ -481,5 +486,25 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     public void getScenarioSimulationEditorPresenter() {
         assertEquals(scenarioSimulationEditorPresenterMock,
                      scenarioSimulationEditorKogitoWrapperSpy.getScenarioSimulationEditorPresenter());
+    }
+
+    @Test
+    public void getDMNMetadata() {
+        when(settingsMock.getDmnFilePath()).thenReturn("src/test.dmn");
+        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
+        ArgumentCaptor<Callback> callbackArgumentCaptor = ArgumentCaptor.forClass(Callback.class);
+        scenarioSimulationEditorKogitoWrapperSpy.getDMNMetadata();
+        verify(scenarioSimulationKogitoDMNMarshallerServiceMock, times(1)).getDMNContent(pathArgumentCaptor.capture(),
+                                                                                                               callbackArgumentCaptor.capture(),
+                                                                                                               isA(ErrorCallback.class));
+        assertEquals("src/test.dmn", pathArgumentCaptor.getValue().toURI());
+        assertEquals("test.dmn", pathArgumentCaptor.getValue().getFileName());
+        JSITDefinitions returnCallback = mock(JSITDefinitions.class);
+        when(returnCallback.getNamespace()).thenReturn("DMN-NAMESPACE");
+        when(returnCallback.getName()).thenReturn("DMN-Name");
+        callbackArgumentCaptor.getValue().callback(returnCallback);
+        verify(settingsMock, times(1)).setDmnNamespace(eq("DMN-NAMESPACE"));
+        verify(settingsMock, times(1)).setDmnName("DMN-Name");
+        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadSettingsDock();
     }
 }

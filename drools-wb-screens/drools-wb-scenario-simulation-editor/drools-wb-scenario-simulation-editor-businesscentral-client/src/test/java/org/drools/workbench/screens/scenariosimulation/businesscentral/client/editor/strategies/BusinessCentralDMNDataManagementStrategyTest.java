@@ -79,6 +79,7 @@ public class BusinessCentralDMNDataManagementStrategyTest extends AbstractScenar
                 this.currentPath = currentPathMock;
                 this.model = modelLocal;
                 this.factModelTreeHolder = factModelTreeHolderMock;
+                this.dmnFilePath = "DMN_FILE_PATH";
             }
 
             @Override
@@ -95,7 +96,7 @@ public class BusinessCentralDMNDataManagementStrategyTest extends AbstractScenar
 
     @Test
     public void retrieveFactModelTuple() {
-        businessCentralDmnDataManagementStrategySpy.retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION, "DMN_FILE_PATH");
+        businessCentralDmnDataManagementStrategySpy.retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
         verify(businessCentralDmnDataManagementStrategySpy, times(1)).getSuccessCallback(eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
         verify(dmnTypeServiceMock, times(1)).retrieveFactModelTuple(eq(currentPathMock), eq("DMN_FILE_PATH"));
     }

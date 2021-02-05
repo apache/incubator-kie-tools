@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
+import java.util.Objects;
+
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
@@ -33,6 +35,7 @@ public abstract class AbstractDMNDataManagementStrategy extends AbstractDataMana
 
     protected final EventBus eventBus;
     protected Path currentPath;
+    protected String dmnFilePath;
 
     public AbstractDMNDataManagementStrategy(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -40,17 +43,17 @@ public abstract class AbstractDMNDataManagementStrategy extends AbstractDataMana
 
     protected abstract void retrieveFactModelTuple(final TestToolsView.Presenter testToolsPresenter,
                                                    final ScenarioSimulationContext context,
-                                                   final GridWidget gridWidget,
-                                                   String dmnFilePath);
+                                                   final GridWidget gridWidget);
 
     @Override
     public void populateTestTools(final TestToolsView.Presenter testToolsPresenter,
-                                  final ScenarioSimulationContext context, final GridWidget gridWidget) {
-        if (factModelTreeHolder.getFactModelTuple() != null) {
+                                  final ScenarioSimulationContext context,
+                                  final GridWidget gridWidget) {
+        if (factModelTreeHolder.getFactModelTuple() != null && Objects.equals(dmnFilePath, model.getSettings().getDmnFilePath())) {
             getSuccessCallback(testToolsPresenter, context, gridWidget).callback(factModelTreeHolder.getFactModelTuple());
         } else {
-            String dmnFilePath = model.getSettings().getDmnFilePath();
-            retrieveFactModelTuple(testToolsPresenter, context, gridWidget, dmnFilePath);
+            dmnFilePath = model.getSettings().getDmnFilePath();
+            retrieveFactModelTuple(testToolsPresenter, context, gridWidget);
         }
     }
 

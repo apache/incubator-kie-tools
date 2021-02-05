@@ -21,6 +21,7 @@ import java.util.TreeMap;
 
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.workbench.screens.scenariosimulation.backend.server.exceptions.WrongDMNTypeException;
+import org.drools.workbench.screens.scenariosimulation.model.DMNMetadata;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.junit.Before;
@@ -64,6 +65,13 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
 
         assertEquals(NAMESPACE, settings.getDmnNamespace());
         assertEquals(MODEL_NAME, settings.getDmnName());
+    }
+
+    @Test
+    public void getDMNMetadata() {
+        DMNMetadata dmnMetadata = dmnTypeServiceImpl.getDMNMetadata(mock(Path.class), "");
+        assertEquals(NAMESPACE, dmnMetadata.getDmnNamespace());
+        assertEquals(MODEL_NAME, dmnMetadata.getDmnName());
     }
 
     @Test

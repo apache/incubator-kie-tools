@@ -44,7 +44,9 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSh
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
+import org.drools.workbench.screens.scenariosimulation.model.DMNMetadata;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
+import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
 import org.drools.workbench.screens.scenariosimulation.service.RunnerReportService;
@@ -194,6 +196,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     private CallerMock<ScenarioSimulationService> scenarioSimulationCaller;
     private CallerMock<ImportExportService> importExportCaller;
     private CallerMock<RunnerReportService> runnerReportServiceCaller;
+    private CallerMock<DMNTypeService> dmnTypeServiceCaller;
     private Promises promises;
     private ScenarioSimulationEditorBusinessCentralWrapper scenarioSimulationEditorBusinessClientWrapper;
     private SaveAndRenameCommandBuilder<ScenarioSimulationModel, Metadata> saveAndRenameCommandBuilderMock;
@@ -205,13 +208,14 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         scenarioSimulationCaller = spy(new CallerMock<>(scenarioSimulationServiceMock));
         importExportCaller = spy(new CallerMock<>(importExportServiceMock));
         runnerReportServiceCaller = spy(new CallerMock<>(runnerReportServiceMock));
+        dmnTypeServiceCaller = spy(new CallerMock<>(dmnTypeServiceMock));
         saveAndRenameCommandBuilderMock = spy(new SaveAndRenameCommandBuilder<>(null, null, null, null));
         scenarioSimulationEditorBusinessClientWrapper = spy(new ScenarioSimulationEditorBusinessCentralWrapper(scenarioSimulationCaller,
                                                                                                                scenarioSimulationEditorPresenterMock,
                                                                                                                importsWidgetPresenterMock,
                                                                                                                oracleFactoryMock,
                                                                                                                placeManagerMock,
-                                                                                                               new CallerMock<>(dmnTypeServiceMock),
+                                                                                                               dmnTypeServiceCaller,
                                                                                                                importExportCaller,
                                                                                                                runnerReportServiceCaller,
                                                                                                                sessionInfoMock,
@@ -256,7 +260,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         when(multiPageEditorViewMock.getPageIndex(ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle())).thenReturn(BACKGROUND_TAB_INDEX);
         when(navTabsMock.getWidget(SIMULATION_TAB_INDEX)).thenReturn(simulationTabListItemMock);
         when(navTabsMock.getWidget(BACKGROUND_TAB_INDEX)).thenReturn(backgroundTabListItemMock);
-        when(scenarioSimulationBusinessCentralDocksHandlerMock.getCoverageReportPresenter()).thenReturn(Optional.ofNullable(coverageReportPresenterMock));
+        when(scenarioSimulationBusinessCentralDocksHandlerMock.getCoverageReportPresenter()).thenReturn(coverageReportPresenterMock);
         when(scenarioSimulationBusinessCentralDocksHandlerMock.getTestRunnerReportingPanelWidget()).thenReturn(testRunnerReportingPanelWidgetMock);
         when(simulationRunResultMock.getTestResultMessage()).thenReturn(testResultMessageMock);
         when(simulationRunResultMock.getSimulationRunMetadata()).thenReturn(simulationRunMetadataMock);
@@ -353,6 +357,26 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).unpublishTestResultsAlerts();
         verify(scenarioSimulationCaller, times(1)).call(eq(remoteCallback), eq(errorCallback));
         verify(scenarioSimulationServiceMock, times(1)).runScenario(eq(observablePathMock), eq(simulationDescriptorMock), eq(scenarioWithIndexLocal), eq(settingsLocal), eq(backgroundLocal));
+    }
+
+    @Test
+    public void getDMNMetadata() {
+        ArgumentCaptor<ErrorCallback> errorCallbackArgumentCaptor = ArgumentCaptor.forClass(ErrorCallback.class);
+        String dmnPath = "src/test.dmn";
+        String dmnName = "DMN-NAME";
+        String dmnNameSpace = "DMN-namespace";
+        modelLocal.getSettings().setDmnFilePath(dmnPath);
+        when(dmnTypeServiceMock.getDMNMetadata(eq(pathMock), eq(dmnPath))).thenReturn(new DMNMetadata(dmnName, dmnNameSpace));
+        scenarioSimulationEditorBusinessClientWrapper.getDMNMetadata();
+        verify(dmnTypeServiceCaller, times(1)).call(isA(RemoteCallback.class),
+                                                                          errorCallbackArgumentCaptor.capture());
+        verify(dmnTypeServiceMock, times(1)).getDMNMetadata(eq(pathMock), eq(dmnPath));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadSettingsDock();
+        assertEquals(dmnName, modelLocal.getSettings().getDmnName());
+        assertEquals(dmnNameSpace, modelLocal.getSettings().getDmnNamespace());
+        errorCallbackArgumentCaptor.getValue().error("ERROR", new Throwable());
+        verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(eq("ERROR"),
+                                                                                                       eq(NotificationEvent.NotificationType.ERROR) );
     }
 
     @Test
@@ -532,7 +556,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
 
     @Test
     public void populateRightDocks_Settings() {
-        doReturn(Optional.of(settingsPresenterMock)).when(scenarioSimulationBusinessCentralDocksHandlerMock).getSettingsPresenter();
+        doReturn(settingsPresenterMock).when(scenarioSimulationBusinessCentralDocksHandlerMock).getSettingsPresenter();
         scenarioSimulationEditorBusinessClientWrapper.populateDocks(SettingsPresenter.IDENTIFIER);
         verify(scenarioSimulationEditorPresenterMock, times(1)).setSettings(eq(settingsPresenterMock));
         verify(settingsPresenterMock, times(1)).setCurrentPath(eq(pathMock));
@@ -544,7 +568,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
 
     @Test
     public void populateRightDocks_TestTools() {
-        doReturn(Optional.of(testToolsPresenterMock)).when(scenarioSimulationBusinessCentralDocksHandlerMock).getTestToolsPresenter();
+        doReturn(testToolsPresenterMock).when(scenarioSimulationBusinessCentralDocksHandlerMock).getTestToolsPresenter();
         scenarioSimulationEditorBusinessClientWrapper.populateDocks(TestToolsPresenter.IDENTIFIER);
         verify(scenarioSimulationEditorPresenterMock, times(1)).setTestTools(eq(testToolsPresenterMock));
         verify(coverageReportPresenterMock, never()).setCurrentPath(any());
@@ -557,7 +581,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     @Test
     public void populateRightDocks_CheatSheetPresenter_NotShown() {
         when(cheatSheetPresenterMock.isCurrentlyShow(pathMock)).thenReturn(false);
-        doReturn(Optional.of(cheatSheetPresenterMock)).when(scenarioSimulationBusinessCentralDocksHandlerMock).getCheatSheetPresenter();
+        doReturn(cheatSheetPresenterMock).when(scenarioSimulationBusinessCentralDocksHandlerMock).getCheatSheetPresenter();
         scenarioSimulationEditorBusinessClientWrapper.populateDocks(CheatSheetPresenter.IDENTIFIER);
         verify(cheatSheetPresenterMock, times(1)).setCurrentPath(pathMock);
         verify(scenarioSimulationEditorPresenterMock, times(1)).setCheatSheet(eq(cheatSheetPresenterMock));
@@ -570,7 +594,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     @Test
     public void populateRightDocks_CheatSheetPresenter_IsShown() {
         when(cheatSheetPresenterMock.isCurrentlyShow(pathMock)).thenReturn(true);
-        doReturn(Optional.of(cheatSheetPresenterMock)).when(scenarioSimulationBusinessCentralDocksHandlerMock).getCheatSheetPresenter();
+        doReturn(cheatSheetPresenterMock).when(scenarioSimulationBusinessCentralDocksHandlerMock).getCheatSheetPresenter();
         scenarioSimulationEditorBusinessClientWrapper.populateDocks(CheatSheetPresenter.IDENTIFIER);
         verify(scenarioSimulationEditorPresenterMock, never()).setSettings(any());
         verify(settingsPresenterMock, never()).setCurrentPath(any());

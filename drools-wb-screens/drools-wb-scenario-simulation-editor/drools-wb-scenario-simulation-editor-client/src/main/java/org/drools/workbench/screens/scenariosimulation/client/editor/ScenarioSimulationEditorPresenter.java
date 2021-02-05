@@ -231,7 +231,7 @@ public class ScenarioSimulationEditorPresenter {
     public void reloadTestTools(boolean disable) {
         populateRightDocks(TestToolsPresenter.IDENTIFIER);
         if (disable) {
-            abstractScenarioSimulationDocksHandler.getTestToolsPresenter().ifPresent(TestToolsView.Presenter::onDisableEditorTab);
+            abstractScenarioSimulationDocksHandler.getTestToolsPresenter().onDisableEditorTab();
         }
     }
 
@@ -239,7 +239,7 @@ public class ScenarioSimulationEditorPresenter {
      * To be called to force settings panel reload
      */
     public void reloadSettingsDock() {
-        abstractScenarioSimulationDocksHandler.getSettingsPresenter().ifPresent(this::updateSettings);
+        this.updateSettings(abstractScenarioSimulationDocksHandler.getSettingsPresenter());
     }
 
     public void onRunScenario() {
@@ -621,7 +621,7 @@ public class ScenarioSimulationEditorPresenter {
     }
 
     protected void clearTestToolsStatus() {
-        abstractScenarioSimulationDocksHandler.getTestToolsPresenter().ifPresent(TestToolsView.Presenter::onClearStatus);
+        abstractScenarioSimulationDocksHandler.getTestToolsPresenter().onClearStatus();
     }
 
     public void setCheatSheet(CheatSheetView.Presenter presenter) {
@@ -654,4 +654,6 @@ public class ScenarioSimulationEditorPresenter {
     public void unpublishTestResultsAlerts() {
         scenarioSimulationEditorWrapper.unpublishTestResultsAlerts();
     }
+
+    public Command getUpdateDMNMetadataCommand() { return () -> scenarioSimulationEditorWrapper.getDMNMetadata();}
 }

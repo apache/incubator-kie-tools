@@ -52,6 +52,7 @@ import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.Sce
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
+import org.drools.workbench.screens.scenariosimulation.model.DMNMetadata;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
@@ -266,6 +267,30 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     }
 
     @Override
+    public void getDMNMetadata() {
+        dmnTypeService.call(getUpdateMetadataCallback(),
+                            getUpdateMetadataErrorCallback())
+                .getDMNMetadata(getScenarioSimulationEditorPresenter().getPath(),
+                                getScenarioSimulationEditorPresenter().getModel().getSettings().getDmnFilePath());
+    }
+
+    private RemoteCallback<DMNMetadata> getUpdateMetadataCallback() {
+        return response -> {
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnName(response.getDmnName());
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnNamespace(response.getDmnNamespace());
+            getScenarioSimulationEditorPresenter().reloadSettingsDock();
+        };
+    }
+
+    private ErrorCallback<Object> getUpdateMetadataErrorCallback() {
+        return (message, throwable) -> {
+            scenarioSimulationEditorPresenter.sendNotification(message.toString(),
+                                                               NotificationEvent.NotificationType.ERROR);
+            return false;
+        };
+    }
+
+    @Override
     public Integer getOriginalHash() {
         return originalHash;
     }
@@ -369,10 +394,9 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     @Override
     public void populateDocks(String identifier) {
         if (CoverageReportPresenter.IDENTIFIER.equals(identifier)) {
-            scenarioSimulationBusinessCentralDocksHandler.getCoverageReportPresenter().ifPresent(presenter -> {
-                setCoverageReport(presenter);
-                presenter.setCurrentPath(scenarioSimulationEditorPresenter.getPath());
-            });
+            CoverageReportView.Presenter coverageReportPresenter = scenarioSimulationBusinessCentralDocksHandler.getCoverageReportPresenter();
+            setCoverageReport(coverageReportPresenter);
+            coverageReportPresenter.setCurrentPath(scenarioSimulationEditorPresenter.getPath());
         } else {
             ScenarioSimulationEditorWrapper.super.populateDocks(identifier);
         }

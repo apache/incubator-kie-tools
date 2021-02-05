@@ -79,14 +79,18 @@ public class KogitoDMNDataManagementStrategyTest {
 
     @Before
     public void setup() {
-        kogitoDMNDataManagementStrategySpy = spy(new KogitoDMNDataManagementStrategy(eventBusMock, kogitoDMNDataManagerMock, dmnMarshallerServiceMock));
+        kogitoDMNDataManagementStrategySpy = spy(new KogitoDMNDataManagementStrategy(eventBusMock, kogitoDMNDataManagerMock, dmnMarshallerServiceMock) {
+            {
+                this.dmnFilePath = "path/dmnFile.dmn";
+            }
+        });
         when(kogitoDMNDataManagementStrategySpy.getSuccessCallback(eq(testToolsPresenterMock), eq(scenarioSimulationContextMock), eq(gridWidgetMock))).thenReturn(factModelTupleRemoteCallbackMock);
         when(kogitoDMNDataManagerMock.getFactModelTuple(eq(jsitDefinitionsMock))).thenReturn(factModelTupleMock);
     }
 
     @Test
     public void retrieveFactModelTuple() {
-        kogitoDMNDataManagementStrategySpy.retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextMock, gridWidgetMock, "path/dmnFile.dmn");
+        kogitoDMNDataManagementStrategySpy.retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextMock, gridWidgetMock);
         Path expectedPath = new PathFactory.PathImpl("dmnFile.dmn", "path/dmnFile.dmn");
         verify(dmnMarshallerServiceMock, times(1)).getDMNContent(eq(expectedPath), callbackArgumentCaptor.capture(), errorCallbackArgumentCaptor.capture());
 

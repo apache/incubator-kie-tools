@@ -36,8 +36,7 @@ public class BusinessCentralDMNDataManagementStrategy extends AbstractDMNDataMan
     @Override
     protected void retrieveFactModelTuple(final TestToolsView.Presenter testToolsPresenter,
                                           final ScenarioSimulationContext context,
-                                          final GridWidget gridWidget,
-                                          String dmnFilePath) {
+                                          final GridWidget gridWidget) {
         dmnTypeService.call(getSuccessCallback(testToolsPresenter, context, gridWidget),
                             getErrorCallback())
                 .retrieveFactModelTuple(currentPath, dmnFilePath);

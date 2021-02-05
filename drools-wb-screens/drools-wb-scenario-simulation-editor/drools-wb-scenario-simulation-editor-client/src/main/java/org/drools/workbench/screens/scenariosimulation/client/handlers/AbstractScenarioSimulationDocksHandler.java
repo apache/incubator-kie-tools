@@ -18,7 +18,6 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -27,13 +26,10 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSh
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsView;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SubDockView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
-import org.uberfire.client.mvp.AbstractWorkbenchActivity;
-import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -53,6 +49,12 @@ public abstract class AbstractScenarioSimulationDocksHandler extends AbstractWor
     protected AuthoringEditorDock authoringWorkbenchDocks;
     @Inject
     protected PlaceManager placeManager;
+    @Inject
+    protected TestToolsPresenter testToolsPresenter;
+    @Inject
+    protected SettingsPresenter settingsPresenter;
+    @Inject
+    protected CheatSheetPresenter cheatSheetPresenter;
 
     private UberfireDock settingsDock;
     private UberfireDock toolsDock;
@@ -109,9 +111,9 @@ public abstract class AbstractScenarioSimulationDocksHandler extends AbstractWor
     public abstract void expandTestResultsDock();
 
     public void resetDocks() {
-        getSettingsPresenter().ifPresent(SubDockView.Presenter::reset);
-        getCheatSheetPresenter().ifPresent(SubDockView.Presenter::reset);
-        getTestToolsPresenter().ifPresent(SubDockView.Presenter::reset);
+        settingsPresenter.reset();
+        cheatSheetPresenter.reset();
+        testToolsPresenter.reset();
     }
 
     public void setScesimEditorId(String scesimEditorId) {
@@ -121,19 +123,16 @@ public abstract class AbstractScenarioSimulationDocksHandler extends AbstractWor
         cheatSheetDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
     }
 
-    public Optional<CheatSheetView.Presenter> getCheatSheetPresenter() {
-        final Optional<CheatSheetView> cheatSheetView = getCheatSheetView(getCurrentRightDockPlaceRequest(CheatSheetPresenter.IDENTIFIER));
-        return cheatSheetView.map(CheatSheetView::getPresenter);
+    public CheatSheetView.Presenter getCheatSheetPresenter() {
+        return cheatSheetPresenter;
     }
 
-    public Optional<TestToolsView.Presenter> getTestToolsPresenter() {
-        final Optional<TestToolsView> testToolsView = getTestToolsView(getTestToolsPlaceManager());
-        return testToolsView.map(TestToolsView::getPresenter);
+    public TestToolsView.Presenter getTestToolsPresenter() {
+        return testToolsPresenter;
     }
 
-    public Optional<SettingsView.Presenter> getSettingsPresenter() {
-        final Optional<SettingsView> settingsView = getSettingsView(getSettingsPlaceManager());
-        return settingsView.map(SettingsView::getPresenter);
+    public SettingsView.Presenter getSettingsPresenter() {
+        return settingsPresenter;
     }
 
     protected PlaceRequest getSettingsPlaceManager() {
@@ -153,35 +152,5 @@ public abstract class AbstractScenarioSimulationDocksHandler extends AbstractWor
         PlaceRequest toReturn = new DefaultPlaceRequest(identifier);
         toReturn.addParameter(SCESIMEDITOR_ID, String.valueOf(currentScesimEditorId));
         return toReturn;
-    }
-
-    protected Optional<TestToolsView> getTestToolsView(PlaceRequest placeRequest) {
-        final Activity activity = placeManager.getActivity(placeRequest);
-        if (activity == null) {
-            return Optional.empty();
-        } else {
-            final AbstractWorkbenchActivity testToolsActivity = (AbstractWorkbenchActivity) activity;
-            return Optional.of((TestToolsView) testToolsActivity.getWidget());
-        }
-    }
-
-    protected Optional<CheatSheetView> getCheatSheetView(PlaceRequest placeRequest) {
-        final Activity activity = placeManager.getActivity(placeRequest);
-        if (activity == null) {
-            return Optional.empty();
-        } else {
-            final AbstractWorkbenchActivity cheatSheetActivity = (AbstractWorkbenchActivity) activity;
-            return Optional.of((CheatSheetView) cheatSheetActivity.getWidget());
-        }
-    }
-
-    protected Optional<SettingsView> getSettingsView(PlaceRequest placeRequest) {
-        final Activity activity = placeManager.getActivity(placeRequest);
-        if (activity == null) {
-            return Optional.empty();
-        } else {
-            final AbstractWorkbenchActivity settingsActivity = (AbstractWorkbenchActivity) activity;
-            return Optional.of((SettingsView) settingsActivity.getWidget());
-        }
     }
 }

@@ -19,7 +19,6 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -165,8 +164,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(testToolsActivityMock.getWidget()).thenReturn(testToolsViewMock);
         when(placeRequestMock.getPath()).thenReturn(pathMock);
         when(simulationMock.getUnmodifiableData()).thenReturn(Arrays.asList(new Scenario()));
-        when(abstractScenarioSimulationDocksHandlerMock.getTestToolsPresenter()).thenReturn(Optional.ofNullable(testToolsPresenterMock));
-        when(abstractScenarioSimulationDocksHandlerMock.getSettingsPresenter()).thenReturn(Optional.ofNullable(settingsPresenterMock));
+        when(abstractScenarioSimulationDocksHandlerMock.getTestToolsPresenter()).thenReturn(testToolsPresenterMock);
+        when(abstractScenarioSimulationDocksHandlerMock.getSettingsPresenter()).thenReturn(settingsPresenterMock);
 
         this.presenterSpy = spy(new ScenarioSimulationEditorPresenter(abstractScenarioSimulationProducerMock,
                                                                       mock(ScenarioSimulationResourceType.class),
@@ -188,11 +187,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.exportToCSVMenuItem = exportToCsvMenuItemMock;
                 this.importMenuItem = importMenuItemMock;
                 this.scenarioSimulationEditorWrapper = scenarioSimulationEditorWrapperMock;
-            }
-
-            @Override
-            protected void clearTestToolsStatus() {
-
             }
 
             @Override
@@ -269,6 +263,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.reloadTestTools(false);
         verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
         verify(abstractScenarioSimulationDocksHandlerMock, never()).getTestToolsPresenter();
+        verify(testToolsPresenterMock, never()).onDisableEditorTab();
     }
 
     @Test
@@ -276,6 +271,14 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.reloadTestTools(true);
         verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).getTestToolsPresenter();
+        verify(testToolsPresenterMock, times(1)).onDisableEditorTab();
+    }
+
+    @Test
+    public void clearTestTools() {
+        presenterSpy.clearTestToolsStatus();
+        verify(abstractScenarioSimulationDocksHandlerMock, times(1)).getTestToolsPresenter();
+        verify(testToolsPresenterMock, times(1)).onClearStatus();
     }
 
     @Test
@@ -753,5 +756,11 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     public void unpublishTestResultsAlerts(){
         presenterSpy.unpublishTestResultsAlerts();
         verify(scenarioSimulationEditorWrapperMock, times(1)).unpublishTestResultsAlerts();
+    }
+
+    @Test
+    public void getUpdateDMNMetadataCommand() {
+        presenterSpy.getUpdateDMNMetadataCommand().execute();
+        verify(scenarioSimulationEditorWrapperMock, times(1)).getDMNMetadata();
     }
 }

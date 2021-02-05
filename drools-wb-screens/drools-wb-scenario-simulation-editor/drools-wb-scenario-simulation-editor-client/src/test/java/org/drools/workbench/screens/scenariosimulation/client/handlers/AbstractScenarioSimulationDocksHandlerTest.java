@@ -16,22 +16,17 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.AbstractWorkbenchActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -40,13 +35,9 @@ import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler.SCESIMEDITOR_ID;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -82,6 +73,9 @@ public class AbstractScenarioSimulationDocksHandlerTest {
             {
                 this.authoringWorkbenchDocks = authoringWorkbenchDocksMock;
                 this.placeManager = placeManagerMock;
+                this.cheatSheetPresenter = cheatSheetPresenterMock;
+                this.settingsPresenter = settingsPresenterMock;
+                this.testToolsPresenter = testToolsPresenterMock;
             }
 
             @Override
@@ -89,10 +83,6 @@ public class AbstractScenarioSimulationDocksHandlerTest {
                 //Do nothing
             }
         });
-
-        doReturn(Optional.of(cheatSheetPresenterMock)).when(abstractScenarioSimulationDocksHandlerSpy).getCheatSheetPresenter();
-        doReturn(Optional.of(testToolsPresenterMock)).when(abstractScenarioSimulationDocksHandlerSpy).getTestToolsPresenter();
-        doReturn(Optional.of(settingsPresenterMock)).when(abstractScenarioSimulationDocksHandlerSpy).getSettingsPresenter();
     }
 
     @Test
@@ -205,62 +195,5 @@ public class AbstractScenarioSimulationDocksHandlerTest {
         assertNotNull(placeRequest);
         assertEquals("identifier", placeRequest.getIdentifier());
         assertNotNull(placeRequest.getParameter(SCESIMEDITOR_ID, ""));
-    }
-
-    @Test
-    public void getTestToolsView() {
-        TestToolsView testToolsViewMock = mock(TestToolsView.class);
-        AbstractWorkbenchActivity activityMock = mock(AbstractWorkbenchActivity.class);
-        when(activityMock.getWidget()).thenReturn(testToolsViewMock);
-        PlaceRequest placeRequest = abstractScenarioSimulationDocksHandlerSpy.getCurrentRightDockPlaceRequest(TestToolsPresenter.IDENTIFIER);
-        when(placeManagerMock.getActivity(eq(placeRequest))).thenReturn(activityMock);
-        Optional<TestToolsView> optional = abstractScenarioSimulationDocksHandlerSpy.getTestToolsView(placeRequest);
-        assertSame(testToolsViewMock, optional.get());
-    }
-
-    @Test
-    public void getTestToolsView_NullActivity() {
-        PlaceRequest placeRequest = abstractScenarioSimulationDocksHandlerSpy.getCurrentRightDockPlaceRequest(TestToolsPresenter.IDENTIFIER);
-        when(placeManagerMock.getActivity(eq(placeRequest))).thenReturn(null);
-        Optional<TestToolsView> optional = abstractScenarioSimulationDocksHandlerSpy.getTestToolsView(placeRequest);
-        assertFalse(optional.isPresent());
-    }
-
-    @Test
-    public void getCheatSheetView() {
-        CheatSheetView cheatSheetViewMock = mock(CheatSheetView.class);
-        AbstractWorkbenchActivity activityMock = mock(AbstractWorkbenchActivity.class);
-        when(activityMock.getWidget()).thenReturn(cheatSheetViewMock);
-        PlaceRequest placeRequest = abstractScenarioSimulationDocksHandlerSpy.getCurrentRightDockPlaceRequest(CheatSheetPresenter.IDENTIFIER);
-        when(placeManagerMock.getActivity(eq(placeRequest))).thenReturn(activityMock);
-        Optional<CheatSheetView> optional = abstractScenarioSimulationDocksHandlerSpy.getCheatSheetView(placeRequest);
-        assertSame(cheatSheetViewMock, optional.get());
-    }
-
-    @Test
-    public void getCheatSheetView_NullActivity() {
-        PlaceRequest placeRequest = abstractScenarioSimulationDocksHandlerSpy.getCurrentRightDockPlaceRequest(CheatSheetPresenter.IDENTIFIER);
-        when(placeManagerMock.getActivity(eq(placeRequest))).thenReturn(null);
-        Optional<CheatSheetView> optional = abstractScenarioSimulationDocksHandlerSpy.getCheatSheetView(placeRequest);
-        assertFalse(optional.isPresent());
-    }
-
-    @Test
-    public void getSettingsView() {
-        SettingsView settingsViewMock = mock(SettingsView.class);
-        AbstractWorkbenchActivity activityMock = mock(AbstractWorkbenchActivity.class);
-        when(activityMock.getWidget()).thenReturn(settingsViewMock);
-        PlaceRequest placeRequest = abstractScenarioSimulationDocksHandlerSpy.getCurrentRightDockPlaceRequest(SettingsPresenter.IDENTIFIER);
-        when(placeManagerMock.getActivity(eq(placeRequest))).thenReturn(activityMock);
-        Optional<SettingsView> optional = abstractScenarioSimulationDocksHandlerSpy.getSettingsView(placeRequest);
-        assertSame(settingsViewMock, optional.get());
-    }
-
-    @Test
-    public void getSettings_NullActivity() {
-        PlaceRequest placeRequest = abstractScenarioSimulationDocksHandlerSpy.getCurrentRightDockPlaceRequest(SettingsPresenter.IDENTIFIER);
-        when(placeManagerMock.getActivity(eq(placeRequest))).thenReturn(null);
-        Optional<SettingsView> optional = abstractScenarioSimulationDocksHandlerSpy.getSettingsView(placeRequest);
-        assertFalse(optional.isPresent());
     }
 }

@@ -65,6 +65,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.kogito.client.resources.i18n.KogitoClientConstants;
@@ -73,6 +74,7 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.promise.Promises;
@@ -293,6 +295,25 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     @Override
     public void unpublishTestResultsAlerts() {
         // Not used in Kogito
+    }
+
+    @Override
+    public void getDMNMetadata() {
+        final String dmnFilePath = getScenarioSimulationEditorPresenter().getModel().getSettings().getDmnFilePath();
+        final String dmnFileName = dmnFilePath.substring(dmnFilePath.lastIndexOf('/') + 1);
+        final Path dmnPath = PathFactory.newPath(dmnFileName, dmnFilePath);
+        scenarioSimulationKogitoDMNMarshallerService.getDMNContent(
+                dmnPath,
+                getUpdateDMNMetadataCallback(),
+                getDMNContentErrorCallback(dmnFilePath));
+    }
+
+    private Callback<JSITDefinitions> getUpdateDMNMetadataCallback() {
+        return jsitDefinitions -> {
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnName(jsitDefinitions.getName());
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnNamespace(jsitDefinitions.getNamespace());
+            getScenarioSimulationEditorPresenter().reloadSettingsDock();
+        };
     }
 
     @Override

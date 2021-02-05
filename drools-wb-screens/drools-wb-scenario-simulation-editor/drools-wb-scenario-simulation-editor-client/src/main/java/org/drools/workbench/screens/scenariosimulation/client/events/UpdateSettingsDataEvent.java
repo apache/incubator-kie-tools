@@ -28,16 +28,27 @@ public class UpdateSettingsDataEvent extends GwtEvent<UpdateSettingsDataEventHan
 
     private final Consumer<Settings> settingsChangeToApply;
     private final Predicate<Settings> settingsValueChanged;
+    private final boolean dmnPathChanged;
 
     public UpdateSettingsDataEvent(final Consumer<Settings> settingsChangeToApply) {
         this.settingsChangeToApply = settingsChangeToApply;
         this.settingsValueChanged = settings -> true;
+        this.dmnPathChanged = false;
     }
 
     public UpdateSettingsDataEvent(final Consumer<Settings> settingsChangeToApply,
                                    final Predicate<Settings> settingsValueChanged) {
         this.settingsChangeToApply = settingsChangeToApply;
         this.settingsValueChanged = settingsValueChanged;
+        this.dmnPathChanged = false;
+    }
+
+    public UpdateSettingsDataEvent(final Consumer<Settings> settingsChangeToApply,
+                                   final Predicate<Settings> settingsValueChanged,
+                                   final boolean dmnPathChanged) {
+        this.settingsChangeToApply = settingsChangeToApply;
+        this.settingsValueChanged = settingsValueChanged;
+        this.dmnPathChanged = dmnPathChanged;
     }
 
     @Override
@@ -56,5 +67,9 @@ public class UpdateSettingsDataEvent extends GwtEvent<UpdateSettingsDataEventHan
 
     public Predicate<Settings> getSettingsValueChanged() {
         return settingsValueChanged;
+    }
+
+    public boolean isDmnPathChanged() {
+        return dmnPathChanged;
     }
 }

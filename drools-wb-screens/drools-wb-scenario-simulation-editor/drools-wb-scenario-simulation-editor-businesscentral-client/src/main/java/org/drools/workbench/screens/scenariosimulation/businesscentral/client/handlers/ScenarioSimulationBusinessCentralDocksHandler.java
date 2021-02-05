@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.scenariosimulation.businesscentral.client.handlers;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,11 +26,8 @@ import org.drools.workbench.screens.scenariosimulation.businesscentral.client.ri
 import org.drools.workbench.screens.scenariosimulation.businesscentral.client.rightpanel.testrunner.TestRunnerReportingPanelWrapper;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SubDockView;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderPlace;
-import org.uberfire.client.mvp.AbstractWorkbenchActivity;
-import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.PlaceRequest;
@@ -44,18 +40,20 @@ public class ScenarioSimulationBusinessCentralDocksHandler extends AbstractScena
 
     @Inject
     protected TestRunnerReportingPanelWrapper testRunnerReportingPanelWrapper;
+    @Inject
+    protected CoverageReportPresenter coverageReportPresenter;
 
-    private UberfireDock testRunnedDock;
+    private UberfireDock testRunnerDock;
     private UberfireDock coverageDock;
 
     @Override
     public Collection<UberfireDock> provideDocks(String perspectiveIdentifier) {
         Collection<UberfireDock> result = super.provideDocks(perspectiveIdentifier);
-        testRunnedDock = new UberfireDock(UberfireDockPosition.EAST,
+        testRunnerDock = new UberfireDock(UberfireDockPosition.EAST,
                                           "PLAY_CIRCLE",
                                           new DockPlaceHolderPlace(TEST_RUNNER_REPORTING_PANEL),
                                           perspectiveIdentifier);
-        result.add(testRunnedDock.withSize(450).withLabel(ScenarioSimulationEditorConstants.INSTANCE.testReport()));
+        result.add(testRunnerDock.withSize(450).withLabel(ScenarioSimulationEditorConstants.INSTANCE.testReport()));
         coverageDock = new UberfireDock(UberfireDockPosition.EAST,
                                         "BAR_CHART",
                                         new DefaultPlaceRequest(CoverageReportPresenter.IDENTIFIER),
@@ -66,13 +64,13 @@ public class ScenarioSimulationBusinessCentralDocksHandler extends AbstractScena
 
     @Override
     public void expandTestResultsDock() {
-        authoringWorkbenchDocks.expandAuthoringDock(testRunnedDock);
+        authoringWorkbenchDocks.expandAuthoringDock(testRunnerDock);
     }
 
     @Override
     public void resetDocks() {
         super.resetDocks();
-        getCoverageReportPresenter().ifPresent(SubDockView.Presenter::reset);
+        coverageReportPresenter.reset();
         testRunnerReportingPanelWrapper.reset();
     }
 
@@ -88,19 +86,8 @@ public class ScenarioSimulationBusinessCentralDocksHandler extends AbstractScena
         coverageDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
     }
 
-    public Optional<CoverageReportView.Presenter> getCoverageReportPresenter() {
-        final Optional<CoverageReportView> coverageReportViewMap = getCoverageReportView(getCurrentRightDockPlaceRequest(CoverageReportPresenter.IDENTIFIER));
-        return coverageReportViewMap.map(CoverageReportView::getPresenter);
-    }
-
-    protected Optional<CoverageReportView> getCoverageReportView(PlaceRequest placeRequest) {
-        final Activity activity = placeManager.getActivity(placeRequest);
-        if (activity == null) {
-            return Optional.empty();
-        } else {
-            final AbstractWorkbenchActivity coverageActivity = (AbstractWorkbenchActivity) activity;
-            return Optional.of((CoverageReportView) coverageActivity.getWidget());
-        }
+    public CoverageReportView.Presenter getCoverageReportPresenter() {
+        return coverageReportPresenter;
     }
 
     public void updateTestRunnerReportingPanelResult(TestResultMessage testResultMessage) {

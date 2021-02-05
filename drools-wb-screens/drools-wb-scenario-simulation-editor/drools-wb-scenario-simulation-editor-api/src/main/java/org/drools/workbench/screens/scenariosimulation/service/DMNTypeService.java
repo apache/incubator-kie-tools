@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.service;
 
 import org.drools.scenariosimulation.api.model.Settings;
+import org.drools.workbench.screens.scenariosimulation.model.DMNMetadata;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -39,4 +40,11 @@ public interface DMNTypeService {
      * @param dmnPath to dmn file
      */
     void initializeNameAndNamespace(Settings settings, Path path, String dmnPath);
+
+    /**
+     * It returns the DMN name and namespace given a dmnPath
+     * @param path to project
+     * @param dmnPath to dmn file
+     */
+    DMNMetadata getDMNMetadata(Path path, String dmnPath);
 }

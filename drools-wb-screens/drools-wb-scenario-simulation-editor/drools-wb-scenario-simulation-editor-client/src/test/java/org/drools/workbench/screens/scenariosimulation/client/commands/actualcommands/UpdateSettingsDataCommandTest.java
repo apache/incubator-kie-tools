@@ -33,9 +33,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UpdateSettingsDataCommandTest extends AbstractScenarioSimulationTest {
@@ -47,7 +49,7 @@ public class UpdateSettingsDataCommandTest extends AbstractScenarioSimulationTes
 
     @Before
     public void setup() {
-        commandSpy = spy(new UpdateSettingsDataCommand(consumerMock));
+        commandSpy = spy(new UpdateSettingsDataCommand(consumerMock, false));
         super.setup();
     }
 
@@ -94,7 +96,21 @@ public class UpdateSettingsDataCommandTest extends AbstractScenarioSimulationTes
     public void internalExecute() {
         commandSpy.internalExecute(scenarioSimulationContextLocal);
         verify(consumerMock, times(1)).accept(eq(settingsLocal));
+        verify(scenarioSimulationEditorPresenterMock, never()).getPopulateTestToolsCommand();
+        verify(scenarioSimulationEditorPresenterMock, never()).getUpdateDMNMetadataCommand();
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadSettingsDock();
+    }
+
+    @Test
+    public void internalExecuteDMNPathChanged() {
+        when(scenarioSimulationEditorPresenterMock.getPopulateTestToolsCommand()).thenReturn(() -> {});
+        when(scenarioSimulationEditorPresenterMock.getUpdateDMNMetadataCommand()).thenReturn(() -> {});
+        commandSpy = spy(new UpdateSettingsDataCommand(consumerMock, true));
+        commandSpy.internalExecute(scenarioSimulationContextLocal);
+        verify(consumerMock, times(1)).accept(eq(settingsLocal));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).getPopulateTestToolsCommand();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).getUpdateDMNMetadataCommand();
+        verify(scenarioSimulationEditorPresenterMock, never()).reloadSettingsDock();
     }
 
     @Test
@@ -109,6 +125,22 @@ public class UpdateSettingsDataCommandTest extends AbstractScenarioSimulationTes
         commandSpy.restorableStatus = settingsLocal;
         commandSpy.setCurrentContext(scenarioSimulationContextLocal);
         verify(scenarioSimulationModelMock, times(1)).setSettings(eq(settingsLocal));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadSettingsDock();
+        verify(scenarioSimulationEditorPresenterMock, never()).getUpdateDMNMetadataCommand();
+        verify(scenarioSimulationEditorPresenterMock, never()).validateSimulation();
+        verify(commandSpy, times(1)).commonExecution(eq(scenarioSimulationContextLocal));
+        assertNotEquals(settingsLocal, commandSpy.restorableStatus);
+    }
+
+    @Test
+    public void setCurrentContextDMNPatchChanged() {
+        when(scenarioSimulationEditorPresenterMock.getPopulateTestToolsCommand()).thenReturn(() -> {});
+        commandSpy = spy(new UpdateSettingsDataCommand(consumerMock, true));
+        commandSpy.restorableStatus = settingsLocal;
+        commandSpy.setCurrentContext(scenarioSimulationContextLocal);
+        verify(scenarioSimulationModelMock, times(1)).setSettings(eq(settingsLocal));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).getPopulateTestToolsCommand();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).validateSimulation();
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadSettingsDock();
         verify(commandSpy, times(1)).commonExecution(eq(scenarioSimulationContextLocal));
         assertNotEquals(settingsLocal, commandSpy.restorableStatus);
