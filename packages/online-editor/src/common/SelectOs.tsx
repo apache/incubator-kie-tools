@@ -16,7 +16,7 @@
 
 import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { getOperatingSystem, OperatingSystem } from "./utils";
 import { OnlineI18n } from "./i18n";
 

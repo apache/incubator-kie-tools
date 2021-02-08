@@ -32,20 +32,12 @@ import {
   Alert,
   AlertActionCloseButton,
   AlertActionLink,
-  Button,
-  Card,
   Drawer,
-  DrawerActions,
-  DrawerCloseButton,
   DrawerContent,
   DrawerContentBody,
-  DrawerHead,
   DrawerPanelContent,
-  Modal,
-  ModalVariant,
   Page,
-  PageSection,
-  Title
+  PageSection
 } from "@patternfly/react-core";
 import { DmnRunner } from "../common/DmnRunner";
 import { DmnRunnerDrawer } from "./DmnRunnerDrawer";
@@ -68,13 +60,15 @@ export enum OpenedModal {
   NONE,
   GITHUB_TOKEN,
   EMBED,
-  DMN_RUNNER
+  DMN_RUNNER_HELPER
 }
 
 enum DmnRunnerStatus {
   DISABLED,
+  AVAILABLE,
   RUNNING,
-  NOT_RUNNING
+  NOT_RUNNING,
+  STOPPED
 }
 
 interface Props {
@@ -264,63 +258,70 @@ export function EditorPage(props: Props) {
     }
   }, [context.file.fileName]);
 
-  const [isDmnRunning, setIsDmnRunning] = useState(false);
+  // TODO: extract to custom hook
+  const [runDmn, setRunDmn] = useState(false);
   const [dmnRunnerSchema, setDmnRunnerSchema] = useState<JSONSchemaBridge>();
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
 
-  const checkDmnRunnerServer = useCallback(() => {
-    return DmnRunner.checkServer()
-      .then(() => setDmnRunnerStatus(DmnRunnerStatus.RUNNING))
-      .catch(() => setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING));
-  }, []);
-
   useEffect(() => {
-    if (context.file.fileExtension === "dmn") {
-      let interval: number | undefined;
-      if (isDmnRunning) {
-        interval = window.setInterval(
+    if (runDmn && context.file.fileExtension === "dmn") {
+      // check crashes / manual stops
+      let polling1: number | undefined;
+      if (dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
+        polling1 = window.setInterval(
           () =>
-            DmnRunner.checkServer()
-              .then(() => setDmnRunnerStatus(DmnRunnerStatus.RUNNING))
-              .catch(() => setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING)),
+            DmnRunner.checkServer().catch(() => {
+              setModal(OpenedModal.DMN_RUNNER_HELPER);
+              setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
+              window.clearInterval(polling1);
+            }),
           500
         );
-      }
-
-      if (isDmnRunning && dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
         editor
           ?.getContent()
           .then(content => DmnRunner.getFormSchema(content ?? ""))
           .then(schema => setDmnRunnerSchema(schema));
       }
 
-      if (!isDmnRunning) {
-        setDmnRunnerStatus(DmnRunnerStatus.DISABLED);
+      // detect dmn runner
+      let polling2: number | undefined;
+      if (dmnRunnerStatus !== DmnRunnerStatus.RUNNING) {
+        polling2 = window.setInterval(
+          () =>
+            DmnRunner.checkServer().then(() => {
+              setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
+              window.clearInterval(polling2);
+            }),
+          500
+        );
       }
 
       return () => {
-        if (interval) {
-          window.clearInterval(interval);
+        if (polling1) {
+          window.clearInterval(polling1);
+        }
+
+        if (polling2) {
+          window.clearInterval(polling2);
         }
       };
     }
-  }, [editor, isDmnRunning, dmnRunnerStatus]);
+  }, [runDmn, editor, dmnRunnerStatus]);
 
-  const onRunDmn = useCallback(
-    (e: React.MouseEvent<any>) => {
-      e.stopPropagation();
-      e.preventDefault();
-      DmnRunner.checkServer()
-        .then(() => setDmnRunnerStatus(DmnRunnerStatus.RUNNING))
-        .catch(() => {
-          setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
-          setModal(OpenedModal.DMN_RUNNER);
-        });
-      // setIsDmnRunning(!isDmnRunning);
-      // setAlert(Alerts.SUCCESS_DMN_RUNNER);
-    },
-    [isDmnRunning]
-  );
+  const onRunDmn = useCallback((e: React.MouseEvent<any>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setRunDmn(true);
+    DmnRunner.checkServer()
+      .then(() => {
+        setAlert(Alerts.SUCCESS_DMN_RUNNER);
+        setDmnRunnerStatus(DmnRunnerStatus.AVAILABLE);
+      })
+      .catch(() => {
+        setModal(OpenedModal.DMN_RUNNER_HELPER);
+        setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
+      });
+  }, []);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
@@ -364,24 +365,22 @@ export function EditorPage(props: Props) {
           onGistIt={requestGistIt}
           onEmbed={requestEmbed}
           isEdited={isDirty}
-          isDmnRunning={isDmnRunning}
+          isDmnRunning={dmnRunnerStatus === DmnRunnerStatus.RUNNING}
           onRunDmn={onRunDmn}
         />
       }
     >
       <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
-        <Drawer isInline={true} isExpanded={isDmnRunning}>
+        <Drawer isInline={true} isExpanded={dmnRunnerStatus === DmnRunnerStatus.RUNNING}>
           <DrawerContent
-            className={!isDmnRunning ? "kogito--editor__dmn-runner-drawer-content" : ""}
+            className={dmnRunnerStatus !== DmnRunnerStatus.RUNNING ? "kogito--editor__dmn-runner-drawer-content" : ""}
             panelContent={
               <DrawerPanelContent className={"kogito--editor__dmn-runner-drawer-panel"}>
-                {dmnRunnerStatus === DmnRunnerStatus.RUNNING && (
-                  <DmnRunnerDrawer
-                    jsonSchemaBridge={dmnRunnerSchema}
-                    editorContent={editor?.getContent}
-                    onRunDmn={onRunDmn}
-                  />
-                )}
+                <DmnRunnerDrawer
+                  jsonSchemaBridge={dmnRunnerSchema}
+                  editorContent={editor?.getContent}
+                  onRunDmn={onRunDmn}
+                />
               </DrawerPanelContent>
             }
           >
@@ -426,7 +425,7 @@ export function EditorPage(props: Props) {
                     className={"kogito--alert"}
                     variant="success"
                     title={"Success connecting with DMN Runner"}
-                    // actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                    actionClose={<AlertActionCloseButton onClose={closeAlert} />}
                   />
                 </div>
               )}
@@ -489,8 +488,10 @@ export function EditorPage(props: Props) {
               )}
               {!fullscreen && (
                 <DmnRunnerModal
-                  isDmnRunning={isDmnRunning}
-                  isOpen={modal === OpenedModal.DMN_RUNNER}
+                  setRunDmn={setRunDmn}
+                  stopped={dmnRunnerStatus === DmnRunnerStatus.STOPPED}
+                  isDmnRunning={dmnRunnerStatus === DmnRunnerStatus.RUNNING}
+                  isOpen={modal === OpenedModal.DMN_RUNNER_HELPER}
                   onClose={closeModal}
                 />
               )}

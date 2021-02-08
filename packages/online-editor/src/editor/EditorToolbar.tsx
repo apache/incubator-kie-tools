@@ -203,7 +203,7 @@ export function EditorToolbar(props: Props) {
                   aria-label={"Run"}
                   className={"kogito--editor__toolbar"}
                   icon={<PlayIcon />}
-                  // isDisabled={props.isDmnRunning}
+                  isDisabled={props.isDmnRunning}
                 >
                   {runLabel}
                 </Button>

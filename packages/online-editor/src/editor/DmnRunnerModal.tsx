@@ -40,6 +40,8 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   isDmnRunning: boolean;
+  stopped: boolean;
+  setRunDmn: React.Dispatch<boolean>;
 }
 
 const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
@@ -47,7 +49,7 @@ const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner
 export function DmnRunnerModal(props: Props) {
   const { i18n } = useOnlineI18n();
   const selectRef = useRef<SelectOsRef>(null);
-  const [installDmnRunnerSection, setInstallDmnRunnerSection] = useState(true);
+  const [installDmnRunnerSection, setInstallDmnRunnerSection] = useState(!props.stopped);
   const [startDmnRunnerSection, setStartDmnRunnerSection] = useState(true);
 
   const downloadDmnRunner = useMemo(() => {
@@ -65,7 +67,10 @@ export function DmnRunnerModal(props: Props) {
   return (
     <Modal
       isOpen={props.isOpen}
-      onClose={props.onClose}
+      onClose={() => {
+        props.onClose();
+        props.setRunDmn(false);
+      }}
       variant={ModalVariant.medium}
       aria-label={"Steps to enable the DMN Runner"}
       title={"DMN Runner is not running"}
@@ -74,25 +79,44 @@ export function DmnRunnerModal(props: Props) {
         <div>
           <div>
             {props.isDmnRunning ? (
-              <div style={{ display: "flex" }}>
-                <p>DMN Runner connected</p>
-                <CheckIcon style={{ marginLeft: "10px" }} size={"md"} />
+              <div>
+                <div style={{ display: "flex" }}>
+                  <p>Connected to DMN Runner</p>
+                  <CheckIcon style={{ marginLeft: "10px" }} size={"md"} />
+                </div>
+                <br />
+
+                <Button
+                  key="cancel"
+                  variant="link"
+                  onClick={() => {
+                    props.onClose();
+                    props.setRunDmn(true);
+                  }}
+                >
+                  {i18n.terms.close}
+                </Button>
               </div>
             ) : (
-              <div style={{ display: "flex" }}>
-                <p>Waiting to connect to DMN Runner server</p>
-                <Spinner style={{ marginLeft: "10px" }} size="md" />
+              <div>
+                <div style={{ display: "flex" }}>
+                  <p>Waiting to connect to DMN Runner server</p>
+                  <Spinner style={{ marginLeft: "10px" }} size="md" />
+                </div>
+                <br />
+
+                <Button
+                  key="cancel"
+                  variant="link"
+                  onClick={() => {
+                    props.onClose();
+                    props.setRunDmn(false);
+                  }}
+                >
+                  {i18n.terms.close}
+                </Button>
               </div>
             )}
-          </div>
-          <br />
-          <div>
-            <a key="download" href={downloadDmnRunner} download={true}>
-              <Button variant="primary">{i18n.terms.download}</Button>
-            </a>
-            <Button key="cancel" variant="link" onClick={props.onClose}>
-              {i18n.terms.close}
-            </Button>
           </div>
         </div>
       }
@@ -106,7 +130,7 @@ export function DmnRunnerModal(props: Props) {
         onToggle={setInstallDmnRunnerSection}
       >
         <p style={{ display: "inline" }}>You can download the zip containing the server </p>
-        <a style={{ display: "inline" }} href={"https://kiegroup.github.io/kogito-online-ci/temp/runner.zip"}>
+        <a style={{ display: "inline" }} href={downloadDmnRunner}>
           here
         </a>
         <p>Unzip it ... </p>

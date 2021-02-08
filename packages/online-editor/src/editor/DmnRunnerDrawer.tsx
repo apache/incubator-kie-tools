@@ -31,7 +31,7 @@ import {
   DrawerPanelContent
 } from "@patternfly/react-core";
 
-enum JitResponseStatus {
+enum DmnRunnerStatusResponse {
   SUCCESS,
   WARNING,
   NONE
@@ -50,20 +50,20 @@ const PF_BREAKPOINT_XL = 1200;
 const PF_BREAKPOINT_2XL = 1450;
 
 export function DmnRunnerDrawer(props: Props) {
-  const [jitResponse, setJitResponse] = useState();
-  const [jitResponseStatus, setJitResponseStatus] = useState(JitResponseStatus.NONE);
+  const [dmnRunnerResponse, setDmnRunnerResponse] = useState();
+  const [dmnRunnerResponseStatus, setDmnRunnerResponseStatus] = useState(DmnRunnerStatusResponse.NONE);
   const autoFormRef = useRef<HTMLFormElement>();
 
   const alertMessage = useMemo(() => {
-    switch (jitResponseStatus) {
-      case JitResponseStatus.SUCCESS:
+    switch (dmnRunnerResponseStatus) {
+      case DmnRunnerStatusResponse.SUCCESS:
         return <Alert title={"Your request has been successfully processed"} variant={"success"} isInline={true} />;
-      case JitResponseStatus.WARNING:
+      case DmnRunnerStatusResponse.WARNING:
         return <Alert title={"Your request couldn't be processed"} variant={"warning"} isInline={true} />;
-      case JitResponseStatus.NONE:
+      case DmnRunnerStatusResponse.NONE:
         return;
     }
-  }, [jitResponseStatus]);
+  }, [dmnRunnerResponseStatus]);
 
   const onSubmit = useCallback(
     ({ context }) => {
@@ -72,10 +72,10 @@ export function DmnRunnerDrawer(props: Props) {
           DmnRunner.validateForm({ context, model })
             .then(res => res.json())
             .then(json => {
-              setJitResponse(json);
-              setJitResponseStatus(JitResponseStatus.SUCCESS);
+              setDmnRunnerResponse(json);
+              setDmnRunnerResponseStatus(DmnRunnerStatusResponse.SUCCESS);
             })
-            .catch(() => setJitResponseStatus(JitResponseStatus.WARNING));
+            .catch(() => setDmnRunnerResponseStatus(DmnRunnerStatusResponse.WARNING));
         });
       }
     },
