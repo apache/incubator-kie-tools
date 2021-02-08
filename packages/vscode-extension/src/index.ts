@@ -25,6 +25,7 @@ import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
+import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/src/vscode/VsCodeNotificationsApi";
 
 /**
  * Starts a Kogito extension.
@@ -49,13 +50,15 @@ export async function startExtension(args: {
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
+  const vsCodeNotificationsApi = new VsCodeNotificationsApi(workspaceApi, vsCodeI18n);
   const editorFactory = new KogitoEditorFactory(
     args.context,
     editorStore,
     args.editorEnvelopeLocator,
     messageBroadcaster,
     workspaceApi,
-    args.backendProxy
+    args.backendProxy,
+    vsCodeNotificationsApi
   );
 
   const editorWebviewProvider = new KogitoEditorWebviewProvider(
@@ -63,7 +66,8 @@ export async function startExtension(args: {
     args.viewType,
     editorStore,
     editorFactory,
-    vsCodeI18n
+    vsCodeI18n,
+    vsCodeNotificationsApi
   );
 
   args.context.subscriptions.push(

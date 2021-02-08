@@ -26,6 +26,7 @@ import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/edi
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
 import { File, StateControl } from "@kogito-tooling/editor/dist/channel";
 import { Minimatch } from "minimatch";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -115,5 +116,15 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public receive_getLocale(): Promise<string> {
     return Promise.resolve(this.locale);
+  }
+
+  public createNotification(notification: Notification): void {
+    this.overrides.createNotification?.(notification);
+  }
+  public setNotifications(path: string, notifications: Notification[]): void {
+    this.overrides.setNotifications?.(path, notifications);
+  }
+  public removeNotifications(path: string): void {
+    this.overrides.removeNotifications?.(path);
   }
 }

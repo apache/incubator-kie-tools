@@ -23,6 +23,7 @@ import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { KieBcEditorsI18n } from "./i18n";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 
 export class GwtEditorWrapper implements Editor {
   public readonly af_isReact = true;
@@ -96,6 +97,10 @@ export class GwtEditorWrapper implements Editor {
 
   public getPreview(): Promise<string | undefined> {
     return this.gwtEditor.getPreview();
+  }
+
+  public validate(): Promise<Notification[]> {
+    return this.gwtEditor.validate();
   }
 
   private removeBusinessCentralHeaderPanel() {

@@ -87,6 +87,10 @@ export class KogitoEditor implements EditorApi {
     return this.envelopeServer.envelopeApi.requests.receive_previewRequest();
   }
 
+  public validate() {
+    return this.envelopeServer.envelopeApi.requests.validate();
+  }
+
   public startInitPolling() {
     this.envelopeServer.startInitPolling();
   }

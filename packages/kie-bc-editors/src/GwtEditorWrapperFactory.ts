@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi } from "./GwtAppFormerApi";
-import { GwtEditorWrapper } from "./GwtEditorWrapper";
+import { NotificationsApi, Notification } from "@kogito-tooling/notifications/dist/api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
 import {
   Editor,
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType
 } from "@kogito-tooling/editor/dist/api";
-import { GwtLanguageData, Resource } from "./GwtLanguageData";
-import { XmlFormatter } from "./XmlFormatter";
-import { GwtStateControlService } from "./gwtStateControl";
-import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
-import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
-import { GuidedTourApi } from "./api/GuidedTourApi";
-import { ResourceContentApi } from "./api/ResourceContentApi";
-import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
-import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
-import { StateControlApi } from "./api/StateControlApi";
-import { EditorContextApi } from "./api/EditorContextApi";
-import { GwtEditorMapping } from "./GwtEditorMapping";
-import { I18nServiceApi } from "./api/I18nServiceApi";
-import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
 import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
+import { EditorContextApi } from "./api/EditorContextApi";
+import { GuidedTourApi } from "./api/GuidedTourApi";
+import { I18nServiceApi } from "./api/I18nServiceApi";
+import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
+import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
+import { ResourceContentApi } from "./api/ResourceContentApi";
+import { StateControlApi } from "./api/StateControlApi";
+import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
+import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
+import { GwtAppFormerApi } from "./GwtAppFormerApi";
+import { GwtEditorMapping } from "./GwtEditorMapping";
+import { GwtEditorWrapper } from "./GwtEditorWrapper";
+import { GwtLanguageData, Resource } from "./GwtLanguageData";
+import { GwtStateControlService } from "./gwtStateControl";
+import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
+import { XmlFormatter } from "./XmlFormatter";
 
 declare global {
   interface Window {
@@ -54,10 +55,10 @@ declare global {
       workspaceService: WorkspaceServiceApi;
       i18nService: I18nServiceApi;
       pmmlEditorMarshallerService: PMMLEditorMarshallerApi;
+      notificationsService: NotificationsApi;
     };
   }
 }
-
 
 export class GwtEditorWrapperFactory implements EditorFactory {
   constructor(
@@ -172,7 +173,18 @@ export class GwtEditorWrapperFactory implements EditorFactory {
           envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
         }
       },
-      pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
+      pmmlEditorMarshallerService: new PMMLEditorMarshallerService(),
+      notificationsService: {
+        createNotification: (notification: Notification) => {
+          envelopeContext.channelApi.notifications.createNotification(notification);
+        },
+        removeNotifications: (path: string) => {
+          envelopeContext.channelApi.notifications.removeNotifications(path);
+        },
+        setNotifications: (path: string, notifications: Notification[]) => {
+          envelopeContext.channelApi.notifications.setNotifications(path, notifications);
+        }
+      }
     };
   }
 

@@ -16,6 +16,7 @@
 
 import { CapabilityChannelApi } from "@kogito-tooling/backend/dist/channel-api";
 import { KogitoToolingChannelCommonApi } from "@kogito-tooling/channel-common-api";
+import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { GuidedTourChannelApi } from "@kogito-tooling/guided-tour/dist/api";
 import { I18nChannelApi } from "@kogito-tooling/i18n/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
@@ -27,7 +28,8 @@ export interface KogitoEditorChannelApi
     GuidedTourChannelApi,
     I18nChannelApi,
     CapabilityChannelApi,
-    WorkspaceApi {
+    WorkspaceApi,
+    NotificationsApi {
   receive_setContentError(errorMessage: string): void;
   receive_stateControlCommandUpdate(command: StateControlCommand): void;
   receive_contentRequest(): Promise<EditorContent>;

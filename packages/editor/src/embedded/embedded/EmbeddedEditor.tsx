@@ -137,7 +137,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
         setContent: async content =>
-          envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content })
+          envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content }),
+        validate: () => envelopeServer.envelopeApi.requests.validate()
       };
     },
     [envelopeServer, stateControl]

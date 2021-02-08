@@ -35,6 +35,7 @@ describe("useDirtyState", () => {
       getContent: jest.fn(),
       getPreview: jest.fn(),
       setContent: jest.fn(),
+      validate: jest.fn(),
       getElementPosition: jest.fn()
     };
   });
