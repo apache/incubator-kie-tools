@@ -16,20 +16,15 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
-import { JitDmn } from "../common/JitDmn";
+import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
   Alert,
-  DescriptionList,
   DescriptionListTerm,
   DescriptionListGroup,
   DescriptionListDescription,
-  EmptyState,
   Title,
-  Flex,
-  FlexItem,
-  Divider,
   DrawerContent,
   DrawerContentBody,
   Drawer,
@@ -45,6 +40,7 @@ enum JitResponseStatus {
 interface Props {
   editorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
+  onRunDmn: (e: React.MouseEvent<any>) => void;
 }
 
 const PF_BREAKPOINT_SM = 576;
@@ -53,7 +49,7 @@ const PF_BREAKPOINT_LG = 992;
 const PF_BREAKPOINT_XL = 1200;
 const PF_BREAKPOINT_2XL = 1450;
 
-export function DmnRunner(props: Props) {
+export function DmnRunnerDrawer(props: Props) {
   const [jitResponse, setJitResponse] = useState();
   const [jitResponseStatus, setJitResponseStatus] = useState(JitResponseStatus.NONE);
   const autoFormRef = useRef<HTMLFormElement>();
@@ -73,7 +69,7 @@ export function DmnRunner(props: Props) {
     ({ context }) => {
       if (props.editorContent) {
         props.editorContent().then((model: string) => {
-          JitDmn.validateForm({ context, model })
+          DmnRunner.validateForm({ context, model })
             .then(res => res.json())
             .then(json => {
               setJitResponse(json);
@@ -145,21 +141,6 @@ export function DmnRunner(props: Props) {
     </Drawer>
   );
 }
-
-// {/*<div style={{ display: "flex" }}>*/}
-// {/*    */}
-//
-// {/*  /!*{alertMessage}*!/*/}
-// {/*  <Divider isVertical={true} />*/}
-// {/*    */}
-// {/*  /!*{jitResponse ? (*!/*/}
-// {/*  /!*  <DescriptionList isHorizontal={true}>*!/*/}
-// {/*  /!*    <JitResponse responseObject={jitResponse!} withoutPadding={false} />*!/*/}
-// {/*  /!*  </DescriptionList>*!/*/}
-// {/*  /!*) : (*!/*/}
-// {/*  /!*  <p>Response Empty State</p>*!/*/}
-// {/*  /!*)}*!/*/}
-// {/*</div>*/}
 
 interface RecursiveJitResponseProps {
   responseObject: object;

@@ -30,9 +30,9 @@ import {
   Tooltip,
   DropdownToggle
 } from "@patternfly/react-core";
-import { EllipsisVIcon } from "@patternfly/react-icons";
+import { EllipsisVIcon, PlayIcon } from "@patternfly/react-icons";
 import * as React from "react";
-import { ReactElement, ReactEventHandler, useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
 import { useOnlineI18n } from "../common/i18n";
@@ -50,8 +50,8 @@ interface Props {
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
   isEdited: boolean;
-  runJitDmn: boolean;
-  setRunJitDmn: React.Dispatch<boolean>;
+  isDmnRunning: boolean;
+  onRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function EditorToolbar(props: Props) {
@@ -92,16 +92,7 @@ export function EditorToolbar(props: Props) {
     [saveNewName, cancelNewName]
   );
 
-  const runLabel = useMemo(() => (props.runJitDmn ? "Stop running" : "Run"), [props.runJitDmn]);
-
-  const onRun = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      e.preventDefault();
-      props.setRunJitDmn(!props.runJitDmn);
-    },
-    [props.runJitDmn]
-  );
+  const runLabel = useMemo(() => (props.isDmnRunning ? "Running" : "Run"), [props.isDmnRunning]);
 
   const viewItems = useCallback(
     (dropdownId: string) => [
@@ -208,9 +199,11 @@ export function EditorToolbar(props: Props) {
                 <Button
                   data-testid="run-button"
                   variant={"tertiary"}
-                  onClick={onRun}
+                  onClick={props.onRunDmn}
                   aria-label={"Run"}
                   className={"kogito--editor__toolbar"}
+                  icon={<PlayIcon />}
+                  // isDisabled={props.isDmnRunning}
                 >
                   {runLabel}
                 </Button>

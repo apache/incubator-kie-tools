@@ -32,18 +32,25 @@ import {
   Alert,
   AlertActionCloseButton,
   AlertActionLink,
+  Button,
   Card,
   Drawer,
+  DrawerActions,
+  DrawerCloseButton,
   DrawerContent,
   DrawerContentBody,
+  DrawerHead,
   DrawerPanelContent,
+  Modal,
+  ModalVariant,
   Page,
   PageSection,
   Title
 } from "@patternfly/react-core";
-import { JitDmn } from "../common/JitDmn";
-import { JitDmnForm } from "./JitDmnForm";
+import { DmnRunner } from "../common/DmnRunner";
+import { DmnRunnerDrawer } from "./DmnRunnerDrawer";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { DmnRunnerModal } from "./DmnRunnerModal";
 
 export enum Alerts {
   NONE,
@@ -53,16 +60,18 @@ export enum Alerts {
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
   UNSAVED,
+  SUCCESS_DMN_RUNNER,
   ERROR
 }
 
-export enum Modal {
+export enum OpenedModal {
   NONE,
   GITHUB_TOKEN,
-  EMBED
+  EMBED,
+  DMN_RUNNER
 }
 
-enum JitDmnStatus {
+enum DmnRunnerStatus {
   DISABLED,
   RUNNING,
   NOT_RUNNING
@@ -83,7 +92,7 @@ export function EditorPage(props: Props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [updateGistFilenameUrl, setUpdateGistFilenameUrl] = useState("");
   const [alert, setAlert] = useState(Alerts.NONE);
-  const [modal, setModal] = useState(Modal.NONE);
+  const [modal, setModal] = useState(OpenedModal.NONE);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
 
@@ -206,15 +215,15 @@ export function EditorPage(props: Props) {
   }, [location.pathname]);
 
   const requestSetGitHubToken = useCallback(() => {
-    setModal(Modal.GITHUB_TOKEN);
+    setModal(OpenedModal.GITHUB_TOKEN);
   }, []);
 
   const requestEmbed = useCallback(() => {
-    setModal(Modal.EMBED);
+    setModal(OpenedModal.EMBED);
   }, []);
 
   const closeModal = useCallback(() => {
-    setModal(Modal.NONE);
+    setModal(OpenedModal.NONE);
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
@@ -255,38 +264,38 @@ export function EditorPage(props: Props) {
     }
   }, [context.file.fileName]);
 
-  const [runJitDmn, setRunJitDmn] = useState(false);
-  const [jitDmnSchema, setJitDmnSchema] = useState<JSONSchemaBridge>();
-  const [jitDmnStatus, setJitDmnStatus] = useState(JitDmnStatus.DISABLED);
+  const [isDmnRunning, setIsDmnRunning] = useState(false);
+  const [dmnRunnerSchema, setDmnRunnerSchema] = useState<JSONSchemaBridge>();
+  const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
 
-  const checkJitServer = useCallback(() => {
-    return JitDmn.checkServer()
-      .then(() => setJitDmnStatus(JitDmnStatus.RUNNING))
-      .catch(() => setJitDmnStatus(JitDmnStatus.NOT_RUNNING));
+  const checkDmnRunnerServer = useCallback(() => {
+    return DmnRunner.checkServer()
+      .then(() => setDmnRunnerStatus(DmnRunnerStatus.RUNNING))
+      .catch(() => setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING));
   }, []);
 
   useEffect(() => {
     if (context.file.fileExtension === "dmn") {
       let interval: number | undefined;
-      if (runJitDmn) {
+      if (isDmnRunning) {
         interval = window.setInterval(
           () =>
-            JitDmn.checkServer()
-              .then(() => setJitDmnStatus(JitDmnStatus.RUNNING))
-              .catch(() => setJitDmnStatus(JitDmnStatus.NOT_RUNNING)),
+            DmnRunner.checkServer()
+              .then(() => setDmnRunnerStatus(DmnRunnerStatus.RUNNING))
+              .catch(() => setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING)),
           500
         );
       }
 
-      if (runJitDmn && jitDmnStatus === JitDmnStatus.RUNNING) {
+      if (isDmnRunning && dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
         editor
           ?.getContent()
-          .then(content => JitDmn.getFormSchema(content ?? ""))
-          .then(schema => setJitDmnSchema(schema));
+          .then(content => DmnRunner.getFormSchema(content ?? ""))
+          .then(schema => setDmnRunnerSchema(schema));
       }
 
-      if (!runJitDmn) {
-        setJitDmnStatus(JitDmnStatus.DISABLED);
+      if (!isDmnRunning) {
+        setDmnRunnerStatus(DmnRunnerStatus.DISABLED);
       }
 
       return () => {
@@ -295,7 +304,23 @@ export function EditorPage(props: Props) {
         }
       };
     }
-  }, [editor, runJitDmn, jitDmnStatus]);
+  }, [editor, isDmnRunning, dmnRunnerStatus]);
+
+  const onRunDmn = useCallback(
+    (e: React.MouseEvent<any>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      DmnRunner.checkServer()
+        .then(() => setDmnRunnerStatus(DmnRunnerStatus.RUNNING))
+        .catch(() => {
+          setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
+          setModal(OpenedModal.DMN_RUNNER);
+        });
+      // setIsDmnRunning(!isDmnRunning);
+      // setAlert(Alerts.SUCCESS_DMN_RUNNER);
+    },
+    [isDmnRunning]
+  );
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
@@ -339,146 +364,146 @@ export function EditorPage(props: Props) {
           onGistIt={requestGistIt}
           onEmbed={requestEmbed}
           isEdited={isDirty}
-          runJitDmn={runJitDmn}
-          setRunJitDmn={setRunJitDmn}
+          isDmnRunning={isDmnRunning}
+          onRunDmn={onRunDmn}
         />
       }
     >
       <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
-        {!fullscreen && alert === Alerts.COPY && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              className={"kogito--alert"}
-              variant="success"
-              title={i18n.editorPage.alerts.copy}
-              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-            />
-          </div>
-        )}
-        {!fullscreen && alert === Alerts.SUCCESS_UPDATE_GIST && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              className={"kogito--alert"}
-              variant="success"
-              title={i18n.editorPage.alerts.updateGist}
-              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-            />
-          </div>
-        )}
-        {!fullscreen && alert === Alerts.SUCCESS_UPDATE_GIST_FILENAME && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              className={"kogito--alert"}
-              variant="warning"
-              title={i18n.editorPage.alerts.updateGistFilename.title}
-              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-            >
-              <p>{i18n.editorPage.alerts.updateGistFilename.message}</p>
-              <p>{i18n.editorPage.alerts.updateGistFilename.yourNewUrl}:</p>
-              <p>{updateGistFilenameUrl}</p>
-            </Alert>
-          </div>
-        )}
-        {!fullscreen && alert === Alerts.INVALID_CURRENT_GIST && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              className={"kogito--alert"}
-              variant="danger"
-              title={i18n.editorPage.alerts.invalidCurrentGist}
-              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-            />
-          </div>
-        )}
-        {!fullscreen && alert === Alerts.INVALID_GIST_FILENAME && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              className={"kogito--alert"}
-              variant="danger"
-              title={i18n.editorPage.alerts.invalidGistFilename}
-              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-            />
-          </div>
-        )}
-        {!fullscreen && alert === Alerts.ERROR && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              className={"kogito--alert"}
-              variant="danger"
-              title={i18n.editorPage.alerts.error}
-              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-            />
-          </div>
-        )}
-        {!fullscreen && alert === Alerts.UNSAVED && (
-          <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
-            <Alert
-              className={"kogito--alert"}
-              variant="warning"
-              title={i18n.editorPage.alerts.unsaved.title}
-              actionClose={<AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={closeAlert} />}
-              actionLinks={
-                <React.Fragment>
-                  <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
-                    {i18n.terms.save}
-                  </AlertActionLink>
-                  <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                    {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
-                  </AlertActionLink>
-                </React.Fragment>
-              }
-            >
-              <p>{i18n.editorPage.alerts.unsaved.message}</p>
-            </Alert>
-          </div>
-        )}
-        {!fullscreen && <GithubTokenModal isOpen={modal === Modal.GITHUB_TOKEN} onClose={closeModal} />}
-        {!fullscreen && (
-          <EmbedModal
-            isOpen={modal === Modal.EMBED}
-            onClose={closeModal}
-            editor={editor}
-            fileExtension={fileExtension}
-          />
-        )}
-        {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-        <Drawer isInline={true} isExpanded={runJitDmn}>
+        <Drawer isInline={true} isExpanded={isDmnRunning}>
           <DrawerContent
+            className={!isDmnRunning ? "kogito--editor__dmn-runner-drawer-content" : ""}
             panelContent={
-              <DrawerPanelContent
-                className={runJitDmn ? "kogito--editor__jit-dmn-width" : "kogito--editor__jit-dmn-closed"}
-              >
-                {jitDmnStatus === JitDmnStatus.RUNNING && (
-                  <JitDmnForm jsonSchemaBridge={jitDmnSchema} editorContent={editor?.getContent} />
-                )}
-                {jitDmnStatus === JitDmnStatus.NOT_RUNNING && (
-                  <div style={{ padding: "20px" }}>
-                    <Title headingLevel={"h2"}>JIT Server</Title>
-                    <p>It wasn't possible to connect to your local JIT Server</p>
-                    <br />
-                    <p>
-                      To use this functionality it's necessary to have a local JIT Server up running, which will be used
-                      to send information from your model to it.
-                    </p>
-                    <p style={{ display: "inline" }}>You can download the zip containing the server </p>
-                    <a
-                      style={{ display: "inline" }}
-                      href={"https://kiegroup.github.io/kogito-online-ci/temp/runner.zip"}
-                    >
-                      here
-                    </a>
-                    <br />
-                    <br />
-                    <p style={{ display: "inline" }}>To start the server you need execute the</p>
-                    <p style={{ display: "inline" }} className={"kogito-code"}>
-                      ./install.sh
-                    </p>
-                    <p style={{ display: "inline" }}> script.</p>
-                  </div>
+              <DrawerPanelContent className={"kogito--editor__dmn-runner-drawer-panel"}>
+                {dmnRunnerStatus === DmnRunnerStatus.RUNNING && (
+                  <DmnRunnerDrawer
+                    jsonSchemaBridge={dmnRunnerSchema}
+                    editorContent={editor?.getContent}
+                    onRunDmn={onRunDmn}
+                  />
                 )}
               </DrawerPanelContent>
             }
           >
             <DrawerContentBody>
+              {!fullscreen && alert === Alerts.COPY && (
+                <div className={"kogito--alert-container"}>
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="success"
+                    title={i18n.editorPage.alerts.copy}
+                    actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                  />
+                </div>
+              )}
+              {!fullscreen && alert === Alerts.SUCCESS_UPDATE_GIST && (
+                <div className={"kogito--alert-container"}>
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="success"
+                    title={i18n.editorPage.alerts.updateGist}
+                    actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                  />
+                </div>
+              )}
+              {!fullscreen && alert === Alerts.SUCCESS_UPDATE_GIST_FILENAME && (
+                <div className={"kogito--alert-container"}>
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="warning"
+                    title={i18n.editorPage.alerts.updateGistFilename.title}
+                    actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                  >
+                    <p>{i18n.editorPage.alerts.updateGistFilename.message}</p>
+                    <p>{i18n.editorPage.alerts.updateGistFilename.yourNewUrl}:</p>
+                    <p>{updateGistFilenameUrl}</p>
+                  </Alert>
+                </div>
+              )}
+              {!fullscreen && alert === Alerts.SUCCESS_DMN_RUNNER && (
+                <div className={"kogito--alert-container"}>
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="success"
+                    title={"Success connecting with DMN Runner"}
+                    // actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                  />
+                </div>
+              )}
+              {!fullscreen && alert === Alerts.INVALID_CURRENT_GIST && (
+                <div className={"kogito--alert-container"}>
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="danger"
+                    title={i18n.editorPage.alerts.invalidCurrentGist}
+                    actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                  />
+                </div>
+              )}
+              {!fullscreen && alert === Alerts.INVALID_GIST_FILENAME && (
+                <div className={"kogito--alert-container"}>
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="danger"
+                    title={i18n.editorPage.alerts.invalidGistFilename}
+                    actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                  />
+                </div>
+              )}
+              {!fullscreen && alert === Alerts.ERROR && (
+                <div className={"kogito--alert-container"}>
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="danger"
+                    title={i18n.editorPage.alerts.error}
+                    actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                  />
+                </div>
+              )}
+              {!fullscreen && alert === Alerts.UNSAVED && (
+                <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
+                  <Alert
+                    className={"kogito--alert"}
+                    variant="warning"
+                    title={i18n.editorPage.alerts.unsaved.title}
+                    actionClose={
+                      <AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={closeAlert} />
+                    }
+                    actionLinks={
+                      <React.Fragment>
+                        <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+                          {i18n.terms.save}
+                        </AlertActionLink>
+                        <AlertActionLink
+                          data-testid="unsaved-alert-close-without-save-button"
+                          onClick={closeWithoutSaving}
+                        >
+                          {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
+                        </AlertActionLink>
+                      </React.Fragment>
+                    }
+                  >
+                    <p>{i18n.editorPage.alerts.unsaved.message}</p>
+                  </Alert>
+                </div>
+              )}
+              {!fullscreen && (
+                <DmnRunnerModal
+                  isDmnRunning={isDmnRunning}
+                  isOpen={modal === OpenedModal.DMN_RUNNER}
+                  onClose={closeModal}
+                />
+              )}
+              {!fullscreen && <GithubTokenModal isOpen={modal === OpenedModal.GITHUB_TOKEN} onClose={closeModal} />}
+              {!fullscreen && (
+                <EmbedModal
+                  isOpen={modal === OpenedModal.EMBED}
+                  onClose={closeModal}
+                  editor={editor}
+                  fileExtension={fileExtension}
+                />
+              )}
+              {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
               <EmbeddedEditor
                 ref={editorRef}
                 file={context.file}
