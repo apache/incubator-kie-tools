@@ -23,7 +23,7 @@ import {
   CharacteristicsTableAction
 } from "../atoms";
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
-import { IndexedCharacteristic, toText } from "../organisms";
+import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 import { useValidationRegistry } from "../../../validation";
@@ -124,12 +124,13 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
     <ul>
       {characteristic.Attribute.map((item, index) => (
         <li key={index}>
-          {CharacteristicPredicateLabel(toText(item.predicate, dataFields), validations(index))}
+          {CharacteristicPredicateLabel(item.predicate, dataFields, validations(index))}
           <AttributeLabels
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}
             activeAttributeIndex={index}
             activeAttribute={item}
+            attributes={characteristic.Attribute}
             areReasonCodesUsed={areReasonCodesUsed}
             characteristicReasonCode={characteristic.reasonCode}
           />

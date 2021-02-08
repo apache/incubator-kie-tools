@@ -125,6 +125,16 @@ const validatePredicate = (
   nesting: number
 ) => {
   if (predicate === undefined) {
+    validationRegistry.set(
+      Builder()
+        .forModel(modelIndex)
+        .forCharacteristics()
+        .forCharacteristic(characteristicIndex)
+        .forAttribute(attributeIndex)
+        .forPredicate(nesting)
+        .build(),
+      new ValidationEntry(ValidationLevel.WARNING, `No predicate defined.`)
+    );
     return;
   } else if (predicate instanceof True) {
     return;

@@ -99,17 +99,13 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   // text will be committed if it has changed from the original..
   const ref = useOnclickOutside(
     () => {
-      if (text?.valid) {
-        if (text.value !== originalText) {
-          commit({ predicate: fromText(text.value) });
-        }
-      } else {
-        onCancel();
+      if (text.value !== originalText) {
+        commit({ predicate: fromText(text.value) });
       }
     },
     {
       disabled: activeOperation !== Operation.UPDATE_ATTRIBUTE,
-      eventTypes: ["click"]
+      eventTypes: ["mousedown"]
     }
   );
 
@@ -145,12 +141,12 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     const _text = toText(attribute.predicate, dataFields);
     setText({
       value: _text,
-      valid: true
+      valid: validateText(_text)
     });
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
     setOriginalText(_text);
-  }, [props]);
+  }, [modelIndex, characteristicIndex, attributeIndex, attribute.predicate]);
 
   const toNumber = (value: string): number | undefined => {
     if (value === "") {

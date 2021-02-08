@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicLabel } from "./CharacteristicLabel";
-import { useValidationRegistry } from "../../../validation";
 import { useMemo } from "react";
+import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { useValidationRegistry } from "../../../validation";
+import { AttributeLabel } from "./AttributeLabel";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { Builder } from "../../../paths";
 
@@ -26,8 +26,10 @@ interface AttributeLabelsProps {
   characteristicIndex: number;
   activeAttributeIndex: number;
   activeAttribute: Attribute;
+  attributes: Attribute[];
   areReasonCodesUsed: boolean;
   characteristicReasonCode: Characteristic["reasonCode"];
+  commit?: (partial: Partial<Attribute>) => void;
 }
 
 export const AttributeLabels = (props: AttributeLabelsProps) => {
@@ -36,8 +38,10 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
     characteristicIndex,
     activeAttributeIndex,
     activeAttribute,
+    attributes,
     areReasonCodesUsed,
-    characteristicReasonCode
+    characteristicReasonCode,
+    commit
   } = props;
 
   const { validationRegistry } = useValidationRegistry();
@@ -77,10 +81,12 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
 
   return (
     <>
-      {areReasonCodesUsed &&
-        activeAttribute.reasonCode !== undefined &&
-        reasonCodeValidation.length === 0 &&
-        CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
+      {areReasonCodesUsed && activeAttribute.reasonCode !== undefined && reasonCodeValidation.length === 0 && (
+        <>
+          {commit && AttributeLabel("Reason code", activeAttribute.reasonCode, () => commit({ reasonCode: undefined }))}
+          {!commit && AttributeLabel("Reason code", activeAttribute.reasonCode)}
+        </>
+      )}
       {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
         <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
           <>
@@ -89,9 +95,13 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
           </>
         </ValidationIndicatorLabel>
       )}
-      {partialScoreValidation.length === 0 &&
-        activeAttribute.partialScore !== undefined &&
-        CharacteristicLabel("Partial score", activeAttribute.partialScore)}
+      {partialScoreValidation.length === 0 && activeAttribute.partialScore !== undefined && (
+        <>
+          {commit &&
+            AttributeLabel("Partial score", activeAttribute.partialScore, () => commit({ partialScore: undefined }))}
+          {!commit && AttributeLabel("Partial score", activeAttribute.partialScore)}
+        </>
+      )}
       {partialScoreValidation.length > 0 && (
         <ValidationIndicatorLabel validations={partialScoreValidation} cssClass="characteristic-list__item__label">
           <>

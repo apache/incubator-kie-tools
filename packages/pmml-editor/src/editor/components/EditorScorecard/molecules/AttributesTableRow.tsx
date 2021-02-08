@@ -30,12 +30,14 @@ interface AttributesTableRowProps {
   characteristicIndex: number;
   attributeIndex: number;
   attribute: Attribute;
+  attributes: Attribute[];
   areReasonCodesUsed: boolean;
   characteristicReasonCode: Characteristic["reasonCode"];
   dataFields: DataField[];
   miningFields: MiningField[];
   onEdit: () => void;
   onDelete: () => void;
+  onCommit: (partial: Partial<Attribute>) => void;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
@@ -44,12 +46,14 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     characteristicIndex,
     attributeIndex,
     attribute,
+    attributes,
     areReasonCodesUsed,
     characteristicReasonCode,
     dataFields,
     miningFields,
     onEdit,
-    onDelete
+    onDelete,
+    onCommit
   } = props;
 
   const { validationRegistry } = useValidationRegistry();
@@ -85,7 +89,15 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           <>
             {validations.length > 0 && (
               <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
-                <pre>{toText(attribute.predicate, dataFields)}</pre>
+                <>
+                  {attribute.predicate && <pre>{toText(attribute.predicate, dataFields)}</pre>}
+                  {!attribute.predicate && (
+                    <>
+                      <strong>Predicate:</strong>&nbsp;
+                      <em>Missing</em>
+                    </>
+                  )}
+                </>
               </ValidationIndicatorLabel>
             )}
             {validations.length === 0 && (
@@ -101,8 +113,10 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
             characteristicIndex={characteristicIndex}
             activeAttributeIndex={attributeIndex}
             activeAttribute={attribute}
+            attributes={attributes}
             areReasonCodesUsed={areReasonCodesUsed}
             characteristicReasonCode={characteristicReasonCode}
+            commit={onCommit}
           />
         </SplitItem>
         <SplitItem>

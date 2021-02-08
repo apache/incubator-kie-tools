@@ -28,8 +28,11 @@ import { useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
-import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { useValidationRegistry } from "../../../validation";
+import { isEqual } from "lodash";
+import get = Reflect.get;
+import set = Reflect.set;
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
@@ -301,6 +304,24 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                         modelIndex: modelIndex,
                         characteristicIndex: characteristicIndex,
                         attributeIndex: attributeIndex
+                      }
+                    });
+                  }
+                }}
+                onCommit={(attributeIndex, partial) => {
+                  const attribute = attributes[attributeIndex];
+                  const existingPartial: Partial<Attribute> = {};
+                  Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+
+                  if (!isEqual(partial, existingPartial)) {
+                    dispatch({
+                      type: Actions.Scorecard_UpdateAttribute,
+                      payload: {
+                        modelIndex: modelIndex,
+                        characteristicIndex: characteristicIndex,
+                        attributeIndex: attributeIndex,
+                        ...attribute,
+                        ...partial
                       }
                     });
                   }
