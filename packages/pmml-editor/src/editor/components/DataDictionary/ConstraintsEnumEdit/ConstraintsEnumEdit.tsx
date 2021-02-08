@@ -14,7 +14,7 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { GripVerticalIcon, TrashIcon } from "@patternfly/react-icons";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationService } from "../../../validation";
 import "./ConstraintsEnumEdit.scss";
 
 interface ConstraintsEnumEditProps {
@@ -161,9 +161,23 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
   };
 
   const { service } = useValidationService();
-  const validations = useRef(service.get(`DataDictionary.DataField[${dataFieldIndex}].Value[${position}]`));
+  const validations = useRef(
+    service.get(
+      Builder()
+        .forDataDictionary()
+        .forDataField(dataFieldIndex)
+        .forValue(position)
+        .build()
+    )
+  );
   useEffect(() => {
-    validations.current = service.get(`DataDictionary.DataField[${dataFieldIndex}].Value[${position}]`);
+    validations.current = service.get(
+      Builder()
+        .forDataDictionary()
+        .forDataField(dataFieldIndex)
+        .forValue(position)
+        .build()
+    );
   }, [position, enumValue]);
 
   const enumRef = useRef<HTMLLIElement | null>(null);

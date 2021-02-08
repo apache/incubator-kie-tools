@@ -25,7 +25,7 @@ import {
   OutlierTreatmentMethod,
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { ValidationService } from "../validation";
+import { Builder, ValidationService } from "../validation";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
@@ -118,7 +118,13 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
               invalidValueTreatment: action.payload.invalidValueTreatment,
               invalidValueReplacement: newInvalidValueReplacement
             };
-            validationService.clear(`models[${modelIndex}].MiningSchema.MiningField[${miningSchemaIndex}]`);
+            validationService.clear(
+              Builder()
+                .forModel(modelIndex)
+                .forMiningSchema()
+                .forMiningField(miningSchemaIndex)
+                .build()
+            );
             validateMiningField(
               action.payload.modelIndex,
               action.payload.miningSchemaIndex,

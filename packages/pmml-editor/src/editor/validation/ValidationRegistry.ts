@@ -17,6 +17,7 @@
 import ownKeys = Reflect.ownKeys;
 import { get, set, unset } from "lodash";
 import { ValidationLevel } from "./ValidationLevel";
+import { ValidationPath } from "./ValidationPath";
 
 export class ValidationEntry {
   constructor(public level: ValidationLevel, public message?: string) {}
@@ -25,12 +26,12 @@ export class ValidationEntry {
 export class ValidationRegistry {
   private readonly registry = {};
 
-  public set = (path: string, entry: ValidationEntry): void => {
-    set(this.registry, path, entry);
+  public set = (path: ValidationPath, entry: ValidationEntry): void => {
+    set(this.registry, path.path, entry);
   };
 
-  public get = (path: string): ValidationEntry[] => {
-    const node = get(this.registry, path);
+  public get = (path: ValidationPath): ValidationEntry[] => {
+    const node = get(this.registry, path.path);
     if (node === undefined) {
       return [];
     }
@@ -45,7 +46,7 @@ export class ValidationRegistry {
     if (!(node instanceof Object)) {
       return [];
     }
-    const mapped = ownKeys(node).map(key => this.get(`${path}.${String(key)}`));
+    const mapped = ownKeys(node).map(key => this.get({ path: `${path.path}.${String(key)}` }));
     if (mapped.length === 0) {
       return [];
     }
@@ -54,7 +55,7 @@ export class ValidationRegistry {
     });
   };
 
-  public clear = (path: string): void => {
-    unset(this.registry, path);
+  public clear = (path: ValidationPath): void => {
+    unset(this.registry, path.path);
   };
 }

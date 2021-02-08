@@ -17,5 +17,6 @@
 export * from "./DataDictionary";
 export * from "./ValidationContext";
 export * from "./ValidationLevel";
+export * from "./ValidationPath";
 export * from "./ValidationRegistry";
 export * from "./ValidationService";

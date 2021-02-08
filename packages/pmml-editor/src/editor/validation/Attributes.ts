@@ -27,6 +27,7 @@ import {
 import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
+import { Builder } from "./ValidationPath";
 
 export const validateAttribute = (
   modelIndex: number,
@@ -79,14 +80,28 @@ const validatePredicate = (
   } else if (predicate instanceof SimpleSetPredicate) {
     if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
       validationService.set(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate[${nesting}].fieldName`,
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate(nesting)
+          .forFieldName()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof SimplePredicate) {
     if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
       validationService.set(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate[${nesting}].fieldName`,
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate(nesting)
+          .forFieldName()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }

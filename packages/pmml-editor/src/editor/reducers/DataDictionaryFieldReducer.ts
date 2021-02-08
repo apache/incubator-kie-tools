@@ -18,12 +18,13 @@ import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import {
-  ValidationService,
+  Builder,
+  hasIntervals,
+  hasValidValues,
+  shouldConstraintsBeCleared,
   validateDataField,
   validateDataFields,
-  shouldConstraintsBeCleared,
-  hasValidValues,
-  hasIntervals
+  ValidationService
 } from "../validation";
 
 interface DataDictionaryFieldPayload {
@@ -87,13 +88,23 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
 
             draft[dataDictionaryIndex] = dataField;
           }
-          validationService.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);
+          validationService.clear(
+            Builder()
+              .forDataDictionary()
+              .forDataField(dataDictionaryIndex)
+              .build()
+          );
           validateDataField(dataField, dataDictionaryIndex, validationService);
         });
         break;
 
       case Actions.Validate:
-        validationService.clear("DataDictionary.DataField");
+        validationService.clear(
+          Builder()
+            .forDataDictionary()
+            .forDataField()
+            .build()
+        );
         validateDataFields(state, validationService);
     }
 

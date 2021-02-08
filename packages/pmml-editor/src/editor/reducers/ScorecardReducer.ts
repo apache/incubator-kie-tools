@@ -35,7 +35,7 @@ import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
 import { isOutputsTargetFieldRequired, validateOutput, validateOutputs } from "../validation/Outputs";
-import { ValidationEntry, ValidationLevel, ValidationService } from "../validation";
+import { Builder, ValidationEntry, ValidationLevel, ValidationService } from "../validation";
 import { validateCharacteristics } from "../validation/Characteristics";
 
 // @ts-ignore
@@ -72,7 +72,12 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
     switch (action.type) {
       case Actions.AddMiningSchemaFields:
         historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
-          validationService.clear(`models[${action.payload.modelIndex}].Characteristics`);
+          validationService.clear(
+            Builder()
+              .forModel(action.payload.modelIndex)
+              .forCharacteristics()
+              .build()
+          );
           validateCharacteristics(
             action.payload.modelIndex,
             state.Characteristics.Characteristic,
@@ -84,7 +89,12 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 
       case Actions.Scorecard_UpdateAttribute:
         historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
-          validationService.clear(`models[${action.payload.modelIndex}].Characteristics`);
+          validationService.clear(
+            Builder()
+              .forModel(action.payload.modelIndex)
+              .forCharacteristics()
+              .build()
+          );
           validateCharacteristics(
             action.payload.modelIndex,
             state.Characteristics.Characteristic.map((characteristic, characteristicIndex) => {
@@ -151,7 +161,12 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         break;
 
       case Actions.DeleteMiningSchemaField:
-        validationService.clear(`models[${action.payload.modelIndex}].Characteristics`);
+        validationService.clear(
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .build()
+        );
         validateCharacteristics(
           action.payload.modelIndex,
           state.Characteristics.Characteristic,
@@ -310,7 +325,12 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             validationService
           );
 
-          validationService.clear(`models[${modelIndex}].Characteristics`);
+          validationService.clear(
+            Builder()
+              .forModel(modelIndex)
+              .forCharacteristics()
+              .build()
+          );
           validateCharacteristics(
             modelIndex,
             state.Characteristics.Characteristic,

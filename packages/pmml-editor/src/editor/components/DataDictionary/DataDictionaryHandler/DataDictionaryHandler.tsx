@@ -18,7 +18,7 @@ import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer
 import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useBatchDispatch, useHistoryService } from "../../../history";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationService } from "../../../validation";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 const DataDictionaryHandler = () => {
@@ -92,7 +92,15 @@ const DataDictionaryHandler = () => {
   };
 
   const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`DataDictionary`), [dictionary]);
+  const validations = useMemo(
+    () =>
+      validationService.get(
+        Builder()
+          .forDataDictionary()
+          .build()
+      ),
+    [dictionary]
+  );
 
   const header = (
     <Split hasGutter={true}>

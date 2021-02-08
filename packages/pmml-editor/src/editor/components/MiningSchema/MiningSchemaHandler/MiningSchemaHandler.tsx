@@ -16,7 +16,7 @@ import { DataDictionary, FieldName, MiningField, MiningSchema, PMML } from "@kog
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 import { useBatchDispatch, useHistoryService } from "../../../history";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationService } from "../../../validation";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 interface MiningSchemaHandlerProps {
@@ -72,11 +72,16 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   };
 
   const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`models[${modelIndex}].MiningSchema`), [
-    modelIndex,
-    miningSchema,
-    dataDictionary
-  ]);
+  const validations = useMemo(
+    () =>
+      validationService.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .build()
+      ),
+    [modelIndex, miningSchema, dataDictionary]
+  );
 
   const header = (
     <Split hasGutter={true}>

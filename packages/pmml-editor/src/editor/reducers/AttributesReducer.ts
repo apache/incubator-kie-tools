@@ -18,7 +18,7 @@ import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
-import { ValidationService } from "../validation";
+import { Builder, ValidationService } from "../validation";
 
 // @ts-ignore
 Attribute[immerable] = true;
@@ -84,7 +84,12 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
               draft.splice(attributeIndex, 1);
             }
             validationService.clear(
-              `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute[${action.payload.attributeIndex}]`
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forCharacteristics()
+                .forCharacteristic(action.payload.characteristicIndex)
+                .forAttribute(action.payload.attributeIndex)
+                .build()
             );
           }
         );

@@ -21,58 +21,62 @@ beforeEach(() => {
   registry = new ValidationRegistry();
 });
 
+const asPath = (segment: string) => {
+  return { path: segment };
+};
+
 describe("ValidationRegistry", () => {
   test("get::non-existent", () => {
-    expect(registry.get("root").length).toBe(0);
+    expect(registry.get(asPath("root")).length).toBe(0);
   });
 
   test("get::root::Object", () => {
-    registry.set("root", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root")[0].level).toBe(ValidationLevel.WARNING);
+    expect(registry.get(asPath("root"))[0].level).toBe(ValidationLevel.WARNING);
   });
 
   test("get::root::JSON", () => {
-    registry.set("root", { level: ValidationLevel.WARNING });
+    registry.set(asPath("root"), { level: ValidationLevel.WARNING });
 
-    expect(registry.get("root")[0].level).toBe(ValidationLevel.WARNING);
+    expect(registry.get(asPath("root"))[0].level).toBe(ValidationLevel.WARNING);
   });
 
   test("get::child", () => {
-    registry.set("root.child1", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root.child1")[0].level).toBe(ValidationLevel.WARNING);
+    expect(registry.get(asPath("root.child1"))[0].level).toBe(ValidationLevel.WARNING);
   });
 
   test("get::child::array", () => {
-    registry.set("root.child1.0", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.child1.0"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root.child1.0")[0].level).toBe(ValidationLevel.WARNING);
+    expect(registry.get(asPath("root.child1.0"))[0].level).toBe(ValidationLevel.WARNING);
   });
 
   test("get::child::array::nested", () => {
-    registry.set("root.child.1.child.1", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.child.1.child.1"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root.child.1")[0].level).toBe(ValidationLevel.WARNING);
+    expect(registry.get(asPath("root.child.1"))[0].level).toBe(ValidationLevel.WARNING);
   });
 
   test("get::child::array::non-existent", () => {
-    registry.set("root.child1.0", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.child1.0"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root.child1.1").length).toBe(0);
+    expect(registry.get(asPath("root.child1.1")).length).toBe(0);
   });
 
   test("get::child::deep", () => {
-    registry.set("root.leaf.child1", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.leaf.child1"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root.leaf")[0].level).toBe(ValidationLevel.WARNING);
+    expect(registry.get(asPath("root.leaf"))[0].level).toBe(ValidationLevel.WARNING);
   });
 
   test("get::child::multiple", () => {
-    registry.set("root.child1", new ValidationEntry(ValidationLevel.WARNING));
-    registry.set("root.child2", new ValidationEntry(ValidationLevel.ERROR));
+    registry.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.child2"), new ValidationEntry(ValidationLevel.ERROR));
 
-    const entries: ValidationEntry[] = registry.get("root");
+    const entries: ValidationEntry[] = registry.get(asPath("root"));
 
     expect(entries.length).toBe(2);
     expect(entries[0].level).toBe(ValidationLevel.WARNING);
@@ -80,36 +84,36 @@ describe("ValidationRegistry", () => {
   });
 
   test("clear::root", () => {
-    registry.set("root", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root").length).toBe(1);
+    expect(registry.get(asPath("root")).length).toBe(1);
 
-    registry.clear("root");
+    registry.clear(asPath("root"));
 
-    expect(registry.get("root").length).toBe(0);
+    expect(registry.get(asPath("root")).length).toBe(0);
   });
 
   test("clear::child", () => {
-    registry.set("root.child1", new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
 
-    expect(registry.get("root").length).toBe(1);
+    expect(registry.get(asPath("root")).length).toBe(1);
 
-    registry.clear("root");
+    registry.clear(asPath("root"));
 
-    expect(registry.get("root").length).toBe(0);
+    expect(registry.get(asPath("root")).length).toBe(0);
   });
   test("clear::child::multiple", () => {
-    registry.set("root.child1", new ValidationEntry(ValidationLevel.WARNING));
-    registry.set("root.child2", new ValidationEntry(ValidationLevel.ERROR));
+    registry.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
+    registry.set(asPath("root.child2"), new ValidationEntry(ValidationLevel.ERROR));
 
-    expect(registry.get("root").length).toBe(2);
+    expect(registry.get(asPath("root")).length).toBe(2);
 
-    registry.clear("root.child1");
+    registry.clear(asPath("root.child1"));
 
-    expect(registry.get("root").length).toBe(1);
+    expect(registry.get(asPath("root")).length).toBe(1);
 
-    registry.clear("root");
+    registry.clear(asPath("root"));
 
-    expect(registry.get("root").length).toBe(0);
+    expect(registry.get(asPath("root")).length).toBe(0);
   });
 });

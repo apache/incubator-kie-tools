@@ -4,7 +4,7 @@ import { Label } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaFieldLabels.scss";
-import { useValidationService, ValidationEntry } from "../../../validation";
+import { Builder, useValidationService, ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import {
   areLowHighValuesRequired,
@@ -76,22 +76,54 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
 
   const { service } = useValidationService();
   const validationsImportance = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].importance`),
+    () =>
+      service.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(index)
+          .forImportance()
+          .build()
+      ),
     [modelIndex, index, field]
   );
 
   const validationsLowValue = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].lowValue`),
+    () =>
+      service.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(index)
+          .forLowValue()
+          .build()
+      ),
     [modelIndex, index, field]
   );
   const validationsHighValue = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].highValue`),
+    () =>
+      service.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(index)
+          .forHighValue()
+          .build()
+      ),
     [modelIndex, index, field]
   );
   const _areLowHighValuesRequired = useMemo(() => areLowHighValuesRequired(field.outliers), [modelIndex, index, field]);
 
   const validationsMissingValueReplacement = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].missingValueReplacement`),
+    () =>
+      service.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(index)
+          .forMissingValueReplacement()
+          .build()
+      ),
     [modelIndex, index, field]
   );
   const _isMissingValueReplacementRequired = useMemo(
@@ -100,7 +132,15 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   );
 
   const validationsInvalidValueReplacement = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${index}].invalidValueReplacement`),
+    () =>
+      service.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(index)
+          .forInvalidValueReplacement()
+          .build()
+      ),
     [modelIndex, index, field]
   );
   const _isInvalidValueReplacementRequired = useMemo(

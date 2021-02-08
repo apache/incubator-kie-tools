@@ -24,6 +24,7 @@ import {
 import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
+import { Builder } from "./ValidationPath";
 
 export const validateMiningFields = (
   modelIndex: number,
@@ -45,7 +46,12 @@ export const validateMiningField = (
   const importance = miningField.importance;
   if (importance !== undefined && (importance < 0 || importance > 1)) {
     validationService.set(
-      `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].importance`,
+      Builder()
+        .forModel(modelIndex)
+        .forMiningSchema()
+        .forMiningField(miningFieldIndex)
+        .forImportance()
+        .build(),
       new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Importance must be between 0 and 1.`)
     );
   }
@@ -55,24 +61,44 @@ export const validateMiningField = (
   if (areLowHighValuesRequired(outliers)) {
     if (lowValue === undefined && highValue === undefined) {
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].lowValue`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forLowValue()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
       );
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].highValue`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forHighValue()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
       );
     }
   } else {
     if (lowValue !== undefined) {
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].lowValue`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forLowValue()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low Value is not needed.`)
       );
     }
     if (highValue !== undefined) {
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].highValue`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forHighValue()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" High Value is not needed.`)
       );
     }
@@ -83,14 +109,24 @@ export const validateMiningField = (
   if (isMissingValueReplacementRequired(missingValueTreatment)) {
     if (missingValueReplacement === undefined) {
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].missingValueReplacement`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forMissingValueReplacement()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Missing Value Replacement must be set.`)
       );
     }
   } else {
     if (missingValueReplacement !== undefined) {
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].missingValueReplacement`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forMissingValueReplacement()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Missing Value Replacement is not required.`)
       );
     }
@@ -101,14 +137,24 @@ export const validateMiningField = (
   if (isInvalidValueReplacementRequired(invalidValueTreatment)) {
     if (invalidValueReplacement === undefined) {
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].invalidValueReplacement`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forInvalidValueReplacement()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Invalid Value Replacement must be set.`)
       );
     }
   } else {
     if (invalidValueReplacement !== undefined) {
       validationService.set(
-        `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].invalidValueReplacement`,
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forInvalidValueReplacement()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Invalid Value Replacement is not required.`)
       );
     }
@@ -136,7 +182,12 @@ const validateMiningFieldDataFieldReference = (
 ): void => {
   if (dataFieldNames.filter(dataFieldName => dataFieldName === miningField.name).length === 0) {
     validationService.set(
-      `models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].dataFieldMissing`,
+      Builder()
+        .forModel(modelIndex)
+        .forMiningSchema()
+        .forMiningField(miningFieldIndex)
+        .forDataFieldMissing()
+        .build(),
       new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" cannot be not found in the Data Dictionary.`)
     );
   }

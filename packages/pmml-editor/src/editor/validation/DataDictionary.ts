@@ -17,6 +17,7 @@ import { Cyclic, DataField, DataType, OpType } from "@kogito-tooling/pmml-editor
 import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
+import { Builder } from "./ValidationPath";
 
 export const validateDataFields = (dataFields: DataField[], validationService: ValidationService): void => {
   dataFields.forEach((dataField, dataDictionaryIndex) =>
@@ -33,7 +34,11 @@ export const validateDataField = (
   dataField.Interval?.forEach((interval, index) => {
     if (interval.leftMargin === undefined && interval.rightMargin === undefined) {
       validationService.set(
-        `DataDictionary.DataField[${dataDictionaryIndex}].Interval[${index}]`,
+        Builder()
+          .forDataDictionary()
+          .forDataField(dataDictionaryIndex)
+          .forInterval(index)
+          .build(),
         new ValidationEntry(
           ValidationLevel.WARNING,
           `"${dataField.name}" data type, Interval (${index + 1}) must have the start and/or end value set.`
@@ -45,7 +50,11 @@ export const validateDataField = (
   dataField.Value?.forEach((value, index) => {
     if (value.value === "") {
       validationService.set(
-        `DataDictionary.DataField[${dataDictionaryIndex}].Value[${index}]`,
+        Builder()
+          .forDataDictionary()
+          .forDataField(dataDictionaryIndex)
+          .forValue(index)
+          .build(),
         new ValidationEntry(
           ValidationLevel.WARNING,
           `"${dataField.name}" data type, Empty Constraint Value (${index + 1})`
@@ -57,7 +66,11 @@ export const validateDataField = (
   if (dataField.dataType === "string" && dataField.optype === "ordinal") {
     if (!hasValidValues(dataField)) {
       validationService.set(
-        `DataDictionary.DataField[${dataDictionaryIndex}].Interval`,
+        Builder()
+          .forDataDictionary()
+          .forDataField(dataDictionaryIndex)
+          .forInterval()
+          .build(),
         new ValidationEntry(
           ValidationLevel.WARNING,
           `"${dataField.name}" data type, Values list required for ordinal strings`
@@ -69,7 +82,11 @@ export const validateDataField = (
     // cyclic ordinal types require values constraint
     if (dataField.optype === "ordinal" && !hasValidValues(dataField)) {
       validationService.set(
-        `DataDictionary.DataField[${dataDictionaryIndex}].Value`,
+        Builder()
+          .forDataDictionary()
+          .forDataField(dataDictionaryIndex)
+          .forValue()
+          .build(),
         new ValidationEntry(
           ValidationLevel.WARNING,
           `"${dataField.name}" data type, Values list is required for cyclic ordinal data types`
@@ -80,7 +97,11 @@ export const validateDataField = (
       // cyclic continuous types require one interval constraint or values constraint
       if (!hasValidValues(dataField) && !hasIntervals(dataField)) {
         validationService.set(
-          `DataDictionary.DataField[${dataDictionaryIndex}].Interval`,
+          Builder()
+            .forDataDictionary()
+            .forDataField(dataDictionaryIndex)
+            .forInterval()
+            .build(),
           new ValidationEntry(
             ValidationLevel.WARNING,
             `"${dataField.name}" data type, A Value or Interval constraint is required for cyclic continuous data types`
@@ -90,7 +111,11 @@ export const validateDataField = (
       // cyclic continuous types can have only a single interval constraint
       if (dataField.Interval && dataField.Interval?.length > 1) {
         validationService.set(
-          `DataDictionary.DataField[${dataDictionaryIndex}].Interval`,
+          Builder()
+            .forDataDictionary()
+            .forDataField(dataDictionaryIndex)
+            .forInterval()
+            .build(),
           new ValidationEntry(
             ValidationLevel.WARNING,
             `"${dataField.name}" data type, Continuous data types can have only a single interval constraint`

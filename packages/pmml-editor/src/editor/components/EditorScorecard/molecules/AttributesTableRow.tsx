@@ -19,7 +19,7 @@ import { Label, Split, SplitItem } from "@patternfly/react-core";
 import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationService } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 
@@ -52,7 +52,13 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
   const validations = useMemo(
     () =>
       service.get(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate`
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build()
       ),
     [modelIndex, characteristicIndex, attributeIndex, attribute, miningFields]
   );

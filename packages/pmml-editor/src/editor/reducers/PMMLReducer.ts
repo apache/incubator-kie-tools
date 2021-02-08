@@ -17,7 +17,7 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { ValidationService } from "../validation";
+import { Builder, ValidationService } from "../validation";
 import { validateMiningFieldsDataFieldReference } from "../validation/MiningSchema";
 import get = Reflect.get;
 
@@ -69,7 +69,12 @@ export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
         models.forEach((model, modelIndex) => {
           const miningSchema = get(model, "MiningSchema");
           if (miningSchema !== undefined) {
-            validationService.clear(`models[${modelIndex}].MiningSchema`);
+            validationService.clear(
+              Builder()
+                .forModel(modelIndex)
+                .forMiningSchema()
+                .build()
+            );
             validateMiningFieldsDataFieldReference(
               modelIndex,
               dataFields,

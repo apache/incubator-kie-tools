@@ -11,7 +11,7 @@ import { findIncrementalName } from "../../../PMMLModelHelper";
 import "./DataDictionaryContainer.scss";
 import DataDictionaryPropertiesEdit from "../DataDictionaryPropertiesEdit/DataDictionaryPropertiesEdit";
 import { isEqual } from "lodash";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationService } from "../../../validation";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
@@ -144,10 +144,20 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const validationService = useValidationService().service;
-  const validations = useRef(validationService.get(`DataDictionary`));
+  const validations = useRef(
+    validationService.get(
+      Builder()
+        .forDataDictionary()
+        .build()
+    )
+  );
   useEffect(() => {
     if (editing === undefined) {
-      validations.current = validationService.get(`DataDictionary`);
+      validations.current = validationService.get(
+        Builder()
+          .forDataDictionary()
+          .build()
+      );
     }
   }, [dataDictionary, editing]);
 
