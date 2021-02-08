@@ -40,13 +40,13 @@ interface DataDictionaryPayload {
 export type DataDictionaryActions = ActionMap<DataDictionaryPayload>[keyof ActionMap<DataDictionaryPayload>];
 
 export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary, AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationService: ValidationService
 ): Reducer<DataDictionary, AllActions> => {
   return (state: DataDictionary, action: AllActions) => {
     switch (action.type) {
       case Actions.AddDataDictionaryField:
-        service.batch(state, "DataDictionary", draft => {
+        historyService.batch(state, "DataDictionary", draft => {
           draft.DataField.push({
             name: action.payload.name as FieldName,
             dataType: action.payload.type,
@@ -56,27 +56,27 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
         break;
 
       case Actions.DeleteDataDictionaryField:
-        service.batch(state, "DataDictionary", draft => {
+        historyService.batch(state, "DataDictionary", draft => {
           const index = action.payload.index;
           if (index >= 0 && index < draft.DataField.length) {
             draft.DataField.splice(index, 1);
           }
-          validation.clear("DataDictionary");
-          validateDataFields(draft.DataField, validation);
+          validationService.clear("DataDictionary");
+          validateDataFields(draft.DataField, validationService);
         });
         break;
 
       case Actions.ReorderDataDictionaryFields:
-        service.batch(state, "DataDictionary", draft => {
+        historyService.batch(state, "DataDictionary", draft => {
           const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
           draft.DataField.splice(action.payload.newIndex, 0, removed);
-          validation.clear("DataDictionary");
-          validateDataFields(draft.DataField, validation);
+          validationService.clear("DataDictionary");
+          validateDataFields(draft.DataField, validationService);
         });
         break;
 
       case Actions.AddBatchDataDictionaryFields:
-        service.batch(state, "DataDictionary", draft => {
+        historyService.batch(state, "DataDictionary", draft => {
           action.payload.dataDictionaryFields.forEach(name => {
             draft.DataField.push({
               name,

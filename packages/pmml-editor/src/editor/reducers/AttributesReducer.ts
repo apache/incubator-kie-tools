@@ -55,13 +55,13 @@ interface AttributesPayload {
 export type AttributesActions = ActionMap<AttributesPayload>[keyof ActionMap<AttributesPayload>];
 
 export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationService: ValidationService
 ): Reducer<Attribute[], AllActions> => {
   return (state: Attribute[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_AddAttribute:
-        service.batch(
+        historyService.batch(
           state,
           `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
           draft => {
@@ -75,7 +75,7 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
         break;
 
       case Actions.Scorecard_DeleteAttribute:
-        service.batch(
+        historyService.batch(
           state,
           `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
           draft => {
@@ -83,7 +83,7 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft.splice(attributeIndex, 1);
             }
-            validation.clear(
+            validationService.clear(
               `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute[${action.payload.attributeIndex}]`
             );
           }
@@ -91,7 +91,7 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
         break;
 
       case Actions.Scorecard_UpdateAttribute:
-        service.batch(
+        historyService.batch(
           state,
           `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
           draft => {

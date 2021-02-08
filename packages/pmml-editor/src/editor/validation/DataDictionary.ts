@@ -18,19 +18,21 @@ import { ValidationService } from "./ValidationService";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 
-export const validateDataFields = (dataFields: DataField[], validation: ValidationService): void => {
-  dataFields.forEach((dataField, dataDictionaryIndex) => validateDataField(dataField, dataDictionaryIndex, validation));
+export const validateDataFields = (dataFields: DataField[], validationService: ValidationService): void => {
+  dataFields.forEach((dataField, dataDictionaryIndex) =>
+    validateDataField(dataField, dataDictionaryIndex, validationService)
+  );
 };
 
 export const validateDataField = (
   dataField: DataField,
   dataDictionaryIndex: number,
-  validation: ValidationService
+  validationService: ValidationService
 ): void => {
   // required interval margins
   dataField.Interval?.forEach((interval, index) => {
     if (interval.leftMargin === undefined && interval.rightMargin === undefined) {
-      validation.set(
+      validationService.set(
         `DataDictionary.DataField[${dataDictionaryIndex}].Interval[${index}]`,
         new ValidationEntry(
           ValidationLevel.WARNING,
@@ -42,7 +44,7 @@ export const validateDataField = (
   // empty values
   dataField.Value?.forEach((value, index) => {
     if (value.value === "") {
-      validation.set(
+      validationService.set(
         `DataDictionary.DataField[${dataDictionaryIndex}].Value[${index}]`,
         new ValidationEntry(
           ValidationLevel.WARNING,
@@ -54,7 +56,7 @@ export const validateDataField = (
   // ordinal strings constraints requirements
   if (dataField.dataType === "string" && dataField.optype === "ordinal") {
     if (!hasValidValues(dataField)) {
-      validation.set(
+      validationService.set(
         `DataDictionary.DataField[${dataDictionaryIndex}].Interval`,
         new ValidationEntry(
           ValidationLevel.WARNING,
@@ -66,7 +68,7 @@ export const validateDataField = (
   if (dataField.isCyclic === "1") {
     // cyclic ordinal types require values constraint
     if (dataField.optype === "ordinal" && !hasValidValues(dataField)) {
-      validation.set(
+      validationService.set(
         `DataDictionary.DataField[${dataDictionaryIndex}].Value`,
         new ValidationEntry(
           ValidationLevel.WARNING,
@@ -77,7 +79,7 @@ export const validateDataField = (
     if (dataField.optype === "continuous") {
       // cyclic continuous types require one interval constraint or values constraint
       if (!hasValidValues(dataField) && !hasIntervals(dataField)) {
-        validation.set(
+        validationService.set(
           `DataDictionary.DataField[${dataDictionaryIndex}].Interval`,
           new ValidationEntry(
             ValidationLevel.WARNING,
@@ -87,7 +89,7 @@ export const validateDataField = (
       }
       // cyclic continuous types can have only a single interval constraint
       if (dataField.Interval && dataField.Interval?.length > 1) {
-        validation.set(
+        validationService.set(
           `DataDictionary.DataField[${dataDictionaryIndex}].Interval`,
           new ValidationEntry(
             ValidationLevel.WARNING,

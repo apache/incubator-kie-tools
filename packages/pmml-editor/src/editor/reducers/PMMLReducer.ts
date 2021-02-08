@@ -43,8 +43,8 @@ interface StateControlPayload {
 export type StateControlActions = ActionMap<StateControlPayload>[keyof ActionMap<StateControlPayload>];
 
 export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
-  history: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationService: ValidationService
 ): Reducer<PMML, AllActions> => {
   return (state: PMML, action: AllActions) => {
     switch (action.type) {
@@ -52,16 +52,16 @@ export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
         return action.payload.pmml;
 
       case Actions.SetVersion:
-        history.batch(state, null, draft => {
+        historyService.batch(state, null, draft => {
           draft.version = action.payload.version;
         });
         break;
 
       case Actions.Undo:
-        return history.undo(state);
+        return historyService.undo(state);
 
       case Actions.Redo:
-        return history.redo(state);
+        return historyService.redo(state);
 
       case Actions.Validate:
         const dataFields = state.DataDictionary.DataField;
@@ -69,12 +69,12 @@ export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
         models.forEach((model, modelIndex) => {
           const miningSchema = get(model, "MiningSchema");
           if (miningSchema !== undefined) {
-            validation.clear(`models[${modelIndex}].MiningSchema`);
+            validationService.clear(`models[${modelIndex}].MiningSchema`);
             validateMiningFieldsDataFieldReference(
               modelIndex,
               dataFields,
               (miningSchema as MiningSchema).MiningField,
-              validation
+              validationService
             );
           }
         });

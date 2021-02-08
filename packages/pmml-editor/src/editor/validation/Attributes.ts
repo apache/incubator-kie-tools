@@ -34,11 +34,19 @@ export const validateAttribute = (
   attributeIndex: number,
   attribute: Attribute,
   miningFields: MiningField[],
-  validation: ValidationService
+  validationService: ValidationService
 ): void => {
   //Predicates
   const fieldNames = miningFields.map(miningField => miningField.name);
-  validatePredicate(modelIndex, characteristicIndex, attributeIndex, attribute.predicate, fieldNames, validation, 0);
+  validatePredicate(
+    modelIndex,
+    characteristicIndex,
+    attributeIndex,
+    attribute.predicate,
+    fieldNames,
+    validationService,
+    0
+  );
 };
 
 export const validateAttributes = (
@@ -46,10 +54,10 @@ export const validateAttributes = (
   characteristicIndex: number,
   attributes: Attribute[],
   miningFields: MiningField[],
-  validation: ValidationService
+  validationService: ValidationService
 ): void => {
   attributes.forEach((attribute, attributeIndex) =>
-    validateAttribute(modelIndex, characteristicIndex, attributeIndex, attribute, miningFields, validation)
+    validateAttribute(modelIndex, characteristicIndex, attributeIndex, attribute, miningFields, validationService)
   );
 };
 
@@ -59,7 +67,7 @@ const validatePredicate = (
   attributeIndex: number,
   predicate: Predicate | undefined,
   fieldNames: FieldName[],
-  validation: ValidationService,
+  validationService: ValidationService,
   nesting: number
 ) => {
   if (predicate === undefined) {
@@ -70,21 +78,21 @@ const validatePredicate = (
     return;
   } else if (predicate instanceof SimpleSetPredicate) {
     if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
-      validation.set(
+      validationService.set(
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate[${nesting}].fieldName`,
         new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof SimplePredicate) {
     if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
-      validation.set(
+      validationService.set(
         `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].Predicate[${nesting}].fieldName`,
         new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof CompoundPredicate) {
     predicate.predicates?.forEach(p =>
-      validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validation, nesting + 1)
+      validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validationService, nesting + 1)
     );
   }
 };

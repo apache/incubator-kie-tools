@@ -27,12 +27,12 @@ interface HeaderPayload {
 export type HeaderActions = ActionMap<HeaderPayload>[keyof ActionMap<HeaderPayload>];
 
 export const HeaderReducer: HistoryAwareReducer<Header, AllActions> = (
-  service: HistoryService
+  historyService: HistoryService
 ): Reducer<Header, AllActions> => {
   return (state: Header, action: AllActions) => {
     switch (action.type) {
       case Actions.SetHeaderDescription:
-        service.batch(state, "Header", draft => {
+        historyService.batch(state, "Header", draft => {
           draft.description = action.payload.description;
         });
     }

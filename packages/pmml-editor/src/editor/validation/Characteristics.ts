@@ -22,19 +22,19 @@ export const validateCharacteristic = (
   characteristicIndex: number,
   characteristic: Characteristic,
   miningFields: MiningField[],
-  validation: ValidationService
+  validationService: ValidationService
 ): void => {
   //Attributes
-  validateAttributes(modelIndex, characteristicIndex, characteristic.Attribute, miningFields, validation);
+  validateAttributes(modelIndex, characteristicIndex, characteristic.Attribute, miningFields, validationService);
 };
 
 export const validateCharacteristics = (
   modelIndex: number,
   characteristics: Characteristic[],
   miningFields: MiningField[],
-  validation: ValidationService
+  validationService: ValidationService
 ): void => {
   characteristics.forEach((characteristic, characteristicIndex) =>
-    validateCharacteristic(modelIndex, characteristicIndex, characteristic, miningFields, validation)
+    validateCharacteristic(modelIndex, characteristicIndex, characteristic, miningFields, validationService)
   );
 };

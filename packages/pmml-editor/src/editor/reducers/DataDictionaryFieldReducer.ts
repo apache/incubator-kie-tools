@@ -40,8 +40,8 @@ export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[k
 >];
 
 export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField[], DataDictionaryFieldActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationService: ValidationService
 ): Reducer<DataField[], AllActions> => {
   return (state: DataField[], action: AllActions) => {
     switch (action.type) {
@@ -49,7 +49,7 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
         const dataField = action.payload.dataField;
         const dataDictionaryIndex = action.payload.dataDictionaryIndex;
 
-        service.batch(state, "DataDictionary.DataField", draft => {
+        historyService.batch(state, "DataDictionary.DataField", draft => {
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
             if (
               shouldConstraintsBeCleared(
@@ -87,14 +87,14 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
 
             draft[dataDictionaryIndex] = dataField;
           }
-          validation.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);
-          validateDataField(dataField, dataDictionaryIndex, validation);
+          validationService.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);
+          validateDataField(dataField, dataDictionaryIndex, validationService);
         });
         break;
 
       case Actions.Validate:
-        validation.clear("DataDictionary.DataField");
-        validateDataFields(state, validation);
+        validationService.clear("DataDictionary.DataField");
+        validateDataFields(state, validationService);
     }
 
     return state;

@@ -35,13 +35,13 @@ interface MiningSchemaPayload {
 export type MiningSchemaActions = ActionMap<MiningSchemaPayload>[keyof ActionMap<MiningSchemaPayload>];
 
 export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationService: ValidationService
 ): Reducer<MiningSchema, AllActions> => {
   return (state: MiningSchema, action: AllActions) => {
     switch (action.type) {
       case Actions.AddMiningSchemaFields:
-        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
           action.payload.names.forEach(name => {
             draft.MiningField.push({
               name: name
@@ -51,13 +51,13 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
         break;
 
       case Actions.DeleteMiningSchemaField:
-        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
           const miningSchemaIndex = action.payload.miningSchemaIndex;
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
             draft.MiningField.splice(miningSchemaIndex, 1);
           }
-          validation.clear(`models[${action.payload.modelIndex}].MiningSchema`);
-          validateMiningFields(action.payload.modelIndex, draft.MiningField, validation);
+          validationService.clear(`models[${action.payload.modelIndex}].MiningSchema`);
+          validateMiningFields(action.payload.modelIndex, draft.MiningField, validationService);
         });
     }
 

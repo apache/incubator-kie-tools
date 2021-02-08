@@ -37,10 +37,10 @@ interface CharacteristicPayload {
 export type CharacteristicActions = ActionMap<CharacteristicPayload>[keyof ActionMap<CharacteristicPayload>];
 
 export const CharacteristicReducer: HistoryAwareValidatingReducer<Characteristic[], AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationService: ValidationService
 ): Reducer<Characteristic[], AllActions> => {
-  const attributesReducer = AttributesReducer(service, validation);
+  const attributesReducer = AttributesReducer(historyService, validationService);
 
   const delegateToAttributes = (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
@@ -58,7 +58,7 @@ export const CharacteristicReducer: HistoryAwareValidatingReducer<Characteristic
   return (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_UpdateCharacteristic:
-        service.batch(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
           const characteristicIndex: number = action.payload.characteristicIndex;
           if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
             draft[characteristicIndex] = {

@@ -29,12 +29,12 @@ interface OutputFieldPayload {
 export type OutputFieldActions = ActionMap<OutputFieldPayload>[keyof ActionMap<OutputFieldPayload>];
 
 export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> = (
-  service: HistoryService
+  historyService: HistoryService
 ): Reducer<OutputField[], AllActions> => {
   return (state: OutputField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateOutput:
-        service.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
           const outputIndex = action.payload.outputIndex;
           if (outputIndex >= 0 && outputIndex < draft.length) {
             draft[outputIndex] = {
