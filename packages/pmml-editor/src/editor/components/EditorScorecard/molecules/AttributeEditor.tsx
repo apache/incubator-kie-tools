@@ -186,27 +186,22 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       : "A Reason Code is mapped to a Business reason."
                   }
                   labelIcon={
-                    (areReasonCodesUsed && reasonCodeValidation.length > 0) ||
-                    characteristic?.reasonCode !== undefined ? (
-                      <Tooltip
-                        content={
-                          characteristic?.reasonCode !== undefined
-                            ? `Reason code already provided at the Characteristic level (${characteristic.reasonCode})`
-                            : `When Use Reason Codes is set to yes in the Model Setup, a reason code must be provided \
+                    <Tooltip
+                      content={
+                        areReasonCodesUsed && characteristic?.reasonCode !== undefined
+                          ? `Reason code already provided at the Characteristic level (${characteristic.reasonCode})`
+                          : `When Use Reason Codes is set to yes in the Model Setup, a reason code must be provided \
                               for characteristics or it must be provided for all its attributes.`
-                        }
+                      }
+                    >
+                      <button
+                        aria-label="More information for Partial Score"
+                        onClick={e => e.preventDefault()}
+                        className="pf-c-form__group-label-help"
                       >
-                        <button
-                          aria-label="More information for Partial Score"
-                          onClick={e => e.preventDefault()}
-                          className="pf-c-form__group-label-help"
-                        >
-                          <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                        </button>
-                      </Tooltip>
-                    ) : (
-                      <></>
-                    )
+                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      </button>
+                    </Tooltip>
                   }
                 >
                   <TextInput
@@ -235,23 +230,19 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       : "Defines the score points awarded to the Attribute."
                   }
                   labelIcon={
-                    partialScoreValidation.length > 0 ? (
-                      <Tooltip
-                        content={
-                          "If one of the Attributes of a Characteristic provides a Partial score value, all the attributes are required to provide a Partial score as well."
-                        }
+                    <Tooltip
+                      content={
+                        "If one of the Attributes of a Characteristic provides a Partial score value, all the attributes are required to provide a Partial score as well."
+                      }
+                    >
+                      <button
+                        aria-label="More information for Partial Score"
+                        onClick={e => e.preventDefault()}
+                        className="pf-c-form__group-label-help"
                       >
-                        <button
-                          aria-label="More information for Partial Score"
-                          onClick={e => e.preventDefault()}
-                          className="pf-c-form__group-label-help"
-                        >
-                          <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                        </button>
-                      </Tooltip>
-                    ) : (
-                      <></>
-                    )
+                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      </button>
+                    </Tooltip>
                   }
                 >
                   <TextInput

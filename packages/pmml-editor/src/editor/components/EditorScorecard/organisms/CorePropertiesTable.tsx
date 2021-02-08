@@ -305,28 +305,24 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
                       helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
                       labelIcon={
-                        areReasonCodesUsed || props.isBaselineScoreDisabled ? (
-                          <Tooltip
-                            content={
-                              props.isBaselineScoreDisabled
-                                ? `A Baseline score is already provided inside all Characteristics`
-                                : `
+                        <Tooltip
+                          content={
+                            areReasonCodesUsed && props.isBaselineScoreDisabled
+                              ? `A Baseline score is already provided inside all Characteristics`
+                              : `
                                 When Use Reason Codes is set to yes, a Baseline score value must be provided. \
                                 Alternatively you can provide a Baseline score for all the characteristics
                                 `
-                            }
+                          }
+                        >
+                          <button
+                            aria-label="More information for Baseline score"
+                            onClick={e => e.preventDefault()}
+                            className="pf-c-form__group-label-help"
                           >
-                            <button
-                              aria-label="More information for Baseline score"
-                              onClick={e => e.preventDefault()}
-                              className="pf-c-form__group-label-help"
-                            >
-                              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                            </button>
-                          </Tooltip>
-                        ) : (
-                          <></>
-                        )
+                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                          </button>
+                        </Tooltip>
                       }
                     >
                       <TextInput

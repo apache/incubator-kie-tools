@@ -179,28 +179,24 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 fieldId="characteristic-reason-code-helper"
                 style={{ width: "16em" }}
                 labelIcon={
-                  (areReasonCodesUsed && reasonCodeValidation.length > 0) || isReasonCodeProvidedByAttributes ? (
-                    <Tooltip
-                      content={
-                        isReasonCodeProvidedByAttributes
-                          ? `A Reason code is already provided inside all the Attributes of this Characteristic`
-                          : `
-                          Reason code is required when Use reason codes property inside Model Setup is yes. \
+                  <Tooltip
+                    content={
+                      areReasonCodesUsed && isReasonCodeProvidedByAttributes
+                        ? `A Reason code is already provided inside all the Attributes of this Characteristic`
+                        : `
+                          Reason code is available and required when Use reason codes property inside Model Setup is yes. \
                           You can enter Reason code here or provide a Reason code for all the Attributes of this \
                           characteristic as an alternative.`
-                      }
+                    }
+                  >
+                    <button
+                      aria-label="More information for Reason code"
+                      onClick={e => e.preventDefault()}
+                      className="pf-c-form__group-label-help"
                     >
-                      <button
-                        aria-label="More information for Reason code"
-                        onClick={e => e.preventDefault()}
-                        className="pf-c-form__group-label-help"
-                      >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                      </button>
-                    </Tooltip>
-                  ) : (
-                    <></>
-                  )
+                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                    </button>
+                  </Tooltip>
                 }
                 validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
                 helperText={reasonCodeValidation.length > 0 ? reasonCodeValidation[0].message : undefined}
@@ -227,29 +223,24 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 label="Baseline score"
                 fieldId="characteristic-baseline-score-helper"
                 labelIcon={
-                  (baselineScoreValidation.length > 0 && areReasonCodesUsed && scorecardBaselineScore === undefined) ||
-                  scorecardBaselineScore !== undefined ? (
-                    <Tooltip
-                      content={
-                        scorecardBaselineScore !== undefined
-                          ? `A baseline score is already provided inside Model Setup`
-                          : `
+                  <Tooltip
+                    content={
+                      areReasonCodesUsed && scorecardBaselineScore !== undefined
+                        ? `A baseline score is already provided inside Model Setup`
+                        : `
                           Baseline score for Characteristics is required when Use reason codes property is true \
                           and no Baseline score is provided inside Model Setup
                           `
-                      }
+                    }
+                  >
+                    <button
+                      aria-label="More information for Baseline score"
+                      onClick={e => e.preventDefault()}
+                      className="pf-c-form__group-label-help"
                     >
-                      <button
-                        aria-label="More information for Baseline score"
-                        onClick={e => e.preventDefault()}
-                        className="pf-c-form__group-label-help"
-                      >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                      </button>
-                    </Tooltip>
-                  ) : (
-                    <></>
-                  )
+                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                    </button>
+                  </Tooltip>
                 }
                 helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
                 validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
