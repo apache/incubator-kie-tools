@@ -13,14 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Requirements to run OLM tests:
+# 1. Have docker installed on your system
+# 2. Passwordless sudo is required by the OLM script to run tests
+# 3. Have ansible installed on your system
+# That's it all other tools will be downloaded and installed by the OLM script.
 
 set -e
 source ./hack/ci/operator-ensure-manifests.sh
 
 export OP_TEST_PRETEST_CUSTOM_SCRIPT=${PWD}/hack/ci/olm-pretest.sh
 
+# SCRIPT_URL URL to the script used by OLM to test the operator
+SCRIPT_URL="https://raw.githubusercontent.com/operator-framework/operator-test-playbooks/master/upstream/test/test.sh"
+
 echo "\n=======> Pretest script path set to ${OP_TEST_PRETEST_CUSTOM_SCRIPT}"
 
 cd "${tempfolder}"
 
-bash <(curl -sL https://cutt.ly/WhkV76k) all  community-operators/kogito-operator/"${version}"
+bash <(curl -sL "${SCRIPT_URL}") all  community-operators/kogito-operator/"${version}"
