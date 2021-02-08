@@ -24,6 +24,7 @@ import java.util.List;
 import org.uberfire.workbench.model.bridge.Notification;
 import org.uberfire.workbench.model.bridge.NotificationSeverity;
 import org.uberfire.workbench.model.bridge.NotificationType;
+import jsinterop.annotations.JsType;
 
 /**
  * This is the API that will let communicate with Notifications channel implementation. There are two types of Notifications:
@@ -35,6 +36,7 @@ import org.uberfire.workbench.model.bridge.NotificationType;
  * Alerts supports severities {@link NotificationSeverity#INFO} and {@link NotificationSeverity#ERROR}. Any other
  * severity will be treated as INFO.
  */
+@JsType(isNative = true)
 public interface NotificationsApi {
 
     /**
