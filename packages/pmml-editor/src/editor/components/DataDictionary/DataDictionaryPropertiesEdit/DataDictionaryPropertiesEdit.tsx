@@ -31,7 +31,7 @@ import {
   TitleSizes,
   Tooltip
 } from "@patternfly/react-core";
-import { HelpIcon } from "@patternfly/react-icons";
+import { ArrowAltCircleLeftIcon, HelpIcon } from "@patternfly/react-icons";
 import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
@@ -238,6 +238,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
             </SplitItem>
           </Split>
         </Form>
+      </StackItem>
+      <StackItem>
+        <Button variant="primary" onClick={onClose} icon={<ArrowAltCircleLeftIcon />} iconPosition="left">
+          Back
+        </Button>
       </StackItem>
     </Stack>
   );

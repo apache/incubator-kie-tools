@@ -455,7 +455,7 @@ const MiningSchemaPropertiesEdit = ({
         </section>
         <section className="mining-schema__edit__actions">
           <Button variant="primary" onClick={onClose} icon={<ArrowAltCircleLeftIcon />} iconPosition="left">
-            Done
+            Back
           </Button>
         </section>
       </StackItem>
