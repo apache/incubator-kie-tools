@@ -4,7 +4,7 @@ import { Label } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaFieldLabels.scss";
-import { Builder, useValidationService, ValidationEntry } from "../../../validation";
+import { Builder, useValidationRegistry, ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import {
   areLowHighValuesRequired,
@@ -74,10 +74,10 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
     );
   };
 
-  const { service } = useValidationService();
+  const { validationRegistry } = useValidationRegistry();
   const validationsImportance = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -90,7 +90,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
 
   const validationsLowValue = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -102,7 +102,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   );
   const validationsHighValue = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -116,7 +116,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
 
   const validationsMissingValueReplacement = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -133,7 +133,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
 
   const validationsInvalidValueReplacement = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()

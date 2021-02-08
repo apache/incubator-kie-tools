@@ -24,7 +24,7 @@ import {
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
@@ -113,10 +113,10 @@ const MiningSchemaPropertiesEdit = ({
     setInvalidValueReplacement(field.invalidValueReplacement ?? "");
   }, [field]);
 
-  const service = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const validationsImportance = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -128,7 +128,7 @@ const MiningSchemaPropertiesEdit = ({
   );
   const validationsLowValue = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -140,7 +140,7 @@ const MiningSchemaPropertiesEdit = ({
   );
   const validationsHighValue = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -152,7 +152,7 @@ const MiningSchemaPropertiesEdit = ({
   );
   const validationsMissingValueReplacement = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -164,7 +164,7 @@ const MiningSchemaPropertiesEdit = ({
   );
   const validationsInvalidValueReplacement = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()

@@ -26,7 +26,7 @@ import { OutputFieldReducer } from "./OutputFieldReducer";
 import { OutputReducer } from "./OutputReducer";
 import { MiningSchemaReducer } from "./MiningSchemaReducer";
 import { MiningSchemaFieldReducer } from "./MiningSchemaFieldReducer";
-import { ValidationService } from "../validation";
+import { ValidationRegistry } from "../validation";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -38,15 +38,15 @@ export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>
 
 export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = (
   historyService: HistoryService,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): Reducer<Model[], AllActions> => {
-  const scorecardReducer = mergeReducers(ScorecardReducer(historyService, validationService), {
-    MiningSchema: mergeReducers(MiningSchemaReducer(historyService, validationService), {
-      MiningField: MiningSchemaFieldReducer(historyService, validationService)
+  const scorecardReducer = mergeReducers(ScorecardReducer(historyService, validationRegistry), {
+    MiningSchema: mergeReducers(MiningSchemaReducer(historyService, validationRegistry), {
+      MiningField: MiningSchemaFieldReducer(historyService, validationRegistry)
     }),
     Output: mergeReducers(OutputReducer(historyService), { OutputField: OutputFieldReducer(historyService) }),
     Characteristics: mergeReducers(CharacteristicsReducer(historyService), {
-      Characteristic: CharacteristicReducer(historyService, validationService)
+      Characteristic: CharacteristicReducer(historyService, validationRegistry)
     })
   });
 

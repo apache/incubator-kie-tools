@@ -4,7 +4,7 @@ import { Label } from "@patternfly/react-core";
 import { every } from "lodash";
 import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {
@@ -57,10 +57,10 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
     return "";
   }, [dataType.constraints]);
 
-  const { service } = useValidationService();
+  const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forDataDictionary()
           .forDataField(dataTypeIndex)

@@ -7,7 +7,7 @@ import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContai
 import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
 import "./MiningSchemaFields.scss";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface MiningSchemaFieldsProps {
@@ -88,10 +88,10 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     onEdit(index);
   };
 
-  const { service } = useValidationService();
+  const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()

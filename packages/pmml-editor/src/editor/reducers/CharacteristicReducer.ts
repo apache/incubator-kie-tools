@@ -19,7 +19,7 @@ import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshalle
 import { Reducer } from "react";
 import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
-import { ValidationService } from "../validation";
+import { ValidationRegistry } from "../validation";
 
 // @ts-ignore
 Characteristic[immerable] = true;
@@ -38,9 +38,9 @@ export type CharacteristicActions = ActionMap<CharacteristicPayload>[keyof Actio
 
 export const CharacteristicReducer: HistoryAwareValidatingReducer<Characteristic[], AllActions> = (
   historyService: HistoryService,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): Reducer<Characteristic[], AllActions> => {
-  const attributesReducer = AttributesReducer(historyService, validationService);
+  const attributesReducer = AttributesReducer(historyService, validationRegistry);
 
   const delegateToAttributes = (state: Characteristic[], action: AllActions) => {
     switch (action.type) {

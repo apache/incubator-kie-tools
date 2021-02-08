@@ -40,7 +40,7 @@ import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
-import { ValidationContext, ValidationService } from "./validation";
+import { ValidationContext, ValidationRegistry } from "./validation";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -59,7 +59,7 @@ export interface State {
 export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
   private readonly history: HistoryService = new HistoryService();
-  private readonly validation: ValidationService = new ValidationService();
+  private readonly validationRegistry: ValidationRegistry = new ValidationRegistry();
   private readonly reducer: Reducer<PMML, AllActions>;
 
   constructor(props: Props) {
@@ -74,12 +74,12 @@ export class PMMLEditor extends React.Component<Props, State> {
 
     enableAllPlugins();
 
-    this.reducer = mergeReducers(PMMLReducer(this.history, this.validation), {
+    this.reducer = mergeReducers(PMMLReducer(this.history, this.validationRegistry), {
       Header: HeaderReducer(this.history),
-      DataDictionary: mergeReducers(DataDictionaryReducer(this.history, this.validation), {
-        DataField: DataDictionaryFieldReducer(this.history, this.validation)
+      DataDictionary: mergeReducers(DataDictionaryReducer(this.history, this.validationRegistry), {
+        DataField: DataDictionaryFieldReducer(this.history, this.validationRegistry)
       }),
-      models: ModelReducer(this.history, this.validation)
+      models: ModelReducer(this.history, this.validationRegistry)
     });
   }
 
@@ -190,7 +190,7 @@ export class PMMLEditor extends React.Component<Props, State> {
         <HashRouter>
           <Page>
             <Provider store={this.store}>
-              <ValidationContext.Provider value={{ service: this.validation }}>
+              <ValidationContext.Provider value={{ validationRegistry: this.validationRegistry }}>
                 <HistoryContext.Provider
                   value={{
                     service: this.history,

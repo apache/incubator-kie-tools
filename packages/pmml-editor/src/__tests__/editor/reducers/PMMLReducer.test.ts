@@ -17,12 +17,12 @@ import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions, PMMLReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
-import { ValidationService } from "../../../editor/validation";
+import { ValidationRegistry } from "../../../editor/validation";
 
 const historyService = new HistoryService();
-const validationService = new ValidationService();
+const validationRegistry = new ValidationRegistry();
 const pmml: PMML = { Header: {}, DataDictionary: { DataField: [] }, version: "" };
-const reducer: Reducer<PMML, AllActions> = PMMLReducer(historyService, validationService);
+const reducer: Reducer<PMML, AllActions> = PMMLReducer(historyService, validationRegistry);
 
 describe("PMMLReducer::Valid actions", () => {
   test("Actions.SetVersion", () => {

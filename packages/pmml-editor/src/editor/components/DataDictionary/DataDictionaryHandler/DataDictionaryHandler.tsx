@@ -18,7 +18,7 @@ import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer
 import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useBatchDispatch, useHistoryService } from "../../../history";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 const DataDictionaryHandler = () => {
@@ -91,10 +91,10 @@ const DataDictionaryHandler = () => {
     setActiveOperation(status ? Operation.UPDATE_DATA_DICTIONARY : Operation.NONE);
   };
 
-  const validationService = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () =>
-      validationService.get(
+      validationRegistry.get(
         Builder()
           .forDataDictionary()
           .build()

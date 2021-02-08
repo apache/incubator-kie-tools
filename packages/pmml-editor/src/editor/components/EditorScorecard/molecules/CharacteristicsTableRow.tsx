@@ -25,7 +25,7 @@ import {
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic, toText } from "../organisms";
 import "./CharacteristicsTableRow.scss";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface CharacteristicsTableRowProps {
   modelIndex: number;
@@ -100,11 +100,11 @@ interface CharacteristicAttributesListProps {
 const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
   const { modelIndex, characteristicIndex, characteristic, areReasonCodesUsed, dataFields } = props;
 
-  const { service } = useValidationService();
+  const { validationRegistry } = useValidationRegistry();
 
   const validations = useCallback(
     attributeIndex =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forCharacteristics()

@@ -11,7 +11,7 @@ import "./MiningSchemaContainer.scss";
 
 import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
 import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface MiningSchemaContainerProps {
   modelIndex: number;
@@ -82,10 +82,10 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     setFields(prepareFieldOptions(dataDictionary, miningSchema));
   }, [dataDictionary, miningSchema]);
 
-  const validationService = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () =>
-      validationService.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()

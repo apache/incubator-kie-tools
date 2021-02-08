@@ -17,7 +17,7 @@ import { Reducer } from "react";
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { FieldName, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
-import { Builder, ValidationService } from "../validation";
+import { Builder, ValidationRegistry } from "../validation";
 import { validateMiningFields } from "../validation/MiningSchema";
 
 interface MiningSchemaPayload {
@@ -36,7 +36,7 @@ export type MiningSchemaActions = ActionMap<MiningSchemaPayload>[keyof ActionMap
 
 export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, AllActions> = (
   historyService: HistoryService,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): Reducer<MiningSchema, AllActions> => {
   return (state: MiningSchema, action: AllActions) => {
     switch (action.type) {
@@ -56,13 +56,13 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
           if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
             draft.MiningField.splice(miningSchemaIndex, 1);
           }
-          validationService.clear(
+          validationRegistry.clear(
             Builder()
               .forModel(action.payload.modelIndex)
               .forMiningSchema()
               .build()
           );
-          validateMiningFields(action.payload.modelIndex, draft.MiningField, validationService);
+          validateMiningFields(action.payload.modelIndex, draft.MiningField, validationRegistry);
         });
     }
 

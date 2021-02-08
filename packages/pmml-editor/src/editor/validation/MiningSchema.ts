@@ -21,18 +21,17 @@ import {
   MissingValueTreatmentMethod,
   OutlierTreatmentMethod
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { ValidationService } from "./ValidationService";
-import { ValidationEntry } from "./ValidationRegistry";
+import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder } from "./ValidationPath";
 
 export const validateMiningFields = (
   modelIndex: number,
   miningFields: MiningField[],
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   miningFields.forEach((miningField, miningFieldIndex) =>
-    validateMiningField(modelIndex, miningFieldIndex, miningField, validationService)
+    validateMiningField(modelIndex, miningFieldIndex, miningField, validationRegistry)
   );
 };
 
@@ -40,12 +39,12 @@ export const validateMiningField = (
   modelIndex: number,
   miningFieldIndex: number,
   miningField: MiningField,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   //Importance
   const importance = miningField.importance;
   if (importance !== undefined && (importance < 0 || importance > 1)) {
-    validationService.set(
+    validationRegistry.set(
       Builder()
         .forModel(modelIndex)
         .forMiningSchema()
@@ -60,7 +59,7 @@ export const validateMiningField = (
   const { outliers, lowValue, highValue } = miningField;
   if (areLowHighValuesRequired(outliers)) {
     if (lowValue === undefined && highValue === undefined) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -69,7 +68,7 @@ export const validateMiningField = (
           .build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
       );
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -81,7 +80,7 @@ export const validateMiningField = (
     }
   } else {
     if (lowValue !== undefined) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -92,7 +91,7 @@ export const validateMiningField = (
       );
     }
     if (highValue !== undefined) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -108,7 +107,7 @@ export const validateMiningField = (
   const { missingValueTreatment, missingValueReplacement } = miningField;
   if (isMissingValueReplacementRequired(missingValueTreatment)) {
     if (missingValueReplacement === undefined) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -120,7 +119,7 @@ export const validateMiningField = (
     }
   } else {
     if (missingValueReplacement !== undefined) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -136,7 +135,7 @@ export const validateMiningField = (
   const { invalidValueTreatment, invalidValueReplacement } = miningField;
   if (isInvalidValueReplacementRequired(invalidValueTreatment)) {
     if (invalidValueReplacement === undefined) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -148,7 +147,7 @@ export const validateMiningField = (
     }
   } else {
     if (invalidValueReplacement !== undefined) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forMiningSchema()
@@ -165,11 +164,11 @@ export const validateMiningFieldsDataFieldReference = (
   modelIndex: number,
   dataFields: DataField[],
   miningFields: MiningField[],
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   const dataFieldNames = dataFields.map(dataField => dataField.name);
   miningFields.forEach((miningField, miningFieldIndex) =>
-    validateMiningFieldDataFieldReference(modelIndex, dataFieldNames, miningFieldIndex, miningField, validationService)
+    validateMiningFieldDataFieldReference(modelIndex, dataFieldNames, miningFieldIndex, miningField, validationRegistry)
   );
 };
 
@@ -178,10 +177,10 @@ const validateMiningFieldDataFieldReference = (
   dataFieldNames: FieldName[],
   miningFieldIndex: number,
   miningField: MiningField,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   if (dataFieldNames.filter(dataFieldName => dataFieldName === miningField.name).length === 0) {
-    validationService.set(
+    validationRegistry.set(
       Builder()
         .forModel(modelIndex)
         .forMiningSchema()

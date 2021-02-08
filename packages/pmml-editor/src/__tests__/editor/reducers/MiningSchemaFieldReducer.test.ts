@@ -18,10 +18,10 @@ import { Actions, AllActions } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 import { MiningSchemaFieldReducer } from "../../../editor/reducers/MiningSchemaFieldReducer";
-import { ValidationService } from "../../../editor/validation";
+import { ValidationRegistry } from "../../../editor/validation";
 
 const historyService = new HistoryService();
-const validationService = new ValidationService();
+const validationRegistry = new ValidationRegistry();
 const miningFields: MiningField[] = [{ name: "field1" as FieldName }];
 const models: Model[] = [
   new Scorecard({
@@ -36,7 +36,7 @@ const pmml: PMML = {
   Header: {},
   models: models
 };
-const reducer: Reducer<MiningField[], AllActions> = MiningSchemaFieldReducer(historyService, validationService);
+const reducer: Reducer<MiningField[], AllActions> = MiningSchemaFieldReducer(historyService, validationRegistry);
 
 describe("MiningSchemaFieldReducer::Valid actions", () => {
   test("Actions.UpdateDataDictionaryField", () => {

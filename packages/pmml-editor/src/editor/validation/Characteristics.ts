@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 import { Characteristic, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
-import { ValidationService } from "./ValidationService";
+import { ValidationRegistry } from "./ValidationRegistry";
 import { validateAttributes } from "./Attributes";
 
 export const validateCharacteristic = (
@@ -22,19 +22,19 @@ export const validateCharacteristic = (
   characteristicIndex: number,
   characteristic: Characteristic,
   miningFields: MiningField[],
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   //Attributes
-  validateAttributes(modelIndex, characteristicIndex, characteristic.Attribute, miningFields, validationService);
+  validateAttributes(modelIndex, characteristicIndex, characteristic.Attribute, miningFields, validationRegistry);
 };
 
 export const validateCharacteristics = (
   modelIndex: number,
   characteristics: Characteristic[],
   miningFields: MiningField[],
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   characteristics.forEach((characteristic, characteristicIndex) =>
-    validateCharacteristic(modelIndex, characteristicIndex, characteristic, miningFields, validationService)
+    validateCharacteristic(modelIndex, characteristicIndex, characteristic, miningFields, validationRegistry)
   );
 };

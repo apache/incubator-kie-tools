@@ -14,48 +14,26 @@
  * limitations under the License.
  */
 
-import ownKeys = Reflect.ownKeys;
-import { get, set, unset } from "lodash";
-import { ValidationLevel } from "./ValidationLevel";
+import { ValidationStore } from "./ValidationStore";
 import { ValidationPath } from "./ValidationPath";
+import { ValidationLevel } from "./ValidationLevel";
 
 export class ValidationEntry {
   constructor(public level: ValidationLevel, public message?: string) {}
 }
 
 export class ValidationRegistry {
-  private readonly registry = {};
+  private readonly registry: ValidationStore = new ValidationStore();
 
   public set = (path: ValidationPath, entry: ValidationEntry): void => {
-    set(this.registry, path.path, entry);
+    this.registry.set(path, entry);
   };
 
   public get = (path: ValidationPath): ValidationEntry[] => {
-    const node = get(this.registry, path.path);
-    if (node === undefined) {
-      return [];
-    }
-    //In case entries were created with the constructor
-    if (node instanceof ValidationEntry) {
-      return [node];
-    }
-    //In case entries were created as JSON
-    if (node.level !== undefined) {
-      return [node];
-    }
-    if (!(node instanceof Object)) {
-      return [];
-    }
-    const mapped = ownKeys(node).map(key => this.get({ path: `${path.path}.${String(key)}` }));
-    if (mapped.length === 0) {
-      return [];
-    }
-    return mapped.reduce((pv, cv) => {
-      return pv.concat(cv);
-    });
+    return this.registry.get(path);
   };
 
   public clear = (path: ValidationPath): void => {
-    unset(this.registry, path.path);
+    this.registry.clear(path);
   };
 }

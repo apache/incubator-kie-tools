@@ -19,7 +19,7 @@ import { Label, Split, SplitItem } from "@patternfly/react-core";
 import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 
@@ -48,10 +48,10 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     onDelete
   } = props;
 
-  const { service } = useValidationService();
+  const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () =>
-      service.get(
+      validationRegistry.get(
         Builder()
           .forModel(modelIndex)
           .forCharacteristics()

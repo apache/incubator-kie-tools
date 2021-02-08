@@ -14,7 +14,7 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { GripVerticalIcon, TrashIcon } from "@patternfly/react-icons";
-import { Builder, useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import "./ConstraintsEnumEdit.scss";
 
 interface ConstraintsEnumEditProps {
@@ -160,9 +160,9 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
     }
   };
 
-  const { service } = useValidationService();
+  const { validationRegistry } = useValidationRegistry();
   const validations = useRef(
-    service.get(
+    validationRegistry.get(
       Builder()
         .forDataDictionary()
         .forDataField(dataFieldIndex)
@@ -171,7 +171,7 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
     )
   );
   useEffect(() => {
-    validations.current = service.get(
+    validations.current = validationRegistry.get(
       Builder()
         .forDataDictionary()
         .forDataField(dataFieldIndex)

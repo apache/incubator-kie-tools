@@ -24,7 +24,7 @@ import {
   shouldConstraintsBeCleared,
   validateDataField,
   validateDataFields,
-  ValidationService
+  ValidationRegistry
 } from "../validation";
 
 interface DataDictionaryFieldPayload {
@@ -42,7 +42,7 @@ export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[k
 
 export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField[], DataDictionaryFieldActions> = (
   historyService: HistoryService,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): Reducer<DataField[], AllActions> => {
   return (state: DataField[], action: AllActions) => {
     switch (action.type) {
@@ -88,24 +88,24 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
 
             draft[dataDictionaryIndex] = dataField;
           }
-          validationService.clear(
+          validationRegistry.clear(
             Builder()
               .forDataDictionary()
               .forDataField(dataDictionaryIndex)
               .build()
           );
-          validateDataField(dataField, dataDictionaryIndex, validationService);
+          validateDataField(dataField, dataDictionaryIndex, validationRegistry);
         });
         break;
 
       case Actions.Validate:
-        validationService.clear(
+        validationRegistry.clear(
           Builder()
             .forDataDictionary()
             .forDataField()
             .build()
         );
-        validateDataFields(state, validationService);
+        validateDataFields(state, validationRegistry);
     }
 
     return state;

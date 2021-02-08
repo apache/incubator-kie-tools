@@ -25,7 +25,7 @@ import {
   OutlierTreatmentMethod,
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { Builder, ValidationService } from "../validation";
+import { Builder, ValidationRegistry } from "../validation";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
@@ -57,7 +57,7 @@ export type MiningSchemaFieldActions = ActionMap<MiningSchemaFieldPayload>[keyof
 
 export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField[], AllActions> = (
   historyService: HistoryService,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): Reducer<MiningField[], AllActions> => {
   return (state: MiningField[], action: AllActions) => {
     switch (action.type) {
@@ -118,7 +118,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
               invalidValueTreatment: action.payload.invalidValueTreatment,
               invalidValueReplacement: newInvalidValueReplacement
             };
-            validationService.clear(
+            validationRegistry.clear(
               Builder()
                 .forModel(modelIndex)
                 .forMiningSchema()
@@ -135,7 +135,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
                 missingValueReplacement: newMissingValueReplacement,
                 invalidValueReplacement: newInvalidValueReplacement
               },
-              validationService
+              validationRegistry
             );
           }
         });
@@ -144,7 +144,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
-          validateMiningFields(modelIndex, state, validationService);
+          validateMiningFields(modelIndex, state, validationRegistry);
         }
     }
 

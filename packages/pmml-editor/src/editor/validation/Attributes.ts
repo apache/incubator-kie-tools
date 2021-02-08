@@ -24,8 +24,7 @@ import {
   SimpleSetPredicate,
   True
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { ValidationService } from "./ValidationService";
-import { ValidationEntry } from "./ValidationRegistry";
+import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder } from "./ValidationPath";
 
@@ -35,7 +34,7 @@ export const validateAttribute = (
   attributeIndex: number,
   attribute: Attribute,
   miningFields: MiningField[],
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   //Predicates
   const fieldNames = miningFields.map(miningField => miningField.name);
@@ -45,7 +44,7 @@ export const validateAttribute = (
     attributeIndex,
     attribute.predicate,
     fieldNames,
-    validationService,
+    validationRegistry,
     0
   );
 };
@@ -55,10 +54,10 @@ export const validateAttributes = (
   characteristicIndex: number,
   attributes: Attribute[],
   miningFields: MiningField[],
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): void => {
   attributes.forEach((attribute, attributeIndex) =>
-    validateAttribute(modelIndex, characteristicIndex, attributeIndex, attribute, miningFields, validationService)
+    validateAttribute(modelIndex, characteristicIndex, attributeIndex, attribute, miningFields, validationRegistry)
   );
 };
 
@@ -68,7 +67,7 @@ const validatePredicate = (
   attributeIndex: number,
   predicate: Predicate | undefined,
   fieldNames: FieldName[],
-  validationService: ValidationService,
+  validationRegistry: ValidationRegistry,
   nesting: number
 ) => {
   if (predicate === undefined) {
@@ -79,7 +78,7 @@ const validatePredicate = (
     return;
   } else if (predicate instanceof SimpleSetPredicate) {
     if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forCharacteristics()
@@ -93,7 +92,7 @@ const validatePredicate = (
     }
   } else if (predicate instanceof SimplePredicate) {
     if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
-      validationService.set(
+      validationRegistry.set(
         Builder()
           .forModel(modelIndex)
           .forCharacteristics()
@@ -107,7 +106,7 @@ const validatePredicate = (
     }
   } else if (predicate instanceof CompoundPredicate) {
     predicate.predicates?.forEach(p =>
-      validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validationService, nesting + 1)
+      validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validationRegistry, nesting + 1)
     );
   }
 };

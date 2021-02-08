@@ -35,7 +35,7 @@ import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
 import { isOutputsTargetFieldRequired, validateOutput, validateOutputs } from "../validation/Outputs";
-import { Builder, ValidationEntry, ValidationLevel, ValidationService } from "../validation";
+import { Builder, ValidationEntry, ValidationLevel, ValidationRegistry } from "../validation";
 import { validateCharacteristics } from "../validation/Characteristics";
 
 // @ts-ignore
@@ -66,13 +66,13 @@ export type AllScorecardActions = ScorecardActions | CharacteristicsActions | Ch
 
 export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActions> = (
   historyService: HistoryService,
-  validationService: ValidationService
+  validationRegistry: ValidationRegistry
 ): Reducer<Scorecard, AllActions> => {
   return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
       case Actions.AddMiningSchemaFields:
         historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
-          validationService.clear(
+          validationRegistry.clear(
             Builder()
               .forModel(action.payload.modelIndex)
               .forCharacteristics()
@@ -82,14 +82,14 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             action.payload.modelIndex,
             state.Characteristics.Characteristic,
             state.MiningSchema.MiningField.concat(action.payload.names.map(n => new MiningField({ name: n }))),
-            validationService
+            validationRegistry
           );
         });
         break;
 
       case Actions.Scorecard_UpdateAttribute:
         historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
-          validationService.clear(
+          validationRegistry.clear(
             Builder()
               .forModel(action.payload.modelIndex)
               .forCharacteristics()
@@ -116,7 +116,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
               return characteristic;
             }),
             state.MiningSchema.MiningField,
-            validationService
+            validationRegistry
           );
         });
         break;
@@ -161,7 +161,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         break;
 
       case Actions.DeleteMiningSchemaField:
-        validationService.clear(
+        validationRegistry.clear(
           Builder()
             .forModel(action.payload.modelIndex)
             .forCharacteristics()
@@ -171,11 +171,11 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
           action.payload.modelIndex,
           state.Characteristics.Characteristic,
           state.MiningSchema.MiningField.filter(mf => mf.name !== action.payload.name),
-          validationService
+          validationRegistry
         );
 
         if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
-          validationService.clear(`models[${action.payload.modelIndex}].Output`);
+          validationRegistry.clear(`models[${action.payload.modelIndex}].Output`);
           state.Output.OutputField.forEach((outputField, outputFieldIndex) => {
             if (outputField.targetField === action.payload.name) {
               historyService.batch(state, `models[${action.payload.modelIndex}]`, draft => {
@@ -190,7 +190,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                   state.MiningSchema.MiningField.filter(
                     (miningField, miningFieldIndex) => miningFieldIndex !== action.payload.miningSchemaIndex
                   ),
-                  validationService
+                  validationRegistry
                 );
               });
             }
@@ -199,14 +199,14 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             action.payload.modelIndex,
             state.Output?.OutputField,
             state.MiningSchema.MiningField.filter((field, index) => index !== action.payload.miningSchemaIndex),
-            validationService
+            validationRegistry
           );
         }
         break;
 
       case Actions.UpdateMiningSchemaField:
         if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
-          validationService.clear(`models[${action.payload.modelIndex}].Output`);
+          validationRegistry.clear(`models[${action.payload.modelIndex}].Output`);
           if (action.payload.usageType !== "target") {
             state.Output.OutputField.forEach((outputField, outputFieldIndex) => {
               if (outputField.targetField === action.payload.name) {
@@ -225,7 +225,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                       }
                       return miningField;
                     }),
-                    validationService
+                    validationRegistry
                   );
                 });
               }
@@ -240,13 +240,13 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
               }
               return item;
             }),
-            validationService
+            validationRegistry
           );
         }
         break;
 
       case Actions.UpdateOutput:
-        validationService.clear(
+        validationRegistry.clear(
           `models[${action.payload.modelIndex}].Output.OutputField[${action.payload.outputIndex}].targetField`
         );
         validateOutput(
@@ -254,24 +254,24 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
           action.payload.outputField,
           action.payload.outputIndex,
           state.MiningSchema.MiningField,
-          validationService
+          validationRegistry
         );
         break;
 
       case Actions.AddBatchOutputs:
-        validationService.clear(`models[${action.payload.modelIndex}].Output`);
+        validationRegistry.clear(`models[${action.payload.modelIndex}].Output`);
         if (state.Output && state.Output?.OutputField.length > 0) {
           validateOutputs(
             action.payload.modelIndex,
             state.Output?.OutputField,
             state.MiningSchema.MiningField,
-            validationService
+            validationRegistry
           );
         }
         if (isOutputsTargetFieldRequired(state.MiningSchema.MiningField)) {
           const startIndex = state.Output?.OutputField.length ?? 0;
           action.payload.outputFields.forEach((name, index) => {
-            validationService.set(
+            validationRegistry.set(
               `models[${action.payload.modelIndex}].Output.OutputField[${startIndex + index}].targetField`,
               new ValidationEntry(
                 ValidationLevel.WARNING,
@@ -283,18 +283,18 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         break;
 
       case Actions.AddOutput:
-        validationService.clear(`models[${action.payload.modelIndex}].Output`);
+        validationRegistry.clear(`models[${action.payload.modelIndex}].Output`);
         if (state.Output && state.Output?.OutputField.length > 0) {
           validateOutputs(
             action.payload.modelIndex,
             state.Output?.OutputField,
             state.MiningSchema.MiningField,
-            validationService
+            validationRegistry
           );
         }
         if (isOutputsTargetFieldRequired(state.MiningSchema.MiningField)) {
           const outputFieldIndex = state.Output?.OutputField.length ?? 0;
-          validationService.set(
+          validationRegistry.set(
             `models[${action.payload.modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`,
             new ValidationEntry(
               ValidationLevel.WARNING,
@@ -305,27 +305,27 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
         break;
 
       case Actions.DeleteOutput:
-        validationService.clear(`models[${action.payload.modelIndex}].Output`);
+        validationRegistry.clear(`models[${action.payload.modelIndex}].Output`);
         validateOutputs(
           action.payload.modelIndex,
           state.Output?.OutputField.filter((field, index) => index !== action.payload.outputIndex) ?? [],
           state.MiningSchema.MiningField,
-          validationService
+          validationRegistry
         );
         break;
 
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
-          validationService.clear(`models[${modelIndex}].Output`);
+          validationRegistry.clear(`models[${modelIndex}].Output`);
           validateOutputs(
             action.payload.modelIndex,
             state.Output?.OutputField ?? [],
             state.MiningSchema.MiningField,
-            validationService
+            validationRegistry
           );
 
-          validationService.clear(
+          validationRegistry.clear(
             Builder()
               .forModel(modelIndex)
               .forCharacteristics()
@@ -335,7 +335,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             modelIndex,
             state.Characteristics.Characteristic,
             state.MiningSchema.MiningField,
-            validationService
+            validationRegistry
           );
         }
         break;
