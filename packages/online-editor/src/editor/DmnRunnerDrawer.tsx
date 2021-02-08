@@ -53,7 +53,7 @@ const PF_BREAKPOINT_LG = 992;
 const PF_BREAKPOINT_XL = 1200;
 const PF_BREAKPOINT_2XL = 1450;
 
-export function JitDmnForm(props: Props) {
+export function DmnRunner(props: Props) {
   const [jitResponse, setJitResponse] = useState();
   const [jitResponseStatus, setJitResponseStatus] = useState(JitResponseStatus.NONE);
   const autoFormRef = useRef<HTMLFormElement>();

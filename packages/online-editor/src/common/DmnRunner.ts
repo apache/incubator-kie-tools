@@ -38,7 +38,7 @@ function createValidator(schema: any) {
   };
 }
 
-export class JitDmn {
+export class DmnRunner {
   public static async checkServer(): Promise<boolean> {
     const response = await fetch(JIT_DMN_SERVER, { method: "OPTIONS" });
     return response.status < 300;
