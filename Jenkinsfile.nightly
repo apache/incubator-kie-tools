@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'kie-linux kie-rhel8 kie-mem16g ff gui-testing && !master'
+        label 'kie-rhel8 && kie-mem16g && !master'
     }
     tools {
         nodejs "nodejs-12.16.3"
