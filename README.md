@@ -87,6 +87,8 @@ Develop
 > **Example:**
 >
 > $ export EXTERNAL_RESOURCE_PATH__bpmnEditor=/Users/tiago/redhat/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime
+> 
+> $ export EXTERNAL_RESOURCE_PATH__dmnEditor=/Users/tiago/redhat/kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime/
 >
 > $ yarn run init && yarn run build:prod
 >
