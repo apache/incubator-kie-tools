@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g && !master'
+        label 'kie-rhel8 && kie-mem16g && !master'
     }
     tools {
         nodejs "nodejs-12.16.3"
@@ -71,7 +71,7 @@ pipeline {
 {
     \"npmRegistry\": \"${NPM_REGISTRY_PUBLISH_URL}",
     \"versions\": {
-        \"kogito-tooling\": \"${env.KOGITO_TOOLING_PROD_VERSION}\"
+        \"kogito-tooling\": \"${env.CURRENT_KOGITO_TOOLING_VERSION}\"
     }
 }
                     """
@@ -132,8 +132,8 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
     def name = projectGroupName[1]
     dir("${env.WORKSPACE}/${group}_${name}") {
         if("kiegroup/kogito-tooling" == project) {
-            env.KOGITO_TOOLING_PROD_VERSION = env.KOGITO_TOOLING_PROD_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
-            println "kogito-tooling prod version ${env.KOGITO_TOOLING_PROD_VERSION}"
+            env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
+            println "kogito-tooling prod version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
         }
         if (fileExists("./pom.xml")) {
             def pom = readMavenPom file: 'pom.xml'
