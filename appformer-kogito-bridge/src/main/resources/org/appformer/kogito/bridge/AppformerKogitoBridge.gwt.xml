@@ -20,7 +20,7 @@
 <module>
 
   <inherits name="org.appformer.AppformerClientAPI"/>
-
+  <inherits name="org.uberfire.UberfireAPI"/>
   <source path='client'/>
 
 </module>

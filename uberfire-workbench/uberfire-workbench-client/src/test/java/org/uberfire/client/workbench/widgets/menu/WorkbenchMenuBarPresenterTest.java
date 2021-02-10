@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -114,6 +114,9 @@ public class WorkbenchMenuBarPresenterTest {
                                                                           null,
                                                                           null,
                                                                           PERSPECTIVE_ID);
+
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(identity))).thenReturn(true);
 
         presenter.addMenus(menus);
         presenter.onPerspectiveChange(perspectiveChange);

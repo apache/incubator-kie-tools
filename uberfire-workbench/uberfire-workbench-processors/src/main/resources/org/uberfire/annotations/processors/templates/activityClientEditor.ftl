@@ -168,6 +168,23 @@ public class ${className} extends AbstractWorkbenchClientEditorActivity {
     }
 
     @Override
+    public Promise validate() {
+        <#if validateMethodName??>
+        return realPresenter.${validateMethodName}();
+        <#else>
+        return null;
+        </#if>
+    }
+
+    <#if getContextIdMethodName??>
+    @Override
+    public String contextId() {
+        return realPresenter.${getContextIdMethodName}();
+    }
+
+    </#if>
+
+    @Override
     public String getIdentifier() {
         return "${identifier}";
     }

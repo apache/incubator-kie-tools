@@ -44,10 +44,12 @@ public class DefaultEditorFileUploadParametersTest {
     @Test
     public void testPathParameterIsEncoded() {
         upload.setPath(new PathFactory.PathImpl("foo.txt", "default://foo & bar.txt"));
+        upload.setIsUpdate(true);
 
         final Map<String, String> parameters = upload.getParameters();
 
-        assertEquals(1, parameters.size());
+        assertEquals(2, parameters.size());
         assertEquals("default%3A%2F%2Ffoo+%26+bar.txt", parameters.get("path"));
+        assertEquals("true", parameters.get("update"));
     }
 }

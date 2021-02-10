@@ -46,7 +46,7 @@ public class DocksBar {
     protected void setupChildBars(UberfireDockPosition position) {
         this.collapsedBar = new DocksCollapsedBar(position);
         this.expandedBar = new DocksExpandedBar(position);
-        dockResizeBar = new DockResizeBar(this);
+        this.dockResizeBar = new DockResizeBar(this);
     }
 
     public DocksCollapsedBar getCollapsedBar() {
@@ -78,7 +78,7 @@ public class DocksBar {
         expandedBar.clear();
     }
 
-    public void addDock(UberfireDock dock,
+    public void addDock(final UberfireDock dock,
                         final ParameterizedCommand<String> openCommand,
                         final ParameterizedCommand<String> closeCommand) {
         if (collapsedBar != null) {

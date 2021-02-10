@@ -48,7 +48,7 @@ public class SouthDockItem
         this.closeCommand = closeCommand;
         initWidget(uiBinder.createAndBindUi(this));
         createButton();
-        setupCSSLocators(dock);
+        setupLocators(dock);
     }
 
     void createButton() {

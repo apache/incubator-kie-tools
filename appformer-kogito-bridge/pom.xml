@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-parent</artifactId>
-    <version>7.48.0-SNAPSHOT</version>
+    <version>7.50.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -63,6 +63,11 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test dependencies -->

@@ -806,4 +806,14 @@ public class GeneratorUtils {
 
         return qualifiers;
     }
+
+    public static ExecutableElement getValidateMethodName(TypeElement classElement, ProcessingEnvironment processingEnvironment) {
+        return getUniqueAnnotatedMethod(classElement,
+                                        processingEnvironment,
+                                        "org.uberfire.lifecycle.Validate", //FIXME: Tiago
+                                        new TypeMirror[]{
+                                                processingEnvironment.getElementUtils().getTypeElement("elemental2.promise.Promise").asType()
+                                        },
+                                        NO_PARAMS);
+    }
 }

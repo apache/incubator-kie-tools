@@ -121,6 +121,11 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                                                                                           processingEnvironment);
         final String getPreviewMethodName = getPreviewMethod == null ? null : getPreviewMethod.getSimpleName().toString();
 
+        final ExecutableElement validateMethod = GeneratorUtils.getValidateMethodName(classElement,
+                                                                                       processingEnvironment);
+
+        final String validateMethodName = validateMethod == null ? null : validateMethod.getSimpleName().toString();
+
         final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType(classElement);
 
         if (GeneratorUtils.debugLoggingEnabled()) {
@@ -154,6 +159,8 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                                   "getContentMethodName: " + getContentMethodName);
             messager.printMessage(Kind.NOTE,
                                   "getPreviewMethodName: " + getPreviewMethodName);
+            messager.printMessage(Kind.NOTE,
+                                  "validateMethodName: " + validateMethodName);
             messager.printMessage(Kind.NOTE,
                                   "Qualifiers: " + String.join(", ",
                                                                qualifiers));
@@ -219,6 +226,8 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                  getContentMethodName);
         root.put("getPreviewMethodName",
                  getPreviewMethodName);
+        root.put("validateMethodName",
+                 validateMethodName);
         root.put("qualifiers",
                  qualifiers);
 

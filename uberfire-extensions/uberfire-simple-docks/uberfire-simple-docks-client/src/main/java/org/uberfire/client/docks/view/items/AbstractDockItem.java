@@ -16,6 +16,8 @@
 
 package org.uberfire.client.docks.view.items;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
@@ -29,16 +31,20 @@ import org.gwtbootstrap3.client.ui.html.Span;
 import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.ouia.OuiaAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponent;
+import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public abstract class AbstractDockItem extends Composite {
+public abstract class AbstractDockItem extends Composite implements OuiaComponent {
 
-    private final boolean opened;
+    private static final String OUIA_COMPONENT_TYPE = "docks-item";
+
     private final UberfireDock dock;
 
     AbstractDockItem(UberfireDock dock) {
         this.dock = dock;
-        this.opened = false;
     }
 
     public static AbstractDockItem create(UberfireDock dock,
@@ -132,9 +138,25 @@ public abstract class AbstractDockItem extends Composite {
 
     public abstract void close();
 
-    void setupCSSLocators(UberfireDock dock) {
-        getElement().addClassName(CSSLocatorsUtils.buildLocator("qe-docks-item",
+    void setupLocators(final UberfireDock dock) {
+        initOuiaComponentAttributes();
+        getElement().addClassName(CSSLocatorsUtils.buildLocator(OUIA_COMPONENT_TYPE,
                                                                 dock.getDockPosition().getShortName(),
                                                                 dock.getIdentifier()));
+    }
+
+    @Override
+    public Consumer<OuiaAttribute> ouiaAttributeRenderer() {
+        return ouiaAttribute -> getElement().setAttribute(ouiaAttribute.getName(), ouiaAttribute.getValue());
+    }
+
+    @Override
+    public OuiaComponentTypeAttribute ouiaComponentType() {
+        return new OuiaComponentTypeAttribute(OUIA_COMPONENT_TYPE);
+    }
+
+    @Override
+    public OuiaComponentIdAttribute ouiaComponentId() {
+        return new OuiaComponentIdAttribute(OUIA_COMPONENT_TYPE + "-" + dock.getIdentifier());
     }
 }
