@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FormGroup,
   Select,
@@ -40,9 +40,12 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
+import { useValidationService } from "../../../validation";
 
 interface OutputFieldEditRowProps {
+  modelIndex: number;
   outputField: OutputField | undefined;
+  outputFieldIndex: number;
   validateOutputName: (name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
   onCommitAndClose: () => void;
@@ -71,7 +74,16 @@ const dataTypes = [
 ];
 
 const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
-  const { outputField, validateOutputName, viewExtendedProperties, onCommitAndClose, onCommit, onCancel } = props;
+  const {
+    modelIndex,
+    outputField,
+    outputFieldIndex,
+    validateOutputName,
+    viewExtendedProperties,
+    onCommitAndClose,
+    onCommit,
+    onCancel
+  } = props;
 
   const { activeOperation } = useOperation();
 
@@ -126,7 +138,11 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
       eventTypes: ["click"]
     }
   );
-
+  const { service } = useValidationService();
+  const targetFieldValidation = useMemo(
+    () => service.get(`models[${modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`),
+    [outputFieldIndex, modelIndex, outputField]
+  );
   return (
     <section
       className={"editable-item__inner"}
@@ -213,6 +229,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   setOptype={setOptype}
                   targetField={targetField}
                   setTargetField={setTargetField}
+                  targetFieldValidation={targetFieldValidation}
                   feature={feature}
                   setFeature={setFeature}
                   value={value}

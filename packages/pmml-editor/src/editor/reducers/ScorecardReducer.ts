@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
+import { isOutputsTargetFieldRequired, validateOutput, validateOutputs } from "../validation/Outputs";
+import { ValidationEntry, ValidationLevel, ValidationService } from "../validation";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -48,9 +50,10 @@ export type ScorecardActions = ActionMap<ScorecardPayload>[keyof ActionMap<Score
 
 export type AllScorecardActions = ScorecardActions | CharacteristicsActions | CharacteristicActions | AttributesActions;
 
-export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> = (
-  service: HistoryService
-): Reducer<Scorecard, ScorecardActions> => {
+export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActions> = (
+  service: HistoryService,
+  validation: ValidationService
+): Reducer<Scorecard, AllActions> => {
   return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_SetModelName:
@@ -70,6 +73,160 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
           draft.useReasonCodes = action.payload.useReasonCodes;
           draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
         });
+        break;
+
+      case Actions.DeleteMiningSchemaField:
+        if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
+          validation.clear(`models[${action.payload.modelIndex}].Output`);
+          state.Output.OutputField.forEach((outputField, outputFieldIndex) => {
+            if (outputField.targetField === action.payload.name) {
+              service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
+                draft!.Output!.OutputField[outputFieldIndex] = {
+                  ...draft!.Output!.OutputField[outputFieldIndex],
+                  targetField: undefined
+                };
+                validateOutput(
+                  action.payload.modelIndex,
+                  { ...state.Output!.OutputField[outputFieldIndex], targetField: undefined },
+                  outputFieldIndex,
+                  state.MiningSchema.MiningField.filter(
+                    (miningField, miningFieldIndex) => miningFieldIndex !== action.payload.miningSchemaIndex
+                  ),
+                  validation
+                );
+              });
+            }
+          });
+          validateOutputs(
+            action.payload.modelIndex,
+            state.Output?.OutputField,
+            state.MiningSchema.MiningField.filter((field, index) => index !== action.payload.miningSchemaIndex),
+            validation
+          );
+        }
+        break;
+
+      case Actions.UpdateMiningSchemaField:
+        if (state.MiningSchema.MiningField.length && state.Output?.OutputField.length) {
+          validation.clear(`models[${action.payload.modelIndex}].Output`);
+          if (action.payload.usageType !== "target") {
+            state.Output.OutputField.forEach((outputField, outputFieldIndex) => {
+              if (outputField.targetField === action.payload.name) {
+                service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
+                  draft!.Output!.OutputField[outputFieldIndex] = {
+                    ...draft!.Output!.OutputField[outputFieldIndex],
+                    targetField: undefined
+                  };
+                  validateOutput(
+                    action.payload.modelIndex,
+                    { ...state.Output!.OutputField[outputFieldIndex], targetField: undefined },
+                    outputFieldIndex,
+                    state.MiningSchema.MiningField.map((miningField, miningFieldIndex) => {
+                      if (miningFieldIndex === action.payload.miningSchemaIndex) {
+                        miningField = { ...miningField, usageType: action.payload.usageType };
+                      }
+                      return miningField;
+                    }),
+                    validation
+                  );
+                });
+              }
+            });
+          }
+          validateOutputs(
+            action.payload.modelIndex,
+            state.Output?.OutputField,
+            state.MiningSchema.MiningField.map((item, index) => {
+              if (index === action.payload.miningSchemaIndex) {
+                item = { ...item, usageType: action.payload.usageType };
+              }
+              return item;
+            }),
+            validation
+          );
+        }
+        break;
+
+      case Actions.UpdateOutput:
+        validation.clear(
+          `models[${action.payload.modelIndex}].Output.OutputField[${action.payload.outputIndex}].targetField`
+        );
+        validateOutput(
+          action.payload.modelIndex,
+          action.payload.outputField,
+          action.payload.outputIndex,
+          state.MiningSchema.MiningField,
+          validation
+        );
+        break;
+
+      case Actions.AddBatchOutputs:
+        validation.clear(`models[${action.payload.modelIndex}].Output`);
+        if (state.Output && state.Output?.OutputField.length > 0) {
+          validateOutputs(
+            action.payload.modelIndex,
+            state.Output?.OutputField,
+            state.MiningSchema.MiningField,
+            validation
+          );
+        }
+        if (isOutputsTargetFieldRequired(state.MiningSchema.MiningField)) {
+          const startIndex = state.Output?.OutputField.length ?? 0;
+          action.payload.outputFields.forEach((name, index) => {
+            validation.set(
+              `models[${action.payload.modelIndex}].Output.OutputField[${startIndex + index}].targetField`,
+              new ValidationEntry(
+                ValidationLevel.WARNING,
+                `"${name}" output field, target field is required if Mining Schema has multiple target fields.`
+              )
+            );
+          });
+        }
+        break;
+
+      case Actions.AddOutput:
+        validation.clear(`models[${action.payload.modelIndex}].Output`);
+        if (state.Output && state.Output?.OutputField.length > 0) {
+          validateOutputs(
+            action.payload.modelIndex,
+            state.Output?.OutputField,
+            state.MiningSchema.MiningField,
+            validation
+          );
+        }
+        if (isOutputsTargetFieldRequired(state.MiningSchema.MiningField)) {
+          const outputFieldIndex = state.Output?.OutputField.length ?? 0;
+          validation.set(
+            `models[${action.payload.modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`,
+            new ValidationEntry(
+              ValidationLevel.WARNING,
+              `"${action.payload.outputField.name}" output field, target field is required if Mining Schema has multiple target fields.`
+            )
+          );
+        }
+        break;
+
+      case Actions.DeleteOutput:
+        validation.clear(`models[${action.payload.modelIndex}].Output`);
+        validateOutputs(
+          action.payload.modelIndex,
+          state.Output?.OutputField.filter((field, index) => index !== action.payload.outputIndex) ?? [],
+          state.MiningSchema.MiningField,
+          validation
+        );
+        break;
+
+      case Actions.Validate:
+        if (action.payload.modelIndex !== undefined) {
+          validation.clear(`models[${action.payload.modelIndex}].Output`);
+          validateOutputs(
+            action.payload.modelIndex,
+            state.Output?.OutputField ?? [],
+            state.MiningSchema.MiningField,
+            validation
+          );
+        }
+        break;
     }
 
     return state;

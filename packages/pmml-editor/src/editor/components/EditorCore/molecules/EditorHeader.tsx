@@ -74,6 +74,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
           <OutputsHandler
             modelIndex={modelIndex}
             output={output}
+            miningSchema={miningSchema}
             validateOutputFieldName={validateOutputFieldName}
             deleteOutputField={deleteOutputField}
             commitOutputField={commitOutputField}

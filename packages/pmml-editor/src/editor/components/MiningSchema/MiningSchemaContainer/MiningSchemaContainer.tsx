@@ -18,7 +18,7 @@ interface MiningSchemaContainerProps {
   dataDictionary?: DataDictionary;
   miningSchema?: MiningSchema;
   onAddField: (name: string[]) => void;
-  onDeleteField: (index: number) => void;
+  onDeleteField: (index: number, name: string) => void;
   onUpdateField: (index: number, field: MiningField) => void;
 }
 
@@ -35,8 +35,8 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     }
   };
 
-  const handleDeleteField = (index: number) => {
-    onDeleteField(index);
+  const handleDeleteField = (index: number, name: string) => {
+    onDeleteField(index, name);
   };
 
   const handleEditField = (index: number) => {

@@ -52,6 +52,20 @@ export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> 
             };
           }
         });
+        break;
+
+      case Actions.UpdateDataDictionaryField:
+        state.forEach((outputField, index) => {
+          if (outputField.targetField === action.payload.originalName) {
+            service.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
+              draft[index] = {
+                ...draft[index],
+                targetField: action.payload.dataField.name
+              };
+            });
+          }
+        });
+        break;
     }
 
     return state;

@@ -28,6 +28,7 @@ interface MiningSchemaPayload {
   [Actions.DeleteMiningSchemaField]: {
     readonly modelIndex: number;
     readonly miningSchemaIndex: number;
+    readonly name: string;
   };
 }
 

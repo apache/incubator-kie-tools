@@ -42,12 +42,13 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
     });
   };
 
-  const deleteMiningField = (index: number) => {
+  const deleteMiningField = (index: number, name: string) => {
     dispatch({
       type: Actions.DeleteMiningSchemaField,
       payload: {
         modelIndex: modelIndex,
-        miningSchemaIndex: index
+        miningSchemaIndex: index,
+        name
       }
     });
   };

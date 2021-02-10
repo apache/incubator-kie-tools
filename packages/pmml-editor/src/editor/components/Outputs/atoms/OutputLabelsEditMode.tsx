@@ -19,12 +19,15 @@ import { Label } from "@patternfly/react-core";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { OutputFieldLabel } from "./OutputFieldLabel";
+import { ValidationEntry } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 interface OutputLabelsEditModeProps {
   optype: OpType | undefined;
   setOptype: (optype: OpType | undefined) => void;
   targetField: FieldName | undefined;
   setTargetField: (targetField: FieldName | undefined) => void;
+  targetFieldValidation: ValidationEntry[];
   feature: ResultFeature | undefined;
   setFeature: (feature: ResultFeature | undefined) => void;
   value: any | undefined;
@@ -50,6 +53,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
     setOptype,
     targetField,
     setTargetField,
+    targetFieldValidation,
     feature,
     setFeature,
     value,
@@ -76,13 +80,20 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             optype: undefined
           });
         })}
-      {targetField &&
+      {targetFieldValidation.length > 0 ? (
+        <ValidationIndicatorLabel validations={targetFieldValidation} cssClass="output-fields-list__item__label">
+          <strong>TargetField:</strong>&nbsp;
+          <em>Missing</em>
+        </ValidationIndicatorLabel>
+      ) : (
+        targetField &&
         OutputFieldLabel("TargetField", targetField, () => {
           setTargetField(undefined);
           commit({
             targetField: undefined
           });
-        })}
+        })
+      )}
       {feature &&
         OutputFieldLabel("Feature", feature, () => {
           setFeature(undefined);
@@ -97,7 +108,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             value: undefined
           });
         })}
-      {rank &&
+      {rank !== undefined &&
         OutputFieldLabel("Rank", rank, () => {
           setRank(undefined);
           commit({
@@ -134,7 +145,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
         <Label
           style={PADDING}
           variant="outline"
-          color="orange"
+          color="cyan"
           href="#outline"
           icon={<ArrowAltCircleRightIcon />}
           onClick={e => {
@@ -142,7 +153,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             viewExtendedProperties();
           }}
         >
-          Edit properties...
+          Edit properties
         </Label>
       )}
     </>

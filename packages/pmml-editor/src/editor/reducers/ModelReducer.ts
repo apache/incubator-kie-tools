@@ -40,7 +40,7 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
   history: HistoryService,
   validation: ValidationService
 ): Reducer<Model[], AllActions> => {
-  const scorecardReducer = mergeReducers(ScorecardReducer(history), {
+  const scorecardReducer = mergeReducers(ScorecardReducer(history, validation), {
     MiningSchema: mergeReducers(MiningSchemaReducer(history, validation), {
       MiningField: MiningSchemaFieldReducer(history, validation)
     }),
