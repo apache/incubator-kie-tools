@@ -75,11 +75,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- UberFire IO -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-io</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-api</artifactId>

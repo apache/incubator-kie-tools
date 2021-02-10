@@ -140,12 +140,6 @@
       <artifactId>elemental2-promise</artifactId>
     </dependency>
 
-    <!-- UberFire IO -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-io</artifactId>
-    </dependency>
-
     <!-- Required for workbench startup -->
     <dependency>
       <groupId>org.uberfire</groupId>
