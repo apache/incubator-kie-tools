@@ -41,6 +41,7 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { ValidationContext, ValidationRegistry } from "./validation";
+import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -58,7 +59,9 @@ export interface State {
 
 export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
-  private readonly history: HistoryService = new HistoryService();
+  private readonly history: HistoryService = new HistoryService((id: string) => {
+    this.props.channelApi.notifications.receive_newEdit(new KogitoEdit(id));
+  });
   private readonly validationRegistry: ValidationRegistry = new ValidationRegistry();
   private readonly reducer: Reducer<PMML, AllActions>;
 

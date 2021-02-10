@@ -20,7 +20,7 @@ import { HistoryService } from "../../../editor/history";
 import { MiningSchemaFieldReducer } from "../../../editor/reducers/MiningSchemaFieldReducer";
 import { ValidationRegistry } from "../../../editor/validation";
 
-const historyService = new HistoryService();
+const historyService = new HistoryService(jest.fn());
 const validationRegistry = new ValidationRegistry();
 const miningFields: MiningField[] = [{ name: "field1" as FieldName }];
 const models: Model[] = [

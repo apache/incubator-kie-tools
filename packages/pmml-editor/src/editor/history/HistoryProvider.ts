@@ -37,6 +37,8 @@ interface BatchEntry<M> {
   validate?: (pmml: PMML) => void;
 }
 
+export type Listener = (id: string) => void;
+
 export class HistoryService {
   private pending: Array<BatchEntry<any>> = new Array<BatchEntry<any>>();
 
@@ -44,6 +46,8 @@ export class HistoryService {
     changes: [],
     index: 0
   };
+
+  constructor(private readonly listener: Listener) {}
 
   public batch = <M>(
     state: M,
@@ -79,15 +83,17 @@ export class HistoryService {
     return newState;
   };
 
-  public mutate = <M>(state: M, path: Path | null, recipe: (draft: WritableDraft<M>) => void) => {
+  private mutate = <M>(state: M, path: Path | null, recipe: (draft: WritableDraft<M>) => void) => {
     if (this.history.index < this.history.changes.length) {
       this.history.changes = this.history.changes.slice(0, this.history.index);
     }
 
     const newState: M = produce(state, recipe, (patches, inversePatches) => {
       this.history.changes.push({ path: path, change: patches, reverse: inversePatches });
+      this.history.index = this.history.changes.length;
+      this.listener(`Command${this.history.index}`);
     });
-    this.history.index = this.history.changes.length;
+
     return newState;
   };
 

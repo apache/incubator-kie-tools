@@ -74,7 +74,7 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
   return (state: Model[], action: AllActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
-        return historyService.mutate(
+        historyService.batch(
           state,
           Builder()
             .forModel()
@@ -88,6 +88,7 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
             }
           }
         );
+        return state;
     }
 
     return delegate(state, action);

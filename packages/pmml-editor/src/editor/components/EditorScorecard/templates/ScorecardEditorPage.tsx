@@ -82,15 +82,16 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const onDeleteOutputField = useCallback(
     _index => {
-      if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
-        dispatch({
-          type: Actions.DeleteOutput,
-          payload: {
-            modelIndex: modelIndex,
-            outputIndex: _index
-          }
-        });
-      }
+      //TODO {manstis} How are we to handle channel-agnostic confirmations?
+      //if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
+      dispatch({
+        type: Actions.DeleteOutput,
+        payload: {
+          modelIndex: modelIndex,
+          outputIndex: _index
+        }
+      });
+      //}
     },
     [modelIndex, output]
   );

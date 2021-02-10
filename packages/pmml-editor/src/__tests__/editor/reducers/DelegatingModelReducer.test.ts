@@ -19,7 +19,7 @@ import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 import { DelegatingModelReducer } from "../../../editor/reducers/DelegatingModelReducer";
 
-const service = new HistoryService();
+const service = new HistoryService(jest.fn());
 const miningFields: MiningField[] = [{ name: "field1" as FieldName }];
 const models: Model[] = [
   new Scorecard({

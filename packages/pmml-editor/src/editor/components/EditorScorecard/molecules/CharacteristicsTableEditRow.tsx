@@ -152,16 +152,17 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const onDeleteAttribute = useCallback(
     attributeIndex => {
-      if (window.confirm(`Delete Attribute?`)) {
-        dispatch({
-          type: Actions.Scorecard_DeleteAttribute,
-          payload: {
-            modelIndex: modelIndex,
-            characteristicIndex: characteristicIndex,
-            attributeIndex: attributeIndex
-          }
-        });
-      }
+      //TODO {manstis} How are we to handle channel-agnostic confirmations?
+      //if (window.confirm(`Delete Attribute?`)) {
+      dispatch({
+        type: Actions.Scorecard_DeleteAttribute,
+        payload: {
+          modelIndex: modelIndex,
+          characteristicIndex: characteristicIndex,
+          attributeIndex: attributeIndex
+        }
+      });
+      //}
     },
     [modelIndex, characteristicIndex]
   );

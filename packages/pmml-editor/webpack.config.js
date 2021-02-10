@@ -20,6 +20,7 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const nodeExternals = require("webpack-node-externals");
 
 let config = merge(common, {
   entry: {
@@ -49,7 +50,8 @@ module.exports = (env, argv) => {
   if (argv.mode === "production") {
     config = merge(config, {
       mode: "production",
-      devtool: "none"
+      devtool: "none",
+      externals: [nodeExternals({ modulesDir: "../../node_modules" })]
     });
   }
 

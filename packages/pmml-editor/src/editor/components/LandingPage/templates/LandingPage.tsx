@@ -67,14 +67,15 @@ export const LandingPage = (props: LandingPageProps) => {
   );
 
   const onDelete = useCallback((index: number, modelName: string) => {
-    if (window.confirm(`Delete Model "${modelName}"?`)) {
-      dispatch({
-        type: Actions.DeleteModel,
-        payload: {
-          modelIndex: index
-        }
-      });
-    }
+    //TODO {manstis} How are we to handle channel-agnostic confirmations?
+    //if (window.confirm(`Delete Model "${modelName}"?`)) {
+    dispatch({
+      type: Actions.DeleteModel,
+      payload: {
+        modelIndex: index
+      }
+    });
+    //}
   }, []);
 
   return (
@@ -116,7 +117,7 @@ export const LandingPage = (props: LandingPageProps) => {
           {filteredModels.length === 0 && (
             <EmptyStateNoModels
               createModel={() => {
-                window.alert("TODO: Create Model");
+                /*NOP*/
               }}
             />
           )}

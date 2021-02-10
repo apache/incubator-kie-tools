@@ -19,6 +19,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = async (argv, env) => [
   merge(common, {
@@ -82,6 +83,7 @@ module.exports = async (argv, env) => [
         },
         ...pfWebpackOptions.patternflyRules
       ]
-    }
+    },
+    plugins: [new MonacoWebpackPlugin()]
   })
 ];
