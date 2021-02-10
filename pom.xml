@@ -836,7 +836,6 @@
     <module>uberfire-backend</module>
     <module>uberfire-workbench</module>
     <module>uberfire-extensions</module>
-    <module>uberfire-m2repo-editor</module>
     <module>uberfire-project</module>
     <module>uberfire-services</module>
     <module>uberfire-structure</module>
