@@ -35,8 +35,15 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInformationRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeSource;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNDiagram;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNEdge;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.invocation.InvocationOnMock;
 
 import static java.util.Arrays.asList;
@@ -269,6 +276,67 @@ public class DMNMarshallerTest {
         assertEquals(2, nodeDiagramImports.size());
         assertTrue(nodeDiagramImports.contains(import1));
         assertTrue(nodeDiagramImports.contains(import2));
+    }
+
+    @Test
+    public void testConnect() {
+        final DMNMarshaller dmnMarshaller = new DMNMarshaller();
+        final JSIDMNDiagram diagram = mock(JSIDMNDiagram.class);
+        final List<String> dmnDiagramElementIds = mock(List.class);
+        final Definitions definitionsStunnerPojo = mock(Definitions.class);
+        final List<JSIDMNEdge> dmnEdges = new ArrayList<>();
+
+        final Node<?, ?> node = mock(Node.class);
+        final List inEdges = new ArrayList<>();
+        final Edge edge = mock(Edge.class);
+        final Node sourceNode = mock(Node.class);
+        final View sourceView = mock(View.class);
+        final ViewConnector viewConnector = mock(ViewConnector.class);
+        final DiscreteConnection sourceConnection = mock(DiscreteConnection.class);
+        final DiscreteConnection targetConnection = mock(DiscreteConnection.class);
+        final View<?> view = mock(View.class);
+
+        inEdges.add(edge);
+        when(edge.getSourceNode()).thenReturn(sourceNode);
+        when(sourceNode.getContent()).thenReturn(sourceView);
+
+        when(node.getInEdges()).thenReturn(inEdges);
+        when(edge.getContent()).thenReturn(viewConnector);
+        when(viewConnector.getControlPoints()).thenReturn(new ControlPoint[]{});
+        when(sourceConnection.isAuto()).thenReturn(true);
+        when(targetConnection.isAuto()).thenReturn(true);
+        when(diagram.getName()).thenReturn("dmnEdge");
+        when(definitionsStunnerPojo.getDefaultNamespace()).thenReturn("org.edge");
+
+        when(viewConnector.getSourceConnection()).thenReturn(Optional.of(sourceConnection));
+        when(viewConnector.getTargetConnection()).thenReturn(Optional.of(targetConnection));
+        dmnMarshaller.connect(diagram,
+                              dmnDiagramElementIds,
+                              definitionsStunnerPojo,
+                              dmnEdges,
+                              node,
+                              view);
+
+        when(viewConnector.getSourceConnection()).thenReturn(Optional.empty());
+        when(viewConnector.getTargetConnection()).thenReturn(Optional.empty());
+        dmnMarshaller.connect(diagram,
+                              dmnDiagramElementIds,
+                              definitionsStunnerPojo,
+                              dmnEdges,
+                              node,
+                              view);
+
+        when(viewConnector.getSourceConnection()).thenReturn(Optional.of(sourceConnection));
+        when(viewConnector.getTargetConnection()).thenReturn(Optional.empty());
+        dmnMarshaller.connect(diagram,
+                              dmnDiagramElementIds,
+                              definitionsStunnerPojo,
+                              dmnEdges,
+                              node,
+                              view);
+
+        verify(sourceConnection).isAuto();
+        verify(targetConnection).isAuto();
     }
 
     private JSITDecision makeDecision(final String id) {

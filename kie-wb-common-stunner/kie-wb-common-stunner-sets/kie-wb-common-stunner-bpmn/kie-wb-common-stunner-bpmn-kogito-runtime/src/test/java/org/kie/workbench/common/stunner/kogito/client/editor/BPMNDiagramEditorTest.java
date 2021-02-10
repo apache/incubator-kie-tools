@@ -25,6 +25,7 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerVie
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
@@ -144,6 +146,9 @@ public class BPMNDiagramEditorTest {
     @Mock
     private ClientSession clientSession;
 
+    @Mock
+    private CanvasDiagramValidator<AbstractCanvasHandler> validator;
+
     private Promises promises = new SyncPromises();
 
     @SuppressWarnings("unchecked")
@@ -171,7 +176,8 @@ public class BPMNDiagramEditorTest {
                                            diagramServices,
                                            formsFlushManager,
                                            canvasFileExport,
-                                           promises));
+                                           promises,
+                                           validator));
 
         when(editor.getSessionPresenter()).thenReturn(sessionPresenter);
         when(sessionPresenter.getInstance()).thenReturn(clientSession);

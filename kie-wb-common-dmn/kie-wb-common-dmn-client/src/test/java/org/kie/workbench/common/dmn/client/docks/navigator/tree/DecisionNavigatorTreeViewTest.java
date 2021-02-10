@@ -44,11 +44,15 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.LockRequiredEvent;
+import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.CONTEXT;
+import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.DECISION;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -368,6 +372,7 @@ public class DecisionNavigatorTreeViewTest {
         doNothing().when(treeItem).updateCSSClass();
         doNothing().when(treeItem).updateLabel();
         doNothing().when(treeItem).updateSubItems(children);
+        doNothing().when(treeItem).initOuiaComponentAttributes();
 
         final DecisionNavigatorTreeView.TreeItem actualTreeItem = treeItem.setup(expectedItem, children);
         final DecisionNavigatorItem actualItem = treeItem.getItem();
@@ -377,6 +382,7 @@ public class DecisionNavigatorTreeViewTest {
         verify(treeItem).updateCSSClass();
         verify(treeItem).updateLabel();
         verify(treeItem).updateSubItems(children);
+        verify(treeItem).initOuiaComponentAttributes();
 
         assertEquals(treeItem, actualTreeItem);
         assertEquals(expectedItem, actualItem);
@@ -538,6 +544,34 @@ public class DecisionNavigatorTreeViewTest {
         treeItem.updateSubItems(children);
 
         verify(parentNode).replaceChild(children, subItems);
+    }
+
+    @Test
+    public void testTreeItemInitOuiaAttributes() {
+
+        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
+        final Text textNode = mock(Text.class);
+        final String label = "label";
+        final HTMLElement element = mock(HTMLElement.class);
+
+        doReturn(element).when(treeItem).getElement();
+        doReturn(item).when(treeItem).getItem();
+        doReturn(DECISION).when(item).getType();
+        doReturn(textNode).when(treeItem).getTextNode(label);
+
+        when(item.getLabel()).thenReturn(label);
+
+        treeItem.initOuiaComponentAttributes();
+
+        verify(element).setAttribute(OuiaComponentTypeAttribute.COMPONENT_TYPE, "dmn-graph-navigator-decision");
+        verify(element).setAttribute(OuiaComponentIdAttribute.COMPONENT_ID, "dmn-graph-navigator-decision-label");
+    }
+
+    @Test
+    public void testTreeItemInitOuiaAttributesIllegalState() {
+        doReturn(null).when(treeItem).getItem();
+
+        assertThatThrownBy(() -> treeItem.initOuiaComponentAttributes()).hasMessage("Decision Navigator item can not be null");
     }
 
     @Test

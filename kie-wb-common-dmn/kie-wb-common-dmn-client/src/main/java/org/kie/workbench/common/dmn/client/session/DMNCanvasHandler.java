@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.google.common.base.Strings;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNGraphsProvider;
 import org.kie.workbench.common.dmn.client.graph.DMNElementsSynchronizer;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -70,7 +71,7 @@ public class DMNCanvasHandler<D extends Diagram, C extends AbstractCanvas> exten
                             final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
                             final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
                             final DMNElementsSynchronizer dmnElementsSynchronizer,
-                            final @DMNEditor GraphsProvider graphsProvider) {
+                            final @DMNEditor DMNGraphsProvider graphsProvider) {
         super(clientDefinitionManager, commandFactory, ruleManager, graphUtils, indexBuilder, shapeManager, textPropertyProviderFactory, canvasElementAddedEvent, canvasElementRemovedEvent, canvasElementUpdatedEvent, canvasElementsClearEvent);
         this.dmnElementsSynchronizer = dmnElementsSynchronizer;
         this.graphsProvider = graphsProvider;

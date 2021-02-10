@@ -140,11 +140,33 @@ MainJs = {
     },
 
     unmarshall: function (text, dynamicNamespace, callback) {
+
+        function getNamespaces() {
+            if (namespaces === undefined) {
+                namespaces = toReturn.value.otherAttributes;
+            }
+            return namespaces;
+        }
+
+        function getNamespaceValues() {
+            if (namespaceValues === undefined) {
+                namespaceValues = Object.keys(getNamespaces());
+            }
+            return namespaceValues;
+        }
+
         function patchObjectTypesToDMN12(obj, property) {
+            // Patch namespaces from other DMN versions to DMN 1.2
             if (property === "TYPE_NAME") {
                 obj[property] = obj[property]
                         .replace(/DMN(10|11|13)/, "DMN12")
                         .replace(/DMNDI(10|11|13)/, "DMNDI12");
+            }
+            // Patch types prefixed by namespaces
+            if (property === "typeRef") {
+                getNamespaceValues().forEach(function (namespace) {
+                    obj[property] = obj[property].replace(new RegExp('^' + namespace.split('}')[1] + ':'), '');
+                });
             }
         }
 
@@ -162,11 +184,21 @@ MainJs = {
             }
         }
 
-        function patchParsedModel(obj) {
+        function patchParsedModelPrefixedNamespaces() {
+            var namespaces = getNamespaces();
+            var dmnModelNamespace = namespaces.namespace;
+            for (var prop in namespaces) {
+                if (namespaces.hasOwnProperty(prop) && dmnModelNamespace !== prop && namespaces[prop] === dmnModelNamespace) {
+                    delete namespaces[prop];
+                }
+            }
+        }
+
+        function patchParsedModelProperties(obj) {
             for (var property in obj) {
                 if (obj.hasOwnProperty(property)) {
                     if (obj[property] !== null && typeof obj[property] === "object") {
-                        patchParsedModel(obj[property]);
+                        patchParsedModelProperties(obj[property]);
                     } else {
                         patchObjectTypesToDMN12(obj, property);
                         patchObjectNamespaceValuesToDMN12(obj, property);
@@ -177,6 +209,8 @@ MainJs = {
 
         // Create Jsonix context
         var context = new Jsonix.Context(this.mappings());
+        var namespaces;
+        var namespaceValues;
 
         // Create unmarshaller
         var unmarshaller = context.createUnmarshaller();
@@ -187,7 +221,8 @@ MainJs = {
         );
 
         if (!isDMN12) {
-            patchParsedModel(toReturn);
+            patchParsedModelProperties(toReturn);
+            patchParsedModelPrefixedNamespaces();
         }
 
         callback(toReturn);

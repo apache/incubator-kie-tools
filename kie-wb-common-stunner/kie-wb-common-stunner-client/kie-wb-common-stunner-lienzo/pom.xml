@@ -21,7 +21,7 @@
   <parent>
     <artifactId>kie-wb-common-stunner-client</artifactId>
     <groupId>org.kie.workbench.stunner</groupId>
-    <version>7.48.0-SNAPSHOT</version>
+    <version>7.50.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -182,6 +182,12 @@
           <artifactId>apache-jsp</artifactId>
         </exclusion>
       </exclusions>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-backend-api</artifactId>
       <scope>test</scope>
     </dependency>
 

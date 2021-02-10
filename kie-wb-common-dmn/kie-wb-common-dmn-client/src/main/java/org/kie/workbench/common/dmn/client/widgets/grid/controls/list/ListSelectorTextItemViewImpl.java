@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,6 +27,9 @@ import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.workbench.ouia.OuiaAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.mvp.Command;
 
 @Templated
@@ -48,11 +53,13 @@ public class ListSelectorTextItemViewImpl implements ListSelectorTextItemView {
                                         final Span text) {
         this.item = item;
         this.text = text;
+        initOuiaComponentAttributes();
     }
 
     @Override
     public void setText(final String text) {
         this.text.setTextContent(text);
+        ouiaAttributeRenderer().accept(ouiaComponentId());
     }
 
     @Override
@@ -70,5 +77,20 @@ public class ListSelectorTextItemViewImpl implements ListSelectorTextItemView {
         item.addEventListener(BrowserEvents.CLICK,
                               (e) -> command.execute(),
                               false);
+    }
+
+    @Override
+    public OuiaComponentTypeAttribute ouiaComponentType() {
+        return new OuiaComponentTypeAttribute("dmn-grid-context-menu-item");
+    }
+
+    @Override
+    public OuiaComponentIdAttribute ouiaComponentId() {
+        return new OuiaComponentIdAttribute("dmn-grid-context-menu-item-" + text.getTextContent());
+    }
+
+    @Override
+    public Consumer<OuiaAttribute> ouiaAttributeRenderer() {
+        return ouiaAttribute -> item.setAttribute(ouiaAttribute.getName(), ouiaAttribute.getValue());
     }
 }

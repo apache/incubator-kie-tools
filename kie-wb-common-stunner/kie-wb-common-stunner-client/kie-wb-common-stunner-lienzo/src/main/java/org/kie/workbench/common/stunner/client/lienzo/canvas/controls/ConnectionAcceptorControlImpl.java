@@ -121,7 +121,8 @@ public class ConnectionAcceptorControlImpl
                                 final Edge<ViewConnector<?>, Node> connector,
                                 final Connection connection) {
         ensureUnHighLight();
-        if (isSourceChanged(source, connector)) {
+        if (isSourceChanged(source, connector) ||
+                isSourceConnectionChanged(connector, connection)) {
             final CommandResult<CanvasViolation> violations =
                     getCommandManager().execute(getCanvasHandler(),
                                                 canvasCommandFactory.setSourceNode(source,
@@ -138,7 +139,8 @@ public class ConnectionAcceptorControlImpl
                                 final Edge<ViewConnector<?>, Node> connector,
                                 final Connection connection) {
         ensureUnHighLight();
-        if (isTargetChanged(target, connector)) {
+        if (isTargetChanged(target, connector) ||
+                isTargetConnectionChanged(connector, connection)) {
             final CommandResult<CanvasViolation> violations =
                     getCommandManager().execute(getCanvasHandler(),
                                                 canvasCommandFactory.setTargetNode(target,

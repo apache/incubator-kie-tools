@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.junit.Before;
@@ -200,6 +201,11 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         when(session.getKeyboardControl()).thenReturn(keyboardControl);
 
         this.control = spy(getControl());
+
+        doAnswer(i -> {
+            ((Scheduler.ScheduledCommand) i.getArguments()[0]).execute();
+            return null;
+        }).when(control).scheduleDeferredCommand(any(Scheduler.ScheduledCommand.class));
 
         doReturn(textEditBoxWidget).when(control).wrapTextEditorBoxElement(eq(textEditBoxElement));
         doAnswer(i -> abstractCanvas).when(control).getAbstractCanvas();

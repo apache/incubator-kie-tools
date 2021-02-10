@@ -25,6 +25,7 @@ public class DMNKogitoCommonEntryPoint {
 
     @PostConstruct
     public void init() {
+        PatternFlyBootstrapper.ensureMomentIsAvailable();
         PatternFlyBootstrapper.ensureMomentTimeZoneIsAvailable();
     }
 }

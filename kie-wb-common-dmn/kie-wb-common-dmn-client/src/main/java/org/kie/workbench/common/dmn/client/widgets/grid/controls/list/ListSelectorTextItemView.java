@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
+import org.uberfire.client.workbench.ouia.OuiaComponent;
 import org.uberfire.mvp.Command;
 
-public interface ListSelectorTextItemView extends org.jboss.errai.ui.client.local.api.IsElement {
+public interface ListSelectorTextItemView extends org.jboss.errai.ui.client.local.api.IsElement,
+                                                  OuiaComponent {
 
     void setText(final String text);
 

@@ -48,7 +48,7 @@ public class DefaultCanvasCommandFactory extends LienzoCanvasCommandFactory {
     @Inject
     public DefaultCanvasCommandFactory(final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors,
                                        final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors,
-                                       final DMNGraphsProvider graphsProvider) {
+                                       final @DMNEditor DMNGraphsProvider graphsProvider) {
         super(childrenTraverseProcessors,
               viewTraverseProcessors);
         this.graphsProvider = graphsProvider;

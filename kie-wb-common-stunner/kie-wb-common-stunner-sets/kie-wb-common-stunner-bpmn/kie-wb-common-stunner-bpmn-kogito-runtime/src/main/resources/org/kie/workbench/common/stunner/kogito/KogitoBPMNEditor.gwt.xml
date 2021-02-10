@@ -20,13 +20,15 @@
 <module>
 
   <!-- Uberfire dependencies -->
+  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.UberfireClient"/>
   <inherits name="org.uberfire.UberfireBackend"/>
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.ext.widgets.core.client.UberfireWidgetsEditors"/>
   <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
   <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
-  
+
   <!-- Appformer Kogito Bridge -->
   <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge"/>
 

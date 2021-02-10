@@ -31,11 +31,11 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.isQuoted;
  */
 public class ListBoxValues {
 
-    protected List<String> acceptableValuesWithCustomValues = new ArrayList<String>();
-    protected List<String> acceptableValuesWithoutCustomValues = new ArrayList<String>();
-    protected List<String> customValues = new ArrayList<String>();
+    protected List<String> acceptableValuesWithCustomValues = new ArrayList<>();
+    protected List<String> acceptableValuesWithoutCustomValues = new ArrayList<>();
+    protected List<String> customValues = new ArrayList<>();
 
-    protected Map<String, String> mapDisplayValuesToValues = new HashMap<String, String>();
+    protected Map<String, String> mapDisplayValuesToValues = new HashMap<>();
 
     protected String customPrompt;
     protected String editPrefix;
@@ -144,14 +144,14 @@ public class ListBoxValues {
             String newDisplayValue = addDisplayValue(newValue);
             if (!acceptableValuesWithCustomValues.contains(newDisplayValue)) {
                 int index = 1;
-                if (acceptableValuesWithCustomValues.size() < 1) {
-                    index = acceptableValuesWithCustomValues.size();
+                if (acceptableValuesWithCustomValues.isEmpty()) {
+                    index = 0;
                 }
                 acceptableValuesWithCustomValues.add(index,
                                                      newDisplayValue);
             }
             if (!customValues.contains(newDisplayValue)) {
-                customValues.add(newDisplayValue);
+                customValues.add(newValue);
             }
             return newDisplayValue;
         } else {

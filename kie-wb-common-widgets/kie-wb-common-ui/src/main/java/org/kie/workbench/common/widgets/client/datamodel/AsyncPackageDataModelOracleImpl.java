@@ -383,16 +383,12 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void getSuperType(final String factType,
                              final Callback<String> callback) {
-
         getSuperTypes(factType,
-                      new Callback<List<String>>() {
-                          @Override
-                          public void callback(List<String> result) {
-                              if (result != null) {
-                                  callback.callback(result.get(0));
-                              } else {
-                                  callback.callback(null);
-                              }
+                      result -> {
+                          if (result != null) {
+                              callback.callback(result.get(0));
+                          } else {
+                              callback.callback(null);
                           }
                       });
     }
@@ -404,17 +400,14 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
         //Load incremental content
         if (superTypes == null) {
-            service.call(new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
-
-                @Override
-                public void callback(final PackageDataModelOracleIncrementalPayload dataModel) {
-                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle(AsyncPackageDataModelOracleImpl.this,
-                                                                                 dataModel);
-                    callback.callback(filteredSuperTypes.get(factType));
-                }
+            final String fgcnByFactName = getFQCNByFactName(factType);
+            service.call((RemoteCallback<PackageDataModelOracleIncrementalPayload>) dataModel -> {
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle(AsyncPackageDataModelOracleImpl.this,
+                                                                             dataModel);
+                callback.callback(filteredSuperTypes.get(factType));
             }).getUpdates(resourcePath,
                           imports,
-                          factType);
+                          fgcnByFactName);
         } else {
             callback.callback(superTypes);
         }

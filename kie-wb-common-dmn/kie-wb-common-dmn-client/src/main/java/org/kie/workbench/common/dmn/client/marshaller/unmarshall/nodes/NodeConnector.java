@@ -62,6 +62,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.kie.workbench.common.dmn.client.marshaller.common.JsInteropUtils.forEach;
 import static org.kie.workbench.common.dmn.client.marshaller.converters.dd.PointUtils.upperLeftBound;
@@ -360,7 +361,7 @@ public class NodeConnector {
         final String reqInputID = getId(jsiDMNElementReference);
         final List<NodeEntry> nodeEntries = entriesById.get(reqInputID);
 
-        if (nodeEntries == null || nodeEntries.size() == 0) {
+        if (nodeEntries == null || nodeEntries.isEmpty()) {
             return;
         }
 
@@ -370,14 +371,13 @@ public class NodeConnector {
             // Generate new a edge and connect it
             final NodeEntry nodeEntry = nodeEntries.get(0);
             final Node requiredNode = nodeEntry.getNode();
-            final String id = nodeEntry.getDmnElement().getId();
 
             connectWbEdge(connectorTypeId,
                           diagramId,
                           currentNode,
                           requiredNode,
                           newEdge(),
-                          id);
+                          uuid());
         } else if (existingEdge.isPresent()) {
             // Connect existing edge
             final JSIDMNEdge edge = Js.uncheckedCast(existingEdge.get());
@@ -444,14 +444,16 @@ public class NodeConnector {
         if (null != sourceNode) {
             setConnectionMagnet(sourceNode,
                                 source,
-                                connectionContent::setSourceConnection);
+                                connectionContent::setSourceConnection,
+                                isSourceAutoConnectionEdge(jsidmnEdge));
         }
         final JSIPoint target = Js.uncheckedCast(e.getWaypoint().get(e.getWaypoint().size() - 1));
         final Node<View<?>, Edge> targetNode = edge.getTargetNode();
         if (null != targetNode) {
             setConnectionMagnet(targetNode,
                                 target,
-                                connectionContent::setTargetConnection);
+                                connectionContent::setTargetConnection,
+                                isTargetAutoConnectionEdge(jsidmnEdge));
         }
         if (e.getWaypoint().size() > 2) {
             connectionContent.setControlPoints(e.getWaypoint()
@@ -462,9 +464,27 @@ public class NodeConnector {
         }
     }
 
+    protected boolean isSourceAutoConnectionEdge(JSIDMNEdge jsidmnEdge) {
+        return isAutoConnection(jsidmnEdge, IdUtils.AUTO_SOURCE_CONNECTION);
+    }
+
+    protected boolean isTargetAutoConnectionEdge(JSIDMNEdge jsidmnEdge) {
+        return isAutoConnection(jsidmnEdge, IdUtils.AUTO_TARGET_CONNECTION);
+    }
+
+    protected boolean isAutoConnection(JSIDMNEdge jsidmnEdge, String autoConnectionID) {
+        String dmnEdgeID = jsidmnEdge.getId();
+        if (dmnEdgeID != null) {
+            return dmnEdgeID.contains(autoConnectionID);
+        } else {
+            return false;
+        }
+    }
+
     private void setConnectionMagnet(final Node<View<?>, Edge> node,
                                      final JSIPoint magnetPoint,
-                                     final Consumer<Connection> connectionConsumer) {
+                                     final Consumer<Connection> connectionConsumer,
+                                     final Boolean isAutoConnection) {
         final View<?> view = node.getContent();
         final double viewX = xOfBound(upperLeftBound(view));
         final double viewY = yOfBound(upperLeftBound(view));
@@ -472,14 +492,18 @@ public class NodeConnector {
         final double magnetRelativeY = magnetPoint.getY() - viewY;
         final double viewWidth = view.getBounds().getWidth();
         final double viewHeight = view.getBounds().getHeight();
+
+        MagnetConnection connection;
         if (isCentre(magnetRelativeX,
                      magnetRelativeY,
                      viewWidth,
                      viewHeight)) {
-            connectionConsumer.accept(MagnetConnection.Builder.atCenter(node));
+            connection = MagnetConnection.Builder.atCenter(node);
         } else {
-            connectionConsumer.accept(MagnetConnection.Builder.at(magnetRelativeX, magnetRelativeY).setAuto(true));
+            connection = MagnetConnection.Builder.at(magnetRelativeX, magnetRelativeY);
         }
+        connection.setAuto(isAutoConnection);
+        connectionConsumer.accept(connection);
     }
 
     private boolean isCentre(final double magnetRelativeX,
@@ -515,5 +539,9 @@ public class NodeConnector {
         });
 
         return entriesByPoint2D.get(nearest).getNode();
+    }
+
+    String uuid() {
+        return UUID.uuid();
     }
 }

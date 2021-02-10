@@ -25,6 +25,8 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JS
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.AUTO_SOURCE_CONNECTION;
+import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.AUTO_TARGET_CONNECTION;
 import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.getComposedId;
 import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.getEdgeId;
 import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.getPrefixedId;
@@ -74,9 +76,39 @@ public class IdUtilsTest {
 
     @Test
     public void testGetEdgeId() {
+        String dmnElementId = "_1111-2222";
+        String uniqueId = "dmnedge-drg-" + dmnElementId;
+
         final JSIDMNDiagram diagram = mock(JSIDMNDiagram.class);
         when(diagram.getName()).thenReturn("DRG");
-        assertEquals("dmnedge-drg-_1111-2222", getEdgeId(diagram, list(), "_1111-2222"));
+
+        final String result1 = getEdgeId(diagram, list(),
+                                         dmnElementId,
+                                         false,
+                                         false);
+        String expected1 = uniqueId;
+        assertEquals(expected1, result1);
+
+        final String result2 = getEdgeId(diagram, list(),
+                                         dmnElementId,
+                                         true,
+                                         false);
+        String expected2 = uniqueId + AUTO_SOURCE_CONNECTION;
+        assertEquals(expected2, result2);
+
+        final String result3 = getEdgeId(diagram, list(),
+                                         dmnElementId,
+                                         false,
+                                         true);
+        String expected3 = uniqueId + AUTO_TARGET_CONNECTION;
+        assertEquals(expected3, result3);
+
+        final String result4 = getEdgeId(diagram, list(),
+                                         dmnElementId,
+                                         true,
+                                         true);
+        String expected4 = uniqueId + AUTO_SOURCE_CONNECTION + AUTO_TARGET_CONNECTION;
+        assertEquals(expected4, result4);
     }
 
     @Test
@@ -88,7 +120,7 @@ public class IdUtilsTest {
     @Test
     public void testGetEdgeIdWhenDiagramNameIsNull() {
         final JSIDMNDiagram diagram = mock(JSIDMNDiagram.class);
-        assertEquals("dmnedge-_1111-2222", getEdgeId(diagram, list(), "_1111-2222"));
+        assertEquals("dmnedge-_1111-2222", getEdgeId(diagram, list(), "_1111-2222", false, false));
     }
 
     private List<String> list(final String... items) {

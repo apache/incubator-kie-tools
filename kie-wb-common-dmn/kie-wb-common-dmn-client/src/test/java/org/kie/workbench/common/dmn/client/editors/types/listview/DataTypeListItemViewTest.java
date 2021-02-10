@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
+import java.util.function.Consumer;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
@@ -35,6 +37,9 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSw
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
+import org.uberfire.client.workbench.ouia.OuiaAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
+import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,6 +59,7 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Save;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -118,6 +124,9 @@ public class DataTypeListItemViewTest {
     @Mock
     private ReadOnlyProvider readOnlyProvider;
 
+    @Mock
+    private Consumer<OuiaAttribute> ouiaRendererMock;
+
     private DataTypeListItemView view;
 
     @Before
@@ -125,6 +134,7 @@ public class DataTypeListItemViewTest {
         when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(false);
         view = spy(new DataTypeListItemView(row, translationService, readOnlyProvider));
         view.init(presenter);
+        when(view.ouiaAttributeRenderer()).thenReturn(ouiaRendererMock);
 
         when(presenter.getDragAndDropElement()).thenReturn(dragAndDropElement);
         doReturn(dataTypeListElement).when(presenter).getDragAndDropListElement();
@@ -460,6 +470,7 @@ public class DataTypeListItemViewTest {
         assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).saveAndCloseEditMode();
+        verify(ouiaRendererMock).accept(any(OuiaComponentIdAttribute.class));
     }
 
     @Test
@@ -1058,6 +1069,35 @@ public class DataTypeListItemViewTest {
         final Element element = mock(Element.class);
         doReturn(element).when(view).querySelector("type");
         assertEquals(element, view.getType());
+    }
+
+    @Test
+    public void testOuiaComponentType() {
+        assertEquals(view.ouiaComponentType(), new OuiaComponentTypeAttribute("dmn-data-type-item"));
+    }
+
+    @Test
+    public void testOuiaComponentId_unknown() {
+        when(presenter.getDataType()).thenReturn(null);
+        assertEquals(view.ouiaComponentId(), new OuiaComponentIdAttribute("unknown"));
+    }
+
+    @Test
+    public void testOuiaComponentId() {
+        final String typeName = "tCar";
+        final DataType dataTypeMock = mock(DataType.class);
+        when(dataTypeMock.getName()).thenReturn(typeName);
+        when(presenter.getDataType()).thenReturn(dataTypeMock);
+        assertEquals(view.ouiaComponentId(), new OuiaComponentIdAttribute(typeName));
+    }
+
+    @Test
+    public void testOuiaRenderer() {
+        doCallRealMethod().when(view).ouiaAttributeRenderer();
+        view.initOuiaComponentAttributes();
+
+        verify(row).setAttribute(OuiaComponentTypeAttribute.COMPONENT_TYPE, "dmn-data-type-item");
+        verify(row).setAttribute(OuiaComponentIdAttribute.COMPONENT_ID, "unknown");
     }
 
     public Element makeChildElement(final String uuid) {

@@ -16,18 +16,25 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DeleteNodeConfirmation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -35,6 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
 import org.kie.workbench.common.stunner.core.graph.content.HasStringName;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.mvp.Command;
 
@@ -43,12 +51,14 @@ import static org.kie.workbench.common.stunner.core.client.canvas.resources.Stun
 import static org.kie.workbench.common.stunner.core.client.canvas.resources.StunnerClientCommonConstants.DeleteNodeConfirmationImpl_Title;
 import static org.kie.workbench.common.stunner.core.graph.util.NodeDefinitionHelper.getContentDefinitionId;
 
-@ApplicationScoped
 @Default
 public class DeleteNodeConfirmationImpl implements DeleteNodeConfirmation {
 
+    private SessionManager sessionManager;
+    private DefinitionUtils definitionUtils;
     private ClientTranslationService translationService;
     private ConfirmationDialog confirmationDialog;
+    private ManagedInstance<GraphsProvider> graphsProviderInstances;
     private GraphsProvider graphsProvider;
 
     static final String QUOTE = "\"";
@@ -59,18 +69,39 @@ public class DeleteNodeConfirmationImpl implements DeleteNodeConfirmation {
     }
 
     @Inject
-    public DeleteNodeConfirmationImpl(@Default final GraphsProvider graphsProvider,
+    public DeleteNodeConfirmationImpl(final @Any ManagedInstance<GraphsProvider> graphsProvider,
                                       final ConfirmationDialog confirmationDialog,
-                                      final ClientTranslationService translationService) {
-        this.graphsProvider = graphsProvider;
+                                      final ClientTranslationService translationService,
+                                      final DefinitionUtils definitionUtils,
+                                      final SessionManager sessionManager) {
+        this.graphsProviderInstances = graphsProvider;
         this.confirmationDialog = confirmationDialog;
         this.translationService = translationService;
+        this.definitionUtils = definitionUtils;
+        this.sessionManager = sessionManager;
+    }
+
+    @PostConstruct
+    public void init() {
+        final Diagram diagram = sessionManager.getCurrentSession()
+                .getCanvasHandler()
+                .getDiagram();
+        final Annotation qualifier = definitionUtils.getQualifier(diagram.getMetadata().getDefinitionSetId());
+        graphsProvider = InstanceUtils.lookup(graphsProviderInstances,
+                                              GraphsProvider.class,
+                                              qualifier);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        graphsProviderInstances.destroyAll();
     }
 
     @Override
     public boolean requiresDeletionConfirmation(final Collection<Element> elements) {
-        return graphsProvider.isGlobalGraphSelected()
-                && !graphsProvider.getNonGlobalGraphs().isEmpty()
+        return !Objects.isNull(getGraphsProvider())
+                && getGraphsProvider().isGlobalGraphSelected()
+                && !getGraphsProvider().getNonGlobalGraphs().isEmpty()
                 && isReferredInAnotherGraph(elements);
     }
 
@@ -85,6 +116,10 @@ public class DeleteNodeConfirmationImpl implements DeleteNodeConfirmation {
                                 translationService.getValue(DeleteNodeConfirmationImpl_Question),
                                 onDeletionAccepted,
                                 onDeletionRejected);
+    }
+
+    GraphsProvider getGraphsProvider() {
+        return graphsProvider;
     }
 
     String getReferredElementsName(final Collection<Element> elements) {
@@ -130,7 +165,7 @@ public class DeleteNodeConfirmationImpl implements DeleteNodeConfirmation {
             if (def.getDefinition() instanceof HasContentDefinitionId) {
                 final HasContentDefinitionId hasContentDefinitionId = (HasContentDefinitionId) def.getDefinition();
                 final String contentId = hasContentDefinitionId.getContentDefinitionId();
-                final List<Graph> graphs = graphsProvider.getNonGlobalGraphs();
+                final List<Graph> graphs = getGraphsProvider().getNonGlobalGraphs();
                 return graphs.stream().anyMatch(graph -> containsNodeWithContentId(graph, contentId));
             }
         }
