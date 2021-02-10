@@ -77,6 +77,10 @@ class ModelBuilder extends BaseBuilder {
     return new MiningSchemaBuilder(this.builders);
   };
 
+  public forOutput = () => {
+    return new OutputBuilder(this.builders);
+  };
+
   protected segment(): string {
     return this.modelIndex !== undefined ? `model[${this.modelIndex}]` : `model`;
   }
@@ -322,5 +326,46 @@ class MiningFieldDataFieldMissingBuilder extends BaseBuilder {
 
   protected segment(): string {
     return `dataFieldMissing`;
+  }
+}
+
+class OutputBuilder extends BaseBuilder {
+  constructor(protected builders: Builders) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  public forOutputField = (outputFieldIndex?: number) => {
+    return new OutputFieldBuilder(this.builders, outputFieldIndex);
+  };
+
+  protected segment(): string {
+    return `Output`;
+  }
+}
+
+class OutputFieldBuilder extends BaseBuilder {
+  constructor(protected builders: Builders, private readonly outputFieldIndex?: number) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  public forTargetField = () => {
+    return new OutputFieldTargetFieldBuilder(this.builders);
+  };
+
+  protected segment(): string {
+    return this.outputFieldIndex !== undefined ? `OutputField[${this.outputFieldIndex}]` : `OutputField`;
+  }
+}
+
+class OutputFieldTargetFieldBuilder extends BaseBuilder {
+  constructor(protected builders: Builders) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  protected segment(): string {
+    return `targetField`;
   }
 }

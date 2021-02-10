@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormSelect, FormSelectOption, FormGroup, TextInput, Tooltip } from "@patternfly/react-core";
+import { Form, FormGroup, FormSelect, FormSelectOption, TextInput, Tooltip } from "@patternfly/react-core";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector, GenericSelectorOption } from "../../EditorScorecard/atoms";
 import { HelpIcon } from "@patternfly/react-icons";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface OutputFieldExtendedPropertiesProps {
   modelIndex: number;
@@ -132,9 +132,17 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
     }
   );
 
-  const service = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const validationsTargetField = useMemo(
-    () => service.get(`models[${modelIndex}].Output.OutputField[${activeOutputFieldIndex}].targetField`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .forOutputField(activeOutputFieldIndex)
+          .forTargetField()
+          .build()
+      ),
     [modelIndex, activeOutputFieldIndex, activeOutputField]
   );
 

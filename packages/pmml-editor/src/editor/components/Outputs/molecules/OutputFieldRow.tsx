@@ -27,7 +27,7 @@ import {
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
 import { ValidationIndicator } from "../../EditorCore/atoms";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface OutputFieldRowProps {
   modelIndex: number;
@@ -70,14 +70,28 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
     };
   }, [outputField]);
 
-  const { service } = useValidationService();
-  const validations = useMemo(() => service.get(`models[${modelIndex}].Output.OutputField[${outputFieldIndex}]`), [
-    outputFieldIndex,
-    modelIndex,
-    outputField
-  ]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .forOutputField(outputFieldIndex)
+          .build()
+      ),
+    [outputFieldIndex, modelIndex, outputField]
+  );
   const targetFieldValidation = useMemo(
-    () => service.get(`models[${modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .forOutputField(outputFieldIndex)
+          .forTargetField()
+          .build()
+      ),
     [outputFieldIndex, modelIndex, outputField]
   );
 
