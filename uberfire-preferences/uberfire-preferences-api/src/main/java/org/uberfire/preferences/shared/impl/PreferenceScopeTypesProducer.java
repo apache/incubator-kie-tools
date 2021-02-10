@@ -26,7 +26,6 @@ import org.uberfire.annotations.FallbackImplementation;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.rpc.SessionInfo;
 
 @Startup(value = StartupType.BOOTSTRAP, priority = -1)
 @ApplicationScoped
@@ -34,9 +33,6 @@ public class PreferenceScopeTypesProducer {
 
     @Inject
     private Instance<PreferenceScopeTypes> preferenceScopeTypes;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     @FallbackImplementation

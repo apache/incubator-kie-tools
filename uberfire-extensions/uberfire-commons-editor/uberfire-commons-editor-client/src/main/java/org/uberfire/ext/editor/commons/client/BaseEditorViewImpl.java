@@ -28,28 +28,8 @@ public abstract class BaseEditorViewImpl
     protected EditorTitle title = new EditorTitle();
 
     @Override
-    public void alertReadOnly() {
-        Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
-    }
-
-    @Override
     public void showLoading() {
         showBusyIndicator(CommonConstants.INSTANCE.Loading());
-    }
-
-    @Override
-    public void showSaving() {
-        showBusyIndicator(CommonConstants.INSTANCE.Saving());
-    }
-
-    @Override
-    public EditorTitle getTitleWidget() {
-        return title;
-    }
-
-    @Override
-    public void refreshTitle(final String value) {
-        title.setText(value);
     }
 
     @Override
@@ -60,10 +40,5 @@ public abstract class BaseEditorViewImpl
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
-    }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
     }
 }

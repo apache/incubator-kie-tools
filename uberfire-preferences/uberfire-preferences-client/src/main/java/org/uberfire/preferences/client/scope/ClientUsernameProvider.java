@@ -16,18 +16,11 @@
 
 package org.uberfire.preferences.client.scope;
 
-import javax.inject.Inject;
-
 import org.uberfire.preferences.shared.UsernameProvider;
-import org.uberfire.rpc.SessionInfo;
 
 public class ClientUsernameProvider implements UsernameProvider {
 
-    private SessionInfo sessionInfo;
-
-    @Inject
-    public ClientUsernameProvider(final SessionInfo sessionInfo) {
-        this.sessionInfo = sessionInfo;
+    public ClientUsernameProvider() {
     }
 
     @Override

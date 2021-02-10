@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.preferences.client.annotations.PreferenceForm;
 

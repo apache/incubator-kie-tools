@@ -34,18 +34,6 @@ import org.uberfire.workbench.model.ActivityResourceType;
  */
 public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity implements WorkbenchScreenActivity {
 
-    /**
-     * Passes the given PlaceManager up to the superclass.
-     * <p>
-     * In order to make the {@code super()} call to this constructor, subclasses should declare their own constructor
-     * that takes a {@code PlaceManager} plus any other dependencies required by the screen, and annotate that
-     * constructor with {@code @Inject}.
-     * @param placeManager The PlaceManager in force for the current application. Must not be null.
-     */
-    public AbstractWorkbenchScreenActivity(final PlaceManager placeManager) {
-        super(placeManager);
-    }
-
     @Override
     public ResourceType getResourceType() {
         return ActivityResourceType.SCREEN;

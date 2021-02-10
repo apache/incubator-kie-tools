@@ -16,17 +16,11 @@
 
 package org.uberfire.client.workbench;
 
-import java.util.Set;
-
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.mvp.Command;
 
 /**
  * Used by the workbench to construct the outer most DOM structure (header, footer and perspective container).
- * Uberfire provides a default {@link org.uberfire.client.workbench.WorkbenchLayoutImpl} that can be replaced
- * through the mechanism described in {@link org.uberfire.client.workbench.LayoutSelection}.
  */
 public interface WorkbenchLayout {
 
@@ -45,10 +39,8 @@ public interface WorkbenchLayout {
     /**
      * Will be invoked by the {@link org.uberfire.client.workbench.Workbench}
      * when the discovery of header and footer elements is completed.
-     * @see {@link #setHeaderContents(java.util.List)}
-     * @see {@link #setFooterContents(java.util.List)}
      */
-    public void onBootstrap();
+    void onBootstrap();
 
     /**
      * The {@link org.uberfire.client.workbench.Workbench} listens for resize events and hands them off
@@ -64,60 +56,4 @@ public interface WorkbenchLayout {
      */
     void resizeTo(int width,
                   int height);
-
-    /**
-     * Makes the given widget fill the entire space normally dedicated to the perspective container. Has no effect if
-     * the given widget is already maximized.
-     * <p/>
-     * <b>Important:</b> this feature is used by panels to maximize themselves. You should not pass a WorkbenchPanelView
-     * to this method yourself; instead, you should use the panel's own API to maximize it. You are free to use this method
-     * to maximize your own widgets that are not workbench panels.
-     * @param w the Widget to maximize.
-     */
-    void maximize(Widget w);
-
-    /**
-     * Makes the given widget fill the entire space normally dedicated to the perspective container. Has no effect if
-     * the given widget is already maximized.
-     * <p/>
-     * <b>Important:</b> this feature is used by panels to maximize themselves. You should not pass a WorkbenchPanelView
-     * to this method yourself; instead, you should use the panel's own API to maximize it. You are free to use this method
-     * to maximize your own widgets that are not workbench panels.
-     * @param w the Widget to maximize.
-     * @param callback A command to be executed after the maximization is fully completed.
-     */
-    void maximize(Widget w,
-                  Command callback);
-
-    /**
-     * Restores a previously maximized widget to its original size and position. Has no effect if the given widget is
-     * not currently in a maximized state set up by {@link #maximize(Widget)}.
-     * <p/>
-     * <b>Important:</b> this feature is used by panels to unmaximize themselves. You should not pass a WorkbenchPanelView
-     * to this method yourself; instead, you should use the panel's own API to unmaximize it. You are free to use this method
-     * to unmaximize your own widgets that have previously been passed to {@link #maximize(Widget)}.
-     * @param w the Widget to restore to its original size and location.
-     */
-    void unmaximize(Widget w);
-
-    /**
-     * Restores a previously maximized widget to its original size and position. Has no effect if the given widget is
-     * not currently in a maximized state set up by {@link #maximize(Widget)}.
-     * <p/>
-     * <b>Important:</b> this feature is used by panels to unmaximize themselves. You should not pass a WorkbenchPanelView
-     * to this method yourself; instead, you should use the panel's own API to unmaximize it. You are free to use this method
-     * to unmaximize your own widgets that have previously been passed to {@link #maximize(Widget)}.
-     * @param w the Widget to restore to its original size and location.
-     * @param callback A command to be executed after the unmaximization is fully completed.
-     */
-    void unmaximize(Widget w,
-                    Command callback);
-
-    /**
-     * Will insert the implementations of Header and Footer in the Workbench
-     * @see {@link #setHeaderContents(java.util.List)}
-     * @see {@link #setFooterContents(java.util.List)}
-     */
-    void setMarginWidgets(boolean isStandaloneMode,
-                          Set<String> headersToKeep);
 }

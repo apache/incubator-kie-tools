@@ -16,18 +16,11 @@
 
 package org.uberfire.client.mvp;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -46,22 +39,12 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     private PanelManager panelManager;
 
     @Inject
-    private WorkbenchServicesProxy wbServices;
-
-    @Inject
     private Event<PerspectiveChange> perspectiveChangeEvent;
 
     @Inject
     private ActivityBeansCache activityBeansCache;
 
-    @Inject
-    private SyncBeanManager iocManager;
-
     private PerspectiveActivity currentPerspective;
-
-    private PerspectiveDefinition livePerspectiveDef;
-
-    private PlaceRequest currentPerspectivePlaceRequest;
 
     @Override
     public void switchToPerspective(final PlaceRequest placeRequest,
@@ -77,8 +60,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         BuildPerspectiveFromDefinitionCommand thirdOperation = new BuildPerspectiveFromDefinitionCommand(activity,
                                                                                                          fourthOperation);
 
-        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand(placeRequest,
-                                                                              activity,
+        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand(activity,
                                                                               thirdOperation);
 
         secondOperation.execute();
@@ -89,87 +71,17 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         return currentPerspective;
     }
 
-    @Override
-    public PerspectiveDefinition getLivePerspectiveDefinition() {
-        return livePerspectiveDef;
-    }
-
-    @Override
-    public void savePerspectiveState(Command doWhenFinished) {
-        if (currentPerspective != null && !currentPerspective.isTransient()) {
-            wbServices.save(currentPerspective.getIdentifier(),
-                            livePerspectiveDef,
-                            doWhenFinished);
-        } else {
-            doWhenFinished.execute();
-        }
-    }
-
-    @Override
-    public void loadPerspectiveStates(final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished) {
-        wbServices.loadPerspectives(doWhenFinished);
-    }
-
-    @Override
-    public void removePerspectiveState(final String perspectiveId,
-                                       final Command doWhenFinished) {
-        wbServices.removePerspectiveState(perspectiveId,
-                                          doWhenFinished);
-    }
-
-    @Override
-    public void removePerspectiveStates(final Command doWhenFinished) {
-        wbServices.removePerspectiveStates(doWhenFinished);
-    }
-
-    @Override
-    public String getDefaultPerspectiveIdentifier() {
-        AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
-        final Iterator<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = getPerspectivesIterator();
-
-        while (perspectivesIterator.hasNext()) {
-            final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
-            final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
-            if (instance.isDefault()) {
-                defaultPerspective = instance;
-                break;
-            } else {
-                iocManager.destroyBean(instance);
-            }
-        }
-
-        if (defaultPerspective != null) {
-            return defaultPerspective.getIdentifier();
-        }
-
-        return null;
-    }
-
-    @Override
-    public PlaceRequest getCurrentPerspectivePlaceRequest() {
-        return currentPerspectivePlaceRequest;
-    }
-
-    Iterator<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> getPerspectivesIterator() {
-        final Collection<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans(AbstractWorkbenchPerspectiveActivity.class);
-        return perspectives.iterator();
-    }
-
     /**
      * Fetches the given perspective's definition either from the server (if non-transient) or from the activity itself
      * (if transient or if the fetch call fails).
      */
     class FetchPerspectiveCommand implements Command {
 
-        private final PlaceRequest placeRequest;
         private final PerspectiveActivity perspective;
         private final ParameterizedCommand<PerspectiveDefinition> doAfterFetch;
 
-        public FetchPerspectiveCommand(PlaceRequest placeRequest,
-                                       PerspectiveActivity perspective,
+        public FetchPerspectiveCommand(PerspectiveActivity perspective,
                                        ParameterizedCommand<PerspectiveDefinition> doAfterFetch) {
-            this.placeRequest = checkNotNull("placeRequest",
-                                             placeRequest);
             this.perspective = checkNotNull("perspective",
                                             perspective);
             this.doAfterFetch = checkNotNull("doAfterFetch",
@@ -178,26 +90,8 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
         @Override
         public void execute() {
-            currentPerspectivePlaceRequest = placeRequest;
             currentPerspective = perspective;
-            if (perspective.isTransient()) {
-                //Transient Perspectives are not saved and hence cannot be loaded
-                doAfterFetch.execute(perspective.getDefaultPerspectiveLayout());
-            } else {
-
-                wbServices.loadPerspective(perspective.getIdentifier(),
-                                           new ParameterizedCommand<PerspectiveDefinition>() {
-                                               @Override
-                                               public void execute(final PerspectiveDefinition response) {
-
-                                                   if (isAValidDefinition(response)) {
-                                                       doAfterFetch.execute(response);
-                                                   } else {
-                                                       doAfterFetch.execute(perspective.getDefaultPerspectiveLayout());
-                                                   }
-                                               }
-                                           });
-            }
+            doAfterFetch.execute(perspective.getDefaultPerspectiveLayout());
         }
 
         boolean isAValidDefinition(PerspectiveDefinition response) {
@@ -246,21 +140,10 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
         @Override
         public void execute(PerspectiveDefinition perspectiveDef) {
-            if (livePerspectiveDef != null) {
-                tearDownChildPanelsRecursively(livePerspectiveDef.getRoot());
-            }
-            livePerspectiveDef = perspectiveDef;
             panelManager.setRoot(activity,
                                  perspectiveDef.getRoot());
             setupPanelRecursively(perspectiveDef.getRoot());
             doWhenFinished.execute(perspectiveDef);
-        }
-
-        private void tearDownChildPanelsRecursively(final PanelDefinition panel) {
-            for (PanelDefinition child : ensureIterable(panel.getChildren())) {
-                tearDownChildPanelsRecursively(child);
-                panelManager.removeWorkbenchPanel(child);
-            }
         }
 
         private void setupPanelRecursively(final PanelDefinition panel) {
@@ -288,13 +171,10 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
         @Override
         public void execute(PerspectiveDefinition perspectiveDef) {
-            currentPerspective.getMenus(menus -> {
-                perspectiveChangeEvent.fire(new PerspectiveChange(placeRequest,
-                                                                  perspectiveDef,
-                                                                  menus,
-                                                                  currentPerspective.getIdentifier()));
-                doWhenFinished.execute(perspectiveDef);
-            });
+            perspectiveChangeEvent.fire(new PerspectiveChange(placeRequest,
+                                                              perspectiveDef,
+                                                              currentPerspective.getIdentifier()));
+            doWhenFinished.execute(perspectiveDef);
         }
     }
 }

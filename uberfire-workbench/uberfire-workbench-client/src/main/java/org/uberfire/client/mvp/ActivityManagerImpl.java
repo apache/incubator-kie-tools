@@ -32,9 +32,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static java.util.Collections.emptyList;
@@ -51,48 +49,15 @@ public class ActivityManagerImpl implements ActivityManager {
      * shut down yet. This set tracks objects by identity, so it is possible that it could have multiple activities of
      * the same type within it (for example, multiple editors of the same type for different files.)
      */
-    private final Map<Activity, PlaceRequest> startedActivities = new IdentityHashMap<Activity, PlaceRequest>();
-    private final Map<Object, Boolean> containsCache = new HashMap<Object, Boolean>();
+    private final Map<Activity, PlaceRequest> startedActivities = new IdentityHashMap<>();
+    private final Map<Object, Boolean> containsCache = new HashMap<>();
     @Inject
     private SyncBeanManager iocManager;
     @Inject
     private ActivityBeansCache activityBeansCache;
-    @Inject
-    private ActivityLifecycleErrorHandler lifecycleErrorHandler;
-
-    @Override
-    public <T extends Activity> Set<T> getActivities(final Class<T> clazz) {
-        // not calling onStartup. See UF-105.
-        return secure(iocManager.lookupBeans(clazz),
-                      true);
-    }
-
-    @Override
-    public SplashScreenActivity getSplashScreenInterceptor(final PlaceRequest placeRequest) {
-
-        SplashScreenActivity resultBean = null;
-        for (SplashScreenActivity splashScreen : activityBeansCache.getSplashScreens()) {
-            if (splashScreen.intercept(placeRequest)) {
-                if (splashScreen.isEnabled()) {
-                    resultBean = splashScreen;
-                    break;
-                }
-            }
-        }
-
-        return startIfNecessary(secure(resultBean),
-                                placeRequest);
-    }
 
     @Override
     public Set<Activity> getActivities(final PlaceRequest placeRequest) {
-        return getActivities(placeRequest,
-                             true);
-    }
-
-    @Override
-    public Set<Activity> getActivities(final PlaceRequest placeRequest,
-                                       boolean secure) {
 
         final Collection<SyncBeanDef<Activity>> beans;
         if (placeRequest instanceof PathPlaceRequest) {
@@ -101,8 +66,7 @@ public class ActivityManagerImpl implements ActivityManager {
             beans = resolveById(placeRequest.getIdentifier());
         }
 
-        final Set<Activity> activities = startIfNecessary(secure(beans,
-                                                                 secure),
+        final Set<Activity> activities = startIfNecessary(secure(beans),
                                                           placeRequest);
 
         if (placeRequest instanceof PathPlaceRequest) {
@@ -135,7 +99,8 @@ public class ActivityManagerImpl implements ActivityManager {
             }
         }
 
-        final Activity result = getActivity(placeRequest);
+        final Activity result = getActivity(Activity.class,
+                                            placeRequest);
         containsCache.put(placeRequest.getIdentifier(),
                           result != null);
         if (path != null) {
@@ -147,34 +112,10 @@ public class ActivityManagerImpl implements ActivityManager {
     }
 
     @Override
-    public Activity getActivity(final PlaceRequest placeRequest) {
-        return getActivity(Activity.class,
-                           placeRequest);
-    }
-
-    @Override
-    public Activity getActivity(PlaceRequest placeRequest,
-                                boolean secure) {
-        return getActivity(Activity.class,
-                           placeRequest,
-                           secure);
-    }
-
-    @Override
     public <T extends Activity> T getActivity(final Class<T> clazz,
                                               final PlaceRequest placeRequest) {
-        return getActivity(clazz,
-                           placeRequest,
-                           true);
-    }
-
-    @Override
-    public <T extends Activity> T getActivity(final Class<T> clazz,
-                                              final PlaceRequest placeRequest,
-                                              final boolean secure) {
-        final Set<Activity> activities = getActivities(placeRequest,
-                                                       secure);
-        if (activities.size() == 0) {
+        final Set<Activity> activities = getActivities(placeRequest);
+        if (activities.isEmpty()) {
             return null;
         }
 
@@ -186,25 +127,12 @@ public class ActivityManagerImpl implements ActivityManager {
     @Override
     public void destroyActivity(final Activity activity) {
         if (startedActivities.remove(activity) != null) {
-            boolean isDependentScope = getBeanScope(activity) == Dependent.class;
-            try {
-                activity.onShutdown();
-            } catch (Exception ex) {
-                lifecycleErrorHandler.handle(activity,
-                                             LifecyclePhase.SHUTDOWN,
-                                             ex);
-            }
-            if (isDependentScope) {
+            if (getBeanScope(activity) == Dependent.class) {
                 iocManager.destroyBean(activity);
             }
         } else {
             throw new IllegalStateException("Activity " + activity + " is not currently in the started state");
         }
-    }
-
-    @Override
-    public boolean isStarted(final Activity activity) {
-        return startedActivities.containsKey(activity);
     }
 
     /**
@@ -215,13 +143,6 @@ public class ActivityManagerImpl implements ActivityManager {
      * @param startedActivity an activity that is in the <i>started</i> or <i>open</i> state.
      */
     private Class<?> getBeanScope(Activity startedActivity) {
-
-        // splash screens are tracked separately from other activities
-        if (startedActivity instanceof SplashScreenActivity) {
-            // FIXME this is an assumption based on convention. should modify bean cache to keep bean defs for splash screens too.
-            return ApplicationScoped.class;
-        }
-
         final IOCBeanDef<?> beanDef = activityBeansCache.getActivity(startedActivity.getPlace().getIdentifier());
         if (beanDef == null) {
             return Dependent.class;
@@ -229,8 +150,7 @@ public class ActivityManagerImpl implements ActivityManager {
         return beanDef.getScope();
     }
 
-    private <T extends Activity> Set<T> secure(final Collection<SyncBeanDef<T>> activityBeans,
-                                               final boolean protectedAccess) {
+    private <T extends Activity> Set<T> secure(final Collection<SyncBeanDef<T>> activityBeans) {
         final Set<T> activities = new HashSet<T>(activityBeans.size());
 
         for (final SyncBeanDef<T> activityBean : activityBeans) {
@@ -244,13 +164,6 @@ public class ActivityManagerImpl implements ActivityManager {
         return activities;
     }
 
-    private SplashScreenActivity secure(final SplashScreenActivity bean) {
-        if (bean == null) {
-            return null;
-        }
-        return bean;
-    }
-
     private <T extends Activity> T startIfNecessary(T activity,
                                                     PlaceRequest place) {
         if (activity == null) {
@@ -260,17 +173,10 @@ public class ActivityManagerImpl implements ActivityManager {
             if (!startedActivities.containsKey(activity)) {
                 startedActivities.put(activity,
                                       place);
-                if (activity.isDynamic() && place instanceof PathPlaceRequest) {
-                    activity.onStartup(ExternalPathPlaceRequest.create((PathPlaceRequest) place));
-                } else {
-                    activity.onStartup(place);
-                }
+                activity.onStartup(place);
             }
             return activity;
         } catch (Exception ex) {
-            lifecycleErrorHandler.handle(activity,
-                                         LifecyclePhase.STARTUP,
-                                         ex);
             destroyActivity(activity);
             return null;
         }
@@ -323,14 +229,6 @@ public class ActivityManagerImpl implements ActivityManager {
             return singleton(result);
         }
 
-        return asSet(activityBeansCache.getActivity(place.getPath()));
-    }
-
-    private Set<SyncBeanDef<Activity>> asSet(final SyncBeanDef<Activity> activity) {
-        if (activity == null) {
-            return emptySet();
-        }
-
-        return singleton(activity);
+        throw new RuntimeException();
     }
 }

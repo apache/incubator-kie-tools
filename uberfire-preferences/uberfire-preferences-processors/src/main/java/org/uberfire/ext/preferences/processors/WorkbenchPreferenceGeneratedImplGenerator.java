@@ -37,7 +37,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.GeneratorUtils;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 

@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collection;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,6 +24,8 @@ import javax.inject.Named;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * An undecorated panel that can contain one part at a time and does not support child panels. The part's view fills
@@ -57,29 +61,22 @@ public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
 
     @Override
     public void addPart(WorkbenchPartPresenter part) {
-        SinglePartPanelHelper h = createSinglePartPanelHelper();
-        if (h.hasNoParts()) {
+        if (getPanelView().getParts().isEmpty()) {
             super.addPart(part);
         } else {
-            h.closeFirstPartAndAddNewOne(() -> super.addPart(part));
+            placeManager.closePlace(getPlaceFromFirstPart(),
+                                    () -> super.addPart(part));
         }
     }
 
-    @Override
-    public void addPart(WorkbenchPartPresenter part,
-                        String contextId) {
-        SinglePartPanelHelper h = createSinglePartPanelHelper();
-        if (h.hasNoParts()) {
-            super.addPart(part,
-                          contextId);
-        } else {
-            h.closeFirstPartAndAddNewOne(() -> super.addPart(part,
-                                                             contextId));
+    private PlaceRequest getPlaceFromFirstPart() {
+        Collection<PartDefinition> parts = getPanelView().getParts();
+        if (parts.iterator().hasNext()) {
+            PartDefinition part = parts.iterator().next();
+            if (part != null) {
+                return part.getPlace();
+            }
         }
-    }
-
-    SinglePartPanelHelper createSinglePartPanelHelper() {
-        return new SinglePartPanelHelper(getPanelView().getParts(),
-                                         placeManager);
+        return null;
     }
 }

@@ -20,13 +20,4 @@ import org.uberfire.workbench.events.UberFireEvent;
 
 public class MultiPageEditorSelectedPageEvent implements UberFireEvent {
 
-    private final int selectedPage;
-
-    public MultiPageEditorSelectedPageEvent(final int selectedPage) {
-        this.selectedPage = selectedPage;
-    }
-
-    public int getSelectedPage() {
-        return selectedPage;
-    }
 }

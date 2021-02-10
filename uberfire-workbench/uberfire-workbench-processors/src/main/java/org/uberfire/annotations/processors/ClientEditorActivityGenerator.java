@@ -34,8 +34,6 @@ import javax.tools.Diagnostic.Kind;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -57,7 +55,6 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
 
         final String annotationName = ClientAPIModule.getWorkbenchClientEditorClass();
-        final boolean isDynamic = ClientAPIModule.getWbEditorIsDynamicValueOnClass(classElement);
 
         String identifier = null;
 
@@ -92,28 +89,12 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
             onStartup1ParameterMethodName = onStartupMethod.getSimpleName().toString();
         }
 
-        final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName(classElement,
-                                                                                   processingEnvironment);
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName(classElement,
                                                                              processingEnvironment);
-        final String onShutdownMethodName = GeneratorUtils.getOnShutdownMethodName(classElement,
-                                                                                   processingEnvironment);
         final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName(classElement,
                                                                            processingEnvironment);
-        final String onLostFocusMethodName = GeneratorUtils.getOnLostFocusMethodName(classElement,
-                                                                                     processingEnvironment);
-        final String onFocusMethodName = GeneratorUtils.getOnFocusMethodName(classElement,
-                                                                             processingEnvironment);
         final String getDefaultPositionMethodName = GeneratorUtils.getDefaultPositionMethodName(classElement,
                                                                                                 processingEnvironment);
-        final String getTitleMethodName = GeneratorUtils.getTitleMethodName(classElement,
-                                                                            processingEnvironment);
-        final String getContextIdMethodName = GeneratorUtils.getContextIdMethodName(classElement,
-                                                                                    processingEnvironment);
-        final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName(classElement,
-                                                                                               processingEnvironment);
-        final String getTitleWidgetMethodName = getTitleWidgetMethod == null ? null : getTitleWidgetMethod.getSimpleName().toString();
-
         final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName(classElement,
                                                                                      processingEnvironment);
         final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
@@ -125,9 +106,6 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
 
         final boolean isWidget = GeneratorUtils.getIsWidget(classElement,
                                                             processingEnvironment);
-
-        final String isDirtyMethodName = GeneratorUtils.getIsDirtyMethodName(classElement,
-                                                                             processingEnvironment);
 
         final ExecutableElement setContentMethod = GeneratorUtils.getSetContentMethodName(classElement,
                                                                                           processingEnvironment);
@@ -153,45 +131,29 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
             messager.printMessage(Kind.NOTE,
                                   "Identifier: " + identifier);
             messager.printMessage(Kind.NOTE,
-                                  "getContextIdMethodName: " + getContextIdMethodName);
-            messager.printMessage(Kind.NOTE,
                                   "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName);
             messager.printMessage(Kind.NOTE,
                                   "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName);
             messager.printMessage(Kind.NOTE,
-                                  "onMayCloseMethodName: " + onMayCloseMethodName);
-            messager.printMessage(Kind.NOTE,
                                   "onCloseMethodName: " + onCloseMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "onShutdownMethodName: " + onShutdownMethodName);
             messager.printMessage(Kind.NOTE,
                                   "onOpenMethodName: " + onOpenMethodName);
             messager.printMessage(Kind.NOTE,
-                                  "onLostFocusMethodName: " + onLostFocusMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "onFocusMethodName: " + onFocusMethodName);
-            messager.printMessage(Kind.NOTE,
                                   "getDefaultPositionMethodName: " + getDefaultPositionMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getTitleMethodName: " + getTitleMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getTitleWidgetMethodName: " + getTitleWidgetMethodName);
             messager.printMessage(Kind.NOTE,
                                   "getWidgetMethodName: " + getWidgetMethodName);
             messager.printMessage(Kind.NOTE,
                                   "isWidgetMethodReturnTypeElement: " + isWidgetMethodReturnTypeElement);
             messager.printMessage(Kind.NOTE,
-                                  "isWidget: " + Boolean.toString(isWidget));
+                                  "isWidget: " + isWidget);
             messager.printMessage(Kind.NOTE,
-                                  "hasUberView: " + Boolean.toString(hasUberView));
+                                  "hasUberView: " + hasUberView);
             messager.printMessage(Kind.NOTE,
                                   "setContentMethodName: " + setContentMethodName);
             messager.printMessage(Kind.NOTE,
                                   "getContentMethodName: " + getContentMethodName);
             messager.printMessage(Kind.NOTE,
                                   "getPreviewMethodName: " + getPreviewMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "isDirtyMethodName: " + isDirtyMethodName);
             messager.printMessage(Kind.NOTE,
                                   "Qualifiers: " + String.join(", ",
                                                                qualifiers));
@@ -209,11 +171,6 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                                   classElement);
         }
 
-        //Validate getTitleMethodName
-        if (getTitleMethodName == null) {
-            throw new GenerationException("The WorkbenchClientEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.",
-                                          packageName + "." + className);
-        }
         //Validate setContentMethodName
         if (setContentMethodName == null) {
             throw new GenerationException("org.uberfire.annotations.processors.WorkbenchClientEditorTest4Activity: The WorkbenchClientEditor must provide a @SetContent annotated method that has two java.lang.String (path and content) as parameters.",
@@ -226,15 +183,13 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
         }
 
         //Setup data for template sub-system
-        Map<String, Object> root = new HashMap<String, Object>();
+        Map<String, Object> root = new HashMap<>();
         root.put("packageName",
                  packageName);
         root.put("className",
                  className);
         root.put("identifier",
                  identifier);
-        root.put("getContextIdMethodName",
-                 getContextIdMethodName);
         root.put("realClassName",
                  classElement.getSimpleName().toString());
         root.put("beanActivatorClass",
@@ -243,24 +198,12 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                  onStartup0ParameterMethodName);
         root.put("onStartup1ParameterMethodName",
                  onStartup1ParameterMethodName);
-        root.put("onMayCloseMethodName",
-                 onMayCloseMethodName);
         root.put("onCloseMethodName",
                  onCloseMethodName);
-        root.put("onShutdownMethodName",
-                 onShutdownMethodName);
         root.put("onOpenMethodName",
                  onOpenMethodName);
-        root.put("onLostFocusMethodName",
-                 onLostFocusMethodName);
-        root.put("onFocusMethodName",
-                 onFocusMethodName);
         root.put("getDefaultPositionMethodName",
                  getDefaultPositionMethodName);
-        root.put("getTitleMethodName",
-                 getTitleMethodName);
-        root.put("getTitleWidgetMethodName",
-                 getTitleWidgetMethodName);
         root.put("getWidgetMethodName",
                  getWidgetMethodName);
         root.put("isWidgetMethodReturnTypeElement",
@@ -269,8 +212,6 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                  isWidget);
         root.put("hasUberView",
                  hasUberView);
-        root.put("isDirtyMethodName",
-                 isDirtyMethodName);
 
         root.put("setContentMethodName",
                  setContentMethodName);
@@ -278,8 +219,6 @@ public class ClientEditorActivityGenerator extends AbstractGenerator {
                  getContentMethodName);
         root.put("getPreviewMethodName",
                  getPreviewMethodName);
-        root.put("isDynamic",
-                 isDynamic);
         root.put("qualifiers",
                  qualifiers);
 

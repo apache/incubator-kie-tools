@@ -18,16 +18,16 @@ package org.uberfire.client.util;
 public class CSSLocatorsUtils {
 
     public static String buildLocator(String... values) {
-        String cssClass = "";
+        StringBuilder cssClass = new StringBuilder();
         for (String value : values) {
             if (isValid(value)) {
-                if (!cssClass.isEmpty()) {
-                    cssClass = cssClass + "-";
+                if (cssClass.length() > 0) {
+                    cssClass.append("-");
                 }
-                cssClass = cssClass + format(value);
+                cssClass.append(format(value));
             }
         }
-        return cssClass;
+        return cssClass.toString();
     }
 
     private static boolean isValid(String value) {
@@ -35,7 +35,7 @@ public class CSSLocatorsUtils {
     }
 
     private static String format(String value) {
-        return value.replaceAll(" ",
-                                "-");
+        return value.replace(" ",
+                             "-");
     }
 }

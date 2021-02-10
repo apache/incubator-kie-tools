@@ -17,74 +17,20 @@
 package org.uberfire.ext.widgets.core.client.editors.texteditor;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
+import elemental2.promise.Promise;
+import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.type.DotResourceType;
-import org.uberfire.ext.widgets.core.client.resources.i18n.EditorsConstants;
-import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.GetContent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.lifecycle.SetContent;
 
 @Dependent
-@WorkbenchEditor(identifier = "TextEditor", supportedTypes = {TextResourceType.class, DotResourceType.class})
+@WorkbenchClientEditor(identifier = "TextEditor")
 public class TextEditorWorkbenchEditor
         extends TextEditorPresenter {
-
-    @Inject
-    private Caller<VFSService> vfsServices;
-
-    @Inject
-    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
-
-    @OnStartup
-    public void onStartup(final Path path,
-                          final PlaceRequest placeRequest) {
-        vfsServices.call(new RemoteCallback<String>() {
-            @Override
-            public void callback(String response) {
-                if (response == null) {
-                    view.setContent(EditorsConstants.INSTANCE.EmptyEntry(),
-                                    getAceEditorMode());
-                } else {
-                    view.setContent(response,
-                                    getAceEditorMode());
-                }
-                changeTitleWidgetEvent.fire(
-                        new ChangeTitleWidgetEvent(
-                                placeRequest,
-                                EditorsConstants.INSTANCE.TextEditor() + " [" + path.getFileName() + "]"));
-            }
-        }).readAllString(path);
-    }
-
-    @OnSave
-    public void onSave() {
-        vfsServices.call(new RemoteCallback<Path>() {
-            @Override
-            public void callback(Path response) {
-                view.setDirty(false);
-            }
-        }).write(path,
-                 view.getContent());
-    }
-
-    @IsDirty
-    public boolean isDirty() {
-        return super.isDirty();
-    }
 
     @OnClose
     public void onClose() {
@@ -96,13 +42,18 @@ public class TextEditorWorkbenchEditor
         super.onOpen();
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return EditorsConstants.INSTANCE.TextEditor();
-    }
-
     @WorkbenchPartView
     public IsWidget getWidget() {
         return super.getWidget();
+    }
+
+    @SetContent
+    public Promise setContent(final String path, final String value) {
+        return Promise.resolve("");
+    }
+
+    @GetContent
+    public Promise getContent() {
+        return Promise.resolve("");
     }
 }

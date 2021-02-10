@@ -22,17 +22,4 @@ public interface MultiPageEditorView extends IsWidget {
 
     void clear();
 
-    void addPage(final int index, final Page page);
-
-    void disablePage(final int index);
-
-    void enablePage(final int index);
-
-    /**
-     * Returns index of the editor page with 'title'
-     * @param title of the page (Model, Overview ...)
-     * @return index, starting from 0
-     * @throws IllegalArgumentException if the 'title' is not found
-     */
-    int getPageIndex(final String title);
 }

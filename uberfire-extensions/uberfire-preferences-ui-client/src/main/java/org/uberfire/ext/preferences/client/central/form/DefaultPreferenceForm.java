@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
@@ -48,8 +47,6 @@ import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 import org.uberfire.preferences.shared.impl.validation.ValidationResult;
-
-import com.google.gwt.core.client.GWT;
 
 @WorkbenchScreen(identifier = DefaultPreferenceForm.IDENTIFIER)
 public class DefaultPreferenceForm {
@@ -76,11 +73,6 @@ public class DefaultPreferenceForm {
                                        null);
         title = placeRequest.getParameter("title",
                                           null);
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return title;
     }
 
     @WorkbenchPartView

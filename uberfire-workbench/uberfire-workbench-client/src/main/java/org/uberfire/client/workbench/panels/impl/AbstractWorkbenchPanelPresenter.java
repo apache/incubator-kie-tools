@@ -22,12 +22,11 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.pmgr.nswe.part.WorkbenchPartPresenterDefault;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenterImpl;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -94,24 +93,8 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         return getClass().getName();
     }
 
-    /**
-     * Calls {@link #addPart(org.uberfire.client.workbench.part.WorkbenchPartPresenter, String)}. Subclasses can
-     * take advantage of this by only overriding the 2-arg version.
-     */
     @Override
     public void addPart(final WorkbenchPartPresenter part) {
-        addPart(part,
-                null);
-    }
-
-    /**
-     * Adds the given part to the view returned by {@link #getPanelView()}, ignoring the given {@code contextId}.
-     * Subclasses that care about context id's will override this method.
-     */
-    @Override
-    public void addPart(final WorkbenchPartPresenter part,
-                        final String contextId) {
-
         // special case: when new perspectives are being built up based on definitions,
         // our definition will already say it contains the given part! We should not try to add it again.
         Optional<PartDefinition> optional = definition.getParts().stream()
@@ -179,20 +162,6 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     @Override
-    public void changeTitle(final PartDefinition part,
-                            final String title,
-                            final IsWidget titleDecorator) {
-        getPanelView().changeTitle(part,
-                                   title,
-                                   titleDecorator);
-    }
-
-    @Override
-    public void setFocus(final boolean hasFocus) {
-        view.setFocus(hasFocus);
-    }
-
-    @Override
     public boolean selectPart(final PartDefinition part) {
         if (!contains(part)) {
             return false;
@@ -203,16 +172,6 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
 
     private boolean contains(final PartDefinition part) {
         return definition.getParts().contains(part);
-    }
-
-    @Override
-    public void maximize() {
-        view.maximize();
-    }
-
-    @Override
-    public void unmaximize() {
-        view.unmaximize();
     }
 
     @Override
@@ -246,6 +205,6 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     public Class<? extends WorkbenchPartPresenter> getPartType() {
-        return WorkbenchPartPresenterDefault.class;
+        return WorkbenchPartPresenterImpl.class;
     }
 }

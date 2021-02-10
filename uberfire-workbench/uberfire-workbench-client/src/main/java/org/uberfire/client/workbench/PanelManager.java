@@ -17,10 +17,9 @@
 package org.uberfire.client.workbench;
 
 import com.google.gwt.user.client.ui.HasWidgets;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
@@ -29,7 +28,6 @@ import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * Internal framework component that handles the creation, destruction, layout, and composition (parent-child nesting)
@@ -55,9 +53,7 @@ public interface PanelManager {
      * @param part The description of the part to add. Not null.
      * @param panel definition of the panel to add the part to (must describe a panel that is already present in the
      * layout). Not null.
-     * @param menus The menus to display for the given part. Null means no menus.
-     * @param uiPart The part's title and physical view. Not null.
-     * @param contextId part of a removed framework feature (TODO: remove this?)
+     * @param widget The widget.
      * @param minInitialWidth minimum pixel width of the part's activity, or null if there is no known minimum width. The target
      * panel will expand to the this width if the panel is not already at least as wide, and only if it
      * supports resizing on the horizontal axis.
@@ -68,9 +64,7 @@ public interface PanelManager {
     void addWorkbenchPart(final PlaceRequest place,
                           final PartDefinition part,
                           final PanelDefinition panel,
-                          final Menus menus,
-                          final UIPart uiPart,
-                          final String contextId,
+                          final IsWidget widget,
                           final Integer minInitialWidth,
                           final Integer minInitialHeight);
 
@@ -121,38 +115,6 @@ public interface PanelManager {
                                          String panelType);
 
     /**
-     * Creates an UberFire panel and installs its view in the given html element container.
-     * <p>
-     * <h3>Custom Panel Lifecycle</h3>
-     * <p>
-     * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
-     * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
-     * (whether directly removed from its parent or some ancestor is removed,) all the panel's parts are closed and then
-     * the associated panel is disposed.
-     * @param container the html element container to install the new panel in. The new panel will fill the container.
-     * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
-     * its parent will be null; {@code isRoot()} will return false.
-     */
-    CustomPanelDefinition addCustomPanel(HTMLElement container,
-                                         String panelType);
-
-    /**
-     * Creates an UberFire panel and installs its view in the given html element container.
-     * <p>
-     * <h3>Custom Panel Lifecycle</h3>
-     * <p>
-     * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
-     * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
-     * (whether directly removed from its parent or some ancestor is removed,) all the panel's parts are closed and then
-     * the associated panel is disposed.
-     * @param container the html element container to install the new panel in. The new panel will fill the container.
-     * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
-     * its parent will be null; {@code isRoot()} will return false.
-     */
-    CustomPanelDefinition addCustomPanel(elemental2.dom.HTMLElement container,
-                                         String panelType);
-
-    /**
      * Removes the panel associated with the given definition, removing the panel's presenter and view from the
      * workbench, and freeing any resources associated with them. The panel must have no parts and no child panels.
      * @param toRemove the panel to remove from the workbench layout. Must not be null.
@@ -171,23 +133,6 @@ public interface PanelManager {
      */
     boolean removePartForPlace(final PlaceRequest toRemove);
 
-    void onPartFocus(final PartDefinition part);
-
-    void onPartLostFocus();
-
-    /**
-     * Gives focus to the given panel, if it is known to this PanelManager. Also removes focus from all other panels
-     * associated with this PanelManager.
-     * @param panel the panel to give focus to. May be null, in which case all panels will lose focus.
-     */
-    void onPanelFocus(final PanelDefinition panel);
-
-    /**
-     * Closes the given part. This is a convenience method for <tt>placeManager.closePlace(part.getPlace())</tt>.
-     * @param part the part to close (remove from the GUI). Must not be null.
-     */
-    void closePart(final PartDefinition part);
-
     /**
      * Clears all existing panel structure from the user interface, then installs a new root panel according to the
      * specifications in the given {@link PanelDefinition}. Only installs the root panel; does not build the child
@@ -196,30 +141,4 @@ public interface PanelManager {
      */
     void setRoot(PerspectiveActivity activity,
                  PanelDefinition root);
-
-    /**
-     * Returns the first PanelDefinition whose place matches the given one.
-     * @return the definition for the panel servicing the given place, or null if no such part can be found.
-     */
-    PanelDefinition getPanelForPlace(PlaceRequest place);
-
-    /**
-     * @param part that has been hidden
-     */
-    void onPartHidden(PartDefinition part);
-
-    /**
-     * @param part the part that has been maximized
-     */
-    void onPartMaximized(PartDefinition part);
-
-    /**
-     * @param part the part that has been minimized
-     */
-    void onPartMinimized(PartDefinition part);
-
-    /**
-     * @return the focused {@link PartDefinition}
-     */
-    PartDefinition getFocusedPart();
 }

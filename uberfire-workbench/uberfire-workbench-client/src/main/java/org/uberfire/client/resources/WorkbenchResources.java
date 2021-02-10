@@ -21,14 +21,10 @@ import com.google.gwt.resources.client.ClientBundle;
 /**
  * All GWT managed resources for Workbench
  */
-public interface WorkbenchResources
-        extends
-        ClientBundle {
+public interface WorkbenchResources extends ClientBundle {
 
     WorkbenchResources INSTANCE = GWT.create(WorkbenchResources.class);
 
     @Source("css/workbench.css")
     WorkbenchCss CSS();
-
-    WorkbenchImages images();
 }

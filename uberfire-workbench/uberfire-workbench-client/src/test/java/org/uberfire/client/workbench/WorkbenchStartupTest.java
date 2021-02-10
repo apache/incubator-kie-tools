@@ -16,12 +16,9 @@
 
 package org.uberfire.client.workbench;
 
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
-import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -36,15 +33,16 @@ import org.slf4j.Logger;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.security.Resource;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class WorkbenchStartupTest {
@@ -64,8 +62,6 @@ public class WorkbenchStartupTest {
     WorkbenchDragAndDropManager dndManager;
     @Mock
     PanelManager panelManager;
-    @Mock
-    StubAppReadyEventSource appReadyEvent;
     @Mock
     WorkbenchLayout layout;
     @Mock
@@ -100,31 +96,6 @@ public class WorkbenchStartupTest {
     }
 
     @Test
-    public void shouldNotStartWhenBlocked() throws Exception {
-        verify(appReadyEvent,
-               never()).fire(any(ApplicationReadyEvent.class));
-        workbench.addStartupBlocker(WorkbenchStartupTest.class);
-        workbench.startIfNotBlocked();
-        verify(appReadyEvent,
-               never()).fire(any(ApplicationReadyEvent.class));
-    }
-
-    @Test
-    public void shouldStartWhenUnblocked() throws Exception {
-        workbench.addStartupBlocker(WorkbenchStartupTest.class);
-        workbench.removeStartupBlocker(WorkbenchStartupTest.class);
-        verify(appReadyEvent,
-               times(1)).fire(any(ApplicationReadyEvent.class));
-    }
-
-    @Test
-    public void shouldStartOnAfterInitIfNeverBlocked() throws Exception {
-        workbench.startIfNotBlocked();
-        verify(appReadyEvent,
-               times(1)).fire(any(ApplicationReadyEvent.class));
-    }
-
-    @Test
     public void goToHomePerspective() throws Exception {
         workbench.startIfNotBlocked();
         verify(placeManager).goTo(new DefaultPlaceRequest(perspectiveActivity1.getIdentifier()));
@@ -144,54 +115,5 @@ public class WorkbenchStartupTest {
         workbench.startIfNotBlocked();
         verify(placeManager,
                never()).goTo(any(PlaceRequest.class));
-    }
-
-    @Test
-    public void workbenchCloseCommandTest() {
-        workbench.workbenchCloseCommand.execute();
-        verify(placeManager).closeAllPlaces();
-    }
-
-    @Test
-    public void workbenchClosingCommandWithUnsavedChangesTest() {
-        doReturn(false).when(placeManager).canCloseAllPlaces();
-        final Window.ClosingEvent event = mock(Window.ClosingEvent.class);
-
-        workbench.workbenchClosingCommand.execute(event);
-
-        verify(event).setMessage(anyString());
-    }
-
-    @Test
-    public void workbenchClosingCommandWithoutUnsavedChangesTest() {
-        doReturn(true).when(placeManager).canCloseAllPlaces();
-        final Window.ClosingEvent event = mock(Window.ClosingEvent.class);
-
-        workbench.workbenchClosingCommand.execute(event);
-
-        verify(event, never()).setMessage(anyString());
-    }
-
-    /**
-     * Mockito failed to produce a valid mock for a raw {@code Event<ApplicationReadyEvent>} due to classloader issues.
-     * This class provides it something that it can mock properly.
-     */
-    public static class StubAppReadyEventSource implements Event<ApplicationReadyEvent> {
-
-        @Override
-        public void fire(ApplicationReadyEvent event) {
-            throw new UnsupportedOperationException("Not implemented.");
-        }
-
-        @Override
-        public Event<ApplicationReadyEvent> select(Annotation... qualifiers) {
-            throw new UnsupportedOperationException("Not implemented.");
-        }
-
-        @Override
-        public <U extends ApplicationReadyEvent> Event<U> select(Class<U> subtype,
-                                                                 Annotation... qualifiers) {
-            throw new UnsupportedOperationException("Not implemented.");
-        }
     }
 }

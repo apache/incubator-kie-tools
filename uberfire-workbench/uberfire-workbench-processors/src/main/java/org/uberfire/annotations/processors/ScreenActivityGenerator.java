@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
@@ -29,13 +30,10 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -53,16 +51,11 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         messager.printMessage(Kind.NOTE,
                               "Starting code generation for [" + className + "]");
 
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
         final String annotationName = ClientAPIModule.getWorkbenchScreenClass();
-        final boolean isDynamic = ClientAPIModule.getWbScreenIsDynamicValueOnClass(classElement);
 
         String identifier = null;
-        Integer preferredHeight = null;
-        Integer preferredWidth = null;
 
         for (final AnnotationMirror am : classElement.getAnnotationMirrors()) {
             if (annotationName.equals(am.getAnnotationType().toString())) {
@@ -70,24 +63,11 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                     AnnotationValue aval = entry.getValue();
                     if ("identifier".equals(entry.getKey().getSimpleName().toString())) {
                         identifier = aval.getValue().toString();
-                    } else if ("preferredHeight".equals(entry.getKey().getSimpleName().toString())) {
-                        final int _preferredHeight = (Integer) aval.getValue();
-                        if (_preferredHeight > 0) {
-                            preferredHeight = _preferredHeight;
-                        }
-                    } else if ("preferredWidth".equals(entry.getKey().getSimpleName().toString())) {
-                        final int _preferredWidth = (Integer) aval.getValue();
-                        if (_preferredWidth > 0) {
-                            preferredWidth = _preferredWidth;
-                        }
                     }
                 }
                 break;
             }
         }
-
-        final String owningPlace = GeneratorUtils.getOwningPerspectivePlaceRequest(classElement,
-                                                                                   processingEnvironment);
 
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName(classElement,
                                                                                    processingEnvironment);
@@ -108,30 +88,12 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             onStartup1ParameterMethodName = onStartupMethod.getSimpleName().toString();
         }
 
-        final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName(classElement,
-                                                                                   processingEnvironment);
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName(classElement,
                                                                              processingEnvironment);
-        final String onShutdownMethodName = GeneratorUtils.getOnShutdownMethodName(classElement,
-                                                                                   processingEnvironment);
         final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName(classElement,
                                                                            processingEnvironment);
-        final String onLostFocusMethodName = GeneratorUtils.getOnLostFocusMethodName(classElement,
-                                                                                     processingEnvironment);
-        final String onFocusMethodName = GeneratorUtils.getOnFocusMethodName(classElement,
-                                                                             processingEnvironment);
         final String getDefaultPositionMethodName = GeneratorUtils.getDefaultPositionMethodName(classElement,
                                                                                                 processingEnvironment);
-        final String getTitleMethodName = GeneratorUtils.getTitleMethodName(classElement,
-                                                                            processingEnvironment);
-        final String getContextIdMethodName = GeneratorUtils.getContextIdMethodName(classElement,
-                                                                                    processingEnvironment);
-        final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName(classElement,
-                                                                                               processingEnvironment);
-        final String getTitleWidgetMethodName = getTitleWidgetMethod == null ? null : getTitleWidgetMethod.getSimpleName().toString();
-        final boolean isTitleWidgetMethodReturnTypeElement = getTitleWidgetMethod != null && GeneratorUtils.getIsElement(getTitleWidgetMethod.getReturnType(),
-                                                                                                                         processingEnvironment);
-
         final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName(classElement,
                                                                                      processingEnvironment);
         final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
@@ -143,13 +105,6 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         final boolean isWidget = GeneratorUtils.getIsWidget(classElement,
                                                             processingEnvironment);
-        final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName(classElement,
-                                                                                processingEnvironment);
-        final String getToolBarMethodName = GeneratorUtils.getToolBarMethodName(classElement,
-                                                                                processingEnvironment);
-
-        final boolean needsElementWrapper = isWidgetMethodReturnTypeElement || isTitleWidgetMethodReturnTypeElement;
-
         final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType(classElement);
 
         if (GeneratorUtils.debugLoggingEnabled()) {
@@ -160,37 +115,15 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage(Kind.NOTE,
                                   "Identifier: " + identifier);
             messager.printMessage(Kind.NOTE,
-                                  "Owning Perspective Identifier: " + owningPlace);
-            messager.printMessage(Kind.NOTE,
-                                  "Preferred Height: " + preferredHeight);
-            messager.printMessage(Kind.NOTE,
-                                  "Preferred Width: " + preferredWidth);
-            messager.printMessage(Kind.NOTE,
-                                  "getContextIdMethodName: " + getContextIdMethodName);
-            messager.printMessage(Kind.NOTE,
                                   "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName);
             messager.printMessage(Kind.NOTE,
                                   "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName);
             messager.printMessage(Kind.NOTE,
-                                  "onMayCloseMethodName: " + onMayCloseMethodName);
-            messager.printMessage(Kind.NOTE,
                                   "onCloseMethodName: " + onCloseMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "onShutdownMethodName: " + onShutdownMethodName);
             messager.printMessage(Kind.NOTE,
                                   "onOpenMethodName: " + onOpenMethodName);
             messager.printMessage(Kind.NOTE,
-                                  "onLostFocusMethodName: " + onLostFocusMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "onFocusMethodName: " + onFocusMethodName);
-            messager.printMessage(Kind.NOTE,
                                   "getDefaultPositionMethodName: " + getDefaultPositionMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getTitleMethodName: " + getTitleMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getTitleWidgetMethodName: " + getTitleWidgetMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "isTitleWidgetMethodReturnTypeElement: " + isTitleWidgetMethodReturnTypeElement);
             messager.printMessage(Kind.NOTE,
                                   "getWidgetMethodName: " + getWidgetMethodName);
             messager.printMessage(Kind.NOTE,
@@ -198,13 +131,9 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage(Kind.NOTE,
                                   "isWidget: " + Boolean.toString(isWidget));
             messager.printMessage(Kind.NOTE,
-                                  "hasPresenterInitMethod: " + Boolean.toString(hasPresenterInitMethod));
+                                  "hasPresenterInitMethod: " + hasPresenterInitMethod);
             messager.printMessage(Kind.NOTE,
-                                  "needsElementWrapper: " + Boolean.toString(needsElementWrapper));
-            messager.printMessage(Kind.NOTE,
-                                  "getMenuBarMethodName: " + getMenuBarMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getToolBarMethodName: " + getToolBarMethodName);
+                                  "needsElementWrapper: " + isWidgetMethodReturnTypeElement);
             messager.printMessage(Kind.NOTE,
                                   "Qualifiers: " + String.join(", ",
                                                                qualifiers));
@@ -222,12 +151,6 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                                   classElement);
         }
 
-        //Validate getTitleMethodName and getTitleWidgetMethodName
-        if (getTitleMethodName == null) {
-            throw new GenerationException("The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.",
-                                          packageName + "." + className);
-        }
-
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("packageName",
@@ -236,14 +159,6 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                  className);
         root.put("identifier",
                  identifier);
-        root.put("owningPlace",
-                 owningPlace);
-        root.put("preferredHeight",
-                 preferredHeight);
-        root.put("preferredWidth",
-                 preferredWidth);
-        root.put("getContextIdMethodName",
-                 getContextIdMethodName);
         root.put("realClassName",
                  classElement.getSimpleName().toString());
         root.put("beanActivatorClass",
@@ -252,26 +167,12 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                  onStartup0ParameterMethodName);
         root.put("onStartup1ParameterMethodName",
                  onStartup1ParameterMethodName);
-        root.put("onMayCloseMethodName",
-                 onMayCloseMethodName);
         root.put("onCloseMethodName",
                  onCloseMethodName);
-        root.put("onShutdownMethodName",
-                 onShutdownMethodName);
         root.put("onOpenMethodName",
                  onOpenMethodName);
-        root.put("onLostFocusMethodName",
-                 onLostFocusMethodName);
-        root.put("onFocusMethodName",
-                 onFocusMethodName);
         root.put("getDefaultPositionMethodName",
                  getDefaultPositionMethodName);
-        root.put("getTitleMethodName",
-                 getTitleMethodName);
-        root.put("getTitleWidgetMethodName",
-                 getTitleWidgetMethodName);
-        root.put("isTitleWidgetMethodReturnTypeElement",
-                 isTitleWidgetMethodReturnTypeElement);
         root.put("getWidgetMethodName",
                  getWidgetMethodName);
         root.put("isWidgetMethodReturnTypeElement",
@@ -281,13 +182,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         root.put("hasPresenterInitMethod",
                  hasPresenterInitMethod);
         root.put("needsElementWrapper",
-                 needsElementWrapper);
-        root.put("getMenuBarMethodName",
-                 getMenuBarMethodName);
-        root.put("getToolBarMethodName",
-                 getToolBarMethodName);
-        root.put("isDynamic",
-                 isDynamic);
+                 isWidgetMethodReturnTypeElement);
         root.put("qualifiers",
                  qualifiers);
 

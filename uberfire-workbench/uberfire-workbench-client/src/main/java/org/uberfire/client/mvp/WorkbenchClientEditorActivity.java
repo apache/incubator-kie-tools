@@ -26,9 +26,9 @@ import org.uberfire.workbench.model.ActivityResourceType;
 public interface WorkbenchClientEditorActivity extends WorkbenchActivity {
 
     /**
-     *  
+     *
      *  Set the editor content
-     *  
+     *
      * @param path
      *  Content Relative Path
      * @param value
@@ -50,8 +50,6 @@ public interface WorkbenchClientEditorActivity extends WorkbenchActivity {
      * @return
      */
     Promise<String> getPreview();
-
-    boolean isDirty();
 
     @Override
     default ResourceType getResourceType() {

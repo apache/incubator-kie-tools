@@ -16,6 +16,8 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchClientEditor;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not
@@ -23,7 +25,8 @@ import org.uberfire.client.annotations.WorkbenchClientEditor;
  */
 public abstract class AbstractWorkbenchClientEditorActivity extends AbstractWorkbenchActivity implements WorkbenchClientEditorActivity {
 
-    public AbstractWorkbenchClientEditorActivity(final PlaceManager placeManager) {
-        super(placeManager);
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.CLIENT_EDITOR;
     }
 }

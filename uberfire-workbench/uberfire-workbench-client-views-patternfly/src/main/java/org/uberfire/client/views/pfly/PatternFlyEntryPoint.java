@@ -23,7 +23,6 @@ import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
 @EntryPoint
-@Bundle("resources/i18n/Constants.properties")
 public class PatternFlyEntryPoint {
 
     @PostConstruct

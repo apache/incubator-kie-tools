@@ -16,13 +16,7 @@
 
 package org.uberfire.client.mvp;
 
-import java.util.Set;
-
-import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.WorkbenchServicesProxy;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -34,7 +28,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
  * modified it (for example, by dragging and dropping components, launching new activities, and so on).
  * <p/>
  * Structurally, the PerspectiveManager performs actions at the request of the {@link PlaceManager}, and it accomplishes
- * these actions by delegating to the {@link PanelManager} and {@link WorkbenchServicesProxy}.
+ * these actions by delegating to the {@link PanelManager}.
  */
 public interface PerspectiveManager {
 
@@ -43,22 +37,6 @@ public interface PerspectiveManager {
      * the workbench has bootstrapped, the return value will not be null again.
      */
     PerspectiveActivity getCurrentPerspective();
-
-    /**
-     * Returns a description of the current perspective which reflects the current visible state of the user interface.
-     */
-    PerspectiveDefinition getLivePerspectiveDefinition();
-
-    /**
-     * Saves the current live perspective definition to the server. Saved perspective definitions override the default
-     * definition produced by the {@link PerspectiveActivity#getDefaultPerspectiveLayout()} when switching to a new
-     * perspective. This method has no effect if the current perspective is transient.
-     * @param doWhenFinished action to execute after the save is complete (or immediately in the case of a transient perspective).
-     * Must not be null. To do nothing, use {@link Commands#DO_NOTHING}.
-     * @see WorkbenchPerspective#isTransient()
-     * @see PerspectiveActivity#isTransient()
-     */
-    void savePerspectiveState(final Command doWhenFinished);
 
     /**
      * This method should only be invoked by PlaceManager. To launch a perspective within an UberFire app, pass a
@@ -79,33 +57,4 @@ public interface PerspectiveManager {
     void switchToPerspective(final PlaceRequest placeRequest,
                              final PerspectiveActivity perspective,
                              final ParameterizedCommand<PerspectiveDefinition> doWhenFinished);
-
-    /**
-     * Retrieves the definitions of all the persisted perspectives.
-     * @param doWhenFinished The command to execute once the perspective definitions are retrieved.
-     */
-    void loadPerspectiveStates(final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished);
-
-    /**
-     * This method removes any persisted definition for the given perspective. Subsequent requests for a previously
-     * persisted perspective should load the Perspective definition from the applicable object.
-     * @param doWhenFinished The command to execute once the perspective state have been removed. Must not be null.
-     */
-    void removePerspectiveState(final String perspectiveId,
-                                final Command doWhenFinished);
-
-    /**
-     * This method removes all persisted Perspective definitions. Subsequent requests for previously persisted
-     * perspectives should load the Perspective definition from the applicable object.
-     * @param doWhenFinished The command to execute once the perspective states have been removed. Must not be null.
-     */
-    void removePerspectiveStates(final Command doWhenFinished);
-
-    /**
-     * Fetches the current default perspective identifier.
-     * @return The default perspective identifier of the workbench, if one exists.
-     */
-    String getDefaultPerspectiveIdentifier();
-
-    PlaceRequest getCurrentPerspectivePlaceRequest();
 }

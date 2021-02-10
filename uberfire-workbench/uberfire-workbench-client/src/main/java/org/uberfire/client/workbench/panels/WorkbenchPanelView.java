@@ -20,9 +20,7 @@ import java.util.Collection;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -74,7 +72,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      * optional feature of WorkbenchPanelView: not all implementations support nested child panels. Additionally,
      * different panels support different {@link Position} types. Implementations should document whether or not they
      * support child panels, and if so, what types of Positions they understand.
-     * @param panel specifies the size that should be imposed on the nested view. Must not be null. FIXME: is this
+     * @param panel specifies the size that should be imposed on the nested view. Must not be null.
      * sensible/correct?
      * @param view the panel to nest inside this one. Must not be null.
      * @param position specifies which edge of this panel will be shared with the nested panel. Must not be null.
@@ -93,17 +91,6 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
     boolean removePanel(WorkbenchPanelView<?> child);
 
     /**
-     * Assigns the given title to the given part, if the part belongs to this panel.
-     * @param part the part whose title to change. Must not be null.
-     * @param title the new title. Must not be null.
-     * @param titleDecoration An optional widget to display beside the title. Note that some implementations do not support title
-     * decorations, and they will ignore this. Null is permitted, and means no decoration.
-     */
-    void changeTitle(final PartDefinition part,
-                     final String title,
-                     final IsWidget titleDecoration);
-
-    /**
      * Makes the given part visible and focused, if it belongs to this view.
      * @param part the part to reveal and give focus to.
      * @return true if the part was found, made visible, and given focus. False if not.
@@ -118,40 +105,12 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
     boolean removePart(final PartDefinition part);
 
     /**
-     * Informs this view that it has gained or lost keyboard focus. Focused views may respond by updating their style to
-     * look more prominent than unfocused views.
-     * @param hasFocus if true, this panel now has focus. If false, this panel does not have focus.
-     */
-    void setFocus(boolean hasFocus);
-
-    /**
      * Sets the ID of the physical root element of this view. For HTML-based views, this is the {@code id} attribute of
      * the view's top-level DOM element. Implementations for other view technologies should map this to whatever the
      * underlying widget/component system uses for unique identifiers.
      * @param elementId the element ID to set. If null, the ID value will be cleared.
      */
     void setElementId(String elementId);
-
-    /**
-     * Returns the widget that defines the boundaries of this panel view for purposes of drag-and-drop.
-     * @return the widget whose boundaries define the region where workbench parts can be dropped into this panel. For
-     * simple panel types that do not support child panels, this will typically be the same widget returned by
-     * {@link #asWidget()}. For fancier panels, this will typically be some child panel within the view's
-     * internal structure.
-     * <p>
-     * If the return value is null, parts will not be droppable on this view.
-     */
-    Widget getPartDropRegion();
-
-    /**
-     * Maximizes this view using {@link WorkbenchLayout#maximize(Widget)}.
-     */
-    void maximize();
-
-    /**
-     * Restores this view to its original unmaximized size and position using {@link WorkbenchLayout#unmaximize(Widget)}.
-     */
-    void unmaximize();
 
     /**
      * Returns the parts currently held by the view.

@@ -34,7 +34,6 @@
     <module>uberfire-widgets-commons</module>
     <module>uberfire-widgets-core</module>
     <module>uberfire-widgets-properties-editor</module>
-    <module>uberfire-widgets-sandbox</module>
     <module>uberfire-widgets-service</module>
     <module>uberfire-widgets-table</module>
   </modules>

@@ -36,15 +36,11 @@ public class DefaultPreferenceScopeTypes implements PreferenceScopeTypes {
 
     private Map<String, DefaultKey> defaultKeyByType;
 
-    private UsernameProvider usernameProvider;
-
     protected DefaultPreferenceScopeTypes() {
     }
 
     @Inject
     public DefaultPreferenceScopeTypes(final UsernameProvider usernameProvider) {
-        this.usernameProvider = usernameProvider;
-
         defaultKeyByType = new HashMap<>();
         defaultKeyByType.put(DefaultScopes.ALL_USERS.type(),
                              DefaultScopes.ALL_USERS::type);

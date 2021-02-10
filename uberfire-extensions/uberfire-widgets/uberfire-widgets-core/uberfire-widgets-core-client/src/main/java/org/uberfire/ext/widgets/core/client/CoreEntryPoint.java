@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
-import org.uberfire.ext.widgets.core.client.resources.WizardResources;
 
 /**
  * Bootstrap widgets-core
@@ -30,7 +29,6 @@ public class CoreEntryPoint {
     @PostConstruct
     public void startApp() {
         //Ensure CSS has been loaded
-        WizardResources.INSTANCE.css().ensureInjected();
         TreeNavigatorResources.INSTANCE.css().ensureInjected();
     }
 }

@@ -54,22 +54,6 @@ public interface UberfireDocks {
     void close(UberfireDock dock);
 
     /**
-     * Toggle a {@link UberfireDock} from a given perspective.
-     * Switch from open/close a dock
-     * @param dock that will be deselected.
-     */
-    void toggle(UberfireDock dock);
-
-    /**
-     * Hides the docks bar associated with {@link UberfireDockPosition}
-     * for a given perspective.
-     * @param position the dock position that will be hidden.
-     * @param perspectiveName pespective that the dock will be hidden.
-     */
-    void hide(UberfireDockPosition position,
-              String perspectiveName);
-
-    /**
      * Shows the docks bar associated with {@link UberfireDockPosition}
      * for a given perspective.
      * @param position the dock position that will be shown.

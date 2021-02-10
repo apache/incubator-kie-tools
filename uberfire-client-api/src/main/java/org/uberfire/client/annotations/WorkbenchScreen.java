@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 /**
  * Classes annotated with this are considered WorkbenchParts that display some form of non-editable (but possibly still
  * interactive) content. If the content is associated with a VFS path, or otherwise represents some sort of document
- * that can be edited and saved, developers should consider using {@code @WorkbenchEditor}.
+ * that can be edited and saved, developers should consider using {@code @WorkbenchClientEditor}.
  * <p>
  * All classes annotated with {@code @WorkbenchScreen} must have a declared or inherited method annotated with
  * {@code @WorkbenchPartTitle}.
@@ -44,11 +44,7 @@ import java.lang.annotation.Target;
  * <ul>
  * <li>{@code @OnStartup}</li>
  * <li>{@code @OnOpen}</li>
- * <li>{@code @OnFocus}</li>
- * <li>{@code @OnLostFocus}</li>
- * <li>{@code @OnMayClose}</li>
  * <li>{@code @OnClose}</li>
- * <li>{@code @OnShutdown}</li>
  * </ul>
  */
 @Inherited
@@ -60,32 +56,4 @@ public @interface WorkbenchScreen {
      * Identifier that should be unique within application.
      */
     String identifier();
-
-    /**
-     * By default, a Workbench Screen will show up in the current active perspective. If this parameter is specified,
-     * this screen will only be shown on the given perspective. An attempt to navigate to this screen when
-     * a different perspective is active will first result in a switch to the owning perspective, then the screen will
-     * be shown in that perspective.
-     */
-    Class<?> owningPerspective() default void.class;
-
-    /**
-     * Defines the preferred height. Preferred means that this Height will be used only if this screen
-     * is the trigger to create a new panel, if panel already exists this information is ignored.
-     */
-    int preferredHeight() default -1;
-
-    /**
-     * Defines the preferred width. Preferred means that this Width will be used only if this screen
-     * is the trigger to create a new panel, if panel already exists this information is ignored.
-     */
-    int preferredWidth() default -1;
-
-    /**
-     * Indicates that this screen can be discovered and loaded at runtime.
-     * This is useful when building plugins or extensions where the screen
-     * is part of an external script loaded at runtime, as opposed to being
-     * statically compiled into the main application.
-     */
-    boolean isDynamic() default false;
 }

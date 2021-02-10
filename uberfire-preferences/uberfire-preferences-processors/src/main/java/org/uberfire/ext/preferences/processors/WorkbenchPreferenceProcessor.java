@@ -32,7 +32,7 @@ import javax.tools.Diagnostic;
 
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.GenerationCompleteCallback;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 
 /**

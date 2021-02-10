@@ -20,18 +20,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
 
-/**
- *
- */
 public class PageImpl implements Page {
 
     private final String label;
     private final PageView view;
-
-    public PageImpl(final IsWidget widget) {
-        this(widget,
-             "");
-    }
 
     public PageImpl(final IsWidget widget,
                     final String label) {

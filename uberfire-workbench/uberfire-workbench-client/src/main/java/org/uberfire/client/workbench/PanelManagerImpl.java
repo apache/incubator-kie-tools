@@ -32,8 +32,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,17 +41,7 @@ import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.events.DropPlaceEvent;
-import org.uberfire.client.workbench.events.PanelFocusEvent;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceHiddenEvent;
-import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
-import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.debug.Debug;
@@ -65,7 +53,6 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.workbench.model.menu.Menus;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.ensureIterable;
@@ -76,8 +63,8 @@ import static org.uberfire.plugin.PluginUtil.ensureIterable;
 @ApplicationScoped
 public class PanelManagerImpl implements PanelManager {
 
-    protected final Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
-    protected final Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
+    protected final Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<>();
+    protected final Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<>();
     /**
      * Remembers which HasWidgets contains each existing custom panel. Items are removed from this map when the panels
      * are closed/removed.
@@ -94,13 +81,7 @@ public class PanelManagerImpl implements PanelManager {
      */
     protected final Map<PanelDefinition, elemental2.dom.HTMLElement> customPanelsInsideElemental2HTMLElements = new HashMap<>();
 
-    protected Event<PlaceGainFocusEvent> placeGainFocusEvent;
-    protected Event<PlaceLostFocusEvent> placeLostFocusEvent;
-    protected Event<PanelFocusEvent> panelFocusEvent;
     protected Event<SelectPlaceEvent> selectPlaceEvent;
-    protected Event<PlaceMaximizedEvent> placeMaximizedEvent;
-    protected Event<PlaceMinimizedEvent> placeMinimizedEvent;
-    protected Event<PlaceHiddenEvent> placeHiddenEvent;
     protected SyncBeanManager iocManager;
     protected Instance<PlaceManager> placeManager;
     /**
@@ -109,67 +90,33 @@ public class PanelManagerImpl implements PanelManager {
      * UberView -> Presenter -> Definition). This may change in the future. See UF-117.
      */
     protected PanelDefinition rootPanelDef = null;
-    protected PartDefinition activePart = null;
-    LayoutSelection layoutSelection;
     private BeanFactory beanFactory;
     private Elemental2DomUtil elemental2DomUtil;
+    private WorkbenchLayout workbenchLayout;
     /**
      * Registration for the native preview handler that watches for ^M events and maximizes/restores the current panel.
      */
     private HandlerRegistration globalHandlerRegistration;
 
-    /**
-     * The currently maximized panel. Set to null when a panel is not maximized.
-     */
-    private WorkbenchPanelPresenter maximizedPanel = null;
-
     @Inject
     public PanelManagerImpl(
-            Event<PlaceGainFocusEvent> placeGainFocusEvent,
-            Event<PlaceLostFocusEvent> placeLostFocusEvent,
-            Event<PanelFocusEvent> panelFocusEvent,
             Event<SelectPlaceEvent> selectPlaceEvent,
-            Event<PlaceMaximizedEvent> placeMaximizedEvent,
-            Event<PlaceMinimizedEvent> placeMinimizedEventEvent,
-            Event<PlaceHiddenEvent> placeHiddenEvent,
             SyncBeanManager iocManager,
             Instance<PlaceManager> placeManager,
-            LayoutSelection layoutSelection,
             BeanFactory beanFactory,
-            Elemental2DomUtil elemental2DomUtil) {
-        this.placeGainFocusEvent = placeGainFocusEvent;
-        this.placeLostFocusEvent = placeLostFocusEvent;
-        this.panelFocusEvent = panelFocusEvent;
+            Elemental2DomUtil elemental2DomUtil,
+            WorkbenchLayout workbenchLayout) {
         this.selectPlaceEvent = selectPlaceEvent;
-        this.placeMaximizedEvent = placeMaximizedEvent;
-        this.placeMinimizedEvent = placeMinimizedEventEvent;
-        this.placeHiddenEvent = placeHiddenEvent;
         this.iocManager = iocManager;
         this.placeManager = placeManager;
-        this.layoutSelection = layoutSelection;
         this.beanFactory = beanFactory;
         this.elemental2DomUtil = elemental2DomUtil;
+        this.workbenchLayout = workbenchLayout;
     }
 
     @PostConstruct
     private void setup() {
-        globalHandlerRegistration = com.google.gwt.user.client.Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-                if (event.getTypeInt() == com.google.gwt.user.client.Event.ONKEYPRESS &&
-                        event.getNativeEvent().getCharCode() == 'm' &&
-                        event.getNativeEvent().getCtrlKey()) {
-                    if (maximizedPanel != null) {
-                        maximizedPanel.unmaximize();
-                        maximizedPanel = null;
-                    } else if (activePart != null) {
-                        WorkbenchPanelPresenter activePanelPresenter = mapPanelDefinitionToPresenter.get(activePart.getParentPanel());
-                        activePanelPresenter.maximize();
-                        maximizedPanel = activePanelPresenter;
-                    }
-                }
-            }
+        globalHandlerRegistration = com.google.gwt.user.client.Event.addNativePreviewHandler(event -> {
         });
     }
 
@@ -202,7 +149,7 @@ public class PanelManagerImpl implements PanelManager {
             throw new IllegalStateException(message);
         }
 
-        HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
+        HasWidgets perspectiveContainer = workbenchLayout.getPerspectiveContainer();
         perspectiveContainer.clear();
 
         getBeanFactory().destroy(oldRootPanelPresenter);
@@ -222,9 +169,7 @@ public class PanelManagerImpl implements PanelManager {
     public void addWorkbenchPart(final PlaceRequest place,
                                  final PartDefinition partDef,
                                  final PanelDefinition panelDef,
-                                 final Menus menus,
-                                 final UIPart uiPart,
-                                 final String contextId,
+                                 final IsWidget widget,
                                  final Integer preferredWidth,
                                  final Integer preferredHeight) {
         checkNotNull("panel",
@@ -237,25 +182,14 @@ public class PanelManagerImpl implements PanelManager {
 
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get(partDef);
         if (partPresenter == null) {
-            partPresenter = getBeanFactory().newWorkbenchPart(menus,
-                                                              uiPart.getTitle(),
-                                                              uiPart.getTitleDecoration(),
-                                                              partDef,
+            partPresenter = getBeanFactory().newWorkbenchPart(partDef,
                                                               panelPresenter.getPartType());
-            partPresenter.setWrappedWidget(uiPart.getWidget()); //FIXME: TIAGO: AQUI O ATTACH NO DOM ACONTECE
-            partPresenter.setContextId(contextId);
+            partPresenter.setWrappedWidget(widget); //FIXME: TIAGO: AQUI O ATTACH NO DOM ACONTECE
             mapPartDefinitionToPresenter.put(partDef,
                                              partPresenter);
         }
 
-        panelPresenter.addPart(partPresenter,
-                               contextId);
-        if (panelPresenter.getParent() instanceof DockingWorkbenchPanelPresenter) {
-            DockingWorkbenchPanelPresenter parent = (DockingWorkbenchPanelPresenter) panelPresenter.getParent();
-            parent.setChildSize(panelPresenter,
-                                preferredWidth,
-                                preferredHeight);
-        }
+        panelPresenter.addPart(partPresenter);
 
         //Select newly inserted part
         selectPlaceEvent.fire(new SelectPlaceEvent(place));
@@ -343,54 +277,6 @@ public class PanelManagerImpl implements PanelManager {
         }
     }
 
-    @Override
-    public void onPartFocus(final PartDefinition part) {
-        activePart = part;
-        panelFocusEvent.fire(new PanelFocusEvent(part.getParentPanel()));
-        placeGainFocusEvent.fire(new PlaceGainFocusEvent(part.getPlace()));
-    }
-
-    @Override
-    public void onPartMaximized(final PartDefinition part) {
-        placeMaximizedEvent.fire(new PlaceMaximizedEvent(part.getPlace()));
-    }
-
-    @Override
-    public void onPartMinimized(final PartDefinition part) {
-        placeMinimizedEvent.fire(new PlaceMinimizedEvent(part.getPlace()));
-    }
-
-    @Override
-    public PartDefinition getFocusedPart() {
-        return activePart;
-    }
-
-    @Override
-    public void onPartHidden(final PartDefinition part) {
-        placeHiddenEvent.fire(new PlaceHiddenEvent(part.getPlace()));
-    }
-
-    @Override
-    public void onPartLostFocus() {
-        if (activePart == null) {
-            return;
-        }
-        placeLostFocusEvent.fire(new PlaceLostFocusEvent(activePart.getPlace()));
-        activePart = null;
-    }
-
-    @Override
-    public void onPanelFocus(final PanelDefinition panel) {
-        for (Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet()) {
-            e.getValue().setFocus(e.getKey().asString().equals(panel.asString()));
-        }
-    }
-
-    @Override
-    public void closePart(final PartDefinition part) {
-        placeManager.get().closePlace(part.getPlace());
-    }
-
     void onSelectPlaceEvent(@Observes SelectPlaceEvent event) {
         final PlaceRequest place = event.getPlace();
 
@@ -400,28 +286,9 @@ public class PanelManagerImpl implements PanelManager {
             for (PartDefinition part : ensureIterable(panelPresenter.getDefinition().getParts())) {
                 if (part.getPlace().asString().equals(place.asString())) {
                     panelPresenter.selectPart(part);
-                    onPanelFocus(e.getKey());
                 }
             }
         }
-    }
-
-    @SuppressWarnings("unused")
-    private void onDropPlaceEvent(@Observes DropPlaceEvent event) {
-        final PartDefinition part = getPartForPlace(event.getPlace());
-        if (part != null) {
-            removePart(part);
-        }
-    }
-
-    @Override
-    public PanelDefinition getPanelForPlace(final PlaceRequest place) {
-        for (PartDefinition part : mapPartDefinitionToPresenter.keySet()) {
-            if (part.getPlace().equals(place)) {
-                return part.getParentPanel();
-            }
-        }
-        return null;
     }
 
     /**
@@ -436,29 +303,6 @@ public class PanelManagerImpl implements PanelManager {
             }
         }
         return null;
-    }
-
-    @SuppressWarnings("unused")
-    private void onChangeTitleWidgetEvent(@Observes ChangeTitleWidgetEvent event) {
-        if (event.getPlaceRequest() == null) {
-            return;
-        }
-        final PlaceRequest place = event.getPlaceRequest();
-        final IsWidget titleDecoration = event.getTitleDecoration();
-        final String title = event.getTitle();
-        for (Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet()) {
-            final PanelDefinition panel = e.getKey();
-            final WorkbenchPanelPresenter presenter = e.getValue();
-            for (PartDefinition part : ensureIterable(panel.getParts())) {
-                if (place.equals(part.getPlace())) {
-                    mapPartDefinitionToPresenter.get(part).setTitle(title);
-                    presenter.changeTitle(part,
-                                          title,
-                                          titleDecoration);
-                    break;
-                }
-            }
-        }
     }
 
     /**
@@ -489,7 +333,7 @@ public class PanelManagerImpl implements PanelManager {
         WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get(targetPanel);
 
         if (targetPanelPresenter == null) {
-            targetPanelPresenter = beanFactory.newWorkbenchPanel(targetPanel); //FIXME: TIAGO -> Aqui só vai precisar do StaticWorkbenchPanelPresenter
+            targetPanelPresenter = beanFactory.newWorkbenchPanel(targetPanel);
             mapPanelDefinitionToPresenter.put(targetPanel,
                                               targetPanelPresenter);
         }
@@ -521,8 +365,6 @@ public class PanelManagerImpl implements PanelManager {
             newPanel = childPanel;
         }
 
-        onPanelFocus(newPanel);
-
         return newPanel;
     }
 
@@ -533,24 +375,6 @@ public class PanelManagerImpl implements PanelManager {
                                          new CustomPanelDefinitionImpl(panelType,
                                                                        container),
                                          false);
-    }
-
-    @Override
-    public CustomPanelDefinition addCustomPanel(final HTMLElement container,
-                                                final String panelType) {
-        return addCustomPanelOnContainer(container,
-                                         new CustomPanelDefinitionImpl(panelType,
-                                                                       container),
-                                         false);
-    }
-
-    @Override
-    public CustomPanelDefinition addCustomPanel(final elemental2.dom.HTMLElement container,
-                                                final String panelType) {
-        return addCustomPanelOnContainer(container,
-                                         new CustomPanelDefinitionImpl(panelType,
-                                                                       container),
-                                         true);
     }
 
     private CustomPanelDefinition addCustomPanelOnContainer(final Object container,
@@ -584,7 +408,6 @@ public class PanelManagerImpl implements PanelManager {
 
         mapPanelDefinitionToPresenter.put(panelDef,
                                           panelPresenter);
-        onPanelFocus(panelDef);
         return panelDef;
     }
 

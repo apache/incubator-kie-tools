@@ -61,12 +61,6 @@ public class UberfireDocksContainer {
         }
     }
 
-    public void addBreadcrumbs(IsElement isElement,
-                               Double size) {
-        rootContainer.addNorth(ElementWrapperWidget.getWidget(isElement.getElement()),
-                               size);
-    }
-
     /**
      * @deprecated You should use Errai UI version of
      * this method {@link #show(IsElement isElement)}

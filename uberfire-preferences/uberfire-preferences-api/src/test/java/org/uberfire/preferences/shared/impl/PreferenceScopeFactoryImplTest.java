@@ -39,7 +39,7 @@ public class PreferenceScopeFactoryImplTest {
         //genericScope = mock(PreferenceScope.class);
 
         //final SessionInfoMock sessionInfo = new SessionInfoMock();
-        final PreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(null));
+        final PreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes();
         scopeFactory = new PreferenceScopeFactoryImpl(scopeTypes);
     }
 

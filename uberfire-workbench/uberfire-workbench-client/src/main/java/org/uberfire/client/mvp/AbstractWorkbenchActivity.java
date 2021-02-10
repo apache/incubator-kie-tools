@@ -15,14 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.function.Consumer;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * Implementation of behaviour common to all workbench editors and screens.
@@ -32,60 +26,9 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  */
 public abstract class AbstractWorkbenchActivity extends AbstractActivity implements WorkbenchActivity {
 
-    public AbstractWorkbenchActivity(final PlaceManager placeManager) {
-        super(placeManager);
-    }
-
     @Override
     public Position getDefaultPosition() {
         return CompassPosition.ROOT;
     }
 
-    /**
-     * This default implementation returns null, meaning this activity can be displayed in any perspective.
-     */
-    @Override
-    public PlaceRequest getOwningPlace() {
-        return null;
-    }
-
-    @Override
-    public boolean onMayClose() {
-        return true;
-    }
-
-    @Override
-    public abstract String getTitle();
-
-    @Override
-    public IsWidget getTitleDecoration() {
-        return null;
-    }
-
-    @Override
-    public abstract IsWidget getWidget();
-
-    @Override
-    public void onLostFocus() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onFocus() {
-    }
-
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(null);
-    }
-
-    @Override
-    public ToolBar getToolBar() {
-        return null;
-    }
-
-    @Override
-    public String contextId() {
-        return null;
-    }
 }

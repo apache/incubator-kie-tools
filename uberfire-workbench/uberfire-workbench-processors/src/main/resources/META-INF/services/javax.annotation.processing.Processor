@@ -14,10 +14,6 @@
 # limitations under the License.
 #
 
-org.uberfire.annotations.processors.WorkbenchSplashScreenProcessor
-org.uberfire.annotations.processors.WorkbenchContextProcessor
 org.uberfire.annotations.processors.WorkbenchScreenProcessor
-org.uberfire.annotations.processors.WorkbenchEditorProcessor
 org.uberfire.annotations.processors.WorkbenchClientEditorProcessor
-org.uberfire.annotations.processors.WorkbenchPopupProcessor
 org.uberfire.annotations.processors.PerspectiveProcessor

@@ -39,7 +39,6 @@ public class TextEditorView extends Composite
     private static TextEditorViewBinder uiBinder = GWT.create(TextEditorViewBinder.class);
     @UiField
     public AceEditor editor;
-    private boolean isDirty = false;
 
     @PostConstruct
     public void init() {
@@ -65,16 +64,6 @@ public class TextEditorView extends Composite
     @Override
     public void setFocus() {
         editor.setFocus();
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setDirty(boolean dirty) {
-        isDirty = dirty;
     }
 
     @Override

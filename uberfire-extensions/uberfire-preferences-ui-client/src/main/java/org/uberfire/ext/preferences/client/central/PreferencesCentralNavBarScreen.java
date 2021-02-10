@@ -20,7 +20,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructurePresenter;
@@ -51,11 +50,6 @@ public class PreferencesCentralNavBarScreen {
         hierarchyStructurePresenter.init(preferenceIdentifier,
                                          scopeResolutionStrategyInfo,
                                          scope);
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Preferences Central";
     }
 
     @WorkbenchPartView

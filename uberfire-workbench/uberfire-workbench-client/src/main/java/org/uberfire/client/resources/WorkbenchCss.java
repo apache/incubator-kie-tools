@@ -20,42 +20,9 @@ import com.google.gwt.resources.client.CssResource;
 /**
  * GWT managed CSS for Workbench
  */
-public interface WorkbenchCss
-        extends
-        CssResource {
-
-    @ClassName("uf-drop-target-highlight")
-    String dropTargetHighlight();
-
-    @ClassName("uf-drop-target-compass")
-    String dropTargetCompass();
-
-    String notification();
-
-    String toolbar();
-
-    String statusBar();
+public interface WorkbenchCss extends CssResource {
 
     @ClassName("uf-activeNavTabs")
     String activeNavTabs();
 
-    String tabCloseButton();
-
-    @ClassName("uf-listbar")
-    String listbar();
-
-    @ClassName("show-context")
-    String showContext();
-
-    @ClassName("uf-split-layout-panel")
-    String splitLayoutPanel();
-
-    @ClassName("uf-split-layout-panel-hdragger")
-    String splitLayoutPanelHDragger();
-
-    @ClassName("uf-split-layout-panel-vdragger")
-    String splitLayoutPanelVDragger();
-
-    @ClassName("uf-modal")
-    String modal();
 }

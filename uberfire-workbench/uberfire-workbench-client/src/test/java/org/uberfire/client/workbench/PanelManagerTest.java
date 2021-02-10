@@ -35,12 +35,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.workbench.events.PanelFocusEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
-import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
@@ -88,14 +84,6 @@ public class PanelManagerTest {
     StubPlaceLostFocusEvent placeLostFocusEvent;
     @Mock
     StubSelectPlaceEvent selectPlaceEvent;
-    @Mock
-    StubPanelFocusEvent panelFocusEvent;
-    @Mock
-    StubPlaceMaximizedEvent placeMaximizedEvent;
-    @Mock
-    StubPlaceMinimizedEvent placeMinimizedEvent;
-    @Mock
-    StubPlaceHiddenEvent placeHidEvent;
     @Mock
     SimpleWorkbenchPanelPresenter workbenchPanelPresenter;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -155,11 +143,7 @@ public class PanelManagerTest {
 
         panelManager = spy(new PanelManagerImpl(placeGainFocusEvent,
                                                 placeLostFocusEvent,
-                                                panelFocusEvent,
                                                 selectPlaceEvent,
-                                                placeMaximizedEvent,
-                                                placeMinimizedEvent,
-                                                placeHidEvent,
                                                 null,
                                                 null,
                                                 layoutSelection,
@@ -445,22 +429,6 @@ public class PanelManagerTest {
     }
 
     static class StubSelectPlaceEvent extends StubEventSource<SelectPlaceEvent> {
-
-    }
-
-    static class StubPanelFocusEvent extends StubEventSource<PanelFocusEvent> {
-
-    }
-
-    static class StubPlaceMaximizedEvent extends StubEventSource<PlaceMaximizedEvent> {
-
-    }
-
-    static class StubPlaceMinimizedEvent extends StubEventSource<PlaceMinimizedEvent> {
-
-    }
-
-    static class StubPlaceHiddenEvent extends StubEventSource<PlaceHiddenEvent> {
 
     }
 }

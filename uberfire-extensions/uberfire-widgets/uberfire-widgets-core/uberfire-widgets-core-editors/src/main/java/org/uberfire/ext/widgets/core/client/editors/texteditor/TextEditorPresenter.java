@@ -19,63 +19,14 @@ package org.uberfire.ext.widgets.core.client.editors.texteditor;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
-import org.uberfire.ext.widgets.core.client.resources.i18n.EditorsConstants;
-import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnStartup;
 
 public abstract class TextEditorPresenter {
 
     @Inject
     public View view;
     protected Path path;
-    @Inject
-    private Caller<VFSService> vfsServices;
-
-    @OnStartup
-    public void onStartup(final ObservablePath path) {
-        this.path = path;
-        vfsServices.call(new RemoteCallback<String>() {
-            @Override
-            public void callback(String response) {
-                if (response == null) {
-                    view.setContent(EditorsConstants.INSTANCE.EmptyEntry(),
-                                    getAceEditorMode());
-                } else {
-                    view.setContent(response,
-                                    getAceEditorMode());
-                }
-                onAfterViewLoaded();
-            }
-        }).readAllString(path);
-    }
-
-    /**
-     * This is called after the view's content has been loaded. Sub-classes can override
-     * this method to perform applicable actions after the view's content has been set.
-     * The default implementation does nothing.
-     */
-    protected void onAfterViewLoaded() {
-    }
-
-    /**
-     * This allows sub-classes to determine the Mode of the AceEditor.
-     * By default the AceEditor assumes the AceEditorMode.TEXT.
-     * @return
-     */
-    public AceEditorMode getAceEditorMode() {
-        return AceEditorMode.TEXT;
-    }
-
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
-    }
 
     public void onOpen() {
         view.setFocus();
@@ -95,10 +46,6 @@ public abstract class TextEditorPresenter {
         String getContent();
 
         void setFocus();
-
-        boolean isDirty();
-
-        void setDirty(final boolean dirty);
 
         void setReadOnly(final boolean isReadOnly);
     }

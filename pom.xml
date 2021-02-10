@@ -839,7 +839,6 @@
     <module>uberfire-preferences</module>
     <module>uberfire-extensions</module>
     <module>uberfire-m2repo-editor</module>
-    <module>uberfire-message-console</module>
     <module>uberfire-project</module>
     <module>uberfire-services</module>
     <module>uberfire-structure</module>

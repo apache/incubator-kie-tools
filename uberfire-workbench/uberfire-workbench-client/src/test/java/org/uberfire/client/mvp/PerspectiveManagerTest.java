@@ -117,8 +117,7 @@ public class PerspectiveManagerTest {
         });
         doWhenFinishedSave = mock(Command.class);
 
-        fetchCommand = spy(perspectiveManager.new FetchPerspectiveCommand(pr,
-                                                                          oz,
+        fetchCommand = spy(perspectiveManager.new FetchPerspectiveCommand(oz,
                                                                           doAfterFetch));
 
         // simulate "finished saving" callback on wbServices.save()

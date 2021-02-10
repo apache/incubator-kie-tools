@@ -57,14 +57,6 @@ public class StaticFocusedResizePanel
         container.clear();
     }
 
-    public void setFocus(boolean hasFocus) {
-        if (hasFocus) {
-            //style
-        } else {
-            //style
-        }
-    }
-
     @Override
     public HandlerRegistration addSelectionHandler(final SelectionHandler<PartDefinition> handler) {
         return addHandler(handler,

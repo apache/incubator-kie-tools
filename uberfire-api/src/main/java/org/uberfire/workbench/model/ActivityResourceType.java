@@ -27,10 +27,7 @@ public enum ActivityResourceType implements ResourceType {
 
     PERSPECTIVE,
     SCREEN,
-    EDITOR,
-    CLIENT_EDITOR,
-    POPUP,
-    SPLASH;
+    CLIENT_EDITOR;
 
     @Override
     public String getName() {

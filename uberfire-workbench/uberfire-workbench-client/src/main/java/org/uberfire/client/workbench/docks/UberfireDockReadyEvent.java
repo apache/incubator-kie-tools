@@ -20,13 +20,4 @@ import org.uberfire.workbench.events.UberFireEvent;
 
 public class UberfireDockReadyEvent implements UberFireEvent {
 
-    private String currentPerspective;
-
-    public UberfireDockReadyEvent(final String currentPerspective) {
-        this.currentPerspective = currentPerspective;
-    }
-
-    public String getCurrentPerspective() {
-        return currentPerspective;
-    }
 }

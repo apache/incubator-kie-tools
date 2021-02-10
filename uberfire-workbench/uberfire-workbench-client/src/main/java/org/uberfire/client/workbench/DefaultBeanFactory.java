@@ -20,63 +20,35 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.TemplatedActivity;
-import org.uberfire.client.mvp.jsbridge.JsWorkbenchLazyPerspective;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.TemplatedWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans
  */
 @ApplicationScoped
-public class DefaultBeanFactory
-        implements BeanFactory {
+public class DefaultBeanFactory implements BeanFactory {
 
     @Inject
     protected SyncBeanManager iocManager;
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart(final Menus menus,
-                                                   final String title,
-                                                   final IsWidget titleDecoration,
-                                                   final PartDefinition definition,
+    public WorkbenchPartPresenter newWorkbenchPart(final PartDefinition definition,
                                                    final Class<? extends WorkbenchPartPresenter> partType) {
         final WorkbenchPartPresenter part = iocManager.lookupBean(partType).getInstance();
-
-        part.setTitle(title);
-        part.setMenus(menus);
-        part.setTitleDecoration(titleDecoration);
         part.setDefinition(definition);
-
         return part;
     }
 
     @Override
     public WorkbenchPanelPresenter newRootPanel(PerspectiveActivity activity,
                                                 PanelDefinition root) {
-        WorkbenchPanelPresenter panel = newWorkbenchPanel(root);
-        if (panel instanceof TemplatedWorkbenchPanelPresenter) {
-
-            final TemplatedActivity templatedActivity;
-            if (activity instanceof JsWorkbenchLazyPerspective) {
-                templatedActivity = (TemplatedActivity) ((JsWorkbenchLazyPerspective) activity).get();
-            } else {
-                templatedActivity = (TemplatedActivity) activity;
-            }
-
-            ((TemplatedWorkbenchPanelPresenter) panel).setActivity(templatedActivity);
-        }
-        return panel;
+        return newWorkbenchPanel(root);
     }
 
     @Override
@@ -90,13 +62,6 @@ public class DefaultBeanFactory
             }
         }
         throw new IllegalArgumentException("Unknown panel type: " + definition.getPanelType());
-    }
-
-    @Override
-    public CompassDropController newDropController(final WorkbenchPanelView<?> view) {
-        final CompassDropController dropController = iocManager.lookupBean(CompassDropController.class).getInstance();
-        dropController.setup(view);
-        return dropController;
     }
 
     @Override

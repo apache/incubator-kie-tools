@@ -15,14 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.function.Consumer;
-
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * Implementation of behaviour common to all perspective activities. Concrete implementations are typically not written by
@@ -30,35 +25,8 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  */
 public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActivity implements PerspectiveActivity {
 
-    public AbstractWorkbenchPerspectiveActivity(final PlaceManager placeManager) {
-        super(placeManager);
-    }
-
     @Override
     public ResourceType getResourceType() {
         return ActivityResourceType.PERSPECTIVE;
-    }
-
-    @Override
-    public abstract PerspectiveDefinition getDefaultPerspectiveLayout();
-
-    @Override
-    public boolean isDefault() {
-        return false;
-    }
-
-    @Override
-    public boolean isTransient() {
-        return true;
-    }
-
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(null);
-    }
-
-    @Override
-    public ToolBar getToolBar() {
-        return null;
     }
 }

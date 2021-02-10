@@ -14,77 +14,8 @@
  * limitations under the License.
  */
 
-.notification {
-    border: 0;
-    margin: 0;
-    padding: 0;
-    z-index: 100000;
-}
-
-.toolbar {
-    min-height: 30px;
-    margin-top: 0;
-    margin-bottom: 5px;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    background-color: #f5f5f5;
-    border: 1px solid #e3e3e3;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-}
-
-.uf-drop-target-highlight {
-
-}
-
-.uf-drop-target-compass {
-
-}
-
-.statusBar {
-    cursor: default;
-    height: 36px;
-    width: 100%;
-    border-spacing: 0px;
-    background: #c0c0c0;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 2px;
-    padding-right: 2px;
-}
-
 .uf-activeNavTabs {
 
-}
-
-.tabCloseButton {
-    float: none;
-    margin: -2px 0 0 10px;
-}
-
-.uf-listbar {
-    -moz-box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
-    -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
-    background: rgb(245, 245, 245) linear-gradient(rgb(255, 255, 255), rgb(230, 230, 230)) repeat-x;
-    border-image-outset: 0px;
-    border-image-repeat: stretch;
-    border-image-slice: 100%;
-    border-image-source: none;
-    border-image-width: 1;
-    border: 1px solid rgba(0, 0, 0, 0.0980392);
-    border-top-width: 0px;
-    border-bottom-color: rgb(179, 179, 179);
-    box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
-    box-sizing: border-box;
-    color: rgb(51, 51, 51);
-    padding-left: 6px;
-    padding-top: 5px;
-    text-shadow: rgba(255, 255, 255, 0.74902) 0px 1px 1px;
-    height: 32px;
 }
 
 .uf-lock-hint {
@@ -108,15 +39,6 @@
     width: 100%;
 }
 
-.show-context {
-    margin-left: 0;
-    -webkit-transition: all 0.7s ease-out;
-    -moz-transition: all 0.7s ease-out;
-    -ms-transition: all 0.7s ease-out;
-    -o-transition: all 0.7s ease-out;
-    transition: all 0.7s ease-out;
-}
-
 @external .navbar-fixed-top, .navbar-fixed-bottom;
 
 .navbar-fixed-top, .navbar-fixed-bottom {
@@ -130,30 +52,6 @@
    Size and position are handled programmatically in the WorkbenchLayout implementation. */
 .uf-maximized-panel {
     background-color: #fff;
-}
-
-.uf-split-layout-panel {
-
-}
-
-.uf-split-layout-panel-hdragger {
-    background-color: #ddd;
-}
-
-.uf-split-layout-panel-hdragger:hover {
-    cursor: col-resize;
-}
-
-.uf-split-layout-panel-vdragger {
-    background-color: #ddd;
-}
-
-.uf-split-layout-panel-vdragger:hover {
-    cursor: row-resize;
-}
-
-.uf-modal {
-
 }
 
 .uf-no-select {

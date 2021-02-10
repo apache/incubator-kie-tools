@@ -19,16 +19,10 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -43,9 +37,6 @@ public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresent
 
     @Inject
     protected PanelManager panelManager;
-
-    @Inject
-    protected LayoutSelection layoutSelection;
 
     protected P presenter;
 
@@ -74,25 +65,6 @@ public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresent
         return this.presenter;
     }
 
-    protected void addOnFocusHandler(MultiPartWidget widget) {
-        widget.addOnFocusHandler(new Command() {
-            @Override
-            public void execute() {
-                panelManager.onPanelFocus(presenter.getDefinition());
-            }
-        });
-    }
-
-    protected void addSelectionHandler(HasSelectionHandlers<PartDefinition> widget) {
-        widget.addSelectionHandler(new SelectionHandler<PartDefinition>() {
-            @Override
-            public void onSelection(final SelectionEvent<PartDefinition> event) {
-                panelManager.onPartLostFocus();
-                panelManager.onPartFocus(event.getSelectedItem());
-            }
-        });
-    }
-
     @Override
     public void setElementId(String elementId) {
         if (elementId == null) {
@@ -105,28 +77,7 @@ public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresent
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getName());
-        sb.append("@").append(System.identityHashCode(this));
-        sb.append(" id=").append(getElement().getAttribute("id"));
-        return sb.toString();
-    }
-
-    /**
-     * This implementation returns null, meaning this panel does not support parts being dropped on it. Subclasses that
-     * want to support Drag-and-Drop can override.
-     */
-    @Override
-    public Widget getPartDropRegion() {
-        return null;
-    }
-
-    @Override
-    public void maximize() {
-        layoutSelection.get().maximize(this);
-    }
-
-    @Override
-    public void unmaximize() {
-        layoutSelection.get().unmaximize(this);
+        return getClass().getName() + "@" + System.identityHashCode(this) +
+                " id=" + getElement().getAttribute("id");
     }
 }

@@ -23,18 +23,15 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Version;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
  * A class capable of generating source code using FreeMarker templates
  */
 public abstract class AbstractGenerator {
 
-    private static Version FREE_MARKER_VERSION = new Version(Version.intValueFor(2,
+    private static final Version FREE_MARKER_VERSION = new Version(Version.intValueFor(2,
                                                                                  3,
                                                                                  25));
-
-    static boolean FAIL_FOR_TESTING = false;
 
     private static ExceptionInInitializerError INITIALIZER_EXCEPTION = null;
 
@@ -44,9 +41,6 @@ public abstract class AbstractGenerator {
 
     //per-instance static initializer block
     {
-        if (FAIL_FOR_TESTING) {
-            throw new NoClassDefFoundError("Failing for testing purposes");
-        }
         try {
             synchronized (AbstractGenerator.class) {
                 final ClassTemplateLoader loader = new ClassTemplateLoader(getClass(),

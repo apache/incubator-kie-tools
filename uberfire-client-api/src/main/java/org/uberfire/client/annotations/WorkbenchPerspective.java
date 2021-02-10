@@ -46,7 +46,6 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
  * <li>{@code @OnStartup}</li>
  * <li>{@code @OnOpen}</li>
  * <li>{@code @OnClose}</li>
- * <li>{@code @OnShutdown}</li>
  * </ul>
  */
 @Inherited
@@ -59,31 +58,4 @@ public @interface WorkbenchPerspective {
      * @see PlaceRequest
      */
     String identifier();
-
-    /**
-     * Indicates that this perspective should be opened by default when the
-     * workbench first starts. Exactly one perspective in the whole application
-     * should be marked as default.
-     */
-    boolean isDefault() default false;
-
-    /**
-     * If true (the default), every time this perspective is displayed, it
-     * should start fresh with the {@link PerspectiveDefinition} returned by the
-     * method annotated with {@code @Perspective}. If false, the framework will
-     * store the structure of the perspective (panel arrangements and part
-     * placement as modified by the user opening and closing tabs, dragging
-     * parts around, and resizing split panels) on the server individually for
-     * each user, and use that stored definition in preference to the one
-     * returned by the {@code @Perspective} method.
-     */
-    boolean isTransient() default true;
-
-    /**
-     * Indicates that this perspective can be discovered and loaded at runtime.
-     * This is useful when building plugins or extensions where the perspective
-     * is part of an external script loaded at runtime, as opposed to being
-     * statically compiled into the main application.
-     */
-    boolean isDynamic() default false;
 }

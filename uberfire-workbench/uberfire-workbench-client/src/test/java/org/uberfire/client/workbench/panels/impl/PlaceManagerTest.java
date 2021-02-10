@@ -235,7 +235,7 @@ public class PlaceManagerTest {
 
     @Test
     public void testPlaceManagerGetsInitializedToADefaultPlace() throws Exception {
-        placeManager.initPlaceHistoryHandler();
+        placeManager.init();
 
         verify(placeHistoryHandler).initialize(any(PlaceManager.class),
                                              any(EventBus.class),
