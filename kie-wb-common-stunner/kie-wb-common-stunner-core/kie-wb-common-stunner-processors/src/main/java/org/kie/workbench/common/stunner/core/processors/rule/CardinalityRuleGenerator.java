@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
 import org.kie.workbench.common.stunner.core.rule.annotation.AllowedOccurrences;
 import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
 import org.uberfire.annotations.processors.AbstractGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class CardinalityRuleGenerator extends AbstractGenerator {
 

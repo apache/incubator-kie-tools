@@ -27,8 +27,8 @@ import org.kie.soup.project.datamodel.oracle.Annotation;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
-import org.kie.workbench.common.services.datamodel.model.LazyModelField;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
+import org.kie.workbench.common.widgets.client.datamodel.copied.LazyModelField;
+import org.kie.workbench.common.widgets.client.datamodel.copied.PackageDataModelOracleIncrementalPayload;
 
 public class AsyncPackageDataModelOracleUtilities {
 

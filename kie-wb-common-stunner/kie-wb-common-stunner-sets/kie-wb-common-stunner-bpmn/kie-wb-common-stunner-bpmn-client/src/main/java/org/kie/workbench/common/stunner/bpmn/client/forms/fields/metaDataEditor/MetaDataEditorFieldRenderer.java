@@ -36,7 +36,6 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.MetaDataEditorFieldType
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -47,7 +46,6 @@ public class MetaDataEditorFieldRenderer extends FieldRenderer<MetaDataEditorFie
     private MetaDataEditorWidgetView view;
     private final SessionManager sessionManager;
     private Path path;
-    private final ErrorPopupPresenter errorPopupPresenter;
     private final Event<NotificationEvent> notification;
 
     private static final String DELIMITER = "Ø";
@@ -55,11 +53,9 @@ public class MetaDataEditorFieldRenderer extends FieldRenderer<MetaDataEditorFie
     @Inject
     public MetaDataEditorFieldRenderer(final MetaDataEditorWidgetView metaDataEditor,
                                        final SessionManager sessionManager,
-                                       final ErrorPopupPresenter errorPopupPresenter,
                                        final Event<NotificationEvent> notification) {
         this.view = metaDataEditor;
         this.sessionManager = sessionManager;
-        this.errorPopupPresenter = errorPopupPresenter;
         this.notification = notification;
     }
 

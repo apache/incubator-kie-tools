@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
 import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.uberfire.annotations.processors.AbstractGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class ConnectionRuleGenerator extends AbstractGenerator {
 

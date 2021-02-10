@@ -23,7 +23,7 @@ import javax.annotation.processing.Messager;
 
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingPropertyAnnotations;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class BindablePropertyAdapterGenerator extends AbstractBindableAdapterGenerator {
 

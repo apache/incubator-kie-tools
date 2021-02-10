@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client.docks;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
 /**
@@ -38,11 +37,6 @@ public class DockPlaceHolderBase {
     public void init(final DockPlaceHolderBaseView view) {
         this.view = view;
         this.view.setPresenter(this);
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "DockPlaceHolder"; // Never used.
     }
 
     @WorkbenchPartView

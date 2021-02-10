@@ -25,9 +25,6 @@ public interface MultiPageEditorContainerView
 
     interface Presenter {
 
-        void onEditTabSelected();
-
-        void onEditTabUnselected();
     }
 
     void setEditorWidget(final IsWidget editorView);
@@ -37,12 +34,6 @@ public interface MultiPageEditorContainerView
     void addPage(final Page page);
 
     void clear();
-
-    void selectEditorTab();
-
-    boolean isEditorTabSelected();
-
-    void setSelectedTab(final int tabIndex);
 
     int getSelectedTabIndex();
 }

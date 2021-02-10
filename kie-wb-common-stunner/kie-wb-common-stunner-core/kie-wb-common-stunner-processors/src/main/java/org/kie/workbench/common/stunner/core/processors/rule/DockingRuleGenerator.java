@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.processors.MainProcessor;
 import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
 import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
 import org.uberfire.annotations.processors.AbstractGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class DockingRuleGenerator extends AbstractGenerator {
 

@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import org.kie.workbench.common.stunner.svg.gen.codegen.ShapeDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.RectDefinition;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class RectDefinitionGenerator
         extends AbstractShapeDefinitionGenerator<RectDefinition>

@@ -65,8 +65,4 @@ public interface DiagramEditorCore<M extends Metadata, D extends Diagram> {
     void onSaveError(final ClientRuntimeError error);
 
     SessionPresenter<? extends ClientSession, ?, Diagram> getSessionPresenter();
-
-    void doFocus();
-
-    void doLostFocus();
 }

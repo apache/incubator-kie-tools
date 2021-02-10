@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;

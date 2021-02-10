@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -69,8 +68,6 @@ public class ConditionEditorFieldEditorPresenter
 
     private final ScriptTypeFieldEditorPresenter scriptEditor;
 
-    private final ErrorPopupPresenter errorPopup;
-
     private final ConditionEditorParsingService conditionEditorParsingService;
 
     private final ConditionEditorGeneratorService conditionEditorGeneratorService;
@@ -81,14 +78,12 @@ public class ConditionEditorFieldEditorPresenter
     public ConditionEditorFieldEditorPresenter(final View view,
                                                final SimpleConditionEditorPresenter simpleConditionEditor,
                                                final ScriptTypeFieldEditorPresenter scriptEditor,
-                                               final ErrorPopupPresenter errorPopup,
                                                final ConditionEditorParsingService conditionEditorParsingService,
                                                final ConditionEditorGeneratorService conditionEditorGeneratorService,
                                                final ClientTranslationService translationService) {
         this.view = view;
         this.simpleConditionEditor = simpleConditionEditor;
         this.scriptEditor = scriptEditor;
-        this.errorPopup = errorPopup;
         this.conditionEditorParsingService = conditionEditorParsingService;
         this.conditionEditorGeneratorService = conditionEditorGeneratorService;
         this.translationService = translationService;
@@ -218,7 +213,6 @@ public class ConditionEditorFieldEditorPresenter
     }
 
     private boolean onSimpleConditionChangeError(Throwable throwable) {
-        errorPopup.showMessage(translationService.getValue(UNEXPECTED_SCRIPT_GENERATION_ERROR, throwable.getMessage()));
         return false;
     }
 
@@ -238,7 +232,6 @@ public class ConditionEditorFieldEditorPresenter
     }
 
     private boolean onSetValueError(Throwable throwable) {
-        errorPopup.showMessage(translationService.getValue(UNEXPECTED_SCRIPT_PARSING_ERROR, throwable.getMessage()));
         return false;
     }
 
@@ -253,7 +246,6 @@ public class ConditionEditorFieldEditorPresenter
     }
 
     private boolean onSimpleConditionSelectedError(Throwable throwable) {
-        errorPopup.showMessage(translationService.getValue(UNEXPECTED_SCRIPT_PARSING_ERROR, throwable.getMessage()));
         return false;
     }
 

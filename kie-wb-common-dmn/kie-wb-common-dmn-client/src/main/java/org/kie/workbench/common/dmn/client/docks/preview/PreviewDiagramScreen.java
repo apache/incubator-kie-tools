@@ -43,8 +43,6 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedE
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.uberfire.client.annotations.WorkbenchContextId;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnClose;
@@ -112,23 +110,10 @@ public class PreviewDiagramScreen {
         closePreview();
     }
 
-    @WorkbenchPartTitle
-    @SuppressWarnings("unused")
-    public String getTitle() {
-        //The WorkbenchPanel used for Docks do not have a title.
-        return "Unused";
-    }
-
     @WorkbenchPartView
     @SuppressWarnings("unused")
     public IsWidget getWidget() {
         return view;
-    }
-
-    @WorkbenchContextId
-    @SuppressWarnings("unused")
-    public String getMyContextRef() {
-        return "DMNProjectDiagramExplorerScreenContext";
     }
 
     void closePreview() {

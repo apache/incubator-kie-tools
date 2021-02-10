@@ -44,7 +44,6 @@ import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
 public class DiagramsNavigatorImpl implements DiagramsNavigator {
@@ -59,8 +58,6 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private final NavigatorView<?> view;
 
-    private final ErrorPopupPresenter errorPopupPresenter;
-
     private final DiagramClientErrorHandler diagramClientErrorHandler;
 
     private final List<NavigatorItem<DiagramRepresentation>> items;
@@ -74,14 +71,12 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
                                  final @Any ManagedInstance<DiagramNavigatorItem> navigatorItemInstances,
                                  final Event<LoadDiagramEvent> loadDiagramEventEvent,
                                  final NavigatorView<?> view,
-                                 final DiagramClientErrorHandler diagramClientErrorHandler,
-                                 final ErrorPopupPresenter errorPopupPresenter) {
+                                 final DiagramClientErrorHandler diagramClientErrorHandler) {
         this.clientDiagramServices = clientDiagramServices;
         this.navigatorItemInstances = navigatorItemInstances;
         this.loadDiagramEventEvent = loadDiagramEventEvent;
         this.view = view;
         this.diagramClientErrorHandler = diagramClientErrorHandler;
-        this.errorPopupPresenter = errorPopupPresenter;
 
         this.width = 140;
         this.height = 140;
@@ -196,7 +191,6 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     }
 
     private void showError(final String message) {
-        errorPopupPresenter.showMessage(message);
     }
 
     private void log(final Level level,

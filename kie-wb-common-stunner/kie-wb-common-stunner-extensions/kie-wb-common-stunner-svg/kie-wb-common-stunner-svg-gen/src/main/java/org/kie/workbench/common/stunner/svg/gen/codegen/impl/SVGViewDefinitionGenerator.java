@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.svg.gen.model.ViewFactory;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.SVGModelUtils;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewDefinitionImpl;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class SVGViewDefinitionGenerator
         extends AbstractGenerator

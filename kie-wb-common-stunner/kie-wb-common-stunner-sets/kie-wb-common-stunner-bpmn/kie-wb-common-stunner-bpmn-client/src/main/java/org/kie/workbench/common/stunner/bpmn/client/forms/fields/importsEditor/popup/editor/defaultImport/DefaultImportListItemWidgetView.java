@@ -45,7 +45,6 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Templated("DefaultImportsEditorWidget.html#defaultImport")
@@ -58,9 +57,6 @@ public class DefaultImportListItemWidgetView extends Composite implements Import
     @Inject
     @AutoBound
     protected DataBinder<DefaultImport> defaultImportDataBinder;
-
-    @Inject
-    protected ErrorPopupPresenter errorPopupPresenter;
 
     @DataField
     protected ValueListBox<String> defaultClassNames = new ValueListBox<>(new Renderer<String>() {

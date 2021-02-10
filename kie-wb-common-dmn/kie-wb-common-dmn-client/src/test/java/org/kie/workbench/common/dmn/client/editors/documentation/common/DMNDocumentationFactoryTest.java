@@ -40,7 +40,6 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.views.pfly.widgets.Moment;
-import org.uberfire.rpc.SessionInfo;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -71,9 +70,6 @@ public class DMNDocumentationFactoryTest {
     private DMNDocumentationDRDsFactory drdsFactory;
 
     @Mock
-    private SessionInfo sessionInfo;
-
-    @Mock
     private DMNGraphUtils graphUtils;
 
     @Mock
@@ -99,7 +95,7 @@ public class DMNDocumentationFactoryTest {
     @Before
     public void setup() {
 
-        documentationFactory = spy(new DMNDocumentationFactory(canvasFileExport, translationService, drdsFactory, sessionInfo, graphUtils));
+        documentationFactory = spy(new DMNDocumentationFactory(canvasFileExport, translationService, drdsFactory, graphUtils));
 
         when(translationService.format(DMNDocumentationFactory_Constraints)).thenReturn("Constraints:");
         when(translationService.format(DMNDocumentationFactory_ListYes)).thenReturn("List: Yes");

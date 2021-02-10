@@ -33,9 +33,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.services.shared.project.KieModulePackages;
-import org.kie.workbench.common.services.shared.project.KieModuleService;
-import org.kie.workbench.common.services.shared.project.PackageItem;
+import org.kie.workbench.common.widgets.client.menu.copied.KieModulePackages;
+import org.kie.workbench.common.widgets.client.menu.copied.KieModuleService;
+import org.kie.workbench.common.widgets.client.menu.copied.PackageItem;
 import org.uberfire.mvp.Command;
 
 /**

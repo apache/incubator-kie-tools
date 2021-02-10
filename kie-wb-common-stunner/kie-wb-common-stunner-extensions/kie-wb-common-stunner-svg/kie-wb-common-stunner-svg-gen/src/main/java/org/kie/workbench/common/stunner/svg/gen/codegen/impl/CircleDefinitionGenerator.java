@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.shape.Circle;
 import org.kie.workbench.common.stunner.svg.gen.codegen.ShapeDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.CircleDefinition;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class CircleDefinitionGenerator
         extends AbstractShapeDefinitionGenerator<CircleDefinition>

@@ -46,10 +46,10 @@ import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
-import org.kie.workbench.common.services.datamodel.model.LazyModelField;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
-import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
-import org.kie.workbench.common.services.datamodel.util.SortHelper;
+import org.kie.workbench.common.widgets.client.datamodel.copied.IncrementalDataModelService;
+import org.kie.workbench.common.widgets.client.datamodel.copied.LazyModelField;
+import org.kie.workbench.common.widgets.client.datamodel.copied.PackageDataModelOracleIncrementalPayload;
+import org.kie.workbench.common.widgets.client.datamodel.copied.SortHelper;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 

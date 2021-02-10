@@ -22,7 +22,6 @@ import org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocum
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.mockito.Mock;
-import org.uberfire.rpc.SessionInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,9 +37,6 @@ public class DMNDocumentationFactoryTest {
     private DMNDocumentationDRDsFactory drdsFactory;
 
     @Mock
-    private SessionInfo sessionInfo;
-
-    @Mock
     private DMNGraphUtils graphUtils;
 
     private DMNDocumentationFactory factory;
@@ -50,7 +46,6 @@ public class DMNDocumentationFactoryTest {
         this.factory = new DMNDocumentationFactory(canvasFileExport,
                                                    translationService,
                                                    drdsFactory,
-                                                   sessionInfo,
                                                    graphUtils);
     }
 

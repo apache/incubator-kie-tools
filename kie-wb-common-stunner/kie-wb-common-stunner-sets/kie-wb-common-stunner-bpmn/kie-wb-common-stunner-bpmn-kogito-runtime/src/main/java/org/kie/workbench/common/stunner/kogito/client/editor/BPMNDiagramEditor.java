@@ -16,7 +16,6 @@
 package org.kie.workbench.common.stunner.kogito.client.editor;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -51,35 +50,23 @@ import org.kie.workbench.common.stunner.forms.client.widgets.FormsFlushManager;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPreviewAndExplorerDock;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
-import org.kie.workbench.common.stunner.kogito.client.menus.BPMNStandaloneEditorMenuSessionItems;
-import org.kie.workbench.common.stunner.kogito.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchClientEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.GetContent;
 import org.uberfire.lifecycle.GetPreview;
-import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnFocus;
-import org.uberfire.lifecycle.OnLostFocus;
-import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.lifecycle.SetContent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
 @DiagramEditor
@@ -101,17 +88,13 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
 
     @Inject
     public BPMNDiagramEditor(final View view,
-                             final FileMenuBuilder fileMenuBuilder,
                              final PlaceManager placeManager,
                              final MultiPageEditorContainerView multiPageEditorContainerView,
-                             final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                              final Event<NotificationEvent> notificationEvent,
                              final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                              final TextEditorView xmlEditorView,
                              final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                              final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                             final BPMNStandaloneEditorMenuSessionItems menuSessionItems,
-                             final ErrorPopupPresenter errorPopupPresenter,
                              final DiagramClientErrorHandler diagramClientErrorHandler,
                              final ClientTranslationService translationService,
                              final DocumentationView documentationView,
@@ -124,17 +107,13 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final CanvasFileExport canvasFileExport,
                              final Promises promises) {
         super(view,
-              fileMenuBuilder,
               placeManager,
               multiPageEditorContainerView,
-              changeTitleNotificationEvent,
               notificationEvent,
               onDiagramFocusEvent,
               xmlEditorView,
               editorSessionPresenterInstances,
               viewerSessionPresenterInstances,
-              menuSessionItems,
-              errorPopupPresenter,
               diagramClientErrorHandler,
               translationService,
               documentationView);
@@ -201,57 +180,10 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         return PathFactory.newPath(title, uri + "/" + title + ".bpmn");
     }
 
-    @OnFocus
-    @SuppressWarnings("unused")
-    public void onFocus() {
-        superDoFocus();
-        onDiagramLoad();
-    }
-
-    void superDoFocus() {
-        super.doFocus();
-    }
-
-    @OnLostFocus
-    @SuppressWarnings("unused")
-    public void onLostFocus() {
-        super.doLostFocus();
-    }
-
-    @Override
-    @WorkbenchPartTitleDecoration
-    public IsWidget getTitle() {
-        return super.getTitle();
-    }
-
-    @WorkbenchPartTitle
-    public String getTitleText() {
-        return "";
-    }
-
-    @WorkbenchMenu
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(super.getMenus());
-    }
-
-    @Override
-    protected void makeMenuBar() {
-        if (!menuBarInitialized) {
-            getMenuSessionItems().populateMenu(getFileMenuBuilder());
-            makeAdditionalStunnerMenus(getFileMenuBuilder());
-            menuBarInitialized = true;
-        }
-    }
-
     @Override
     @WorkbenchPartView
     public IsWidget asWidget() {
         return super.asWidget();
-    }
-
-    @OnMayClose
-    public boolean onMayClose() {
-        return super.mayClose();
     }
 
     @Override
@@ -274,12 +206,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         } else {
             return Promise.resolve("");
         }
-    }
-
-    @Override
-    @IsDirty
-    public boolean isDirty() {
-        return super.isDirty();
     }
 
     @SetContent
@@ -320,14 +246,9 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         return promise;
     }
 
-    @Override
-    public void resetContentHash() {
-        setOriginalContentHash(getCurrentDiagramHash());
-    }
-
     void initDocks() {
-        diagramPropertiesDock.init(AuthoringPerspective.PERSPECTIVE_ID);
-        diagramPreviewAndExplorerDock.init(AuthoringPerspective.PERSPECTIVE_ID);
+        diagramPropertiesDock.init(Workbench.DEFAULT_PERSPECTIVE_NAME);
+        diagramPreviewAndExplorerDock.init(Workbench.DEFAULT_PERSPECTIVE_NAME);
     }
 
     void openDocks() {

@@ -31,15 +31,10 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
-import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
 import org.kie.workbench.common.stunner.kogito.client.view.DiagramEditorScreenView;
-import org.uberfire.client.annotations.WorkbenchContextId;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
@@ -59,18 +54,15 @@ public class DiagramEditorPropertiesScreen {
 
     private final FormPropertiesWidget formPropertiesWidget;
     private final SessionManager clientSessionManager;
-    private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final DiagramEditorScreenView view;
     private final Event<ScreenPreMaximizedStateEvent> screenStateEvent;
 
     private PlaceRequest placeRequest;
     private ClientSession session;
-    private String title = "Properties";
     private boolean open = false;
 
     protected DiagramEditorPropertiesScreen() {
         this(null,
-             null,
              null,
              null,
              null);
@@ -79,12 +71,10 @@ public class DiagramEditorPropertiesScreen {
     @Inject
     public DiagramEditorPropertiesScreen(final FormPropertiesWidget formPropertiesWidget,
                                          final SessionManager clientSessionManager,
-                                         final Event<ChangeTitleWidgetEvent> changeTitleNotification,
                                          final DiagramEditorScreenView view,
                                          final Event<ScreenPreMaximizedStateEvent> screenStateEvent) {
         this.formPropertiesWidget = formPropertiesWidget;
         this.clientSessionManager = clientSessionManager;
-        this.changeTitleNotificationEvent = changeTitleNotification;
         this.view = view;
         this.screenStateEvent = screenStateEvent;
     }
@@ -116,10 +106,6 @@ public class DiagramEditorPropertiesScreen {
         destroy();
     }
 
-    protected void onPlaceMaximizedEvent(@Observes PlaceMaximizedEvent event) {
-        screenStateEvent.fire(new ScreenPreMaximizedStateEvent(false));
-    }
-
     @SuppressWarnings("unchecked")
     private void handleSession(final ClientSession session) {
         boolean done = false;
@@ -146,26 +132,10 @@ public class DiagramEditorPropertiesScreen {
         session = null;
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return title;
-    }
-
     @WorkbenchPartView
     public IsWidget getWidget() {
         // TODO: return view.asWidget() - See DiagramEditorScreenViewImpl TODO;
         return ElementWrapperWidget.getWidget(formPropertiesWidget.getElement());
-    }
-
-    @WorkbenchContextId
-    public String getMyContextRef() {
-        return "projectDiagramPropertiesScreenContext";
-    }
-
-    void onFormPropertiesOpened(final @Observes FormPropertiesOpened propertiesOpened) {
-        if (null != session && session.equals(propertiesOpened.getSession())) {
-            updateTitle(propertiesOpened.getName());
-        }
     }
 
     void onSessionOpened(final @Observes SessionDiagramOpenedEvent event) {
@@ -174,13 +144,6 @@ public class DiagramEditorPropertiesScreen {
                 "DiagramEditorPropertiesScreen -> Current Session Changed.");
             handleSession(clientSessionManager.getCurrentSession());
         }
-    }
-
-    private void updateTitle(final String title) {
-        // Change screen title.
-        DiagramEditorPropertiesScreen.this.title = title;
-        changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
-                                                                     this.title));
     }
 
     private void log(final Level level,

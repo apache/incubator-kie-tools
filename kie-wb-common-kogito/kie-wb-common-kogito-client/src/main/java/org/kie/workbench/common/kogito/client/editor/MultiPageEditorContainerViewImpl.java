@@ -28,8 +28,6 @@ public class MultiPageEditorContainerViewImpl
         extends MultiPageEditorImpl
         implements MultiPageEditorContainerView {
 
-    protected static final int EDITOR_TAB_INDEX = 0;
-
     private TranslationService translationService;
     private Presenter presenter;
 
@@ -53,12 +51,12 @@ public class MultiPageEditorContainerViewImpl
                              translationService.format(KogitoClientConstants.KieEditorWrapperView_EditTabTitle)) {
             @Override
             public void onFocus() {
-                presenter.onEditTabSelected();
+
             }
 
             @Override
             public void onLostFocus() {
-                presenter.onEditTabUnselected();
+
             }
         });
     }
@@ -66,21 +64,6 @@ public class MultiPageEditorContainerViewImpl
     @Override
     public MultiPageEditor getMultiPage() {
         return this;
-    }
-
-    @Override
-    public void selectEditorTab() {
-        setSelectedTab(EDITOR_TAB_INDEX);
-    }
-
-    @Override
-    public boolean isEditorTabSelected() {
-        return selectedPage() == EDITOR_TAB_INDEX;
-    }
-
-    @Override
-    public void setSelectedTab(final int tabIndex) {
-        selectPage(tabIndex);
     }
 
     @Override

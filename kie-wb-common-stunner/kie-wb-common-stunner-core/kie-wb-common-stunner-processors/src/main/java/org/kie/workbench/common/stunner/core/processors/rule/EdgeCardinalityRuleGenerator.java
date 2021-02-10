@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.AllowedEdgeOccurren
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.uberfire.annotations.processors.AbstractGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
 

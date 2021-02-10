@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.kogito.client.editor;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,30 +50,21 @@ import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.resources.i18n.KogitoClientConstants;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.menu.Menus;
 
 public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPresenter<KogitoDiagramResourceImpl> implements DiagramEditorCore<Metadata, Diagram> {
 
     private static final Logger LOGGER = Logger.getLogger(AbstractDiagramEditor.class.getName());
 
-    private final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems;
-    private final Event<ChangeTitleWidgetEvent> changeTitleEvent;
     private final Event<OnDiagramFocusEvent> onDiagramFocusEvent;
     private final ClientTranslationService translationService;
     private final DocumentationView documentationView;
-    private final FileMenuBuilder fileMenuBuilder;
 
     private String title = "Diagram Editor";
-
-    protected boolean menuBarInitialized = false;
 
     public class DiagramEditorCore extends AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> {
 
@@ -83,8 +73,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                  final Event<NotificationEvent> notificationEvent,
                                  final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                  final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                 final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
-                                 final ErrorPopupPresenter errorPopupPresenter,
                                  final DiagramClientErrorHandler diagramClientErrorHandler,
                                  final ClientTranslationService translationService) {
             super(baseEditorView,
@@ -92,8 +80,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                   notificationEvent,
                   editorSessionPresenterInstances,
                   viewerSessionPresenterInstances,
-                  menuSessionItems,
-                  errorPopupPresenter,
                   diagramClientErrorHandler,
                   translationService);
         }
@@ -141,10 +127,7 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                 final Metadata metadata = dpe.getMetadata();
                 final String xml = dpe.getXml();
 
-                setOriginalContentHash(xml.hashCode());
-                updateTitle(metadata.getTitle());
                 resetEditorPages();
-                menuSessionItems.setEnabled(false);
                 getXMLEditorView().setReadOnly(isReadOnly());
                 getXMLEditorView().setContent(xml, AceEditorMode.XML);
                 getView().setWidget(getXMLEditorView().asWidget());
@@ -159,7 +142,7 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                 showError(error);
 
                 //close editor in case of error when opening the editor
-                getPlaceManager().forceClosePlace(getPlaceRequest());
+                getPlaceManager().closePlace(getPlaceRequest());
             }
         }
     }
@@ -167,43 +150,30 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     private final AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> editor;
 
     public AbstractDiagramEditor(final View view,
-                                 final FileMenuBuilder fileMenuBuilder,
                                  final PlaceManager placeManager,
                                  final MultiPageEditorContainerView multiPageEditorContainerView,
-                                 final Event<ChangeTitleWidgetEvent> changeTitleEvent,
                                  final Event<NotificationEvent> notificationEvent,
                                  final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                  final TextEditorView xmlEditorView,
                                  final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                  final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                 final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
-                                 final ErrorPopupPresenter errorPopupPresenter,
                                  final DiagramClientErrorHandler diagramClientErrorHandler,
                                  final ClientTranslationService translationService,
                                  final DocumentationView documentationView) {
         super(view,
               placeManager,
               multiPageEditorContainerView);
-        this.menuSessionItems = menuSessionItems;
-        this.changeTitleEvent = changeTitleEvent;
         this.onDiagramFocusEvent = onDiagramFocusEvent;
         this.translationService = translationService;
         this.documentationView = documentationView;
-        this.fileMenuBuilder = fileMenuBuilder;
 
         this.editor = makeCore(view,
                                xmlEditorView,
                                notificationEvent,
                                editorSessionPresenterInstances,
                                viewerSessionPresenterInstances,
-                               menuSessionItems,
-                               errorPopupPresenter,
                                diagramClientErrorHandler,
                                translationService);
-    }
-
-    protected ClientTranslationService getTranslationService() {
-        return translationService;
     }
 
     protected AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> makeCore(final View view,
@@ -211,8 +181,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                                                                                                                               final Event<NotificationEvent> notificationEvent,
                                                                                                                                               final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                                                                                                                               final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                                                                                                                              final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
-                                                                                                                                              final ErrorPopupPresenter errorPopupPresenter,
                                                                                                                                               final DiagramClientErrorHandler diagramClientErrorHandler,
                                                                                                                                               final ClientTranslationService translationService) {
         return new DiagramEditorCore(view,
@@ -220,8 +188,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                      notificationEvent,
                                      editorSessionPresenterInstances,
                                      viewerSessionPresenterInstances,
-                                     menuSessionItems,
-                                     errorPopupPresenter,
                                      diagramClientErrorHandler,
                                      translationService);
     }
@@ -230,47 +196,16 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     @SuppressWarnings("unchecked")
     public void init() {
         title = translationService.getValue(KogitoClientConstants.DIAGRAM_EDITOR_DEFAULT_TITLE);
-        menuSessionItems
-                .setLoadingStarts(this::showLoadingViews)
-                .setLoadingCompleted(this::hideLoadingViews)
-                .setErrorConsumer(editor::showError);
     }
 
     protected void doStartUp(final PlaceRequest place) {
         init(place);
     }
 
-    @Override
-    protected void makeMenuBar() {
-        if (!menuBarInitialized) {
-            menuSessionItems.populateMenu(fileMenuBuilder);
-            makeAdditionalStunnerMenus(fileMenuBuilder);
-            menuBarInitialized = true;
-        }
-    }
-
-    @Override
-    protected void buildMenuBar() {
-        if (fileMenuBuilder != null) {
-            setMenus(fileMenuBuilder.build());
-        }
-    }
-
-    @Override
-    protected Supplier<KogitoDiagramResourceImpl> getContentSupplier() {
-        return editor.getEditorProxy().getContentSupplier();
-    }
-
-    @Override
-    protected Integer getCurrentContentHash() {
-        return editor.getCurrentDiagramHash();
-    }
-
     protected void doOpen() {
     }
 
     protected void doClose() {
-        menuSessionItems.destroy();
         editor.destroySession();
     }
 
@@ -280,14 +215,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
 
     protected void hideLoadingViews() {
         getView().hideBusyIndicator();
-    }
-
-    @Override
-    protected Menus getMenus() {
-        if (super.getMenus() == null) {
-            makeMenuBar();
-        }
-        return super.getMenus();
     }
 
     protected View getView() {
@@ -308,20 +235,10 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     @Override
     public void initialiseKieEditorForSession(final Diagram diagram) {
         resetEditorPages();
-        updateTitle(diagram.getMetadata().getTitle());
         onDiagramLoad();
-
-        //Set original hash after onDiagramLoad that may have modified the Diagram
-        setOriginalContentHash(getCurrentDiagramHash());
 
         addDocumentationPage(diagram);
         hideLoadingViews();
-    }
-
-    protected void updateTitle(final String title) {
-        this.title = title;
-        changeTitleEvent.fire(new ChangeTitleWidgetEvent(getPlaceRequest(),
-                                                         this.title));
     }
 
     @SuppressWarnings("unchecked")
@@ -373,16 +290,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
         return editor.getSessionPresenter();
     }
 
-    @Override
-    public void doFocus() {
-        editor.doFocus();
-    }
-
-    @Override
-    public void doLostFocus() {
-        editor.doLostFocus();
-    }
-
     protected boolean isSameSession(final ClientSession other) {
         return editor.isSameSession(other);
     }
@@ -392,18 +299,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level, message);
         }
-    }
-
-    @SuppressWarnings("unused")
-    protected void makeAdditionalStunnerMenus(final FileMenuBuilder fileMenuBuilder) {
-    }
-
-    public AbstractDiagramEditorMenuSessionItems getMenuSessionItems() {
-        return menuSessionItems;
-    }
-
-    public FileMenuBuilder getFileMenuBuilder() {
-        return fileMenuBuilder;
     }
 
     protected AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> getEditor() {

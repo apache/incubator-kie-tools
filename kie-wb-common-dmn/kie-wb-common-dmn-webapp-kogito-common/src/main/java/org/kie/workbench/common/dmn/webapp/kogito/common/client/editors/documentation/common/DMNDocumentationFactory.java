@@ -24,7 +24,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationDRDsFactory;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
-import org.uberfire.rpc.SessionInfo;
 
 @Dependent
 @Alternative
@@ -35,12 +34,10 @@ public class DMNDocumentationFactory extends org.kie.workbench.common.dmn.client
     public DMNDocumentationFactory(final CanvasFileExport canvasFileExport,
                                    final TranslationService translationService,
                                    final DMNDocumentationDRDsFactory drdsFactory,
-                                   final SessionInfo sessionInfo,
                                    final DMNGraphUtils graphUtils) {
         super(canvasFileExport,
               translationService,
               drdsFactory,
-              sessionInfo,
               graphUtils);
     }
 

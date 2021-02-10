@@ -49,7 +49,7 @@ import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 
 import static com.google.gwt.dom.client.Style.Display.BLOCK;
 import static com.google.gwt.dom.client.Style.Display.NONE;

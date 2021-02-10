@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Definiti
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
 import org.kie.workbench.common.stunner.core.processors.ProcessingDefinitionAnnotations;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class BindableDefinitionAdapterGenerator extends AbstractBindableAdapterGenerator {
 

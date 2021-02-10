@@ -33,7 +33,6 @@
   <modules>
     <module>kie-wb-common-stunner-lienzo-extensions</module>
     <module>kie-wb-common-stunner-forms</module>
-    <module>kie-wb-common-stunner-project</module>
     <module>kie-wb-common-stunner-svg</module>
     <module>kie-wb-common-stunner-kogito</module>
   </modules>

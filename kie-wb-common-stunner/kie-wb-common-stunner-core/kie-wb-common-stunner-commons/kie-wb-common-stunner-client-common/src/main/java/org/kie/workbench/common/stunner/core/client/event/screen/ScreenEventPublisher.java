@@ -18,14 +18,11 @@ package org.kie.workbench.common.stunner.core.client.event.screen;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.workbench.events.AbstractPlaceEvent;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
-import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 
 /**
  * Observes screen events and publish Stunner related events, e.g.
@@ -45,14 +42,6 @@ public class ScreenEventPublisher {
         this.diagramEditorMaximizedEventEvent = diagramEditorMaximizedEventEvent;
         this.diagramEditorMinimizedEventEvent = diagramEditorMinimizedEventEvent;
         this.activityBeansCache = activityBeansCache;
-    }
-
-    protected void onPlaceMaximizedEvent(@Observes PlaceMaximizedEvent event) {
-        diagramEditorMaximizedEventEvent.fire(new ScreenMaximizedEvent(verifyEventIdentifier(event)));
-    }
-
-    protected void onPlaceMinimizedEvent(@Observes PlaceMinimizedEvent event) {
-        diagramEditorMinimizedEventEvent.fire(new ScreenMinimizedEvent(verifyEventIdentifier(event)));
     }
 
     private boolean verifyEventIdentifier(AbstractPlaceEvent event) {

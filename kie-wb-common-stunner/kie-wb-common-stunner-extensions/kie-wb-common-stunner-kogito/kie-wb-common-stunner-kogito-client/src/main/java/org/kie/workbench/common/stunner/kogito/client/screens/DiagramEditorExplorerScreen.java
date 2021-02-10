@@ -40,13 +40,8 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagram
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.uberfire.client.annotations.WorkbenchContextId;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
@@ -73,8 +68,6 @@ public class DiagramEditorExplorerScreen {
     private final SessionManager clientSessionManager;
     private final ManagedInstance<TreeExplorer> treeExplorers;
     private final ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
-    private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
-    private final ErrorPopupPresenter errorPopupPresenter;
     private final Event<ScreenPreMaximizedStateEvent> screenStateEvent;
     private final View view;
 
@@ -88,24 +81,18 @@ public class DiagramEditorExplorerScreen {
              null,
              null,
              null,
-             null,
-             null,
              null);
     }
 
     @Inject
     public DiagramEditorExplorerScreen(final SessionManager clientSessionManager,
                                        final @Any ManagedInstance<TreeExplorer> treeExplorers,
-                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                        final @Any @Default ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews,
-                                       final ErrorPopupPresenter errorPopupPresenter,
                                        final View view,
                                        final Event<ScreenPreMaximizedStateEvent> screenStateEvent) {
         this.clientSessionManager = clientSessionManager;
         this.treeExplorers = treeExplorers;
-        this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.sessionPreviews = sessionPreviews;
-        this.errorPopupPresenter = errorPopupPresenter;
         this.view = view;
         this.screenStateEvent = screenStateEvent;
     }
@@ -128,19 +115,9 @@ public class DiagramEditorExplorerScreen {
         close();
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return title;
-    }
-
     @WorkbenchPartView
     public IsWidget getWidget() {
         return view;
-    }
-
-    @WorkbenchContextId
-    public String getMyContextRef() {
-        return "projectDiagramExplorerScreenContext";
     }
 
     public void show(final ClientSession session) {
@@ -148,7 +125,6 @@ public class DiagramEditorExplorerScreen {
         if (null != session.getCanvasHandler().getDiagram()) {
             showPreview(session);
             showExplorer(session);
-            updateTitle(session);
         }
     }
 
@@ -202,10 +178,6 @@ public class DiagramEditorExplorerScreen {
         view.setExplorerWidget(explorerWidget);
     }
 
-    protected void onPlaceMaximizedEvent(@Observes PlaceMaximizedEvent event) {
-        screenStateEvent.fire(new ScreenPreMaximizedStateEvent(true));
-    }
-
     private void showPreview(final ClientSession session) {
         if (null != session && session instanceof AbstractSession) {
             if (null != previewWidget) {
@@ -224,7 +196,6 @@ public class DiagramEditorExplorerScreen {
                                    @Override
                                    public void onSuccess() {
                                        view.setPreviewWidget(previewWidget.getView());
-                                       updateTitle();
                                    }
 
                                    @Override
@@ -235,30 +206,8 @@ public class DiagramEditorExplorerScreen {
         }
     }
 
-    private void updateTitle() {
-        final ClientSession session = clientSessionManager.getCurrentSession();
-        updateTitle(session);
-    }
-
-    private void updateTitle(final ClientSession session) {
-        String title = TITLE;
-        if (null != session.getCanvasHandler() && null != session.getCanvasHandler().getDiagram()) {
-            final Diagram<?, ?> diagram = session.getCanvasHandler().getDiagram();
-            title = diagram.getMetadata().getTitle();
-        }
-        doUpdateTitle(title);
-    }
-
-    private void doUpdateTitle(final String title) {
-        // Change screen title.
-        DiagramEditorExplorerScreen.this.title = title;
-        changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
-                                                                     this.title));
-    }
-
     private void showError(final ClientRuntimeError error) {
         final String s = error.toString();
-        errorPopupPresenter.showMessage(s);
         LOGGER.log(Level.SEVERE,
                    s);
     }

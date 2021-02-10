@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 
 public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
 

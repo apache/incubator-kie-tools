@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.definition.morph.BindableMorphPrope
 import org.kie.workbench.common.stunner.core.definition.morph.BindablePropertyMorphDefinition;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingMorphProperty;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class MorphPropertyDefinitionGenerator extends AbstractBindableAdapterGenerator {
 

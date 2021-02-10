@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 import com.google.gwt.safehtml.shared.annotations.IsSafeHtml;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 
 /**
  * This provides a Panel that is compatible with RequiresResize and errai-ui @Templated Views

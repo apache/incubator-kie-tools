@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.definition.DefinitionSetProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingEntity;
 import org.kie.workbench.common.stunner.core.processors.definition.TypeConstructor;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class DefinitionSetProxyGenerator extends AbstractAdapterGenerator {
 

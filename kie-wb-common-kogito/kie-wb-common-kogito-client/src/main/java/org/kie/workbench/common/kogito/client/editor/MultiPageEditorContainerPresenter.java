@@ -58,22 +58,6 @@ public abstract class MultiPageEditorContainerPresenter<CONTENT>
         multiPageEditorContainerView.setEditorWidget(getBaseEditorView());
     }
 
-    protected void OnClose() {
-        multiPageEditorContainerView.clear();
-    }
-
-    protected void selectEditorTab() {
-        multiPageEditorContainerView.selectEditorTab();
-    }
-
-    protected boolean isEditorTabSelected() {
-        return multiPageEditorContainerView.isEditorTabSelected();
-    }
-
-    public void setSelectedTab(final int index) {
-        multiPageEditorContainerView.setSelectedTab(index);
-    }
-
     protected int getSelectedTabIndex() {
         return multiPageEditorContainerView.getSelectedTabIndex();
     }
@@ -84,13 +68,5 @@ public abstract class MultiPageEditorContainerPresenter<CONTENT>
 
     protected MultiPageEditorContainerView getWidget() {
         return multiPageEditorContainerView;
-    }
-
-    @Override
-    public void onEditTabSelected() {
-    }
-
-    @Override
-    public void onEditTabUnselected() {
     }
 }

@@ -22,7 +22,7 @@ import org.drools.workbench.models.datamodel.oracle.DSLActionSentence;
 import org.drools.workbench.models.datamodel.oracle.DSLConditionSentence;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.soup.project.datamodel.imports.HasImports;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.widgets.client.datamodel.copied.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped

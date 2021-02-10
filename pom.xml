@@ -17,10 +17,7 @@
   <description>Kie Workbench - Common</description>
 
   <modules>
-    <module>kie-wb-common-profile</module>
     <module>kie-wb-common-widgets</module>
-    <module>kie-wb-common-screens</module>
-    <module>kie-wb-common-services</module>
     <module>kie-wb-common-forms</module>
     <module>kie-wb-common-stunner</module>
     <module>kie-wb-common-dmn</module>

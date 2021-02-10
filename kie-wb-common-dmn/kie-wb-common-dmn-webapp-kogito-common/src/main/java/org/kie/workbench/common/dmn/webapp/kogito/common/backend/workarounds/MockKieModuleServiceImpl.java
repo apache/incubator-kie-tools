@@ -25,9 +25,9 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.repositories.Branch;
 
-import org.kie.workbench.common.services.shared.project.KieModule;
-import org.kie.workbench.common.services.shared.project.KieModulePackages;
-import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.widgets.client.menu.copied.KieModule;
+import org.kie.workbench.common.widgets.client.menu.copied.KieModulePackages;
+import org.kie.workbench.common.widgets.client.menu.copied.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 

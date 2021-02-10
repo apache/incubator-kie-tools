@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.views.pfly.widgets.Moment;
-import org.uberfire.rpc.SessionInfo;
 
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Constraints;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_ListYes;
@@ -47,20 +46,16 @@ public class DMNDocumentationFactory {
 
     private final DMNDocumentationDRDsFactory drdsFactory;
 
-    private final SessionInfo sessionInfo;
-
     private final DMNGraphUtils graphUtils;
 
     @Inject
     public DMNDocumentationFactory(final CanvasFileExport canvasFileExport,
                                    final TranslationService translationService,
                                    final DMNDocumentationDRDsFactory drdsFactory,
-                                   final SessionInfo sessionInfo,
                                    final DMNGraphUtils graphUtils) {
         this.canvasFileExport = canvasFileExport;
         this.translationService = translationService;
         this.drdsFactory = drdsFactory;
-        this.sessionInfo = sessionInfo;
         this.graphUtils = graphUtils;
     }
 

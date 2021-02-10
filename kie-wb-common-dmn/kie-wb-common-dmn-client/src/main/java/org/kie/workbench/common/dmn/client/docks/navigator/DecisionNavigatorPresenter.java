@@ -32,14 +32,11 @@ import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigato
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
-
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = DecisionNavigatorPresenter.IDENTIFIER)
@@ -87,11 +84,6 @@ public class DecisionNavigatorPresenter {
     @WorkbenchPartView
     public View getView() {
         return view;
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return translationService.format(DecisionNavigatorPresenter_DecisionNavigator);
     }
 
     @DefaultPosition

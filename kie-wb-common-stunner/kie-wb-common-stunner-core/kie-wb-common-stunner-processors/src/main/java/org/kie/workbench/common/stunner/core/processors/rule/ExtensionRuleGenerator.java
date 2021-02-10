@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
 import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtensions;
 import org.uberfire.annotations.processors.AbstractGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class ExtensionRuleGenerator extends AbstractGenerator {
 

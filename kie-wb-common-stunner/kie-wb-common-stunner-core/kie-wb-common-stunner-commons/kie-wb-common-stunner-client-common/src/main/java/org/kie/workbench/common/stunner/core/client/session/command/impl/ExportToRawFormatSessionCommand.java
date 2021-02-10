@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.exports.TextContent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
 
@@ -32,22 +31,18 @@ import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
 public class ExportToRawFormatSessionCommand extends AbstractExportSessionCommand {
 
     private final ClientDiagramService clientDiagramService;
-    private final ErrorPopupPresenter errorPopupPresenter;
     private final TextFileExport textFileExport;
 
     protected ExportToRawFormatSessionCommand() {
         this(null,
-             null,
              null);
     }
 
     @Inject
     public ExportToRawFormatSessionCommand(final ClientDiagramService clientDiagramService,
-                                           final ErrorPopupPresenter errorPopupPresenter,
                                            final TextFileExport textFileExport) {
         super(true);
         this.clientDiagramService = clientDiagramService;
-        this.errorPopupPresenter = errorPopupPresenter;
         this.textFileExport = textFileExport;
     }
 
@@ -64,7 +59,6 @@ public class ExportToRawFormatSessionCommand extends AbstractExportSessionComman
 
                                                @Override
                                                public void onError(ClientRuntimeError error) {
-                                                   errorPopupPresenter.showMessage(error.getMessage());
                                                }
                                            });
     }

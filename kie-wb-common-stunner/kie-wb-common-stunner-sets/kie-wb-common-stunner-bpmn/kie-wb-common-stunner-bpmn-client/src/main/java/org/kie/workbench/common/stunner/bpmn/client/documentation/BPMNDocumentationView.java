@@ -36,7 +36,6 @@ import org.kie.workbench.common.stunner.core.documentation.DefaultDiagramDocumen
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
-import org.uberfire.client.views.pfly.icon.PatternFlyIconType;
 import org.uberfire.client.views.pfly.widgets.Button;
 
 @BPMN
@@ -93,7 +92,7 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
         super.initialize(diagram);
 
         printButton.setText(clientTranslationService.getValue(CoreTranslationMessages.PRINT));
-        printButton.addIcon(PatternFlyIconType.PRINT.getCssName(), "pull-right");
+        printButton.addIcon("pficon-print", "pull-right");
         printButton.setClickHandler(() -> print());
 
         return refresh();

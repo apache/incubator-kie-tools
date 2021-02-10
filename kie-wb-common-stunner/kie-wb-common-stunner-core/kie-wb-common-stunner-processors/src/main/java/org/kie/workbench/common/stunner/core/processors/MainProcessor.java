@@ -76,7 +76,7 @@ import org.kie.workbench.common.stunner.core.processors.rule.ExtensionRuleGenera
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.AbstractGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 @SupportedAnnotationTypes({
         MainProcessor.ANNOTATION_DEFINITION_SET,

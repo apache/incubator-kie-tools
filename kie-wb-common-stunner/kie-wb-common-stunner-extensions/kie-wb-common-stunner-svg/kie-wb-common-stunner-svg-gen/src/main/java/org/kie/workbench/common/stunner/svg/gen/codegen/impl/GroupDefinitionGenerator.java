@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import org.kie.workbench.common.stunner.svg.gen.codegen.PrimitiveDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.GroupDefinition;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class GroupDefinitionGenerator
         extends AbstractPrimitiveDefinitionGenerator<GroupDefinition>

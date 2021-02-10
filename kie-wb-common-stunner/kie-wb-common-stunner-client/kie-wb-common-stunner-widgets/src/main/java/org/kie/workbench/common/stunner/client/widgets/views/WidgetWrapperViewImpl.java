@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 
 @Dependent
 public class WidgetWrapperViewImpl implements WidgetWrapperView {

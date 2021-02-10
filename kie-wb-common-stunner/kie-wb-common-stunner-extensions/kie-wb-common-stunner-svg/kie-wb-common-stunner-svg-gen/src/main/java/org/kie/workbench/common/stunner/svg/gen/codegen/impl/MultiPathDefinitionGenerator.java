@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import org.kie.workbench.common.stunner.svg.gen.codegen.ShapeDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.MultiPathDefinition;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.GenerationException;
 
 public class MultiPathDefinitionGenerator
         extends AbstractShapeDefinitionGenerator<MultiPathDefinition>

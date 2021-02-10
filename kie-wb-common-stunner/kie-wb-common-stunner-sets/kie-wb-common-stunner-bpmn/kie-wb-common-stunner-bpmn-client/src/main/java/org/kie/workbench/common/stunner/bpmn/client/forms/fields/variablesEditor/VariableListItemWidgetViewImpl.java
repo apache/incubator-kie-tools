@@ -63,7 +63,6 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static jsinterop.annotations.JsPackage.GLOBAL;
@@ -96,9 +95,6 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     @DataField
     @StunnerSpecific
     protected VariableNameTextBox name;
-
-    @Inject
-    protected ErrorPopupPresenter errorPopupPresenter;
 
     private String currentValue;
     private String currentName;
@@ -272,7 +268,6 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                 name.setValue(currentName);
                 ValueChangeEvent.fire(name, currentName);
             } else if (isBoundToNodes(currentName)) {
-                errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.RenameDiagramVariableError());
                 name.setValue(currentName);
                 ValueChangeEvent.fire(name, currentName);
             }
