@@ -17,7 +17,7 @@
 import { WebView, By, SideBarView } from 'vscode-extension-tester';
 import * as path from 'path';
 import { aComponentWithText } from './helpers/CommonLocators';
-import { EditorTab } from './helpers/EditorTab';
+import { EditorTabs } from './helpers/EditorTabs';
 import { assertWebElementIsDisplayedEnabled } from './helpers/CommonAsserts'
 import VSCodeTestHelper from './helpers/VSCodeTestHelper';
 import BpmnEditorTestHelper from './helpers/BpmnEditorTestHelper';
@@ -27,17 +27,17 @@ import DmnEditorTestHelper from './helpers/DmnEditorTestHelper';
 describe("Editors are loading properly", () => {
 
     const RESOURCES: string = path.resolve('src', 'ui-test', 'resources');
-	const DEMO_BPMN: string = 'demo.bpmn';
+    const DEMO_BPMN: string = 'demo.bpmn';
     const DEMO_DMN: string = 'demo.dmn';
     const DEMO_SCESIM: string = 'demo.scesim';
 
     const REUSABLE_DMN: string = 'reusable-model.dmn';
 
     let testHelper: VSCodeTestHelper;
-    let webview : WebView;
-    let folderView : SideBarView;
+    let webview: WebView;
+    let folderView: SideBarView;
 
-    before(async function() {
+    before(async function () {
         this.timeout(60000);
         testHelper = new VSCodeTestHelper();
         await testHelper.closeAllEditors();
@@ -51,13 +51,13 @@ describe("Editors are loading properly", () => {
 
     it('Opens demo.bpmn file in BPMN Editor and loads correct diagram', async function () {
         this.timeout(20000);
-        webview = await testHelper.openFileFromSidebar(DEMO_BPMN);     
+        webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
         await webview.switchToFrame();
         const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
         const envelopApp = await webview.findWebElement(By.id('envelope-app'));
         await assertWebElementIsDisplayedEnabled(envelopApp);
-        
+
         const palette = await bpmnEditorTester.getPalette();
         await assertWebElementIsDisplayedEnabled(palette);
 
@@ -67,13 +67,13 @@ describe("Editors are loading properly", () => {
         await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText('demo'))));
         await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText('Start'))));
         await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText('End'))));
-        
+
         await webview.switchBack();
     });
 
     it('Opens demo.dmn file in DMN Editor', async function () {
         this.timeout(20000);
-        webview = await testHelper.openFileFromSidebar(DEMO_DMN); 
+        webview = await testHelper.openFileFromSidebar(DEMO_DMN);
         await webview.switchToFrame();
         const dmnEditorTester = new DmnEditorTestHelper(webview);
 
@@ -83,41 +83,44 @@ describe("Editors are loading properly", () => {
         await dmnEditorTester.openDiagramProperties();
         await dmnEditorTester.openDiagramExplorer();
         await dmnEditorTester.openDecisionNavigator();
-     
+
         await webview.switchBack();
     });
 
-    // kiegroup/appformer#1090
-    // kiegroup/kie-wb-common#3537
-    it.skip('Include reusable-model in DMN Editor', async function () {
+    it('Include reusable-model in DMN Editor', async function () {
         this.timeout(20000);
-        webview = await testHelper.openFileFromSidebar(DEMO_DMN); 
+        webview = await testHelper.openFileFromSidebar(DEMO_DMN);
         await webview.switchToFrame();
         const dmnEditorTester = new DmnEditorTestHelper(webview);
 
         const envelopApp = await webview.findWebElement(By.id('envelope-app'));
         await assertWebElementIsDisplayedEnabled(envelopApp);
 
-        await dmnEditorTester.switchEditorTab(EditorTab.IncludedModels);
-        await dmnEditorTester.includeModelWithNodes(REUSABLE_DMN, 2);
-     
+        await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
+        await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
+
+        // Blocked by https://issues.redhat.com/browse/KOGITO-4261
+        // await dmnEditorTester.inspectIncludedModel("reusable-model", 2)
+
+        await dmnEditorTester.switchEditorTab(EditorTabs.Editor)
+
         await webview.switchBack();
     });
 
     it('Opens demo.scesim file in SCESIM Editor', async function () {
         this.timeout(20000);
 
-        webview = await testHelper.openFileFromSidebar(DEMO_SCESIM); 
+        webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
         await webview.switchToFrame();
         const scesimEditorTester = new ScesimEditorTestHelper(webview);
 
         const envelopApp = await webview.findWebElement(By.id('envelope-app'));
         await assertWebElementIsDisplayedEnabled(envelopApp);
-       
+
         await scesimEditorTester.openScenarioCheatsheet();
         await scesimEditorTester.openSettings();
         await scesimEditorTester.openTestTools();
-        
+
         await webview.switchBack();
     });
 })

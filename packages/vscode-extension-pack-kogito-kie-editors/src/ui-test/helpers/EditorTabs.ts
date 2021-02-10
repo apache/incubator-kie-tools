@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-export enum EditorTab {
+export enum EditorTabs {
     DataTypes = "Data Types",
     IncludedModels = "Included Models",
-    Model = "Model"
+    Editor = "Editor"
 }
