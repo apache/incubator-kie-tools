@@ -27,8 +27,8 @@ import (
 */
 
 func registerKogitoInfraSteps(ctx *godog.ScenarioContext, data *Data) {
-	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak) Kogito Infra "([^"]*)" within (\d+) (?:minute|minutes)$`, data.installKogitoInfraWithinMinutes)
-	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak) Kogito Infra "([^"]*)" within (\d+) (?:minute|minutes) with configuration:$`, data.installKogitoInfraWithinMinutesWithConfiguration)
+	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak|Broker) Kogito Infra "([^"]*)" within (\d+) (?:minute|minutes)$`, data.installKogitoInfraWithinMinutes)
+	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak|Broker) Kogito Infra "([^"]*)" within (\d+) (?:minute|minutes) with configuration:$`, data.installKogitoInfraWithinMinutesWithConfiguration)
 }
 
 func (data *Data) installKogitoInfraWithinMinutes(targetResourceType, name string, timeoutInMin int) error {

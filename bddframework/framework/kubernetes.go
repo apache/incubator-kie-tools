@@ -280,6 +280,11 @@ func IsCrdAvailable(crdName string) (bool, error) {
 	return kubernetes.ResourceC(kubeClient).Fetch(crdEntity)
 }
 
+// CreateObject creates object
+func CreateObject(o meta.ResourceObject) error {
+	return kubernetes.ResourceC(kubeClient).Create(o)
+}
+
 // DeleteObject deletes object
 func DeleteObject(o meta.ResourceObject) error {
 	return kubernetes.ResourceC(kubeClient).Delete(o)
@@ -453,4 +458,15 @@ func GetKubernetesDurationFromTimeInMin(timeoutInMin int) time.Duration {
 // IsOpenshift returns whether the cluster is running on Openshift
 func IsOpenshift() bool {
 	return kubeClient.IsOpenshift()
+}
+
+// GetService return Service based on namespace and name
+func GetService(namespace, name string) (*corev1.Service, error) {
+	service := &corev1.Service{}
+	if exits, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, service); err != nil {
+		return nil, err
+	} else if !exits {
+		return nil, fmt.Errorf("Service with name %s doesn't exist in given namespace %s", name, namespace)
+	}
+	return service, nil
 }

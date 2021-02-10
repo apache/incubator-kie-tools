@@ -35,6 +35,9 @@ func registerKubernetesSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^CLI use namespace$`, data.cliUseNamespace)
 
 	ctx.Step(`^Deployment "([^"]*)" has (\d+) pods with runtime resources within (\d+) minutes:$`, data.deploymentHasResourcesWithinMinutes)
+
+	// Logging steps
+	ctx.Step(`^Deployment "([^"]*)" pods log contains text "([^"]*)" within (\d+) minutes$`, data.deploymentPodsLogContainsTextWithinMinutes)
 }
 
 func (data *Data) namespaceIsCreated() error {
@@ -85,4 +88,8 @@ func (data *Data) deploymentHasResourcesWithinMinutes(dName string, podNb, timeo
 	}
 
 	return framework.WaitForPodsByDeploymentToHaveResources(data.Namespace, dName, *runtime, timeoutInMin)
+}
+
+func (data *Data) deploymentPodsLogContainsTextWithinMinutes(dName, logText string, timeoutInMin int) error {
+	return framework.WaitForAllPodsByDeploymentToContainTextInLog(data.Namespace, dName, logText, timeoutInMin)
 }

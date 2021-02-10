@@ -16,6 +16,7 @@ package steps
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/cucumber/godog"
@@ -31,6 +32,7 @@ func registerHTTPSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceWithPathAndBody)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody)
+	ctx.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)", headers "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathHeadersAndBody)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" using access token "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinutesWithPathAndBody)
 	ctx.Step(`^(\d+) HTTP POST requests using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsUsingThreadsOnServiceWithPathAndBody)
 	ctx.Step(`^(\d+) HTTP POST requests with report using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody)
@@ -119,6 +121,24 @@ func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBo
 	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
 }
 
+func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathHeadersAndBody(serviceName string, timeoutInMin int, path, headersContent string, body *godog.DocString) error {
+	path = data.ResolveWithScenarioContext(path)
+	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
+	framework.GetLogger(data.Namespace).Debug("httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody", "service", serviceName, "path", path, "bodyMediaType", body.GetMediaType(), "bodyContent", bodyContent, "timeout", timeoutInMin)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	headers, err := parseHeaders(headersContent)
+	if err != nil {
+		return err
+	}
+
+	requestInfo := framework.NewPOSTHTTPRequestInfoWithHeaders(uri, path, headers, body.GetMediaType(), bodyContent)
+	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
+}
+
 func (data *Data) httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes(serviceName, path string, size, timeoutInMin int) error {
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
@@ -186,4 +206,23 @@ func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBod
 		}
 	}
 	return nil
+}
+
+func parseHeaders(headersContent string) (map[string]string, error) {
+	headers := make(map[string]string)
+
+	for _, headerEntry := range strings.Split(headersContent, ",") {
+		keyValuePair := strings.Split(headerEntry, "=")
+
+		if len(keyValuePair) == 1 {
+			return nil, fmt.Errorf("Header key and value need to be separated by `=`, parsed header: %s", headerEntry)
+		}
+		if len(keyValuePair) > 2 {
+			return nil, fmt.Errorf("Found multiple `=` in parsed header: %s", headerEntry)
+		}
+
+		headers[keyValuePair[0]] = keyValuePair[1]
+	}
+
+	return headers, nil
 }

@@ -37,6 +37,7 @@ type (
 	HTTPRequestInfo struct {
 		HTTPMethod, URI, Path, BodyFormat, BodyContent, Token string
 		Unsecure                                              bool
+		Headers                                               map[string]string
 	}
 )
 
@@ -145,6 +146,10 @@ func ExecuteHTTPRequestC(client *http.Client, namespace string, requestInfo HTTP
 		client.Transport = &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
+	}
+
+	for key, value := range requestInfo.Headers {
+		request.Header.Add(key, value)
 	}
 
 	return client.Do(request)
@@ -329,6 +334,13 @@ func NewPOSTHTTPRequestInfo(uri, path, bodyFormat, bodyContent string) HTTPReque
 		BodyFormat:  bodyFormat,
 		BodyContent: bodyContent,
 	}
+}
+
+// NewPOSTHTTPRequestInfoWithHeaders constructor creates a new HTTPRequestInfo struct with the POST HTTP method and provided headers
+func NewPOSTHTTPRequestInfoWithHeaders(uri, path string, headers map[string]string, bodyFormat, bodyContent string) HTTPRequestInfo {
+	request := NewPOSTHTTPRequestInfo(uri, path, bodyFormat, bodyContent)
+	request.Headers = headers
+	return request
 }
 
 func addHTTPAuthentication(request *http.Request, requestInfo HTTPRequestInfo) {

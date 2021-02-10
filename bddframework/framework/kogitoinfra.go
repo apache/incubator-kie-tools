@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
@@ -86,6 +87,8 @@ func parseKogitoInfraResource(targetResourceType string) (*v1beta1.Resource, err
 		return &v1beta1.Resource{APIVersion: infrastructure.KeycloakAPIVersion, Kind: infrastructure.KeycloakKind}, nil
 	case infrastructure.MongoDBKind:
 		return &v1beta1.Resource{APIVersion: infrastructure.MongoDBAPIVersion, Kind: infrastructure.MongoDBKind}, nil
+	case infrastructure.KnativeEventingBrokerKind:
+		return &v1beta1.Resource{APIVersion: infrastructure.KnativeEventingAPIVersion, Kind: infrastructure.KnativeEventingBrokerKind}, nil
 	default:
 		return nil, fmt.Errorf("Unknown KogitoInfra target resource type %s", targetResourceType)
 	}

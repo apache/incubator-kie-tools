@@ -474,3 +474,34 @@ Feature: Deploy Kogito Runtime
     Examples:
       | runtime    | example-service         | profile     |
       | quarkus    | process-quarkus-example | persistence |
+
+#####
+
+  # Disabled until automated Knative provisioning is implemented
+  @disabled
+  @knative
+  Scenario: Deploy process-knative-quickstart-quarkus with Maven profile default using Kogito Runtime
+    Given Kogito Operator is deployed
+    And Deploy Knative Broker "default"
+    And Deploy Event display "event-display"
+    And Create Knative Trigger "event-display" receiving events from Broker "default" delivering to Service "event-display"
+    And Install Broker Kogito Infra "broker" within 5 minutes with configuration:
+      | resource | name | default |
+    And Clone Kogito examples into local directory
+    And Local example service "process-knative-quickstart-quarkus" is built by Maven using profile "default" and deployed to runtime registry
+
+    When Deploy quarkus example service "process-knative-quickstart-quarkus" from runtime registry with configuration:
+      | config | infra | broker |
+    And Kogito Runtime "process-knative-quickstart-quarkus" has 1 pods running within 10 minutes
+    And HTTP POST request on service "process-knative-quickstart-quarkus" is successful within 2 minutes with path "", headers "ce-specversion=1.0,ce-source=/from/localhost,ce-type=travellers,ce-id=12345" and body:
+      """json
+      {
+      "firstName": "Jan",
+      "lastName": "Kowalski",
+      "email": "jan.kowalski@example.com",
+      "nationality": "Polish"
+      }
+      """
+
+      Then Deployment "event-display" pods log contains text "Kowalski" within 3 minutes
+      And Deployment "event-display" pods log contains text "\"processed\":true" within 3 minutes
