@@ -16,14 +16,6 @@
     <name>AppFormer.js :: Monaco Editor</name>
     <description>AppFormer.js Monaco Editor</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>appformer-js</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
