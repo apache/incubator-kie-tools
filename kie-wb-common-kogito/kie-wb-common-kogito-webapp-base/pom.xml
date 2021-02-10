@@ -79,11 +79,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-api</artifactId>
     </dependency>
-    <!-- Required by uberfire-project -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>

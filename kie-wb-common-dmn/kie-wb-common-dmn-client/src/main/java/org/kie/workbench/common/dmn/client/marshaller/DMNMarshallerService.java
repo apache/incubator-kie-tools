@@ -255,8 +255,10 @@ public class DMNMarshallerService {
     }
 
     private Path getRoot() {
-        final WorkspaceProject workspaceProject = getWorkspaceProject();
-        return workspaceProject == null ? PathFactory.newPath(".", ROOT) : workspaceProject.getRootPath();
+//  FIXME: Tiago
+//        final WorkspaceProject workspaceProject = getWorkspaceProject();
+//        return workspaceProject == null ? PathFactory.newPath(".", ROOT) : workspaceProject.getRootPath();
+        return PathFactory.newPath(".", ROOT);
     }
 
     private WorkspaceProject getWorkspaceProject() {

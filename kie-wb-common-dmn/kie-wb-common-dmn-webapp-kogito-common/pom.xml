@@ -171,12 +171,6 @@
       <artifactId>uberfire-project-api</artifactId>
     </dependency>
 
-    <!-- Required by uberfire-project -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-api</artifactId>
-    </dependency>
-
     <!-- GWT and extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
