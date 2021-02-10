@@ -16,7 +16,6 @@
 
 package org.guvnor.common.services.project.events;
 
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.clusterapi.Clustered;
@@ -25,16 +24,7 @@ import org.uberfire.commons.clusterapi.Clustered;
 @Clustered
 public class RepositoryContributorsUpdatedEvent {
 
-    private Repository repository;
 
     public RepositoryContributorsUpdatedEvent() {
-    }
-
-    public RepositoryContributorsUpdatedEvent(@MapsTo("repository") final Repository repository) {
-        this.repository = repository;
-    }
-
-    public Repository getRepository() {
-        return repository;
     }
 }

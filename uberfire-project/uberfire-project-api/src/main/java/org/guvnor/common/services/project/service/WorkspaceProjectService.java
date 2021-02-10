@@ -16,16 +16,9 @@
 package org.guvnor.common.services.project.service;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.guvnor.common.services.project.model.Module;
-import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.structure.contributors.Contributor;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.Repository;
-
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.spaces.Space;
 
@@ -33,47 +26,6 @@ import org.uberfire.spaces.Space;
 public interface WorkspaceProjectService {
 
     Collection<WorkspaceProject> getAllWorkspaceProjects();
-
-    Collection<WorkspaceProject> getAllWorkspaceProjects(final OrganizationalUnit organizationalUnit);
-
-    Collection<WorkspaceProject> getAllWorkspaceProjectsByName(final OrganizationalUnit organizationalUnit,
-                                                               final String name);
-
-    boolean spaceHasNoProjectsWithName(final OrganizationalUnit organizationalUnit,
-                                       final String name,
-                                       final WorkspaceProject projectToIgnore);
-
-    WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
-                                final POM pom);
-
-    WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
-                                final POM pom,
-                                final DeploymentMode mode);
-
-    WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
-                                final POM pom,
-                                final DeploymentMode mode,
-                                final List<Contributor> contributor);
-
-    WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
-                                final POM pom,
-                                final DeploymentMode mode,
-                                final List<Contributor> contributor,
-                                final Repository templateRepository);
-
-    WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
-                                final POM pom,
-                                final DeploymentMode mode,
-                                final List<Contributor> contributor,
-                                final Repository templateRepository,
-                                final String remoteRepositoryUrl);
-
-    String createFreshProjectName(final OrganizationalUnit organizationalUnit,
-                                  final String name);
-
-    WorkspaceProject resolveProject(final Repository repository);
-
-    WorkspaceProject resolveProject(final Space space, final Branch branch);
 
     WorkspaceProject resolveProject(final Space space, final Module module);
 

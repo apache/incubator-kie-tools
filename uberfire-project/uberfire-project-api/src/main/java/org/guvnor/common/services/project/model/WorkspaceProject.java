@@ -15,16 +15,8 @@
  */
 package org.guvnor.common.services.project.model;
 
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
-import org.uberfire.spaces.Space;
-import org.uberfire.util.URIUtil;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 /**
@@ -40,48 +32,14 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class WorkspaceProject
         implements Cacheable {
 
-    private Repository repository;
-    private Branch branch;
     private Module mainModule;
-    private OrganizationalUnit organizationalUnit;
     private boolean requiresRefresh = true;
 
     public WorkspaceProject() {
     }
 
-    public WorkspaceProject(final OrganizationalUnit organizationalUnit,
-                            final Repository repository,
-                            final Branch branch,
-                            final Module mainModule) {
-        this.organizationalUnit = checkNotNull("organizationalUnit",
-                                               organizationalUnit);
-        this.repository = checkNotNull("repository",
-                                       repository);
-        this.branch = checkNotNull("branch",
-                                   branch);
+    public WorkspaceProject(final Module mainModule) {
         this.mainModule = mainModule;
-    }
-
-    public OrganizationalUnit getOrganizationalUnit() {
-        return organizationalUnit;
-    }
-
-    /**
-     * This is here for convenience. In case you quickly need the repository information.
-     * Please do not use the repository root path unless you are sure you need it. The Branch root is the Project root.
-     * @return Repository where the project is.
-     */
-    public Repository getRepository() {
-        return repository;
-    }
-
-    /**
-     * Branch is where the Project is located.
-     * To change the branch, please recreate and reload the Project. You get way less bugs in UI code this way.
-     * @return Currently active branch.
-     */
-    public Branch getBranch() {
-        return branch;
     }
 
     /**
@@ -89,10 +47,6 @@ public class WorkspaceProject
      */
     public Module getMainModule() {
         return mainModule;
-    }
-
-    public String getEncodedIdentifier() {
-        return URIUtil.encodeQueryString(repository.getIdentifier());
     }
 
     @Override
@@ -110,28 +64,16 @@ public class WorkspaceProject
             if (moduleName != null && !mainModule.getModuleName().trim().isEmpty()) {
                 return mainModule.getModuleName();
             } else {
-                return repository.getAlias();
+                return "null"; //FIXME: tiago
             }
         } else {
-            return repository.getAlias();
+            return "null"; //FIXME: tiago
         }
     }
 
     @Override
     public void markAsCached() {
         this.requiresRefresh = false;
-    }
-
-    /**
-     * Short cut for the WorkspaceProject root.
-     * @return The root path of the active branch.
-     */
-    public Path getRootPath() {
-        return this.getBranch().getPath();
-    }
-
-    public Space getSpace(){
-        return getRepository().getSpace();
     }
 
     @Override
@@ -148,24 +90,16 @@ public class WorkspaceProject
         if (requiresRefresh != workspaceProject.requiresRefresh) {
             return false;
         }
-        if (!repository.equals(workspaceProject.repository)) {
-            return false;
-        }
-        if (!branch.equals(workspaceProject.branch)) {
-            return false;
-        }
         if (mainModule != null ? !mainModule.equals(workspaceProject.mainModule) : workspaceProject.mainModule != null) {
             return false;
         }
-        return organizationalUnit.equals(workspaceProject.organizationalUnit);
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = ~~repository.hashCode();
-        result = 31 * result + ~~branch.hashCode();
-        result = 31 * result + (mainModule != null ? ~~mainModule.hashCode() : 0);
-        result = 31 * result + ~~organizationalUnit.hashCode();
+        int result = (mainModule != null ? ~~mainModule.hashCode() : 0);
         result = 31 * result + (requiresRefresh ? 1 : 0);
         return result;
     }

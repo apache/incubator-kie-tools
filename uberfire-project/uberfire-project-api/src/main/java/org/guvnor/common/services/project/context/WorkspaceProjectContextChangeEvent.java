@@ -20,7 +20,6 @@ import java.util.Objects;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.annotations.LocalEvent;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -35,23 +34,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @LocalEvent
 public class WorkspaceProjectContextChangeEvent {
 
-    private final OrganizationalUnit ou;
     private final WorkspaceProject workspaceProject;
     private final Module module;
     private final Package pkg;
 
     public WorkspaceProjectContextChangeEvent() {
-        ou = null;
         workspaceProject = null;
         module = null;
         pkg = null;
-    }
-
-    public WorkspaceProjectContextChangeEvent(final OrganizationalUnit ou) {
-        this.ou = ou;
-        this.workspaceProject = null;
-        this.module = null;
-        this.pkg = null;
     }
 
     public WorkspaceProjectContextChangeEvent(final WorkspaceProject workspaceProject) {
@@ -69,14 +59,9 @@ public class WorkspaceProjectContextChangeEvent {
     public WorkspaceProjectContextChangeEvent(final WorkspaceProject workspaceProject,
                                               final Module module,
                                               final Package pkg) {
-        this.ou = workspaceProject != null ? workspaceProject.getOrganizationalUnit() : null;
         this.workspaceProject = workspaceProject;
         this.module = module;
         this.pkg = pkg;
-    }
-
-    public OrganizationalUnit getOrganizationalUnit() {
-        return ou;
     }
 
     public WorkspaceProject getWorkspaceProject() {
@@ -96,7 +81,6 @@ public class WorkspaceProjectContextChangeEvent {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((module == null) ? 0 : module.hashCode());
-        result = prime * result + ((ou == null) ? 0 : ou.hashCode());
         result = prime * result + ((pkg == null) ? 0 : pkg.hashCode());
         result = prime * result + ((workspaceProject == null) ? 0 : workspaceProject.hashCode());
         return result;
@@ -111,7 +95,6 @@ public class WorkspaceProjectContextChangeEvent {
         } else {
             WorkspaceProjectContextChangeEvent other = (WorkspaceProjectContextChangeEvent) obj;
             return Objects.equals(module, other.module)
-                    && Objects.equals(ou, other.ou)
                     && Objects.equals(pkg, other.pkg)
                     && Objects.equals(workspaceProject, other.workspaceProject);
         }
@@ -119,6 +102,6 @@ public class WorkspaceProjectContextChangeEvent {
 
     @Override
     public String toString() {
-        return "WorkspaceProjectContextChangeEvent [ou=" + ou + ", workspaceProject=" + workspaceProject + ", module=" + module + ", pkg=" + pkg + "]";
+        return "WorkspaceProjectContextChangeEvent [workspaceProject=" + workspaceProject + ", module=" + module + ", pkg=" + pkg + "]";
     }
 }

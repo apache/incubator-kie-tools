@@ -15,22 +15,11 @@
  */
 package org.guvnor.common.services.project.service;
 
-import java.util.Set;
-
-import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.structure.repositories.Branch;
 import org.uberfire.backend.vfs.Path;
 
 public interface ModuleServiceCore<T> {
-
-    /**
-     * Gets all the modules from a given branch.
-     * @param branch the branch where we are looking for the modules
-     * @return
-     */
-    Set<Module> getAllModules(final Branch branch);
 
     /**
      * Creates a new module to the given path.

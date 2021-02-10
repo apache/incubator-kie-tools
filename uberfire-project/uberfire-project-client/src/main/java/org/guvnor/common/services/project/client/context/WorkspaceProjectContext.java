@@ -31,8 +31,6 @@ import org.guvnor.common.services.project.events.ModuleUpdatedEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -50,7 +48,6 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 public class WorkspaceProjectContext {
 
-    private OrganizationalUnit activeOrganizationalUnit;
     private WorkspaceProject activeWorkspaceProject;
     private Module activeModule;
     private Package activePackage;
@@ -67,24 +64,10 @@ public class WorkspaceProjectContext {
         this.contextChangeEvent = contextChangeEvent;
     }
 
-    public void onOrganizationalUnitUpdated(@Observes final UpdatedOrganizationalUnitEvent event) {
-        if (activeWorkspaceProject != null) {
-            WorkspaceProject updatedWorkspaceProject = new WorkspaceProject(event.getOrganizationalUnit(),
-                                                                            activeWorkspaceProject.getRepository(),
-                                                                            activeWorkspaceProject.getBranch(),
-                                                                            activeWorkspaceProject.getMainModule());
-            contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(updatedWorkspaceProject,
-                                                                           activeModule,
-                                                                           activePackage));
-        }
-    }
 
     public void onModuleUpdated(@Observes final ModuleUpdatedEvent moduleUpdatedEvent) {
         if (activeModule != null && activeModule.getRootPath().equals(moduleUpdatedEvent.getOldModule().getRootPath())) {
-            contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(new WorkspaceProject(activeWorkspaceProject.getOrganizationalUnit(),
-                                                                                                activeWorkspaceProject.getRepository(),
-                                                                                                activeWorkspaceProject.getBranch(),
-                                                                                                moduleUpdatedEvent.getNewModule()),
+            contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(new WorkspaceProject(moduleUpdatedEvent.getNewModule()),
                                                                            moduleUpdatedEvent.getNewModule()));
         }
     }
@@ -94,7 +77,6 @@ public class WorkspaceProjectContext {
                                                                                              activeModule,
                                                                                              activePackage);
 
-        this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
         this.setActiveWorkspaceProject(event.getWorkspaceProject());
         this.setActiveModule(event.getModule());
         this.setActivePackage(event.getPackage());
@@ -103,18 +85,6 @@ public class WorkspaceProjectContext {
             handler.onChange(previous,
                              event);
         }
-    }
-
-    public Optional<Path> getActiveRepositoryRoot() {
-        return getActiveWorkspaceProject().map(proj -> proj.getBranch()).map(branch -> branch.getPath());
-    }
-
-    protected void setActiveOrganizationalUnit(final OrganizationalUnit activeOrganizationalUnit) {
-        this.activeOrganizationalUnit = activeOrganizationalUnit;
-    }
-
-    public Optional<OrganizationalUnit> getActiveOrganizationalUnit() {
-        return Optional.ofNullable(this.activeOrganizationalUnit);
     }
 
     protected void setActiveWorkspaceProject(final WorkspaceProject activeWorkspaceProject) {

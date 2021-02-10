@@ -32,10 +32,6 @@
   <description>UberFire - Project API</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-api</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
