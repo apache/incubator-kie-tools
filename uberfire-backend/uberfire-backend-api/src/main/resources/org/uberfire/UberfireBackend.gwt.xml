@@ -20,7 +20,6 @@
 <module>
 
   <inherits name='org.uberfire.java.nio.UberfireNIO2Model'/>
-  <inherits name='org.uberfire.preferences.UberfirePreferencesAPI'/>
   <source path='backend'>
     <exclude name="server/**"/>
   </source>

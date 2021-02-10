@@ -17,51 +17,18 @@
 
 package org.guvnor.m2repo.preferences;
 
-import org.uberfire.preferences.shared.PropertyFormType;
-import org.uberfire.preferences.shared.annotations.Property;
-import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.preferences.shared.bean.BasePreference;
-import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
+public class ArtifactRepositoryPreference  {
 
-@WorkbenchPreference(identifier = "ArtifactRepositoryPreference", bundleKey = "ArtifactRepositoryPreference.Label")
-public class ArtifactRepositoryPreference implements BasePreference<ArtifactRepositoryPreference> {
+    private String globalM2RepoDir = "repositories/kie/global";
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDir",
-            validators = NotEmptyValidator.class)
-    private String globalM2RepoDir;
+    private boolean globalM2RepoDirEnabled = true;
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)
-    private boolean globalM2RepoDirEnabled;
+    private String workspaceM2RepoDir = "repositories/kie/workspaces";
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDir",
-            validators = NotEmptyValidator.class)
-    private String workspaceM2RepoDir;
+    private boolean workspaceM2RepoDirEnabled = false;
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)
-    private boolean workspaceM2RepoDirEnabled;
+    private boolean distributionManagementM2RepoDirEnabled = true;
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.DistributionManagementM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)
-    private boolean distributionManagementM2RepoDirEnabled;
-
-    public static String getGlobalM2RepoDirWithFallback() {
-        ArtifactRepositoryPreference artifactRepositoryPreference = new ArtifactRepositoryPreference();
-        artifactRepositoryPreference = artifactRepositoryPreference.defaultValue(artifactRepositoryPreference);
-        String global = artifactRepositoryPreference.getGlobalM2RepoDir();
-        if (global == null) {
-            global = "repositories/kie/global";
-        }
-        return global;
-    }
-
-    @Override
-    public ArtifactRepositoryPreference defaultValue(final ArtifactRepositoryPreference defaultValue) {
-        defaultValue.globalM2RepoDir = "repositories/kie/global";
-        defaultValue.workspaceM2RepoDir = "repositories/kie/workspaces";
-        defaultValue.globalM2RepoDirEnabled = true;
-        defaultValue.workspaceM2RepoDirEnabled = false;
-        defaultValue.distributionManagementM2RepoDirEnabled = true;
-        return defaultValue;
-    }
 
     public String getGlobalM2RepoDir() {
         return globalM2RepoDir;

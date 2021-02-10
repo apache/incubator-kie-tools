@@ -16,38 +16,13 @@
 
 package org.uberfire.ext.editor.commons.file.exports;
 
-import org.uberfire.preferences.shared.annotations.Property;
-import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.preferences.shared.bean.BasePreference;
-import org.uberfire.preferences.shared.impl.validation.EnumValuePropertyValidator;
+public class FileExportsPreferences {
 
-@WorkbenchPreference(identifier = "FileExport",
-        bundleKey = "FileExport.Label",
-        parents = "LibraryPreferences")
-public class FileExportsPreferences implements BasePreference<FileExportsPreferences> {
+    String pdfOrientation = format(PdfExportPreferences.Orientation.PORTRAIT);
 
-    @Property(bundleKey = "FileExport.PdfOrientation.Text",
-            helpBundleKey = "FileExport.PdfOrientation.Help",
-            validators = PdfOrientationValidator.class)
-    String pdfOrientation;
+    String pdfUnit = format(PdfExportPreferences.Unit.MM);
 
-    @Property(bundleKey = "FileExport.PdfUnit.Text",
-            helpBundleKey = "FileExport.PdfUnit.Help",
-            validators = PdfUnitValidator.class)
-    String pdfUnit;
-
-    @Property(bundleKey = "FileExport.PdfFormat.Text",
-            helpBundleKey = "FileExport.PdfFormat.Help",
-            validators = PdfFormatValidator.class)
-    String pdfFormat;
-
-    @Override
-    public FileExportsPreferences defaultValue(final FileExportsPreferences defaultValue) {
-        defaultValue.pdfOrientation = format(PdfExportPreferences.Orientation.PORTRAIT);
-        defaultValue.pdfUnit = format(PdfExportPreferences.Unit.MM);
-        defaultValue.pdfFormat = format(PdfExportPreferences.Format.A4);
-        return defaultValue;
-    }
+    String pdfFormat = format(PdfExportPreferences.Format.A4);
 
     public PdfExportPreferences getPdfPreferences() {
         return PdfExportPreferences.create(pdfOrientation,

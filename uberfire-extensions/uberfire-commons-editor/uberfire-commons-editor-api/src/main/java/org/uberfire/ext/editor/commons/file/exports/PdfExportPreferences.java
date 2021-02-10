@@ -19,7 +19,7 @@ package org.uberfire.ext.editor.commons.file.exports;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.preferences.shared.impl.validation.EnumValuePropertyValidator.parseString;
+import static org.uberfire.ext.editor.commons.file.exports.EnumValuePropertyValidator.parseString;
 
 /**
  * The pdf document's settings.

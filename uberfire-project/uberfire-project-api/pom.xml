@@ -75,14 +75,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-preferences-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-preferences-processors</artifactId>
-    </dependency>
   </dependencies>
 
 </project>

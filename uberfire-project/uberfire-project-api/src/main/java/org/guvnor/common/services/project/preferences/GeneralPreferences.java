@@ -16,11 +16,6 @@
 
 package org.guvnor.common.services.project.preferences;
 
-import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.preferences.shared.bean.BasePreference;
-
-@WorkbenchPreference(identifier = "GeneralPreferences",
-        bundleKey = "GeneralPreferences.Label")
-public class GeneralPreferences implements BasePreference<GeneralPreferences> {
+public class GeneralPreferences {
 
 }

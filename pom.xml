@@ -835,7 +835,6 @@
     <module>uberfire-nio2-backport</module>
     <module>uberfire-backend</module>
     <module>uberfire-workbench</module>
-    <module>uberfire-preferences</module>
     <module>uberfire-extensions</module>
     <module>uberfire-m2repo-editor</module>
     <module>uberfire-project</module>

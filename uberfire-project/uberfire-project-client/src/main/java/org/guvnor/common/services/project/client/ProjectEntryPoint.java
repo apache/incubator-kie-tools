@@ -18,7 +18,6 @@ package org.guvnor.common.services.project.client;
 
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
@@ -26,10 +25,7 @@ import org.jboss.errai.ui.shared.api.annotations.Bundle;
 @Bundle("preferences/resources/i18n/ProjectPreferencesConstants.properties")
 public class ProjectEntryPoint {
 
-    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
-
     @Inject
-    public ProjectEntryPoint(final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier) {
-        this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
+    public ProjectEntryPoint() {
     }
 }

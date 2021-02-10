@@ -16,61 +16,23 @@
 
 package org.guvnor.common.services.project.preferences;
 
-import org.uberfire.preferences.shared.PropertyFormType;
-import org.uberfire.preferences.shared.annotations.Property;
-import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference(identifier = "GAVPreferences",
-        bundleKey = "GAVPreferences.Label",
-        parents = "GeneralPreferences")
-public class GAVPreferences implements BasePreference<GAVPreferences> {
+public class GAVPreferences {
 
     static final String CONFLICTING_GAV_CHECK_DISABLED = "org.guvnor.project.gav.check.disabled";
     static final String CHILD_GAV_EDIT_ENABLED = "org.guvnor.project.gav.child.edit.enabled";
 
-    @Property(bundleKey = "GAVPreferences.ConflictingGAVCheckDisabled.Label",
-            helpBundleKey = "GAVPreferences.ConflictingGAVCheckDisabled.Help",
-            formType = PropertyFormType.BOOLEAN)
-    private boolean conflictingGAVCheckDisabled;
+    private boolean conflictingGAVCheckDisabled = Boolean.parseBoolean(System.getProperty("org.guvnor.project.gav.check.disabled",
+                                                                                          "false"));
 
-    @Property(bundleKey = "GAVPreferences.ChildGAVEditEnabled.Label",
-            helpBundleKey = "GAVPreferences.ChildGAVEditEnabled.Help",
-            formType = PropertyFormType.BOOLEAN)
-    private boolean childGAVEditEnabled;
-
-    @Override
-    public GAVPreferences defaultValue(final GAVPreferences defaultValue) {
-        //GWT complains in SuperDevMode if the static constants are used; so we have to use a literal
-        final String conflictingGAVCheckDisabledSystemProperty = System.getProperty("org.guvnor.project.gav.check.disabled",
-                                                                                    "false");
-        final boolean conflictingGAVCheckDisabled = Boolean.parseBoolean(conflictingGAVCheckDisabledSystemProperty);
-
-        defaultValue.setConflictingGAVCheckDisabled(conflictingGAVCheckDisabled);
-
-        //GWT complains in SuperDevMode if the static constants are used; so we have to use a literal
-        final String childGAVEditEnabledSystemProperty = System.getProperty("org.guvnor.project.gav.child.edit.enabled",
-                                                                            "false");
-        final boolean childGAVEditEnabled = Boolean.parseBoolean(childGAVEditEnabledSystemProperty);
-
-        defaultValue.setChildGAVEditEnabled(childGAVEditEnabled);
-
-        return defaultValue;
-    }
+    private boolean childGAVEditEnabled = Boolean.parseBoolean(System.getProperty("org.guvnor.project.gav.child.edit.enabled",
+                                                                                  "false"));
 
     public boolean isConflictingGAVCheckDisabled() {
         return conflictingGAVCheckDisabled;
     }
 
-    public void setConflictingGAVCheckDisabled(final boolean conflictingGAVCheckDisabled) {
-        this.conflictingGAVCheckDisabled = conflictingGAVCheckDisabled;
-    }
-
     public boolean isChildGAVEditEnabled() {
         return childGAVEditEnabled;
-    }
-
-    public void setChildGAVEditEnabled(final boolean childGAVEditEnabled) {
-        this.childGAVEditEnabled = childGAVEditEnabled;
     }
 }

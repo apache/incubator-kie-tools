@@ -17,10 +17,6 @@
 
 package org.uberfire.ext.editor.commons.file.exports;
 
-import org.uberfire.preferences.shared.PropertyValidator;
-import org.uberfire.preferences.shared.impl.validation.EnumValuePropertyValidator;
-import org.uberfire.preferences.shared.impl.validation.ValidationResult;
-
 public class PdfUnitValidator implements PropertyValidator {
 
     private static final PdfExportPreferences.Unit[] VALUES = PdfExportPreferences.Unit.values();
