@@ -126,10 +126,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-m2repo-editor-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
