@@ -56,12 +56,9 @@ public class StunnerPreferencesRegistryLoader {
         final Annotation qualifier = definitionUtils.getQualifier(definitionSetId);
         final StunnerPreferencesRegistryHolder holder = InstanceUtils.lookup(preferencesHolders,
                                                                              qualifier);
-        preferences.load(prefs -> {
-                             holder.set(prefs, StunnerPreferences.class);
-                             holder.set(textPreferences, StunnerTextPreferences.class);
-                             loadCompleteCallback.execute(prefs);
-                         },
-                         errorCallback);
+        holder.set(preferences, StunnerPreferences.class);
+        holder.set(textPreferences, StunnerTextPreferences.class);
+        loadCompleteCallback.execute(preferences);
     }
 
     @PreDestroy

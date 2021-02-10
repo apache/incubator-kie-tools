@@ -16,25 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.preferences;
 
-import org.uberfire.preferences.shared.PropertyFormType;
-import org.uberfire.preferences.shared.annotations.Property;
-import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.preferences.shared.bean.BasePreference;
+public class StunnerDiagramEditorPreferences {
 
-@WorkbenchPreference(identifier = "StunnerDiagramEditorPreferences",
-        bundleKey = "StunnerDiagramEditorPreferences.Label")
-public class StunnerDiagramEditorPreferences implements BasePreference<StunnerDiagramEditorPreferences>,
-                                                        Cloneable {
+    boolean autoHidePalettePanel = false;
 
-    @Property(bundleKey = "StunnerDiagramEditorPreferences.AutoHidePalettePanel.Label",
-            helpBundleKey = "StunnerDiagramEditorPreferences.AutoHidePalettePanel.Help",
-            formType = PropertyFormType.BOOLEAN)
-    boolean autoHidePalettePanel;
-
-    @Property(bundleKey = "StunnerDiagramEditorPreferences.EnableHiDpi.Label",
-            helpBundleKey = "StunnerDiagramEditorPreferences.EnableHiDpi.Help",
-            formType = PropertyFormType.BOOLEAN)
-    boolean enableHiDPI;
+    boolean enableHiDPI = true;
 
     public boolean isAutoHidePalettePanel() {
         return autoHidePalettePanel;

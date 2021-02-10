@@ -52,15 +52,7 @@ add:
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
       <classifier>sources</classifier>
-    </dependency>
-    
-removed:
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-preferences-backend</artifactId>
-    </dependency>
-  
+    </dependency>  
     
     
 **Java sources**:

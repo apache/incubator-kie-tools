@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
 import java.util.function.Consumer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -178,11 +177,6 @@ public class CanvasFileExport {
     }
 
     private void loadFileExportPreferences(final Consumer<FileExportsPreferences> preferencesConsumer) {
-        preferences.load(preferencesConsumer::accept,
-                         error -> {
-                             LOGGER.log(Level.SEVERE,
-                                        "Cannot load preferences.",
-                                        error);
-                         });
+        preferencesConsumer.accept(preferences);
     }
 }

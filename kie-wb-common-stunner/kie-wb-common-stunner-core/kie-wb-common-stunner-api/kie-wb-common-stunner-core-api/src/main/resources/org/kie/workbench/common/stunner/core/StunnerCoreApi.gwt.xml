@@ -20,7 +20,6 @@
 <module>
 
   <inherits name="org.uberfire.UberfireAPI"/>
-  <inherits name="org.uberfire.preferences.UberfirePreferencesAPI" />
 
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
   <inherits name="org.jboss.errai.databinding.DataBinding"/>

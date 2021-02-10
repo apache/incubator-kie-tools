@@ -16,24 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.preferences;
 
-import org.uberfire.preferences.shared.annotations.Property;
-import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.preferences.shared.bean.BasePreference;
+public class StunnerPreferences {
 
-@WorkbenchPreference(identifier = "StunnerPreferences",
-        bundleKey = "StunnerPreferences.Label")
-public class StunnerPreferences implements BasePreference<StunnerPreferences>,
-                                           Cloneable {
-
-    @Property(bundleKey = "StunnerPreferences.StunnerDiagramEditorPreferences")
-    StunnerDiagramEditorPreferences diagramEditorPreferences;
-
-    @Override
-    public StunnerPreferences defaultValue(final StunnerPreferences defaultValue) {
-        defaultValue.diagramEditorPreferences.setAutoHidePalettePanel(false);
-        defaultValue.diagramEditorPreferences.setEnableHiDPI(true);
-        return defaultValue;
-    }
+    private StunnerDiagramEditorPreferences diagramEditorPreferences = new StunnerDiagramEditorPreferences();
 
     public StunnerDiagramEditorPreferences getDiagramEditorPreferences() {
         return diagramEditorPreferences;
