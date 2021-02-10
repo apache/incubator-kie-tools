@@ -61,7 +61,7 @@ public class DataSetDefProviderTypeEditorTest {
         final ArgumentCaptor<Collection> actualEntriesCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(provider, times(1)).setEntries(actualEntriesCaptor.capture());
         final Collection actualEntries = actualEntriesCaptor.getValue();
-        assertEquals(4, actualEntries.size());
+        assertEquals(5, actualEntries.size());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class DataSetDefProviderTypeEditorTest {
         final ArgumentCaptor<Collection> actualEntriesCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(provider, times(1)).setEntries(actualEntriesCaptor.capture());
         final Collection actualEntries = actualEntriesCaptor.getValue();
-        assertEquals(5, actualEntries.size());
+        assertEquals(6, actualEntries.size());
         
         verify(pluginEditor, times(1)).getTypeSelectorImageUri();
         verify(pluginEditor, times(1)).getTypeSelectorTitle();

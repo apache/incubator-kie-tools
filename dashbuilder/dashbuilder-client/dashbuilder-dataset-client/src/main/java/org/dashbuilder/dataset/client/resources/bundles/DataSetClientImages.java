@@ -87,4 +87,10 @@ public interface DataSetClientImages extends ClientBundle {
 
     @Source("images/loading_icon.gif")
     DataResource loadingIcon();
+
+    @Source("images/prometheus_icon_160.png")
+    DataResource prometheusIcon160();
+
+    @Source("images/prometheus_icon_32.png")
+    DataResource prometheusIcon32();
 }

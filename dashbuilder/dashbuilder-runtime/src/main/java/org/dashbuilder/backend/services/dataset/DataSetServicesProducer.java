@@ -26,6 +26,7 @@ import org.dashbuilder.dataprovider.StaticDataSetProvider;
 import org.dashbuilder.dataprovider.backend.elasticsearch.ElasticSearchDataSetProvider;
 import org.dashbuilder.dataprovider.csv.CSVDataSetProvider;
 import org.dashbuilder.dataprovider.csv.CSVFileStorage;
+import org.dashbuilder.dataprovider.prometheus.PrometheusDataSetProvider;
 import org.dashbuilder.dataprovider.sql.SQLDataSetProvider;
 import org.dashbuilder.dataset.DataSetDefRegistryImpl;
 import org.dashbuilder.dataset.DataSetManager;
@@ -72,6 +73,12 @@ public class DataSetServicesProducer {
         return new ElasticSearchDataSetProvider(staticDataSetProvider,
                                                 DataSetCore.get().getIntervalBuilderLocator(),
                                                 DataSetCore.get().getIntervalBuilderDynamicDate());
+    }
+    
+    @Produces
+    @ApplicationScoped
+    public PrometheusDataSetProvider producePrometheusProvider(StaticDataSetProvider staticDataSetProvider) {
+        return new PrometheusDataSetProvider(staticDataSetProvider);
     }
 
     @Produces

@@ -135,6 +135,9 @@ public class DataSetDefVfsServicesImpl implements DataSetDefVfsServices {
                       final String newName,
                       final Path targetDirectory,
                       final String comment ) {
+        if (targetDirectory == null) {
+            return copy(path, newName, comment);
+        }
         throw new UnsupportedOperationException( "A data set definition cannot be copied to another directory." );
     }
 

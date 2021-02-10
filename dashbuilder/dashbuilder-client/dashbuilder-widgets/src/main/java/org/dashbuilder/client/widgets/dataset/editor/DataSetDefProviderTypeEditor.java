@@ -18,6 +18,7 @@ package org.dashbuilder.client.widgets.dataset.editor;
 import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
 import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
 import static org.dashbuilder.dataprovider.DataSetProviderType.ELASTICSEARCH;
+import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
 import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
 
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
     /**
      * The provider types supported by this editor
      */
-    DataSetProviderType[] CORE_TYPES = new DataSetProviderType[]{BEAN, CSV, SQL, ELASTICSEARCH};
+    DataSetProviderType[] CORE_TYPES = new DataSetProviderType[]{BEAN, CSV, SQL, ELASTICSEARCH, PROMETHEUS};
 
     protected Collection<ImageListEditor<DataSetProviderType>.Entry> getDefaultEntries() {
         final DataSetProviderType[] providerTypes = CORE_TYPES;
@@ -168,6 +169,9 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         if (ELASTICSEARCH.equals(type)) {
             return DataSetEditorConstants.INSTANCE.elasticSearch();
         }
+        if (PROMETHEUS.equals(type)) {
+            return DataSetEditorConstants.INSTANCE.prometheus();
+        }
         return null;
     }
 
@@ -183,6 +187,9 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         }
         if (ELASTICSEARCH.equals(type)) {
             return DataSetEditorConstants.INSTANCE.elasticSearch_description();
+        }
+        if (PROMETHEUS.equals(type)) {
+            return DataSetEditorConstants.INSTANCE.prometheus_description();
         }
         return null;
     }
@@ -200,7 +207,9 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         if (ELASTICSEARCH.equals(type)) {
             return DataSetClientResources.INSTANCE.images().elIcon160().getSafeUri();
         }
-
+        if (PROMETHEUS.equals(type)) {
+            return DataSetClientResources.INSTANCE.images().prometheusIcon160().getSafeUri();
+        }        
         return null;
     }
 }

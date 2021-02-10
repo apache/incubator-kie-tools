@@ -147,5 +147,12 @@ public interface DataSetEditorConstants extends Messages {
     String showColumnsAndFilter();
     String hideColumnsAndFilter();
     String defNotFound();
+    String prometheus_query();
+    String prometheus_query_description();
+    String prometheus_server_url();
+    String prometheus_server_url_description();
+    String prometheus();
+    String prometheus_description();
+    String prometheus_query_placeholder();
+    String prometheus_server_url_placeholder();
 }
-

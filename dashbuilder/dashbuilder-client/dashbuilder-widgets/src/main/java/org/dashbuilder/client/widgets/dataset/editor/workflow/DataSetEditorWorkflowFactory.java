@@ -9,11 +9,13 @@ import org.dashbuilder.client.widgets.dataset.editor.workflow.create.CSVDataSetB
 import org.dashbuilder.client.widgets.dataset.editor.workflow.create.DataSetBasicAttributesWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.create.DataSetProviderTypeWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.create.ElasticSearchDataSetBasicAttributesWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.create.PrometheusDataSetBasicAttributesWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.create.SQLDataSetBasicAttributesWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.BeanDataSetEditWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.CSVDataSetEditWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.DataSetEditWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.ElasticSearchDataSetEditWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.PrometheusDataSetEditWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.SQLDataSetEditWorkflow;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -51,6 +53,7 @@ public class DataSetEditorWorkflowFactory {
         final boolean isBean = type != null && DataSetProviderType.BEAN.equals(type);
         final boolean isCSV = type != null && DataSetProviderType.CSV.equals(type);
         final boolean isEL = type != null && DataSetProviderType.ELASTICSEARCH.equals(type);
+        final boolean isPrometheus = type != null && DataSetProviderType.PROMETHEUS.equals(type);
         
         Class workflowClass = null;
         if (isSQL) {
@@ -61,6 +64,8 @@ public class DataSetEditorWorkflowFactory {
             workflowClass = BeanDataSetEditWorkflow.class;
         } else if (isEL) {
             workflowClass = ElasticSearchDataSetEditWorkflow.class;
+        } else if (isPrometheus) {
+            workflowClass = PrometheusDataSetEditWorkflow.class;
         } else if (!dataSetEditorPlugin.isUnsatisfied()) {
             for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
                 if (plugin.getProviderType().equals(type)) {
@@ -98,6 +103,7 @@ public class DataSetEditorWorkflowFactory {
         final boolean isBean = type != null && DataSetProviderType.BEAN.equals(type);
         final boolean isCSV = type != null && DataSetProviderType.CSV.equals(type);
         final boolean isEL = type != null && DataSetProviderType.ELASTICSEARCH.equals(type);
+        final boolean isPrometheus = type != null && DataSetProviderType.PROMETHEUS.equals(type);
         
         Class workflowClass = null;
         if (isSQL) {
@@ -108,6 +114,8 @@ public class DataSetEditorWorkflowFactory {
             workflowClass = BeanDataSetBasicAttributesWorkflow.class;
         } else if (isEL) {
             workflowClass = ElasticSearchDataSetBasicAttributesWorkflow.class;
+        } else if (isPrometheus) {
+            workflowClass = PrometheusDataSetBasicAttributesWorkflow.class;            
         } else if (!dataSetEditorPlugin.isUnsatisfied()) {
             for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
                 if (plugin.getProviderType().equals(type)) {

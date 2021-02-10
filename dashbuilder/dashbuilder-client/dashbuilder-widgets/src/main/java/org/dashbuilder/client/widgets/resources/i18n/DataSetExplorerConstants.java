@@ -52,4 +52,5 @@ public interface DataSetExplorerConstants extends ConstantsWithLookup {
     String message();
     String cause();
     String ok();
+    String prometheus();
 }
