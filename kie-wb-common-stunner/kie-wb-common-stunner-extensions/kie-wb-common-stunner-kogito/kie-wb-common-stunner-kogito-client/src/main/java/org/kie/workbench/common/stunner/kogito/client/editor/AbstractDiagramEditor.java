@@ -304,4 +304,9 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     protected AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> getEditor() {
         return editor;
     }
+
+    protected ClientTranslationService getTranslationService() {
+        return translationService;
+    }
+
 }
