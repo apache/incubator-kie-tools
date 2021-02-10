@@ -21,7 +21,6 @@
 
   <inherits name='org.uberfire.UberfireAPI'/>
   <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorAPI'/>
-  <inherits name='org.guvnor.common.services.workingset.GuvnorWorkingsetAPI'/>
   <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
   <inherits name='org.guvnor.structure.GuvnorStructureAPI' />
 

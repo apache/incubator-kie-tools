@@ -21,10 +21,6 @@
       <exclusions>
         <exclusion>
           <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-workingset-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
           <artifactId>uberfire-services-api</artifactId>
         </exclusion>
         <exclusion>
