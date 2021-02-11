@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.project.client.util;
+package org.guvnor.common.services.project.context;
 
-import java.util.ArrayList;
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Plugin;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 
-@ApplicationScoped
-public class POMDefaultOptions {
+/**
+ * DO NOT DELETE THIS CLASS, FOR SOME REASON, THE DMN EDITOR NEEDS THIS
+ */
+@EntryPoint
+public class ProjectEntryPoint {
 
-    public ArrayList<Plugin> getBuildPlugins() {
-        return new ArrayList<Plugin>();
-    }
-
-    public String getPackaging() {
-        return "jar";
+    @Inject
+    public ProjectEntryPoint() {
     }
 }

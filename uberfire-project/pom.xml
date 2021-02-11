@@ -31,6 +31,5 @@
 
   <modules>
     <module>uberfire-project-api</module>
-    <module>uberfire-project-client</module>
   </modules>
 </project>
