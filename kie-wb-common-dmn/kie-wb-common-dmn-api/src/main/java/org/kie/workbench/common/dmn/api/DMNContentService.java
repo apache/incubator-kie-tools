@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.api;
 import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.uberfire.backend.vfs.Path;
@@ -47,12 +46,10 @@ public interface DMNContentService {
      * Save the content as string and the metadata into the specified path.
      * @param path The file path.
      * @param content The content of the file.
-     * @param metadata The metadata of the file.
      * @param comment The commit message.
      */
     void saveContent(final Path path,
                      final String content,
-                     final Metadata metadata,
                      final String comment);
 
     /**
