@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.bpmn.workitem;
 
 import java.util.Objects;
 
-import org.guvnor.common.services.project.model.Dependencies;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -35,7 +34,6 @@ public class WorkItemDefinition {
     private String defaultHandler;
     private String parameters;
     private String results;
-    private Dependencies dependencies;
 
     public void setUri(String uri) {
         this.uri = uri;
@@ -86,11 +84,6 @@ public class WorkItemDefinition {
         return this;
     }
 
-    public WorkItemDefinition setDependencies(Dependencies dependencies) {
-        this.dependencies = dependencies;
-        return this;
-    }
-
     public String getUri() {
         return uri;
     }
@@ -131,10 +124,6 @@ public class WorkItemDefinition {
         return results;
     }
 
-    public Dependencies getDependencies() {
-        return dependencies;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
@@ -146,8 +135,7 @@ public class WorkItemDefinition {
                                          (null != iconDefinition) ? iconDefinition.hashCode() : 0,
                                          (null != defaultHandler) ? defaultHandler.hashCode() : 0,
                                          (null != parameters) ? parameters.hashCode() : 0,
-                                         (null != results) ? results.hashCode() : 0,
-                                         (null != dependencies) ? dependencies.hashCode() : 0);
+                                         (null != results) ? results.hashCode() : 0);
     }
 
     @Override
@@ -163,8 +151,7 @@ public class WorkItemDefinition {
                     Objects.equals(iconDefinition, other.iconDefinition) &&
                     Objects.equals(defaultHandler, other.defaultHandler) &&
                     Objects.equals(parameters, other.parameters) &&
-                    Objects.equals(results, other.results) &&
-                    Objects.equals(dependencies, other.dependencies);
+                    Objects.equals(results, other.results);
         }
         return false;
     }

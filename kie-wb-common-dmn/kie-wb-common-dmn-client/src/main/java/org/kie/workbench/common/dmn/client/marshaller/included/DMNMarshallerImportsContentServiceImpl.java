@@ -16,18 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.marshaller.included;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import elemental2.promise.Promise;
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.dmn.api.DMNContentService;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
@@ -35,80 +28,41 @@ import org.uberfire.client.promise.Promises;
 @ApplicationScoped
 public class DMNMarshallerImportsContentServiceImpl implements DMNMarshallerImportsContentService {
 
-    private final Caller<DMNContentService> dmnContentServiceCaller;
 
     private final Promises promises;
 
 
     @Inject
-    public DMNMarshallerImportsContentServiceImpl(final Caller<DMNContentService> dmnContentServiceCaller,
-                                                  final Promises promises) {
-        this.dmnContentServiceCaller = dmnContentServiceCaller;
+    public DMNMarshallerImportsContentServiceImpl(final Promises promises) {
         this.promises = promises;
     }
 
     @Override
     public Promise<String> loadFile(final String fileUri) {
-        return promises.create((success, failure) -> {
-            dmnContentServiceCaller.call(
-                    (RemoteCallback<String>) success::onInvoke,
-                    (message, throwable) -> {
-                        failure.onInvoke(new ClientRuntimeError(throwable));
-                        return false;
-                    }).getContent(makePath(fileUri));
-        });
+        return promises.resolve("");
     }
 
     @Override
     public Promise<String[]> getModelsURIs() {
-        return promises.create((success, failure) -> {
-            getContentServiceCaller(success, failure).getModelsPaths(getWorkspaceProject());
-        });
+        return promises.resolve(new String[]{});
     }
 
     @Override
     public Promise<String[]> getModelsDMNFilesURIs() {
-        return promises.create((success, failure) -> {
-            getContentServiceCaller(success, failure).getDMNModelsPaths(getWorkspaceProject());
-        });
+        return promises.resolve(new String[]{});
     }
 
     @Override
     public Promise<String[]> getModelsPMMLFilesURIs() {
-        return promises.create((success, failure) -> {
-            getContentServiceCaller(success, failure).getPMMLModelsPaths(getWorkspaceProject());
-        });
+        return promises.resolve(new String[]{});
     }
 
     @Override
     public Promise<PMMLDocumentMetadata> getPMMLDocumentMetadata(final String fileUri) {
-        return promises.create((success, failure) -> {
-            dmnContentServiceCaller.call(
-                    (RemoteCallback<PMMLDocumentMetadata>) success::onInvoke,
-                    (message, throwable) -> {
-                        failure.onInvoke(new ClientRuntimeError(throwable));
-                        return false;
-                    }).loadPMMLDocumentMetadata(makePath(fileUri));
-        });
+        return promises.resolve();
     }
 
     private Path makePath(final String fileUri) {
         return PathFactory.newPath(".", fileUri);
-    }
-
-    private DMNContentService getContentServiceCaller(final Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<String[]> success,
-                                                      final Promise.PromiseExecutorCallbackFn.RejectCallbackFn failure) {
-        return dmnContentServiceCaller.call(
-                (List<Path> paths) -> {
-                    success.onInvoke(paths.stream().map(Path::toURI).toArray(String[]::new));
-                },
-                (message, throwable) -> {
-                    failure.onInvoke(new ClientRuntimeError(throwable));
-                    return false;
-                });
-    }
-
-    private WorkspaceProject getWorkspaceProject() {
-        return null; //FIXME: tiago
     }
 }

@@ -19,7 +19,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.categories.Decision;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
 import org.uberfire.workbench.annotations.VisibleAsset;

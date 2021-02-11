@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-import org.guvnor.common.services.project.model.Dependencies;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
@@ -71,7 +70,6 @@ public class WorkItemDefinitionClientParser {
 
     private static WorkItemDefinition parseWorkItemDefinitionObject(Queue<String> objectQueue) {
         WorkItemDefinition wid = emptyWid();
-        wid.setDependencies(new Dependencies());
         String line = objectQueue.poll();
         while (!isEndingObject(line) && !objectQueue.isEmpty()) {
             Map.Entry<String, String> attributes = getAttribute(line);
@@ -124,7 +122,6 @@ public class WorkItemDefinitionClientParser {
         wid.setDisplayName("");
         wid.setResults("");
         wid.setDefaultHandler("");
-        wid.setDependencies(new Dependencies(Collections.emptyList()));
         wid.setParameters("");
         return wid;
     }

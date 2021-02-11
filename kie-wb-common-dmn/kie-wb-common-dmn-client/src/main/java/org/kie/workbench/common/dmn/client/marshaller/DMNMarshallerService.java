@@ -31,7 +31,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import jsinterop.base.Js;
-import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
@@ -255,10 +254,10 @@ public class DMNMarshallerService {
 //        return workspaceProject == null ? PathFactory.newPath(".", ROOT) : workspaceProject.getRootPath();
         return PathFactory.newPath(".", ROOT);
     }
-
-    private WorkspaceProject getWorkspaceProject() {
-        return null; //FIXME: tiago
-    }
+// //FIXME: tiago
+//    private WorkspaceProject getWorkspaceProject() {
+//        return null;  //FIXME: tiago
+//    }
 
     private void updateClientShapeSetId(final Diagram diagram) {
         if (Objects.nonNull(diagram)) {
