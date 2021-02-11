@@ -19,7 +19,6 @@
 
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
   <inherits name="org.uberfire.UberfireAPI"/>
-  <inherits name="org.uberfire.java.nio.UberfireNIO2Model"/>
 
   <source path='file'/>
   <source path='readonly'/>

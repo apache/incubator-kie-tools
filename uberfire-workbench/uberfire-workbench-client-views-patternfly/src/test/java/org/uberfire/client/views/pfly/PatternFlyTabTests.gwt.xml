@@ -20,7 +20,6 @@
 <module>
 
   <inherits name="org.uberfire.client.views.PatternFly"/>
-  <inherits name="org.uberfire.java.nio.UberfireNIO2Model"/>
 
   <source path='tab'/>
   <source path='mock'/>
