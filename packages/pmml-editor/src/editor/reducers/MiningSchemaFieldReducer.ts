@@ -25,7 +25,7 @@ import {
   OutlierTreatmentMethod,
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { ValidationService } from "../validation";
+import { Builder, ValidationRegistry } from "../validation";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
@@ -39,6 +39,7 @@ interface MiningSchemaFieldPayload {
     readonly modelIndex: number;
     readonly miningSchemaIndex: number;
     readonly name: FieldName;
+    readonly originalName: FieldName | undefined;
     readonly usageType: UsageType | undefined;
     readonly optype: OpType | undefined;
     readonly importance: number | undefined;
@@ -55,15 +56,15 @@ interface MiningSchemaFieldPayload {
 export type MiningSchemaFieldActions = ActionMap<MiningSchemaFieldPayload>[keyof ActionMap<MiningSchemaFieldPayload>];
 
 export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField[], AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<MiningField[], AllActions> => {
   return (state: MiningField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateDataDictionaryField:
         state.forEach((mf, index) => {
           if (mf.name === action.payload.originalName) {
-            service.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
+            historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
               draft[index] = {
                 ...draft[index],
                 name: action.payload.dataField.name
@@ -74,7 +75,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
         break;
 
       case Actions.UpdateMiningSchemaField:
-        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
           const modelIndex = action.payload.modelIndex;
           const miningSchemaIndex = action.payload.miningSchemaIndex;
           const _areLowHighValuesRequired = areLowHighValuesRequired(action.payload.outliers);
@@ -117,7 +118,13 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
               invalidValueTreatment: action.payload.invalidValueTreatment,
               invalidValueReplacement: newInvalidValueReplacement
             };
-            validation.clear(`models[${modelIndex}].MiningSchema.MiningField[${miningSchemaIndex}]`);
+            validationRegistry.clear(
+              Builder()
+                .forModel(modelIndex)
+                .forMiningSchema()
+                .forMiningField(miningSchemaIndex)
+                .build()
+            );
             validateMiningField(
               action.payload.modelIndex,
               action.payload.miningSchemaIndex,
@@ -128,7 +135,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
                 missingValueReplacement: newMissingValueReplacement,
                 invalidValueReplacement: newInvalidValueReplacement
               },
-              validation
+              validationRegistry
             );
           }
         });
@@ -137,8 +144,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
-          validation.clear(`models[${modelIndex}].MiningSchema`);
-          validateMiningFields(modelIndex, state, validation);
+          validateMiningFields(modelIndex, state, validationRegistry);
         }
     }
 

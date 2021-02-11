@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
+import { MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { Builder, ValidationRegistry } from "../validation";
+import { validateMiningFieldsDataFieldReference } from "../validation/MiningSchema";
+import get = Reflect.get;
 
 interface PMMLPayload {
   [Actions.Refresh]: {
@@ -39,8 +42,9 @@ interface StateControlPayload {
 
 export type StateControlActions = ActionMap<StateControlPayload>[keyof ActionMap<StateControlPayload>];
 
-export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
-  history: HistoryService
+export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<PMML, AllActions> => {
   return (state: PMML, action: AllActions) => {
     switch (action.type) {
@@ -48,16 +52,37 @@ export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
         return action.payload.pmml;
 
       case Actions.SetVersion:
-        history.batch(state, null, draft => {
+        historyService.batch(state, null, draft => {
           draft.version = action.payload.version;
         });
         break;
 
       case Actions.Undo:
-        return history.undo(state);
+        return historyService.undo(state);
 
       case Actions.Redo:
-        return history.redo(state);
+        return historyService.redo(state);
+
+      case Actions.Validate:
+        const dataFields = state.DataDictionary.DataField;
+        const models = state.models ?? [];
+        models.forEach((model, modelIndex) => {
+          const miningSchema = get(model, "MiningSchema");
+          if (miningSchema !== undefined) {
+            validationRegistry.clear(
+              Builder()
+                .forModel(modelIndex)
+                .forMiningSchema()
+                .build()
+            );
+            validateMiningFieldsDataFieldReference(
+              modelIndex,
+              dataFields,
+              (miningSchema as MiningSchema).MiningField,
+              validationRegistry
+            );
+          }
+        });
     }
 
     return state;

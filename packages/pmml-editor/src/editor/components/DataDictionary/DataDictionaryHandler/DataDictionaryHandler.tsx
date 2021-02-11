@@ -18,7 +18,7 @@ import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer
 import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useBatchDispatch, useHistoryService } from "../../../history";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 const DataDictionaryHandler = () => {
@@ -56,12 +56,14 @@ const DataDictionaryHandler = () => {
   };
 
   const deleteField = (index: number) => {
-    dispatch({
-      type: Actions.DeleteDataDictionaryField,
-      payload: {
-        index
-      }
-    });
+    if (window.confirm(`Delete Output "${dictionary[index].name}"?`)) {
+      dispatch({
+        type: Actions.DeleteDataDictionaryField,
+        payload: {
+          index
+        }
+      });
+    }
   };
 
   const reorderFields = (oldIndex: number, newIndex: number) => {
@@ -89,8 +91,16 @@ const DataDictionaryHandler = () => {
     setActiveOperation(status ? Operation.UPDATE_DATA_DICTIONARY : Operation.NONE);
   };
 
-  const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`DataDictionary`), [dictionary]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forDataDictionary()
+          .build()
+      ),
+    [dictionary]
+  );
 
   const header = (
     <Split hasGutter={true}>

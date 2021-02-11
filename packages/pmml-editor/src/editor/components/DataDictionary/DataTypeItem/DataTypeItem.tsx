@@ -24,7 +24,7 @@ import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
 import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface DataTypeItemProps {
@@ -165,8 +165,17 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     setOptypeSelection(dataType.optype);
   }, [dataType]);
 
-  const { service } = useValidationService();
-  const validations = useMemo(() => service.get(`DataDictionary.DataField[${index}]`), [index, dataType]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forDataDictionary()
+          .forDataField(index)
+          .build()
+      ),
+    [index, dataType]
+  );
 
   return (
     <article

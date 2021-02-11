@@ -17,11 +17,11 @@ import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions, ModelReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
-import { ValidationService } from "../../../editor/validation";
+import { ValidationRegistry } from "../../../editor/validation";
 
 const historyService = new HistoryService();
-const validationService = new ValidationService();
-const reducer: Reducer<Model[], AllActions> = ModelReducer(historyService, validationService);
+const validationRegistry = new ValidationRegistry();
+const reducer: Reducer<Model[], AllActions> = ModelReducer(historyService, validationRegistry);
 
 describe("ModelReducer::Valid actions", () => {
   test("Actions.DeleteModel", () => {

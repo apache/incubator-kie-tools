@@ -36,12 +36,12 @@ interface OutputPayload {
 export type OutputActions = ActionMap<OutputPayload>[keyof ActionMap<OutputPayload>];
 
 export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
-  service: HistoryService
+  historyService: HistoryService
 ): Reducer<Output, AllActions> => {
   return (state: Output, action: AllActions) => {
     switch (action.type) {
       case Actions.AddOutput:
-        service.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
           draft.OutputField.push({
             name: action.payload.outputField.name,
             dataType: action.payload.outputField.dataType,
@@ -58,7 +58,7 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
         break;
 
       case Actions.DeleteOutput:
-        service.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
           const outputIndex = action.payload.outputIndex;
           if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
             draft.OutputField.splice(outputIndex, 1);
@@ -67,7 +67,7 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
         break;
 
       case Actions.AddBatchOutputs:
-        service.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
           action.payload.outputFields.forEach(name => {
             draft.OutputField.push({
               name: name,

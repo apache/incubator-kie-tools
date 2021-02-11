@@ -28,9 +28,9 @@ import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import "./OutputsContainer.scss";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";
+import { Builder, useValidationRegistry } from "../../../validation";
 import get = Reflect.get;
 import set = Reflect.set;
-import { useValidationService } from "../../../validation";
 
 interface OutputsContainerProps {
   modelIndex: number;
@@ -140,11 +140,17 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     setSelectedOutputIndex(undefined);
     setActiveOperation(Operation.NONE);
   };
-  const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`models[${modelIndex}].Output`), [
-    modelIndex,
-    output?.OutputField
-  ]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .build()
+      ),
+    [modelIndex, output?.OutputField]
+  );
 
   return (
     <div className="outputs-container">

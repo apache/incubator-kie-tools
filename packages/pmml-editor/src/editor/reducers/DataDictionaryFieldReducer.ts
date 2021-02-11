@@ -18,12 +18,13 @@ import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import {
-  ValidationService,
+  Builder,
+  hasIntervals,
+  hasValidValues,
+  shouldConstraintsBeCleared,
   validateDataField,
   validateDataFields,
-  shouldConstraintsBeCleared,
-  hasValidValues,
-  hasIntervals
+  ValidationRegistry
 } from "../validation";
 
 interface DataDictionaryFieldPayload {
@@ -40,8 +41,8 @@ export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[k
 >];
 
 export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField[], DataDictionaryFieldActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<DataField[], AllActions> => {
   return (state: DataField[], action: AllActions) => {
     switch (action.type) {
@@ -49,7 +50,7 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
         const dataField = action.payload.dataField;
         const dataDictionaryIndex = action.payload.dataDictionaryIndex;
 
-        service.batch(state, "DataDictionary.DataField", draft => {
+        historyService.batch(state, "DataDictionary.DataField", draft => {
           if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
             if (
               shouldConstraintsBeCleared(
@@ -87,14 +88,24 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
 
             draft[dataDictionaryIndex] = dataField;
           }
-          validation.clear(`DataDictionary.DataField[${dataDictionaryIndex}]`);
-          validateDataField(dataField, dataDictionaryIndex, validation);
+          validationRegistry.clear(
+            Builder()
+              .forDataDictionary()
+              .forDataField(dataDictionaryIndex)
+              .build()
+          );
+          validateDataField(dataField, dataDictionaryIndex, validationRegistry);
         });
         break;
 
       case Actions.Validate:
-        validation.clear("DataDictionary.DataField");
-        validateDataFields(state, validation);
+        validationRegistry.clear(
+          Builder()
+            .forDataDictionary()
+            .forDataField()
+            .build()
+        );
+        validateDataFields(state, validationRegistry);
     }
 
     return state;

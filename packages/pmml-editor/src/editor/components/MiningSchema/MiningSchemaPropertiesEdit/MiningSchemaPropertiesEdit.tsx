@@ -24,7 +24,7 @@ import {
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
@@ -113,25 +113,65 @@ const MiningSchemaPropertiesEdit = ({
     setInvalidValueReplacement(field.invalidValueReplacement ?? "");
   }, [field]);
 
-  const service = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const validationsImportance = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].importance`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forImportance()
+          .build()
+      ),
     [modelIndex, miningFieldIndex, field]
   );
   const validationsLowValue = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].lowValue`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forLowValue()
+          .build()
+      ),
     [modelIndex, miningFieldIndex, field]
   );
   const validationsHighValue = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].highValue`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forHighValue()
+          .build()
+      ),
     [modelIndex, miningFieldIndex, field]
   );
   const validationsMissingValueReplacement = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].missingValueReplacement`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forMissingValueReplacement()
+          .build()
+      ),
     [modelIndex, miningFieldIndex, field]
   );
   const validationsInvalidValueReplacement = useMemo(
-    () => service.get(`models[${modelIndex}].MiningSchema.MiningField[${miningFieldIndex}].invalidValueReplacement`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(miningFieldIndex)
+          .forInvalidValueReplacement()
+          .build()
+      ),
     [modelIndex, miningFieldIndex, field]
   );
 

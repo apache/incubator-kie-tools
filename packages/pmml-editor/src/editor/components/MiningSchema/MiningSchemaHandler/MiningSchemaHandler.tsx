@@ -12,11 +12,11 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
-import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, FieldName, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 import { useBatchDispatch, useHistoryService } from "../../../history";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 interface MiningSchemaHandlerProps {
@@ -42,24 +42,27 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
     });
   };
 
-  const deleteMiningField = (index: number, name: string) => {
-    dispatch({
-      type: Actions.DeleteMiningSchemaField,
-      payload: {
-        modelIndex: modelIndex,
-        miningSchemaIndex: index,
-        name
-      }
-    });
+  const deleteMiningField = (index: number) => {
+    if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
+      dispatch({
+        type: Actions.DeleteMiningSchemaField,
+        payload: {
+          modelIndex: modelIndex,
+          miningSchemaIndex: index,
+          name: miningSchema?.MiningField[index].name
+        }
+      });
+    }
   };
 
-  const updateField = (index: number, field: MiningField) => {
+  const updateField = (index: number, originalName: FieldName | undefined, field: MiningField) => {
     dispatch({
       type: Actions.UpdateMiningSchemaField,
       payload: {
         modelIndex: modelIndex,
         miningSchemaIndex: index,
-        ...field
+        ...field,
+        originalName
       }
     });
   };
@@ -68,12 +71,17 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
     setIsMiningSchemaOpen(!isMiningSchemaOpen);
   };
 
-  const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`models[${modelIndex}].MiningSchema`), [
-    modelIndex,
-    miningSchema,
-    dataDictionary
-  ]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .build()
+      ),
+    [modelIndex, miningSchema, dataDictionary]
+  );
 
   const header = (
     <Split hasGutter={true}>

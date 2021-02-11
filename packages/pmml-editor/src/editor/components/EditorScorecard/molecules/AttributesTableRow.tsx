@@ -14,27 +14,58 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useMemo } from "react";
 import { Label, Split, SplitItem } from "@patternfly/react-core";
-import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
-import { toText } from "../../../reducers";
+import { Builder, useValidationRegistry } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
-  index: number;
+  modelIndex: number;
+  characteristicIndex: number;
+  attributeIndex: number;
   attribute: Attribute;
   areReasonCodesUsed: boolean;
   dataFields: DataField[];
+  miningFields: MiningField[];
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
-  const { index, attribute, areReasonCodesUsed, dataFields, onEdit, onDelete } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    attributeIndex,
+    attribute,
+    areReasonCodesUsed,
+    dataFields,
+    miningFields,
+    onEdit,
+    onDelete
+  } = props;
+
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, attributeIndex, attribute, miningFields]
+  );
 
   return (
     <article
-      className={`attribute-item attribute-item-n${index} editable`}
+      className={`attribute-item attribute-item-n${attributeIndex} editable`}
       tabIndex={0}
       onClick={() => onEdit()}
       onKeyDown={e => {
@@ -47,9 +78,18 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
-          <Label tabIndex={0} color="blue">
-            <pre>{toText(attribute.predicate, dataFields)}</pre>
-          </Label>
+          <>
+            {validations.length > 0 && (
+              <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
+                <pre>{toText(attribute.predicate, dataFields)}</pre>
+              </ValidationIndicatorLabel>
+            )}
+            {validations.length === 0 && (
+              <Label tabIndex={0} color="blue">
+                <pre>{toText(attribute.predicate, dataFields)}</pre>
+              </Label>
+            )}
+          </>
         </SplitItem>
         <SplitItem isFilled={true}>
           <AttributeLabels activeAttribute={attribute} areReasonCodesUsed={areReasonCodesUsed} />

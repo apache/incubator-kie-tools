@@ -83,6 +83,7 @@ describe("DelegatingModelReducer::Valid actions", () => {
         modelIndex: 1,
         miningSchemaIndex: 0,
         name: "updated" as FieldName,
+        originalName: "field1" as FieldName,
         usageType: undefined,
         optype: undefined,
         importance: undefined,

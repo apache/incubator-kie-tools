@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, DataField, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";
@@ -22,6 +22,8 @@ import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
 
 interface AttributesTableProps {
+  modelIndex: number;
+  characteristicIndex: number;
   attributes: Attribute[];
   areReasonCodesUsed: boolean;
   viewAttribute: (index: number | undefined) => void;
@@ -29,12 +31,19 @@ interface AttributesTableProps {
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { attributes, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
+  const { modelIndex, characteristicIndex, attributes, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
 
   const { setActiveOperation } = useOperation();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
+  });
+  const miningFields: MiningField[] = useSelector<PMML, MiningField[]>((state: PMML) => {
+    const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
+    if (_model && _model instanceof Scorecard) {
+      return (_model as Scorecard).MiningSchema.MiningField;
+    }
+    return [];
   });
 
   const onEdit = (index: number | undefined) => {
@@ -54,10 +63,13 @@ export const AttributesTable = (props: AttributesTableProps) => {
         return (
           <AttributesTableRow
             key={index}
-            index={index}
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            attributeIndex={index}
             attribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}
             dataFields={dataFields}
+            miningFields={miningFields}
             onEdit={() => onEdit(index)}
             onDelete={() => onDelete(index)}
           />

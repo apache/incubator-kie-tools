@@ -40,7 +40,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface OutputFieldEditRowProps {
   modelIndex: number;
@@ -138,9 +138,17 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
       eventTypes: ["click"]
     }
   );
-  const { service } = useValidationService();
+  const { validationRegistry } = useValidationRegistry();
   const targetFieldValidation = useMemo(
-    () => service.get(`models[${modelIndex}].Output.OutputField[${outputFieldIndex}].targetField`),
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .forOutputField(outputFieldIndex)
+          .forTargetField()
+          .build()
+      ),
     [outputFieldIndex, modelIndex, outputField]
   );
   return (

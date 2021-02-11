@@ -26,7 +26,7 @@ import { OutputFieldReducer } from "./OutputFieldReducer";
 import { OutputReducer } from "./OutputReducer";
 import { MiningSchemaReducer } from "./MiningSchemaReducer";
 import { MiningSchemaFieldReducer } from "./MiningSchemaFieldReducer";
-import { ValidationService } from "../validation";
+import { ValidationRegistry } from "../validation";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -37,21 +37,21 @@ interface ModelPayload {
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
 export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = (
-  history: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<Model[], AllActions> => {
-  const scorecardReducer = mergeReducers(ScorecardReducer(history, validation), {
-    MiningSchema: mergeReducers(MiningSchemaReducer(history, validation), {
-      MiningField: MiningSchemaFieldReducer(history, validation)
+  const scorecardReducer = mergeReducers(ScorecardReducer(historyService, validationRegistry), {
+    MiningSchema: mergeReducers(MiningSchemaReducer(historyService, validationRegistry), {
+      MiningField: MiningSchemaFieldReducer(historyService, validationRegistry)
     }),
-    Output: mergeReducers(OutputReducer(history), { OutputField: OutputFieldReducer(history) }),
-    Characteristics: mergeReducers(CharacteristicsReducer(history), {
-      Characteristic: CharacteristicReducer(history)
+    Output: mergeReducers(OutputReducer(historyService), { OutputField: OutputFieldReducer(historyService) }),
+    Characteristics: mergeReducers(CharacteristicsReducer(historyService), {
+      Characteristic: CharacteristicReducer(historyService, validationRegistry)
     })
   });
 
   const delegate = DelegatingModelReducer(
-    history,
+    historyService,
     new Map([
       [
         "Scorecard",
@@ -71,7 +71,7 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
   return (state: Model[], action: AllActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
-        return history.mutate(state, "models", draft => {
+        return historyService.mutate(state, "models", draft => {
           if (draft !== undefined) {
             const modelIndex: number = action.payload.modelIndex;
             if (modelIndex >= 0 && modelIndex < draft.length) {

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
+import { ValidationRegistry } from "../validation";
 
 // @ts-ignore
 Characteristic[immerable] = true;
@@ -35,10 +36,11 @@ interface CharacteristicPayload {
 
 export type CharacteristicActions = ActionMap<CharacteristicPayload>[keyof ActionMap<CharacteristicPayload>];
 
-export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllActions> = (
-  service: HistoryService
+export const CharacteristicReducer: HistoryAwareValidatingReducer<Characteristic[], AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<Characteristic[], AllActions> => {
-  const attributesReducer = AttributesReducer(service);
+  const attributesReducer = AttributesReducer(historyService, validationRegistry);
 
   const delegateToAttributes = (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
@@ -56,7 +58,7 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
   return (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_UpdateCharacteristic:
-        service.batch(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
+        historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
           const characteristicIndex: number = action.payload.characteristicIndex;
           if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
             draft[characteristicIndex] = {

@@ -130,7 +130,7 @@ const _operator = (lookup: string): SimplePredicateOperator | undefined => {
 };
 
 //TODO {manstis} The text in the payload needs to have been converted to a Predicate
-export const fromText = (text: string): Predicate | undefined => {
+export const fromText = (text: string | undefined): Predicate | undefined => {
   if (text === undefined) {
     return undefined;
   }

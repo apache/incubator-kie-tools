@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
 
 export interface IndexedCharacteristic {
-  index: number | undefined;
+  index: number;
   characteristic: Characteristic;
 }
 
@@ -110,7 +110,9 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           <article
             key={ic.index}
             className={`editable-item output-item-n${selectedCharacteristicIndex} ${
-              selectedCharacteristicIndex === ic.index ? "editable-item--editing" : ""
+              selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC
+                ? "editable-item--editing"
+                : ""
             }`}
           >
             {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
@@ -131,6 +133,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
             )}
             {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
               <CharacteristicsTableRow
+                modelIndex={modelIndex}
+                characteristicIndex={ic.index}
                 areReasonCodesUsed={areReasonCodesUsed}
                 isBaselineScoreRequired={isBaselineScoreRequired}
                 characteristic={ic}

@@ -34,7 +34,7 @@ import {
 import { TrashIcon } from "@patternfly/react-icons";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface ConstraintsRangeEditProps {
   dataFieldIndex: number | undefined;
@@ -168,10 +168,18 @@ const RangeEdit = (props: RangeEditProps) => {
     }
   }, [addedRange, index, rangeRef.current]);
 
-  const { service } = useValidationService();
-  const validations = useMemo(() => service.get(`DataDictionary.DataField[${dataFieldIndex}].Interval[${index}]`), [
-    range
-  ]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forDataDictionary()
+          .forDataField(dataFieldIndex)
+          .forInterval(index)
+          .build()
+      ),
+    [range]
+  );
 
   return (
     <section ref={rangeRef}>

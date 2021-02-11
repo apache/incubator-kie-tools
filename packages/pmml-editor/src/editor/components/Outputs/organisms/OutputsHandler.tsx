@@ -29,7 +29,7 @@ import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation, useOperation } from "../../EditorScorecard";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 interface OutputsHandlerProps {
@@ -48,12 +48,17 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
 
   const { setActiveOperation } = useOperation();
 
-  const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`models[${modelIndex}].Output`), [
-    modelIndex,
-    output,
-    miningSchema
-  ]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .build()
+      ),
+    [modelIndex, output, miningSchema]
+  );
 
   const toggleModal = () => {
     setActiveOperation(Operation.NONE);

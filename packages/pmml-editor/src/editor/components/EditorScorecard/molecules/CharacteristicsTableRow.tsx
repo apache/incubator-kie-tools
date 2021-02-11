@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useCallback } from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import {
   AttributeLabels,
@@ -22,11 +23,13 @@ import {
   CharacteristicsTableAction
 } from "../atoms";
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
-import { IndexedCharacteristic } from "../organisms";
-import { toText } from "../../../reducers";
+import { IndexedCharacteristic, toText } from "../organisms";
 import "./CharacteristicsTableRow.scss";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface CharacteristicsTableRowProps {
+  modelIndex: number;
+  characteristicIndex: number;
   characteristic: IndexedCharacteristic;
   areReasonCodesUsed: boolean;
   isBaselineScoreRequired: boolean;
@@ -36,7 +39,16 @@ interface CharacteristicsTableRowProps {
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
-  const { characteristic, areReasonCodesUsed, isBaselineScoreRequired, dataFields, onEdit, onDelete } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    characteristic,
+    areReasonCodesUsed,
+    isBaselineScoreRequired,
+    dataFields,
+    onEdit,
+    onDelete
+  } = props;
 
   return (
     <article
@@ -62,6 +74,8 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
             isBaselineScoreRequired={isBaselineScoreRequired}
           />
           <CharacteristicAttributesList
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
             characteristic={characteristic.characteristic}
             areReasonCodesUsed={areReasonCodesUsed}
             dataFields={dataFields}
@@ -76,19 +90,37 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
 };
 
 interface CharacteristicAttributesListProps {
+  modelIndex: number;
+  characteristicIndex: number;
   characteristic: Characteristic;
   areReasonCodesUsed: boolean;
   dataFields: DataField[];
 }
 
 const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
-  const { characteristic, areReasonCodesUsed, dataFields } = props;
+  const { modelIndex, characteristicIndex, characteristic, areReasonCodesUsed, dataFields } = props;
+
+  const { validationRegistry } = useValidationRegistry();
+
+  const validations = useCallback(
+    attributeIndex =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, characteristic]
+  );
 
   return (
     <ul>
       {characteristic.Attribute.map((item, index) => (
         <li key={index}>
-          {CharacteristicPredicateLabel(toText(item.predicate, dataFields))}
+          {CharacteristicPredicateLabel(toText(item.predicate, dataFields), validations(index))}
           <AttributeLabels activeAttribute={item} areReasonCodesUsed={areReasonCodesUsed} />
         </li>
       ))}
