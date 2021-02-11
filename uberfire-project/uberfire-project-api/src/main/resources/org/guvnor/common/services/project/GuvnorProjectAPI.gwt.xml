@@ -27,16 +27,6 @@
   <inherits name='org.gwtbootstrap3.GwtBootstrap3NoTheme'/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
 
-  <source path='builder'/>
   <source path='context'/>
-  <source path='editor'/>
-  <source path='events'/>
-  <source path='model'/>
-  <source path="security" />
-  <source path='service'/>
-  <source path='categories' />
-  <source path='preferences' />
-  <source path='roles' />
-  <source path='utils' />
 
 </module>
