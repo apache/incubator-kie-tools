@@ -17,6 +17,7 @@
 package org.guvnor.ala.ui.client.navigation.providertype;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;

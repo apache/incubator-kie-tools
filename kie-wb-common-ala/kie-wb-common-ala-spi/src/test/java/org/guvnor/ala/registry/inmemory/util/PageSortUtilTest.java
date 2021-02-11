@@ -22,8 +22,9 @@ import java.util.List;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Page Sort Utils Test for checking correct paging and sorting

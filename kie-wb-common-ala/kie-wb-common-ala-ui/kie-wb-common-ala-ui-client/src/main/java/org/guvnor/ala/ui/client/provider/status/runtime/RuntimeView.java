@@ -17,6 +17,7 @@
 package org.guvnor.ala.ui.client.provider.status.runtime;
 
 import java.util.Collection;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

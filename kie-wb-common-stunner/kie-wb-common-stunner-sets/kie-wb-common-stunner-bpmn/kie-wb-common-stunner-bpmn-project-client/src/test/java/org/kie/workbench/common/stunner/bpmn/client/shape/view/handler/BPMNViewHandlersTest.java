@@ -28,9 +28,9 @@ import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandl
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.ViewAttributesHandler;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 

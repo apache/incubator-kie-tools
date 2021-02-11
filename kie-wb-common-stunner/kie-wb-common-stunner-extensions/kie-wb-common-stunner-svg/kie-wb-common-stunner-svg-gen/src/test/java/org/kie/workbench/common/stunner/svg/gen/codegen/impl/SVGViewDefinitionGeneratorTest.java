@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewBoxDefinitionImpl
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewFactoryImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewRefDefinitionImpl;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
 

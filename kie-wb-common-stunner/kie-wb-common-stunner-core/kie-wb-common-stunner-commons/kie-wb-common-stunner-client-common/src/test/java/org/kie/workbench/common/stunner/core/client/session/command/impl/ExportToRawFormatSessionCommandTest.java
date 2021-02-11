@@ -31,8 +31,8 @@ import org.uberfire.ext.editor.commons.client.file.exports.TextContent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

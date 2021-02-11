@@ -38,12 +38,12 @@ import org.kie.workbench.common.migration.cli.RealSystemAccess;
 import org.kie.workbench.common.migration.cli.SystemAccess;
 import org.kie.workbench.common.project.cli.util.ConfigGroupToSpaceInfoConverter;
 import org.mockito.ArgumentCaptor;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

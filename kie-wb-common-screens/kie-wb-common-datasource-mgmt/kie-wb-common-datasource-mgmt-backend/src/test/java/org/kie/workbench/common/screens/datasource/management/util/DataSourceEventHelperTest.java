@@ -26,7 +26,7 @@ import org.kie.workbench.common.screens.datasource.management.events.NewDriverEv
 import org.kie.workbench.common.screens.datasource.management.events.UpdateDataSourceEvent;
 import org.kie.workbench.common.screens.datasource.management.events.UpdateDriverEvent;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.*;

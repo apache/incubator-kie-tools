@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.gatewa
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.SubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.TaskConverter;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;

@@ -30,7 +30,7 @@ import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractJBPMFormModelHandlerTest {

@@ -53,7 +53,7 @@ import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.
 import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.TASKS;
 import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.TASKS_ADMIN;
 import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.TASK_DASHBOARD;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

@@ -16,15 +16,6 @@
 
 package org.guvnor.ala.ui.client.wizard.source;
 
-import static org.guvnor.ala.ui.client.util.UIUtil.EMPTY_STRING;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +34,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.spaces.Space;
+
+import static org.guvnor.ala.ui.client.util.UIUtil.EMPTY_STRING;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SourceConfigurationParamsPresenterTest {

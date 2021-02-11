@@ -18,6 +18,7 @@ package org.guvnor.ala.ui.wildfly.client.provider;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

@@ -51,8 +51,8 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.screens.server.management.client.wizard.container.NewContainerFormPresenter.SNAPSHOT;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)

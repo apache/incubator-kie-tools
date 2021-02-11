@@ -31,7 +31,7 @@ import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencie
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.*;

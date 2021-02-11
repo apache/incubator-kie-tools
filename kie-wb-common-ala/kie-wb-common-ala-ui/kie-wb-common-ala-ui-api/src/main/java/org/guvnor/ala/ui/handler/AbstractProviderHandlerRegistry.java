@@ -19,6 +19,7 @@ package org.guvnor.ala.ui.handler;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.ala.ui.model.ProviderTypeKey;

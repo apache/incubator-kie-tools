@@ -53,7 +53,7 @@ import org.kie.workbench.common.screens.datasource.management.metadata.SchemaMet
 import org.kie.workbench.common.screens.datasource.management.metadata.TableMetadata;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

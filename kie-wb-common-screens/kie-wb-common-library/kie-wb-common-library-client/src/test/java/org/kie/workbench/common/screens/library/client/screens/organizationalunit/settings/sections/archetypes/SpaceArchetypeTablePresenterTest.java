@@ -35,7 +35,7 @@ import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.Archet
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
@@ -43,7 +43,7 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInf
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;

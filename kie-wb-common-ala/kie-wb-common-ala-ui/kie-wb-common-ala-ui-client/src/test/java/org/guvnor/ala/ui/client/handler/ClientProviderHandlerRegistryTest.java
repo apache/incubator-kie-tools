@@ -22,7 +22,7 @@ import org.guvnor.ala.ui.handler.AbstractProviderHandlerRegistryTest;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class ClientProviderHandlerRegistryTest
         extends AbstractProviderHandlerRegistryTest<ClientProviderHandler> {

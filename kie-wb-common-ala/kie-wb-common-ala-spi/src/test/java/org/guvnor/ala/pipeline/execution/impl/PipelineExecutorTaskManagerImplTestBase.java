@@ -3,6 +3,7 @@ package org.guvnor.ala.pipeline.execution.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.ala.pipeline.ConfigExecutor;
@@ -20,8 +21,11 @@ import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class PipelineExecutorTaskManagerImplTestBase {
 

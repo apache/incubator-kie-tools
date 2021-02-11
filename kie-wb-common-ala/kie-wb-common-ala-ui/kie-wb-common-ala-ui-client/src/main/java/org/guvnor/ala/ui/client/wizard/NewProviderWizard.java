@@ -18,6 +18,7 @@ package org.guvnor.ala.ui.client.wizard;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;

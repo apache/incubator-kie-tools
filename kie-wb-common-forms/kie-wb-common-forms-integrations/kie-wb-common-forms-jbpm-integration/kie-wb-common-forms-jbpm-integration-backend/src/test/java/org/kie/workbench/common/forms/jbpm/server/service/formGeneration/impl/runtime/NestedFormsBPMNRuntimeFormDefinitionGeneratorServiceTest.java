@@ -25,10 +25,10 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.C
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Expense;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Line;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

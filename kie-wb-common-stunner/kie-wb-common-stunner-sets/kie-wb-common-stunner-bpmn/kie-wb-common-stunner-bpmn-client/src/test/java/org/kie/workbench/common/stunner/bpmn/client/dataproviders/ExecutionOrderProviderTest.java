@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ExecutionOrder;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

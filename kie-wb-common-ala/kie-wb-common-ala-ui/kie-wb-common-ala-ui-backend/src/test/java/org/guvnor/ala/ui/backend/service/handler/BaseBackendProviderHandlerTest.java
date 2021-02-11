@@ -20,7 +20,7 @@ import org.guvnor.ala.ui.backend.service.converter.ProviderConfigConverter;
 import org.guvnor.ala.ui.handler.BaseProviderHandlerTest;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public abstract class BaseBackendProviderHandlerTest<T extends BackendProviderHandler>
         extends BaseProviderHandlerTest<T> {

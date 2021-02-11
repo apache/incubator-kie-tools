@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.project.diagram.editor.impl.ProjectDiagr
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.RenameService;

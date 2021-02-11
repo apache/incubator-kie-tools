@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class AbstractGraphDefinitionTypesTest {

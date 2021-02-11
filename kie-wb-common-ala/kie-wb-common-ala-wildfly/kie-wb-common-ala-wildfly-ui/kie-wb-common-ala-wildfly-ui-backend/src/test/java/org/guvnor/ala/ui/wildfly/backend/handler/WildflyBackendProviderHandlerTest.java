@@ -21,7 +21,7 @@ import org.guvnor.ala.ui.backend.service.handler.BaseBackendProviderHandlerTest;
 import org.guvnor.ala.wildfly.model.WildflyProviderType;
 import org.junit.Before;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class WildflyBackendProviderHandlerTest
         extends BaseBackendProviderHandlerTest<WildflyBackendProviderHandler> {

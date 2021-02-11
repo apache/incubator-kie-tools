@@ -71,7 +71,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.commons.data.Pair;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;

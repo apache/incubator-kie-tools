@@ -19,7 +19,7 @@ package org.guvnor.ala.ui.client.handler;
 import org.guvnor.ala.ui.handler.BaseProviderHandlerTest;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public abstract class BaseClientProviderHandlerTest<T extends ClientProviderHandler>
         extends BaseProviderHandlerTest<T> {

@@ -25,7 +25,7 @@ import org.kie.workbench.common.services.verifier.reporting.client.panel.Analysi
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.assertEquals;

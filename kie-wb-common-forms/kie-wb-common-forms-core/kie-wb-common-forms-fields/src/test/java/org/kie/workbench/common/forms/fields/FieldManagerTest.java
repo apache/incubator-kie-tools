@@ -45,7 +45,7 @@ import org.kie.workbench.common.forms.model.impl.meta.entries.FieldPlaceHolderEn
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldRequiredEntry;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FieldManagerTest {

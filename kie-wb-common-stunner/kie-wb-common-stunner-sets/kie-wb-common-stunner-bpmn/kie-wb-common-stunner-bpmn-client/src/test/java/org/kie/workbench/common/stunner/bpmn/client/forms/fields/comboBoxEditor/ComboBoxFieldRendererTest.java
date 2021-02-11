@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ComboBoxFieldRendererTest {

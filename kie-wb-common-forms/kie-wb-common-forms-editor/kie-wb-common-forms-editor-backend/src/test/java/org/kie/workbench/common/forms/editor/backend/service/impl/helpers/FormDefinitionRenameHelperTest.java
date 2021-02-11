@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.editor.backend.service.impl.helpers;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 
 @RunWith(MockitoJUnitRunner.class)

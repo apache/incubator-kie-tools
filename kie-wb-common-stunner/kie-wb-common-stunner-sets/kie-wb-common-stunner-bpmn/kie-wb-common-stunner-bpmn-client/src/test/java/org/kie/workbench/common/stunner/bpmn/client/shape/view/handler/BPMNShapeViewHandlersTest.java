@@ -36,7 +36,7 @@ import static org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.O
 import static org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.ReferencePosition;
 import static org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.Size;
 import static org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.VerticalAlignment;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 

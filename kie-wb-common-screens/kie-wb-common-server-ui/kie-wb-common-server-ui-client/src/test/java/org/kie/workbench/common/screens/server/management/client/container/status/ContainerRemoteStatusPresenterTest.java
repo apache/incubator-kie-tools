@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.screens.server.management.client.util.Convert.toKey;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;

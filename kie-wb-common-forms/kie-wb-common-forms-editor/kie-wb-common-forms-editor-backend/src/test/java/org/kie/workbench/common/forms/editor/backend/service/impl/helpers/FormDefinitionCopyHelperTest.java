@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
 import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.io.IOService;
 

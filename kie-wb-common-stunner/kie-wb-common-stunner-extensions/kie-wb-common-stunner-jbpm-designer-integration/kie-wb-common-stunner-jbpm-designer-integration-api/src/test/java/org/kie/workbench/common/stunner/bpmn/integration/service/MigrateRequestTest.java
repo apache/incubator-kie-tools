@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 @RunWith(MockitoJUnitRunner.class)

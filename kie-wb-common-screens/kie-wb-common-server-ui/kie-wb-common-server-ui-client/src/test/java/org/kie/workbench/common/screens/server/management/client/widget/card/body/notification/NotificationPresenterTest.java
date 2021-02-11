@@ -24,7 +24,7 @@ import org.kie.server.api.model.Message;
 import org.kie.server.api.model.Severity;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

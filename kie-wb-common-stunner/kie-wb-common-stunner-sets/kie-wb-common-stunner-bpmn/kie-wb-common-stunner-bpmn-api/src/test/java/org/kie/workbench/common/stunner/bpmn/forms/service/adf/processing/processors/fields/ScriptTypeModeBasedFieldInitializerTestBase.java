@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElem
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

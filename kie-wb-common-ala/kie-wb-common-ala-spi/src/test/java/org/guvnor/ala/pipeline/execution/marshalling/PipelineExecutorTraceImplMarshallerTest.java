@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.guvnor.ala.marshalling.BaseMarshallerTest;
 import org.guvnor.ala.marshalling.Marshaller;
-import org.guvnor.ala.pipeline.impl.BasePipeline;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.Stage;
@@ -31,9 +30,11 @@ import org.guvnor.ala.pipeline.execution.RegistrableOutput;
 import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskDefImpl;
 import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskImpl;
 import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTraceImpl;
+import org.guvnor.ala.pipeline.impl.BasePipeline;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PipelineExecutorTraceImplMarshallerTest
         extends BaseMarshallerTest<PipelineExecutorTraceImpl> {

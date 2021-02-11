@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClassVerifierTest {

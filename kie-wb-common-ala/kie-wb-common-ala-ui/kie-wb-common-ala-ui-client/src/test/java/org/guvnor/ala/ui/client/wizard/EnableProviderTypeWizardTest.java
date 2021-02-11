@@ -43,7 +43,10 @@ import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.mockProviderTy
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.prepareServiceCallerError;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.EnableProviderTypeWizard_ProviderTypeEnableErrorMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.EnableProviderTypeWizard_ProviderTypeEnableSuccessMessage;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class EnableProviderTypeWizardTest

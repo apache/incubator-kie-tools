@@ -34,7 +34,7 @@ import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;

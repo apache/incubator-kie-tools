@@ -31,7 +31,7 @@ import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slid
 import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType.MIN_PARAM;
 import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType.PRECISION_PARAM;
 import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType.STEP_PARAM;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;

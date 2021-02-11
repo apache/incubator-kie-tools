@@ -30,7 +30,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.stunner.bpmn.project.backend.service.BPMNFindDataTypesProjectService;
 import org.kie.workbench.common.stunner.bpmn.project.service.DataTypesService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertEquals;

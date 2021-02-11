@@ -22,7 +22,7 @@ import org.guvnor.ala.ui.wildfly.client.handler.WildflyClientProviderHandler;
 import org.guvnor.ala.ui.wildfly.client.handler.WildflyFormResolver;
 import org.junit.Before;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class WildflyClientProviderHandlerTest
         extends BaseClientProviderHandlerTest<WildflyClientProviderHandler> {

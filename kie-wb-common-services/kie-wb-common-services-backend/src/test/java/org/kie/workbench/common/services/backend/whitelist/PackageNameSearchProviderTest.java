@@ -30,7 +30,7 @@ import org.kie.workbench.common.services.backend.builder.core.NoBuilderFoundExce
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.*;

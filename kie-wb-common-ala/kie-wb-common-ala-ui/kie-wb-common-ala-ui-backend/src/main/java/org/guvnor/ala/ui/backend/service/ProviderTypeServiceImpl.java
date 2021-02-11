@@ -16,10 +16,6 @@
 
 package org.guvnor.ala.ui.backend.service;
 
-import static org.guvnor.ala.registry.RuntimeRegistry.PROVIDER_TYPE_NAME_SORT;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +35,10 @@ import org.guvnor.ala.ui.service.ProviderTypeService;
 import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
+
+import static org.guvnor.ala.registry.RuntimeRegistry.PROVIDER_TYPE_NAME_SORT;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

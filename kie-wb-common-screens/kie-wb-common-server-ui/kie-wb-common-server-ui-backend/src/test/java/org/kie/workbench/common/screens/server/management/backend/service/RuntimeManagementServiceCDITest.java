@@ -17,7 +17,7 @@ package org.kie.workbench.common.screens.server.management.backend.service;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,7 +44,7 @@ import org.kie.server.controller.impl.service.SpecManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RuntimeManagementServiceCDITest {

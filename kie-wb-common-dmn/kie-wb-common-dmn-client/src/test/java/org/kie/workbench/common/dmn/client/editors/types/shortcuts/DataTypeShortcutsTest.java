@@ -35,7 +35,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts.MODAL_FOOTER;
 import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts.SELECT_DATATYPE_MENU;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

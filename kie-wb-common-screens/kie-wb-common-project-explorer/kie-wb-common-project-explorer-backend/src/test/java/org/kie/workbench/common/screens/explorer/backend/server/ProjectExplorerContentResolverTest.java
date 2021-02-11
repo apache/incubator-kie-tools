@@ -54,7 +54,7 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)

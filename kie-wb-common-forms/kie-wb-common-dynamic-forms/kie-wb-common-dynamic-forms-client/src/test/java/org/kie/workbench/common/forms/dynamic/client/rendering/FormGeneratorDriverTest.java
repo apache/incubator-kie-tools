@@ -37,7 +37,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -46,9 +46,9 @@ import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
 
 import static org.kie.workbench.common.forms.dynamic.client.rendering.FormGeneratorDriver.CONTAINER_TAG;
 import static org.kie.workbench.common.forms.dynamic.client.rendering.FormGeneratorDriver.ROW_CLASS;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

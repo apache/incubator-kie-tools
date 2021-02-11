@@ -28,7 +28,7 @@ import org.appformer.maven.integration.embedder.MavenEmbedderException;
 import org.appformer.maven.integration.embedder.MavenRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;

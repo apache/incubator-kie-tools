@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.guvnor.ala.ui.service.ProvisioningValidationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 /**
  * Service for facilitating validations in client side.

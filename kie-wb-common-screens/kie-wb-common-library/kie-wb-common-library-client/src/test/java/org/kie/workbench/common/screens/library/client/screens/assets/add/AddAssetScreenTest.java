@@ -19,7 +19,7 @@ package org.kie.workbench.common.screens.library.client.screens.assets.add;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -50,7 +50,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.category.Others;

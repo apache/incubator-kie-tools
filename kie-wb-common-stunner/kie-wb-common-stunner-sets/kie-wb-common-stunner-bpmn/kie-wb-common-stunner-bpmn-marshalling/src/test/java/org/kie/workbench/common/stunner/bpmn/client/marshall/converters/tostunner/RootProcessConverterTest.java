@@ -40,7 +40,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.f
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.di;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

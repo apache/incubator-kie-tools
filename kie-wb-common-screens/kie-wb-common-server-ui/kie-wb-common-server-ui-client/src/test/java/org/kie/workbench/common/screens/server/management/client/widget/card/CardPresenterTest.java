@@ -23,7 +23,7 @@ import org.kie.workbench.common.screens.server.management.client.widget.card.foo
 import org.kie.workbench.common.screens.server.management.client.widget.card.title.TitlePresenter;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

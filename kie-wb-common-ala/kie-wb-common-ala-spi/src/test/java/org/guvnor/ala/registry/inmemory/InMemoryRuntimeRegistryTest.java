@@ -34,8 +34,12 @@ import static org.guvnor.ala.AlaSPITestCommons.mockProviderListSPI;
 import static org.guvnor.ala.AlaSPITestCommons.mockProviderSPI;
 import static org.guvnor.ala.AlaSPITestCommons.mockProviderTypeListSPI;
 import static org.guvnor.ala.AlaSPITestCommons.mockProviderTypeSPI;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class InMemoryRuntimeRegistryTest {
 

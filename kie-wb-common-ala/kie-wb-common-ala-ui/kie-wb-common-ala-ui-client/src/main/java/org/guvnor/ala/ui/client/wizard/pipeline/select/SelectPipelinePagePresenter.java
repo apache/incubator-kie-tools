@@ -19,6 +19,7 @@ package org.guvnor.ala.ui.client.wizard.pipeline.select;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

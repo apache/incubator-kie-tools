@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalatio
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessEscalationRefProviderTest extends AbstractProcessFilteredNodeProviderBaseTest {

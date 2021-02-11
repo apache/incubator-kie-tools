@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.adf.engine.shared.test.AbstractFormGenerat
 import org.kie.workbench.common.forms.adf.engine.shared.test.TestPropertyValueExtractor;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

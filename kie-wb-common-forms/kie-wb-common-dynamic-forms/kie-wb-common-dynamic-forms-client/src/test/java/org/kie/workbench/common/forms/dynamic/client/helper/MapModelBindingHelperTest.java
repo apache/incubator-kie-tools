@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.dynamic.test.util.TestFormGenerator;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

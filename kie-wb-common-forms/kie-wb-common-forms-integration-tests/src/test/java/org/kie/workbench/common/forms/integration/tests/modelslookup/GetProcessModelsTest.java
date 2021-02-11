@@ -35,7 +35,7 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.BPMFinderServiceImpl;
 import org.kie.workbench.common.forms.model.ModelProperty;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 

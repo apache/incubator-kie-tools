@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 

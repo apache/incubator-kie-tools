@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.adf.engine.shared.FormBuildingService;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.model.Person;
 import org.kie.workbench.common.forms.adf.engine.shared.test.AbstractFormGenerationTest;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormBuildingServiceImplTest extends AbstractFormGenerationTest {

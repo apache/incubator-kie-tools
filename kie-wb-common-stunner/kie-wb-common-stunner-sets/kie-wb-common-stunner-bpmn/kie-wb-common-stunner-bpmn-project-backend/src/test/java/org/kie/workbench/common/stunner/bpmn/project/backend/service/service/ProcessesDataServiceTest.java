@@ -33,13 +33,13 @@ import org.kie.workbench.common.services.refactoring.service.RefactoringQuerySer
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.ProcessDataEvent;
 import org.kie.workbench.common.stunner.bpmn.project.backend.service.ProcessesDataService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

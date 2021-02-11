@@ -30,7 +30,7 @@ import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.ext.widgets.common.client.select.SelectOption;
 import org.uberfire.ext.widgets.common.client.select.SelectOptionImpl;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.workbench.category.Others;
 
 import static org.junit.Assert.*;

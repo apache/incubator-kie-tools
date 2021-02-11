@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.kie.server.api.model.Message;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.notification.NotificationPresenter;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BodyPresenterTest {

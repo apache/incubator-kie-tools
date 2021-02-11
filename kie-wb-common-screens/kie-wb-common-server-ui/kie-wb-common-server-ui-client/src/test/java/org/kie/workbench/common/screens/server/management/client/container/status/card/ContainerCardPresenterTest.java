@@ -17,8 +17,8 @@
 package org.kie.workbench.common.screens.server.management.client.container.status.card;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -44,7 +44,7 @@ import org.kie.workbench.common.screens.server.management.client.widget.card.bod
 import org.kie.workbench.common.screens.server.management.client.widget.card.footer.FooterPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.title.LinkTitlePresenter;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 

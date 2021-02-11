@@ -22,7 +22,7 @@ import elemental2.promise.Promise;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.promise.Promises;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
 

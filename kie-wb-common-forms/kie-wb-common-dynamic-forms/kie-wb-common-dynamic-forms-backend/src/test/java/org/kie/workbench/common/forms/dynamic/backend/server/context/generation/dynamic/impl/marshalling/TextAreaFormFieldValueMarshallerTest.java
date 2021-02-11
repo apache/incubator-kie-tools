@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TextAreaFormFieldValueMarshallerTest {

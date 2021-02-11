@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.GroupManager;
 import org.uberfire.ext.security.management.api.UserManager;
@@ -49,7 +49,7 @@ import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;

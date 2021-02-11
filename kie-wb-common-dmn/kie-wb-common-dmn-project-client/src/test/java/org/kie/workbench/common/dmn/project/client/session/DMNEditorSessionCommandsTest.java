@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionComma
 import org.mockito.InOrder;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 

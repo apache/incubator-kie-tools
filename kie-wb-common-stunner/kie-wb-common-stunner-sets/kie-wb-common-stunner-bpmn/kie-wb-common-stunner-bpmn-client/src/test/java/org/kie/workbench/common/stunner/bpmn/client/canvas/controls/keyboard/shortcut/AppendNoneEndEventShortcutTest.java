@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.sho
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.BaseAppendNodeShortcutTest;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppendNoneEndEventShortcutTest extends BaseAppendNodeShortcutTest {

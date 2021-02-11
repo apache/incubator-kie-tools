@@ -40,7 +40,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSessi
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

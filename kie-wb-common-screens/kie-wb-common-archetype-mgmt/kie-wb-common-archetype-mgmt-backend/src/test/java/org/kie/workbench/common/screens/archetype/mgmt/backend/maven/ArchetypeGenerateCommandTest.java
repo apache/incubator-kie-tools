@@ -22,7 +22,7 @@ import org.appformer.maven.integration.embedder.MavenRequest;
 import org.guvnor.common.services.project.model.GAV;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;

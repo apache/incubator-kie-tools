@@ -25,7 +25,7 @@ import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.when;
 

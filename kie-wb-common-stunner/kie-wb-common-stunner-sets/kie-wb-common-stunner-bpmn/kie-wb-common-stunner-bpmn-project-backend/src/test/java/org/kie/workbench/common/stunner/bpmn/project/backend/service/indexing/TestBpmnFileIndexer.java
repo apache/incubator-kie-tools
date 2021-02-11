@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.project.backend.indexing.BpmnFileIn
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.uberfire.io.IOService;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

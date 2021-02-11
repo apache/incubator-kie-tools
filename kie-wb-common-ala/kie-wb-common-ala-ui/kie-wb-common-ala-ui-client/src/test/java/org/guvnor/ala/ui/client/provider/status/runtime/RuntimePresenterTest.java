@@ -51,8 +51,12 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.mockProviderKey;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.mockProviderTypeKey;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Base test for the RuntimePresenter.

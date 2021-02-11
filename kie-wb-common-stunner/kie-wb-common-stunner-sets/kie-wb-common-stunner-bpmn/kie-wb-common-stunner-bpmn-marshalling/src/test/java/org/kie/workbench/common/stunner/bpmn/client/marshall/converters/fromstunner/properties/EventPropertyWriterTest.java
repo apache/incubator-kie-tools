@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.mockito.ArgumentCaptor;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.assertFalse;
