@@ -104,11 +104,6 @@
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-model</artifactId>
-    </dependency>
-
     <!-- Java Bean & Errai validations. -->
     <dependency>
       <groupId>javax.validation</groupId>

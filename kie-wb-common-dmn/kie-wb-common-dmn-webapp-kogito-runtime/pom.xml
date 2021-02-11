@@ -157,14 +157,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Required to provide default implementation of client-side CDI injection points -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-model</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- DMN Editor -->
     <dependency>
       <groupId>org.kie.workbench</groupId>
@@ -503,7 +495,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-project-api</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
 
 
                   <!-- Errai, Drools etc -->
