@@ -37,3 +37,4 @@ if __name__ == "__main__":
     
     if args.ignore_self_signed_cert:
         common.ignore_maven_self_signed_certificate_in_behave_tests()
+        common.ignore_maven_self_signed_certificate_in_clone_repo()

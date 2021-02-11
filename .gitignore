@@ -9,6 +9,7 @@ bats/*
 /.*
 !.gitignore
 !.github
+!.jenkins
 /nbproject
 /*.ipr
 /*.iws

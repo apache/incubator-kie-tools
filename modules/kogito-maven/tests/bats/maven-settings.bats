@@ -168,7 +168,7 @@ function _generate_random_id() {
     prepareEnv
     MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE="true"
     ignore_maven_self_signed_certificates
-    expected=" -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
+    expected=" -Denforcer.skip -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
     result="${MAVEN_ARGS_APPEND}"
     echo "expected=${expected}"
     echo "result=${result}"

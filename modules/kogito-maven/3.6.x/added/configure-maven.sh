@@ -97,7 +97,7 @@ function configure_maven_download_output() {
 
 function ignore_maven_self_signed_certificates() {
     if [ "${MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE}" == "true" ]; then
-        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
+        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -Denforcer.skip -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
     fi
 }
 

@@ -5,13 +5,15 @@
 SCRIPT_DIR=`pwd`
 MVN_MODULE="${SCRIPT_DIR}/../../modules/kogito-maven/3.6.x"
 CONTAINER_ENGINE="docker"
+MAVEN_OPTIONS="-DskipTests -U"
 MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS="-Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=${CONTAINER_ENGINE}"
+# MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE=true
 
 # exit when any command fails
 set -e
-#Setup maven configuration only on CI
+# Setup maven configuration only on CI
 if [ "${CI}" ]; then
-# setup maven env
+    # setup maven env
     export JBOSS_MAVEN_REPO_URL="https://repository.jboss.org/nexus/content/groups/public/"
     # export MAVEN_REPO_URL=
     cp "${MVN_MODULE}"/maven/settings.xml "${HOME}"/.m2/settings.xml
@@ -19,6 +21,10 @@ if [ "${CI}" ]; then
     configure
 
     cat "${HOME}"/.m2/settings.xml
+fi
+
+if [ "${MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE}" = "true" ]; then
+    MAVEN_OPTIONS="${MAVEN_OPTIONS} -Denforcer.skip"
 fi
 
 # Clone examples
@@ -33,9 +39,9 @@ git checkout master
 cp -rv  /tmp/kogito-examples/rules-quarkus-helloworld/ /tmp/kogito-examples/rules-quarkus-helloworld-native/
 
 # generating the app binaries to test the binary build
-mvn -f rules-quarkus-helloworld clean package -DskipTests -U
-mvn -f process-springboot-example clean package -DskipTests -U
-mvn -f rules-quarkus-helloworld-native -Pnative clean package -DskipTests -U ${MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS}
+mvn -f rules-quarkus-helloworld clean package ${MAVEN_OPTIONS}
+mvn -f process-springboot-example clean package ${MAVEN_OPTIONS}
+mvn -f rules-quarkus-helloworld-native -Pnative clean package ${MAVEN_OPTIONS} ${MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS}
 
 # preparing directory to run kogito maven archetypes tests
 mkdir -pv /tmp/kogito-examples/dmn-example
