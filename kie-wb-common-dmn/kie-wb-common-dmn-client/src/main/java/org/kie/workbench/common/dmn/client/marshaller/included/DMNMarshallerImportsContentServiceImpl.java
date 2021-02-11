@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import elemental2.promise.Promise;
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -40,15 +39,12 @@ public class DMNMarshallerImportsContentServiceImpl implements DMNMarshallerImpo
 
     private final Promises promises;
 
-    private final WorkspaceProjectContext projectContext;
 
     @Inject
     public DMNMarshallerImportsContentServiceImpl(final Caller<DMNContentService> dmnContentServiceCaller,
-                                                  final Promises promises,
-                                                  final WorkspaceProjectContext projectContext) {
+                                                  final Promises promises) {
         this.dmnContentServiceCaller = dmnContentServiceCaller;
         this.promises = promises;
-        this.projectContext = projectContext;
     }
 
     @Override
@@ -113,6 +109,6 @@ public class DMNMarshallerImportsContentServiceImpl implements DMNMarshallerImpo
     }
 
     private WorkspaceProject getWorkspaceProject() {
-        return projectContext.getActiveWorkspaceProject().orElse(null);
+        return null; //FIXME: tiago
     }
 }

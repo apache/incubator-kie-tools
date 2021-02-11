@@ -31,7 +31,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import jsinterop.base.Js;
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
@@ -85,8 +84,6 @@ public class DMNMarshallerService {
 
     private final DMNDiagramsSession dmnDiagramsSession;
 
-    private final WorkspaceProjectContext projectContext;
-
     private final Event<CurrentRegistryChangedEvent> currentRegistryChangedEvent;
 
     private ServiceCallback<Diagram> onDiagramLoad = emptyService();
@@ -100,7 +97,6 @@ public class DMNMarshallerService {
                                 final DefinitionManager definitionManager,
                                 final Promises promises,
                                 final DMNDiagramsSession dmnDiagramsSession,
-                                final WorkspaceProjectContext projectContext,
                                 final Event<CurrentRegistryChangedEvent> currentRegistryChangedEvent) {
         this.dmnUnmarshaller = dmnUnmarshaller;
         this.dmnMarshaller = dmnMarshaller;
@@ -108,7 +104,6 @@ public class DMNMarshallerService {
         this.definitionManager = definitionManager;
         this.promises = promises;
         this.dmnDiagramsSession = dmnDiagramsSession;
-        this.projectContext = projectContext;
         this.currentRegistryChangedEvent = currentRegistryChangedEvent;
     }
 
@@ -262,7 +257,7 @@ public class DMNMarshallerService {
     }
 
     private WorkspaceProject getWorkspaceProject() {
-        return projectContext.getActiveWorkspaceProject().orElse(null);
+        return null; //FIXME: tiago
     }
 
     private void updateClientShapeSetId(final Diagram diagram) {

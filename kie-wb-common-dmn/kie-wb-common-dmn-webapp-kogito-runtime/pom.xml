@@ -503,7 +503,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-project-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-project-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-services-api</compileSourcesArtifact>
                   <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
 
