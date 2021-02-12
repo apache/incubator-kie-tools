@@ -162,11 +162,9 @@ public class PlaceManagerImpl implements PlaceManager {
         if (resolved.getActivity() != null) {
             final Activity activity = resolved.getActivity();
             if (activity.isType(ActivityResourceType.SCREEN.name())) {
-                final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-
                 launchWorkbenchActivityAtPosition(resolved.getPlaceRequest(),
-                                                  workbenchActivity,
-                                                  workbenchActivity.getDefaultPosition(),
+                                                  activity,
+                                                  activity.getDefaultPosition(),
                                                   panel);
                 doWhenFinished.execute();
             } else if (activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
@@ -294,11 +292,10 @@ public class PlaceManagerImpl implements PlaceManager {
         if (resolved.getActivity() != null) {
             final Activity activity = resolved.getActivity();
 
-            if (activity.isType(ActivityResourceType.CLIENT_EDITOR.name()) ||
+            if (activity.isType(ActivityResourceType.EDITOR.name()) ||
                     activity.isType(ActivityResourceType.SCREEN.name())) {
-                final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
                 launchWorkbenchActivityInPanel(place,
-                                               workbenchActivity,
+                                               activity,
                                                part,
                                                panel);
             } else {
@@ -339,7 +336,7 @@ public class PlaceManagerImpl implements PlaceManager {
     }
 
     private void launchWorkbenchActivityAtPosition(final PlaceRequest place,
-                                                   final WorkbenchActivity activity,
+                                                   final Activity activity,
                                                    final Position position,
                                                    final PanelDefinition _panel) {
 
@@ -368,7 +365,7 @@ public class PlaceManagerImpl implements PlaceManager {
     }
 
     private void launchWorkbenchActivityInPanel(final PlaceRequest place,
-                                                final WorkbenchActivity activity,
+                                                final Activity activity,
                                                 final PartDefinition part,
                                                 final PanelDefinition panel) {
         if (visibleWorkbenchParts.containsKey(place)) {
@@ -498,9 +495,8 @@ public class PlaceManagerImpl implements PlaceManager {
             }
 
             if (activity.isType(ActivityResourceType.SCREEN.name())) {
-                WorkbenchActivity activity1 = (WorkbenchActivity) activity;
                 try {
-                    activity1.onClose();
+                    activity.onClose();
                 } catch (Exception ex) {
                 }
             } else {

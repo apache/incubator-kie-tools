@@ -69,7 +69,7 @@ public class ActivityBeansCache {
 
             activitiesById.put(id, activityBean);
 
-            if (activityBean.getInstance() instanceof AbstractWorkbenchClientEditorActivity) {
+            if (activityBean.getInstance() instanceof EditorActivity) {
                 registerGwtClientBean(id, activityBean);
             }
         }

@@ -17,23 +17,21 @@ package org.uberfire.client.mvp;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
-import org.uberfire.security.ResourceType;
-import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.bridge.Notification;
 
 /**
  * An Editor is an activity that is associated with a VFS path. It is expected that the editor will provide the end user
  * some means of editing and saving the resource represented by the VFS path.
  */
-public interface WorkbenchClientEditorActivity extends WorkbenchActivity {
+public interface EditorActivity extends Activity {
 
     /**
+     * Set the editor content
      *
-       Set the editor content
-     *
-     * @param path
-       Content Relative Path
+     * @param path  Content Relative Path
      * @param value The editor content
      */
     Promise<Void> setContent(String path, String value);
@@ -54,8 +52,8 @@ public interface WorkbenchClientEditorActivity extends WorkbenchActivity {
 
     Promise<List<Notification>> validate();
 
-    @Override
-    default ResourceType getResourceType() {
-        return ActivityResourceType.CLIENT_EDITOR;
+    default Element getWidgetElement() {
+        IsWidget widget = getWidget();
+        return (widget == null) ? null : widget.asWidget().getElement();
     }
 }

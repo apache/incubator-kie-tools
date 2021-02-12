@@ -83,7 +83,7 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(ClientEditor.class.getAnnotations()));
         when(mockDef.getQualifiers()).thenReturn(annotations);
 
-        activity = mock(WorkbenchClientEditorActivity.class);
+        activity = mock(EditorActivity.class);
         when(activity.getIdentifier()).thenReturn(idMock);
     }
 

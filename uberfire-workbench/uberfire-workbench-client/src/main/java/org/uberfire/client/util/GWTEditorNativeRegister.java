@@ -41,27 +41,27 @@ public class GWTEditorNativeRegister {
         };
 
         $wnd.GWTEditor.prototype.onOpen = function () {
-            this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::onOpen()();
+            this.instance.@org.uberfire.client.mvp.EditorActivity::onOpen()();
         };
 
         $wnd.GWTEditor.prototype.setContent = function (path, value) {
-            return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::setContent(Ljava/lang/String;Ljava/lang/String;)(path, value);
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::setContent(Ljava/lang/String;Ljava/lang/String;)(path, value);
         };
 
         $wnd.GWTEditor.prototype.getContent = function () {
-            return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::getContent()();
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::getContent()();
         };
         
         $wnd.GWTEditor.prototype.getPreview = function () {
-            return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::getPreview()();
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::getPreview()();
         };        
 
         $wnd.GWTEditor.prototype.getView = function () {
-            return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::getWidgetElement()();
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::getWidgetElement()();
         };
 
          $wnd.GWTEditor.prototype.validate = function () {
-            return this.instance.@org.uberfire.client.mvp.WorkbenchClientEditorActivity::validate()();
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::validate()();
         };
 
         $wnd.GWTEditorSupplier = function (bean) {

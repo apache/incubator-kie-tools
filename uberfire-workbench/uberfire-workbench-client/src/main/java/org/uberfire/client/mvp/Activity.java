@@ -15,21 +15,17 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
-import org.uberfire.client.annotations.WorkbenchClientEditor;
-import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Resource;
+import org.uberfire.workbench.model.Position;
 
 /**
  * Common top-level interface for all Workbench Activity classes. No concrete class implements this interface directly;
  * see the subinterfaces for specific activity types that do get implemented.
- * <p>
- * Also, implementations of this interface and its subinterfaces are typically not written by hand; instead, they are
- * generated from classes annotated with {@link WorkbenchScreen}, {@link WorkbenchClientEditor}, and
- * others by an UberFire annotation processor.
- * <p>
  * Developers of UberFire applications will not typically come into direct contact with things that implement Activity
  * or its subinterfaces; instead, they will work with a {@link PlaceManager} to manipulate activities at arm's length.
  * <p>
@@ -74,8 +70,14 @@ public interface Activity extends Resource {
 
     /**
      * Returns the PlaceRequest that this Activity is currently tied to.
+     *
      * @return the PlaceRequest that this activity was started for, or null if this activity is not in the started
      * state.
      */
     PlaceRequest getPlace();
+
+    Position getDefaultPosition();
+
+    @JsIgnore
+    IsWidget getWidget();
 }

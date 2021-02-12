@@ -16,6 +16,8 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.Position;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -73,6 +75,11 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public PlaceRequest getPlace() {
         return place;
+    }
+
+    @Override
+    public Position getDefaultPosition() {
+        return CompassPosition.ROOT;
     }
 
     @Override

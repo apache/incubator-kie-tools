@@ -23,5 +23,5 @@ package org.uberfire.mvp;
  */
 public interface ParameterizedCommand<T> {
 
-    public void execute(T parameter);
+    void execute(T parameter);
 }

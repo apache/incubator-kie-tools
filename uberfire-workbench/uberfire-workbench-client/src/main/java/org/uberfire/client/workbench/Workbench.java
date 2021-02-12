@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.client.mvp.DefaultPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -74,8 +75,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class Workbench {
 
-    public static final String DEFAULT_PERSPECTIVE_NAME = "AuthoringPerspective";
-
     @Inject
     private WorkbenchLayout workbenchLayout;
     @Inject
@@ -87,7 +86,7 @@ public class Workbench {
 
         workbenchLayout.onBootstrap();
         RootLayoutPanel.get().add(workbenchLayout.getRoot());
-        placeManager.goTo(new DefaultPlaceRequest(DEFAULT_PERSPECTIVE_NAME));
+        placeManager.goTo(new DefaultPlaceRequest(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME));
 
         // Resizing the Window should resize everything
         Window.addResizeHandler(event -> workbenchLayout.resizeTo(event.getWidth(),

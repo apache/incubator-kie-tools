@@ -16,16 +16,17 @@
 package org.uberfire.client.mvp;
 
 import jsinterop.annotations.JsType;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 @JsType
 public interface PerspectiveActivity extends Activity {
 
-    /**
-     * Returns a new copy of the layout (panels and their parts) that should be used if no persisted state is available.
-     * Each time this method is called, it must produce a new PerspectiveDefinition. This rule applies whether or not
-     * the perspective is transient.
-     * @return the perspective layout to use when a previously saved one is not available.
-     */
     PerspectiveDefinition getDefaultPerspectiveLayout();
+
+    @Override
+    default ResourceType getResourceType() {
+        return ActivityResourceType.PERSPECTIVE;
+    }
 }
