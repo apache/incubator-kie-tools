@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 public class ProcessTypeProvider extends AbstractProcessFilteredNodeProvider {
 

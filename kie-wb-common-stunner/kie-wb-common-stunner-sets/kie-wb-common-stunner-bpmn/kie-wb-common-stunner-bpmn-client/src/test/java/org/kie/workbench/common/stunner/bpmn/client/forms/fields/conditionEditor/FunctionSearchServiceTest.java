@@ -34,7 +34,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.mvp.Command;

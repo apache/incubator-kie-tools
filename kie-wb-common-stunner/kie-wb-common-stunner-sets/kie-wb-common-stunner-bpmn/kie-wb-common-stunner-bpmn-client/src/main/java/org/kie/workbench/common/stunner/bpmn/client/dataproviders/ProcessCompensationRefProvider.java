@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.SafeComparator;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getSelectedNode;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;

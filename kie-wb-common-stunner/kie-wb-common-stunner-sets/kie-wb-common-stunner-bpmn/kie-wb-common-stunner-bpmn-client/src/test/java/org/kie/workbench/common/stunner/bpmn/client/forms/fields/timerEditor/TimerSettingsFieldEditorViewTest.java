@@ -48,7 +48,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;

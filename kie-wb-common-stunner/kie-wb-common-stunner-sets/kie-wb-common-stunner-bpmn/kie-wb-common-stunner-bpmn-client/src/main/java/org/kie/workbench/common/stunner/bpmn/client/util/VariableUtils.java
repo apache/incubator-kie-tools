@@ -68,7 +68,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag.CASE_FILE_VARIABLE;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;

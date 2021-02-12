@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.util.StringUtils;
-import org.uberfire.commons.uuid.UUID;
+import org.uberfire.commons.UUID;
 
 import static java.util.stream.Collectors.toList;
 

@@ -24,6 +24,7 @@
   <inherits name="org.hibernate.validator.HibernateValidator" />
   <inherits name="org.jboss.errai.validation.Validation" />
   <inherits name="org.kie.soup.commons.KIESoupCommons"/>
+  <inherits name="org.uberfire.UberfireAPI"/>
 
   <source path="api"/>
   <source path="command"/>

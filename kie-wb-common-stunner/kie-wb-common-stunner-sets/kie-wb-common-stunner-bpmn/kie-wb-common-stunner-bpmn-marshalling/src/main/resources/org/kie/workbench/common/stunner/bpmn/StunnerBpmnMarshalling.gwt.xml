@@ -21,6 +21,7 @@
 
   <inherits name='org.kie.workbench.common.stunner.bpmn.StunnerBpmnEmf'/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
+  <inherits name="org.uberfire.UberfireAPI"/>
 
   <source path="client/marshall"/>
 

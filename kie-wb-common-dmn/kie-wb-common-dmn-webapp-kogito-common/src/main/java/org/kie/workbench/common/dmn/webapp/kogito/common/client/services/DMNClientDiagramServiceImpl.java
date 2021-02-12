@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramReso
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.commons.uuid.UUID;
+import org.uberfire.commons.UUID;
 
 @ApplicationScoped
 public class DMNClientDiagramServiceImpl extends AbstractKogitoClientDiagramService {

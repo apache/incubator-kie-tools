@@ -22,6 +22,7 @@
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.UberfireAPI"/>
 
   <!-- Errai, Drools etc -->
   <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>

@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.commons.uuid.UUID;
+import org.uberfire.commons.UUID;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;

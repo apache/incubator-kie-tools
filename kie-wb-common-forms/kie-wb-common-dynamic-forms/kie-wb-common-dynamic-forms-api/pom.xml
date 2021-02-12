@@ -30,13 +30,6 @@
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
-
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>

@@ -68,7 +68,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;

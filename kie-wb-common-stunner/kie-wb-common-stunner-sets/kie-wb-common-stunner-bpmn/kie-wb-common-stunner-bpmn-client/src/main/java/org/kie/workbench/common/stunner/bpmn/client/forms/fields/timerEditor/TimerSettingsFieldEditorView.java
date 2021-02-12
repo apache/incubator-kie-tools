@@ -45,7 +45,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 @Templated
 public class TimerSettingsFieldEditorView

@@ -26,7 +26,7 @@ import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 public class TimerSettingsFieldEditorPresenter
         extends FieldEditorPresenter<TimerSettingsValue> {

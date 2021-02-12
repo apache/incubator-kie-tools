@@ -36,7 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeSto
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
-import org.uberfire.commons.uuid.UUID;
+import org.uberfire.commons.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;

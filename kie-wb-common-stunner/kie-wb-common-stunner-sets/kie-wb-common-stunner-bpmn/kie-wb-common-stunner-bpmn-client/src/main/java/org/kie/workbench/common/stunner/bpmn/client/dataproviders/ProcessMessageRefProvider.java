@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.M
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 public class ProcessMessageRefProvider
         extends AbstractProcessFilteredNodeProvider {

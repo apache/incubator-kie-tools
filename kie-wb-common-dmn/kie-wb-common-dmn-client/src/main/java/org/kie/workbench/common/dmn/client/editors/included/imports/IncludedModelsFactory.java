@@ -31,7 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModel
 import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 
-import static org.uberfire.commons.uuid.UUID.uuid;
+import static org.uberfire.commons.UUID.uuid;
 
 @ApplicationScoped
 public class IncludedModelsFactory {

@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.rule.context.ConnectionContext;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.violations.ConnectionRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 @ApplicationScoped
 public class ConnectionEvaluationHandler implements RuleEvaluationHandler<CanConnect, ConnectionContext> {

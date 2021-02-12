@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.util.SafeComparator;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 public abstract class AbstractProcessFilteredNodeProvider
         implements SelectorDataProvider {
