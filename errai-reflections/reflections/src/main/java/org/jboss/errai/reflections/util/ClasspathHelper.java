@@ -105,7 +105,7 @@ public abstract class ClasspathHelper {
 
         return null;
     }
-    
+
     /** returns urls using {@link java.net.URLClassLoader#getURLs()} up the classloader parent hierarchy
      * <p>if optional {@link ClassLoader}s are not specified, then both {@link #getContextClassLoader()} and {@link #getStaticClassLoader()} are used for {@link ClassLoader#getResources(String)}
      * */
@@ -122,7 +122,7 @@ public abstract class ClasspathHelper {
                         for (URL url : urls) {
                             try {
                               String urlString = url.toExternalForm();
-                              String decodedUrlString = 
+                              String decodedUrlString =
                                 URLDecoder.decode(urlString.replaceAll("\\+", "%2b"), "UTF-8");
                               result.add(new URL(decodedUrlString));
                             }
@@ -136,111 +136,6 @@ public abstract class ClasspathHelper {
             }
         }
         return result;
-    }
-
-    /** returns urls using {@code java.class.path} system property */
-    public static Set<URL> forJavaClassPath() {
-        Set<URL> urls = Sets.newHashSet();
-
-        String javaClassPath = System.getProperty("java.class.path");
-        if (javaClassPath != null) {
-            for (String path : javaClassPath.split(File.pathSeparator)) {
-                try { urls.add(new File(path).toURI().toURL()); }
-                catch (Exception e) { e.printStackTrace(); }
-            }
-        }
-
-        return urls;
-    }
-
-    /** returns urls using {@link ServletContext} in resource path WEB-INF/lib */
-    public static Set<URL> forWebInfLib(final ServletContext servletContext) {
-        final Set<URL> urls = Sets.newHashSet();
-
-        for (Object urlString : servletContext.getResourcePaths("/WEB-INF/lib")) {
-            try { urls.add(servletContext.getResource((String) urlString)); }
-            catch (MalformedURLException e) { /*fuck off*/ }
-        }
-
-        return urls;
-    }
-
-    /** returns url using {@link ServletContext} in resource path WEB-INF/classes */
-    public static URL forWebInfClasses(final ServletContext servletContext) {
-        try {
-            final String path = servletContext.getRealPath("/WEB-INF/classes");
-            final File file = new File(path);
-            if (file.exists()) return file.toURL();
-        }
-        catch (MalformedURLException e) { /*fuck off*/ }
-
-        return null;
-    }
-
-    /** return urls that are in the current class path.
-     * attempts to load the jar manifest, if any, and adds to the result any dependencies it finds. */
-    public static Set<URL> forManifest() {
-        return forManifest(forClassLoader());
-    }
-
-    /** get the urls that are specified in the manifest of the given url for a jar file.
-     * attempts to load the jar manifest, if any, and adds to the result any dependencies it finds. */
-    public static Set<URL> forManifest(final URL url) {
-        final Set<URL> result = Sets.newHashSet();
-
-        result.add(url);
-
-        try {
-            final String part = Vfs.normalizePath(url);
-            File jarFile = new File(part);
-            JarFile myJar = new JarFile(part);
-
-            URL validUrl = tryToGetValidUrl(jarFile.getPath(), new File(part).getParent(), part);
-            if (validUrl != null) { result.add(validUrl); }
-
-            final Manifest manifest = myJar.getManifest();
-            if (manifest != null) {
-                final String classPath = manifest.getMainAttributes().getValue(new Attributes.Name("Class-Path"));
-                if (classPath != null) {
-                    for (String jar : classPath.split(" ")) {
-                        validUrl = tryToGetValidUrl(jarFile.getPath(), new File(part).getParent(), jar);
-                        if (validUrl != null) { result.add(validUrl); }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // don't do anything, we're going on the assumption it is a jar, which could be wrong
-        }
-
-        return result;
-    }
-
-    /** get the urls that are specified in the manifest of the given urls.
-     * attempts to load the jar manifest, if any, and adds to the result any dependencies it finds. */
-    public static Set<URL> forManifest(final Iterable<URL> urls) {
-        Set<URL> result = Sets.newHashSet();
-
-        // determine if any of the URLs are JARs, and get any dependencies
-        for (URL url : urls) {
-            result.addAll(forManifest(url));
-        }
-
-        return result;
-    }
-
-    //a little bit cryptic...
-    private static URL tryToGetValidUrl(String workingDir, String path, String filename) {
-        try {
-            if (new File(filename).exists())
-                return new File(filename).toURI().toURL();
-            if (new File(path + File.separator + filename).exists())
-                return new File(path + File.separator + filename).toURI().toURL();
-            if (new File(workingDir + File.separator + filename).exists())
-                return new File(workingDir + File.separator + filename).toURI().toURL();
-        } catch (MalformedURLException e) {
-            // don't do anything, we're going on the assumption it is a jar, which could be wrong
-        }
-        return null;
     }
 }
 

@@ -77,6 +77,11 @@
       <classifier>sources</classifier>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
