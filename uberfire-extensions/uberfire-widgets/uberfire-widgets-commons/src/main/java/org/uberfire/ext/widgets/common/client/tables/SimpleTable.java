@@ -16,19 +16,10 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import java.util.List;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.ext.services.shared.preferences.GridColumnPreference;
-import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
-import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
-import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
-import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
 import org.uberfire.ext.widgets.table.client.ColumnChangedHandler;
 import org.uberfire.ext.widgets.table.client.UberfireSimpleTable;
 
@@ -42,11 +33,7 @@ public class SimpleTable<T>
         extends UberfireSimpleTable<T> {
 
     private static Binder uiBinder = GWT.create(Binder.class);
-    private GridPreferencesStore gridPreferencesStore;
     private boolean persistPreferencesOnChange = true;
-
-    @Inject
-    private Caller<UserPreferencesService> preferencesService;
 
     public SimpleTable() {
         super();
@@ -56,14 +43,6 @@ public class SimpleTable<T>
         super(providesKey);
     }
 
-    public SimpleTable(final ProvidesKey<T> providesKey,
-                       final GridGlobalPreferences gridGlobalPreferences) {
-
-        super(providesKey);
-        if (gridGlobalPreferences != null) {
-            this.gridPreferencesStore = new GridPreferencesStore(gridGlobalPreferences);
-        }
-    }
 
     public void setPersistPreferencesOnChange(boolean persistPreferencesOnChange) {
         this.persistPreferencesOnChange = persistPreferencesOnChange;
@@ -74,8 +53,7 @@ public class SimpleTable<T>
     }
 
     protected void setupColumnPicker() {
-        columnPicker = new ColumnPicker<T>(dataGrid,
-                                           gridPreferencesStore);
+        columnPicker = new ColumnPicker<T>(dataGrid);
 
         columnPicker.addColumnChangedHandler(new ColumnChangedHandler() {
 
@@ -91,59 +69,10 @@ public class SimpleTable<T>
     }
 
     protected void afterColumnChangedHandler() {
-        if (gridPreferencesStore != null && preferencesService != null) {
-            List<GridColumnPreference> columnsState = getColumnPicker().getColumnsState();
-            gridPreferencesStore.resetGridColumnPreferences();
-            for (GridColumnPreference gcp : columnsState) {
-                gridPreferencesStore.addGridColumnPreference(gcp);
-            }
-            if (isPersistingPreferencesOnChange()) {
-                saveGridPreferences();
-            }
-        }
     }
 
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi(this);
-    }
-
-    public void setPreferencesService(final Caller<UserPreferencesService> preferencesService) {
-        this.preferencesService = preferencesService;
-    }
-
-    public GridPreferencesStore getGridPreferencesStore() {
-        return this.gridPreferencesStore;
-    }
-
-    public void setGridPreferencesStore(final GridPreferencesStore gridPreferences) {
-        // I need to update my local copy of the preferences 
-        //   if I would like to compare with the current state for changes
-        this.gridPreferencesStore = gridPreferences;
-        getColumnPicker().setGridPreferencesStore(gridPreferences);
-    }
-
-    public void saveGridPreferences() {
-        if (gridPreferencesStore != null) {
-            gridPreferencesStore.setPreferenceKey(gridPreferencesStore.getGlobalPreferences().getKey());
-            saveGridToUserPreferences();
-        }
-    }
-
-    public void saveGridToUserPreferences(){
-        if (preferencesService!=null && gridPreferencesStore != null) {
-            gridPreferencesStore.setType(UserPreferencesType.GRIDPREFERENCES);
-            preferencesService.call(response -> {
-            }).saveUserPreferences(gridPreferencesStore);
-        }
-    }
-
-    public void storeColumnToPreferences() {
-        List<GridColumnPreference> columnsState = getColumnPicker().getColumnsState();
-        gridPreferencesStore.resetGridColumnPreferences();
-        for (GridColumnPreference gcp : columnsState) {
-            gridPreferencesStore.addGridColumnPreference(gcp);
-        }
-        saveGridPreferences();
     }
 
     protected ColumnPicker getColumnPicker() {
