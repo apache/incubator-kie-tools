@@ -18,6 +18,7 @@ import { ValidationRegistry } from "./ValidationRegistry";
 import { areAttributesReasonCodesMissing, validateAttributes } from "./Attributes";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
+import { Builder } from "./ValidationPath";
 
 export const validateCharacteristic = (
   modelIndex: number,
@@ -33,19 +34,36 @@ export const validateCharacteristic = (
   if (scorecardProperties.useReasonCodes !== false) {
     if (characteristic.reasonCode === undefined && areAttributesReasonCodesMissing(characteristic.Attribute)) {
       validationRegistry.set(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].reasonCode`,
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forReasonCode()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `${characteristic.name}: Reason code is required`)
       );
     }
     if (scorecardProperties.baselineScore === undefined && characteristic.baselineScore === undefined) {
       validationRegistry.set(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].baselineScore`,
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forBaselineScore()
+          .build(),
         new ValidationEntry(ValidationLevel.WARNING, `${characteristic.name}: Baseline score is required`)
       );
     }
   }
   //Attributes
-  validateAttributes(modelIndex, scorecardProperties, characteristicIndex, characteristic, miningFields, validationRegistry);
+  validateAttributes(
+    modelIndex,
+    scorecardProperties,
+    characteristicIndex,
+    characteristic,
+    miningFields,
+    validationRegistry
+  );
 };
 
 export const validateCharacteristics = (
@@ -59,6 +77,13 @@ export const validateCharacteristics = (
   validationRegistry: ValidationRegistry
 ): void => {
   characteristics.forEach((characteristic, characteristicIndex) =>
-    validateCharacteristic(modelIndex, scorecardProperties, characteristicIndex, characteristic, miningFields, validationRegistry)
+    validateCharacteristic(
+      modelIndex,
+      scorecardProperties,
+      characteristicIndex,
+      characteristic,
+      miningFields,
+      validationRegistry
+    )
   );
 };

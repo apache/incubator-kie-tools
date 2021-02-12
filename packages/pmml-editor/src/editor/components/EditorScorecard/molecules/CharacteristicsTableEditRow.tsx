@@ -28,7 +28,7 @@ import { useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
@@ -109,16 +109,28 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     setBaselineScore(characteristic?.characteristic.baselineScore);
   }, [props]);
 
-  const validationService = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const reasonCodeValidation = useMemo(
     () =>
-      validationService.get(`models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].reasonCode`),
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forReasonCode()
+          .build()
+      ),
     [modelIndex, characteristicIndex, areReasonCodesUsed, characteristic]
   );
   const baselineScoreValidation = useMemo(
     () =>
-      validationService.get(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].baselineScore`
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forBaselineScore()
+          .build()
       ),
     [modelIndex, characteristicIndex, scorecardBaselineScore, characteristic]
   );

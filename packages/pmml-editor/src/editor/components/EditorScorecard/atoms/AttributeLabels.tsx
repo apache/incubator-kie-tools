@@ -16,7 +16,7 @@
 import * as React from "react";
 import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { useMemo } from "react";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
@@ -39,11 +39,17 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
     characteristicReasonCode
   } = props;
 
-  const validationService = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const reasonCodeValidation = useMemo(
     () =>
-      validationService.get(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${activeAttributeIndex}].reasonCode`
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(activeAttributeIndex)
+          .forReasonCode()
+          .build()
       ),
     [
       modelIndex,
@@ -56,8 +62,14 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
   );
   const partialScoreValidation = useMemo(
     () =>
-      validationService.get(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${activeAttributeIndex}].partialScore`
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(activeAttributeIndex)
+          .forPartialScore()
+          .build()
       ),
     [modelIndex, characteristicIndex, activeAttribute, activeAttributeIndex]
   );

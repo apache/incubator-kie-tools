@@ -19,7 +19,6 @@ import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshalle
 import { Reducer } from "react";
 import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
-import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 
 // @ts-ignore

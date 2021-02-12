@@ -41,7 +41,7 @@ import { isEqual } from "lodash";
 import { useOperation } from "../OperationContext";
 import set = Reflect.set;
 import get = Reflect.get;
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { HelpIcon } from "@patternfly/react-icons";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
@@ -145,8 +145,13 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     activeOperation
   ]);
 
-  const validationService = useValidationService().service;
-  const baselineScoreValidation = validationService.get(`models[${props.modelIndex}].baselineScore`);
+  const { validationRegistry } = useValidationRegistry();
+  const baselineScoreValidation = validationRegistry.get(
+    Builder()
+      .forModel(props.modelIndex)
+      .forBaselineScore()
+      .build()
+  );
 
   return (
     <div

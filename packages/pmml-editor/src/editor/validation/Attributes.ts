@@ -49,14 +49,26 @@ export const validateAttribute = (
     attribute.reasonCode === undefined
   ) {
     validationRegistry.set(
-      `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].reasonCode`,
+      Builder()
+        .forModel(modelIndex)
+        .forCharacteristics()
+        .forCharacteristic(characteristicIndex)
+        .forAttribute(attributeIndex)
+        .forReasonCode()
+        .build(),
       new ValidationEntry(ValidationLevel.WARNING, `"${characteristic.name} attribute: Reason code is required.`)
     );
   }
 
   if (isPartialScoreRequired && attribute.partialScore === undefined) {
     validationRegistry.set(
-      `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].partialScore`,
+      Builder()
+        .forModel(modelIndex)
+        .forCharacteristics()
+        .forCharacteristic(characteristicIndex)
+        .forAttribute(attributeIndex)
+        .forPartialScore()
+        .build(),
       new ValidationEntry(ValidationLevel.WARNING, `"${characteristic.name} attribute: Partial score is required.`)
     );
   }

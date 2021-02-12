@@ -15,16 +15,16 @@
  */
 
 import { Characteristic, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { ValidationService } from "./ValidationService";
-import { ValidationEntry } from "./ValidationRegistry";
+import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
+import { Builder } from "./ValidationPath";
 
 export const validateBaselineScore = (
   modelIndex: number,
   useReasonCodes: Scorecard["useReasonCodes"],
   baselineScore: Scorecard["baselineScore"],
   characteristics: Characteristic[],
-  validation: ValidationService
+  validationRegistry: ValidationRegistry
 ) => {
   if (
     (useReasonCodes === undefined || useReasonCodes) &&
@@ -32,8 +32,11 @@ export const validateBaselineScore = (
     (characteristics.length === 0 ||
       characteristics.filter(characteristic => characteristic.baselineScore === undefined).length > 0)
   ) {
-    validation.set(
-      `models[${modelIndex}].baselineScore`,
+    validationRegistry.set(
+      Builder()
+        .forModel(modelIndex)
+        .forBaselineScore()
+        .build(),
       new ValidationEntry(ValidationLevel.WARNING, `Baseline score is required`)
     );
   }

@@ -34,7 +34,7 @@ import { isEqual } from "lodash";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { useOperation } from "../OperationContext";
 import { fromText, toText } from "../organisms";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -112,18 +112,30 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     }
   );
 
-  const validationService = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const reasonCodeValidation = useMemo(
     () =>
-      validationService.get(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].reasonCode`
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forReasonCode()
+          .build()
       ),
     [modelIndex, characteristicIndex, areReasonCodesUsed, attribute.reasonCode]
   );
   const partialScoreValidation = useMemo(
     () =>
-      validationService.get(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].Attribute[${attributeIndex}].partialScore`
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPartialScore()
+          .build()
       ),
     [modelIndex, characteristicIndex, attribute.partialScore]
   );

@@ -17,7 +17,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
-import { useValidationService } from "../../../validation";
+import { Builder, useValidationRegistry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 interface CharacteristicLabelsProps {
@@ -31,16 +31,28 @@ interface CharacteristicLabelsProps {
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
   const { modelIndex, characteristicIndex, activeCharacteristic, areReasonCodesUsed, scorecardBaselineScore } = props;
 
-  const validationService = useValidationService().service;
+  const { validationRegistry } = useValidationRegistry();
   const reasonCodeValidation = useMemo(
     () =>
-      validationService.get(`models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].reasonCode`),
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forReasonCode()
+          .build()
+      ),
     [modelIndex, characteristicIndex, areReasonCodesUsed, activeCharacteristic]
   );
   const baselineScoreValidation = useMemo(
     () =>
-      validationService.get(
-        `models[${modelIndex}].Characteristics.Characteristic[${characteristicIndex}].baselineScore`
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forBaselineScore()
+          .build()
       ),
     [modelIndex, characteristicIndex, areReasonCodesUsed, scorecardBaselineScore, activeCharacteristic]
   );
