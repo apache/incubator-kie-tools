@@ -96,7 +96,6 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
 
             // Deploy information
             booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('QUAY_TOKEN_CREDENTIALS', '', 'quay.io access token credentials to use to push/pull images and set images\' visibility. Will be ignored if IMAGE_REGISTRY is different from quay.io. Else IMAGE_REGISTRY_CREDENTIALS is ignored if that one is set.')
             stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
@@ -114,6 +113,10 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             env('CI', true)
             env('REPO_NAME', 'kogito-images')
             env('PROPERTIES_FILE_NAME', 'deployment.properties')
+
+            env('CONTAINER_ENGINE', 'docker')
+            env('CONTAINER_TLS_OPTIONS', '')
+            env('MAX_REGISTRY_RETRIES', 3)
 
             env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
@@ -155,7 +158,6 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
 
             // Promote images information
             booleanParam('PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if base image should be deployed in Openshift registry.In this case, PROMOTE_IMAGE_REGISTRY_CREDENTIALS, PROMOTE_IMAGE_REGISTRY and PROMOTE_IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('PROMOTE_QUAY_TOKEN_CREDENTIALS', '', 'quay.io access token credentials to use to set images\' visibility. Will be ignored if PROMOTE_IMAGE_REGISTRY is different from quay.io.')
             stringParam('PROMOTE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
             stringParam('PROMOTE_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Promote image registry')
             stringParam('PROMOTE_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Promote image namespace')
@@ -174,6 +176,10 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
             env('CI', true)
             env('REPO_NAME', 'kogito-images')
             env('PROPERTIES_FILE_NAME', 'deployment.properties')
+
+            env('CONTAINER_ENGINE', 'podman')
+            env('CONTAINER_TLS_OPTIONS', '--tls-verify=false')
+            env('MAX_REGISTRY_RETRIES', 3)
 
             env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")

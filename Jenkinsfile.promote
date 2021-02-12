@@ -136,7 +136,7 @@ pipeline {
                     dir(getRepoName()) {
                         pushImages()
 
-                        if (isQuayRegistry(getNewImageRegistry()) && getNewImageQuayTokenCredentials()) {
+                        if (isQuayRegistry(getNewImageRegistry())) {
                             makeQuayNewImagesPublic()
                         }
                     }
@@ -233,39 +233,55 @@ void clean() {
 }
 
 void cleanImages() {
-    sh 'podman rm -f \$(podman ps -a -q) || date'
-    sh 'podman rmi -f \$(podman images -q) || date'
+    sh "${env.CONTAINER_ENGINE} rm -f \$(${env.CONTAINER_ENGINE} ps -a -q) || date"
+    sh "${env.CONTAINER_ENGINE} rmi -f \$(${env.CONTAINER_ENGINE} images -q) || date"
 }
 
 void pullImages() {
     for (String imageName : getImages()) {
-        sh "podman pull ${getOldImageFullTag(imageName)}"
+        pullImage(getOldImageFullTag(imageName))
+    }
+}
+
+void pullImage(String fullImageName) {
+    retry(env.MAX_REGISTRY_RETRIES) {
+        sh "${env.CONTAINER_ENGINE} pull ${env.CONTAINER_TLS_OPTIONS} ${fullImageName}"
     }
 }
 
 void tagImages() {
     for (String imageName : getImages()) {
-        sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, getNewImageTag())}"
+        tagImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, getNewImageTag()))
         if (isDeployLatestTag()) {
-            sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, 'latest')}"
+            tagImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, 'latest'))
         }
         String reducedTag = getReducedTag()
-        if (reducedTag != '') {
-            sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, reducedTag)}"
+        if (reducedTag) {
+            tagImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, reducedTag))
         }
     }
 }
 
+void tagImage(String oldImageName, String newImageName) {
+    sh "${env.CONTAINER_ENGINE} tag ${oldImageName} ${newImageName}"
+}
+
 void pushImages() {
     for (String imageName : getImages()) {
-        sh "podman push ${getNewImageFullTag(imageName, getNewImageTag())}"
+        pushImage(getNewImageFullTag(imageName, getNewImageTag()))
         if (isDeployLatestTag()) {
-            sh "podman push ${getNewImageFullTag(imageName, 'latest')}"
+            pushImage(getNewImageFullTag(imageName, 'latest'))
         }
         String reducedTag = getReducedTag()
-        if (reducedTag != '') {
-            sh "podman push ${getNewImageFullTag(imageName, reducedTag)}"
+        if (reducedTag) {
+            pushImage(getNewImageFullTag(imageName, reducedTag))
         }
+    }
+}
+
+void pushImage(String fullImageName) {
+    retry(env.MAX_REGISTRY_RETRIES) {
+        sh "${env.CONTAINER_ENGINE} push ${env.CONTAINER_TLS_OPTIONS} ${fullImageName}"
     }
 }
 
@@ -276,7 +292,7 @@ void makeQuayNewImagesPublic() {
         String repository = getFinalImageName(imageName, getNewImageNameSuffix())
         echo "Check and set public if needed Quay repository ${namespace}/${repository}"
         try {
-            cloud.makeQuayImagePublic(namespace, repository, getNewImageQuayTokenCredentials())
+            cloud.makeQuayImagePublic(namespace, repository, [ usernamePassword: getNewImageRegistryCredentials()])
         } catch (err) {
             echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
         }
@@ -319,12 +335,12 @@ void loginOpenshift() {
 void loginOpenshiftRegistry() {
     loginOpenshift()
     // username can be anything. See https://docs.openshift.com/container-platform/4.4/registry/accessing-the-registry.html#registry-accessing-directly_accessing-the-registry
-    sh "set +x && podman login -u anything -p \$(oc whoami -t) --tls-verify=false ${env.OPENSHIFT_REGISTRY}"
+    sh "set +x && ${env.CONTAINER_ENGINE} login -u anything -p \$(oc whoami -t) ${env.CONTAINER_TLS_OPTIONS} ${env.OPENSHIFT_REGISTRY}"
 }
 
 void loginContainerRegistry(String registry, String credsId) {
     withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "podman login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} --tls-verify=false ${registry}"
+        sh "${env.CONTAINER_ENGINE} login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${env.CONTAINER_TLS_OPTIONS} ${registry}"
     }
 }
 void readDeployProperties() {
@@ -458,10 +474,6 @@ String getOldImageTag() {
 
 boolean isNewImageInOpenshiftRegistry() {
     return params.PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY
-}
-
-String getNewImageQuayTokenCredentials() {
-    return params.PROMOTE_QUAY_TOKEN_CREDENTIALS
 }
 
 String getNewImageRegistryCredentials() {

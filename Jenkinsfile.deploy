@@ -241,7 +241,7 @@ pipeline {
                     }
                     pushImages()
 
-                    if (isQuayRegistry() && getDeployQuayTokenCredentials()) {
+                    if (isQuayRegistry()) {
                         makeQuayImagesPublic()
                     }
                 }
@@ -328,8 +328,8 @@ void clean() {
 }
 
 void cleanImages() {
-    sh 'docker rm -f \$(docker ps -a -q) || date'
-    sh 'docker rmi -f \$(docker images -q) || date'
+    sh "${env.CONTAINER_ENGINE} rm -f \$(${env.CONTAINER_ENGINE} ps -a -q) || date"
+    sh "${env.CONTAINER_ENGINE} rmi -f \$(${env.CONTAINER_ENGINE} images -q) || date"
 }
 
 void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
@@ -358,13 +358,19 @@ void testImage(image) {
 
 void tagImages() {
     for (String imageName : getImages()) {
-        sh "docker tag quay.io/kiegroup/${imageName}:latest ${buildImageName(imageName)}"
+        sh "${env.CONTAINER_ENGINE} tag quay.io/kiegroup/${imageName}:latest ${buildImageName(imageName)}"
     }
 }
 
 void pushImages() {
     for (String imageName : getImages()) {
-        sh "docker push ${buildImageName(imageName)}"
+        pushImage(buildImageName(imageName))
+    }
+}
+
+void pushImage(String fullImageName) {
+    retry(env.MAX_REGISTRY_RETRIES) {
+        sh "${env.CONTAINER_ENGINE} push ${env.CONTAINER_TLS_OPTIONS} ${fullImageName}"
     }
 }
 
@@ -375,7 +381,7 @@ void makeQuayImagesPublic() {
         String repository = getFinalImageName(imageName)
         echo "Check and set public if needed Quay repository ${namespace}/${repository}"
         try {
-            cloud.makeQuayImagePublic(namespace, repository, getDeployQuayTokenCredentials())
+            cloud.makeQuayImagePublic(namespace, repository, [ usernamePassword: getDeployImageRegistryCredentials()])
         } catch (err) {
             echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
         }
@@ -399,12 +405,12 @@ void loginOpenshift() {
 void loginOpenshiftRegistry() {
     loginOpenshift()
     // username can be anything. See https://docs.openshift.com/container-platform/4.4/registry/accessing-the-registry.html#registry-accessing-directly_accessing-the-registry
-    sh "set +x && docker login -u anything -p \$(oc whoami -t) ${env.OPENSHIFT_REGISTRY}"
+    sh "set +x && ${env.CONTAINER_ENGINE} login -u anything -p \$(oc whoami -t) ${env.CONTAINER_TLS_OPTIONS} ${env.OPENSHIFT_REGISTRY}"
 }
 
 void loginContainerRegistry(String registry, String credsId) {
     withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "docker login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
+        sh "${env.CONTAINER_ENGINE} login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${env.CONTAINER_TLS_OPTIONS} ${registry}"
     }
 }
 
@@ -420,10 +426,6 @@ void setDeployPropertyIfneeded(String key, def value) {
 
 boolean isDeployImageInOpenshiftRegistry() {
     return params.IMAGE_USE_OPENSHIFT_REGISTRY
-}
-
-String getDeployQuayTokenCredentials() {
-    return params.QUAY_TOKEN_CREDENTIALS
 }
 
 String getDeployImageRegistryCredentials() {
