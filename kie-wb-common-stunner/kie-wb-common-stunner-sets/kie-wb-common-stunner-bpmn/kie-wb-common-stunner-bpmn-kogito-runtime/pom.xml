@@ -433,14 +433,6 @@
       </exclusions>
     </dependency>
 
-    <!-- UberFire Project -->
-    <!-- Required by kie-wb-common-ui -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- GWT and extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -639,7 +631,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-project-api</compileSourcesArtifact>
 
             <!-- Errai, Drools etc -->
             <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>

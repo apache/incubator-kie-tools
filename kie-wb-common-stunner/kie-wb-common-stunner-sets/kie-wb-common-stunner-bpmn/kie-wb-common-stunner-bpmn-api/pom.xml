@@ -52,11 +52,6 @@
       <artifactId>hibernate-validator</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-api</artifactId>
-    </dependency>
-
     <!-- Stunner. -->
 
     <dependency>

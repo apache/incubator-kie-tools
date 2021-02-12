@@ -493,7 +493,6 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-project-api</compileSourcesArtifact>
 
 
                   <!-- Errai, Drools etc -->
