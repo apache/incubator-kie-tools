@@ -834,7 +834,6 @@
     <module>uberfire-client-api</module>
     <module>uberfire-workbench</module>
     <module>uberfire-extensions</module>
-    <module>uberfire-project</module>
     <module>appformer-client-api</module>
     <module>appformer-kogito-bridge</module>
     <module>appformer-js-monaco</module>

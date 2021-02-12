@@ -124,6 +124,16 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-core-client</artifactId>
+    </dependency>
+
 
   </dependencies>
 
