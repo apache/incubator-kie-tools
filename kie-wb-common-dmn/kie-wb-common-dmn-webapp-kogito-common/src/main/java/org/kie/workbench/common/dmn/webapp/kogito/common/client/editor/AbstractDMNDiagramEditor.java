@@ -66,18 +66,11 @@ import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEdit
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
-import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.DefaultPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
-import org.uberfire.client.workbench.Workbench;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
-import org.uberfire.lifecycle.GetContent;
-import org.uberfire.lifecycle.GetPreview;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.lifecycle.SetContent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -170,14 +163,12 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         this.drdNameChanger = drdNameChanger;
     }
 
-    @OnStartup
-    @SuppressWarnings("unused")
     public void onStartup(final PlaceRequest place) {
         superDoStartUp(place);
 
-        decisionNavigatorDock.init(Workbench.DEFAULT_PERSPECTIVE_NAME);
-        diagramPropertiesDock.init(Workbench.DEFAULT_PERSPECTIVE_NAME);
-        diagramPreviewAndExplorerDock.init(Workbench.DEFAULT_PERSPECTIVE_NAME);
+        decisionNavigatorDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
+        diagramPropertiesDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
+        diagramPreviewAndExplorerDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
         guidedTourBridgeInitializer.init();
     }
 
@@ -259,14 +250,10 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         });
     }
 
-    @OnOpen
-    @SuppressWarnings("unused")
     public void onOpen() {
         super.doOpen();
     }
 
-    @OnClose
-    @SuppressWarnings("unused")
     public void onClose() {
         superOnClose();
 
@@ -284,7 +271,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     @Override
-    @WorkbenchPartView
     public IsWidget asWidget() {
         return super.asWidget();
     }
@@ -324,13 +310,11 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     @Override
-    @GetContent
     public Promise getContent() {
         return diagramServices.transform(getEditor().getEditorProxy().getContentSupplier().get());
     }
 
     @Override
-    @SetContent
     public Promise setContent(final String path,
                               final String value) {
         Promise promise =
@@ -368,7 +352,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         return promise;
     }
 
-    @GetPreview
     public Promise getPreview() {
         final CanvasHandler canvasHandler = getCanvasHandler();
         if (canvasHandler != null) {

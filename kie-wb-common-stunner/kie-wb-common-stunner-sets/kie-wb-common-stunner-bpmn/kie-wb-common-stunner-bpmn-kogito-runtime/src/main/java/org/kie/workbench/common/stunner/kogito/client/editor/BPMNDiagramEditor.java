@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
-import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
@@ -64,27 +63,17 @@ import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocu
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.annotations.WorkbenchClientEditor;
-import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.DefaultPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.client.workbench.Workbench;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
-import org.uberfire.lifecycle.GetContent;
-import org.uberfire.lifecycle.GetPreview;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.lifecycle.SetContent;
-import org.uberfire.lifecycle.Validate;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.bridge.Notification;
 import org.uberfire.workbench.model.bridge.NotificationSeverity;
 
 @ApplicationScoped
-@DiagramEditor
-@WorkbenchClientEditor(identifier = BPMNDiagramEditor.EDITOR_ID)
+//@Named(BPMNDiagramEditor.EDITOR_ID) uncomment after removing BPMNDiagramEditorActivity
 public class BPMNDiagramEditor extends AbstractDiagramEditor {
 
     public static final String EDITOR_ID = "BPMNDiagramEditor";
@@ -150,8 +139,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         this.validator = validator;
     }
 
-    @OnStartup
-    @SuppressWarnings("unused")
     public void onStartup(final PlaceRequest place) {
         superDoStartUp(place);
         initDocks();
@@ -169,14 +156,10 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         super.open(diagram, callback);
     }
 
-    @OnOpen
-    @SuppressWarnings("unused")
     public void onOpen() {
         super.doOpen();
     }
 
-    @OnClose
-    @SuppressWarnings("unused")
     public void onClose() {
         superOnClose();
         closeDocks();
@@ -203,7 +186,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     @Override
-    @WorkbenchPartView
     public IsWidget asWidget() {
         return super.asWidget();
     }
@@ -213,14 +195,12 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         return EDITOR_ID;
     }
 
-    @GetContent
     @Override
     public Promise getContent() {
         flush();
         return diagramServices.transform(getEditor().getEditorProxy().getContentSupplier().get());
     }
 
-    @GetPreview
     public Promise getPreview() {
         CanvasHandler canvasHandler = getCanvasHandler();
         if (canvasHandler != null) {
@@ -230,7 +210,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         }
     }
 
-    @Validate
     public Promise validate() {
         CanvasHandler canvasHandler = getCanvasHandler();
         getSessionPresenter().displayNotifications(t -> false);
@@ -264,7 +243,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         return this.validationSeverityTable.getOrDefault(violationType, NotificationSeverity.INFO);
     }
 
-    @SetContent
     @Override
     @SuppressWarnings("all")
     public Promise setContent(final String path, final String value) {
@@ -303,8 +281,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     void initDocks() {
-        diagramPropertiesDock.init(Workbench.DEFAULT_PERSPECTIVE_NAME);
-        diagramPreviewAndExplorerDock.init(Workbench.DEFAULT_PERSPECTIVE_NAME);
+        diagramPropertiesDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
+        diagramPreviewAndExplorerDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
     }
 
     void openDocks() {

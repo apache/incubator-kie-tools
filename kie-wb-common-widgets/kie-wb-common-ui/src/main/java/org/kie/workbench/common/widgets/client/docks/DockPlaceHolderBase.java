@@ -18,14 +18,18 @@ package org.kie.workbench.common.widgets.client.docks;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.AbstractActivity;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * Base for any panel that is opened into the an editor dock.
  * To use this dock it is necessary to register the dock for the editor that uses it.
  * @see org.kie.workbench.common.widgets.metadata.client.KieEditor.registerDock(String, IsWidget)
  */
-public class DockPlaceHolderBase {
+public class DockPlaceHolderBase extends AbstractActivity {
+
+    public static final String IDENTIFIER = "org.docks.PlaceHolder";
 
     private DockPlaceHolderBaseView view;
 
@@ -39,8 +43,22 @@ public class DockPlaceHolderBase {
         this.view.setPresenter(this);
     }
 
-    @WorkbenchPartView
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.SCREEN;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
+    }
+
     public IsWidget getView() {
+        return view;
+    }
+
+    @Override
+    public IsWidget getWidget() {
         return view;
     }
 

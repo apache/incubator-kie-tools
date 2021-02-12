@@ -19,10 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -33,21 +34,19 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
 import org.kie.workbench.common.stunner.kogito.client.view.DiagramEditorScreenView;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * The screen for the project context (includes the kie workbenches) which is included in
  * a docked area and displays the properties for the selected element on the canvas.
  * TODO: I18n.
  */
-@Dependent
-@WorkbenchScreen(identifier = DiagramEditorPropertiesScreen.SCREEN_ID)
-public class DiagramEditorPropertiesScreen {
+@ApplicationScoped
+@Named(DiagramEditorPropertiesScreen.SCREEN_ID)
+public class DiagramEditorPropertiesScreen extends AbstractActivity {
 
     private static Logger LOGGER = Logger.getLogger(DiagramEditorPropertiesScreen.class.getName());
     public static final String SCREEN_ID = "DiagramEditorPropertiesScreen";
@@ -79,18 +78,32 @@ public class DiagramEditorPropertiesScreen {
         this.screenStateEvent = screenStateEvent;
     }
 
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.SCREEN;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return SCREEN_ID;
+    }
+
     @PostConstruct
     public void init() {
         view.setWidget(ElementWrapperWidget.getWidget(formPropertiesWidget.getElement()));
     }
 
-    @OnStartup
+    @Override
     public void onStartup(final PlaceRequest placeRequest) {
+        super.onStartup(placeRequest);
+
         this.placeRequest = placeRequest;
     }
 
-    @OnOpen
+    @Override
     public void onOpen() {
+        super.onOpen();
+
         log(Level.FINE,
             "Opening DiagramEditorPropertiesScreen.");
         open = true;
@@ -98,8 +111,10 @@ public class DiagramEditorPropertiesScreen {
         handleSession(current);
     }
 
-    @OnClose
+    @Override
     public void onClose() {
+        super.onClose();
+
         log(Level.FINE,
             "Closing DiagramEditorPropertiesScreen.");
         open = false;
@@ -132,9 +147,8 @@ public class DiagramEditorPropertiesScreen {
         session = null;
     }
 
-    @WorkbenchPartView
+    @Override
     public IsWidget getWidget() {
-        // TODO: return view.asWidget() - See DiagramEditorScreenViewImpl TODO;
         return ElementWrapperWidget.getWidget(formPropertiesWidget.getElement());
     }
 

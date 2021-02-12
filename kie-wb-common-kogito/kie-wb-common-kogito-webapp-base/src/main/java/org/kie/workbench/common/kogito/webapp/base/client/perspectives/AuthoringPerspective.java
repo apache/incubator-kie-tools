@@ -17,23 +17,16 @@
 package org.kie.workbench.common.kogito.webapp.base.client.perspectives;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
-import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.Workbench;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.client.mvp.DefaultPerspectiveActivity;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = Workbench.DEFAULT_PERSPECTIVE_NAME)
-public class AuthoringPerspective {
+@Named(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME)
+public class AuthoringPerspective extends DefaultPerspectiveActivity {
 
-    @Perspective
-    public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl();
-        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("DMNDiagramEditor")));
-        return perspective;
+    @Override
+    public String getPlaceRequestIdentifier() {
+        return "DMNDiagramEditor";
     }
 }

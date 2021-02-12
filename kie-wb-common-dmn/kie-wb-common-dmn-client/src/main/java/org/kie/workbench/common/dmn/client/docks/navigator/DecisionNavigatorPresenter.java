@@ -22,7 +22,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
@@ -31,16 +34,16 @@ import org.kie.workbench.common.dmn.client.docks.navigator.included.components.D
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
-import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = DecisionNavigatorPresenter.IDENTIFIER)
-public class DecisionNavigatorPresenter {
+@Named(DecisionNavigatorPresenter.IDENTIFIER)
+public class DecisionNavigatorPresenter extends AbstractActivity {
 
     public static final String IDENTIFIER = "org.kie.dmn.decision.navigator";
 
@@ -81,12 +84,26 @@ public class DecisionNavigatorPresenter {
         this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
-    @WorkbenchPartView
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.SCREEN;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    @Override
+    public IsWidget getWidget() {
+        return ElementWrapperWidget.getWidget(view.getElement());
+    }
+
     public View getView() {
         return view;
     }
 
-    @DefaultPosition
+    @Override
     public Position getDefaultPosition() {
         return CompassPosition.WEST;
     }

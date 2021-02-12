@@ -16,12 +16,10 @@
 package org.kie.workbench.common.widgets.client.docks;
 
 import javax.enterprise.context.ApplicationScoped;
-
-import org.uberfire.client.annotations.WorkbenchScreen;
-
+import javax.inject.Named;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "org.docks.PlaceHolder")
+@Named(DockPlaceHolderBase.IDENTIFIER)
 public class DockPlaceHolder
         extends DockPlaceHolderBase {
 

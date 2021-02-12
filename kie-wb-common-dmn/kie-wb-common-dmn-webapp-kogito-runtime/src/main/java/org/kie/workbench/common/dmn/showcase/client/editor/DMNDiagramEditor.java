@@ -20,7 +20,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -46,7 +45,6 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerVie
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
-import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -65,17 +63,14 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropert
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
-import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.workbench.events.NotificationEvent;
 
-@DiagramEditor
 @ApplicationScoped
-@WorkbenchClientEditor(identifier = AbstractDMNDiagramEditor.EDITOR_ID)
-@Default
+//@Named(AbstractDMNDiagramEditor.EDITOR_ID) uncomment after removing DMNDiagramEditorActivity
 public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
 
     private final ReadOnlyProvider readOnlyProvider;
