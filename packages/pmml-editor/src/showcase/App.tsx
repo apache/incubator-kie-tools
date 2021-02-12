@@ -17,11 +17,11 @@
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { PMMLEditor } from "../editor";
 import * as React from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/common";
 import { PMMLEmptyState } from "./EmptyState";
 import { DisplayProperty } from "csstype";
-import { HistoryButtons } from "./HistoryButtons";
+import { HistoryButtons, Theme } from "./HistoryButtons";
 import "./App.scss";
 
 const manager: EnvelopeBusMessageManager<
@@ -48,6 +48,8 @@ export const App = () => {
     editor.redo().finally();
   };
 
+  const container = useRef<HTMLDivElement | null>(null);
+
   return (
     <div>
       {content === undefined && (
@@ -63,8 +65,21 @@ export const App = () => {
         />
       )}
       <div style={{ display: displayPMMLEditor() }}>
-        <HistoryButtons undo={undo} redo={redo} get={() => editor.getContent()} />
-        <div className="editor-container">
+        <HistoryButtons
+          undo={undo}
+          redo={redo}
+          get={() => editor.getContent()}
+          setTheme={theme => {
+            if (container.current) {
+              if (theme === Theme.DARK) {
+                container.current?.classList.add("vscode-dark");
+              } else {
+                container.current?.classList.remove("vscode-dark");
+              }
+            }
+          }}
+        />
+        <div ref={container} className="editor-container">
           <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
         </div>
       </div>
