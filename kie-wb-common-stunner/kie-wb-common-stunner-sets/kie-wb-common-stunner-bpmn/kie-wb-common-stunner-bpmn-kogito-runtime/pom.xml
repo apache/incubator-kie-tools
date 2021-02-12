@@ -217,13 +217,6 @@
       </exclusions>
     </dependency>
 
-    <!-- Required by stunner-core-api -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-service-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Lienzo -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -644,7 +637,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-editors</compileSourcesArtifact>
 
