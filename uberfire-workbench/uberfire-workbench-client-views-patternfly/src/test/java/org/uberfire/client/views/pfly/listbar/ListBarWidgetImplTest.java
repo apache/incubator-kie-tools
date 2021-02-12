@@ -16,7 +16,6 @@
 
 package org.uberfire.client.views.pfly.listbar;
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,10 +42,8 @@ import org.mockito.Spy;
 import org.uberfire.client.views.pfly.maximize.MaximizeToggleButton;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Resource;
-import org.uberfire.security.ResourceAction;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;

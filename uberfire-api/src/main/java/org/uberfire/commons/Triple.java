@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.commons.data;
+package org.uberfire.commons;
 
 public class Triple<K1, K2, K3> {
 

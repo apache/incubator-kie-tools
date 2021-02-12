@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

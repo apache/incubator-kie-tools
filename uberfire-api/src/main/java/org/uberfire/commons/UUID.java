@@ -20,7 +20,7 @@
  * and open the template in the editor.
  */
 
-package org.uberfire.commons.uuid;
+package org.uberfire.commons;
 
 /**
  * Can be used to make UUID Strings.

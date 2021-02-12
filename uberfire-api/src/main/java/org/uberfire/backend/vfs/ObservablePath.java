@@ -16,12 +16,12 @@
 
 package org.uberfire.backend.vfs;
 
-import org.uberfire.commons.lifecycle.Disposable;
 
-public interface ObservablePath extends Path,
-                                        Disposable {
+public interface ObservablePath extends Path {
 
     ObservablePath wrap(final Path path);
 
     Path getOriginal();
+
+    void dispose();
 }

@@ -19,7 +19,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.uberfire.commons.uuid;
+package org.uberfire.commons;
 
 import org.junit.Test;
 

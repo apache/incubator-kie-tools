@@ -20,7 +20,7 @@ import jsinterop.annotations.JsType;
 import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.authz.RuntimeFeatureResource;
+import org.uberfire.security.Resource;
 
 /**
  * Common top-level interface for all Workbench Activity classes. No concrete class implements this interface directly;
@@ -52,7 +52,7 @@ import org.uberfire.security.authz.RuntimeFeatureResource;
  * @see ActivityManager
  */
 @JsType
-public interface Activity extends RuntimeFeatureResource {
+public interface Activity extends Resource {
 
     /**
      * Called by the framework to notify this activity that it is now associated with the given PlaceRequest.

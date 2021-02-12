@@ -18,9 +18,8 @@ package org.uberfire.ext.widgets.common.client.tables.popup;
 
 import java.io.Serializable;
 
-import org.uberfire.paging.AbstractPageRow;
 
-public class DataGridFilterSummary extends AbstractPageRow implements Serializable {
+public class DataGridFilterSummary implements Comparable<DataGridFilterSummary>, Serializable {
 
     private String filterName;
 
@@ -38,5 +37,9 @@ public class DataGridFilterSummary extends AbstractPageRow implements Serializab
 
     public void setFilterName(String filterName) {
         this.filterName = filterName;
+    }
+
+    public int compareTo(DataGridFilterSummary o) {
+        return 0;
     }
 }

@@ -27,8 +27,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.uberfire.client.annotations.WorkbenchClientEditor;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.Pair;
 import org.uberfire.workbench.category.Undefined;
 
 import static org.mockito.Mockito.*;

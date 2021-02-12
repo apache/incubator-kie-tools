@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.commons.data;
+package org.uberfire.commons;
 
 /**
  * This is a simple class to store a pair of objects.
