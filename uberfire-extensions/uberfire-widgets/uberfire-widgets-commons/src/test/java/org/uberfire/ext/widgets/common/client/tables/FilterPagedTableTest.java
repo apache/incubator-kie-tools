@@ -38,10 +38,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.services.shared.preferences.MultiGridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.ext.widgets.common.client.tables.popup.NewTabFilterPopup;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
+import static org.uberfire.ext.widgets.common.client.tables.FilterPagedTable.FILTER_TAB_DESC_PARAM;
+import static org.uberfire.ext.widgets.common.client.tables.FilterPagedTable.FILTER_TAB_NAME_PARAM;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub(Modal.class)
@@ -136,8 +137,8 @@ public class FilterPagedTableTest {
 
         doReturn(yesNoCancelPopupMock).when(filterPagedTable).getYesNoCancelPopup(eq(SafeHtmlUtils.htmlEscape(header)), anyString());
 
-        when(multiGridPreferencesStoreMock.getGridSettingParam(eq(key),eq(NewTabFilterPopup.FILTER_TAB_NAME_PARAM))).thenReturn(header);
-        when(multiGridPreferencesStoreMock.getGridSettingParam(eq(key),eq(NewTabFilterPopup.FILTER_TAB_DESC_PARAM))).thenReturn(title);
+        when(multiGridPreferencesStoreMock.getGridSettingParam(eq(key),eq(FILTER_TAB_NAME_PARAM))).thenReturn(header);
+        when(multiGridPreferencesStoreMock.getGridSettingParam(eq(key),eq(FILTER_TAB_DESC_PARAM))).thenReturn(title);
 
         filterPagedTable.addTab(pagedTableMock, key, mock(Command.class));
 

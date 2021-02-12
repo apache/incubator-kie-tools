@@ -41,7 +41,6 @@ import org.uberfire.ext.services.shared.preferences.MultiGridPreferencesStore;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.widgets.common.client.tables.popup.NewTabFilterPopup;
 import org.uberfire.mvp.Command;
 
 /**
@@ -49,6 +48,10 @@ import org.uberfire.mvp.Command;
  */
 public class FilterPagedTable<T>
         extends Composite {
+
+
+    public static String FILTER_TAB_NAME_PARAM = "filterTabName";
+    public static String FILTER_TAB_DESC_PARAM = "filterTabDesc";
 
     private static Binder uiBinder = GWT.create(Binder.class);
     public Command refreshGridCommand;
@@ -127,9 +130,9 @@ public class FilterPagedTable<T>
                                                      filterCommand));
 
         final String gridHeader = multiGridPreferencesStore.getGridSettingParam(key,
-                                                                                NewTabFilterPopup.FILTER_TAB_NAME_PARAM);
+                                                                                FILTER_TAB_NAME_PARAM);
         final String gridTitle = multiGridPreferencesStore.getGridSettingParam(key,
-                                                                               NewTabFilterPopup.FILTER_TAB_DESC_PARAM);
+                                                                               FILTER_TAB_DESC_PARAM);
         final String safeHtmlGridHeader = (gridHeader != null ? SafeHtmlUtils.htmlEscape(gridHeader) : "");
         final String safeHtmlGridTitle = (gridTitle != null ? SafeHtmlUtils.htmlEscape(gridTitle) : "");
 
