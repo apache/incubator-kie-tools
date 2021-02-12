@@ -21,11 +21,12 @@
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "ajv": "^7.0.3",
+    "ajv-errors": "^2.0.0",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1",
     "uniforms": "^3.0.0",
     "uniforms-bridge-json-schema": "^3.0.0",
-    "uniforms-patternfly": "^4.1.2"
+    "uniforms-patternfly": "file:/home/lmotta/Documents/redhat/uniforms-patternfly"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
@@ -43,6 +44,7 @@
     ]
   },
   "devDependencies": {
-    "@types/ajv": "^1.0.0"
+    "@types/ajv": "^1.0.0",
+    "source-map-loader": "^1"
   }
 }

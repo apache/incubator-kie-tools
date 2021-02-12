@@ -268,15 +268,14 @@ export function EditorPage(props: Props) {
       // check crashes / manual stops
       let polling1: number | undefined;
       if (dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
-        polling1 = window.setInterval(
-          () =>
-            DmnRunner.checkServer().catch(() => {
-              setModal(OpenedModal.DMN_RUNNER_HELPER);
-              setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
-              window.clearInterval(polling1);
-            }),
-          500
-        );
+        polling1 = window.setInterval(() => {
+          console.log("aaa");
+          DmnRunner.checkServer().catch(() => {
+            setModal(OpenedModal.DMN_RUNNER_HELPER);
+            setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
+            window.clearInterval(polling1);
+          });
+        }, 500);
         editor
           ?.getContent()
           .then(content => DmnRunner.getFormSchema(content ?? ""))
@@ -286,14 +285,13 @@ export function EditorPage(props: Props) {
       // detect dmn runner
       let polling2: number | undefined;
       if (dmnRunnerStatus !== DmnRunnerStatus.RUNNING) {
-        polling2 = window.setInterval(
-          () =>
-            DmnRunner.checkServer().then(() => {
-              setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
-              window.clearInterval(polling2);
-            }),
-          500
-        );
+        polling2 = window.setInterval(() => {
+          console.log("bbbbb");
+          DmnRunner.checkServer().then(() => {
+            setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
+            window.clearInterval(polling2);
+          });
+        }, 500);
       }
 
       return () => {

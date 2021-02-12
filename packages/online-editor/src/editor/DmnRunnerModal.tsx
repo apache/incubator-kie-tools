@@ -16,25 +16,28 @@
 
 import * as React from "react";
 import { useMemo, useRef, useState } from "react";
-import { Button, ExpandableSection, Modal, ModalVariant, SelectDirection, Spinner } from "@patternfly/react-core";
+import {
+  Alert,
+  Button,
+  Card,
+  CardBody,
+  ExpandableSection,
+  Form,
+  FormGroup,
+  Modal,
+  ModalVariant,
+  SelectDirection,
+  TextContent,
+  TextVariants,
+  Text,
+  Wizard,
+  WizardFooter,
+  WizardContextConsumer
+} from "@patternfly/react-core";
 import { useOnlineI18n } from "../common/i18n";
 import { OperatingSystem } from "../common/utils";
 import { SelectOs, SelectOsRef } from "../common/SelectOs";
-import { CheckIcon } from "@patternfly/react-icons";
-
-//
-// Install and start DMN Runner                                   [Close icon]
-//
-// (select) [macOS \/]
-//
-// (collapsable) Installing DMN Runner on macOS - arcordion
-// (collapsable) Starting DMN Runner on macOS - arcordoin
-//
-// Always present either:
-//   “Waiting for DMN Runner to start [loading spinner]”; or
-//   “Connected to DMN Runner [green-check]”. Primary button -> Back to the Editor.
-//
-//
+import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 
 interface Props {
   isOpen: boolean;
@@ -64,89 +67,168 @@ export function DmnRunnerModal(props: Props) {
     }
   }, [selectRef]);
 
+  const steps = useMemo(
+    () => [
+      {
+        name: "Install",
+        component: (
+          <TextContent>
+            <Text component={TextVariants.p}>
+              You can download the zip containing the server{" "}
+              <Text component={TextVariants.a} href={downloadDmnRunner}>
+                here
+              </Text>
+            </Text>
+          </TextContent>
+        )
+      },
+      {
+        name: "Start",
+        component: (
+          <TextContent>
+            <Text component={TextVariants.p}>
+              You can download the zip containing the server{" "}
+              <Text component={TextVariants.p} className={"kogito-code"}>
+                here
+              </Text>
+            </Text>
+          </TextContent>
+        )
+      },
+      {
+        name: "Use",
+        component: <></>
+      }
+    ],
+    []
+  );
+
   return (
     <Modal
       isOpen={props.isOpen}
       onClose={() => {
         props.onClose();
-        props.setRunDmn(false);
+        if (!props.isDmnRunning) {
+          props.setRunDmn(false);
+        }
       }}
-      variant={ModalVariant.medium}
+      variant={ModalVariant.large}
       aria-label={"Steps to enable the DMN Runner"}
-      title={"DMN Runner is not running"}
-      description={"Install and start DMN Runner "}
+      title={"DMN Runner setup"}
+      description={
+        <>
+          {"Choose your Operating System and follow the instructions to install and start the DMN Runner."}
+          <br />
+          {" This will enable you to run your DMN models and see live results."}
+        </>
+      }
       footer={
-        <div>
-          <div>
+        <>
+          <>
             {props.isDmnRunning ? (
-              <div>
-                <div style={{ display: "flex" }}>
-                  <p>Connected to DMN Runner</p>
-                  <CheckIcon style={{ marginLeft: "10px" }} size={"md"} />
+              <>
+                <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                  <Alert
+                    variant={"success"}
+                    isInline={true}
+                    style={{ width: "100%" }}
+                    title={
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <p>Connected to DMN Runner</p>
+                        <a
+                          key="back-to-editor"
+                          onClick={() => {
+                            props.onClose();
+                          }}
+                        >
+                          Back to Editor
+                        </a>
+                      </div>
+                    }
+                  />
                 </div>
-                <br />
-
-                <Button
-                  key="cancel"
-                  variant="link"
-                  onClick={() => {
-                    props.onClose();
-                    props.setRunDmn(true);
-                  }}
-                >
-                  {i18n.terms.close}
-                </Button>
-              </div>
+              </>
             ) : (
-              <div>
-                <div style={{ display: "flex" }}>
-                  <p>Waiting to connect to DMN Runner server</p>
-                  <Spinner style={{ marginLeft: "10px" }} size="md" />
-                </div>
-                <br />
-
-                <Button
-                  key="cancel"
-                  variant="link"
-                  onClick={() => {
-                    props.onClose();
-                    props.setRunDmn(false);
-                  }}
-                >
-                  {i18n.terms.close}
-                </Button>
-              </div>
+              <Alert
+                variant={"default"}
+                isInline={true}
+                style={{ width: "100%" }}
+                title={<AnimatedTripleDotLabel label={"Waiting to connect to DMN Runner"} interval={750} />}
+              />
             )}
-          </div>
-        </div>
+          </>
+        </>
       }
     >
-      <p>Select your operating system: </p>
-      <SelectOs ref={selectRef} direction={SelectDirection.down} />
+      <Form isHorizontal={true}>
+        <FormGroup fieldId={"select-os"} label={"Operating system"}>
+          <SelectOs ref={selectRef} direction={SelectDirection.down} />
+        </FormGroup>
+      </Form>
       <br />
-      <ExpandableSection
-        toggleText={"Install DMN Runner"}
-        isExpanded={installDmnRunnerSection}
-        onToggle={setInstallDmnRunnerSection}
-      >
-        <p style={{ display: "inline" }}>You can download the zip containing the server </p>
-        <a style={{ display: "inline" }} href={downloadDmnRunner}>
-          here
-        </a>
-        <p>Unzip it ... </p>
-      </ExpandableSection>
-      <br />
-      <ExpandableSection
-        toggleText={"Starting DMN Runner"}
-        isExpanded={startDmnRunnerSection}
-        onToggle={setStartDmnRunnerSection}
-      >
-        <p style={{ display: "inline" }}>To start the server you need execute the</p>
-        <p style={{ display: "inline" }} className={"kogito-code"}>
-          ./install.sh
-        </p>
-        <p style={{ display: "inline" }}> script.</p>
-      </ExpandableSection>
+      <Wizard
+        steps={steps}
+        height={400}
+        startAtStep={props.isDmnRunning ? steps.length : 1}
+        footer={
+          <WizardFooter>
+            <WizardContextConsumer>
+              {({ activeStep, goToStepByName, goToStepById, onNext, onBack, onClose }) => {
+                return (
+                  <>
+                    {/*<Button*/}
+                    {/*  variant="primary"*/}
+                    {/*  type="submit"*/}
+                    {/*  onClick={onNext}*/}
+                    {/*  className={activeStep.name === steps[steps.length - 1].name ? "pf-m-disabled" : ""}*/}
+                    {/*>*/}
+                    {/*  Next*/}
+                    {/*</Button>*/}
+                    {/*<Button*/}
+                    {/*  variant="secondary"*/}
+                    {/*  onClick={onBack}*/}
+                    {/*  className={activeStep.name === steps[0].name ? "pf-m-disabled" : ""}*/}
+                    {/*>*/}
+                    {/*  Back*/}
+                    {/*</Button>*/}
+                  </>
+                );
+              }}
+            </WizardContextConsumer>
+          </WizardFooter>
+        }
+      />
+
+      {/*<Card isFlat={true}>*/}
+      {/*  <CardBody>*/}
+      {/*    <ExpandableSection*/}
+      {/*      toggleText={"Install DMN Runner"}*/}
+      {/*      isExpanded={installDmnRunnerSection}*/}
+      {/*      onToggle={setInstallDmnRunnerSection}*/}
+      {/*    >*/}
+      {/*      <TextContent>*/}
+      {/*        <Text component={TextVariants.p}>*/}
+      {/*          You can download the zip containing the server{" "}*/}
+      {/*          <Text component={TextVariants.a} href={downloadDmnRunner}>*/}
+      {/*            here*/}
+      {/*          </Text>*/}
+      {/*        </Text>*/}
+      {/*      </TextContent>*/}
+      {/*    </ExpandableSection>*/}
+      {/*    <br />*/}
+      {/*    <ExpandableSection*/}
+      {/*      toggleText={"Starting DMN Runner"}*/}
+      {/*      isExpanded={startDmnRunnerSection}*/}
+      {/*      onToggle={setStartDmnRunnerSection}*/}
+      {/*    >*/}
+      {/*      <p style={{ display: "inline" }}>To start the server you need execute the</p>*/}
+      {/*      <p style={{ display: "inline" }} className={"kogito-code"}>*/}
+      {/*        ./install.sh*/}
+      {/*      </p>*/}
+      {/*      <p style={{ display: "inline" }}> script.</p>*/}
+      {/*    </ExpandableSection>*/}
+      {/*  </CardBody>*/}
+      {/*</Card>*/}
     </Modal>
   );
 }

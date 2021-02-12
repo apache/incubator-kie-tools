@@ -96,6 +96,11 @@ module.exports = async (env, argv) => {
             ]
           }
         },
+        {
+          test: /\.js$/,
+          enforce: "pre",
+          use: ["source-map-loader"]
+        },
         ...pfWebpackOptions.patternflyRules
       ]
     },

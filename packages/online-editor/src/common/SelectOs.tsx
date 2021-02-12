@@ -33,7 +33,7 @@ const LINUX = "Linux";
 const MACOS = "MacOS";
 const WINDOWS = "Windows";
 
-const SelectOsForwardRef: React.ForwardRefRenderFunction<SelectOsRef, Props> = (props: Props, forwardRef) => {
+const SelectOsForwardRef: React.RefForwardingComponent<SelectOsRef, Props> = (props: Props, forwardRef) => {
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 

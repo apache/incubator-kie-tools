@@ -16,11 +16,12 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
-import { DmnRunner } from "../common/DmnRunner";
+import { ajv, DmnRunner, schema } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
   Alert,
+  DescriptionList,
   DescriptionListTerm,
   DescriptionListGroup,
   DescriptionListDescription,
@@ -28,7 +29,15 @@ import {
   DrawerContent,
   DrawerContentBody,
   Drawer,
-  DrawerPanelContent
+  DrawerPanelContent,
+  Page,
+  PageSection,
+  TextContent,
+  PageHeader,
+  Text,
+  Card,
+  CardTitle,
+  CardBody
 } from "@patternfly/react-core";
 
 enum DmnRunnerStatusResponse {
@@ -82,29 +91,6 @@ export function DmnRunnerDrawer(props: Props) {
     [props.editorContent]
   );
 
-  useEffect(() => {
-    if (props.jsonSchemaBridge) {
-      const form = document.getElementById("form") as HTMLFormElement;
-      Array.from(form.getElementsByTagName("input")).forEach(input =>
-        input.addEventListener("change", () => autoFormRef.current!.onSubmit())
-      );
-      (form.querySelector("button[type='submit']")! as HTMLButtonElement).style.display = "none";
-
-      const observables = Array.from(form.querySelectorAll(".pf-c-select")).map(select => {
-        const observer = new MutationObserver(() => autoFormRef.current!.onSubmit());
-        observer.observe(select, {
-          childList: true,
-          subtree: true
-        });
-        return observer;
-      });
-
-      return () => {
-        observables.forEach(observable => observable.disconnect());
-      };
-    }
-  }, [props.jsonSchemaBridge, autoFormRef]);
-
   const [drawerPosition, setDrawerPosition] = useState<"right" | "bottom">("right");
 
   const handleResize = useCallback(() => {
@@ -122,55 +108,121 @@ export function DmnRunnerDrawer(props: Props) {
   }, []);
 
   return (
-    <Drawer isStatic={true} position={drawerPosition}>
-      <DrawerContent
-        panelContent={
-          <DrawerPanelContent widths={{ default: "width_50" }}>
-            <p>Response Empty State</p>
-          </DrawerPanelContent>
-        }
-      >
-        <DrawerContentBody>
-          {props.jsonSchemaBridge ? (
-            <AutoForm id={"form"} ref={autoFormRef} schema={props.jsonSchemaBridge} onSubmit={onSubmit} />
-          ) : (
-            <p>Form Empty State</p>
-          )}
-        </DrawerContentBody>
-      </DrawerContent>
-    </Drawer>
+    <>
+      <div className={"kogito-drawer"} style={{ display: "flex", flexDirection: "row" }}>
+        <Page>
+          <PageSection style={{ paddingBottom: 0 }}>
+            <TextContent>
+              <Text component={"h2"}>Inputs</Text>
+            </TextContent>
+          </PageSection>
+          <PageSection>
+            {props.jsonSchemaBridge ? (
+              <AutoForm
+                style={{ maxWidth: "350px" }}
+                id={"form"}
+                ref={autoFormRef}
+                showInlineError={true}
+                autosave={true}
+                autosaveDelay={500}
+                schema={props.jsonSchemaBridge}
+                onSubmit={onSubmit}
+                errorsField={() => <></>}
+                submitField={() => <></>}
+              />
+            ) : (
+              <p>Form Empty State</p>
+            )}
+          </PageSection>
+        </Page>
+        <Page>
+          <PageSection style={{ paddingBottom: 0 }}>
+            <TextContent>
+              <Text component={"h2"}>Outputs</Text>
+            </TextContent>
+          </PageSection>
+          <PageSection style={{ width: "350px", maxWidth: "350px", paddingLeft: 0 }}>
+            {dmnRunnerResponse ? (
+              <JitResponse responseObject={dmnRunnerResponse!} depth={0} />
+            ) : (
+              // <DescriptionList isHorizontal={true} style={{ maxWidth: "350px" }}>
+              //
+              // </DescriptionList>
+              <p>Response Empty State</p>
+            )}
+          </PageSection>
+        </Page>
+      </div>
+    </>
+    // <Drawer isStatic={true} position={drawerPosition}>
+    //   <DrawerContent
+    //     panelContent={
+    //       <DrawerPanelContent widths={{ default: "width_50" }}>
+    //         <p>Response Empty State</p>
+    //       </DrawerPanelContent>
+    //     }
+    //   >
+    //     <DrawerContentBody>
+    //       {props.jsonSchemaBridge ? (
+    //         <AutoForm id={"form"} ref={autoFormRef} schema={props.jsonSchemaBridge} onSubmit={onSubmit} />
+    //       ) : (
+    //         <p>Form Empty State</p>
+    //       )}
+    //     </DrawerContentBody>
+    //   </DrawerContent>
+    // </Drawer>
   );
 }
 
 interface RecursiveJitResponseProps {
   responseObject: object;
-  withoutPadding: boolean;
+  depth: number;
 }
 
 function JitResponse(props: RecursiveJitResponseProps) {
   return (
-    <div style={{ padding: "10px" }}>
-      {[...Object.entries(props.responseObject)].map(([key, value]: any[], index) => (
+    <div>
+      {[...Object.entries(props.responseObject)].reverse().map(([key, value]: any[], index) => (
         <div key={`${key}-${index}-jit-response`}>
           {typeof value === "object" && value !== null ? (
-            <div>
-              <Title headingLevel={"h5"}>{key}</Title>
-              <JitResponse responseObject={value} withoutPadding={true} />
-            </div>
+            <Card isFlat={true} style={{ border: 0, background: "transparent" }}>
+              <CardTitle>{key}</CardTitle>
+              <CardBody isFilled={true} style={props.depth > 0 ? { paddingBottom: 0 } : {}}>
+                <JitResponse responseObject={value} depth={props.depth + 1} />
+              </CardBody>
+            </Card>
           ) : (
-            <div style={props.withoutPadding ? {} : { padding: "10px" }}>
-              <DescriptionListGroup>
-                <DescriptionListTerm>{key}</DescriptionListTerm>
-                {value ? (
-                  <DescriptionListDescription>{value}</DescriptionListDescription>
-                ) : (
-                  <DescriptionListDescription>Not provided</DescriptionListDescription>
-                )}
-              </DescriptionListGroup>
-            </div>
+            <>
+              {props.depth === 0 ? (
+                <Card isFlat={true} style={{ border: 0, background: "transparent" }}>
+                  <CardBody isFilled={true} style={{ paddingBottom: 0, paddingTop: 0 }}>
+                    <ResultCardLeaf label={key} value={value} />
+                  </CardBody>
+                </Card>
+              ) : (
+                <ResultCardLeaf label={key} value={value} />
+              )}
+            </>
           )}
         </div>
       ))}
     </div>
+  );
+}
+
+function ResultCardLeaf(props: { label: string; value: string }) {
+  return (
+    <DescriptionList isHorizontal={true}>
+      <DescriptionListGroup>
+        <DescriptionListTerm>{props.label}</DescriptionListTerm>
+        {props.value ? (
+          <DescriptionListDescription>{props.value}</DescriptionListDescription>
+        ) : (
+          <DescriptionListDescription>
+            <i>(null)</i>
+          </DescriptionListDescription>
+        )}
+      </DescriptionListGroup>
+    </DescriptionList>
   );
 }
