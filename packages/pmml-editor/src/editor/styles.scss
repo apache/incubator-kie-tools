@@ -18,21 +18,11 @@
 @import "../../../../node_modules/@patternfly/patternfly/base/variables";
 @import "../../../../node_modules/@patternfly/patternfly/base/themes";
 
-// Toggle dark theme
-:not(.vscode-dark) {
-  @extend .pf-t-light;
+.pf-c-button.pf-m-secondary {
+  color: var(--pf-global--primary-color--100);
 }
 
-.vscode-dark {
-  @extend .pf-t-dark;
-
-  .pf-c-button.pf-m-secondary {
-    color: var(--pf-global--primary-color--100);
-  }
-
-  .pf-c-button.pf-m-primary {
-    color: var(--pf-global--Color--light-100);
-    background-color: var(--pf-global--primary-color--100);
-  }
-
+.pf-c-button.pf-m-primary {
+  color: var(--pf-global--Color--light-100);
+  background-color: var(--pf-global--primary-color--100);
 }
