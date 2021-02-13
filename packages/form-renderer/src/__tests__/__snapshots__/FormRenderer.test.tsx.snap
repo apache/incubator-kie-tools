@@ -1,0 +1,820 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormRenderer test Form change & reset 1`] = `
+<form
+  class="pf-c-form"
+  novalidate=""
+  role="form"
+>
+  <div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0001"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0001"
+          name="name"
+          placeholder=""
+          type="text"
+          value="Jon"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0003"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Last name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0003"
+          name="lastName"
+          placeholder=""
+          type="text"
+          value="Snow"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+      min="18"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0005"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Age
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0005"
+          min="18"
+          name="age"
+          placeholder=""
+          step="1"
+          type="number"
+          value="18"
+        />
+        
+      </div>
+    </div>
+  </div>
+</form>
+`;
+
+exports[`FormRenderer test Form change & reset 2`] = `
+<form
+  class="pf-c-form"
+  novalidate=""
+  role="form"
+>
+  <div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0001"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0001"
+          name="name"
+          placeholder=""
+          type="text"
+          value="Harry"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0003"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Last name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0003"
+          name="lastName"
+          placeholder=""
+          type="text"
+          value="Potter"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+      min="18"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0005"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Age
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0005"
+          min="18"
+          name="age"
+          placeholder=""
+          step="1"
+          type="number"
+          value="8"
+        />
+        
+      </div>
+    </div>
+  </div>
+</form>
+`;
+
+exports[`FormRenderer test Form change & reset 3`] = `
+<form
+  class="pf-c-form"
+  novalidate=""
+  role="form"
+>
+  <div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0007"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0007"
+          name="name"
+          placeholder=""
+          type="text"
+          value="Jon"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-0009"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Last name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-0009"
+          name="lastName"
+          placeholder=""
+          type="text"
+          value="Snow"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+      min="18"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0002-000b"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Age
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0002-000b"
+          min="18"
+          name="age"
+          placeholder=""
+          step="1"
+          type="number"
+          value="18"
+        />
+        
+      </div>
+    </div>
+  </div>
+</form>
+`;
+
+exports[`FormRenderer test Form submit 1`] = `
+<form
+  class="pf-c-form"
+  novalidate=""
+  role="form"
+>
+  <div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0001-0001"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0001-0001"
+          name="name"
+          placeholder=""
+          type="text"
+          value="Jon"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0001-0003"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Last name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0001-0003"
+          name="lastName"
+          placeholder=""
+          type="text"
+          value="Snow"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+      min="18"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0001-0005"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Age
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0001-0005"
+          min="18"
+          name="age"
+          placeholder=""
+          step="1"
+          type="number"
+          value="18"
+        />
+        
+      </div>
+    </div>
+  </div>
+</form>
+`;
+
+exports[`FormRenderer test Form validation error 1`] = `
+<form
+  class="pf-c-form"
+  novalidate=""
+  role="form"
+>
+  <div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0003-0001"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0003-0001"
+          name="name"
+          placeholder=""
+          type="text"
+          value="Jon"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0003-0003"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Last name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0003-0003"
+          name="lastName"
+          placeholder=""
+          type="text"
+          value="Snow"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+      min="18"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0003-0005"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Age
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0003-0005"
+          min="18"
+          name="age"
+          placeholder=""
+          step="1"
+          type="number"
+          value="18"
+        />
+        
+      </div>
+    </div>
+  </div>
+</form>
+`;
+
+exports[`FormRenderer test Form validation error 2`] = `
+<form
+  class="pf-c-form"
+  novalidate=""
+  role="form"
+>
+  <div
+    style="background-color: rgba(255, 85, 0, 0.2); border: 1px solid rgb(255, 85, 0); border-radius: 7px; margin: 20px 0px; padding: 10px;"
+  >
+    <ul>
+      <li
+        style="margin: 3px;"
+      >
+        should have required property 'name'
+      </li>
+      <li
+        style="margin: 3px;"
+      >
+        should have required property 'lastName'
+      </li>
+    </ul>
+  </div>
+  <div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0003-0001"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="true"
+          class="pf-c-form-control"
+          id="uniforms-0003-0001"
+          name="name"
+          placeholder=""
+          type="text"
+          value=""
+        />
+        <div
+          aria-live="polite"
+          class="pf-c-form__helper-text pf-m-error"
+          id="uniforms-0003-0001-helper"
+        >
+          should have required property 'name'
+        </div>
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0003-0003"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Last name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="true"
+          class="pf-c-form-control"
+          id="uniforms-0003-0003"
+          name="lastName"
+          placeholder=""
+          type="text"
+          value=""
+        />
+        <div
+          aria-live="polite"
+          class="pf-c-form__helper-text pf-m-error"
+          id="uniforms-0003-0003-helper"
+        >
+          should have required property 'lastName'
+        </div>
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+      min="18"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0003-0005"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Age
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0003-0005"
+          min="18"
+          name="age"
+          placeholder=""
+          step="1"
+          type="number"
+          value="18"
+        />
+        
+      </div>
+    </div>
+  </div>
+</form>
+`;
+
+exports[`FormRenderer test Snapshot 1`] = `
+<form
+  class="pf-c-form"
+  novalidate=""
+  role="form"
+>
+  <div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0000-0001"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0000-0001"
+          name="name"
+          placeholder=""
+          type="text"
+          value="Jon"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0000-0003"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Last name
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0000-0003"
+          name="lastName"
+          placeholder=""
+          type="text"
+          value="Snow"
+        />
+        
+      </div>
+    </div>
+    <div
+      class="pf-c-form__group"
+      min="18"
+    >
+      <div
+        class="pf-c-form__group-label"
+      >
+        <label
+          class="pf-c-form__label"
+          for="uniforms-0000-0005"
+        >
+          <span
+            class="pf-c-form__label-text"
+          >
+            Age
+          </span>
+        </label>
+         
+      </div>
+      <div
+        class="pf-c-form__group-control"
+      >
+        <input
+          aria-invalid="false"
+          class="pf-c-form-control"
+          id="uniforms-0000-0005"
+          min="18"
+          name="age"
+          placeholder=""
+          step="1"
+          type="number"
+          value="18"
+        />
+        
+      </div>
+    </div>
+  </div>
+</form>
+`;
