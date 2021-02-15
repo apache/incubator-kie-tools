@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -32,14 +31,14 @@ import { SearchIcon } from "@patternfly/react-icons";
 import "./CharacteristicsToolbar.scss";
 
 interface CharacteristicsToolbarProps {
-  onFilter: (filter: string) => void;
+  filter: string;
+  setFilter: (filter: string) => void;
+  onFilter: () => void;
   onAddCharacteristic: () => void;
 }
 
 export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
-  const { onFilter, onAddCharacteristic } = props;
-
-  const [filter, setFilter] = useState("");
+  const { filter, setFilter, onFilter, onAddCharacteristic } = props;
 
   return (
     <Toolbar id="characteristics-toolbar" data-testid="characteristics-toolbar">
@@ -74,7 +73,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       data-testid="characteristics-toolbar__submit"
                       variant={ButtonVariant.control}
                       aria-label="filter button for filter input"
-                      onClick={() => onFilter(filter)}
+                      onClick={() => onFilter()}
                     >
                       <SearchIcon />
                     </Button>

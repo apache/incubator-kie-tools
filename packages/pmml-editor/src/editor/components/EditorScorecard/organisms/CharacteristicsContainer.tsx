@@ -43,7 +43,6 @@ interface CharacteristicsContainerProps {
   isBaselineScoreRequired: boolean;
   characteristics: Characteristic[];
   filteredCharacteristics: IndexedCharacteristic[];
-  filter: string;
   onFilter: (filter: string) => void;
   deleteCharacteristic: (index: number) => void;
   commit: (index: number | undefined, characteristic: Characteristic) => void;
@@ -58,7 +57,6 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     isBaselineScoreRequired,
     characteristics,
     filteredCharacteristics,
-    filter,
     onFilter,
     deleteCharacteristic,
     commit
@@ -68,6 +66,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
+  const [filter, setFilter] = useState("");
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
 
@@ -168,19 +167,24 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   };
 
   const emptyStateProvider = useMemo(() => {
-    if (filter === "") {
+    if (characteristics.length === 0) {
       return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
     } else {
       return (
         <Stack hasGutter={true}>
           <StackItem>
-            <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
+            <CharacteristicsToolbar
+              filter={filter}
+              setFilter={setFilter}
+              onFilter={() => onFilter(filter)}
+              onAddCharacteristic={onAddCharacteristic}
+            />
             <EmptyStateNoMatchingCharacteristics />
           </StackItem>
         </Stack>
       );
     }
-  }, [filter]);
+  }, [filter, characteristics]);
 
   return (
     <div className="characteristics-container">
@@ -199,7 +203,12 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
               {viewSection === "overview" && (
                 <Stack>
                   <StackItem>
-                    <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
+                    <CharacteristicsToolbar
+                      filter={filter}
+                      setFilter={setFilter}
+                      onFilter={() => onFilter(filter)}
+                      onAddCharacteristic={onAddCharacteristic}
+                    />
                   </StackItem>
                   <StackItem className="characteristics-container__overview">
                     <CharacteristicsTable

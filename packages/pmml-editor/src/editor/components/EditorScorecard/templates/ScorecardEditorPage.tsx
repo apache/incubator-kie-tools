@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
 import {
@@ -45,7 +45,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
-  const [filter, setFilter] = useState("");
+  const [filteredCharacteristics, setFilteredCharacteristics] = useState<IndexedCharacteristic[]>([]);
 
   const model: Scorecard | undefined = useSelector<PMML, Scorecard | undefined>((state: PMML) => {
     const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
@@ -56,8 +56,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   });
 
   const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
-  const output: Output | undefined = useMemo(() => model?.Output, [model]);
   const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
+  const output: Output | undefined = useMemo(() => model?.Output, [model]);
+
+  useEffect(() => onFilter(""), [modelIndex]);
 
   const validateOutputName = useCallback(
     (index: number | undefined, name: string): boolean => {
@@ -71,7 +73,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     [output]
   );
 
-  const filterCharacteristics = useCallback((): IndexedCharacteristic[] => {
+  const onFilter = (filter: string) => {
     const _lowerCaseFilter = filter.toLowerCase();
     const _filteredCharacteristics = characteristics?.Characteristic.map<IndexedCharacteristic>(
       (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
@@ -79,13 +81,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       const _characteristicName = ic.characteristic.name;
       return _characteristicName?.toLowerCase().includes(_lowerCaseFilter);
     });
-    return _filteredCharacteristics ?? [];
-  }, [filter, characteristics]);
-
-  const filteredCharacteristics: IndexedCharacteristic[] = useMemo(() => filterCharacteristics(), [
-    filter,
-    characteristics
-  ]);
+    setFilteredCharacteristics(_filteredCharacteristics ?? []);
+  };
 
   return (
     <div data-testid="editor-page" className={"editor"}>
@@ -180,8 +177,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                 isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
                 characteristics={characteristics?.Characteristic ?? []}
                 filteredCharacteristics={filteredCharacteristics}
-                filter={filter}
-                onFilter={setFilter}
+                onFilter={onFilter}
                 deleteCharacteristic={index => {
                   if (window.confirm(`Delete Characteristic "${characteristics?.Characteristic[index].name}"?`)) {
                     dispatch({
