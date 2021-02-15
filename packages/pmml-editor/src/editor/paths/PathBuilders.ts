@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export interface ValidationPath {
+export interface Path {
   readonly path: string;
 }
 
@@ -31,7 +31,7 @@ abstract class BaseBuilder {
 
   protected abstract segment(): string;
 
-  public build(): ValidationPath {
+  public build(): Path {
     const path = this.builders.builders
       .map(builder => builder.segment())
       .filter(segment => segment !== "")
@@ -49,6 +49,10 @@ class PMMLBuilder extends BaseBuilder {
     super(new Builders([]));
     this.builders.add(this);
   }
+
+  public forHeader = () => {
+    return new HeaderBuilder(this.builders);
+  };
 
   public forDataDictionary = () => {
     return new DataDictionaryBuilder(this.builders);
@@ -82,7 +86,18 @@ class ModelBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.modelIndex !== undefined ? `model[${this.modelIndex}]` : `model`;
+    return this.modelIndex !== undefined ? `models[${this.modelIndex}]` : `models`;
+  }
+}
+
+class HeaderBuilder extends BaseBuilder {
+  constructor(protected builders: Builders) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  protected segment(): string {
+    return `Header`;
   }
 }
 

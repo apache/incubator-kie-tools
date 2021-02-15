@@ -16,7 +16,8 @@ import { DataDictionary, FieldName, MiningField, MiningSchema, PMML } from "@kog
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 import { useBatchDispatch, useHistoryService } from "../../../history";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 interface MiningSchemaHandlerProps {

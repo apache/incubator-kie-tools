@@ -18,6 +18,7 @@ import { HistoryAwareReducer, HistoryService } from "../history";
 import { Characteristics } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
+import { Builder } from "../paths";
 
 // @ts-ignore
 Characteristics[immerable] = true;
@@ -43,23 +44,37 @@ export const CharacteristicsReducer: HistoryAwareReducer<Characteristics, AllAct
   return (state: Characteristics, action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_AddCharacteristic:
-        historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
-          draft.Characteristic.push({
-            name: action.payload.name,
-            reasonCode: action.payload.reasonCode,
-            baselineScore: action.payload.baselineScore,
-            Attribute: []
-          });
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .build(),
+          draft => {
+            draft.Characteristic.push({
+              name: action.payload.name,
+              reasonCode: action.payload.reasonCode,
+              baselineScore: action.payload.baselineScore,
+              Attribute: []
+            });
+          }
+        );
         break;
 
       case Actions.Scorecard_DeleteCharacteristic:
-        historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
-          const characteristicIndex = action.payload.characteristicIndex;
-          if (characteristicIndex >= 0 && characteristicIndex < draft.Characteristic.length) {
-            draft.Characteristic.splice(characteristicIndex, 1);
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .build(),
+          draft => {
+            const characteristicIndex = action.payload.characteristicIndex;
+            if (characteristicIndex >= 0 && characteristicIndex < draft.Characteristic.length) {
+              draft.Characteristic.splice(characteristicIndex, 1);
+            }
           }
-        });
+        );
     }
 
     return state;

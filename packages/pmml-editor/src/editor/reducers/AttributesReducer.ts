@@ -18,7 +18,8 @@ import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
-import { Builder, ValidationRegistry } from "../validation";
+import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 
 // @ts-ignore
 Attribute[immerable] = true;
@@ -63,7 +64,12 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
       case Actions.Scorecard_AddAttribute:
         historyService.batch(
           state,
-          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .forAttribute()
+            .build(),
           draft => {
             draft.push({
               predicate: action.payload.predicate,
@@ -77,7 +83,12 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
       case Actions.Scorecard_DeleteAttribute:
         historyService.batch(
           state,
-          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .forAttribute()
+            .build(),
           draft => {
             const attributeIndex = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
@@ -98,7 +109,12 @@ export const AttributesReducer: HistoryAwareValidatingReducer<Attribute[], AllAc
       case Actions.Scorecard_UpdateAttribute:
         historyService.batch(
           state,
-          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .forAttribute()
+            .build(),
           draft => {
             const attributeIndex: number = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {

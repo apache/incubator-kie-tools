@@ -27,6 +27,7 @@ import { OutputReducer } from "./OutputReducer";
 import { MiningSchemaReducer } from "./MiningSchemaReducer";
 import { MiningSchemaFieldReducer } from "./MiningSchemaFieldReducer";
 import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -71,14 +72,20 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
   return (state: Model[], action: AllActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
-        return historyService.mutate(state, "models", draft => {
-          if (draft !== undefined) {
-            const modelIndex: number = action.payload.modelIndex;
-            if (modelIndex >= 0 && modelIndex < draft.length) {
-              draft.splice(modelIndex, 1);
+        return historyService.mutate(
+          state,
+          Builder()
+            .forModel()
+            .build(),
+          draft => {
+            if (draft !== undefined) {
+              const modelIndex: number = action.payload.modelIndex;
+              if (modelIndex >= 0 && modelIndex < draft.length) {
+                draft.splice(modelIndex, 1);
+              }
             }
           }
-        });
+        );
     }
 
     return delegate(state, action);

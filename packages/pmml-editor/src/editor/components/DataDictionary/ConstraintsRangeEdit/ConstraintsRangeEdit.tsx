@@ -34,7 +34,8 @@ import {
 import { TrashIcon } from "@patternfly/react-icons";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface ConstraintsRangeEditProps {
   dataFieldIndex: number | undefined;

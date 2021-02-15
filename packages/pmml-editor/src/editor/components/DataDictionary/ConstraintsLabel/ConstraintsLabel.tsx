@@ -4,7 +4,8 @@ import { Label } from "@patternfly/react-core";
 import { every } from "lodash";
 import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import "./ConstraintsLabel.scss";
 
 interface ConstraintsLabelProps {

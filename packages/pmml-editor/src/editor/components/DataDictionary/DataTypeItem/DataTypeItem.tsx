@@ -24,7 +24,8 @@ import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
 import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface DataTypeItemProps {

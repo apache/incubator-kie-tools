@@ -17,7 +17,8 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataDictionary, DataType, FieldName, OpType } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { Builder, validateDataFields, ValidationRegistry } from "../validation";
+import { validateDataFields, ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 
 interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
@@ -46,53 +47,77 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
   return (state: DataDictionary, action: AllActions) => {
     switch (action.type) {
       case Actions.AddDataDictionaryField:
-        historyService.batch(state, "DataDictionary", draft => {
-          draft.DataField.push({
-            name: action.payload.name as FieldName,
-            dataType: action.payload.type,
-            optype: action.payload.optype
-          });
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            draft.DataField.push({
+              name: action.payload.name as FieldName,
+              dataType: action.payload.type,
+              optype: action.payload.optype
+            });
+          }
+        );
         break;
 
       case Actions.DeleteDataDictionaryField:
-        historyService.batch(state, "DataDictionary", draft => {
-          const index = action.payload.index;
-          if (index >= 0 && index < draft.DataField.length) {
-            draft.DataField.splice(index, 1);
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            const index = action.payload.index;
+            if (index >= 0 && index < draft.DataField.length) {
+              draft.DataField.splice(index, 1);
+            }
+            validationRegistry.clear(
+              Builder()
+                .forDataDictionary()
+                .build()
+            );
+            validateDataFields(draft.DataField, validationRegistry);
           }
-          validationRegistry.clear(
-            Builder()
-              .forDataDictionary()
-              .build()
-          );
-          validateDataFields(draft.DataField, validationRegistry);
-        });
+        );
         break;
 
       case Actions.ReorderDataDictionaryFields:
-        historyService.batch(state, "DataDictionary", draft => {
-          const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
-          draft.DataField.splice(action.payload.newIndex, 0, removed);
-          validationRegistry.clear(
-            Builder()
-              .forDataDictionary()
-              .build()
-          );
-          validateDataFields(draft.DataField, validationRegistry);
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
+            draft.DataField.splice(action.payload.newIndex, 0, removed);
+            validationRegistry.clear(
+              Builder()
+                .forDataDictionary()
+                .build()
+            );
+            validateDataFields(draft.DataField, validationRegistry);
+          }
+        );
         break;
 
       case Actions.AddBatchDataDictionaryFields:
-        historyService.batch(state, "DataDictionary", draft => {
-          action.payload.dataDictionaryFields.forEach(name => {
-            draft.DataField.push({
-              name,
-              dataType: "string",
-              optype: "categorical"
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            action.payload.dataDictionaryFields.forEach(name => {
+              draft.DataField.push({
+                name,
+                dataType: "string",
+                optype: "categorical"
+              });
             });
-          });
-        });
+          }
+        );
     }
 
     return state;

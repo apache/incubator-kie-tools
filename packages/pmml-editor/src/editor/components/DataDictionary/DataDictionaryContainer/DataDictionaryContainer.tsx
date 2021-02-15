@@ -11,7 +11,8 @@ import { findIncrementalName } from "../../../PMMLModelHelper";
 import "./DataDictionaryContainer.scss";
 import DataDictionaryPropertiesEdit from "../DataDictionaryPropertiesEdit/DataDictionaryPropertiesEdit";
 import { isEqual } from "lodash";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];

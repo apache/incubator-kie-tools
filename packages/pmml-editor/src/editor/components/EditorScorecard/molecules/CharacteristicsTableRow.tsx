@@ -25,7 +25,8 @@ import {
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic, toText } from "../organisms";
 import "./CharacteristicsTableRow.scss";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface CharacteristicsTableRowProps {
   modelIndex: number;

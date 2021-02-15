@@ -7,7 +7,8 @@ import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContai
 import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
 import "./MiningSchemaFields.scss";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface MiningSchemaFieldsProps {
