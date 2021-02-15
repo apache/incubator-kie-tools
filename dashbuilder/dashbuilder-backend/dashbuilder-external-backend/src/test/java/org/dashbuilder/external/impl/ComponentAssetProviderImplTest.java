@@ -122,6 +122,13 @@ public class ComponentAssetProviderImplTest {
     public void testInternalComponentAssetPathTraversal() throws Exception {
         assertNotNull(componentAssetProviderImpl.openAsset("../../../dashbuilder-components.properties"));
     }
+    
+    @Test
+    public void testFixSlashes() throws Exception {
+        assertEquals("/abc/cde", componentAssetProviderImpl.fixSlashes("\\abc\\cde"));
+        assertEquals("/abc/cde", componentAssetProviderImpl.fixSlashes("/abc/cde"));
+        assertEquals("", componentAssetProviderImpl.fixSlashes(null));
+    }
 
     private String createComponentFile(String componentId, String fileName, String fileContent) throws Exception {
         Path componentDir = componentsDir.resolve(componentId);

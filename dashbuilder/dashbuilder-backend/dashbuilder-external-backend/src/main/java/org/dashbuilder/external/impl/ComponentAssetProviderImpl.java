@@ -51,9 +51,13 @@ public class ComponentAssetProviderImpl implements ComponentAssetProvider {
         throw new IllegalArgumentException("Invalid Asset Path.");
     }
 
+    String fixSlashes(String componentAssetPath) {
+        return componentAssetPath == null ? "" : componentAssetPath.replaceAll("\\\\", "/");
+    }
+
     private Optional<InputStream> getInternalComponentAsset(String componentAssetPath) {
         String internalComponentsBaseDir = componentsLoader.getProvidedComponentsPath();
-        String fullPath = "/" + internalComponentsBaseDir + "/" + componentAssetPath;
+        String fullPath = "/" + internalComponentsBaseDir + "/" + fixSlashes(componentAssetPath);
         return Optional.ofNullable(this.getClass().getResourceAsStream(fullPath));
     }
 
