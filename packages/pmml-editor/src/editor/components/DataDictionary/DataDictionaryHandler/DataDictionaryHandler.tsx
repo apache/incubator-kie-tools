@@ -111,7 +111,12 @@ const DataDictionaryHandler = () => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button type="button" variant={ButtonVariant.plain} onClick={handleDataDictionaryToggle}>
+        <Button
+          type="button"
+          variant={ButtonVariant.plain}
+          onClick={handleDataDictionaryToggle}
+          data-title="DataDictionaryModalClose"
+        >
           <CloseIcon />
         </Button>
       </SplitItem>
@@ -121,7 +126,7 @@ const DataDictionaryHandler = () => {
   return (
     <>
       {validations.length === 0 && (
-        <Button variant="secondary" onClick={handleDataDictionaryToggle}>
+        <Button variant="secondary" onClick={handleDataDictionaryToggle} data-title="DataDictionary">
           Set Data Dictionary
         </Button>
       )}
@@ -131,6 +136,7 @@ const DataDictionaryHandler = () => {
             variant="secondary"
             icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
             onClick={handleDataDictionaryToggle}
+            data-title="DataDictionary"
           >
             Set Data Dictionary
           </Button>
@@ -144,6 +150,7 @@ const DataDictionaryHandler = () => {
         showClose={false}
         variant={ModalVariant.large}
         onEscapePress={() => false}
+        data-title="DataDictionaryModal"
       >
         <DataDictionaryContainer
           dataDictionary={dictionary}

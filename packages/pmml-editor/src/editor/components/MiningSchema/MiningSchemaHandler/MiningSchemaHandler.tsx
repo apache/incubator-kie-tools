@@ -92,7 +92,12 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button type="button" variant={ButtonVariant.plain} onClick={handleMiningSchemaToggle}>
+        <Button
+          type="button"
+          variant={ButtonVariant.plain}
+          onClick={handleMiningSchemaToggle}
+          data-title="MiningSchemaModalClose"
+        >
           <CloseIcon />
         </Button>
       </SplitItem>
@@ -102,7 +107,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   return (
     <>
       {validations.length === 0 && (
-        <Button variant="secondary" onClick={handleMiningSchemaToggle}>
+        <Button variant="secondary" onClick={handleMiningSchemaToggle} data-title="MiningSchema">
           Set Mining Schema
         </Button>
       )}
@@ -112,6 +117,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
             variant="secondary"
             icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
             onClick={handleMiningSchemaToggle}
+            data-title="MiningSchema"
           >
             Set Mining Schema
           </Button>
@@ -125,6 +131,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         showClose={false}
         variant={ModalVariant.large}
         onEscapePress={() => false}
+        data-title="MiningSchemaModal"
       >
         <MiningSchemaContainer
           modelIndex={modelIndex}
