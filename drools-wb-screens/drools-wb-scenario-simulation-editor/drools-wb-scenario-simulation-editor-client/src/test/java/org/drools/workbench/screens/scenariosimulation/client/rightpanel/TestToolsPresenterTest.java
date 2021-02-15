@@ -221,7 +221,6 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
 
     @Test
     public void populateTestTools() {
-
         SortedMap<String, FactModelTree> dataObjects = new TreeMap<>();
         SortedMap<String, FactModelTree> simpleJava = new TreeMap<>();
         SortedMap<String, FactModelTree> instanceField = new TreeMap<>();
@@ -594,6 +593,21 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         testToolsPresenterSpy.reset();
         verify(testToolsViewMock, times(1)).reset();
         verify(listGroupItemPresenterMock, times(1)).reset();
+        verify(testToolsPresenterSpy, times(1)).clearFieldsMaps();
+    }
+
+    @Test
+    public void clearFieldsMaps() {
+        testToolsPresenterSpy.setDataObjectFieldsMap(getDataObjectFactTreeMap());
+        testToolsPresenterSpy.setSimpleJavaTypeFieldsMap(getSimpleJavaTypeFieldsMap());
+        testToolsPresenterSpy.setInstanceFieldsMap(getDataObjectFactTreeMap());
+        testToolsPresenterSpy.setSimpleJavaInstanceFieldsMap(getSimpleJavaTypeFieldsMap());
+        testToolsPresenterSpy.clearFieldsMaps();
+        assertTrue(testToolsPresenterSpy.dataObjectFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.simpleJavaTypeFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.instanceFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.simpleJavaInstanceFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.hiddenFieldsMap.isEmpty());
     }
 
     @Test

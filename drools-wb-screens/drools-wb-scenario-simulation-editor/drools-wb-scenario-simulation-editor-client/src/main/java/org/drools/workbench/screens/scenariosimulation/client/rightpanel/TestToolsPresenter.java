@@ -389,8 +389,17 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
 
     @Override
     public void reset() {
+        clearFieldsMaps();
         listGroupItemPresenter.reset();
         view.reset();
+    }
+
+    protected void clearFieldsMaps() {
+        dataObjectFieldsMap = new TreeMap<>();
+        simpleJavaTypeFieldsMap = new TreeMap<>();
+        instanceFieldsMap = new TreeMap<>();
+        simpleJavaInstanceFieldsMap = new TreeMap<>();
+        hiddenFieldsMap = new TreeMap<>();
     }
 
     /**
