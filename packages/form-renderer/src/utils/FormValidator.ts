@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ValidateFunction } from "ajv";
 import * as Ajv from "ajv";
+import { ValidateFunction } from "ajv";
 
 /**
  * Defines a basic Form Validator

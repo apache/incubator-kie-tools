@@ -17,33 +17,33 @@
 import { ModelConversionTool } from "../ModelConversionTool";
 
 const schema = {
-  type: 'object',
+  type: "object",
   properties: {
-    name: { type: 'string' },
-    lastName: { type: 'string' },
-    married: { type: 'boolean' },
-    age: { type: 'integer' },
+    name: { type: "string" },
+    lastName: { type: "string" },
+    married: { type: "boolean" },
+    age: { type: "integer" },
     date: {
-      type: 'string',
-      format: 'date-time'
+      type: "string",
+      format: "date-time"
     },
     nested: {
-      type: 'object',
+      type: "object",
       properties: {
         date: {
-          type: 'string',
-          format: 'date-time'
+          type: "string",
+          format: "date-time"
         }
       }
     },
     children: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'object',
+        type: "object",
         properties: {
           date: {
-            type: 'string',
-            format: 'date-time'
+            type: "string",
+            format: "date-time"
           }
         }
       }
@@ -56,9 +56,9 @@ const currentStrDate = currentDate.toISOString();
 
 function getModel(dateValue: Date | string): any {
   return {
-    name: 'John',
-    lastName: 'Doe',
-    fullName: 'Doe, John',
+    name: "John",
+    lastName: "Doe",
+    fullName: "Doe, John",
     married: false,
     age: 27,
     date: dateValue,
@@ -82,7 +82,7 @@ function getModel(dateValue: Date | string): any {
 function testModel(
   originalDateValue: Date | string,
   convertedDateValue: string | Date,
-  conversion: (model:any, schema:any) => any
+  conversion: (model: any, schema: any) => any
 ) {
   const model = getModel(originalDateValue);
 
@@ -106,14 +106,14 @@ function testModel(
   });
 }
 
-describe('Model Conversion  tests', () => {
-  test('String to dates conversion', () => {
+describe("Model Conversion  tests", () => {
+  test("String to dates conversion", () => {
     testModel(currentStrDate, currentDate, (model, formSchema) =>
       ModelConversionTool.convertStringToDate(model, formSchema)
     );
   });
 
-  test('Dates to strings conversion', () => {
+  test("Dates to strings conversion", () => {
     testModel(currentDate, currentStrDate, (model, formSchema) =>
       ModelConversionTool.convertDateToString(model, formSchema)
     );

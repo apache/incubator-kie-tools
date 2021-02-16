@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from 'react';
+import * as React from "react";
 
 const MockedFormRenderer = (): React.ReactElement => {
   return <></>;

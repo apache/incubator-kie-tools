@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export {FormValidator, DefaultFormValidator} from './FormValidator';
-export { ModelConversionTool } from './ModelConversionTool';
+export { FormValidator, DefaultFormValidator } from "./FormValidator";
+export { ModelConversionTool } from "./ModelConversionTool";

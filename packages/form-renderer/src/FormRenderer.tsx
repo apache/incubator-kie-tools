@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
+import { useImperativeHandle, useState } from "react";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { AutoFields, AutoForm, ErrorsField } from "uniforms-patternfly";
 import { DefaultFormValidator, FormValidator, ModelConversionTool } from "./utils";
-import { useImperativeHandle, useState } from "react";
 
 export interface Props {
   formSchema: object;
@@ -26,6 +26,8 @@ export interface Props {
   readOnly?: boolean;
   showErrorsHeader?: boolean;
   onSubmit?: (model: object) => void;
+  autoSave?: boolean;
+  autoSaveDelay?: number
 }
 
 /**
@@ -48,7 +50,7 @@ export interface FormApi {
    * @param key the field we want modify
    * @param value to set
    */
-  change: (key:string, value:any) => void;
+  change: (key: string, value: any) => void;
 }
 
 const FormRenderer = React.forwardRef<FormApi, Props>(({
@@ -56,7 +58,9 @@ const FormRenderer = React.forwardRef<FormApi, Props>(({
                                                          model,
                                                          readOnly,
                                                          showErrorsHeader: showErrorsHeader,
-                                                         onSubmit
+                                                         onSubmit,
+                                                         autoSave,
+                                                         autoSaveDelay= 0
                                                        }, forwardedRef) => {
   const [formRef, setFormRef] = useState<FormApi>();
 
@@ -87,7 +91,7 @@ const FormRenderer = React.forwardRef<FormApi, Props>(({
         },
 
         change: (key, value) => {
-          formRef?.change(key, value)
+          formRef?.change(key, value);
         }
       };
 
@@ -101,12 +105,14 @@ const FormRenderer = React.forwardRef<FormApi, Props>(({
       disabled={readOnly}
       schema={bridge}
       showInlineError={true}
-      onSubmit={(submitData:object) => {
-        if(onSubmit) {
-          onSubmit(submitData)
+      autoSave={autoSave}
+      autosaveDelay={autoSaveDelay}
+      onSubmit={(submitData: object) => {
+        if (onSubmit) {
+          onSubmit(submitData);
         }
       }}
-      role={'form'}
+      role={"form"}
     >
       {showErrorsHeader && <ErrorsField/>}
       <AutoFields/>

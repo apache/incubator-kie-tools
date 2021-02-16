@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-import * as React from 'react';
-import { act, render, screen, waitFor } from "@testing-library/react";
+import * as React from "react";
+import { act, render, screen } from "@testing-library/react";
 import { cloneDeep } from "lodash";
 import FormRenderer, { FormApi, Props } from "../FormRenderer";
 
 const schema = {
-  type: 'object',
+  type: "object",
   properties: {
-    name: { type: 'string' },
-    lastName: { type: 'string' },
-    age: { type: 'integer', minimum: 18 }
+    name: { type: "string" },
+    lastName: { type: "string" },
+    age: { type: "integer", minimum: 18 }
   },
-  required: ['name', 'lastName']
+  required: ["name", "lastName"]
 };
 
 const person: any = {
-  name: 'Jon',
-  lastName: 'Snow',
+  name: "Jon",
+  lastName: "Snow",
   age: 18
 };
 
 let props: Props;
 
-describe('FormRenderer test', () => {
+describe("FormRenderer test", () => {
 
   beforeEach(() => {
     props = {
@@ -45,25 +45,25 @@ describe('FormRenderer test', () => {
       model: cloneDeep(person),
       onSubmit: jest.fn(),
       showErrorsHeader: true
-    }
+    };
   });
 
-  it('Snapshot', () => {
-    const { container } = render( <FormRenderer {...props}/>);
+  it("Snapshot", () => {
+    const { container } = render(<FormRenderer {...props}/>);
 
     expect(container.firstChild).toMatchSnapshot();
 
-    expect(screen.getByRole('form')).toHaveFormValues({
-      name: 'Jon',
-      lastName: 'Snow',
+    expect(screen.getByRole("form")).toHaveFormValues({
+      name: "Jon",
+      lastName: "Snow",
       age: 18
     });
   });
 
-  it('Form submit', async () => {
+  it("Form submit", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render( <FormRenderer {...props} ref={formApi}/>)
+    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
 
     expect(container.firstChild).toMatchSnapshot();
 
@@ -71,33 +71,33 @@ describe('FormRenderer test', () => {
       formApi.current?.submit();
     });
 
-    expect(props.onSubmit).toHaveBeenCalledWith(props.model)
+    expect(props.onSubmit).toHaveBeenCalledWith(props.model);
   });
 
-  it('Form change & reset', async () => {
+  it("Form change & reset", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render( <FormRenderer {...props} ref={formApi}/>)
+    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
 
     expect(container.firstChild).toMatchSnapshot();
 
-    expect(screen.getByRole('form')).toHaveFormValues({
-      name: 'Jon',
-      lastName: 'Snow',
+    expect(screen.getByRole("form")).toHaveFormValues({
+      name: "Jon",
+      lastName: "Snow",
       age: 18
     });
 
     await act(async () => {
-      formApi.current?.change('name', "Harry");
-      formApi.current?.change('lastName', "Potter");
-      formApi.current?.change('age', 8);
+      formApi.current?.change("name", "Harry");
+      formApi.current?.change("lastName", "Potter");
+      formApi.current?.change("age", 8);
     });
 
     expect(container.firstChild).toMatchSnapshot();
 
-    expect(screen.getByRole('form')).toHaveFormValues({
-      name: 'Harry',
-      lastName: 'Potter',
+    expect(screen.getByRole("form")).toHaveFormValues({
+      name: "Harry",
+      lastName: "Potter",
       age: 8
     });
 
@@ -107,29 +107,29 @@ describe('FormRenderer test', () => {
 
     expect(container.firstChild).toMatchSnapshot();
 
-    expect(screen.getByRole('form')).toHaveFormValues({
-      name: 'Jon',
-      lastName: 'Snow',
+    expect(screen.getByRole("form")).toHaveFormValues({
+      name: "Jon",
+      lastName: "Snow",
       age: 18
     });
   });
 
-  it('Form validation error', async () => {
+  it("Form validation error", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render( <FormRenderer {...props} ref={formApi}/>)
+    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
 
     expect(container.firstChild).toMatchSnapshot();
 
-    expect(screen.getByRole('form')).toHaveFormValues({
-      name: 'Jon',
-      lastName: 'Snow',
+    expect(screen.getByRole("form")).toHaveFormValues({
+      name: "Jon",
+      lastName: "Snow",
       age: 18
     });
 
     await act(async () => {
-      formApi.current?.change('name', null);
-      formApi.current?.change('lastName', null);
+      formApi.current?.change("name", null);
+      formApi.current?.change("lastName", null);
     });
 
     await act(async () => {
@@ -140,7 +140,7 @@ describe('FormRenderer test', () => {
 
     expect(props.onSubmit).not.toHaveBeenCalled();
 
-    expect(screen.getAllByText('should have required property \'name\'')).toHaveLength(2);
-    expect(screen.getAllByText('should have required property \'lastName\'')).toHaveLength(2);
+    expect(screen.getAllByText("should have required property 'name'")).toHaveLength(2);
+    expect(screen.getAllByText("should have required property 'lastName'")).toHaveLength(2);
   });
 });
