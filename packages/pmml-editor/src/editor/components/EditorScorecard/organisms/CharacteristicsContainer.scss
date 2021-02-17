@@ -23,6 +23,10 @@
     background-color: var(--pf-global--BackgroundColor--200);
     height: 100%;
 
+    &-form {
+      height: 0;
+    }
+
     &-enter {
       opacity: 0;
     }
@@ -40,6 +44,7 @@
       opacity: 0;
       transition: opacity 100ms;
     }
+
   }
 
   &__attribute {

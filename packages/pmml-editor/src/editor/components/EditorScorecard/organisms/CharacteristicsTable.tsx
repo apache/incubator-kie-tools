@@ -104,6 +104,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
         e.stopPropagation();
         e.preventDefault();
       }}
+      className="characteristics-container__overview-form"
     >
       <section>
         {characteristics.map(ic => (
