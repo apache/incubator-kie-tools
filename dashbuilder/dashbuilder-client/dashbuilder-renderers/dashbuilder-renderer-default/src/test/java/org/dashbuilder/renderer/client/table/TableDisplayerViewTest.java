@@ -31,7 +31,7 @@ import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 import org.uberfire.ext.widgets.table.client.DataGrid;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)

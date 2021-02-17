@@ -51,7 +51,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -65,8 +65,8 @@ import org.uberfire.mocks.MockInstanceImpl;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -266,7 +266,7 @@ public class GuvnorM2RepositoryTest {
 
         GuvnorM2Repository spiedRepo = spy(repo);
 
-        doReturn(new ArrayList<String>()).when(spiedRepo).getFiles(Matchers.<List<String>>any());
+        doReturn(new ArrayList<String>()).when(spiedRepo).getFiles(ArgumentMatchers.<List<String>>any());
 
         spiedRepo.listFiles();
         verify(spiedRepo).getFiles(wildcards);
@@ -283,7 +283,7 @@ public class GuvnorM2RepositoryTest {
 
         GuvnorM2Repository spiedRepo = spy(repo);
 
-        doReturn(new ArrayList<String>()).when(spiedRepo).getFiles(Matchers.<List<String>>any());
+        doReturn(new ArrayList<String>()).when(spiedRepo).getFiles(ArgumentMatchers.<List<String>>any());
 
         spiedRepo.listFiles(filter);
         verify(spiedRepo).getFiles(wildcards);
@@ -303,7 +303,7 @@ public class GuvnorM2RepositoryTest {
 
         GuvnorM2Repository spiedRepo = spy(repo);
 
-        doReturn(new ArrayList<String>()).when(spiedRepo).getFiles(Matchers.<List<String>>any());
+        doReturn(new ArrayList<String>()).when(spiedRepo).getFiles(ArgumentMatchers.<List<String>>any());
 
         spiedRepo.listFiles(filter,
                             fileFormats);

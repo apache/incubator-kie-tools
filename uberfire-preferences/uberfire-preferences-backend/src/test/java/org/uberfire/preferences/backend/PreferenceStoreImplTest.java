@@ -53,9 +53,9 @@ import org.uberfire.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class PreferenceStoreImplTest {

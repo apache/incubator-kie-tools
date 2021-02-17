@@ -52,7 +52,7 @@ import static org.dashbuilder.shared.model.DataSetContentType.CSV;
 import static org.dashbuilder.shared.model.DataSetContentType.DEFINITION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

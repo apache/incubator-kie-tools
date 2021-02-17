@@ -24,7 +24,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -82,16 +82,16 @@ public class RuntimePluginBaseEditorTest {
     public void loadContentTest() {
 
         final PluginContent pluginContent = mock(PluginContent.class);
-        when(pluginServices.getPluginContent(Matchers.<Path>any())).thenReturn(pluginContent);
+        when(pluginServices.getPluginContent(ArgumentMatchers.<Path>any())).thenReturn(pluginContent);
 
         assertNull(editor.getOriginalHash());
 
         editor.loadContent();
 
-        verify(pluginServices).getPluginContent(Matchers.<Path>any());
+        verify(pluginServices).getPluginContent(ArgumentMatchers.<Path>any());
         verify(baseEditorView).setFramework(anyCollection());
         verify(baseEditorView).setupContent(eq(pluginContent),
-                                            Matchers.<ParameterizedCommand<Media>>any());
+                                            ArgumentMatchers.<ParameterizedCommand<Media>>any());
         verify(baseEditorView).hideBusyIndicator();
 
         assertNotNull(editor.getOriginalHash());

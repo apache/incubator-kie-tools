@@ -25,7 +25,7 @@ import org.uberfire.ssh.service.backend.keystore.SSHKeyStore;
 import org.uberfire.ssh.service.backend.keystore.impl.SSHKeyStoreServiceImpl;
 import org.uberfire.ssh.service.backend.keystore.impl.storage.DefaultSSHKeyStore;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

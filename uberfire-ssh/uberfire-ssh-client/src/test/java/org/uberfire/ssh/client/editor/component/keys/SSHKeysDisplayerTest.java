@@ -32,7 +32,7 @@ import org.uberfire.ssh.client.editor.component.keys.key.SSHKeyEditor;
 import org.uberfire.ssh.service.shared.editor.PortableSSHPublicKey;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

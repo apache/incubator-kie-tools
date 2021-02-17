@@ -30,7 +30,7 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.dashbuilder.displayer.DisplayerSubType.*;
 import static org.dashbuilder.displayer.DisplayerType.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 

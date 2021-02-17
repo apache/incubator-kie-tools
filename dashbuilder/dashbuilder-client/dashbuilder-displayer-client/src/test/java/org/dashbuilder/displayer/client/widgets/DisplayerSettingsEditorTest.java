@@ -43,7 +43,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.*;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

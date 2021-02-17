@@ -27,8 +27,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.UberfireRoleManager;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

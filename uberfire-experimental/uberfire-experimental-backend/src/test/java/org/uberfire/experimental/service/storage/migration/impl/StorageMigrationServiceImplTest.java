@@ -31,7 +31,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.experimental.service.storage.migration.StorageMigration;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;

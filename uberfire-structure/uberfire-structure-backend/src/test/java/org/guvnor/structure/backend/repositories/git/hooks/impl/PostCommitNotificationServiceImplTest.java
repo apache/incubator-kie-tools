@@ -37,7 +37,7 @@ import java.util.Locale;
 import static org.guvnor.structure.repositories.impl.git.event.NotificationType.ERROR;
 import static org.guvnor.structure.repositories.impl.git.event.NotificationType.SUCCESS;
 import static org.guvnor.structure.repositories.impl.git.event.NotificationType.WARNING;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

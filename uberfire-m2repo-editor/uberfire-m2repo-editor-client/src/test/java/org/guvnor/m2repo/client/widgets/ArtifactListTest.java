@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -38,7 +38,7 @@ import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -108,7 +108,7 @@ public class ArtifactListTest {
         // Search request with filter
         presenter.search("filters");
         verify(event).fire(any(NotificationEvent.class));
-        verify(dataProvider).addDataDisplay(Matchers.<HasData<JarListPageRow>>any());
+        verify(dataProvider).addDataDisplay(ArgumentMatchers.<HasData<JarListPageRow>>any());
         verify(dataProvider,
                never()).goToFirstPage();
         verify(m2service).listArtifacts(request.capture());
@@ -130,7 +130,7 @@ public class ArtifactListTest {
         presenter.search("other filters");
         verify(event).fire(any(NotificationEvent.class));
         verify(dataProvider,
-               never()).addDataDisplay(Matchers.<HasData<JarListPageRow>>any());
+               never()).addDataDisplay(ArgumentMatchers.<HasData<JarListPageRow>>any());
         verify(dataProvider).goToFirstPage();
     }
 

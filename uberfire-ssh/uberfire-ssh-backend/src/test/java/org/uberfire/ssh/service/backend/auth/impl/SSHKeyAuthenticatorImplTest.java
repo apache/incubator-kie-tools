@@ -38,8 +38,8 @@ import org.uberfire.ssh.service.backend.keystore.model.SSHPublicKey;
 import org.uberfire.ssh.service.backend.keystore.util.PublicKeyConverter;
 import org.uberfire.ssh.service.backend.test.AbstractSSHKeyStoreServiceImplTest;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

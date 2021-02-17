@@ -32,7 +32,7 @@ import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.ext.editor.commons.service.restriction.PathOperationRestriction;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

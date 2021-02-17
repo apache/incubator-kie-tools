@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -40,7 +40,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -79,7 +79,7 @@ public class RenameServiceImplTest {
         doNothing().when(renameService).renamePathIfExists(any(Path.class),
                                                            any(String.class),
                                                            any(String.class));
-        doNothing().when(renameService).startBatch(Matchers.<Collection<Path>>any());
+        doNothing().when(renameService).startBatch(ArgumentMatchers.<Collection<Path>>any());
         doNothing().when(renameService).endBatch();
 
         List<RenameRestrictor> renameRestrictors = new ArrayList<RenameRestrictor>();

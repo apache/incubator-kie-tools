@@ -31,7 +31,7 @@ import org.uberfire.ssh.client.editor.component.keys.SSHKeysDisplayer;
 import org.uberfire.ssh.service.shared.editor.PortableSSHPublicKey;
 import org.uberfire.ssh.service.shared.editor.SSHKeyEditorService;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;

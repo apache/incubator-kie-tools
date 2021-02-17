@@ -15,7 +15,7 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 

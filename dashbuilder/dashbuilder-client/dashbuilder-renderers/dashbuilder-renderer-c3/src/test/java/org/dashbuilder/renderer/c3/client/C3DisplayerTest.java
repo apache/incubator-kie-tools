@@ -21,8 +21,8 @@ import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;

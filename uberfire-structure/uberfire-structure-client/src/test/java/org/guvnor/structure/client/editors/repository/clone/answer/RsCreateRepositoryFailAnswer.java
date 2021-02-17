@@ -25,7 +25,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class RsCreateRepositoryFailAnswer implements Answer<RepositoryService> {
