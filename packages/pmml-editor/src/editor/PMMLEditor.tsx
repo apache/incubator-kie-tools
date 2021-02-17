@@ -41,6 +41,7 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { ValidationContext, ValidationRegistry } from "./validation";
+import "./PMMLEditor.scss";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -187,41 +188,43 @@ export class PMMLEditor extends React.Component<Props, State> {
     if (this.store) {
       const path: string = this.state.path;
       return (
-        <HashRouter>
-          <Page>
-            <Provider store={this.store}>
-              <ValidationContext.Provider value={{ validationRegistry: this.validationRegistry }}>
-                <HistoryContext.Provider
-                  value={{
-                    service: this.history,
-                    getCurrentState: () => this.store?.getState()
-                  }}
-                >
-                  <Switch>
-                    <Route exact={true} path={"/"}>
-                      {!isSingleModel && <LandingPage path={path} />}
-                      {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
-                    </Route>
-                    <Route exact={true} path={"/editor/:index"}>
-                      <OperationContext.Provider
-                        value={{
-                          activeOperation: this.state.activeOperation,
-                          setActiveOperation: operation =>
-                            this.setState({
-                              ...this.state,
-                              activeOperation: operation
-                            })
-                        }}
-                      >
-                        <SingleEditorRouter path={path} />
-                      </OperationContext.Provider>
-                    </Route>
-                  </Switch>
-                </HistoryContext.Provider>
-              </ValidationContext.Provider>
-            </Provider>
-          </Page>
-        </HashRouter>
+        <div className={"editor-body"}>
+          <HashRouter>
+            <Page className={"editor-page"}>
+              <Provider store={this.store}>
+                <ValidationContext.Provider value={{ validationRegistry: this.validationRegistry }}>
+                  <HistoryContext.Provider
+                    value={{
+                      service: this.history,
+                      getCurrentState: () => this.store?.getState()
+                    }}
+                  >
+                    <Switch>
+                      <Route exact={true} path={"/"}>
+                        {!isSingleModel && <LandingPage path={path} />}
+                        {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
+                      </Route>
+                      <Route exact={true} path={"/editor/:index"}>
+                        <OperationContext.Provider
+                          value={{
+                            activeOperation: this.state.activeOperation,
+                            setActiveOperation: operation =>
+                              this.setState({
+                                ...this.state,
+                                activeOperation: operation
+                              })
+                          }}
+                        >
+                          <SingleEditorRouter path={path} />
+                        </OperationContext.Provider>
+                      </Route>
+                    </Switch>
+                  </HistoryContext.Provider>
+                </ValidationContext.Provider>
+              </Provider>
+            </Page>
+          </HashRouter>
+        </div>
       );
     } else {
       return <EmptyStateNoContent />;
