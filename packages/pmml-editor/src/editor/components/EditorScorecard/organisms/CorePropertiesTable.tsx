@@ -143,7 +143,6 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   return (
     <div
       ref={ref}
-      className={`editable${isEditModeEnabled ? " editing" : ""}`}
       onClick={onEdit}
       tabIndex={0}
       onKeyDown={e => {
@@ -154,7 +153,10 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
         }
       }}
     >
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection
+        variant={PageSectionVariants.light}
+        className={`editable-item${isEditModeEnabled ? "--editing" : ""}`}
+      >
         <Stack hasGutter={true}>
           <StackItem>
             <Split hasGutter={true}>
