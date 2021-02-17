@@ -52,11 +52,22 @@ test('<DateField> - renders an input with correct disabled state', () => {
 });
 
 test('<DateField> - renders a input with correct label (specified)', () => {
-  const element = <DateField name="x" label="DateFieldLabel" />;
+  const element = <DateField required={false} name="x" label="DateFieldLabel" />;
   const wrapper = mount(element, createContext({ x: { type: Date } }));
 
   expect(wrapper.find('label')).toHaveLength(1);
   expect(wrapper.find('label').text()).toBe('DateFieldLabel');
+  expect(wrapper.find('label').prop('htmlFor')).toBe(
+    wrapper.find('input').prop('id'),
+  );
+});
+
+test('<DateField> - renders a input with correct label (specified)', () => {
+  const element = <DateField required={true} name="x" label="DateFieldLabel" />;
+  const wrapper = mount(element, createContext({ x: { type: Date } }));
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('DateFieldLabel *');
   expect(wrapper.find('label').prop('htmlFor')).toBe(
     wrapper.find('input').prop('id'),
   );

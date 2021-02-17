@@ -260,7 +260,7 @@ test('<RadioField> - renders a set of checkboxes which correctly reacts on chang
 });
 
 test('<RadioField> - renders a label', () => {
-  const element = <RadioField name="x" label="y" />;
+  const element = <RadioField required={false} name="x" label="y" />;
   const wrapper = mount(
     element,
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
@@ -273,6 +273,22 @@ test('<RadioField> - renders a label', () => {
       .at(0)
       .text(),
   ).toBe('y');
+});
+
+test('<RadioField> - renders a label', () => {
+  const element = <RadioField required={true} name="x" label="y" />;
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
+  );
+
+  expect(wrapper.find('label')).toHaveLength(3);
+  expect(
+    wrapper
+      .find('label')
+      .at(0)
+      .text(),
+  ).toBe('y *');
 });
 
 test('<RadioField> - renders a wrapper with unknown props', () => {
