@@ -259,7 +259,7 @@ export function EditorPage(props: Props) {
   }, [context.file.fileName]);
 
   // TODO: extract to custom hook
-  const [runDmn, setRunDmn] = useState(false);
+  const [runDmn, setRunDmn] = useState(true);
   const [dmnRunnerSchema, setDmnRunnerSchema] = useState<JSONSchemaBridge>();
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
 
@@ -269,7 +269,6 @@ export function EditorPage(props: Props) {
       let polling1: number | undefined;
       if (dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
         polling1 = window.setInterval(() => {
-          console.log("aaa");
           DmnRunner.checkServer().catch(() => {
             setModal(OpenedModal.DMN_RUNNER_HELPER);
             setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
@@ -286,7 +285,6 @@ export function EditorPage(props: Props) {
       let polling2: number | undefined;
       if (dmnRunnerStatus !== DmnRunnerStatus.RUNNING) {
         polling2 = window.setInterval(() => {
-          console.log("bbbbb");
           DmnRunner.checkServer().then(() => {
             setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
             window.clearInterval(polling2);
@@ -304,7 +302,7 @@ export function EditorPage(props: Props) {
         }
       };
     }
-  }, [runDmn, editor, dmnRunnerStatus]);
+  }, [runDmn, editor, dmnRunnerStatus, isEditorReady]);
 
   const onRunDmn = useCallback((e: React.MouseEvent<any>) => {
     e.stopPropagation();
@@ -319,6 +317,13 @@ export function EditorPage(props: Props) {
         setModal(OpenedModal.DMN_RUNNER_HELPER);
         setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
       });
+  }, []);
+
+  const onStopRunDmn = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
+    setRunDmn(false);
   }, []);
 
   useEffect(() => {
@@ -377,7 +382,7 @@ export function EditorPage(props: Props) {
                 <DmnRunnerDrawer
                   jsonSchemaBridge={dmnRunnerSchema}
                   editorContent={editor?.getContent}
-                  onRunDmn={onRunDmn}
+                  onStopRunDmn={onStopRunDmn}
                 />
               </DrawerPanelContent>
             }

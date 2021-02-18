@@ -16,7 +16,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
-import { ajv, DmnRunner, schema } from "../common/DmnRunner";
+import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
@@ -25,20 +25,19 @@ import {
   DescriptionListTerm,
   DescriptionListGroup,
   DescriptionListDescription,
-  Title,
-  DrawerContent,
-  DrawerContentBody,
-  Drawer,
-  DrawerPanelContent,
   Page,
   PageSection,
   TextContent,
-  PageHeader,
   Text,
   Card,
   CardTitle,
-  CardBody
+  CardBody,
+  EmptyState,
+  EmptyStateIcon,
+  Button,
+  ButtonVariant
 } from "@patternfly/react-core";
+import { CubesIcon } from "@patternfly/react-icons";
 
 enum DmnRunnerStatusResponse {
   SUCCESS,
@@ -49,14 +48,10 @@ enum DmnRunnerStatusResponse {
 interface Props {
   editorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
-  onRunDmn: (e: React.MouseEvent<any>) => void;
+  onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const PF_BREAKPOINT_SM = 576;
-const PF_BREAKPOINT_MD = 768;
-const PF_BREAKPOINT_LG = 992;
 const PF_BREAKPOINT_XL = 1200;
-const PF_BREAKPOINT_2XL = 1450;
 
 export function DmnRunnerDrawer(props: Props) {
   const [dmnRunnerResponse, setDmnRunnerResponse] = useState();
@@ -91,15 +86,22 @@ export function DmnRunnerDrawer(props: Props) {
     [props.editorContent]
   );
 
-  const [drawerPosition, setDrawerPosition] = useState<"right" | "bottom">("right");
+  const [buttonPosition, setButtonPosition] = useState<"input" | "output">(() => {
+    const width = window.innerWidth;
+
+    if (width <= PF_BREAKPOINT_XL) {
+      return "input";
+    }
+    return "output";
+  });
 
   const handleResize = useCallback(() => {
     const width = window.innerWidth;
 
     if (width <= PF_BREAKPOINT_XL) {
-      setDrawerPosition("bottom");
+      setButtonPosition("input");
     } else {
-      setDrawerPosition("right");
+      setButtonPosition("output");
     }
   }, []);
 
@@ -109,68 +111,85 @@ export function DmnRunnerDrawer(props: Props) {
 
   return (
     <>
-      <div className={"kogito-drawer"} style={{ display: "flex", flexDirection: "row" }}>
-        <Page>
-          <PageSection style={{ paddingBottom: 0 }}>
-            <TextContent>
-              <Text component={"h2"}>Inputs</Text>
-            </TextContent>
-          </PageSection>
-          <PageSection>
-            {props.jsonSchemaBridge ? (
-              <AutoForm
-                style={{ maxWidth: "350px" }}
-                id={"form"}
-                ref={autoFormRef}
-                showInlineError={true}
-                autosave={true}
-                autosaveDelay={500}
-                schema={props.jsonSchemaBridge}
-                onSubmit={onSubmit}
-                errorsField={() => <></>}
-                submitField={() => <></>}
-              />
-            ) : (
-              <p>Form Empty State</p>
-            )}
-          </PageSection>
-        </Page>
-        <Page>
-          <PageSection style={{ paddingBottom: 0 }}>
-            <TextContent>
-              <Text component={"h2"}>Outputs</Text>
-            </TextContent>
-          </PageSection>
-          <PageSection style={{ width: "350px", maxWidth: "350px", paddingLeft: 0 }}>
-            {dmnRunnerResponse ? (
-              <JitResponse responseObject={dmnRunnerResponse!} depth={0} />
-            ) : (
-              // <DescriptionList isHorizontal={true} style={{ maxWidth: "350px" }}>
-              //
-              // </DescriptionList>
-              <p>Response Empty State</p>
-            )}
-          </PageSection>
-        </Page>
+      <div className={"kogito--editor__dmn-runner-drawer-div-page"}>
+        <div className={"kogito--editor__dmn-runner-drawer-div-page-div"}>
+          <Page className={"kogito--editor__dmn-runner-drawer-page"}>
+            <PageSection
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: 0
+              }}
+              // height={buttonPosition !== "input" ? "60px" : undefined}
+            >
+              <TextContent>
+                <Text component={"h2"}>Inputs</Text>
+              </TextContent>
+              {buttonPosition === "input" && (
+                <Button variant={ButtonVariant.secondary} onClick={e => props.onStopRunDmn(e)}>
+                  Stop Running
+                </Button>
+              )}
+            </PageSection>
+            <PageSection>
+              {props.jsonSchemaBridge ? (
+                <AutoForm
+                  style={{ maxWidth: "350px" }}
+                  id={"form"}
+                  ref={autoFormRef}
+                  showInlineError={true}
+                  autosave={true}
+                  autosaveDelay={500}
+                  schema={props.jsonSchemaBridge}
+                  onSubmit={onSubmit}
+                  errorsField={() => <></>}
+                  submitField={() => <></>}
+                  placeholder={true}
+                />
+              ) : (
+                <div>
+                  <EmptyState>
+                    <EmptyStateIcon icon={CubesIcon} />
+                    <TextContent>
+                      <Text component={"h2"}>Create a Model!</Text>
+                    </TextContent>
+                  </EmptyState>
+                </div>
+              )}
+            </PageSection>
+          </Page>
+        </div>
+        <div className={"kogito--editor__dmn-runner-drawer-div-page-div"}>
+          <Page className={"kogito--editor__dmn-runner-drawer-page"}>
+            <PageSection
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 0 }}
+            >
+              <TextContent>
+                <Text component={"h2"}>Outputs</Text>
+              </TextContent>
+              {buttonPosition === "output" && (
+                <Button variant={ButtonVariant.secondary} onClick={e => props.onStopRunDmn(e)}>
+                  Stop Running
+                </Button>
+              )}
+            </PageSection>
+            <PageSection style={{ width: "350px", maxWidth: "350px", paddingLeft: 0 }}>
+              {dmnRunnerResponse ? (
+                <JitResponse responseObject={dmnRunnerResponse!} depth={0} />
+              ) : (
+                <EmptyState>
+                  <EmptyStateIcon icon={CubesIcon} />
+                  <TextContent>
+                    <Text component={"h2"}>Without response yet</Text>
+                  </TextContent>
+                </EmptyState>
+              )}
+            </PageSection>
+          </Page>
+        </div>
       </div>
     </>
-    // <Drawer isStatic={true} position={drawerPosition}>
-    //   <DrawerContent
-    //     panelContent={
-    //       <DrawerPanelContent widths={{ default: "width_50" }}>
-    //         <p>Response Empty State</p>
-    //       </DrawerPanelContent>
-    //     }
-    //   >
-    //     <DrawerContentBody>
-    //       {props.jsonSchemaBridge ? (
-    //         <AutoForm id={"form"} ref={autoFormRef} schema={props.jsonSchemaBridge} onSubmit={onSubmit} />
-    //       ) : (
-    //         <p>Form Empty State</p>
-    //       )}
-    //     </DrawerContentBody>
-    //   </DrawerContent>
-    // </Drawer>
   );
 }
 

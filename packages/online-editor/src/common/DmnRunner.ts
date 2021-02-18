@@ -16,7 +16,7 @@
 
 import Ajv from "ajv";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import AjvErrors from "ajv-errors";
+import { Schema } from "ajv";
 
 export interface JitDmnPayload {
   model: string;
@@ -140,8 +140,8 @@ export const schema = {
   type: "object"
 };
 
-function createValidator(schema: any) {
-  const validator = ajv.compile(schema);
+function createValidator(jsonSchema: Schema) {
+  const validator = ajv.compile(jsonSchema);
 
   return (model: any) => {
     validator(model);
