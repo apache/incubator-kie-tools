@@ -105,7 +105,7 @@ const FormRenderer = React.forwardRef<FormApi, Props>(({
       disabled={readOnly}
       schema={bridge}
       showInlineError={true}
-      autoSave={autoSave}
+      autosave={autoSave}
       autosaveDelay={autoSaveDelay}
       onSubmit={(submitData: object) => {
         if (onSubmit) {
