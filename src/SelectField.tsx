@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Checkbox,
   CheckboxProps,
@@ -10,7 +10,7 @@ import {
   SelectVariant,
   SelectOptionObject,
 } from '@patternfly/react-core';
-import { connectField, filterDOMProps, useField } from 'uniforms/es5';
+import { connectField, filterDOMProps } from 'uniforms/es5';
 
 import wrapField from './wrapField';
 

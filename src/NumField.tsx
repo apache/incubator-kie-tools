@@ -38,7 +38,7 @@ const Num = (props: NumFieldProps) => {
       step={props.decimal ? 0.01 : 1}
       type="number"
       value={props.value ?? ''}
-      validated={(props.error) ? 'error' : 'default'}
+      validated={props.error ? 'error' : 'default'}
     />
   );
 };
