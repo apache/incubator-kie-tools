@@ -77,7 +77,7 @@ public class WorkbenchClientEditorTest7Activity extends AbstractWorkbenchClientE
 
     @Override
     public Promise validate() {
-        return null;
+        return Promise.resolve(Collections.emptyList());
     }
 
     @Override

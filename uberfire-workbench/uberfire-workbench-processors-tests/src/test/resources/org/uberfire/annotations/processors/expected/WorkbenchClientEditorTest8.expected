@@ -72,7 +72,7 @@ public class WorkbenchClientEditorTest8Activity extends AbstractWorkbenchClientE
     }
     @Override
     public Promise<String> getPreview() {
-        return null;
+        return Promise.resolve("");
     }
 
     @Override

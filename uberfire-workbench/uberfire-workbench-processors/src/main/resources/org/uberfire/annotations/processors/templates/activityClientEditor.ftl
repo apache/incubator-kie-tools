@@ -208,7 +208,7 @@ public class ${className} extends AbstractWorkbenchClientEditorActivity {
     	<#if getPreviewMethodName??>    
         return realPresenter.${getPreviewMethodName}();
         <#else>
-        return null;
+        return Promise.resolve("");
         </#if>
     }
 
@@ -217,7 +217,7 @@ public class ${className} extends AbstractWorkbenchClientEditorActivity {
         <#if validateMethodName??>
         return realPresenter.${validateMethodName}();
         <#else>
-        return null;
+        return Promise.resolve(Collections.emptyList());
         </#if>
     }
 

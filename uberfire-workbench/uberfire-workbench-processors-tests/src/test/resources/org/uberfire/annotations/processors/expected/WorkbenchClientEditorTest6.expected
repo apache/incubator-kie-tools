@@ -72,12 +72,12 @@ public class WorkbenchClientEditorTest6Activity extends AbstractWorkbenchClientE
     }
     @Override
     public Promise<String> getPreview() {
-        return null;
+        return Promise.resolve("");
     }
 
     @Override
     public Promise validate() {
-        return null;
+        return Promise.resolve(Collections.emptyList());
     }
 
     @Override
