@@ -200,7 +200,7 @@ test('<SelectField> - renders a select which correctly reacts on change (empty)'
   });
 
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(onChange).toHaveBeenLastCalledWith('x', '');
+  expect(onChange).not.toHaveBeenCalled()
 });
 
 test('<SelectField> - renders a select which correctly reacts on change (same value)', () => {

@@ -125,10 +125,15 @@ function RenderSelect(props: SelectInputProps) {
       event: React.MouseEvent | React.ChangeEvent,
       selection: string | SelectOptionObject
     ) => {
-      const items = parseInput(selection, props.fieldType);
-      props.onChange(items);
-      setSelected(items);
-      setExpanded(false);
+      if (selection === props.placeholder) {
+        setSelected([]);
+        setExpanded(false);
+      } else {
+        const items = parseInput(selection, props.fieldType);
+        props.onChange(items);
+        setSelected(items);
+        setExpanded(false);
+      }
     },
     [parseInput, props]
   );
@@ -142,6 +147,15 @@ function RenderSelect(props: SelectInputProps) {
       )),
     [props]
   );
+
+  if (props.placeholder)
+    selectedOptions.unshift(
+      <SelectOption
+        key={props.allowedValues!.length}
+        isPlaceholder
+        value={props.placeholder}
+      />
+    );
 
   return wrapField(
     props,
