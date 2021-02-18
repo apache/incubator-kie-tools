@@ -39,7 +39,6 @@
   &:not(.editable-item--editing):hover {
     box-shadow: var(--pf-global--BoxShadow--lg);
     border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--BorderColor--light-100);
-    background-color: var(--pf-global--palette--cyan-50);
   }
 
   // from 5 items reduce spacing
