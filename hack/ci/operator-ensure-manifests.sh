@@ -26,20 +26,23 @@ latest_released_version=$(getLatestOlmReleaseVersion)
 
 git clone https://github.com/operator-framework/community-operators.git "${tempfolder}"
 mkdir  "${tempfolder}/community-operators/kogito-operator/${version}/"
-cp -r bundle/manifests/*.yaml "${tempfolder}/community-operators/kogito-operator/${version}/"
+## copy the latest manifests
+cp -r bundle/manifests/ "${tempfolder}/community-operators/kogito-operator/${version}/"
+cp -r bundle/metadata/ "${tempfolder}/community-operators/kogito-operator/${version}/"
+cp -r bundle/tests/ "${tempfolder}/community-operators/kogito-operator/${version}/"
+cp bundle.Dockerfile "${tempfolder}/community-operators/kogito-operator/${version}/Dockerfile"
 
-
+#Edit dockerfile with correct relative path
+sed -i "s|bundle/manifests|manifests|g" "${tempfolder}/community-operators/kogito-operator/${version}/Dockerfile"
+sed -i "s|bundle/metadata|metadata|g" "${tempfolder}/community-operators/kogito-operator/${version}/Dockerfile"
+sed -i "s|bundle/tests|tests|g" "${tempfolder}/community-operators/kogito-operator/${version}/Dockerfile"
 #replace image in target CSV
-sed -i  "s|${OPERATOR_IMAGE}|${KIND_IMAGE}|g"  "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml"
+sed -i  "s|${OPERATOR_IMAGE}|${KIND_IMAGE}|g"  "${tempfolder}/community-operators/kogito-operator/${version}/manifests/kogito-operator.clusterserviceversion.yaml"
 #
 ##ensure correct replace field is there
-sed -i "s|replace.*|replaces: kogito-operator.v${latest_released_version}|g" "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml"
+sed -i "s|replace.*|replaces: kogito-operator.v${latest_released_version}|g" "${tempfolder}/community-operators/kogito-operator/${version}/manifests/kogito-operator.clusterserviceversion.yaml"
 #
-sed -i "s|${latest_released_version}|${version}|g" "${tempfolder}/community-operators/kogito-operator/kogito-operator.package.yaml"
-#
-echo "---> verify CSV updates"
-cat "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml" | grep "${KIND_IMAGE}"
-cat "${tempfolder}/community-operators/kogito-operator/${version}/kogito-operator.clusterserviceversion.yaml" | grep replaces
 
-echo "---> Verify package.yaml updates"
-cat "${tempfolder}/community-operators/kogito-operator/kogito-operator.package.yaml"
+echo "---> verify CSV updates"
+cat "${tempfolder}/community-operators/kogito-operator/${version}/manifests/kogito-operator.clusterserviceversion.yaml" | grep "${KIND_IMAGE}"
+cat "${tempfolder}/community-operators/kogito-operator/${version}/manifests/kogito-operator.clusterserviceversion.yaml" | grep replaces
