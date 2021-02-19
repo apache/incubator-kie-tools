@@ -220,12 +220,17 @@
   font-size: var(--pf-global--FontSize--md);
 }
 
+.kogito--editor__dmn-runner-drawer-panel {
+  flex-grow: 0;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
 @media screen and (min-width: 1200px) {
   .kogito--editor__dmn-runner-drawer-panel {
     max-height: calc(100vh - 76px);
     flex-basis: 700px;
-    flex-grow: 0;
-    flex-shrink: 0;
   }
 }
 
@@ -233,8 +238,6 @@
   .kogito--editor__dmn-runner-drawer-panel {
     max-height: calc(100vh - 108px);
     flex-basis: 350px;
-    flex-grow: 0;
-    flex-shrink: 0;
   }
 }
 
@@ -265,12 +268,14 @@
   .kogito--editor__dmn-runner-drawer-div-page-div {
     width: 100%;
     flex-grow: 1;
+    height: 50%;
   }
 }
 
 .kogito--editor__dmn-runner-drawer-page {
   flex-grow: 0;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 @media screen and (min-width: 1200px) {
@@ -284,6 +289,40 @@
   .kogito--editor__dmn-runner-drawer-page {
     max-height: unset;
     flex-basis: 100%;
+  }
+}
+
+.kogito--editor__dmn-runner-drawer-page-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9999;
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--editor__dmn-runner-drawer-page-section {
+    width: 50%;
+    position: fixed;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--editor__dmn-runner-drawer-page-section {
+    width: 100%;
+    position: static;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--editor__dmn-runner-drawer-page-section-div {
+    margin-top: 60px;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--editor__dmn-runner-drawer-page-section-div {
+    overflow-y: auto;
   }
 }
 

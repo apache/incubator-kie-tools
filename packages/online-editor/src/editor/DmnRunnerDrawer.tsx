@@ -35,14 +35,21 @@ import {
   EmptyState,
   EmptyStateIcon,
   Button,
-  ButtonVariant
+  ButtonVariant,
+  EmptyStateBody,
+  TextVariants
 } from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
+import { CubesIcon, InfoCircleIcon } from "@patternfly/react-icons";
 
 enum DmnRunnerStatusResponse {
   SUCCESS,
   WARNING,
   NONE
+}
+
+enum ButtonPosition {
+  INPUT,
+  OUTPUT
 }
 
 interface Props {
@@ -86,22 +93,22 @@ export function DmnRunnerDrawer(props: Props) {
     [props.editorContent]
   );
 
-  const [buttonPosition, setButtonPosition] = useState<"input" | "output">(() => {
+  const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() => {
     const width = window.innerWidth;
 
     if (width <= PF_BREAKPOINT_XL) {
-      return "input";
+      return ButtonPosition.INPUT;
     }
-    return "output";
+    return ButtonPosition.OUTPUT;
   });
 
   const handleResize = useCallback(() => {
     const width = window.innerWidth;
 
     if (width <= PF_BREAKPOINT_XL) {
-      setButtonPosition("input");
+      setButtonPosition(ButtonPosition.INPUT);
     } else {
-      setButtonPosition("output");
+      setButtonPosition(ButtonPosition.OUTPUT);
     }
   }, []);
 
@@ -114,78 +121,84 @@ export function DmnRunnerDrawer(props: Props) {
       <div className={"kogito--editor__dmn-runner-drawer-div-page"}>
         <div className={"kogito--editor__dmn-runner-drawer-div-page-div"}>
           <Page className={"kogito--editor__dmn-runner-drawer-page"}>
-            <PageSection
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingBottom: 0
-              }}
-              // height={buttonPosition !== "input" ? "60px" : undefined}
-            >
+            <PageSection className={"kogito--editor__dmn-runner-drawer-page-section"} style={{ height: "60px" }}>
               <TextContent>
                 <Text component={"h2"}>Inputs</Text>
               </TextContent>
-              {buttonPosition === "input" && (
+              {buttonPosition === ButtonPosition.INPUT && (
                 <Button variant={ButtonVariant.secondary} onClick={e => props.onStopRunDmn(e)}>
                   Stop Running
                 </Button>
               )}
             </PageSection>
-            <PageSection>
-              {props.jsonSchemaBridge ? (
-                <AutoForm
-                  style={{ maxWidth: "350px" }}
-                  id={"form"}
-                  ref={autoFormRef}
-                  showInlineError={true}
-                  autosave={true}
-                  autosaveDelay={500}
-                  schema={props.jsonSchemaBridge}
-                  onSubmit={onSubmit}
-                  errorsField={() => <></>}
-                  submitField={() => <></>}
-                  placeholder={true}
-                />
-              ) : (
-                <div>
-                  <EmptyState>
-                    <EmptyStateIcon icon={CubesIcon} />
-                    <TextContent>
-                      <Text component={"h2"}>Create a Model!</Text>
-                    </TextContent>
-                  </EmptyState>
-                </div>
-              )}
-            </PageSection>
+
+            <div className={"kogito--editor__dmn-runner-drawer-page-section-div"}>
+              <PageSection style={{ paddingTop: 0 }}>
+                {props.jsonSchemaBridge ? (
+                  <AutoForm
+                    style={{ maxWidth: "350px" }}
+                    id={"form"}
+                    ref={autoFormRef}
+                    showInlineError={true}
+                    autosave={true}
+                    autosaveDelay={500}
+                    schema={props.jsonSchemaBridge}
+                    onSubmit={onSubmit}
+                    errorsField={() => <></>}
+                    submitField={() => <></>}
+                    placeholder={true}
+                  />
+                ) : (
+                  <div>
+                    <EmptyState>
+                      <EmptyStateIcon icon={CubesIcon} />
+                      <TextContent>
+                        <Text component={"h2"}>No Form</Text>
+                      </TextContent>
+                      <EmptyStateBody>
+                        <TextContent>
+                          <Text component={TextVariants.p}>Associated DMN Model doesn't have a Form to render</Text>
+                        </TextContent>
+                      </EmptyStateBody>
+                    </EmptyState>
+                  </div>
+                )}
+              </PageSection>
+            </div>
           </Page>
         </div>
         <div className={"kogito--editor__dmn-runner-drawer-div-page-div"}>
           <Page className={"kogito--editor__dmn-runner-drawer-page"}>
-            <PageSection
-              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 0 }}
-            >
+            <PageSection style={{ height: "60px" }} className={"kogito--editor__dmn-runner-drawer-page-section"}>
               <TextContent>
                 <Text component={"h2"}>Outputs</Text>
               </TextContent>
-              {buttonPosition === "output" && (
+              {buttonPosition === ButtonPosition.OUTPUT && (
                 <Button variant={ButtonVariant.secondary} onClick={e => props.onStopRunDmn(e)}>
                   Stop Running
                 </Button>
               )}
             </PageSection>
-            <PageSection style={{ width: "350px", maxWidth: "350px", paddingLeft: 0 }}>
-              {dmnRunnerResponse ? (
-                <JitResponse responseObject={dmnRunnerResponse!} depth={0} />
-              ) : (
-                <EmptyState>
-                  <EmptyStateIcon icon={CubesIcon} />
-                  <TextContent>
-                    <Text component={"h2"}>Without response yet</Text>
-                  </TextContent>
-                </EmptyState>
-              )}
-            </PageSection>
+
+            <div className={"kogito--editor__dmn-runner-drawer-page-section-div"}>
+              <PageSection style={{ paddingLeft: 0, paddingTop: 0 }}>
+                {dmnRunnerResponse ? (
+                  <JitResponse responseObject={dmnRunnerResponse!} depth={0} />
+                ) : (
+                  <EmptyState>
+                    <EmptyStateIcon icon={InfoCircleIcon} />
+                    <TextContent>
+                      <Text component={"h2"}>No Response</Text>
+                    </TextContent>
+                    <EmptyStateBody>
+                      <TextContent>
+                        <Text>Response appears after the Form is filled and valid</Text>
+                      </TextContent>
+                    </EmptyStateBody>
+                  </EmptyState>
+                )}
+              </PageSection>
+            </div>
           </Page>
         </div>
       </div>
