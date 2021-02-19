@@ -110,9 +110,17 @@ export function EditorToolbar(props: Props) {
       </React.Fragment>,
       <DropdownItem key={`dropdown-${dropdownId}-fullscreen`} component={"button"} onClick={props.onFullScreen}>
         {i18n.editorToolbar.enterFullScreenView}
+      </DropdownItem>,
+      <DropdownItem
+        key={`dropdown-${dropdownId}-run`}
+        isDisabled={props.isDmnRunning}
+        component={"button"}
+        onClick={props.onRunDmn}
+      >
+        {runLabel}
       </DropdownItem>
     ],
-    [i18n, context, props.onClose, props.onFullScreen]
+    [i18n, context, props, runLabel]
   );
 
   const shareItems = useCallback(
