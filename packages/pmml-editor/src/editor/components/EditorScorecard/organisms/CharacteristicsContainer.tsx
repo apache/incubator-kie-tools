@@ -68,13 +68,13 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     return [];
   });
 
-  useEffect(() => onFilter(), [modelIndex, characteristics]);
+  useEffect(() => applyFilter(), [modelIndex, characteristics]);
 
-  const doSetFilter = (_filter: string) => {
+  const setLowercaseTrimmedFilter = (_filter: string) => {
     setFilter(_filter.toLowerCase().trim());
   };
 
-  const onFilter = () => {
+  const applyFilter = () => {
     const _filteredCharacteristics = characteristics
       ?.map<IndexedCharacteristic>(
         (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
@@ -141,7 +141,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
 
       //Clear filter to ensure new Characteristic is visible
-      doSetFilter("");
+      setLowercaseTrimmedFilter("");
     }
   }, [characteristics]);
 
@@ -224,8 +224,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
           <StackItem>
             <CharacteristicsToolbar
               filter={filter}
-              setFilter={doSetFilter}
-              onFilter={() => onFilter()}
+              setFilter={setLowercaseTrimmedFilter}
+              onFilter={applyFilter}
               onAddCharacteristic={onAddCharacteristic}
             />
             <EmptyStateNoMatchingCharacteristics />
@@ -254,8 +254,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                   <StackItem>
                     <CharacteristicsToolbar
                       filter={filter}
-                      setFilter={doSetFilter}
-                      onFilter={() => onFilter()}
+                      setFilter={setLowercaseTrimmedFilter}
+                      onFilter={applyFilter}
                       onAddCharacteristic={onAddCharacteristic}
                     />
                   </StackItem>
