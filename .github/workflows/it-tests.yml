@@ -124,7 +124,7 @@ jobs:
           name: kie-editors-standalone-it-tests-videos-${{ matrix.os }}
           path: packages/kie-editors-standalone/it-tests/cypress/videos
 
-  kie-editors-vscode-tests-it:
+  vscode-extension-tests-it:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
