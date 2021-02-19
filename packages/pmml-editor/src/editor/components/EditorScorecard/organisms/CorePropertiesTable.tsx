@@ -155,7 +155,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     >
       <PageSection
         variant={PageSectionVariants.light}
-        className={`editable-item${isEditModeEnabled ? "--editing" : ""}`}
+        className={isEditModeEnabled ? "editable-item" : "editable-item--editing"}
       >
         <Stack hasGutter={true}>
           <StackItem>
