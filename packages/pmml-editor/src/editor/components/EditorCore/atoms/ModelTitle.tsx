@@ -14,108 +14,137 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { Form, FormGroup, TextContent, TextInput, Title, Tooltip } from "@patternfly/react-core";
+import { useEffect, useMemo, useState } from "react";
+import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Title } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
-import { ValidatedType } from "../../../types";
 import { Operation, useOperation } from "../../EditorScorecard";
+import { useValidationRegistry } from "../../../validation";
+import { ValidationIndicator } from "./ValidationIndicator";
+import { Builder } from "../../../paths";
 
-interface HeaderTitleProps {
+interface ModelTitleProps {
+  modelIndex?: number;
   modelName: string;
   commitModelName?: (_modelName: string) => void;
 }
 
-export const ModelTitle = (props: HeaderTitleProps) => {
-  const { commitModelName } = props;
+export const ModelTitle = (props: ModelTitleProps) => {
+  const { modelIndex, commitModelName } = props;
 
-  const [modelName, setModelName] = useState<ValidatedType<string>>({ value: "", valid: true });
+  const [isEditing, setEditing] = useState(false);
+  const [modelName, setModelName] = useState("");
 
   const { activeOperation, setActiveOperation } = useOperation();
 
-  const ref = useOnclickOutside(event => onCancel(), {
+  const ref = useOnclickOutside(event => onCommitAndClose(), {
     disabled: activeOperation !== Operation.UPDATE_NAME,
     eventTypes: ["click"]
   });
 
-  useEffect(() => {
-    setModelName({ value: props.modelName, valid: true });
-  }, [props]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forModelName()
+          .build()
+      ),
+    [modelIndex, props.modelName]
+  );
 
-  const onCommit = () => {
-    if (modelName.value !== props.modelName) {
-      if (commitModelName !== undefined) {
-        commitModelName(modelName.value);
-      }
+  useEffect(() => {
+    setModelName(props.modelName);
+  }, [props.modelIndex, props.modelName]);
+
+  const onEdit = () => {
+    if (commitModelName !== undefined) {
+      setEditing(true);
+      setActiveOperation(Operation.UPDATE_NAME);
     }
+  };
+
+  const onCommitAndClose = () => {
+    onCommit();
     onCancel();
   };
 
+  const onCommit = () => {
+    if (commitModelName !== undefined) {
+      commitModelName(modelName);
+    }
+  };
+
   const onCancel = () => {
+    setEditing(false);
     setActiveOperation(Operation.NONE);
   };
 
+  const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_NAME, [
+    isEditing,
+    activeOperation
+  ]);
+
   return (
-    <Form
-      className="modelTitle"
-      onSubmit={e => {
-        e.stopPropagation();
-        e.preventDefault();
+    <div
+      ref={ref}
+      tabIndex={0}
+      onClick={onEdit}
+      onKeyDown={e => {
+        if (e.key === "Enter") {
+          onEdit();
+        }
       }}
+      className={`modelTitle ${isEditModeEnabled ? "modelTitle--editing" : ""}`}
     >
-      <FormGroup
-        fieldId="modelName"
-        helperTextInvalid="Name must be present"
-        helperTextInvalidIcon={<ExclamationCircleIcon />}
-        validated={modelName.valid ? "default" : "error"}
-      >
-        {activeOperation !== Operation.UPDATE_NAME && (
-          <Tooltip content={<div>{props.modelName}</div>}>
-            <TextContent
-              tabIndex={0}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  if (commitModelName !== undefined) {
-                    setActiveOperation(Operation.UPDATE_NAME);
-                  }
-                }
-              }}
-            >
-              <Title
-                size="3xl"
-                headingLevel="h2"
-                className="modelTitle__truncate"
-                onClick={e => {
-                  if (commitModelName !== undefined) {
-                    setActiveOperation(Operation.UPDATE_NAME);
-                  }
-                }}
-              >
-                {modelName.value}
-              </Title>
-            </TextContent>
-          </Tooltip>
-        )}
-        {activeOperation === Operation.UPDATE_NAME && (
-          <TextInput
-            ref={ref}
-            type="text"
-            id="modelName"
-            name="modelName"
-            aria-describedby="modelName"
-            autoFocus={true}
-            value={modelName.value}
-            validated={modelName.valid ? "default" : "error"}
-            onChange={e => setModelName({ value: e, valid: e.length > 0 })}
-            onBlur={e => {
-              if (modelName.valid) {
-                onCommit();
-              }
+      <Stack hasGutter={true} className={"modelTitle--full-width"}>
+        <StackItem>
+          <Form
+            onSubmit={e => {
+              e.stopPropagation();
+              e.preventDefault();
             }}
-          />
-        )}
-      </FormGroup>
-    </Form>
+          >
+            <Split hasGutter={true} className={"modelTitle--hide-overflow"}>
+              {validations.length !== 0 && (
+                <SplitItem className="modelTitle__icon">
+                  <ValidationIndicator validations={validations} />
+                </SplitItem>
+              )}
+              <SplitItem isFilled={true} className={"modelTitle--hide-overflow"}>
+                <FormGroup
+                  fieldId="modelName"
+                  helperTextInvalidIcon={<ExclamationCircleIcon />}
+                  helperText={validations[0] ? validations[0].message : ""}
+                  validated={validations.length === 0 ? "default" : "warning"}
+                >
+                  {!isEditModeEnabled && validations.length === 0 && (
+                    <Title size="lg" headingLevel="h1" className="modelTitle__truncate">
+                      {modelName}
+                    </Title>
+                  )}
+                  {isEditModeEnabled && (
+                    <TextInput
+                      type="text"
+                      id="modelName"
+                      name="modelName"
+                      aria-describedby="modelName"
+                      autoFocus={true}
+                      value={modelName}
+                      validated={validations.length === 0 ? "default" : "warning"}
+                      placeholder={"<Not set>"}
+                      onChange={e => setModelName(e)}
+                      onBlur={onCommitAndClose}
+                    />
+                  )}
+                </FormGroup>
+              </SplitItem>
+            </Split>
+          </Form>
+        </StackItem>
+      </Stack>
+    </div>
   );
 };

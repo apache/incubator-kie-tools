@@ -15,11 +15,12 @@
  */
 import { ModelTitle } from "../atoms";
 import * as React from "react";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem, Title } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../../Outputs/organisms";
 import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
+import "./EditorHeader.scss";
 
 interface EditorHeaderViewerProps {
   modelName: string;
@@ -57,12 +58,9 @@ export const EditorHeader = (props: EditorHeaderProps) => {
     } = props;
 
     return (
-      <Split hasGutter={true}>
-        <SplitItem>
-          <ModelTitle modelName={modelName} commitModelName={commitModelName} />
-        </SplitItem>
-        <SplitItem isFilled={true}>
-          <div>&nbsp;</div>
+      <Split hasGutter={true} className={"editorHeader"}>
+        <SplitItem isFilled={true} className={"editorHeader--hide-overflow"}>
+          <ModelTitle modelIndex={modelIndex} modelName={modelName} commitModelName={commitModelName} />
         </SplitItem>
         <SplitItem>
           <DataDictionaryHandler />
@@ -84,12 +82,11 @@ export const EditorHeader = (props: EditorHeaderProps) => {
     );
   } else {
     return (
-      <Split hasGutter={true}>
-        <SplitItem>
-          <ModelTitle modelName={modelName} />
-        </SplitItem>
-        <SplitItem isFilled={true}>
-          <div>&nbsp;</div>
+      <Split hasGutter={true} className={"editorHeader"}>
+        <SplitItem isFilled={true} className={"editorHeader--hide-overflow"}>
+          <Title size="lg" headingLevel="h1" className="modelTitle__truncate">
+            {modelName}
+          </Title>
         </SplitItem>
       </Split>
     );

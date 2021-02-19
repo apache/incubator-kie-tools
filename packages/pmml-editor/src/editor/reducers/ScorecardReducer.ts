@@ -39,6 +39,7 @@ import { ValidationEntry, ValidationLevel, ValidationRegistry } from "../validat
 import { Builder } from "../paths";
 import { validateCharacteristic, validateCharacteristics } from "../validation/Characteristics";
 import { validateBaselineScore } from "../validation/ModelCoreProperties";
+import { validateModelName } from "../validation/Model";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -204,6 +205,14 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             .build(),
           draft => {
             draft.modelName = action.payload.modelName;
+
+            validationRegistry.clear(
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forModelName()
+                .build()
+            );
+            validateModelName(action.payload.modelIndex, action.payload.modelName, validationRegistry);
           }
         );
         break;
@@ -215,52 +224,56 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             .forModel(action.payload.modelIndex)
             .build(),
           draft => {
-          draft.isScorable = action.payload.isScorable;
-          draft.functionName = action.payload.functionName;
-          draft.algorithmName = action.payload.algorithmName;
-          draft.baselineScore = action.payload.baselineScore;
-          draft.baselineMethod = action.payload.baselineMethod;
-          draft.initialScore = action.payload.initialScore;
-          draft.useReasonCodes = action.payload.useReasonCodes;
-          draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
-          if (!(action.payload.useReasonCodes === undefined || action.payload.useReasonCodes)) {
-            draft.Characteristics.Characteristic.forEach(characteristic => {
-              characteristic.reasonCode = undefined;
-              characteristic.Attribute.forEach(attribute => (attribute.reasonCode = undefined));
-            });
+            draft.isScorable = action.payload.isScorable;
+            draft.functionName = action.payload.functionName;
+            draft.algorithmName = action.payload.algorithmName;
+            draft.baselineScore = action.payload.baselineScore;
+            draft.baselineMethod = action.payload.baselineMethod;
+            draft.initialScore = action.payload.initialScore;
+            draft.useReasonCodes = action.payload.useReasonCodes;
+            draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
+            if (!(action.payload.useReasonCodes === undefined || action.payload.useReasonCodes)) {
+              draft.Characteristics.Characteristic.forEach(characteristic => {
+                characteristic.reasonCode = undefined;
+                characteristic.Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+              });
+            }
+            if (action.payload.baselineScore !== undefined) {
+              draft.Characteristics.Characteristic.forEach(characteristic => {
+                characteristic.baselineScore = undefined;
+              });
+            }
+            validationRegistry.clear(
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forBaselineScore()
+                .build()
+            );
+            validateBaselineScore(
+              action.payload.modelIndex,
+              action.payload.useReasonCodes,
+              action.payload.baselineScore,
+              state.Characteristics.Characteristic,
+              validationRegistry
+            );
+            validationRegistry.clear(
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forCharacteristics()
+                .build()
+            );
+            validateCharacteristics(
+              action.payload.modelIndex,
+              {
+                baselineScore: action.payload.baselineScore,
+                useReasonCodes: action.payload.useReasonCodes
+              },
+              state.Characteristics.Characteristic,
+              state.MiningSchema.MiningField,
+              validationRegistry
+            );
           }
-          if (action.payload.baselineScore !== undefined) {
-            draft.Characteristics.Characteristic.forEach(characteristic => {
-              characteristic.baselineScore = undefined;
-            });
-          }
-          validationRegistry.clear(
-            Builder()
-              .forModel(action.payload.modelIndex)
-              .forBaselineScore()
-              .build()
-          );
-          validateBaselineScore(
-            action.payload.modelIndex,
-            action.payload.useReasonCodes,
-            action.payload.baselineScore,
-            state.Characteristics.Characteristic,
-            validationRegistry
-          );
-          validationRegistry.clear(
-            Builder()
-              .forModel(action.payload.modelIndex)
-              .forCharacteristics()
-              .build()
-          );
-          validateCharacteristics(
-            action.payload.modelIndex,
-            { baselineScore: action.payload.baselineScore, useReasonCodes: action.payload.useReasonCodes },
-            state.Characteristics.Characteristic,
-            state.MiningSchema.MiningField,
-            validationRegistry
-          );
-        });
+        );
         break;
 
       case Actions.DeleteMiningSchemaField:
@@ -579,6 +592,14 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
+          validationRegistry.clear(
+            Builder()
+              .forModel(action.payload.modelIndex)
+              .forModelName()
+              .build()
+          );
+          validateModelName(action.payload.modelIndex, state.modelName, validationRegistry);
+
           const modelIndex = action.payload.modelIndex;
           validationRegistry.clear(
             Builder()
