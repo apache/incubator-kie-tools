@@ -106,45 +106,47 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
       }}
       className="characteristics-container__overview__form"
     >
-      {characteristics.map(ic => (
-        <article
-          key={ic.index}
-          className={`editable-item output-item-n${selectedCharacteristicIndex} ${
-            selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC
-              ? "editable-item--editing"
-              : ""
-          }`}
-        >
-          {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
-            <div ref={addCharacteristicRowRef}>
-              <CharacteristicsTableEditRow
+      {characteristics.map(ic => {
+        const isRowInEditMode =
+          selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC;
+        return (
+          <article
+            key={ic.index}
+            className={`editable-item output-item-n${selectedCharacteristicIndex} ${
+              isRowInEditMode ? "editable-item--editing" : ""
+            }`}
+          >
+            {isRowInEditMode && (
+              <div ref={addCharacteristicRowRef}>
+                <CharacteristicsTableEditRow
+                  modelIndex={modelIndex}
+                  areReasonCodesUsed={areReasonCodesUsed}
+                  isBaselineScoreRequired={isBaselineScoreRequired}
+                  characteristic={ic}
+                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                  viewAttribute={viewAttribute}
+                  onAddAttribute={onAddAttribute}
+                  onCommitAndClose={onCommitAndClose}
+                  onCommit={onCommit}
+                  onCancel={onCancel}
+                />
+              </div>
+            )}
+            {!isRowInEditMode && (
+              <CharacteristicsTableRow
                 modelIndex={modelIndex}
+                characteristicIndex={ic.index}
                 areReasonCodesUsed={areReasonCodesUsed}
                 isBaselineScoreRequired={isBaselineScoreRequired}
                 characteristic={ic}
-                validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
-                viewAttribute={viewAttribute}
-                onAddAttribute={onAddAttribute}
-                onCommitAndClose={onCommitAndClose}
-                onCommit={onCommit}
-                onCancel={onCancel}
+                dataFields={dataFields}
+                onEdit={() => onEdit(ic.index)}
+                onDelete={() => onDelete(ic.index)}
               />
-            </div>
-          )}
-          {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
-            <CharacteristicsTableRow
-              modelIndex={modelIndex}
-              characteristicIndex={ic.index}
-              areReasonCodesUsed={areReasonCodesUsed}
-              isBaselineScoreRequired={isBaselineScoreRequired}
-              characteristic={ic}
-              dataFields={dataFields}
-              onEdit={() => onEdit(ic.index)}
-              onDelete={() => onDelete(ic.index)}
-            />
-          )}
-        </article>
-      ))}
+            )}
+          </article>
+        );
+      })}
     </Form>
   );
 };
