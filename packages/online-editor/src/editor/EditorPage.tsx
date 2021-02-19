@@ -259,7 +259,7 @@ export function EditorPage(props: Props) {
   }, [context.file.fileName]);
 
   // TODO: extract to custom hook
-  const [runDmn, setRunDmn] = useState(true);
+  const [runDmn, setRunDmn] = useState(false);
   const [dmnRunnerSchema, setDmnRunnerSchema] = useState<JSONSchemaBridge>();
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
 
@@ -387,7 +387,7 @@ export function EditorPage(props: Props) {
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody>
+            <DrawerContentBody style={{ position: "relative" }}>
               {!fullscreen && alert === Alerts.COPY && (
                 <div className={"kogito--alert-container"}>
                   <Alert

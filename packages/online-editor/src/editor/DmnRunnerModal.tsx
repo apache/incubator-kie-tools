@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import {
   Alert,
   Form,
@@ -28,9 +28,10 @@ import {
   Text,
   Wizard,
   WizardFooter,
-  WizardContextConsumer
+  WizardContext,
+  WizardContextConsumer,
+  AlertVariant
 } from "@patternfly/react-core";
-import { useOnlineI18n } from "../common/i18n";
 import { OperatingSystem } from "../common/utils";
 import { SelectOs, SelectOsRef } from "../common/SelectOs";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
@@ -46,10 +47,7 @@ interface Props {
 const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
 
 export function DmnRunnerModal(props: Props) {
-  const { i18n } = useOnlineI18n();
   const selectRef = useRef<SelectOsRef>(null);
-  const [installDmnRunnerSection, setInstallDmnRunnerSection] = useState(!props.stopped);
-  const [startDmnRunnerSection, setStartDmnRunnerSection] = useState(true);
 
   const downloadDmnRunner = useMemo(() => {
     switch (selectRef.current?.getOperationalSystem()) {
@@ -70,33 +68,47 @@ export function DmnRunnerModal(props: Props) {
         component: (
           <TextContent>
             <Text component={TextVariants.p}>
-              You can download the zip containing the server{" "}
+              Download the DMN Runner{" "}
               <Text component={TextVariants.a} href={downloadDmnRunner}>
                 here
               </Text>
             </Text>
+            <Text component={TextVariants.p}>Open its folder and unzip it.</Text>
           </TextContent>
         )
       },
       {
         name: "Start",
         component: (
-          <TextContent>
-            <Text component={TextVariants.p}>
-              You can download the zip containing the server{" "}
-              <Text component={TextVariants.p} className={"kogito-code"}>
-                here
+          <>
+            {props.stopped && (
+              <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
+                It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
+                it again.
+              </Alert>
+            )}
+            <br />
+            <TextContent>
+              <Text component={TextVariants.p}>
+                Open a terminal on the DMN Runner folder and execute the folliwing command:
+                <Text component={TextVariants.p} className={"kogito-code"}>
+                  java -jar dmn-runner.jar
+                </Text>
               </Text>
-            </Text>
-          </TextContent>
+            </TextContent>
+          </>
         )
       },
       {
         name: "Use",
-        component: <></>
+        component: (
+          <TextContent>
+            <Text component={TextVariants.p}>Fill the form and see what happens :-)</Text>
+          </TextContent>
+        )
       }
     ],
-    []
+    [props.stopped]
   );
 
   return (
@@ -165,66 +177,30 @@ export function DmnRunnerModal(props: Props) {
       <Wizard
         steps={steps}
         height={400}
-        startAtStep={props.isDmnRunning ? steps.length : 1}
+        startAtStep={props.isDmnRunning ? 2 : 1}
         footer={
           <WizardFooter>
-            <WizardContextConsumer>
-              {({ activeStep, goToStepByName, goToStepById, onNext, onBack, onClose }) => {
-                return (
-                  <>
-                    {/*<Button*/}
-                    {/*  variant="primary"*/}
-                    {/*  type="submit"*/}
-                    {/*  onClick={onNext}*/}
-                    {/*  className={activeStep.name === steps[steps.length - 1].name ? "pf-m-disabled" : ""}*/}
-                    {/*>*/}
-                    {/*  Next*/}
-                    {/*</Button>*/}
-                    {/*<Button*/}
-                    {/*  variant="secondary"*/}
-                    {/*  onClick={onBack}*/}
-                    {/*  className={activeStep.name === steps[0].name ? "pf-m-disabled" : ""}*/}
-                    {/*>*/}
-                    {/*  Back*/}
-                    {/*</Button>*/}
-                  </>
-                );
-              }}
-            </WizardContextConsumer>
+            <DmnRunnerWizardFooter shouldGoToStep={props.isDmnRunning} stepName={steps[steps.length - 1].name} />
           </WizardFooter>
         }
       />
-
-      {/*<Card isFlat={true}>*/}
-      {/*  <CardBody>*/}
-      {/*    <ExpandableSection*/}
-      {/*      toggleText={"Install DMN Runner"}*/}
-      {/*      isExpanded={installDmnRunnerSection}*/}
-      {/*      onToggle={setInstallDmnRunnerSection}*/}
-      {/*    >*/}
-      {/*      <TextContent>*/}
-      {/*        <Text component={TextVariants.p}>*/}
-      {/*          You can download the zip containing the server{" "}*/}
-      {/*          <Text component={TextVariants.a} href={downloadDmnRunner}>*/}
-      {/*            here*/}
-      {/*          </Text>*/}
-      {/*        </Text>*/}
-      {/*      </TextContent>*/}
-      {/*    </ExpandableSection>*/}
-      {/*    <br />*/}
-      {/*    <ExpandableSection*/}
-      {/*      toggleText={"Starting DMN Runner"}*/}
-      {/*      isExpanded={startDmnRunnerSection}*/}
-      {/*      onToggle={setStartDmnRunnerSection}*/}
-      {/*    >*/}
-      {/*      <p style={{ display: "inline" }}>To start the server you need execute the</p>*/}
-      {/*      <p style={{ display: "inline" }} className={"kogito-code"}>*/}
-      {/*        ./install.sh*/}
-      {/*      </p>*/}
-      {/*      <p style={{ display: "inline" }}> script.</p>*/}
-      {/*    </ExpandableSection>*/}
-      {/*  </CardBody>*/}
-      {/*</Card>*/}
     </Modal>
   );
+}
+
+interface WizardImperativeControlProps {
+  shouldGoToStep: boolean;
+  stepName: string;
+}
+
+function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
+  const wizardContext = useContext(WizardContext);
+
+  useEffect(() => {
+    if (props.shouldGoToStep) {
+      wizardContext.goToStepByName(props.stepName);
+    }
+  }, [props]);
+
+  return <WizardContextConsumer>{() => <></>}</WizardContextConsumer>;
 }
