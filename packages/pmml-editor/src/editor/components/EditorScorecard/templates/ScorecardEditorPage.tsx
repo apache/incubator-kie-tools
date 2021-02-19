@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
-import {
-  Characteristics,
-  MiningSchema,
-  Model,
-  Output,
-  OutputField,
-  PMML,
-  Scorecard
-} from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicsContainer, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
+import { MiningSchema, Model, Output, OutputField, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { CharacteristicsContainer, CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useSelector } from "react-redux";
@@ -45,8 +37,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
-  const [filteredCharacteristics, setFilteredCharacteristics] = useState<IndexedCharacteristic[]>([]);
-
   const model: Scorecard | undefined = useSelector<PMML, Scorecard | undefined>((state: PMML) => {
     const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
     if (_model && _model instanceof Scorecard) {
@@ -55,11 +45,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return undefined;
   });
 
-  const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
   const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
-
-  useEffect(() => onFilter(""), [modelIndex]);
 
   const validateOutputName = useCallback(
     (index: number | undefined, name: string): boolean => {
@@ -72,17 +59,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     },
     [output]
   );
-
-  const onFilter = (filter: string) => {
-    const _lowerCaseFilter = filter.toLowerCase();
-    const _filteredCharacteristics = characteristics?.Characteristic.map<IndexedCharacteristic>(
-      (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
-    ).filter(ic => {
-      const _characteristicName = ic.characteristic.name;
-      return _characteristicName?.toLowerCase().includes(_lowerCaseFilter);
-    });
-    setFilteredCharacteristics(_filteredCharacteristics ?? []);
-  };
 
   return (
     <div data-testid="editor-page" className={"editor"}>
@@ -175,44 +151,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                 modelIndex={modelIndex}
                 areReasonCodesUsed={model.useReasonCodes ?? true}
                 isBaselineScoreRequired={(model.useReasonCodes ?? true) && model.baselineScore === undefined}
-                characteristics={characteristics?.Characteristic ?? []}
-                filteredCharacteristics={filteredCharacteristics}
-                onFilter={onFilter}
-                deleteCharacteristic={index => {
-                  if (window.confirm(`Delete Characteristic "${characteristics?.Characteristic[index].name}"?`)) {
-                    dispatch({
-                      type: Actions.Scorecard_DeleteCharacteristic,
-                      payload: {
-                        modelIndex: modelIndex,
-                        characteristicIndex: index
-                      }
-                    });
-                  }
-                }}
-                commit={(_index, _characteristic) => {
-                  if (_index === undefined) {
-                    dispatch({
-                      type: Actions.Scorecard_AddCharacteristic,
-                      payload: {
-                        modelIndex: modelIndex,
-                        name: _characteristic.name,
-                        reasonCode: _characteristic.reasonCode,
-                        baselineScore: _characteristic.baselineScore
-                      }
-                    });
-                  } else {
-                    dispatch({
-                      type: Actions.Scorecard_UpdateCharacteristic,
-                      payload: {
-                        modelIndex: modelIndex,
-                        characteristicIndex: _index,
-                        name: _characteristic.name,
-                        reasonCode: _characteristic.reasonCode,
-                        baselineScore: _characteristic.baselineScore
-                      }
-                    });
-                  }
-                }}
               />
             </PageSection>
           </PageSection>
