@@ -6,12 +6,11 @@
     background-color: var(--pf-global--BackgroundColor--200);
 
     &__disabled {
-      background-color: var(--pf-global--BorderColor--100)
+      background-color: var(--pf-global--BorderColor--100);
     }
   }
 
   &__actions {
-    margin-top: var(--pf-global--spacer--lg);
+    margin-top: var(--pf-global--spacer--md);
   }
-
 }

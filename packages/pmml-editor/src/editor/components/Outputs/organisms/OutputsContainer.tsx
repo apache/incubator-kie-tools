@@ -247,7 +247,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     icon={<ArrowAltCircleLeftIcon />}
                     iconPosition="left"
                   >
-                    Done
+                    Back
                   </Button>
                 </StackItem>
               </Stack>
