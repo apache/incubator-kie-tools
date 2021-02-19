@@ -73,12 +73,16 @@ export class KogitoEditableDocument implements CustomDocument {
     try {
       const editor = this.editorStore.get(this.uri);
       if (!editor) {
-        console.error(`Cannot save because there's no open Editor for ${this.uri.fsPath}`);
+        this.vsCodeLogger.error(`Cannot save because there's no open Editor for ${this.uri.fsPath}`);
         return;
       }
 
-      const notifications = await editor.validate();
-      this.vsCodeNotifications.setNotifications(destination.fsPath, notifications);
+      try {
+        const notifications = await editor.validate();
+        this.vsCodeNotifications.setNotifications(destination.fsPath, notifications);
+      } catch (e) {
+        this.vsCodeLogger.warn(`File was not validated: ${e}`);
+      }
 
       const content = await editor.getContent();
       if (cancellation.isCancellationRequested) {
