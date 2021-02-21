@@ -5,7 +5,9 @@ import {
   Switch,
   SwitchProps,
 } from '@patternfly/react-core';
-import { connectField, FieldProps, filterDOMProps } from 'uniforms/es5';
+import { connectField, FieldProps } from 'uniforms/es5';
+
+import wrapField from './wrapField';
 
 enum ComponentType {
   checkbox = 'checkbox',
@@ -34,18 +36,17 @@ function Bool({
   ...props
 }: BoolFieldProps) {
   const Component = appearance === ComponentType.switch ? Switch : Checkbox;
-  return (
-    <div {...filterDOMProps(props)}>
-      <Component
-        isChecked={value || false}
-        isDisabled={disabled}
-        id={id}
-        name={name}
-        onChange={() => disabled || onChange(!value)}
-        ref={inputRef}
-        label={label}
-      />
-    </div>
+  return wrapField(
+    { id, ...props },
+    <Component
+      isChecked={value || false}
+      isDisabled={disabled}
+      id={id}
+      name={name}
+      onChange={() => disabled || onChange(!value)}
+      ref={inputRef}
+      label={label}
+    />
   );
 }
 

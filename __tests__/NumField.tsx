@@ -246,11 +246,22 @@ test('<NumField> - renders an input which correctly reacts on change (zero)', ()
 });
 
 test('<NumField> - renders a label', () => {
-  const element = <NumField name="x" label="y" />;
+  const element = <NumField required={false} name="x" label="y" />;
   const wrapper = mount(element, createContext({ x: { type: Number } }));
 
   expect(wrapper.find('label')).toHaveLength(1);
   expect(wrapper.find('label').text()).toBe('y');
+  expect(wrapper.find('label').prop('htmlFor')).toBe(
+    wrapper.find('input').prop('id'),
+  );
+});
+
+test('<NumField> - renders a label', () => {
+  const element = <NumField required={true} name="x" label="y" />;
+  const wrapper = mount(element, createContext({ x: { type: Number } }));
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
   expect(wrapper.find('label').prop('htmlFor')).toBe(
     wrapper.find('input').prop('id'),
   );

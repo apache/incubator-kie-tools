@@ -27,7 +27,7 @@ const Nest = ({
   ...props
 }: NestFieldProps) => {
   return (
-    <Card {...filterDOMProps(props)} style={{ marginBottom: '1.5rem' }}>
+    <Card {...filterDOMProps(props)}>
       <CardBody className="pf-c-form">
         {label && (
           <label>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Checkbox,
   CheckboxProps,
@@ -35,7 +35,9 @@ type CheckboxesProps = {
 filterDOMProps.register('autoValue');
 
 function RenderCheckboxes(props: CheckboxesProps) {
-  const Group = props.fieldType === Array ? Checkbox : Radio;
+  const Group = useMemo(() => (props.fieldType === Array ? Checkbox : Radio), [
+    props,
+  ]);
 
   return (
     <div {...filterDOMProps(props)}>
@@ -91,57 +93,70 @@ function isSelectOptionObject(
 }
 
 function RenderSelect(props: SelectInputProps) {
-  const selectDefault = props.fieldType === Array ? [] : props.placeholder;
-
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string | string[]>(selectDefault);
+  const [selected, setSelected] = useState<string | string[]>([]);
 
-  const handleSelect = (
-    event: React.MouseEvent | React.ChangeEvent,
-    selection: string | SelectOptionObject
-  ) => {
-    const items = parseInput(selection, props.fieldType);
-    props.onChange(items);
-    setSelected(items);
-    setExpanded(false);
-  };
+  const parseInput = useCallback(
+    (
+      selection: string | SelectOptionObject,
+      fieldType: typeof Array | any
+    ): string | string[] => {
+      const parsedSelection = isSelectOptionObject(selection)
+        ? selection.toString()
+        : selection;
 
-  const parseInput = (
-    selection: string | SelectOptionObject,
-    fieldType: typeof Array | any
-  ): string | string[] => {
-    const parsedSelection = isSelectOptionObject(selection)
-      ? selection.toString()
-      : selection;
-
-    if (fieldType !== Array) {
-      return parsedSelection !== '' ? parsedSelection : '';
-    }
-
-    if (Array.isArray(selected)) {
-      if (selected.includes(parsedSelection)) {
-        return selected.filter((s) => s !== parsedSelection);
+      if (fieldType !== Array) {
+        return parsedSelection !== '' ? parsedSelection : '';
       }
-      return [parsedSelection, ...selected];
-    }
-    return [parsedSelection, selected];
-  };
 
-  const selectedOptions = props.allowedValues!.map((value) => (
-    <SelectOption key={value} value={value}>
-      {props.transform ? props.transform(value) : value}
-    </SelectOption>
-  ));
+      if (Array.isArray(selected)) {
+        if (selected.includes(parsedSelection)) {
+          return selected.filter((s) => s !== parsedSelection);
+        }
+        return [parsedSelection, ...selected];
+      }
+      return [parsedSelection, selected];
+    },
+    [selected]
+  );
+
+  const handleSelect = useCallback(
+    (
+      event: React.MouseEvent | React.ChangeEvent,
+      selection: string | SelectOptionObject
+    ) => {
+      if (selection === props.placeholder) {
+        setSelected([]);
+        setExpanded(false);
+      } else {
+        const items = parseInput(selection, props.fieldType);
+        props.onChange(items);
+        setSelected(items);
+        setExpanded(false);
+      }
+    },
+    [parseInput, props]
+  );
+
+  const selectedOptions = useMemo(
+    () =>
+      props.allowedValues!.map((value) => (
+        <SelectOption key={value} value={value}>
+          {props.transform ? props.transform(value) : value}
+        </SelectOption>
+      )),
+    [props]
+  );
 
   if (props.placeholder)
     selectedOptions.unshift(
       <SelectOption
         key={props.allowedValues!.length}
-        isDisabled
         isPlaceholder
         value={props.placeholder}
       />
     );
+
   return wrapField(
     props,
     <Select

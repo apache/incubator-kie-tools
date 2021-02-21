@@ -200,7 +200,7 @@ test('<SelectField> - renders a select which correctly reacts on change (empty)'
   });
 
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(onChange).toHaveBeenLastCalledWith('x', '');
+  expect(onChange).not.toHaveBeenCalled()
 });
 
 test('<SelectField> - renders a select which correctly reacts on change (same value)', () => {
@@ -225,7 +225,7 @@ test('<SelectField> - renders a select which correctly reacts on change (same va
 });
 
 test('<SelectField> - renders a label', () => {
-  const element = <SelectField name="x" label="y" />;
+  const element = <SelectField required={false} name="x" label="y" />;
   const wrapper = mount(
     element,
     createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
@@ -233,6 +233,20 @@ test('<SelectField> - renders a label', () => {
 
   expect(wrapper.find('label')).toHaveLength(1);
   expect(wrapper.find('label').text()).toBe('y');
+  expect(wrapper.find('label').prop('htmlFor')).toBe(
+    wrapper.find(Select).prop('id'),
+  );
+});
+
+test('<SelectField> - renders a label', () => {
+  const element = <SelectField required={true} name="x" label="y" />;
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String, allowedValues: ['a', 'b'] } }),
+  );
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
   expect(wrapper.find('label').prop('htmlFor')).toBe(
     wrapper.find(Select).prop('id'),
   );
