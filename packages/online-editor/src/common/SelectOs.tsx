@@ -25,16 +25,17 @@ interface Props {
   direction: SelectDirection;
   style?: React.CSSProperties;
   className?: string;
+  selected: OperatingSystem;
+  onSelect: React.Dispatch<OperatingSystem>;
 }
 
 export type SelectOsRef = { getOperationalSystem: () => OperatingSystem } | null;
 
 const LINUX = "Linux";
-const MACOS = "MacOS";
+const MACOS = "macOS";
 const WINDOWS = "Windows";
 
-const SelectOsForwardRef: React.RefForwardingComponent<SelectOsRef, Props> = (props: Props, forwardRef) => {
-  const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
+export function SelectOs(props: Props) {
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 
   const onSelectOsToggle = useCallback(isExpanded => {
@@ -42,7 +43,7 @@ const SelectOsForwardRef: React.RefForwardingComponent<SelectOsRef, Props> = (pr
   }, []);
 
   const onSelectOperatingSystem = useCallback((e, selection) => {
-    setOperationalSystem(selection);
+    props.onSelect(selection);
     setSelectIsExpanded(false);
   }, []);
 
@@ -56,8 +57,6 @@ const SelectOsForwardRef: React.RefForwardingComponent<SelectOsRef, Props> = (pr
     []
   );
 
-  useImperativeHandle(forwardRef, () => ({ getOperationalSystem: () => operationalSystem }));
-
   return (
     <div className={props.className ?? ""} style={{ width: "140px", ...props.style }}>
       <Select
@@ -65,7 +64,7 @@ const SelectOsForwardRef: React.RefForwardingComponent<SelectOsRef, Props> = (pr
         aria-label="Select operating system"
         onToggle={onSelectOsToggle}
         onSelect={onSelectOperatingSystem}
-        selections={operationalSystem}
+        selections={props.selected}
         isOpen={isSelectExpanded}
         aria-labelledby={"select-os"}
         isDisabled={false}
@@ -80,6 +79,4 @@ const SelectOsForwardRef: React.RefForwardingComponent<SelectOsRef, Props> = (pr
       </Select>
     </div>
   );
-};
-
-export const SelectOs = React.forwardRef(SelectOsForwardRef);
+}

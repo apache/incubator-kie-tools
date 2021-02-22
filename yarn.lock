@@ -14897,7 +14897,7 @@ uniforms-bridge-json-schema@^3.0.0:
     tslib "^1.10.0"
     uniforms "^3.0.0"
 
-"uniforms-patternfly@file:/home/lmotta/Documents/redhat/uniforms-patternfly":
+"uniforms-patternfly@file:../uniforms-patternfly":
   version "4.1.2"
   dependencies:
     "@patternfly/react-core" "4.84.4"

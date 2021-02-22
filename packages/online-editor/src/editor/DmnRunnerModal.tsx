@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Form,
@@ -30,10 +30,12 @@ import {
   WizardFooter,
   WizardContext,
   WizardContextConsumer,
-  AlertVariant
+  AlertVariant,
+  List,
+  ListItem
 } from "@patternfly/react-core";
-import { OperatingSystem } from "../common/utils";
-import { SelectOs, SelectOsRef } from "../common/SelectOs";
+import { getOperatingSystem, OperatingSystem } from "../common/utils";
+import { SelectOs } from "../common/SelectOs";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 
 interface Props {
@@ -44,22 +46,14 @@ interface Props {
   setRunDmn: React.Dispatch<boolean>;
 }
 
-// const filePath = `samples/${fileName}.${fileExtension}`;
-// props.onFileOpened({
-//   isReadOnly: false,
-//   fileExtension: fileExtension,
-//   fileName: fileName,
-//   getFileContents: () => fetch(filePath).then(response => response.text())
-// });
-
 // const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
-const DMN_RUNNER_LINK = `samples/dmn-runner.zip`;
+const DMN_RUNNER_LINK = `files/dmn-runner.zip`;
 
 export function DmnRunnerModal(props: Props) {
-  const selectRef = useRef<SelectOsRef>(null);
+  const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
 
   const downloadDmnRunner = useMemo(() => {
-    switch (selectRef.current?.getOperationalSystem()) {
+    switch (operationalSystem) {
       case OperatingSystem.MACOS:
         return DMN_RUNNER_LINK;
       case OperatingSystem.WINDOWS:
@@ -68,22 +62,31 @@ export function DmnRunnerModal(props: Props) {
       default:
         return DMN_RUNNER_LINK;
     }
-  }, [selectRef]);
+  }, [operationalSystem]);
 
   const steps = useMemo(
     () => [
       {
         name: "Install",
         component: (
-          <TextContent>
-            <Text component={TextVariants.p}>
-              Download the DMN Runner{" "}
-              <Text component={TextVariants.a} href={downloadDmnRunner}>
-                here
-              </Text>
-            </Text>
-            <Text component={TextVariants.p}>Open its folder and unzip it.</Text>
-          </TextContent>
+          <List>
+            <ListItem>
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  Download the DMN Runner{" "}
+                  <Text component={TextVariants.a} href={downloadDmnRunner}>
+                    here
+                  </Text>
+                  .
+                </Text>
+              </TextContent>
+            </ListItem>
+            <ListItem>
+              <TextContent>
+                <Text component={TextVariants.p}>Open the folder containing the dmn-runner.zip file and unzip it.</Text>
+              </TextContent>
+            </ListItem>
+          </List>
         )
       },
       {
@@ -91,29 +94,57 @@ export function DmnRunnerModal(props: Props) {
         component: (
           <>
             {props.stopped && (
-              <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
-                It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
-                it again.
-              </Alert>
+              <div>
+                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
+                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
+                  it again.
+                </Alert>
+                <br />
+              </div>
             )}
-            <br />
-            <TextContent>
-              <Text component={TextVariants.p}>
-                Open a terminal on the DMN Runner folder and execute the folliwing command:
-                <Text component={TextVariants.p} className={"kogito-code"}>
-                  java -jar dmn-runner.jar
-                </Text>
-              </Text>
-            </TextContent>
+            <List>
+              <ListItem>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    Open the dmn-runner folder on a terminal and execute the following command to start the DMN Runner:
+                  </Text>
+                  <Text component={TextVariants.p} className={"kogito--code"}>
+                    ./init.sh
+                  </Text>
+                </TextContent>
+              </ListItem>
+              <br />
+              <ListItem>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    To stop the DMN Runner you can press{" "}
+                    <Text component={TextVariants.p} className={"kogito--code"} style={{ display: "inline" }}>
+                      CTRL + C
+                    </Text>{" "}
+                    on the terminal.
+                  </Text>
+                </TextContent>
+              </ListItem>
+            </List>
           </>
         )
       },
       {
         name: "Use",
         component: (
-          <TextContent>
-            <Text component={TextVariants.p}>Fill the form and see what happens :-)</Text>
-          </TextContent>
+          <div>
+            <List>
+              <ListItem>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    Fill the Form on the Inputs column and see the results on the Outputs column.
+                  </Text>
+                </TextContent>
+              </ListItem>
+            </List>
+            <br />
+            <img src="images/dmn-runner.gif" alt="DMN Runner running" width={"450px"} />
+          </div>
         )
       }
     ],
@@ -179,19 +210,14 @@ export function DmnRunnerModal(props: Props) {
     >
       <Form isHorizontal={true}>
         <FormGroup fieldId={"select-os"} label={"Operating system"}>
-          <SelectOs ref={selectRef} direction={SelectDirection.down} />
+          <SelectOs selected={operationalSystem} onSelect={setOperationalSystem} direction={SelectDirection.down} />
         </FormGroup>
       </Form>
       <br />
       <Wizard
         steps={steps}
         height={400}
-        startAtStep={props.isDmnRunning ? 2 : 1}
-        footer={
-          <WizardFooter>
-            <DmnRunnerWizardFooter shouldGoToStep={props.isDmnRunning} stepName={steps[steps.length - 1].name} />
-          </WizardFooter>
-        }
+        footer={<DmnRunnerWizardFooter shouldGoToStep={props.isDmnRunning} hasStopped={props.stopped} steps={steps} />}
       />
     </Modal>
   );
@@ -199,17 +225,24 @@ export function DmnRunnerModal(props: Props) {
 
 interface WizardImperativeControlProps {
   shouldGoToStep: boolean;
-  stepName: string;
+  hasStopped: boolean;
+  steps: Array<{ component: JSX.Element; name: string }>;
 }
 
 function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
   const wizardContext = useContext(WizardContext);
 
   useEffect(() => {
-    if (props.shouldGoToStep) {
-      wizardContext.goToStepByName(props.stepName);
+    if (props.hasStopped) {
+      wizardContext.goToStepByName(props.steps[1].name);
+    } else if (props.shouldGoToStep) {
+      wizardContext.goToStepByName(props.steps[props.steps.length - 1].name);
     }
   }, [props]);
 
-  return <WizardContextConsumer>{() => <></>}</WizardContextConsumer>;
+  return (
+    <WizardFooter>
+      <WizardContextConsumer>{() => <></>}</WizardContextConsumer>
+    </WizardFooter>
+  );
 }

@@ -87,6 +87,7 @@
   justify-content: center;
   align-items: center;
   padding: 1em;
+  pointer-events: none;
 }
 
 .kogito--alert {
@@ -213,7 +214,7 @@
   padding: var(--pf-global--spacer--xs);
 }
 
-.kogito-code {
+.kogito--code {
   font-family: var(--pf-global--FontFamily--monospace);
   font-weight: var(--pf-global--FontWeight--normal);
   line-height: var(--pf-global--LineHeight--md);
