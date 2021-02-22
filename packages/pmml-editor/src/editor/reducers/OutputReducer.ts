@@ -17,6 +17,7 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { Builder } from "../paths";
 
 interface OutputPayload {
   [Actions.AddOutput]: {
@@ -41,40 +42,61 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
   return (state: Output, action: AllActions) => {
     switch (action.type) {
       case Actions.AddOutput:
-        historyService.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
-          draft.OutputField.push({
-            name: action.payload.outputField.name,
-            dataType: action.payload.outputField.dataType,
-            optype: action.payload.outputField.optype,
-            targetField: action.payload.outputField.targetField,
-            feature: action.payload.outputField.feature,
-            value: action.payload.outputField.value,
-            rank: action.payload.outputField.rank,
-            rankOrder: action.payload.outputField.rankOrder,
-            segmentId: action.payload.outputField.segmentId,
-            isFinalResult: action.payload.outputField.isFinalResult
-          });
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forOutput()
+            .build(),
+          draft => {
+            draft.OutputField.push({
+              name: action.payload.outputField.name,
+              dataType: action.payload.outputField.dataType,
+              optype: action.payload.outputField.optype,
+              targetField: action.payload.outputField.targetField,
+              feature: action.payload.outputField.feature,
+              value: action.payload.outputField.value,
+              rank: action.payload.outputField.rank,
+              rankOrder: action.payload.outputField.rankOrder,
+              segmentId: action.payload.outputField.segmentId,
+              isFinalResult: action.payload.outputField.isFinalResult
+            });
+          }
+        );
         break;
 
       case Actions.DeleteOutput:
-        historyService.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
-          const outputIndex = action.payload.outputIndex;
-          if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
-            draft.OutputField.splice(outputIndex, 1);
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forOutput()
+            .build(),
+          draft => {
+            const outputIndex = action.payload.outputIndex;
+            if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
+              draft.OutputField.splice(outputIndex, 1);
+            }
           }
-        });
+        );
         break;
 
       case Actions.AddBatchOutputs:
-        historyService.batch(state, `models[${action.payload.modelIndex}].Output`, draft => {
-          action.payload.outputFields.forEach(name => {
-            draft.OutputField.push({
-              name: name,
-              dataType: "string"
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forOutput()
+            .build(),
+          draft => {
+            action.payload.outputFields.forEach(name => {
+              draft.OutputField.push({
+                name: name,
+                dataType: "string"
+              });
             });
-          });
-        });
+          }
+        );
     }
 
     return state;

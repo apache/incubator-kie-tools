@@ -24,7 +24,8 @@ import {
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,

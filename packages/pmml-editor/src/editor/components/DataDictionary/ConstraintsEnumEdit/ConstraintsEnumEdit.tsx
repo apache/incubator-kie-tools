@@ -14,7 +14,8 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { GripVerticalIcon, TrashIcon } from "@patternfly/react-icons";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import "./ConstraintsEnumEdit.scss";
 
 interface ConstraintsEnumEditProps {

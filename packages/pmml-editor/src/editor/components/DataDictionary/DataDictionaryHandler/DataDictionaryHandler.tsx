@@ -18,7 +18,8 @@ import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer
 import { convertPMML2DD, convertToDataField } from "../dataDictionaryUtils";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useBatchDispatch, useHistoryService } from "../../../history";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 const DataDictionaryHandler = () => {

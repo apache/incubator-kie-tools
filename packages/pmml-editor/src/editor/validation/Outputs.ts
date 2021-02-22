@@ -16,7 +16,7 @@
 import { MiningField, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
-import { Builder } from "./ValidationPath";
+import { Builder } from "../paths";
 
 export const validateOutputs = (
   modelIndex: number,

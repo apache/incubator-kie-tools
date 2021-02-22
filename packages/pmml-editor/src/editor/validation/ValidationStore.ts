@@ -16,17 +16,17 @@
 
 import ownKeys = Reflect.ownKeys;
 import { get, set, unset } from "lodash";
-import { ValidationPath } from "./ValidationPath";
+import { Path } from "../paths";
 import { ValidationEntry } from "./ValidationRegistry";
 
 export class ValidationStore {
   private readonly registry = {};
 
-  public set = (path: ValidationPath, entry: ValidationEntry): void => {
+  public set = (path: Path, entry: ValidationEntry): void => {
     set(this.registry, path.path, entry);
   };
 
-  public get = (path: ValidationPath): ValidationEntry[] => {
+  public get = (path: Path): ValidationEntry[] => {
     const node = get(this.registry, path.path);
     if (node === undefined) {
       return [];
@@ -51,7 +51,7 @@ export class ValidationStore {
     });
   };
 
-  public clear = (path: ValidationPath): void => {
+  public clear = (path: Path): void => {
     unset(this.registry, path.path);
   };
 }

@@ -17,7 +17,8 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { Builder, ValidationRegistry } from "../validation";
+import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 import { validateMiningFieldsDataFieldReference } from "../validation/MiningSchema";
 import get = Reflect.get;
 

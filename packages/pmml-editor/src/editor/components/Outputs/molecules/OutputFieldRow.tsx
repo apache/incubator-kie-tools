@@ -27,7 +27,8 @@ import {
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
 import { ValidationIndicator } from "../../EditorCore/atoms";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface OutputFieldRowProps {
   modelIndex: number;

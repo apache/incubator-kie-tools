@@ -231,7 +231,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         id="core-algorithmName"
                         name="core-algorithmName"
                         aria-describedby="core-algorithmName"
-                        value={algorithmName}
+                        value={algorithmName ?? ""}
                         onChange={e => setAlgorithmName(e)}
                         onBlur={() => {
                           onCommit({ algorithmName: algorithmName });

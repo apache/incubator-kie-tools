@@ -19,7 +19,8 @@ import { Label, Split, SplitItem } from "@patternfly/react-core";
 import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 

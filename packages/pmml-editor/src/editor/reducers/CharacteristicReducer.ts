@@ -20,6 +20,7 @@ import { Reducer } from "react";
 import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
 import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 
 // @ts-ignore
 Characteristic[immerable] = true;
@@ -58,17 +59,25 @@ export const CharacteristicReducer: HistoryAwareValidatingReducer<Characteristic
   return (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_UpdateCharacteristic:
-        historyService.batch(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
-          const characteristicIndex: number = action.payload.characteristicIndex;
-          if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
-            draft[characteristicIndex] = {
-              ...draft[characteristicIndex],
-              name: action.payload.name,
-              reasonCode: action.payload.reasonCode,
-              baselineScore: action.payload.baselineScore
-            };
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic()
+            .build(),
+          draft => {
+            const characteristicIndex: number = action.payload.characteristicIndex;
+            if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
+              draft[characteristicIndex] = {
+                ...draft[characteristicIndex],
+                name: action.payload.name,
+                reasonCode: action.payload.reasonCode,
+                baselineScore: action.payload.baselineScore
+              };
+            }
           }
-        });
+        );
         return state;
     }
 

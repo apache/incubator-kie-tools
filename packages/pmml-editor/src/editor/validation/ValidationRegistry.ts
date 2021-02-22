@@ -15,7 +15,7 @@
  */
 
 import { ValidationStore } from "./ValidationStore";
-import { ValidationPath } from "./ValidationPath";
+import { Path } from "../paths";
 import { ValidationLevel } from "./ValidationLevel";
 
 export class ValidationEntry {
@@ -25,15 +25,15 @@ export class ValidationEntry {
 export class ValidationRegistry {
   private readonly registry: ValidationStore = new ValidationStore();
 
-  public set = (path: ValidationPath, entry: ValidationEntry): void => {
+  public set = (path: Path, entry: ValidationEntry): void => {
     this.registry.set(path, entry);
   };
 
-  public get = (path: ValidationPath): ValidationEntry[] => {
+  public get = (path: Path): ValidationEntry[] => {
     return this.registry.get(path);
   };
 
-  public clear = (path: ValidationPath): void => {
+  public clear = (path: Path): void => {
     this.registry.clear(path);
   };
 }

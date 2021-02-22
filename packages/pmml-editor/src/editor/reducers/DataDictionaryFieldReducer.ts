@@ -18,7 +18,6 @@ import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import {
-  Builder,
   hasIntervals,
   hasValidValues,
   shouldConstraintsBeCleared,
@@ -26,6 +25,7 @@ import {
   validateDataFields,
   ValidationRegistry
 } from "../validation";
+import { Builder } from "../paths";
 
 interface DataDictionaryFieldPayload {
   [Actions.UpdateDataDictionaryField]: {
@@ -50,52 +50,59 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
         const dataField = action.payload.dataField;
         const dataDictionaryIndex = action.payload.dataDictionaryIndex;
 
-        historyService.batch(state, "DataDictionary.DataField", draft => {
-          if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
-            if (
-              shouldConstraintsBeCleared(
-                dataField,
-                draft[dataDictionaryIndex].isCyclic,
-                draft[dataDictionaryIndex].dataType,
-                draft[dataDictionaryIndex].optype
-              )
-            ) {
-              // clearing constraints if they contain only empty values because constraints are no more required
-              // for non cyclic data types or for types different from ordinal strings)
-              delete dataField.Interval;
-              dataField.Value = dataField.Value?.filter(
-                value => value.property === "invalid" || value.property === "missing"
-              );
-            }
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .forDataField()
+            .build(),
+          draft => {
+            if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
+              if (
+                shouldConstraintsBeCleared(
+                  dataField,
+                  draft[dataDictionaryIndex].isCyclic,
+                  draft[dataDictionaryIndex].dataType,
+                  draft[dataDictionaryIndex].optype
+                )
+              ) {
+                // clearing constraints if they contain only empty values because constraints are no more required
+                // for non cyclic data types or for types different from ordinal strings)
+                delete dataField.Interval;
+                dataField.Value = dataField.Value?.filter(
+                  value => value.property === "invalid" || value.property === "missing"
+                );
+              }
 
-            if (dataField.isCyclic === "1" && dataField.optype === "ordinal" && hasIntervals(dataField)) {
-              // ordinal cyclic fields cannot have interval constraints
-              delete dataField.Interval;
-            }
-            if (dataField.optype === "categorical" && dataField.isCyclic !== undefined) {
-              // categorical fields cannot be cyclic
-              delete dataField.isCyclic;
-            }
-            if (
-              ((dataField.isCyclic === "1" && dataField.optype === "ordinal") ||
-                (dataField.dataType === "string" && dataField.optype === "ordinal")) &&
-              !hasValidValues(dataField)
-            ) {
-              // add automatically an empty value when value constraint is required because we want to save the user
-              // from having to manually select the only supported constraint type in the UI ("Value")
-              dataField.Value = (dataField.Value || []).concat({ value: "" });
-            }
+              if (dataField.isCyclic === "1" && dataField.optype === "ordinal" && hasIntervals(dataField)) {
+                // ordinal cyclic fields cannot have interval constraints
+                delete dataField.Interval;
+              }
+              if (dataField.optype === "categorical" && dataField.isCyclic !== undefined) {
+                // categorical fields cannot be cyclic
+                delete dataField.isCyclic;
+              }
+              if (
+                ((dataField.isCyclic === "1" && dataField.optype === "ordinal") ||
+                  (dataField.dataType === "string" && dataField.optype === "ordinal")) &&
+                !hasValidValues(dataField)
+              ) {
+                // add automatically an empty value when value constraint is required because we want to save the user
+                // from having to manually select the only supported constraint type in the UI ("Value")
+                dataField.Value = (dataField.Value || []).concat({ value: "" });
+              }
 
-            draft[dataDictionaryIndex] = dataField;
+              draft[dataDictionaryIndex] = dataField;
+            }
+            validationRegistry.clear(
+              Builder()
+                .forDataDictionary()
+                .forDataField(dataDictionaryIndex)
+                .build()
+            );
+            validateDataField(dataField, dataDictionaryIndex, validationRegistry);
           }
-          validationRegistry.clear(
-            Builder()
-              .forDataDictionary()
-              .forDataField(dataDictionaryIndex)
-              .build()
-          );
-          validateDataField(dataField, dataDictionaryIndex, validationRegistry);
-        });
+        );
         break;
 
       case Actions.Validate:

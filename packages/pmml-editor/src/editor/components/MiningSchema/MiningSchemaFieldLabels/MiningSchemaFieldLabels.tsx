@@ -4,7 +4,8 @@ import { Label } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaFieldLabels.scss";
-import { Builder, useValidationRegistry, ValidationEntry } from "../../../validation";
+import { useValidationRegistry, ValidationEntry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import {
   areLowHighValuesRequired,

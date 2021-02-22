@@ -17,7 +17,8 @@ import { Reducer } from "react";
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { FieldName, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
-import { Builder, ValidationRegistry } from "../validation";
+import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 import { validateMiningFields } from "../validation/MiningSchema";
 
 interface MiningSchemaPayload {
@@ -41,29 +42,43 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
   return (state: MiningSchema, action: AllActions) => {
     switch (action.type) {
       case Actions.AddMiningSchemaFields:
-        historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
-          action.payload.names.forEach(name => {
-            draft.MiningField.push({
-              name: name
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forMiningSchema()
+            .build(),
+          draft => {
+            action.payload.names.forEach(name => {
+              draft.MiningField.push({
+                name: name
+              });
             });
-          });
-        });
+          }
+        );
         break;
 
       case Actions.DeleteMiningSchemaField:
-        historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
-          const miningSchemaIndex = action.payload.miningSchemaIndex;
-          if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
-            draft.MiningField.splice(miningSchemaIndex, 1);
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forMiningSchema()
+            .build(),
+          draft => {
+            const miningSchemaIndex = action.payload.miningSchemaIndex;
+            if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
+              draft.MiningField.splice(miningSchemaIndex, 1);
+            }
+            validationRegistry.clear(
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forMiningSchema()
+                .build()
+            );
+            validateMiningFields(action.payload.modelIndex, draft.MiningField, validationRegistry);
           }
-          validationRegistry.clear(
-            Builder()
-              .forModel(action.payload.modelIndex)
-              .forMiningSchema()
-              .build()
-          );
-          validateMiningFields(action.payload.modelIndex, draft.MiningField, validationRegistry);
-        });
+        );
     }
 
     return state;

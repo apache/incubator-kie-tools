@@ -29,7 +29,8 @@ import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation, useOperation } from "../../EditorScorecard";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
 
 interface OutputsHandlerProps {

@@ -25,7 +25,8 @@ import {
   OutlierTreatmentMethod,
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { Builder, ValidationRegistry } from "../validation";
+import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
@@ -64,81 +65,97 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
       case Actions.UpdateDataDictionaryField:
         state.forEach((mf, index) => {
           if (mf.name === action.payload.originalName) {
-            historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
-              draft[index] = {
-                ...draft[index],
-                name: action.payload.dataField.name
-              };
-            });
+            historyService.batch(
+              state,
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forMiningSchema()
+                .forMiningField()
+                .build(),
+              draft => {
+                draft[index] = {
+                  ...draft[index],
+                  name: action.payload.dataField.name
+                };
+              }
+            );
           }
         });
         break;
 
       case Actions.UpdateMiningSchemaField:
-        historyService.batch(state, `models[${action.payload.modelIndex}].MiningSchema.MiningField`, draft => {
-          const modelIndex = action.payload.modelIndex;
-          const miningSchemaIndex = action.payload.miningSchemaIndex;
-          const _areLowHighValuesRequired = areLowHighValuesRequired(action.payload.outliers);
-          const _isMissingValueReplacementRequired = isMissingValueReplacementRequired(
-            action.payload.missingValueTreatment
-          );
-          const _isInvalidValueReplacementRequired = isInvalidValueReplacementRequired(
-            action.payload.invalidValueTreatment
-          );
-
-          if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
-            const outlierChanged = draft[miningSchemaIndex].outliers !== action.payload.outliers;
-            const missingValueTreatmentChanged =
-              draft[miningSchemaIndex].missingValueTreatment !== action.payload.missingValueTreatment;
-            const invalidValueTreatmentChanged =
-              draft[miningSchemaIndex].invalidValueTreatment !== action.payload.invalidValueTreatment;
-            const clearLowHighValues = outlierChanged && !_areLowHighValuesRequired;
-            const clearMissingValueReplacement = missingValueTreatmentChanged && !_isMissingValueReplacementRequired;
-            const clearInvalidValueReplacement = invalidValueTreatmentChanged && !_isInvalidValueReplacementRequired;
-            const newLowValue = clearLowHighValues ? undefined : action.payload.lowValue;
-            const newHighValue = clearLowHighValues ? undefined : action.payload.highValue;
-            const newMissingValueReplacement = clearMissingValueReplacement
-              ? undefined
-              : action.payload.missingValueReplacement;
-            const newInvalidValueReplacement = clearInvalidValueReplacement
-              ? undefined
-              : action.payload.invalidValueReplacement;
-
-            draft[miningSchemaIndex] = {
-              ...draft[miningSchemaIndex],
-              name: action.payload.name,
-              usageType: action.payload.usageType,
-              optype: action.payload.optype,
-              importance: action.payload.importance,
-              outliers: action.payload.outliers,
-              lowValue: newLowValue,
-              highValue: newHighValue,
-              missingValueTreatment: action.payload.missingValueTreatment,
-              missingValueReplacement: newMissingValueReplacement,
-              invalidValueTreatment: action.payload.invalidValueTreatment,
-              invalidValueReplacement: newInvalidValueReplacement
-            };
-            validationRegistry.clear(
-              Builder()
-                .forModel(modelIndex)
-                .forMiningSchema()
-                .forMiningField(miningSchemaIndex)
-                .build()
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forMiningSchema()
+            .forMiningField()
+            .build(),
+          draft => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchemaIndex = action.payload.miningSchemaIndex;
+            const _areLowHighValuesRequired = areLowHighValuesRequired(action.payload.outliers);
+            const _isMissingValueReplacementRequired = isMissingValueReplacementRequired(
+              action.payload.missingValueTreatment
             );
-            validateMiningField(
-              action.payload.modelIndex,
-              action.payload.miningSchemaIndex,
-              {
-                ...action.payload,
+            const _isInvalidValueReplacementRequired = isInvalidValueReplacementRequired(
+              action.payload.invalidValueTreatment
+            );
+
+            if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
+              const outlierChanged = draft[miningSchemaIndex].outliers !== action.payload.outliers;
+              const missingValueTreatmentChanged =
+                draft[miningSchemaIndex].missingValueTreatment !== action.payload.missingValueTreatment;
+              const invalidValueTreatmentChanged =
+                draft[miningSchemaIndex].invalidValueTreatment !== action.payload.invalidValueTreatment;
+              const clearLowHighValues = outlierChanged && !_areLowHighValuesRequired;
+              const clearMissingValueReplacement = missingValueTreatmentChanged && !_isMissingValueReplacementRequired;
+              const clearInvalidValueReplacement = invalidValueTreatmentChanged && !_isInvalidValueReplacementRequired;
+              const newLowValue = clearLowHighValues ? undefined : action.payload.lowValue;
+              const newHighValue = clearLowHighValues ? undefined : action.payload.highValue;
+              const newMissingValueReplacement = clearMissingValueReplacement
+                ? undefined
+                : action.payload.missingValueReplacement;
+              const newInvalidValueReplacement = clearInvalidValueReplacement
+                ? undefined
+                : action.payload.invalidValueReplacement;
+
+              draft[miningSchemaIndex] = {
+                ...draft[miningSchemaIndex],
+                name: action.payload.name,
+                usageType: action.payload.usageType,
+                optype: action.payload.optype,
+                importance: action.payload.importance,
+                outliers: action.payload.outliers,
                 lowValue: newLowValue,
                 highValue: newHighValue,
+                missingValueTreatment: action.payload.missingValueTreatment,
                 missingValueReplacement: newMissingValueReplacement,
+                invalidValueTreatment: action.payload.invalidValueTreatment,
                 invalidValueReplacement: newInvalidValueReplacement
-              },
-              validationRegistry
-            );
+              };
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forMiningSchema()
+                  .forMiningField(miningSchemaIndex)
+                  .build()
+              );
+              validateMiningField(
+                action.payload.modelIndex,
+                action.payload.miningSchemaIndex,
+                {
+                  ...action.payload,
+                  lowValue: newLowValue,
+                  highValue: newHighValue,
+                  missingValueReplacement: newMissingValueReplacement,
+                  invalidValueReplacement: newInvalidValueReplacement
+                },
+                validationRegistry
+              );
+            }
           }
-        });
+        );
         break;
 
       case Actions.Validate:

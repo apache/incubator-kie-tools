@@ -20,7 +20,8 @@ import { Form, FormGroup, FormSelect, FormSelectOption, TextInput, Tooltip } fro
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector, GenericSelectorOption } from "../../EditorScorecard/atoms";
 import { HelpIcon } from "@patternfly/react-icons";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface OutputFieldExtendedPropertiesProps {
   modelIndex: number;

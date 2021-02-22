@@ -17,6 +17,7 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { Builder } from "../paths";
 
 interface OutputFieldPayload {
   [Actions.UpdateOutput]: {
@@ -34,35 +35,51 @@ export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> 
   return (state: OutputField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateOutput:
-        historyService.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
-          const outputIndex = action.payload.outputIndex;
-          if (outputIndex >= 0 && outputIndex < draft.length) {
-            draft[outputIndex] = {
-              ...draft[outputIndex],
-              name: action.payload.outputField.name,
-              dataType: action.payload.outputField.dataType,
-              optype: action.payload.outputField.optype,
-              targetField: action.payload.outputField.targetField,
-              feature: action.payload.outputField.feature,
-              value: action.payload.outputField.value,
-              rank: action.payload.outputField.rank,
-              rankOrder: action.payload.outputField.rankOrder,
-              segmentId: action.payload.outputField.segmentId,
-              isFinalResult: action.payload.outputField.isFinalResult
-            };
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forOutput()
+            .forOutputField()
+            .build(),
+          draft => {
+            const outputIndex = action.payload.outputIndex;
+            if (outputIndex >= 0 && outputIndex < draft.length) {
+              draft[outputIndex] = {
+                ...draft[outputIndex],
+                name: action.payload.outputField.name,
+                dataType: action.payload.outputField.dataType,
+                optype: action.payload.outputField.optype,
+                targetField: action.payload.outputField.targetField,
+                feature: action.payload.outputField.feature,
+                value: action.payload.outputField.value,
+                rank: action.payload.outputField.rank,
+                rankOrder: action.payload.outputField.rankOrder,
+                segmentId: action.payload.outputField.segmentId,
+                isFinalResult: action.payload.outputField.isFinalResult
+              };
+            }
           }
-        });
+        );
         break;
 
       case Actions.UpdateDataDictionaryField:
         state.forEach((outputField, index) => {
           if (outputField.targetField === action.payload.originalName) {
-            historyService.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
-              draft[index] = {
-                ...draft[index],
-                targetField: action.payload.dataField.name
-              };
-            });
+            historyService.batch(
+              state,
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forOutput()
+                .forOutputField()
+                .build(),
+              draft => {
+                draft[index] = {
+                  ...draft[index],
+                  targetField: action.payload.dataField.name
+                };
+              }
+            );
           }
         });
         break;
