@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-export * from "./DataDictionary";
-export * from "./NotificationsFactory";
-export * from "./ValidationContext";
-export * from "./ValidationLevel";
-export * from "./ValidationStore";
-export * from "./ValidationRegistry";
+import { ValidationLevel } from "./ValidationLevel";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { ValidationEntry } from "./ValidationRegistry";
+
+export const toNotifications = (path: string, validationEntries: ValidationEntry[]): Notification[] => {
+  return validationEntries.map<Notification>(validationEntry => {
+    return {
+      path: path,
+      message: validationEntry.message ?? "",
+      type: "PROBLEM",
+      severity: validationEntry.level === ValidationLevel.ERROR ? "ERROR" : "WARNING"
+    };
+  });
+};

@@ -23,17 +23,17 @@ export class ValidationEntry {
 }
 
 export class ValidationRegistry {
-  private readonly registry: ValidationStore = new ValidationStore();
+  private readonly store: ValidationStore = new ValidationStore();
 
   public set = (path: Path, entry: ValidationEntry): void => {
-    this.registry.set(path, entry);
+    this.store.set(path, entry);
   };
 
   public get = (path: Path): ValidationEntry[] => {
-    return this.registry.get(path);
+    return this.store.get(path);
   };
 
   public clear = (path: Path): void => {
-    this.registry.clear(path);
+    this.store.clear(path);
   };
 }

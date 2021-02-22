@@ -40,8 +40,9 @@ import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
-import { ValidationContext, ValidationRegistry } from "./validation";
+import { Builder, toNotifications, ValidationContext, ValidationRegistry } from "./validation";
 import { KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -59,9 +60,14 @@ export interface State {
 
 export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
-  private readonly history: HistoryService = new HistoryService((id: string) => {
-    this.props.channelApi.notifications.receive_newEdit(new KogitoEdit(id));
-  });
+  private readonly history: HistoryService = new HistoryService([
+    (id: string) => {
+      this.props.channelApi.notifications.receive_newEdit(new KogitoEdit(id));
+    },
+    () => {
+      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate());
+    }
+  ]);
   private readonly validationRegistry: ValidationRegistry = new ValidationRegistry();
   private readonly reducer: Reducer<PMML, AllActions>;
 
@@ -91,7 +97,9 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public setContent(path: string, content: string): Promise<void> {
-    return Promise.resolve(this.doSetContent(path, content));
+    return Promise.resolve(this.doSetContent(path, content)).then(() =>
+      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate())
+    );
   }
 
   private doSetContent(path: string, content: string): void {
@@ -150,6 +158,7 @@ export class PMMLEditor extends React.Component<Props, State> {
         type: Actions.Validate,
         payload: {}
       });
+      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate());
     }
   }
 
@@ -168,7 +177,12 @@ export class PMMLEditor extends React.Component<Props, State> {
         type: Actions.Validate,
         payload: {}
       });
+      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate());
     }
+  }
+
+  public validate(): Notification[] {
+    return toNotifications(this.state.path, this.validationRegistry.get(Builder().build()));
   }
 
   private isSingleModel(): boolean {

@@ -29,6 +29,7 @@ interface HistoryButtonsProps {
   redo: () => void;
   get: () => Promise<string>;
   setTheme: (theme: Theme) => void;
+  validate: () => void;
 }
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
@@ -49,6 +50,11 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
         </SplitItem>
         <SplitItem>
           <PMMLModal get={props.get} />
+        </SplitItem>
+        <SplitItem>
+          <Button variant="secondary" onClick={props.validate}>
+            Validate
+          </Button>
         </SplitItem>
         <SplitItem className="history-buttons__theme-switch">
           <Switch

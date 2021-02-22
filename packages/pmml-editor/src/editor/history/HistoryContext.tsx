@@ -23,9 +23,11 @@ export interface History {
 }
 
 export const HistoryContext = React.createContext<History>({
-  service: new HistoryService(() => {
-    /*NOP*/
-  }),
+  service: new HistoryService([
+    () => {
+      /*NOP*/
+    }
+  ]),
   getCurrentState: () => undefined
 });
 

@@ -22,6 +22,7 @@ import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/com
 import { PMMLEmptyState } from "./EmptyState";
 import { DisplayProperty } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 import "./App.scss";
 
 const manager: EnvelopeBusMessageManager<
@@ -46,6 +47,11 @@ export const App = () => {
 
   const redo = (): void => {
     editor.redo().finally();
+  };
+
+  const validate = () => {
+    const notifications: Notification[] = editor.validate();
+    window.alert(JSON.stringify(notifications, undefined, 2));
   };
 
   const container = useRef<HTMLDivElement | null>(null);
@@ -78,6 +84,7 @@ export const App = () => {
               }
             }
           }}
+          validate={validate}
         />
         <div ref={container} className="editor-container">
           <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />

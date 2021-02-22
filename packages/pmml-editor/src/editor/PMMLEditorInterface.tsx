@@ -56,6 +56,6 @@ export class PMMLEditorInterface implements Editor {
   }
 
   public async validate(): Promise<Notification[]> {
-    return [];
+    return Promise.resolve(this.self.validate());
   }
 }

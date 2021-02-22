@@ -47,7 +47,7 @@ export class HistoryService {
     index: 0
   };
 
-  constructor(private readonly listener: Listener) {}
+  constructor(private readonly listeners: Listener[]) {}
 
   public batch = <M>(
     state: M,
@@ -91,7 +91,7 @@ export class HistoryService {
     const newState: M = produce(state, recipe, (patches, inversePatches) => {
       this.history.changes.push({ path: path, change: patches, reverse: inversePatches });
       this.history.index = this.history.changes.length;
-      this.listener(`Command${this.history.index}`);
+      this.listeners.forEach(listener => listener(`Command${this.history.index}`));
     });
 
     return newState;

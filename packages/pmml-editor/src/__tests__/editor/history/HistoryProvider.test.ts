@@ -16,9 +16,10 @@
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { HistoryService } from "../../../editor/history";
 
-const listener = jest.fn();
+const listener1 = jest.fn();
+const listener2 = jest.fn();
 
-const service: HistoryService = new HistoryService(listener);
+const service: HistoryService = new HistoryService([listener1, listener2]);
 
 const pmml: PMML = {
   version: "1.0",

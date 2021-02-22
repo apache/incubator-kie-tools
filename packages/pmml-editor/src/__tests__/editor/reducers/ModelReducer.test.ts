@@ -19,7 +19,7 @@ import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 import { ValidationRegistry } from "../../../editor/validation";
 
-const historyService = new HistoryService(jest.fn());
+const historyService = new HistoryService([jest.fn()]);
 const validationRegistry = new ValidationRegistry();
 const reducer: Reducer<Model[], AllActions> = ModelReducer(historyService, validationRegistry);
 
