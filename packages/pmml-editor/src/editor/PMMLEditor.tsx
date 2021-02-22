@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
 import { Reducer } from "react";
 import { enableAllPlugins } from "immer";
@@ -48,7 +46,10 @@ const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4
 
 interface Props {
   exposing: (s: PMMLEditor) => void;
-  channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
+  ready: () => void;
+  newEdit: (edit: KogitoEdit) => void;
+  setNotifications: (path: string, notifications: Notification[]) => void;
+  //  channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
 }
 
 export interface State {
@@ -62,10 +63,10 @@ export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
   private readonly history: HistoryService = new HistoryService([
     (id: string) => {
-      this.props.channelApi.notifications.receive_newEdit(new KogitoEdit(id));
+      this.props.newEdit(new KogitoEdit(id));
     },
     () => {
-      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate());
+      this.props.setNotifications(this.state.path, this.validate());
     }
   ]);
   private readonly validationRegistry: ValidationRegistry = new ValidationRegistry();
@@ -93,12 +94,12 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public componentDidMount(): void {
-    this.props.channelApi.notifications.receive_ready();
+    this.props.ready();
   }
 
   public setContent(path: string, content: string): Promise<void> {
     return Promise.resolve(this.doSetContent(path, content)).then(() =>
-      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate())
+      this.props.setNotifications(this.state.path, this.validate())
     );
   }
 
@@ -158,7 +159,7 @@ export class PMMLEditor extends React.Component<Props, State> {
         type: Actions.Validate,
         payload: {}
       });
-      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate());
+      this.props.setNotifications(this.state.path, this.validate());
     }
   }
 
@@ -177,7 +178,7 @@ export class PMMLEditor extends React.Component<Props, State> {
         type: Actions.Validate,
         payload: {}
       });
-      this.props.channelApi.notifications.setNotifications(this.state.path, this.validate());
+      this.props.setNotifications(this.state.path, this.validate());
     }
   }
 

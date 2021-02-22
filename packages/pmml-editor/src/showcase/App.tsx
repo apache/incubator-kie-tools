@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { PMMLEditor } from "../editor";
 import * as React from "react";
 import { useRef, useState } from "react";
-import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/common";
 import { PMMLEmptyState } from "./EmptyState";
 import { DisplayProperty } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
 import "./App.scss";
-
-const manager: EnvelopeBusMessageManager<
-  KogitoEditorChannelApi,
-  KogitoEditorChannelApi
-> = new EnvelopeBusMessageManager((msg: any) => console.log(msg));
 
 let editor: PMMLEditor;
 
@@ -87,7 +80,18 @@ export const App = () => {
           validate={validate}
         />
         <div ref={container} className="editor-container">
-          <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
+          <PMMLEditor
+            exposing={(self: PMMLEditor) => (editor = self)}
+            ready={() => {
+              /*NOP*/
+            }}
+            newEdit={() => {
+              /*NOP*/
+            }}
+            setNotifications={() => {
+              /*NOP*/
+            }}
+          />
         </div>
       </div>
     </div>
