@@ -14,5 +14,5 @@
 # limitations under the License.
 
 
-gofmt -s -l -w cmd/ pkg/ api/ controllers/
+gofmt -s -l -w cmd/ api/ controllers/ core/ internal/ version/
 go fmt ./...

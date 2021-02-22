@@ -23,7 +23,7 @@ if [ -z "$new_version" ]; then
   exit 1
 fi
 
-sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md pkg/version/version.go config/manager/kustomization.yaml Makefile
+sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md version/version.go config/manager/kustomization.yaml Makefile
 
 make vet
 
