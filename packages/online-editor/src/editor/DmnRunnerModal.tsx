@@ -44,7 +44,16 @@ interface Props {
   setRunDmn: React.Dispatch<boolean>;
 }
 
-const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
+// const filePath = `samples/${fileName}.${fileExtension}`;
+// props.onFileOpened({
+//   isReadOnly: false,
+//   fileExtension: fileExtension,
+//   fileName: fileName,
+//   getFileContents: () => fetch(filePath).then(response => response.text())
+// });
+
+// const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
+const DMN_RUNNER_LINK = `samples/dmn-runner.zip`;
 
 export function DmnRunnerModal(props: Props) {
   const selectRef = useRef<SelectOsRef>(null);
