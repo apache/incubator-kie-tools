@@ -16,13 +16,13 @@ package steps
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	imgv1 "github.com/openshift/api/image/v1"
@@ -107,7 +107,7 @@ func generateNamespaceName() string {
 	for isNamespaceAlreadyCreated(ns) {
 		ns = framework.GenerateNamespaceName("cucumber")
 	}
-	namespacesCreated.Store(ns, []meta.ResourceObject{})
+	namespacesCreated.Store(ns, []kubernetes.ResourceObject{})
 	return ns
 }
 
@@ -192,10 +192,10 @@ func deleteTemporaryExamplesFolder(data *Data) {
 }
 
 // GetCreatedOperatorObjects returns all operator objects created for this namespace
-func (data *Data) GetCreatedOperatorObjects() []meta.ResourceObject {
-	result := []meta.ResourceObject{}
+func (data *Data) GetCreatedOperatorObjects() []kubernetes.ResourceObject {
+	result := []kubernetes.ResourceObject{}
 	if value, ok := namespacesCreated.Load(data.Namespace); ok {
-		result = value.([]meta.ResourceObject)
+		result = value.([]kubernetes.ResourceObject)
 	}
 	return result
 }

@@ -16,6 +16,8 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,9 +28,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/openshift"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
@@ -85,9 +86,9 @@ func checkWebhooksInBuildConfig(namespace string, actual []buildv1.BuildTriggerP
 		for _, actualTrigger := range actual {
 			var typedTrigger *buildv1.WebHookTrigger
 			switch expectedWebhook.Type {
-			case v1beta1.GitHubWebHook:
+			case api.GitHubWebHook:
 				typedTrigger = actualTrigger.GitHubWebHook
-			case v1beta1.GenericWebHook:
+			case api.GenericWebHook:
 				typedTrigger = actualTrigger.GenericWebHook
 			}
 

@@ -16,15 +16,15 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-cloud-operator/meta"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/core/client"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -48,7 +48,7 @@ func InitKubeClient() error {
 	mux.Lock()
 	defer mux.Unlock()
 	if kubeClient == nil {
-		newClient, err := client.NewClientBuilder().UseControllerDynamicMapper().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
+		newClient, err := client.NewClientBuilder(meta.GetRegisteredSchema()).UseControllerDynamicMapper().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
 		if err != nil {
 			return fmt.Errorf("Error initializing kube client: %v", err)
 		}
@@ -191,7 +191,7 @@ func GetDeployment(namespace, deploymentName string) (*apps.Deployment, error) {
 	return deployment, nil
 }
 
-func loadResource(namespace, uri string, resourceRef meta.ResourceObject, beforeCreate func(object interface{})) error {
+func loadResource(namespace, uri string, resourceRef kubernetes.ResourceObject, beforeCreate func(object interface{})) error {
 	GetLogger(namespace).Debug("loadResource", "uri", uri)
 
 	data, err := ReadFromURI(uri)
@@ -281,12 +281,12 @@ func IsCrdAvailable(crdName string) (bool, error) {
 }
 
 // CreateObject creates object
-func CreateObject(o meta.ResourceObject) error {
+func CreateObject(o kubernetes.ResourceObject) error {
 	return kubernetes.ResourceC(kubeClient).Create(o)
 }
 
 // DeleteObject deletes object
-func DeleteObject(o meta.ResourceObject) error {
+func DeleteObject(o kubernetes.ResourceObject) error {
 	return kubernetes.ResourceC(kubeClient).Delete(o)
 }
 
@@ -407,7 +407,7 @@ func GetIngressURI(namespace, serviceName string) (string, error) {
 }
 
 // ExposeServiceOnKubernetes adds ingress CR to expose a service
-func ExposeServiceOnKubernetes(namespace string, service v1beta1.KogitoService) error {
+func ExposeServiceOnKubernetes(namespace string, service api.KogitoService) error {
 	host := service.GetName()
 	if !config.IsLocalCluster() {
 		host += fmt.Sprintf(".%s.%s", namespace, config.GetDomainSuffix())

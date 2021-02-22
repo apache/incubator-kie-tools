@@ -16,6 +16,9 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/logger"
+	"github.com/kiegroup/kogito-cloud-operator/meta"
 	"strings"
 
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
@@ -27,12 +30,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
-	infra "github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/operator"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/version"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/framework"
+	"github.com/kiegroup/kogito-cloud-operator/core/operator"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	"github.com/kiegroup/kogito-cloud-operator/version"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
@@ -77,7 +79,7 @@ var (
 	KogitoOperatorDependencies = []string{kogitoInfinispanDependencyName, kogitoKafkaDependencyName, kogitoKeycloakDependencyName}
 
 	// KogitoOperatorMongoDBDependency is the MongoDB identifier for installation
-	KogitoOperatorMongoDBDependency = infra.MongoDBKind
+	KogitoOperatorMongoDBDependency = infrastructure.MongoDBKind
 	mongoDBOperatorTimeoutInMin     = 10
 
 	kogitoOperatorCatalogSourceTimeoutInMin = 3
@@ -460,7 +462,13 @@ func getOperatorImageNameAndTag() string {
 func DeployMongoDBOperatorFromYaml(namespace string) error {
 	GetLogger(namespace).Info("Deploy MongoDB from yaml files", "file uri", mongoDBOperatorDeployFilesURI)
 
-	if !infra.IsMongoDBAvailable(kubeClient) {
+	context := &operator.Context{
+		Client: kubeClient,
+		Log:    logger.GetLogger(namespace),
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	mongoHandler := infrastructure.NewMongoDBHandler(context)
+	if !mongoHandler.IsMongoDBAvailable() {
 		if err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"crds/mongodb.com_mongodb_crd.yaml", &apiextensionsv1beta1.CustomResourceDefinition{}, nil); err != nil {
 			return err
 		}
@@ -515,7 +523,13 @@ func WaitForMongoDBOperatorRunning(namespace string) error {
 }
 
 func isMongoDBOperatorRunning(namespace string) (bool, error) {
-	exists, err := infra.IsMongoDBOperatorAvailable(kubeClient, namespace)
+	context := &operator.Context{
+		Client: kubeClient,
+		Log:    logger.GetLogger(namespace),
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	mongoDBHandler := infrastructure.NewMongoDBHandler(context)
+	exists, err := mongoDBHandler.IsMongoDBOperatorAvailable(namespace)
 	if err != nil {
 		if exists {
 			return false, nil

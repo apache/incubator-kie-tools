@@ -16,11 +16,12 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -82,7 +83,7 @@ func GetKogitoBuildStub(namespace, runtimeType, name string) *v1beta1.KogitoBuil
 			Conditions: []v1beta1.KogitoBuildConditions{},
 		},
 		Spec: v1beta1.KogitoBuildSpec{
-			Runtime:        v1beta1.RuntimeType(runtimeType),
+			Runtime:        api.RuntimeType(runtimeType),
 			MavenMirrorURL: config.GetMavenMirrorURL(),
 		},
 	}
@@ -138,7 +139,7 @@ func getKogitoBuildRuntimeImage(kogitoBuild *v1beta1.KogitoBuild) string {
 
 // getKogitoBuildImage returns a build image with defaults set
 func getKogitoBuildImage(imageName string) string {
-	image := v1beta1.Image{
+	image := api.Image{
 		Domain:    config.GetBuildImageRegistry(),
 		Namespace: config.GetBuildImageNamespace(),
 		Tag:       config.GetBuildImageVersion(),

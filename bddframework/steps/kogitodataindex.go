@@ -16,7 +16,8 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
@@ -53,7 +54,7 @@ func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(rep
 	}
 	if dataIndex.DatabaseType == infrastructure.MongoDBKind {
 		framework.GetMainLogger().Debug("Setting Data Index MongoDB image")
-		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetDataIndexImageTag(), infrastructure.DataIndexMongoDBImageName))
+		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetDataIndexImageTag(), kogitosupportingservice.DataIndexMongoDBImageName))
 	}
 
 	return framework.InstallKogitoDataIndexService(data.Namespace, framework.GetDefaultInstallerType(), dataIndex)

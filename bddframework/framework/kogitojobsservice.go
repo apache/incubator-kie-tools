@@ -16,10 +16,10 @@ package framework
 
 import (
 	"fmt"
-
+	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -66,7 +66,7 @@ func WaitForKogitoJobsServiceLogContainsTextWithinMinutes(namespace, logText str
 }
 
 func getJobsServiceName() string {
-	return infrastructure.DefaultJobsServiceName
+	return kogitosupportingservice.DefaultJobsServiceName
 }
 
 // GetKogitoJobsServiceResourceStub Get basic KogitoJobsService stub with all needed fields initialized
@@ -74,8 +74,8 @@ func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1beta1.K
 	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getJobsServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
-			ServiceType:       v1beta1.JobsService,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), infrastructure.DefaultJobsServiceImageName),
+			ServiceType:       api.JobsService,
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), kogitosupportingservice.DefaultJobsServiceImageName),
 		},
 		Status: v1beta1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),

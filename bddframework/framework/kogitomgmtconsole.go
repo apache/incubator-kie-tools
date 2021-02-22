@@ -15,8 +15,9 @@
 package framework
 
 import (
+	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
@@ -32,7 +33,7 @@ func WaitForKogitoManagementConsoleService(namespace string, replicas int, timeo
 }
 
 func getManagementConsoleServiceName() string {
-	return infrastructure.DefaultMgmtConsoleName
+	return kogitosupportingservice.DefaultMgmtConsoleName
 }
 
 // GetKogitoManagementConsoleResourceStub Get basic KogitoManagementConsole stub with all needed fields initialized
@@ -40,8 +41,8 @@ func GetKogitoManagementConsoleResourceStub(namespace string, replicas int) *v1b
 	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getManagementConsoleServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
-			ServiceType:       v1beta1.MgmtConsole,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), infrastructure.DefaultMgmtConsoleImageName),
+			ServiceType:       api.MgmtConsole,
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), kogitosupportingservice.DefaultMgmtConsoleImageName),
 		},
 		Status: v1beta1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),

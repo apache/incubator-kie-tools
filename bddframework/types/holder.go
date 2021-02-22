@@ -15,12 +15,13 @@
 package types
 
 import (
+	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 )
 
 // KogitoServiceHolder Helper structure holding informations which are not available in KogitoService
 type KogitoServiceHolder struct {
-	v1beta1.KogitoService
+	api.KogitoService
 
 	DatabaseType string
 }

@@ -16,9 +16,9 @@ package framework
 
 import (
 	"fmt"
-
+	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
@@ -62,7 +62,7 @@ func WaitForKogitoTrustyService(namespace string, replicas int, timeoutInMin int
 }
 
 func getTrustyServiceName() string {
-	return infrastructure.DefaultTrustyName
+	return kogitosupportingservice.DefaultTrustyName
 }
 
 // GetKogitoTrustyResourceStub Get basic KogitoTrusty stub with all needed fields initialized
@@ -70,8 +70,8 @@ func GetKogitoTrustyResourceStub(namespace string, replicas int) *v1beta1.Kogito
 	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getTrustyServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
-			ServiceType:       v1beta1.TrustyAI,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetTrustyImageTag(), infrastructure.DefaultTrustyImageName),
+			ServiceType:       api.TrustyAI,
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetTrustyImageTag(), kogitosupportingservice.DefaultTrustyImageName),
 		},
 		Status: v1beta1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),

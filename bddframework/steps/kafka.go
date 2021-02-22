@@ -16,11 +16,9 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
-
-const defaultReplicas = 1
 
 func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Kafka instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.kafkaInstanceHasPodsRunningWithinMinutes)
@@ -33,7 +31,7 @@ func (data *Data) kafkaInstanceHasPodsRunningWithinMinutes(name string, numberOf
 }
 
 func (data *Data) kafkaInstanceIsDeployed(name string) error {
-	kafka := infrastructure.GetKafkaDefaultResource(name, data.Namespace, defaultReplicas)
+	kafka := infrastructure.GetKafkaDefaultResource(name, data.Namespace)
 
 	if err := framework.DeployKafkaInstance(data.Namespace, kafka); err != nil {
 		return err

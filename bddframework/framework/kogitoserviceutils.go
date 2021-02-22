@@ -16,11 +16,12 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -121,7 +122,7 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 		return fullImage
 	}
 
-	image := v1beta1.Image{}
+	image := api.Image{}
 	if isRuntimeImageInformationSet() {
 
 		image.Domain = config.GetServicesImageRegistry()
@@ -172,7 +173,7 @@ func cliInstall(serviceHolder *bddtypes.KogitoServiceHolder, cliDeployCommand, c
 }
 
 // OnKogitoServiceDeployed is called when a service deployed.
-func OnKogitoServiceDeployed(namespace string, service v1beta1.KogitoService) error {
+func OnKogitoServiceDeployed(namespace string, service api.KogitoService) error {
 	if !IsOpenshift() {
 		return ExposeServiceOnKubernetes(namespace, service)
 	}
@@ -182,7 +183,7 @@ func OnKogitoServiceDeployed(namespace string, service v1beta1.KogitoService) er
 
 // Kogito CLI doesn't contain all the probe configuration options which are needed to alter the deployments for slow environments. Therefore it is needed to patch CRs directly.
 func patchKogitoProbes(serviceHolder *bddtypes.KogitoServiceHolder) error {
-	var patched v1beta1.KogitoService
+	var patched api.KogitoService
 	var err error
 	for i := 0; i < 3; i++ {
 		patched, err = newKogitoService(serviceHolder.KogitoService)
@@ -210,11 +211,11 @@ func patchKogitoProbes(serviceHolder *bddtypes.KogitoServiceHolder) error {
 }
 
 // Return new empty KogitoService based on same type as parameter
-func newKogitoService(s v1beta1.KogitoService) (v1beta1.KogitoService, error) {
-	switch v := s.(type) {
-	case *v1beta1.KogitoRuntime:
+func newKogitoService(s api.KogitoService) (api.KogitoService, error) {
+	switch v := s.GetSpec().(type) {
+	case *v1beta1.KogitoRuntimeSpec:
 		return &v1beta1.KogitoRuntime{}, nil
-	case *v1beta1.KogitoSupportingService:
+	case *v1beta1.KogitoSupportingServiceSpec:
 		return &v1beta1.KogitoSupportingService{}, nil
 	default:
 		return nil, fmt.Errorf("Type %T not defined", v)

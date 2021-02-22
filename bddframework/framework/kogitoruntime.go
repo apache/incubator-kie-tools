@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/api"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -23,7 +24,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
@@ -60,7 +61,7 @@ func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1beta
 			},
 		},
 		Spec: v1beta1.KogitoRuntimeSpec{
-			Runtime: v1beta1.RuntimeType(runtimeType),
+			Runtime: api.RuntimeType(runtimeType),
 			KogitoServiceSpec: v1beta1.KogitoServiceSpec{
 				Image: imageTag,
 				// Use insecure registry flag in tests

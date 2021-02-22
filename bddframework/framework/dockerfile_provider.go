@@ -16,12 +16,11 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 )
 
 const (

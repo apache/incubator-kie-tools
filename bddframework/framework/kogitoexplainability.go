@@ -15,8 +15,9 @@
 package framework
 
 import (
+	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
@@ -33,7 +34,7 @@ func WaitForKogitoExplainabilityService(namespace string, replicas int, timeoutI
 }
 
 func getExplainabilityServiceName() string {
-	return infrastructure.DefaultExplainabilityName
+	return kogitosupportingservice.DefaultExplainabilityName
 }
 
 // GetKogitoExplainabilityResourceStub Get basic KogitoExplainability stub with all needed fields initialized
@@ -41,8 +42,8 @@ func GetKogitoExplainabilityResourceStub(namespace string, replicas int) *v1beta
 	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getExplainabilityServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
-			ServiceType:       v1beta1.Explainability,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetExplainabilityImageTag(), infrastructure.DefaultExplainabilityImageName),
+			ServiceType:       api.Explainability,
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetExplainabilityImageTag(), kogitosupportingservice.DefaultExplainabilityImageName),
 		},
 		Status: v1beta1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),

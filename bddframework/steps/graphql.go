@@ -16,12 +16,12 @@ package steps
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -55,7 +55,7 @@ func (data *Data) graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinut
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes(processName string, timeoutInMin int) error {
-	serviceName := infrastructure.DefaultDataIndexName
+	serviceName := kogitosupportingservice.DefaultDataIndexName
 	query := getProcessInstancesNameQuery
 	path := "graphql"
 
@@ -77,7 +77,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWit
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes(processInstances int, processName string, timeoutInMin int) error {
-	serviceName := infrastructure.DefaultDataIndexName
+	serviceName := kogitosupportingservice.DefaultDataIndexName
 	pageSize := 1000
 	preProcessedQuery := strings.ReplaceAll(getProcessInstancesIDByNameQuery, "$name", processName)
 	preProcessedQuery = strings.ReplaceAll(preProcessedQuery, "$limit", strconv.Itoa(pageSize))
@@ -117,7 +117,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWith
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes(id string, timeoutInMin int) error {
-	serviceName := infrastructure.DefaultDataIndexName
+	serviceName := kogitosupportingservice.DefaultDataIndexName
 	query := getJobsIDQuery
 	path := "graphql"
 

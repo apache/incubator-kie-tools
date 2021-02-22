@@ -19,15 +19,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
+	"github.com/kiegroup/kogito-cloud-operator/core/logger"
 	"io"
 	"os"
 	"reflect"
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
+	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/framework/util"
 	"k8s.io/api/events/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 
