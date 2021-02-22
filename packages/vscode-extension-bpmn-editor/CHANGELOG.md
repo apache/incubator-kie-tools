@@ -1,3 +1,10 @@
+# 0.8.3 (alpha)
+
+### Fixed issues:
+
+Editors
+*   [[KOGITO-4315](https://issues.redhat.com/browse/KOGITO-4315)] - Stunner - Cannot undo/redo more than once
+
 # 0.8.2 (alpha)
 
 ### New features:
