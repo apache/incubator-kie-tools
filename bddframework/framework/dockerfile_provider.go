@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -88,12 +87,6 @@ func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) GetDockerfi
 		dockerfileContent += "COPY target/lib $KOGITO_HOME/bin/lib\n"
 	}
 
-	// Copy protobuf files
-	persistenceDirectory := dockerfileProvider.projectLocation + "/target/classes/persistence/"
-	if fileOrDirectoryExists(persistenceDirectory) {
-		dockerfileContent += "COPY target/classes/persistence/ $KOGITO_HOME/data/protobufs"
-	}
-
 	return dockerfileContent, nil
 }
 
@@ -109,11 +102,4 @@ func fileWithSuffixExists(scannedDirectory, fileSuffix string) bool {
 		}
 	}
 	return false
-}
-
-func fileOrDirectoryExists(fileOrDirectory string) bool {
-	if _, err := os.Stat(fileOrDirectory); os.IsNotExist(err) {
-		return false
-	}
-	return true
 }
