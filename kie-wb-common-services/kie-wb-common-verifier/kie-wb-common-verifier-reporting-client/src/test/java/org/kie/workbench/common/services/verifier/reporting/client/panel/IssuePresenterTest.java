@@ -53,9 +53,9 @@ public class IssuePresenterTest {
 
         Issue issue = new Issue(Severity.WARNING,
                                 CheckType.REDUNDANT_ROWS,
-                                new HashSet<>(Arrays.asList(1,
+                                new HashSet<>(Arrays.asList(3,
                                                             2,
-                                                            3))
+                                                            1))
         );
 
         screen.show(issue);

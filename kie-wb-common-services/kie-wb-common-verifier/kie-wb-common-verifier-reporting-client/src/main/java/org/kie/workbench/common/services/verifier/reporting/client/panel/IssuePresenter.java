@@ -51,6 +51,7 @@ public class IssuePresenter
     private String makeRowNumbers(final Issue issue) {
         return issue.getRowNumbers()
                 .stream()
+                .sorted()
                 .map(Object::toString)
                 .collect(Collectors.joining(", "));
     }
