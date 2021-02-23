@@ -50,7 +50,6 @@ interface Props {
   ready: () => void;
   newEdit: (edit: KogitoEdit) => void;
   setNotifications: (path: string, notifications: Notification[]) => void;
-  //  channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
 }
 
 export interface State {
