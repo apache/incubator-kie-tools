@@ -16,12 +16,13 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { Label, Split, SplitItem } from "@patternfly/react-core";
-import { Attribute, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
@@ -30,6 +31,7 @@ interface AttributesTableRowProps {
   attributeIndex: number;
   attribute: Attribute;
   areReasonCodesUsed: boolean;
+  characteristicReasonCode: Characteristic["reasonCode"];
   dataFields: DataField[];
   miningFields: MiningField[];
   onEdit: () => void;
@@ -43,6 +45,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     attributeIndex,
     attribute,
     areReasonCodesUsed,
+    characteristicReasonCode,
     dataFields,
     miningFields,
     onEdit,
@@ -93,7 +96,14 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           </>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <AttributeLabels activeAttribute={attribute} areReasonCodesUsed={areReasonCodesUsed} />
+          <AttributeLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            activeAttributeIndex={attributeIndex}
+            activeAttribute={attribute}
+            areReasonCodesUsed={areReasonCodesUsed}
+            characteristicReasonCode={characteristicReasonCode}
+          />
         </SplitItem>
         <SplitItem>
           <AttributesTableAction onDelete={onDelete} />

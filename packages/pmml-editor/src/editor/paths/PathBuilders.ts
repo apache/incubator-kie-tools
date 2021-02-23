@@ -73,6 +73,10 @@ class ModelBuilder extends BaseBuilder {
     this.builders.add(this);
   }
 
+  public forBaselineScore = () => {
+    return new BaselineScoreBuilder(this.builders);
+  };
+
   public forCharacteristics = () => {
     return new CharacteristicsBuilder(this.builders);
   };
@@ -178,12 +182,42 @@ class CharacteristicBuilder extends BaseBuilder {
     this.builders.add(this);
   }
 
+  public forReasonCode = () => {
+    return new ReasonCodeBuilder(this.builders);
+  };
+
+  public forBaselineScore = () => {
+    return new BaselineScoreBuilder(this.builders);
+  };
+
   public forAttribute = (attributeIndex?: number) => {
     return new AttributeBuilder(this.builders, attributeIndex);
   };
 
   protected segment(): string {
     return this.characteristicIndex !== undefined ? `Characteristic[${this.characteristicIndex}]` : `Characteristic`;
+  }
+}
+
+class ReasonCodeBuilder extends BaseBuilder {
+  constructor(protected builders: Builders) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  protected segment(): string {
+    return `reasonCode`;
+  }
+}
+
+class BaselineScoreBuilder extends BaseBuilder {
+  constructor(protected builders: Builders) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  protected segment(): string {
+    return `baselineScore`;
   }
 }
 
@@ -197,8 +231,27 @@ class AttributeBuilder extends BaseBuilder {
     return new PredicateBuilder(this.builders, predicateIndex);
   };
 
+  public forReasonCode = () => {
+    return new ReasonCodeBuilder(this.builders);
+  };
+
+  public forPartialScore = () => {
+    return new PartialScoreBuilder(this.builders);
+  };
+
   protected segment(): string {
     return this.attributeIndex !== undefined ? `Attribute[${this.attributeIndex}]` : `Attribute`;
+  }
+}
+
+class PartialScoreBuilder extends BaseBuilder {
+  constructor(protected builders: Builders) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  protected segment(): string {
+    return `partialScore`;
   }
 }
 
@@ -213,7 +266,7 @@ class PredicateBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.predicateIndex !== undefined ? `Predicate[${this.predicateIndex}]` : `Predicate`;
+    return this.predicateIndex !== undefined ? `predicate[${this.predicateIndex}]` : `predicate`;
   }
 }
 

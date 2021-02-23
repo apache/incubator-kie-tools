@@ -25,6 +25,7 @@ import {
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic, toText } from "../organisms";
 import "./CharacteristicsTableRow.scss";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 
@@ -33,7 +34,7 @@ interface CharacteristicsTableRowProps {
   characteristicIndex: number;
   characteristic: IndexedCharacteristic;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
   dataFields: DataField[];
   onEdit: () => void;
   onDelete: () => void;
@@ -45,7 +46,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
     characteristicIndex,
     characteristic,
     areReasonCodesUsed,
-    isBaselineScoreRequired,
+    scorecardBaselineScore,
     dataFields,
     onEdit,
     onDelete
@@ -70,9 +71,11 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
         </SplitItem>
         <SplitItem isFilled={true}>
           <CharacteristicLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
             activeCharacteristic={characteristic.characteristic}
             areReasonCodesUsed={areReasonCodesUsed}
-            isBaselineScoreRequired={isBaselineScoreRequired}
+            scorecardBaselineScore={scorecardBaselineScore}
           />
           <CharacteristicAttributesList
             modelIndex={modelIndex}
@@ -122,7 +125,14 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
       {characteristic.Attribute.map((item, index) => (
         <li key={index}>
           {CharacteristicPredicateLabel(toText(item.predicate, dataFields), validations(index))}
-          <AttributeLabels activeAttribute={item} areReasonCodesUsed={areReasonCodesUsed} />
+          <AttributeLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            activeAttributeIndex={index}
+            activeAttribute={item}
+            areReasonCodesUsed={areReasonCodesUsed}
+            characteristicReasonCode={characteristic.reasonCode}
+          />
         </li>
       ))}
     </ul>

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareValidatingReducer, HistoryService } from "../history";
+import { HistoryAwareReducer, HistoryService } from "../history";
 import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
-import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 
 // @ts-ignore
@@ -37,11 +36,10 @@ interface CharacteristicPayload {
 
 export type CharacteristicActions = ActionMap<CharacteristicPayload>[keyof ActionMap<CharacteristicPayload>];
 
-export const CharacteristicReducer: HistoryAwareValidatingReducer<Characteristic[], AllActions> = (
-  historyService: HistoryService,
-  validationRegistry: ValidationRegistry
+export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllActions> = (
+  historyService: HistoryService
 ): Reducer<Characteristic[], AllActions> => {
-  const attributesReducer = AttributesReducer(historyService, validationRegistry);
+  const attributesReducer = AttributesReducer(historyService);
 
   const delegateToAttributes = (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
@@ -75,6 +73,9 @@ export const CharacteristicReducer: HistoryAwareValidatingReducer<Characteristic
                 reasonCode: action.payload.reasonCode,
                 baselineScore: action.payload.baselineScore
               };
+            }
+            if (action.payload.reasonCode !== undefined) {
+              draft[characteristicIndex].Attribute.forEach(attribute => (attribute.reasonCode = undefined));
             }
           }
         );

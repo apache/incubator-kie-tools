@@ -14,23 +14,92 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
+import { useValidationRegistry } from "../../../validation";
+import { useMemo } from "react";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { Builder } from "../../../paths";
 
 interface AttributeLabelsProps {
+  modelIndex: number;
+  characteristicIndex: number;
+  activeAttributeIndex: number;
   activeAttribute: Attribute;
   areReasonCodesUsed: boolean;
+  characteristicReasonCode: Characteristic["reasonCode"];
 }
 
 export const AttributeLabels = (props: AttributeLabelsProps) => {
-  const { activeAttribute, areReasonCodesUsed } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    activeAttributeIndex,
+    activeAttribute,
+    areReasonCodesUsed,
+    characteristicReasonCode
+  } = props;
+
+  const { validationRegistry } = useValidationRegistry();
+  const reasonCodeValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(activeAttributeIndex)
+          .forReasonCode()
+          .build()
+      ),
+    [
+      modelIndex,
+      characteristicIndex,
+      areReasonCodesUsed,
+      activeAttribute,
+      activeAttributeIndex,
+      characteristicReasonCode
+    ]
+  );
+  const partialScoreValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(activeAttributeIndex)
+          .forPartialScore()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, activeAttribute, activeAttributeIndex]
+  );
 
   return (
     <>
-      {activeAttribute.reasonCode !== undefined &&
-        areReasonCodesUsed &&
+      {areReasonCodesUsed &&
+        activeAttribute.reasonCode !== undefined &&
+        reasonCodeValidation.length === 0 &&
         CharacteristicLabel("Reason code", activeAttribute.reasonCode)}
-      {activeAttribute.partialScore !== undefined && CharacteristicLabel("Partial score", activeAttribute.partialScore)}
+      {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Reason code:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
+      {partialScoreValidation.length === 0 &&
+        activeAttribute.partialScore !== undefined &&
+        CharacteristicLabel("Partial score", activeAttribute.partialScore)}
+      {partialScoreValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={partialScoreValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Partial score:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
     </>
   );
 };

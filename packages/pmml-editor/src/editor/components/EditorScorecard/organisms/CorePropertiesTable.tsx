@@ -31,7 +31,8 @@ import {
   StackItem,
   Switch,
   TextInput,
-  Title
+  Title,
+  Tooltip
 } from "@patternfly/react-core";
 import "./CorePropertiesTable.scss";
 import { Operation } from "../Operation";
@@ -40,6 +41,10 @@ import { isEqual } from "lodash";
 import { useOperation } from "../OperationContext";
 import set = Reflect.set;
 import get = Reflect.get;
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
+import { HelpIcon } from "@patternfly/react-icons";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 interface CoreProperties {
   modelIndex: number;
@@ -54,6 +59,7 @@ interface CoreProperties {
 }
 
 interface CorePropertiesTableProps extends CoreProperties {
+  isBaselineScoreDisabled: boolean;
   commit: (props: CoreProperties) => void;
 }
 
@@ -140,6 +146,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     activeOperation
   ]);
 
+  const { validationRegistry } = useValidationRegistry();
+  const baselineScoreValidation = validationRegistry.get(
+    Builder()
+      .forModel(props.modelIndex)
+      .forBaselineScore()
+      .build()
+  );
+
   return (
     <div
       ref={ref}
@@ -172,7 +186,17 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                   {areReasonCodesUsed !== undefined &&
                     CorePropertyLabel("Use Reason Codes", toYesNo(areReasonCodesUsed))}
                   {reasonCodeAlgorithm !== undefined && CorePropertyLabel("Reason Code Algorithm", reasonCodeAlgorithm)}
-                  {baselineScore !== undefined && CorePropertyLabel("Baseline Score", baselineScore)}
+                  {baselineScore !== undefined &&
+                    baselineScoreValidation.length === 0 &&
+                    CorePropertyLabel("Baseline Score", baselineScore)}
+                  {baselineScoreValidation.length > 0 && (
+                    <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="core-properties__label">
+                      <>
+                        <strong>Baseline score:</strong>&nbsp;
+                        <em>Missing</em>
+                      </>
+                    </ValidationIndicatorLabel>
+                  )}
                   {baselineMethod !== undefined && CorePropertyLabel("Baseline Method", baselineMethod)}
                 </SplitItem>
               )}
@@ -281,18 +305,42 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     </FormGroup>
                   </LevelItem>
                   <LevelItem>
-                    <FormGroup label="Baseline score" fieldId="core-baselineScore">
+                    <FormGroup
+                      label="Baseline score"
+                      fieldId="core-baselineScore"
+                      validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                      helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
+                      labelIcon={
+                        <Tooltip
+                          content={
+                            areReasonCodesUsed && props.isBaselineScoreDisabled
+                              ? `A Baseline score is already provided inside all Characteristics`
+                              : `
+                                When Use Reason Codes is set to yes, a Baseline score value must be provided. \
+                                Alternatively you can provide a Baseline score for all the characteristics
+                                `
+                          }
+                        >
+                          <button
+                            aria-label="More information for Baseline score"
+                            onClick={e => e.preventDefault()}
+                            className="pf-c-form__group-label-help"
+                          >
+                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                          </button>
+                        </Tooltip>
+                      }
+                    >
                       <TextInput
                         id="core-baselineScore"
-                        value={baselineScore}
+                        value={baselineScore ?? ""}
                         onChange={e => setBaselineScore(toNumber(e))}
                         onBlur={() => {
                           onCommit({ baselineScore: baselineScore });
                         }}
                         type="number"
-                        // Baseline Score is only required when Reason Codes are enabled.
-                        // See http://dmg.org/pmml/v4-4/Scorecard.html
-                        isDisabled={!areReasonCodesUsed}
+                        validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                        isDisabled={props.isBaselineScoreDisabled}
                       />
                     </FormGroup>
                   </LevelItem>

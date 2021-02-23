@@ -14,26 +14,75 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useMemo } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
+import { useValidationRegistry } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { Builder } from "../../../paths";
 
 interface CharacteristicLabelsProps {
+  modelIndex: number;
+  characteristicIndex: number;
   activeCharacteristic: Characteristic;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired } = props;
+  const { modelIndex, characteristicIndex, activeCharacteristic, areReasonCodesUsed, scorecardBaselineScore } = props;
 
+  const { validationRegistry } = useValidationRegistry();
+  const reasonCodeValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forReasonCode()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, areReasonCodesUsed, activeCharacteristic]
+  );
+  const baselineScoreValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forBaselineScore()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, areReasonCodesUsed, scorecardBaselineScore, activeCharacteristic]
+  );
   return (
     <>
-      {activeCharacteristic.baselineScore !== undefined &&
-        isBaselineScoreRequired &&
-        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
-      {activeCharacteristic.reasonCode !== undefined &&
-        areReasonCodesUsed &&
+      {areReasonCodesUsed &&
+        activeCharacteristic.reasonCode !== undefined &&
+        reasonCodeValidation.length === 0 &&
         CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
+      {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Reason code:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
+
+      {activeCharacteristic.baselineScore !== undefined &&
+        baselineScoreValidation.length === 0 &&
+        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
+      {areReasonCodesUsed && activeCharacteristic.baselineScore === undefined && baselineScoreValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Baseline score:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
     </>
   );
 };
