@@ -2311,7 +2311,7 @@ public class DMNMarshallerStandaloneTest {
     @Test
     public void testIsAutoConnection() {
         String id = "DMNEdge-ID";
-        String autoConnectionID = "#AUTO-CONNECTION";
+        String autoConnectionID = "-AUTO-CONNECTION";
 
         DMNEdge dmnEdge1 = mock(DMNEdge.class);
         when(dmnEdge1.getId()).thenReturn(id);

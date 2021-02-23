@@ -144,9 +144,9 @@ public class DMNMarshallerStandalone implements DiagramMarshaller<Graph, Metadat
 
     private static final double CENTRE_TOLERANCE = 1.0;
 
-    private static final String AUTO_SOURCE_CONNECTION = "#AUTO-SOURCE";
+    private static final String AUTO_SOURCE_CONNECTION = "-AUTO-SOURCE";
 
-    private static final String AUTO_TARGET_CONNECTION = "#AUTO-TARGET";
+    private static final String AUTO_TARGET_CONNECTION = "-AUTO-TARGET";
 
     private XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
     private FactoryManager factoryManager;
