@@ -1,6 +1,7 @@
 name: "Re-trigger Workflows on open PRs"
 
 on:
+  workflow_dispatch:
   push:
     branches: [master]
 
