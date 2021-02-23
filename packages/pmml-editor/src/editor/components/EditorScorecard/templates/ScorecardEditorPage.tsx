@@ -76,7 +76,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       characteristics.Characteristic.every(characteristic => characteristic.baselineScore !== undefined)
     );
   }, [characteristics]);
-  
+
   return (
     <div data-testid="editor-page" className={"editor"}>
       {!model && <EmptyStateModelNotFound />}
@@ -169,6 +169,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                 modelIndex={modelIndex}
                 areReasonCodesUsed={model.useReasonCodes ?? true}
                 scorecardBaselineScore={model.baselineScore}
+                characteristics={characteristics?.Characteristic ?? []}
               />
             </PageSection>
           </PageSection>

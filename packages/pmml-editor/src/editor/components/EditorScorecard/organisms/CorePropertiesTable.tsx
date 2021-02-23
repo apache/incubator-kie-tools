@@ -41,7 +41,8 @@ import { isEqual } from "lodash";
 import { useOperation } from "../OperationContext";
 import set = Reflect.set;
 import get = Reflect.get;
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { HelpIcon } from "@patternfly/react-icons";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 

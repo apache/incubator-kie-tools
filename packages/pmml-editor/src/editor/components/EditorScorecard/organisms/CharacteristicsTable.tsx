@@ -32,6 +32,7 @@ interface CharacteristicsTableProps {
   areReasonCodesUsed: boolean;
   scorecardBaselineScore: number | undefined;
   characteristics: IndexedCharacteristic[];
+  characteristicsUnfilteredLength: number;
   selectedCharacteristicIndex: number | undefined;
   setSelectedCharacteristicIndex: (index: number | undefined) => void;
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
@@ -49,6 +50,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     areReasonCodesUsed,
     scorecardBaselineScore,
     characteristics,
+    characteristicsUnfilteredLength,
     selectedCharacteristicIndex,
     setSelectedCharacteristicIndex,
     validateCharacteristicName,
@@ -76,7 +78,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
   useEffect(() => {
-    if (selectedCharacteristicIndex === characteristics.length) {
+    if (selectedCharacteristicIndex === characteristicsUnfilteredLength) {
       setSelectedCharacteristicIndex(undefined);
       setActiveOperation(Operation.NONE);
     }

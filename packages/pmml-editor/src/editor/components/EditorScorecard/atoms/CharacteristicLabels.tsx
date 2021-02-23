@@ -17,8 +17,9 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { Builder } from "../../../paths";
 
 interface CharacteristicLabelsProps {
   modelIndex: number;

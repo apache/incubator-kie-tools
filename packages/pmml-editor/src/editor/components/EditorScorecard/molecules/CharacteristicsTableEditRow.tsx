@@ -28,7 +28,8 @@ import { useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;

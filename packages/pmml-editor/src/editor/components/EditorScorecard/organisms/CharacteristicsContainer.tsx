@@ -28,13 +28,12 @@ import {
   EmptyStateNoCharacteristics,
   EmptyStateNoMatchingCharacteristics
 } from "../molecules";
-import { Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
 import { fromText } from "./PredicateConverter";
-import { useSelector } from "react-redux";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -42,12 +41,13 @@ interface CharacteristicsContainerProps {
   modelIndex: number;
   areReasonCodesUsed: boolean;
   scorecardBaselineScore: number | undefined;
+  characteristics: Characteristic[];
 }
 
 type CharacteristicsViewSection = "overview" | "attribute";
 
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
-  const { modelIndex, areReasonCodesUsed, scorecardBaselineScore } = props;
+  const { modelIndex, areReasonCodesUsed, scorecardBaselineScore, characteristics } = props;
 
   const { setActiveOperation } = useOperation();
   const { service, getCurrentState } = useHistoryService();
@@ -58,15 +58,6 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
   const [viewSection, setViewSection] = useState<CharacteristicsViewSection>("overview");
-
-  const characteristics: Characteristic[] = useSelector<PMML, Characteristic[]>((state: PMML) => {
-    const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
-    if (_model && _model instanceof Scorecard) {
-      const scorecard = _model as Scorecard;
-      return scorecard.Characteristics.Characteristic;
-    }
-    return [];
-  });
 
   useEffect(() => applyFilter(), [modelIndex, characteristics]);
 
@@ -207,7 +198,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
         });
       }
     },
-    [characteristics]
+    [characteristics, selectedCharacteristicIndex]
   );
 
   const onCancel = () => {
@@ -265,6 +256,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       areReasonCodesUsed={areReasonCodesUsed}
                       scorecardBaselineScore={scorecardBaselineScore}
                       characteristics={filteredCharacteristics}
+                      characteristicsUnfilteredLength={characteristics.length}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
                       setSelectedCharacteristicIndex={setSelectedCharacteristicIndex}
                       validateCharacteristicName={validateCharacteristicName}

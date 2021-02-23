@@ -266,7 +266,7 @@ class PredicateBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.predicateIndex !== undefined ? `Predicate[${this.predicateIndex}]` : `Predicate`;
+    return this.predicateIndex !== undefined ? `predicate[${this.predicateIndex}]` : `predicate`;
   }
 }
 

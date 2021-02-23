@@ -34,9 +34,10 @@ import { isEqual } from "lodash";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { useOperation } from "../OperationContext";
 import { fromText, toText } from "../organisms";
-import { Builder, useValidationRegistry } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
 import set = Reflect.set;
 import get = Reflect.get;
+import { Builder } from "../../../paths";
 
 interface AttributeEditorContent {
   partialScore?: number;

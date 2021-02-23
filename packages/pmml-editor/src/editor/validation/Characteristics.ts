@@ -18,7 +18,7 @@ import { ValidationRegistry } from "./ValidationRegistry";
 import { areAttributesReasonCodesMissing, validateAttributes } from "./Attributes";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
-import { Builder } from "./ValidationPath";
+import { Builder } from "../paths";
 
 export const validateCharacteristic = (
   modelIndex: number,
