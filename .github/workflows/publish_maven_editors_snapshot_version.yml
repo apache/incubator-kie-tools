@@ -57,7 +57,6 @@ jobs:
 
       - name: Checkout kogito-tooling
         uses: actions/checkout@v2
-        if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
         with:
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
           path: ${{ github.workspace }}/kogito-tooling
