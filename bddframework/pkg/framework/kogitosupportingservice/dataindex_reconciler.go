@@ -75,6 +75,7 @@ var dataIndexKafkaTopics = []string{
 	"kogito-processdomain-events",
 	"kogito-usertaskdomain-events",
 	"kogito-jobs-events",
+	"kogito-variables-events",
 }
 
 func (d *dataIndexSupportingServiceResource) dataIndexOnDeploymentCreate(deployment *appsv1.Deployment) error {
