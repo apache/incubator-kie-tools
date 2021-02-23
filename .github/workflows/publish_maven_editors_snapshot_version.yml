@@ -82,7 +82,7 @@ jobs:
       - name: Build kie-wb-common
         run: |
           cd ${{ github.workspace }}/kie-wb-common
-          mvn clean install -DskipTests -Denforcer.skip -T 2 -B -am -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime,kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
+          mvn clean install -DskipTests -Denforcer.skip -B -am -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime,kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
 
       - name: Build drools-wb
         run: |
