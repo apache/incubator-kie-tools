@@ -39,12 +39,12 @@ import { Operation } from "../Operation";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { isEqual } from "lodash";
 import { useOperation } from "../OperationContext";
-import set = Reflect.set;
-import get = Reflect.get;
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { HelpIcon } from "@patternfly/react-icons";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import set = Reflect.set;
+import get = Reflect.get;
 
 interface CoreProperties {
   modelIndex: number;
@@ -169,7 +169,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     >
       <PageSection
         variant={PageSectionVariants.light}
-        className={isEditModeEnabled ? "editable-item" : "editable-item--editing"}
+        className={isEditModeEnabled ? "editable-item--editing" : "editable-item"}
       >
         <Stack hasGutter={true}>
           <StackItem>
