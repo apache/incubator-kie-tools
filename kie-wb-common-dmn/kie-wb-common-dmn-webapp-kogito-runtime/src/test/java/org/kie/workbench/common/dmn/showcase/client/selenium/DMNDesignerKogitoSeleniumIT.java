@@ -60,7 +60,9 @@ import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrume
 import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+
 
 /**
  * Selenium test for DMN Designer - client site marshalling version
@@ -622,6 +624,7 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     @Test
     public void testDecisionExpressionInvocation() throws Exception {
         final String expected = loadResource("decision-expression-invocation.xml");
+        setContent(expected);
         setContent(expected);
 
         final String actual = getContent();
@@ -2349,6 +2352,55 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
                                   "/dmn:text[text()='the description']");
     }
 
+    /**
+     * This test increases KOGITO-4265 coverage
+     * Input parameters order should be the same as in the Properties panel so in the DMN file
+     */
+    @Test
+    public void testDecisionServiceParametersOrder() throws Exception {
+        final String decisionService = "DecisionService-1";
+        final String expected = loadResource("decision-service-three-inputs.xml");
+
+        final String xInputHref = "#_51D20318-4883-49DC-AE68-42131A20F8B3";
+        final String yInputHref = "#_4D49912C-2D15-4C30-A445-E0431AB5AB9C";
+        final String zInputHref = "#_65560FB5-7AF0-4FCC-A8E8-8AEA2E307ABB";
+
+        // assert original order
+        assertDecisionServiceParametersOrder(expected, zInputHref, xInputHref, yInputHref);
+
+        setContent(expected);
+
+        expandDecisionNavigatorDock();
+        waitOperation()
+                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, decisionService))
+                .until(element(DecisionNavigatorXPathLocator.node(decisionService)))
+                .click();
+        expandPropertiesPanelDock();
+
+        List<WebElement> inputs = waitOperation()
+                .withMessage("Input Data decision service details not found in properties panel")
+                .until(allElements(PropertiesPanelXPathLocator.decisionServiceDetails(PropertiesPanelXPathLocator.DecisionServiceDetails.INPUT_DATA)));
+
+        // assert order in UI is same as in the source
+        assertThat(inputs)
+                .extracting(in -> in.getText())
+                .containsExactly("Z", "X", "Y");
+
+        collapseDecisionNavigatorDock();
+
+        // assert order doesn't change when saving
+        final String actual = getContent();
+        assertDecisionServiceParametersOrder(actual, zInputHref, xInputHref, yInputHref);
+    }
+
+    private void assertDecisionServiceParametersOrder(final String dmnModelXml, final String... inputHrefs) {
+        XmlAssert.assertThat(dmnModelXml)
+                .withNamespaceContext(NAMESPACES)
+                .nodesByXPath("/dmn:definitions/dmn:decisionService/dmn:inputData")
+                .extracting(n-> n.getAttributes().getNamedItem("href").getNodeValue())
+                .containsExactly(inputHrefs);
+    }
+
     private void assertDiagramNodeIsPresentInDecisionNavigator(final String nodeName) {
         expandDecisionNavigatorDock();
         waitOperation()
@@ -2446,12 +2498,14 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
 
     private void expandPropertiesPanelGroup(final String groupName) {
         waitOperation()
+                .withMessage(groupName + "not found in properties panel")
                 .until(element(PropertiesPanelXPathLocator.group(groupName)))
                 .click();
     }
 
     private void fillInProperty(final String propertyName, final String value) {
         waitOperation()
+                .withMessage(propertyName + "not found in properties panel")
                 .until(element(PropertiesPanelXPathLocator.property(propertyName)))
                 .sendKeys(value);
     }
@@ -2481,5 +2535,9 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
 
     private ExpectedCondition<WebElement> element(final XPathLocator xpathLocator) {
         return visibilityOfElementLocated(xpath(xpathLocator.getXPathLocator()));
+    }
+
+    private ExpectedCondition<List<WebElement>> allElements(final XPathLocator xpathLocator) {
+        return visibilityOfAllElementsLocatedBy(xpath(xpathLocator.getXPathLocator()));
     }
 }
