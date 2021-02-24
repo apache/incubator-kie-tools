@@ -116,3 +116,26 @@ func CreateFakeKogitoInfinispan(namespace string) api.KogitoInfraInterface {
 		},
 	}
 }
+
+// CreateFakeKogitoKnative create fake kogito infra instance for Knative
+func CreateFakeKogitoKnative(namespace string) api.KogitoInfraInterface {
+	return &v1beta1.KogitoInfra{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "kogito-knative",
+			Namespace: namespace,
+		},
+		Spec: v1beta1.KogitoInfraSpec{
+			Resource: v1beta1.Resource{
+				Kind:       "Broker",
+				APIVersion: "eventing.knative.dev/v1",
+			},
+		},
+		Status: v1beta1.KogitoInfraStatus{
+			Condition: v1beta1.KogitoInfraCondition{
+				Type:   api.SuccessInfraConditionType,
+				Status: v1.StatusSuccess,
+				Reason: "",
+			},
+		},
+	}
+}

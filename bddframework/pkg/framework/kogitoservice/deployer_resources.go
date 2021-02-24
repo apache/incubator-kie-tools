@@ -261,13 +261,15 @@ func (s *serviceDeployer) fetchKogitoInfraProperties() (map[string]string, []cor
 		runtime := s.instance.GetSpec().GetRuntime()
 
 		// fetch app properties from Kogito infra instance
-		appProp := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtime].GetAppProps()
-		util.AppendToStringMap(appProp, consolidateAppProperties)
+		runtimeProperties := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtime]
+		if runtimeProperties != nil {
+			appProp := runtimeProperties.GetAppProps()
+			util.AppendToStringMap(appProp, consolidateAppProperties)
 
-		// fetch env properties from Kogito infra instance
-		envProp := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtime].GetEnv()
-		consolidateEnvProperties = append(consolidateEnvProperties, envProp...)
-
+			// fetch env properties from Kogito infra instance
+			envProp := runtimeProperties.GetEnv()
+			consolidateEnvProperties = append(consolidateEnvProperties, envProp...)
+		}
 		// fetch volume from Kogito infra instance
 		volumes = append(volumes, kogitoInfraInstance.GetStatus().GetVolumes()...)
 	}

@@ -50,7 +50,7 @@ func (k *knativeInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 		if resultErr != nil {
 			return false, resultErr
 		} else if broker == nil {
-			return false, errorForResourceNotFound(infrastructure.KnativeEventingBrokerKind, broker.Name, broker.Namespace)
+			return false, errorForResourceNotFound(infrastructure.KnativeEventingBrokerKind, k.instance.GetSpec().GetResource().GetName(), ns)
 		}
 	} else {
 		return false,

@@ -86,12 +86,14 @@ func Test_serviceDeployer_createRequiredResources_OnOCPNoImageStreamCreated(t *t
 func Test_serviceDeployer_createRequiredResources_CreateNewAppPropConfigMap(t *testing.T) {
 	kogitoKafka := test.CreateFakeKogitoKafka(t.Name())
 	kogitoInfinispan := test.CreateFakeKogitoInfinispan(t.Name())
+	kogitoKnative := test.CreateFakeKogitoKnative(t.Name())
 	instance := test.CreateFakeDataIndex(t.Name())
 	instance.GetSpec().AddInfra(kogitoKafka.GetName())
 	instance.GetSpec().AddInfra(kogitoInfinispan.GetName())
+	instance.GetSpec().AddInfra(kogitoKnative.GetName())
 	is, tag := test.CreateImageStreams("kogito-data-index-infinispan", instance.GetNamespace(), instance.GetName(), infrastructure.GetKogitoImageVersion())
 	cli := test.NewFakeClientBuilder().OnOpenShift().
-		AddK8sObjects(is, kogitoKafka, kogitoInfinispan).
+		AddK8sObjects(is, kogitoKafka, kogitoInfinispan, kogitoKnative).
 		AddImageObjects(tag).
 		Build()
 	context := &operator.Context{
