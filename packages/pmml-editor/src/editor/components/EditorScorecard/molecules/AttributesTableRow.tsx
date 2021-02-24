@@ -22,7 +22,6 @@ import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
-import { ValidationIndicator } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
@@ -30,7 +29,6 @@ interface AttributesTableRowProps {
   characteristicIndex: number;
   attributeIndex: number;
   attribute: Attribute;
-  attributes: Attribute[];
   areReasonCodesUsed: boolean;
   characteristicReasonCode: Characteristic["reasonCode"];
   dataFields: DataField[];
@@ -46,7 +44,6 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     characteristicIndex,
     attributeIndex,
     attribute,
-    attributes,
     areReasonCodesUsed,
     characteristicReasonCode,
     dataFields,
@@ -101,7 +98,15 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
               </ValidationIndicatorLabel>
             )}
             {validations.length === 0 && (
-              <Label tabIndex={0} color="blue">
+              <Label
+                tabIndex={0}
+                color="blue"
+                onClose={e => {
+                  e.nativeEvent.stopImmediatePropagation();
+                  e.stopPropagation();
+                  onCommit({ predicate: undefined });
+                }}
+              >
                 <pre>{toText(attribute.predicate, dataFields)}</pre>
               </Label>
             )}
@@ -113,7 +118,6 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
             characteristicIndex={characteristicIndex}
             activeAttributeIndex={attributeIndex}
             activeAttribute={attribute}
-            attributes={attributes}
             areReasonCodesUsed={areReasonCodesUsed}
             characteristicReasonCode={characteristicReasonCode}
             commit={onCommit}

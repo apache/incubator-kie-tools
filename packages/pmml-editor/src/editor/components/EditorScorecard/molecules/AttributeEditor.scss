@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.characteristic-item {
-  // write the following better
-  span,
-  strong {
-    user-select: text;
-  }
+.attribute-editor {
 
-  &:last-child {
-    margin-bottom: 0;
+  &__validation-alert {
+    margin-bottom: 1em;
   }
 
 }

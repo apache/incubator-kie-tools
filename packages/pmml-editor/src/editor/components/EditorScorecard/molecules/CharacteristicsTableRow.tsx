@@ -25,7 +25,6 @@ import {
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
-import { ValidationIndicator } from "../../EditorCore/atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 
@@ -130,7 +129,6 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
             characteristicIndex={characteristicIndex}
             activeAttributeIndex={index}
             activeAttribute={item}
-            attributes={characteristic.Attribute}
             areReasonCodesUsed={areReasonCodesUsed}
             characteristicReasonCode={characteristic.reasonCode}
           />

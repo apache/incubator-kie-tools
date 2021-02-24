@@ -84,7 +84,6 @@ export const AttributesTable = (props: AttributesTableProps) => {
             characteristicIndex={characteristicIndex}
             attributeIndex={index}
             attribute={attribute}
-            attributes={characteristic.Attribute}
             areReasonCodesUsed={areReasonCodesUsed}
             characteristicReasonCode={characteristic.reasonCode}
             dataFields={dataFields}

@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
+import { Alert, Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
 import {
   Attribute,
   Characteristic,
@@ -25,8 +25,7 @@ import {
   Predicate,
   Scorecard
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { ExclamationCircleIcon, HelpIcon } from "@patternfly/react-icons";
-import { ValidatedType } from "../../../types";
+import { HelpIcon } from "@patternfly/react-icons";
 import { PredicateEditor } from "./PredicateEditor";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
@@ -35,9 +34,10 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { useOperation } from "../OperationContext";
 import { fromText, toText } from "../organisms";
 import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
+import "./AttributeEditor.scss";
 import set = Reflect.set;
 import get = Reflect.get;
-import { Builder } from "../../../paths";
 
 interface AttributeEditorContent {
   partialScore?: number;
@@ -57,10 +57,7 @@ interface AttributeEditorProps {
 export const AttributeEditor = (props: AttributeEditorProps) => {
   const { modelIndex, characteristicIndex, attributeIndex, areReasonCodesUsed, onCancel, onCommit } = props;
 
-  const [text, setText] = useState<ValidatedType<string | undefined>>({
-    value: undefined,
-    valid: true
-  });
+  const [text, setText] = useState<string | undefined>();
   const [partialScore, setPartialScore] = useState<number | undefined>();
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [originalText, setOriginalText] = useState<string>();
@@ -99,8 +96,8 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   // text will be committed if it has changed from the original..
   const ref = useOnclickOutside(
     () => {
-      if (text.value !== originalText) {
-        commit({ predicate: fromText(text.value) });
+      if (text !== originalText) {
+        commit({ predicate: fromText(text) });
       }
     },
     {
@@ -136,13 +133,27 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
       ),
     [modelIndex, characteristicIndex, attribute.partialScore]
   );
+  const predicateValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, attribute.predicate]
+  );
+  const hasInvalidState = useMemo(
+    () => reasonCodeValidation.length + partialScoreValidation.length + predicateValidation.length > 0,
+    [reasonCodeValidation, partialScoreValidation, predicateValidation]
+  );
 
   useEffect(() => {
     const _text = toText(attribute.predicate, dataFields);
-    setText({
-      value: _text,
-      valid: validateText(_text)
-    });
+    setText(_text);
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
     setOriginalText(_text);
@@ -159,12 +170,13 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     return n;
   };
 
-  const validateText = (_text: string | undefined) => {
-    return _text !== undefined && _text.trim() !== "";
-  };
-
   return (
     <article tabIndex={0}>
+      {hasInvalidState && (
+        <section className="attribute-editor__validation-alert">
+          <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
+        </section>
+      )}
       <Form>
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>
@@ -172,13 +184,15 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
               label="Predicate"
               isRequired={true}
               fieldId="attribute-predicate-helper"
-              helperText="Expression editor for the predicate."
-              helperTextInvalid="Predicate must be present"
-              helperTextInvalidIcon={<ExclamationCircleIcon />}
-              validated={text.valid ? "default" : "error"}
+              validated={predicateValidation.length > 0 ? "warning" : "default"}
+              helperText={
+                predicateValidation.length > 0
+                  ? predicateValidation[0].message
+                  : "The condition upon which the mapping between input attribute and partial score takes place."
+              }
             >
               <div ref={ref}>
-                <PredicateEditor text={text} setText={setText} validateText={validateText} />
+                <PredicateEditor text={text} setText={setText} />
               </div>
             </FormGroup>
           </SplitItem>

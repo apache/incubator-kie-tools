@@ -26,7 +26,6 @@ interface AttributeLabelsProps {
   characteristicIndex: number;
   activeAttributeIndex: number;
   activeAttribute: Attribute;
-  attributes: Attribute[];
   areReasonCodesUsed: boolean;
   characteristicReasonCode: Characteristic["reasonCode"];
   commit?: (partial: Partial<Attribute>) => void;
@@ -38,7 +37,6 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
     characteristicIndex,
     activeAttributeIndex,
     activeAttribute,
-    attributes,
     areReasonCodesUsed,
     characteristicReasonCode,
     commit
