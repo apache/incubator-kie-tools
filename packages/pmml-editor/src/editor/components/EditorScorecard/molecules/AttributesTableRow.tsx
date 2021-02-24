@@ -69,7 +69,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
 
   return (
     <article
-      className={`attribute-item attribute-item-n${attributeIndex} editable`}
+      className={`attribute-item attribute-item-n${attributeIndex} editable-item`}
       tabIndex={0}
       onClick={() => onEdit()}
       onKeyDown={e => {
