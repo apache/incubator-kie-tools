@@ -82,97 +82,105 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       {!model && <EmptyStateModelNotFound />}
       {model && (
         <>
-          <PageSection variant={PageSectionVariants.light} isFilled={false}>
-            <EditorHeader
-              modelName={getModelName(model)}
-              modelIndex={modelIndex}
-              miningSchema={miningSchema}
-              output={output}
-              validateOutputFieldName={validateOutputName}
-              deleteOutputField={_index => {
-                if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
-                  dispatch({
-                    type: Actions.DeleteOutput,
-                    payload: {
-                      modelIndex: modelIndex,
-                      outputIndex: _index
+          <div className={"editor__header__container"}>
+            <div className={"editor__header__content"}>
+              <PageSection variant={PageSectionVariants.light} isFilled={false}>
+                <EditorHeader
+                  modelName={getModelName(model)}
+                  modelIndex={modelIndex}
+                  miningSchema={miningSchema}
+                  output={output}
+                  validateOutputFieldName={validateOutputName}
+                  deleteOutputField={_index => {
+                    if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
+                      dispatch({
+                        type: Actions.DeleteOutput,
+                        payload: {
+                          modelIndex: modelIndex,
+                          outputIndex: _index
+                        }
+                      });
                     }
-                  });
-                }
-              }}
-              commitOutputField={(_index, _outputField: OutputField) => {
-                if (_index === undefined) {
-                  dispatch({
-                    type: Actions.AddOutput,
-                    payload: {
-                      modelIndex: modelIndex,
-                      outputField: _outputField
+                  }}
+                  commitOutputField={(_index, _outputField: OutputField) => {
+                    if (_index === undefined) {
+                      dispatch({
+                        type: Actions.AddOutput,
+                        payload: {
+                          modelIndex: modelIndex,
+                          outputField: _outputField
+                        }
+                      });
+                    } else {
+                      dispatch({
+                        type: Actions.UpdateOutput,
+                        payload: {
+                          modelIndex: modelIndex,
+                          outputIndex: _index,
+                          outputField: _outputField
+                        }
+                      });
                     }
-                  });
-                } else {
-                  dispatch({
-                    type: Actions.UpdateOutput,
-                    payload: {
-                      modelIndex: modelIndex,
-                      outputIndex: _index,
-                      outputField: _outputField
-                    }
-                  });
-                }
-              }}
-              commitModelName={(_modelName: string) => {
-                dispatch({
-                  type: Actions.Scorecard_SetModelName,
-                  payload: {
-                    modelIndex: modelIndex,
-                    modelName: _modelName
-                  }
-                });
-              }}
-            />
-          </PageSection>
+                  }}
+                  commitModelName={(_modelName: string) => {
+                    dispatch({
+                      type: Actions.Scorecard_SetModelName,
+                      payload: {
+                        modelIndex: modelIndex,
+                        modelName: _modelName
+                      }
+                    });
+                  }}
+                />
+              </PageSection>
+            </div>
+          </div>
 
-          <PageSection isFilled={false}>
-            <CorePropertiesTable
-              modelIndex={modelIndex}
-              isScorable={model.isScorable ?? true}
-              functionName={model.functionName}
-              algorithmName={model.algorithmName}
-              baselineScore={model.baselineScore}
-              isBaselineScoreDisabled={isBaselineScoreDisabled}
-              baselineMethod={model.baselineMethod ?? "other"}
-              initialScore={model.initialScore}
-              areReasonCodesUsed={model.useReasonCodes ?? true}
-              reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
-              commit={_props => {
-                dispatch({
-                  type: Actions.Scorecard_SetCoreProperties,
-                  payload: {
-                    modelIndex: modelIndex,
-                    isScorable: _props.isScorable,
-                    functionName: _props.functionName,
-                    algorithmName: _props.algorithmName,
-                    baselineScore: _props.baselineScore,
-                    baselineMethod: _props.baselineMethod,
-                    initialScore: _props.initialScore,
-                    useReasonCodes: _props.areReasonCodesUsed,
-                    reasonCodeAlgorithm: _props.reasonCodeAlgorithm
-                  }
-                });
-              }}
-            />
-          </PageSection>
+          <div className={"editor__body__container"}>
+            <div className={"editor__body__content"}>
+              <PageSection isFilled={false}>
+                <CorePropertiesTable
+                  modelIndex={modelIndex}
+                  isScorable={model.isScorable ?? true}
+                  functionName={model.functionName}
+                  algorithmName={model.algorithmName}
+                  baselineScore={model.baselineScore}
+                  isBaselineScoreDisabled={isBaselineScoreDisabled}
+                  baselineMethod={model.baselineMethod ?? "other"}
+                  initialScore={model.initialScore}
+                  areReasonCodesUsed={model.useReasonCodes ?? true}
+                  reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
+                  commit={_props => {
+                    dispatch({
+                      type: Actions.Scorecard_SetCoreProperties,
+                      payload: {
+                        modelIndex: modelIndex,
+                        isScorable: _props.isScorable,
+                        functionName: _props.functionName,
+                        algorithmName: _props.algorithmName,
+                        baselineScore: _props.baselineScore,
+                        baselineMethod: _props.baselineMethod,
+                        initialScore: _props.initialScore,
+                        useReasonCodes: _props.areReasonCodesUsed,
+                        reasonCodeAlgorithm: _props.reasonCodeAlgorithm
+                      }
+                    });
+                  }}
+                />
+              </PageSection>
 
-          <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
-            <PageSection variant={PageSectionVariants.light} style={{ height: "100%" }}>
-              <CharacteristicsContainer
-                modelIndex={modelIndex}
-                areReasonCodesUsed={model.useReasonCodes ?? true}
-                scorecardBaselineScore={model.baselineScore}
-                characteristics={characteristics?.Characteristic ?? []}
-              />
-            </PageSection>
-          </PageSection>
+              <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
+                <PageSection variant={PageSectionVariants.light} style={{ height: "100%" }}>
+                  <CharacteristicsContainer
+                    modelIndex={modelIndex}
+                    areReasonCodesUsed={model.useReasonCodes ?? true}
+                    scorecardBaselineScore={model.baselineScore}
+                    characteristics={characteristics?.Characteristic ?? []}
+                  />
+                </PageSection>
+              </PageSection>
+            </div>
+          </div>
         </>
       )}
     </div>

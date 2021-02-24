@@ -20,6 +20,37 @@
   display: flex;
   flex-direction: column;
   justify-content: stretch;
+
+  &__header {
+
+    &__container {
+      background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
+    }
+
+    &__content {
+      margin: 0 auto;
+      max-width: 1920px;
+    }
+
+  }
+
+  &__body {
+
+    &__container {
+      background-color: var(--pf-c-page__main-section--BackgroundColor);
+      flex-grow: 1;
+    }
+
+    &__content {
+      margin: 0 auto;
+      max-width: 1920px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+    }
+
+  }
 }
 
 .editable-item {
