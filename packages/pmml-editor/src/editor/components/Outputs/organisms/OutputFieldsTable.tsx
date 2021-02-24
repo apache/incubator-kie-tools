@@ -93,38 +93,39 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
       }}
     >
       <section>
-        {outputs.map((o, index) => (
-          <article
-            key={index}
-            className={`editable-item output-item-n${index} ${
-              selectedOutputIndex === index ? "editable-item--editing" : ""
-            }`}
-          >
-            {selectedOutputIndex === index && (
-              <div ref={addOutputRowRef}>
-                <OutputFieldEditRow
+        {outputs.map((o, index) => {
+          const isRowInEditMode = selectedOutputIndex === index && activeOperation === Operation.UPDATE_OUTPUT;
+          return (
+            <article
+              key={index}
+              className={`editable-item output-item-n${index} ${isRowInEditMode ? "editable-item--editing" : ""}`}
+            >
+              {isRowInEditMode && (
+                <div ref={addOutputRowRef}>
+                  <OutputFieldEditRow
+                    modelIndex={modelIndex}
+                    outputField={o}
+                    outputFieldIndex={index}
+                    validateOutputName={_name => onValidateOutputFieldName(index, _name)}
+                    viewExtendedProperties={viewExtendedProperties}
+                    onCommitAndClose={onCommitAndClose}
+                    onCommit={onCommit}
+                    onCancel={onCancel}
+                  />
+                </div>
+              )}
+              {!isRowInEditMode && (
+                <OutputFieldRow
                   modelIndex={modelIndex}
                   outputField={o}
                   outputFieldIndex={index}
-                  validateOutputName={_name => onValidateOutputFieldName(index, _name)}
-                  viewExtendedProperties={viewExtendedProperties}
-                  onCommitAndClose={onCommitAndClose}
-                  onCommit={onCommit}
-                  onCancel={onCancel}
+                  onEditOutputField={() => onEdit(index)}
+                  onDeleteOutputField={() => onDelete(index)}
                 />
-              </div>
-            )}
-            {selectedOutputIndex !== index && (
-              <OutputFieldRow
-                modelIndex={modelIndex}
-                outputField={o}
-                outputFieldIndex={index}
-                onEditOutputField={() => onEdit(index)}
-                onDeleteOutputField={() => onDelete(index)}
-              />
-            )}
-          </article>
-        ))}
+              )}
+            </article>
+          );
+        })}
       </section>
       {outputs.length === 0 && (
         <Bullseye>

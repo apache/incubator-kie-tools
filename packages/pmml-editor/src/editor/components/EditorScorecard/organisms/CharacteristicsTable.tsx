@@ -106,18 +106,19 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
         e.stopPropagation();
         e.preventDefault();
       }}
+      className="characteristics-container__overview__form"
     >
-      <section>
-        {characteristics.map(ic => (
+      {characteristics.map(ic => {
+        const isRowInEditMode =
+          selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC;
+        return (
           <article
             key={ic.index}
             className={`editable-item output-item-n${selectedCharacteristicIndex} ${
-              selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC
-                ? "editable-item--editing"
-                : ""
+              isRowInEditMode ? "editable-item--editing" : ""
             }`}
           >
-            {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
+            {isRowInEditMode && (
               <div ref={addCharacteristicRowRef}>
                 <CharacteristicsTableEditRow
                   modelIndex={modelIndex}
@@ -133,7 +134,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 />
               </div>
             )}
-            {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
+            {!isRowInEditMode && (
               <CharacteristicsTableRow
                 modelIndex={modelIndex}
                 characteristicIndex={ic.index}
@@ -146,8 +147,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               />
             )}
           </article>
-        ))}
-      </section>
+        );
+      })}
     </Form>
   );
 };

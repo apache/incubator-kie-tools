@@ -18,10 +18,18 @@
   height: 100%;
 
   &__overview {
-    overflow-y: auto;
-    padding: 1em;
-    background-color: var(--pf-global--BackgroundColor--200);
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+
+    &__form {
+      display: block;
+      flex: 1 1 0;
+      overflow-y: auto;
+      padding: 1em;
+      background-color: var(--pf-global--BackgroundColor--200);
+    }
 
     &-enter {
       opacity: 0;
@@ -40,6 +48,7 @@
       opacity: 0;
       transition: opacity 100ms;
     }
+
   }
 
   &__attribute {
