@@ -61,7 +61,16 @@ func Test_Reconcile_Infinispan(t *testing.T) {
 			},
 			Conditions: []ispn.InfinispanCondition{
 				{
+					Type:   infinispanConditionWellFormed,
 					Status: string(v1.ConditionTrue),
+				},
+				{
+					Type:   "stopping",
+					Status: string(v1.ConditionFalse),
+				},
+				{
+					Type:   "gracefulShutdown",
+					Status: string(v1.ConditionFalse),
 				},
 			},
 		},

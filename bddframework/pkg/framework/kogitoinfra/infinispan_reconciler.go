@@ -66,6 +66,7 @@ const (
 	infinispanCertMountName           = "infinispan-cert"
 	infinispanEnvKeyCredSecret        = "INFINISPAN_CREDENTIAL_SECRET"
 	infinispanEnablePersistenceEnvKey = "ENABLE_PERSISTENCE"
+	infinispanConditionWellFormed     = "wellFormed"
 )
 
 var (
@@ -160,9 +161,9 @@ func (i *infinispanInfraReconciler) Reconcile() (requeue bool, resultErr error) 
 			return true, nil
 		}
 	}
-	infinispanCondition := getLatestInfinispanCondition(infinispanInstance)
+	infinispanCondition := getInfinispanWellFormedCondition(infinispanInstance)
 	if infinispanCondition == nil || infinispanCondition.Status != string(v1.ConditionTrue) {
-		return false, errorForResourceNotReadyError(fmt.Errorf("infinispan instance %s not ready. Waiting for Condition.Type == True", infinispanInstance.Name))
+		return false, errorForResourceNotReadyError(fmt.Errorf("infinispan instance %s not ready. Waiting for Condition with Condition.Type == %s to have Condition.Status == %s", infinispanInstance.Name, infinispanConditionWellFormed, v1.ConditionTrue))
 	}
 	if resultErr := i.updateInfinispanVolumesInStatus(infinispanInstance); resultErr != nil {
 		return false, nil
@@ -380,10 +381,17 @@ func hasInfinispanMountedVolume(infra api.KogitoInfraInterface) bool {
 	return false
 }
 
-func getLatestInfinispanCondition(instance *infinispan.Infinispan) *infinispan.InfinispanCondition {
+func getInfinispanWellFormedCondition(instance *infinispan.Infinispan) *infinispan.InfinispanCondition {
 	if len(instance.Status.Conditions) == 0 {
 		return nil
 	}
-	// Infinispan does not have a condition transition date, so let's get the latest
-	return &instance.Status.Conditions[len(instance.Status.Conditions)-1]
+
+	// Infinispan does not have a condition transition date, so let's get the wellFormed condition
+	for _, condition := range instance.Status.Conditions {
+		if condition.Type == infinispanConditionWellFormed {
+			return &condition
+		}
+	}
+
+	return nil
 }
