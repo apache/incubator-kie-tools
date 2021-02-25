@@ -21,15 +21,15 @@ public class DockPlaceHolderBaseViewImpl
         extends SimplePanel
         implements DockPlaceHolderBaseView {
 
-    private DockPlaceHolderBase presenter;
+    private DockPlaceHolder presenter;
 
     @Override
-    public DockPlaceHolderBase getPresenter() {
+    public DockPlaceHolder getPresenter() {
         return presenter;
     }
 
     @Override
-    public void setPresenter(final DockPlaceHolderBase presenter) {
+    public void setPresenter(final DockPlaceHolder presenter) {
         this.presenter = presenter;
     }
 }

@@ -63,7 +63,6 @@ import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocu
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.mvp.DefaultPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
@@ -281,8 +280,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     void initDocks() {
-        diagramPropertiesDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
-        diagramPreviewAndExplorerDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
+        diagramPropertiesDock.init();
+        diagramPreviewAndExplorerDock.init();
     }
 
     void openDocks() {

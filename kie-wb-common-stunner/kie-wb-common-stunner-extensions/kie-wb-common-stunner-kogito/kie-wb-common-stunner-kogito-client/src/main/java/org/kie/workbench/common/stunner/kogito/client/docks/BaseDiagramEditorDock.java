@@ -29,7 +29,6 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
     protected final UberfireDocks uberfireDocks;
     protected UberfireDock uberfireDock;
     protected boolean isOpened = false;
-    protected String owningPerspectiveId;
     protected final TranslationService translationService;
 
     public BaseDiagramEditorDock(UberfireDocks uberfireDocks, TranslationService translationService) {
@@ -38,8 +37,7 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
     }
 
     @Override
-    public void init(final String owningPerspectiveId) {
-        this.owningPerspectiveId = owningPerspectiveId;
+    public void init() {
         this.uberfireDock = makeUberfireDock();
     }
 
@@ -56,7 +54,7 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
 
         isOpened = true;
         uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position(), owningPerspectiveId());
+        uberfireDocks.show(position());
     }
 
     @Override
@@ -78,16 +76,12 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
         return UberfireDockPosition.EAST;
     }
 
-    protected String owningPerspectiveId() {
-        return owningPerspectiveId;
-    }
-
     protected UberfireDock getUberfireDock() {
         return uberfireDock;
     }
 
     protected UberfireDock makeUberfireDock() {
-        final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest(), owningPerspectiveId());
+        final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest());
         return uberfireDock.withSize(DOCK_SIZE).withLabel(dockLabel());
     }
 

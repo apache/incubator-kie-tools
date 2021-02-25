@@ -24,7 +24,7 @@ public interface DockPlaceHolderBaseView
 
     void setWidget(final IsWidget widget);
 
-    DockPlaceHolderBase getPresenter();
+    DockPlaceHolder getPresenter();
 
-    void setPresenter(final DockPlaceHolderBase presenter);
+    void setPresenter(final DockPlaceHolder presenter);
 }

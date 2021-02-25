@@ -41,8 +41,6 @@ public class PreviewDiagramDock implements DiagramEditorDock {
 
     protected boolean isOpened = false;
 
-    protected String owningPerspectiveId;
-
     public PreviewDiagramDock() {
         // CDI proxy
     }
@@ -55,8 +53,7 @@ public class PreviewDiagramDock implements DiagramEditorDock {
     }
 
     @Override
-    public void init(final String owningPerspectiveId) {
-        this.owningPerspectiveId = owningPerspectiveId;
+    public void init() {
         this.uberfireDock = makeUberfireDock();
     }
 
@@ -73,7 +70,7 @@ public class PreviewDiagramDock implements DiagramEditorDock {
 
         isOpened = true;
         uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position(), owningPerspectiveId());
+        uberfireDocks.show(position());
         uberfireDocks.open(getUberfireDock());
     }
 
@@ -93,7 +90,7 @@ public class PreviewDiagramDock implements DiagramEditorDock {
     }
 
     protected UberfireDock makeUberfireDock() {
-        final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest(), owningPerspectiveId());
+        final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest());
         return uberfireDock.withSize(DOCK_SIZE).withLabel(dockLabel());
     }
 
@@ -107,10 +104,6 @@ public class PreviewDiagramDock implements DiagramEditorDock {
 
     protected DefaultPlaceRequest placeRequest() {
         return new DefaultPlaceRequest(PreviewDiagramScreen.SCREEN_ID);
-    }
-
-    protected String owningPerspectiveId() {
-        return owningPerspectiveId;
     }
 
     protected UberfireDock getUberfireDock() {

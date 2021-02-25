@@ -49,12 +49,11 @@ public class KogitoDecisionNavigatorDock extends DecisionNavigatorDock {
     }
 
     @Override
-    public void init(final String perspective) {
-        this.perspective = perspective;
+    public void init() {
         this.uberfireDock = makeUberfireDock();
 
         uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position(), perspective());
+        uberfireDocks.show(position());
     }
 
     @Override

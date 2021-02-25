@@ -39,12 +39,11 @@ public class KogitoPreviewDiagramDock extends PreviewDiagramDock {
     }
 
     @Override
-    public void init(final String owningPerspectiveId) {
-        this.owningPerspectiveId = owningPerspectiveId;
+    public void init() {
         this.uberfireDock = makeUberfireDock();
 
         uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position(), owningPerspectiveId);
+        uberfireDocks.show(position());
     }
 
     @Override

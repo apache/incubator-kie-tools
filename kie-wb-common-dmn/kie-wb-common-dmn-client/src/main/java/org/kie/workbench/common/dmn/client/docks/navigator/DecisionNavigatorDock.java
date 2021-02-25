@@ -44,8 +44,6 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
 
     protected boolean isOpened = false;
 
-    protected String perspective;
-
     public DecisionNavigatorDock() {
         // CDI proxy
     }
@@ -60,8 +58,7 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
     }
 
     @Override
-    public void init(final String perspective) {
-        this.perspective = perspective;
+    public void init() {
         this.uberfireDock = makeUberfireDock();
     }
 
@@ -87,7 +84,7 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
 
         isOpened = true;
         uberfireDocks.add(getUberfireDock());
-        uberfireDocks.show(position(), perspective());
+        uberfireDocks.show(position());
         uberfireDocks.open(getUberfireDock());
     }
 
@@ -113,13 +110,9 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
 
     protected UberfireDock makeUberfireDock() {
 
-        final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest(), perspective());
+        final UberfireDock uberfireDock = new UberfireDock(position(), icon(), placeRequest());
 
         return uberfireDock.withSize(DOCK_SIZE).withLabel(dockLabel());
-    }
-
-    protected String perspective() {
-        return perspective;
     }
 
     protected UberfireDock getUberfireDock() {

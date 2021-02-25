@@ -16,11 +16,59 @@
 package org.kie.workbench.common.widgets.client.docks;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
-@ApplicationScoped
-@Named(DockPlaceHolderBase.IDENTIFIER)
-public class DockPlaceHolder
-        extends DockPlaceHolderBase {
+import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.AbstractActivity;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 
+/**
+ * Base for any panel that is opened into the an editor dock.
+ * To use this dock it is necessary to register the dock for the editor that uses it.
+ *
+ * @see org.kie.workbench.common.widgets.metadata.client.KieEditor.registerDock(String, IsWidget)
+ */
+@ApplicationScoped
+@Named(DockPlaceHolder.IDENTIFIER)
+public class DockPlaceHolder extends AbstractActivity {
+
+    public static final String IDENTIFIER = "org.docks.PlaceHolder";
+
+    private DockPlaceHolderBaseView view;
+
+    public DockPlaceHolder() {
+        // CDI
+    }
+
+    @Inject
+    public void init(final DockPlaceHolderBaseView view) {
+        this.view = view;
+        this.view.setPresenter(this);
+    }
+
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.SCREEN;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public IsWidget getView() {
+        return view;
+    }
+
+    @Override
+    public IsWidget getWidget() {
+        return view;
+    }
+
+    public void setView(final IsWidget widget) {
+        view.clear();
+        view.setWidget(widget);
+    }
 }

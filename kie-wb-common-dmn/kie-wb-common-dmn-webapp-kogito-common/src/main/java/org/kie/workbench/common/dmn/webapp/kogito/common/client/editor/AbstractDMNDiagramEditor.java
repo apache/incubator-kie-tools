@@ -66,7 +66,6 @@ import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEdit
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
-import org.uberfire.client.mvp.DefaultPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
@@ -166,9 +165,9 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     public void onStartup(final PlaceRequest place) {
         superDoStartUp(place);
 
-        decisionNavigatorDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
-        diagramPropertiesDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
-        diagramPreviewAndExplorerDock.init(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME);
+        decisionNavigatorDock.init();
+        diagramPropertiesDock.init();
+        diagramPreviewAndExplorerDock.init();
         guidedTourBridgeInitializer.init();
     }
 

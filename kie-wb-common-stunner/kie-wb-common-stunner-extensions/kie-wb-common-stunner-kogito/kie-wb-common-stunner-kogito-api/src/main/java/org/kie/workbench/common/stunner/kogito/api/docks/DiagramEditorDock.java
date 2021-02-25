@@ -19,9 +19,8 @@ public interface DiagramEditorDock {
 
     /**
      * Initialise dock registering it with AppFormer's docks configuration.
-     * @param owningPerspectiveId PerspectiveId for the perspective on which the dock should appear.
      */
-    void init(final String owningPerspectiveId);
+    void init();
 
     /**
      * Destroy the dock removing it from AppFormer's docks configuration.

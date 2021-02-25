@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -44,7 +44,7 @@ import org.uberfire.workbench.model.ActivityResourceType;
  * a docked area and displays the properties for the selected element on the canvas.
  * TODO: I18n.
  */
-@ApplicationScoped
+@Dependent
 @Named(DiagramEditorPropertiesScreen.SCREEN_ID)
 public class DiagramEditorPropertiesScreen extends AbstractActivity {
 

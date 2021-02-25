@@ -27,7 +27,7 @@ public class DockPlaceHolderBaseViewImplTest {
 
     @Test
     public void testRoundTripWorks() {
-        final DockPlaceHolderBase presenter = mock(DockPlaceHolderBase.class);
+        final DockPlaceHolder presenter = mock(DockPlaceHolder.class);
         final DockPlaceHolderBaseViewImpl view = new DockPlaceHolderBaseViewImpl();
 
         view.setPresenter(presenter);
