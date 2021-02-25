@@ -81,8 +81,14 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
     <>
       {areReasonCodesUsed && activeAttribute.reasonCode !== undefined && reasonCodeValidation.length === 0 && (
         <>
-          {commit && AttributeLabel("Reason code", activeAttribute.reasonCode, () => commit({ reasonCode: undefined }))}
-          {!commit && AttributeLabel("Reason code", activeAttribute.reasonCode)}
+          {commit && (
+            <AttributeLabel
+              name={"Reason code"}
+              value={activeAttribute.reasonCode}
+              onClose={() => commit({ reasonCode: undefined })}
+            />
+          )}
+          {!commit && <AttributeLabel name={"Reason code"} value={activeAttribute.reasonCode} />}
         </>
       )}
       {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
@@ -95,9 +101,14 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
       )}
       {partialScoreValidation.length === 0 && activeAttribute.partialScore !== undefined && (
         <>
-          {commit &&
-            AttributeLabel("Partial score", activeAttribute.partialScore, () => commit({ partialScore: undefined }))}
-          {!commit && AttributeLabel("Partial score", activeAttribute.partialScore)}
+          {commit && (
+            <AttributeLabel
+              name={"Partial score"}
+              value={activeAttribute.partialScore}
+              onClose={() => commit({ partialScore: undefined })}
+            />
+          )}
+          {!commit && <AttributeLabel name={"Partial score"} value={activeAttribute.partialScore} />}
         </>
       )}
       {partialScoreValidation.length > 0 && (

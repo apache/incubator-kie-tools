@@ -18,7 +18,15 @@ import { Label } from "@patternfly/react-core";
 
 import "./AttributeLabel.scss";
 
-export const AttributeLabel = (name: string, value: any, onClose?: () => void) => {
+interface AttributeLabelProps {
+  name: string;
+  value: any;
+  onClose?: () => void;
+}
+
+export const AttributeLabel = (props: AttributeLabelProps) => {
+  const { name, value, onClose } = props;
+
   return (
     <>
       {!onClose && (

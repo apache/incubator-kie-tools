@@ -15,8 +15,8 @@
  */
 .attribute-editor {
 
-  &__validation-alert {
-    margin-bottom: 1em;
+  &__validation-message {
+    margin-left: var(--pf-global--spacer--xs);
   }
 
 }

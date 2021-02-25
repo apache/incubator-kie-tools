@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
+import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
 import {
   Attribute,
   Characteristic,
@@ -36,6 +36,7 @@ import { fromText, toText } from "../organisms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import "./AttributeEditor.scss";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
 
@@ -146,10 +147,6 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
       ),
     [modelIndex, characteristicIndex, attribute.predicate]
   );
-  const hasInvalidState = useMemo(
-    () => reasonCodeValidation.length + partialScoreValidation.length + predicateValidation.length > 0,
-    [reasonCodeValidation, partialScoreValidation, predicateValidation]
-  );
 
   useEffect(() => {
     const _text = toText(attribute.predicate, dataFields);
@@ -172,11 +169,6 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
 
   return (
     <article tabIndex={0}>
-      {hasInvalidState && (
-        <section className="attribute-editor__validation-alert">
-          <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
-        </section>
-      )}
       <Form>
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>
@@ -185,14 +177,24 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
               isRequired={true}
               fieldId="attribute-predicate-helper"
               validated={predicateValidation.length > 0 ? "warning" : "default"}
-              helperText={
-                predicateValidation.length > 0
-                  ? predicateValidation[0].message
-                  : "The condition upon which the mapping between input attribute and partial score takes place."
-              }
             >
               <div ref={ref}>
                 <PredicateEditor text={text} setText={setText} />
+                <>
+                  {predicateValidation.length > 0 && (
+                    <div>
+                      <ValidationIndicator validations={predicateValidation} />
+                      <span className="pf-c-form__helper-text pf-m-warning attribute-editor__validation-message">
+                        {predicateValidation[0].message}
+                      </span>
+                    </div>
+                  )}
+                  {predicateValidation.length === 0 && (
+                    <div className="pf-c-form__helper-text">
+                      The condition upon which the mapping between input attribute and partial score takes place.
+                    </div>
+                  )}
+                </>
               </div>
             </FormGroup>
           </SplitItem>
