@@ -206,6 +206,36 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     setActiveOperation(Operation.NONE);
   };
 
+  const onUpdateAttribute = useCallback(
+    (_index, _content) => {
+      if (_index === undefined) {
+        dispatch({
+          type: Actions.Scorecard_AddAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: selectedCharacteristicIndex,
+            predicate: _content.predicate,
+            partialScore: _content.partialScore,
+            reasonCode: _content.reasonCode
+          }
+        });
+      } else {
+        dispatch({
+          type: Actions.Scorecard_UpdateAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: selectedCharacteristicIndex,
+            attributeIndex: selectedAttributeIndex,
+            predicate: _content.predicate,
+            partialScore: _content.partialScore,
+            reasonCode: _content.reasonCode
+          }
+        });
+      }
+    },
+    [modelIndex, selectedCharacteristicIndex, selectedAttributeIndex]
+  );
+
   const emptyStateProvider = useMemo(() => {
     if (characteristics.length === 0) {
       return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
@@ -282,32 +312,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       attributeIndex={selectedAttributeIndex}
                       areReasonCodesUsed={areReasonCodesUsed}
                       onCancel={onViewOverviewView}
-                      onCommit={(_index, _content) => {
-                        if (_index === undefined) {
-                          dispatch({
-                            type: Actions.Scorecard_AddAttribute,
-                            payload: {
-                              modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristicIndex,
-                              predicate: _content.predicate,
-                              partialScore: _content.partialScore,
-                              reasonCode: _content.reasonCode
-                            }
-                          });
-                        } else {
-                          dispatch({
-                            type: Actions.Scorecard_UpdateAttribute,
-                            payload: {
-                              modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristicIndex,
-                              attributeIndex: selectedAttributeIndex,
-                              predicate: _content.predicate,
-                              partialScore: _content.partialScore,
-                              reasonCode: _content.reasonCode
-                            }
-                          });
-                        }
-                      }}
+                      onCommit={onUpdateAttribute}
                     />
                   </StackItem>
                 </Stack>

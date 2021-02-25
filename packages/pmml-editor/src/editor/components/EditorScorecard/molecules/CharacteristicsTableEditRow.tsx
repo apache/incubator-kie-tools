@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
 import { ExclamationCircleIcon, HelpIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTableRow.scss";
@@ -149,6 +149,44 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     }
     return n;
   };
+
+  const onDeleteAttribute = useCallback(
+    attributeIndex => {
+      if (window.confirm(`Delete Attribute?`)) {
+        dispatch({
+          type: Actions.Scorecard_DeleteAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: characteristicIndex,
+            attributeIndex: attributeIndex
+          }
+        });
+      }
+    },
+    [modelIndex, characteristicIndex]
+  );
+
+  const onUpdateAttribute = useCallback(
+    (attributeIndex, partial) => {
+      const attribute = attributes[attributeIndex];
+      const existingPartial: Partial<Attribute> = {};
+      Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+
+      if (!isEqual(partial, existingPartial)) {
+        dispatch({
+          type: Actions.Scorecard_UpdateAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: characteristicIndex,
+            attributeIndex: attributeIndex,
+            ...attribute,
+            ...partial
+          }
+        });
+      }
+    },
+    [modelIndex, characteristicIndex, attributes]
+  );
 
   return (
     <article ref={ref} className={"editable-item__inner"} tabIndex={0}>
@@ -296,36 +334,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 characteristic={characteristic.characteristic}
                 areReasonCodesUsed={areReasonCodesUsed}
                 viewAttribute={viewAttribute}
-                deleteAttribute={attributeIndex => {
-                  if (window.confirm(`Delete Attribute?`)) {
-                    dispatch({
-                      type: Actions.Scorecard_DeleteAttribute,
-                      payload: {
-                        modelIndex: modelIndex,
-                        characteristicIndex: characteristicIndex,
-                        attributeIndex: attributeIndex
-                      }
-                    });
-                  }
-                }}
-                onCommit={(attributeIndex, partial) => {
-                  const attribute = attributes[attributeIndex];
-                  const existingPartial: Partial<Attribute> = {};
-                  Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
-
-                  if (!isEqual(partial, existingPartial)) {
-                    dispatch({
-                      type: Actions.Scorecard_UpdateAttribute,
-                      payload: {
-                        modelIndex: modelIndex,
-                        characteristicIndex: characteristicIndex,
-                        attributeIndex: attributeIndex,
-                        ...attribute,
-                        ...partial
-                      }
-                    });
-                  }
-                }}
+                deleteAttribute={onDeleteAttribute}
+                onCommit={onUpdateAttribute}
               />
             </FormGroup>
           </StackItem>

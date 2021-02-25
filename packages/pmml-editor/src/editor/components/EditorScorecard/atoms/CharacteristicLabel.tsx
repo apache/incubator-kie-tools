@@ -21,31 +21,20 @@ import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 import { DataField, Predicate } from "@kogito-tooling/pmml-editor-marshaller";
 
-export const CharacteristicLabel = (name: string, value: any, tooltip?: string) => {
+interface CharacteristicLabelProps {
+  name: string;
+  value: any;
+}
+
+export const CharacteristicLabel = (props: CharacteristicLabelProps) => {
+  const { name, value } = props;
+
   return (
-    <>
-      {!tooltip && (
-        <Label color="cyan" className="characteristic-list__item__label">
-          <strong>{name}:</strong>
-          &nbsp;
-          <span>{value}</span>
-        </Label>
-      )}
-      {tooltip && (
-        <Tooltip
-          position={TooltipPosition.top}
-          isContentLeftAligned={true}
-          maxWidth={"100em"}
-          content={<pre>{tooltip}</pre>}
-        >
-          <Label tabIndex={0} color="cyan" className="characteristic-list__item__label">
-            <strong>{name}:</strong>
-            &nbsp;
-            <span>{value}</span>
-          </Label>
-        </Tooltip>
-      )}
-    </>
+    <Label color="cyan" className="characteristic-list__item__label">
+      <strong>{name}:</strong>
+      &nbsp;
+      <span>{value}</span>
+    </Label>
   );
 };
 

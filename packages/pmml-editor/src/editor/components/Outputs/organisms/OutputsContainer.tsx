@@ -141,6 +141,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     setSelectedOutputIndex(undefined);
     setActiveOperation(Operation.NONE);
   };
+
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () =>
