@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
 
@@ -56,6 +55,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
         final String EVENT_NAME = "end event01 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "end event01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message01";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "message01:String||||[din]processGlobalVar->message01";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_END_EVENT_FILE_PATH);
@@ -65,7 +65,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                         FILLED_TOP_LEVEL_EVENT_ID,
                                                         HAS_NO_INCOME_EDGE);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -79,6 +79,8 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                        EMPTY_TOP_LEVEL_EVENT_ID,
                                                        HAS_NO_INCOME_EDGE);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
+        assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
     @Test
@@ -87,6 +89,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
         final String EVENT_NAME = "end event03 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "end event03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message03";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "message03:String||||[din]processGlobalVar->message03";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_END_EVENT_FILE_PATH);
@@ -96,7 +99,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                                FILLED_SUBPROCESS_LEVEL_EVENT_ID,
                                                                HAS_NO_INCOME_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -110,6 +113,8 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                               EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
                                                               HAS_NO_INCOME_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
+        assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
     @Test
@@ -118,6 +123,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
         final String EVENT_NAME = "end event02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "end event02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message02";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "message02:String||||[din]processGlobalVar->message02";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_END_EVENT_FILE_PATH);
@@ -127,7 +133,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                                FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID,
                                                                HAS_INCOME_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -141,6 +147,8 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                     EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID,
                                                     HAS_INCOME_EDGE);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
+        assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
     @Test
@@ -153,6 +161,8 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                               EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
                                                               HAS_INCOME_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
+        assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
     @Test
@@ -161,6 +171,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
         final String EVENT_NAME = "end event04 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "end event04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message04";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "message04:String||||[din]processGlobalVar->message04";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_END_EVENT_FILE_PATH);
@@ -170,7 +181,7 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
                                                                FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
                                                                HAS_INCOME_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -251,9 +262,10 @@ public class EndMessageEventTest extends EndEventTest<EndMessageEvent> {
         return EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
-    private void assertMessageEventExecutionSet(MessageEventExecutionSet executionSet, String eventName) {
-        assertNotNull(executionSet);
-        assertNotNull(executionSet.getMessageRef());
-        assertEquals(eventName, executionSet.getMessageRef().getValue());
+    private void assertMessageEventExecutionSet(MessageEventExecutionSet executionSet, String messageReferenceName, String messageReferenceType) {
+        assertThat(executionSet).isNotNull();
+        assertThat(executionSet.getMessageRef()).isNotNull();
+        assertThat(executionSet.getMessageRef().getValue()).isEqualTo(messageReferenceName);
+        assertThat(executionSet.getMessageRef().getStructure()).isEqualTo(messageReferenceType);
     }
 }

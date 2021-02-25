@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
         final String EVENT_NAME = "Boundary message01 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message01";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "||message01:String||[dout]message01->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -62,7 +63,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                           HAS_NO_INCOME_EDGE,
                                                                                           ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
+        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -77,7 +78,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                          HAS_NO_INCOME_EDGE,
                                                                                          ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -87,6 +88,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
         final String EVENT_NAME = "Boundary message03 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message03";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "||message03:String||[dout]message03->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -97,7 +99,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                                  HAS_NO_INCOME_EDGE,
                                                                                                  ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -112,7 +114,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                                 HAS_NO_INCOME_EDGE,
                                                                                                 ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -122,6 +124,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
         final String EVENT_NAME = "Boundary message02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message02";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "||message02:String||[dout]message02->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -132,7 +135,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                                  HAS_NO_INCOME_EDGE,
                                                                                                  TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -147,7 +150,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                       HAS_NO_INCOME_EDGE,
                                                                                       TWO_OUTGOING_EDGES);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -162,7 +165,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                                 HAS_NO_INCOME_EDGE,
                                                                                                 TWO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE, NON_CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -172,6 +175,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
         final String EVENT_NAME = "Boundary message04 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message04";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_OUTPUT = "||message04:String||[dout]message04->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -182,7 +186,7 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
                                                                                                  HAS_NO_INCOME_EDGE,
                                                                                                  TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -236,10 +240,11 @@ public class BoundaryCatchingIntermediateMessageEventTest extends BoundaryCatchi
         return EMPTY_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
-    private void assertMessageEventExecutionSet(CancellingMessageEventExecutionSet executionSet, String eventName, boolean isCancelling, String slaDueDate) {
+    private void assertMessageEventExecutionSet(CancellingMessageEventExecutionSet executionSet, String messageReferenceName, String messageReferenceType, boolean isCancelling, String slaDueDate) {
         assertThat(executionSet).isNotNull();
         assertThat(executionSet.getMessageRef()).isNotNull();
-        assertThat(executionSet.getMessageRef().getValue()).isEqualTo(eventName);
+        assertThat(executionSet.getMessageRef().getValue()).isEqualTo(messageReferenceName);
+        assertThat(executionSet.getMessageRef().getStructure()).isEqualTo(messageReferenceType);
 
         assertEventCancelActivity(executionSet, isCancelling);
         assertEventSlaDueDate(executionSet, slaDueDate);

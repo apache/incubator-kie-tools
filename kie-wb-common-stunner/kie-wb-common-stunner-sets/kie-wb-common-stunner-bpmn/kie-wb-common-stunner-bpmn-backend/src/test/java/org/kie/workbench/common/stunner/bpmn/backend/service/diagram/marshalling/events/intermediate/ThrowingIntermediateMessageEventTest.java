@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
         final String EVENT_NAME = "message01 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message01";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_INPUT = "message01:String||||[din]ProcessGlobalVar->message01";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -59,7 +60,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                           FILLED_TOP_LEVEL_EVENT_ID,
                                                                                           HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_INPUT);
     }
 
@@ -73,7 +74,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                          EMPTY_TOP_LEVEL_EVENT_ID,
                                                                                          HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
         assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -83,6 +84,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
         final String EVENT_NAME = "message03 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message03";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_INPUT = "message03:String||||[din]ProcessGlobalVar->message03";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -92,7 +94,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                                  FILLED_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                                  HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_INPUT);
     }
 
@@ -106,7 +108,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                                 EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                                 HAS_NO_INCOME_EDGE, ZERO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -116,6 +118,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
         final String EVENT_NAME = "message02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message02";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_INPUT = "message02:String||||[din]ProcessGlobalVar->message02";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -125,7 +128,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                                  FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID,
                                                                                                  HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_INPUT);
     }
 
@@ -139,7 +142,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                       EMPTY_WITH_EDGES_TOP_LEVEL_EVENT_ID,
                                                                                       HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
         assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -153,7 +156,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                                 EMPTY_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                                 HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -163,6 +166,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
         final String EVENT_NAME = "message04 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String EVENT_DOCUMENTATION = "message04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String EVENT_REF = "message04";
+        final String MESSAGE_TYPE = "String";
         final String EVENT_DATA_INPUT = "message04:String||||[din]ProcessGlobalVar->message04";
 
         Diagram<Graph, Metadata> diagram = getDiagram();
@@ -172,7 +176,7 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
                                                                                                  FILLED_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                                  HAS_INCOME_EDGE, TWO_OUTGOING_EDGES);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, MESSAGE_TYPE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_INPUT);
     }
 
@@ -226,9 +230,10 @@ public class ThrowingIntermediateMessageEventTest extends ThrowingIntermediateEv
         return EMPTY_WITH_EDGES_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
-    private void assertMessageEventExecutionSet(MessageEventExecutionSet executionSet, String messageReference) {
+    private void assertMessageEventExecutionSet(MessageEventExecutionSet executionSet, String messageReferenceName, String messageReferenceType) {
         assertThat(executionSet).isNotNull();
         assertThat(executionSet.getMessageRef()).isNotNull();
-        assertThat(executionSet.getMessageRef().getValue()).isEqualTo(messageReference);
+        assertThat(executionSet.getMessageRef().getValue()).isEqualTo(messageReferenceName);
+        assertThat(executionSet.getMessageRef().getStructure()).isEqualTo(messageReferenceType);
     }
 }

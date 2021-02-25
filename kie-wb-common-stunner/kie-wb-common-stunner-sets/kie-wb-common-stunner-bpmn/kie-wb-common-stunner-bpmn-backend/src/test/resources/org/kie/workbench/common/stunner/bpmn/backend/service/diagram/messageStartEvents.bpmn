@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_342skHwHEemELvK9iJNNvg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_mPfzYHUdEeuOLrSuV3E7hg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="_helloProcessItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_464FB8BC-F752-4428-A3DC-D5DDCEE2353F_messageROutputXItem" structureRef="String"/>
-  <bpmn2:itemDefinition id="Message2Type"/>
+  <bpmn2:itemDefinition id="Message2Type" structureRef="String"/>
   <bpmn2:itemDefinition id="_2B967C25-C1FE-4945-8511-7A9E5465BA22_messageReceivedOutputXItem" structureRef="String"/>
-  <bpmn2:itemDefinition id="Message1Type"/>
-  <bpmn2:message id="_342snHwHEemELvK9iJNNvg" itemRef="Message2Type" name="Message2"/>
-  <bpmn2:message id="_342slXwHEemELvK9iJNNvg" itemRef="Message1Type" name="Message1"/>
-  <bpmn2:process id="testproject.startMessageEvents" drools:packageName="com.myteam.testproject" drools:version="1.0" drools:adHoc="false" name="startMessageEvents" isExecutable="true">
+  <bpmn2:itemDefinition id="Message1Type" structureRef="String"/>
+  <bpmn2:message id="_mPfzbHUdEeuOLrSuV3E7hg" itemRef="Message2Type" name="Message2"/>
+  <bpmn2:message id="_mPfzZXUdEeuOLrSuV3E7hg" itemRef="Message1Type" name="Message1"/>
+  <bpmn2:process id="testproject.startMessageEvents" drools:packageName="com.myteam.testproject" drools:version="1.0" drools:adHoc="false" name="startMessageEvents" isExecutable="true" processType="Public">
     <bpmn2:property id="helloProcess" itemSubjectRef="_helloProcessItem" name="helloProcess"/>
     <bpmn2:sequenceFlow id="0C562A4B-40D4-4B7A-9BAE-69A08AA6FE08" sourceRef="D78124CD-19B0-45C6-AF0A-CD7C16F4F3BD" targetRef="34D91C96-9ECA-4A86-824F-6299B5120C38"/>
     <bpmn2:sequenceFlow id="70C4BD95-1AD5-4A1A-BF28-62B78E0C1140" sourceRef="2B967C25-C1FE-4945-8511-7A9E5465BA22" targetRef="FFF3D894-B06A-403E-9879-B598975029CB"/>
-    <bpmn2:startEvent id="2B967C25-C1FE-4945-8511-7A9E5465BA22" name="Message message name ~`!@#$%^&amp;*()_+=-{}|\][:&quot;;&apos;?&gt;&lt;,./">
-      <bpmn2:documentation id="_342skXwHEemELvK9iJNNvg"><![CDATA[Message documentation
+    <bpmn2:startEvent id="2B967C25-C1FE-4945-8511-7A9E5465BA22" name="Message message name ~`!@#$%^&amp;*()_+=-{}|\][:&quot;;'?&gt;&lt;,./">
+      <bpmn2:documentation id="_mPfzYXUdEeuOLrSuV3E7hg"><![CDATA[Message documentation
 ~`!@#$%^&*()_+=-{}|\][:";'?><,./
 ]]></bpmn2:documentation>
       <bpmn2:extensionElements>
@@ -25,21 +25,21 @@
       </bpmn2:extensionElements>
       <bpmn2:outgoing>70C4BD95-1AD5-4A1A-BF28-62B78E0C1140</bpmn2:outgoing>
       <bpmn2:dataOutput id="2B967C25-C1FE-4945-8511-7A9E5465BA22_messageReceivedOutputX" drools:dtype="String" itemSubjectRef="_2B967C25-C1FE-4945-8511-7A9E5465BA22_messageReceivedOutputXItem" name="messageReceived"/>
-      <bpmn2:dataOutputAssociation id="_342sk3wHEemELvK9iJNNvg">
+      <bpmn2:dataOutputAssociation id="_mPfzY3UdEeuOLrSuV3E7hg">
         <bpmn2:sourceRef>2B967C25-C1FE-4945-8511-7A9E5465BA22_messageReceivedOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>helloProcess</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
-      <bpmn2:outputSet id="_342sknwHEemELvK9iJNNvg">
+      <bpmn2:outputSet id="_mPfzYnUdEeuOLrSuV3E7hg">
         <bpmn2:dataOutputRefs>2B967C25-C1FE-4945-8511-7A9E5465BA22_messageReceivedOutputX</bpmn2:dataOutputRefs>
       </bpmn2:outputSet>
-      <bpmn2:messageEventDefinition id="_342slHwHEemELvK9iJNNvg" drools:msgref="Message1" messageRef="_342slXwHEemELvK9iJNNvg"/>
+      <bpmn2:messageEventDefinition id="_mPfzZHUdEeuOLrSuV3E7hg" drools:msgref="Message1" messageRef="_mPfzZXUdEeuOLrSuV3E7hg"/>
     </bpmn2:startEvent>
     <bpmn2:endEvent id="34D91C96-9ECA-4A86-824F-6299B5120C38">
       <bpmn2:incoming>0C562A4B-40D4-4B7A-9BAE-69A08AA6FE08</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:startEvent id="D78124CD-19B0-45C6-AF0A-CD7C16F4F3BD" isInterrupting="false">
       <bpmn2:outgoing>0C562A4B-40D4-4B7A-9BAE-69A08AA6FE08</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="_342slnwHEemELvK9iJNNvg"/>
+      <bpmn2:messageEventDefinition id="_mPfzZnUdEeuOLrSuV3E7hg"/>
     </bpmn2:startEvent>
     <bpmn2:endEvent id="FFF3D894-B06A-403E-9879-B598975029CB">
       <bpmn2:incoming>70C4BD95-1AD5-4A1A-BF28-62B78E0C1140</bpmn2:incoming>
@@ -56,7 +56,7 @@
       </bpmn2:endEvent>
       <bpmn2:startEvent id="372D12E1-30F9-4504-8ED5-5F7D1735FEDB" isInterrupting="false">
         <bpmn2:outgoing>3888BC82-D830-46E3-84EC-A771D08E4C40</bpmn2:outgoing>
-        <bpmn2:messageEventDefinition id="_342sl3wHEemELvK9iJNNvg"/>
+        <bpmn2:messageEventDefinition id="_mPfzZ3UdEeuOLrSuV3E7hg"/>
       </bpmn2:startEvent>
     </bpmn2:subProcess>
     <bpmn2:subProcess id="1132DDDA-96A6-4359-B243-A3F96B932BC6" name="Event Sub-process" triggeredByEvent="true">
@@ -66,8 +66,8 @@
         </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:sequenceFlow id="7AAB45DC-401C-4D78-9B28-9ED8BCAC02AA" sourceRef="464FB8BC-F752-4428-A3DC-D5DDCEE2353F" targetRef="797B87EC-7718-4095-9593-B6D7A4B9B0D8"/>
-      <bpmn2:startEvent id="464FB8BC-F752-4428-A3DC-D5DDCEE2353F" name="Message name ~`!@#$%^&amp;*()_+=-{}|\][:&quot;;&apos;?&gt;&lt;,./">
-        <bpmn2:documentation id="_342smHwHEemELvK9iJNNvg"><![CDATA[Doc is here
+      <bpmn2:startEvent id="464FB8BC-F752-4428-A3DC-D5DDCEE2353F" name="Message name ~`!@#$%^&amp;*()_+=-{}|\][:&quot;;'?&gt;&lt;,./">
+        <bpmn2:documentation id="_mPfzaHUdEeuOLrSuV3E7hg"><![CDATA[Doc is here
 ~`!@#$%^&*()_+=-{}|\][:";'?><,./
 ]]></bpmn2:documentation>
         <bpmn2:extensionElements>
@@ -80,22 +80,22 @@
         </bpmn2:extensionElements>
         <bpmn2:outgoing>7AAB45DC-401C-4D78-9B28-9ED8BCAC02AA</bpmn2:outgoing>
         <bpmn2:dataOutput id="464FB8BC-F752-4428-A3DC-D5DDCEE2353F_messageROutputX" drools:dtype="String" itemSubjectRef="_464FB8BC-F752-4428-A3DC-D5DDCEE2353F_messageROutputXItem" name="messageR"/>
-        <bpmn2:dataOutputAssociation id="_342smnwHEemELvK9iJNNvg">
+        <bpmn2:dataOutputAssociation id="_mPfzanUdEeuOLrSuV3E7hg">
           <bpmn2:sourceRef>464FB8BC-F752-4428-A3DC-D5DDCEE2353F_messageROutputX</bpmn2:sourceRef>
           <bpmn2:targetRef>helloProcess</bpmn2:targetRef>
         </bpmn2:dataOutputAssociation>
-        <bpmn2:outputSet id="_342smXwHEemELvK9iJNNvg">
+        <bpmn2:outputSet id="_mPfzaXUdEeuOLrSuV3E7hg">
           <bpmn2:dataOutputRefs>464FB8BC-F752-4428-A3DC-D5DDCEE2353F_messageROutputX</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
-        <bpmn2:messageEventDefinition id="_342sm3wHEemELvK9iJNNvg" drools:msgref="Message2" messageRef="_342snHwHEemELvK9iJNNvg"/>
+        <bpmn2:messageEventDefinition id="_mPfza3UdEeuOLrSuV3E7hg" drools:msgref="Message2" messageRef="_mPfzbHUdEeuOLrSuV3E7hg"/>
       </bpmn2:startEvent>
       <bpmn2:endEvent id="797B87EC-7718-4095-9593-B6D7A4B9B0D8">
         <bpmn2:incoming>7AAB45DC-401C-4D78-9B28-9ED8BCAC02AA</bpmn2:incoming>
       </bpmn2:endEvent>
     </bpmn2:subProcess>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="_342snXwHEemELvK9iJNNvg">
-    <bpmndi:BPMNPlane id="_342snnwHEemELvK9iJNNvg" bpmnElement="testproject.startMessageEvents">
+  <bpmndi:BPMNDiagram id="_mPfzbXUdEeuOLrSuV3E7hg">
+    <bpmndi:BPMNPlane id="_mPfzbnUdEeuOLrSuV3E7hg" bpmnElement="testproject.startMessageEvents">
       <bpmndi:BPMNShape id="shape_1132DDDA-96A6-4359-B243-A3F96B932BC6" bpmnElement="1132DDDA-96A6-4359-B243-A3F96B932BC6" isExpanded="true">
         <dc:Bounds height="161.0" width="317.0" x="37.0" y="264.0"/>
       </bpmndi:BPMNShape>
@@ -144,7 +144,7 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-  <bpmn2:relationship id="_342sn3wHEemELvK9iJNNvg" type="BPSimData">
+  <bpmn2:relationship id="_mPgacHUdEeuOLrSuV3E7hg" type="BPSimData">
     <bpmn2:extensionElements>
       <bpsim:BPSimData>
         <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
@@ -152,7 +152,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_342skHwHEemELvK9iJNNvg</bpmn2:source>
-    <bpmn2:target>_342skHwHEemELvK9iJNNvg</bpmn2:target>
+    <bpmn2:source>_mPfzYHUdEeuOLrSuV3E7hg</bpmn2:source>
+    <bpmn2:target>_mPfzYHUdEeuOLrSuV3E7hg</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>
