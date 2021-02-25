@@ -187,7 +187,7 @@ export function DmnRunnerDrawer(props: Props) {
             <div className={"kogito--editor__dmn-runner-drawer-page-section-div"}>
               <PageSection style={{ paddingLeft: 0, paddingTop: 0 }}>
                 {dmnRunnerResponse ? (
-                  <JitResponse responseObject={dmnRunnerResponse!} depth={0} />
+                  <DmnRunnerResponse responseObject={dmnRunnerResponse!} depth={0} />
                 ) : (
                   <EmptyState>
                     <EmptyStateIcon icon={InfoCircleIcon} />
@@ -210,21 +210,21 @@ export function DmnRunnerDrawer(props: Props) {
   );
 }
 
-interface RecursiveJitResponseProps {
+interface RecursiveDmnRunnerResponse {
   responseObject: object;
   depth: number;
 }
 
-function JitResponse(props: RecursiveJitResponseProps) {
+function DmnRunnerResponse(props: RecursiveDmnRunnerResponse) {
   return (
     <div>
       {[...Object.entries(props.responseObject)].reverse().map(([key, value]: any[], index) => (
-        <div key={`${key}-${index}-jit-response`}>
+        <div key={`${key}-${index}-dmn-runner-response`}>
           {typeof value === "object" && value !== null ? (
             <Card isFlat={true} style={{ border: 0, background: "transparent" }}>
               <CardTitle>{key}</CardTitle>
               <CardBody isFilled={true} style={props.depth > 0 ? { paddingBottom: 0 } : {}}>
-                <JitResponse responseObject={value} depth={props.depth + 1} />
+                <DmnRunnerResponse responseObject={value} depth={props.depth + 1} />
               </CardBody>
             </Card>
           ) : (
@@ -252,9 +252,7 @@ function ResultCardLeaf(props: { label: string; value: string }) {
       <DescriptionListGroup>
         <DescriptionListTerm>{props.label}</DescriptionListTerm>
         {props.value ? (
-          <DescriptionListDescription>
-            {props.value}
-          </DescriptionListDescription>
+          <DescriptionListDescription>{props.value}</DescriptionListDescription>
         ) : (
           <DescriptionListDescription>
             <i>(null)</i>
