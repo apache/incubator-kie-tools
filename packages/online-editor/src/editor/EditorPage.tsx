@@ -36,8 +36,6 @@ import {
   DrawerContent,
   DrawerContentBody,
   DrawerPanelContent,
-  DrawerCloseButton,
-  DrawerActions,
   Page,
   PageSection
 } from "@patternfly/react-core";
@@ -265,6 +263,7 @@ export function EditorPage(props: Props) {
   const [dmnRunnerSchema, setDmnRunnerSchema] = useState<JSONSchemaBridge>();
   // This state saves the current status of the Dmn Runner server on the user machine.
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
+  const [formContext, setFormContext] = useState();
 
   const DMN_RUNNER_POLLING_TIME = 500;
 
@@ -274,8 +273,6 @@ export function EditorPage(props: Props) {
       let polling2: number | undefined;
       if (dmnRunnerStatus !== DmnRunnerStatus.RUNNING) {
         polling2 = window.setInterval(() => {
-          console.log("polling 2")
-
           DmnRunner.checkServer().then(() => {
             setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
             window.clearInterval(polling2);
@@ -289,7 +286,6 @@ export function EditorPage(props: Props) {
       let polling1: number | undefined;
       if (dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
         polling1 = window.setInterval(() => {
-          console.log("polling 1")
           DmnRunner.checkServer().catch(() => {
             setModal(OpenedModal.DMN_RUNNER_HELPER);
             setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
@@ -372,6 +368,8 @@ export function EditorPage(props: Props) {
                   jsonSchemaBridge={dmnRunnerSchema}
                   editorContent={editor?.getContent}
                   onStopRunDmn={requestCloseDmnRunnerDrawer}
+                  formContext={formContext}
+                  setFormContext={setFormContext}
                 />
               </DrawerPanelContent>
             }

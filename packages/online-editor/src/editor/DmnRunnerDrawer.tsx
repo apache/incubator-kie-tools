@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
-  Alert,
   DescriptionList,
   DescriptionListTerm,
   DescriptionListGroup,
@@ -41,12 +40,6 @@ import {
 } from "@patternfly/react-core";
 import { CubesIcon, InfoCircleIcon } from "@patternfly/react-icons";
 
-enum DmnRunnerStatusResponse {
-  SUCCESS,
-  WARNING,
-  NONE
-}
-
 enum ButtonPosition {
   INPUT,
   OUTPUT
@@ -56,42 +49,33 @@ interface Props {
   editorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
   onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  formContext: any;
+  setFormContext: React.Dispatch<any>;
 }
 
 const PF_BREAKPOINT_XL = 1200;
 
 export function DmnRunnerDrawer(props: Props) {
   const [dmnRunnerResponse, setDmnRunnerResponse] = useState();
-  const [dmnRunnerResponseStatus, setDmnRunnerResponseStatus] = useState(DmnRunnerStatusResponse.NONE);
   const [isAutoSubmit, setIsAutoSubmit] = useState(true);
   const autoFormRef = useRef<HTMLFormElement>();
 
-  const alertMessage = useMemo(() => {
-    switch (dmnRunnerResponseStatus) {
-      case DmnRunnerStatusResponse.SUCCESS:
-        return <Alert title={"Your request has been successfully processed"} variant={"success"} isInline={true} />;
-      case DmnRunnerStatusResponse.WARNING:
-        return <Alert title={"Your request couldn't be processed"} variant={"warning"} isInline={true} />;
-      case DmnRunnerStatusResponse.NONE:
-        return;
-    }
-  }, [dmnRunnerResponseStatus]);
-
   const onSubmit = useCallback(
     ({ context }) => {
+      props.setFormContext(context);
       if (props.editorContent) {
         props.editorContent().then((model: string) => {
           DmnRunner.sendForm({ context, model })
             .then(res => res.json())
             .then(json => {
+              console.log(json)
               setDmnRunnerResponse(json);
-              setDmnRunnerResponseStatus(DmnRunnerStatusResponse.SUCCESS);
             })
-            .catch(() => setDmnRunnerResponseStatus(DmnRunnerStatusResponse.WARNING));
+            .catch(() => setDmnRunnerResponse(undefined));
         });
       }
     },
-    [props.editorContent, dmnRunnerResponse]
+    [props]
   );
 
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() => {
@@ -114,14 +98,16 @@ export function DmnRunnerDrawer(props: Props) {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
     if (isAutoSubmit) {
       autoFormRef.current?.submit();
     }
   }, [isAutoSubmit]);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    autoFormRef.current?.change("context", props.formContext);
+  }, []);
 
   return (
     <>
