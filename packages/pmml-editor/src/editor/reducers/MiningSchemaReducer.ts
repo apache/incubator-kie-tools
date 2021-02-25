@@ -20,6 +20,7 @@ import { FieldName, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller"
 import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 import { validateMiningFields } from "../validation/MiningSchema";
+import { getMiningSchema } from "../PMMLModelHelper";
 
 interface MiningSchemaPayload {
   [Actions.AddMiningSchemaFields]: {
@@ -70,13 +71,19 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
             if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
               draft.MiningField.splice(miningSchemaIndex, 1);
             }
-            validationRegistry.clear(
-              Builder()
-                .forModel(action.payload.modelIndex)
-                .forMiningSchema()
-                .build()
-            );
-            validateMiningFields(action.payload.modelIndex, draft.MiningField, validationRegistry);
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            if (miningSchema !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forMiningSchema()
+                  .build()
+              );
+              validateMiningFields(modelIndex, miningSchema.MiningField, validationRegistry);
+            }
           }
         );
     }

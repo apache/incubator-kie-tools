@@ -106,4 +106,21 @@ describe("HistoryProvider", () => {
     const updated4: PMML = service.redo(updated3);
     expect(updated4).toStrictEqual(updated1);
   });
+
+  test("Validation", () => {
+    const validator = jest.fn();
+    service.batch(
+      pmml,
+      null,
+      draft => {
+        draft.Header = header1;
+      },
+      validator
+    );
+
+    const updated: PMML = service.commit(pmml) as PMML;
+    expect(updated).not.toStrictEqual(pmml);
+
+    expect(validator).toBeCalled();
+  });
 });

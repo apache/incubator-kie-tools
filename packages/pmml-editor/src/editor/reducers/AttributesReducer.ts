@@ -18,7 +18,6 @@ import { HistoryAwareReducer, HistoryService } from "../history";
 import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
-import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 
 // @ts-ignore

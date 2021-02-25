@@ -2,7 +2,7 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 import { Button, Flex, FlexItem, Split, SplitItem } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
-import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
 import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
@@ -13,6 +13,7 @@ import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface MiningSchemaFieldsProps {
   modelIndex: number;
+  dataDictionary?: DataDictionary;
   fields: MiningField[] | undefined;
   onAddProperties: (index: number) => void;
   onDelete: (index: number, name: string) => void;
@@ -22,13 +23,14 @@ interface MiningSchemaFieldsProps {
 }
 
 const MiningSchemaFields = (props: MiningSchemaFieldsProps) => {
-  const { fields, modelIndex, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
+  const { dataDictionary, fields, modelIndex, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
   return (
     <ul className="mining-schema-list">
       {fields?.map((field, index) => {
         return (
           <MiningSchemaItem
             key={field.name as string}
+            dataDictionary={dataDictionary}
             field={field}
             index={index}
             modelIndex={modelIndex}
@@ -49,6 +51,7 @@ export default MiningSchemaFields;
 interface MiningSchemaFieldProps {
   index: number;
   modelIndex: number;
+  dataDictionary?: DataDictionary;
   field: MiningField;
   onAddProperties: (index: number) => void;
   onDelete: (index: number, name: string) => void;
@@ -58,7 +61,17 @@ interface MiningSchemaFieldProps {
 }
 
 const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
-  const { index, modelIndex, field, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
+  const {
+    index,
+    modelIndex,
+    dataDictionary,
+    field,
+    onAddProperties,
+    onDelete,
+    onPropertyDelete,
+    onEdit,
+    onCancel
+  } = props;
   const editing = useContext(MiningSchemaContext);
 
   const ref = useOnclickOutside(
@@ -99,7 +112,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
           .forMiningField(index)
           .build()
       ),
-    [index, modelIndex, field]
+    [index, modelIndex, dataDictionary, field]
   );
 
   return (

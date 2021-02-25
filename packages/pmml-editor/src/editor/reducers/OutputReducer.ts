@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { Builder } from "../paths";
+import { getCharacteristics, getMiningSchema, getOutputs } from "../PMMLModelHelper";
+import { isOutputsTargetFieldRequired, validateOutputs } from "../validation/Outputs";
+import { ValidationEntry, ValidationLevel, ValidationRegistry } from "../validation";
 
 interface OutputPayload {
   [Actions.AddOutput]: {
@@ -36,8 +39,9 @@ interface OutputPayload {
 
 export type OutputActions = ActionMap<OutputPayload>[keyof ActionMap<OutputPayload>];
 
-export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
-  historyService: HistoryService
+export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<Output, AllActions> => {
   return (state: Output, action: AllActions) => {
     switch (action.type) {
@@ -61,6 +65,41 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
               segmentId: action.payload.outputField.segmentId,
               isFinalResult: action.payload.outputField.isFinalResult
             });
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const outputField = action.payload.outputField;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const outputs = getOutputs(pmml, modelIndex);
+            if (outputs !== undefined && miningSchema !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forOutput()
+                  .build()
+              );
+              validateOutputs(
+                action.payload.modelIndex,
+                outputs.OutputField,
+                miningSchema.MiningField,
+                validationRegistry
+              );
+              if (isOutputsTargetFieldRequired(miningSchema.MiningField)) {
+                const outputFieldIndex = outputs.OutputField.length;
+                validationRegistry.set(
+                  Builder()
+                    .forModel(modelIndex)
+                    .forOutput()
+                    .forOutputField(outputFieldIndex)
+                    .forTargetField()
+                    .build(),
+                  new ValidationEntry(
+                    ValidationLevel.WARNING,
+                    `"${outputField.name}" output field, target field is required if Mining Schema has multiple target fields.`
+                  )
+                );
+              }
+            }
           }
         );
         break;
@@ -76,6 +115,20 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
             const outputIndex = action.payload.outputIndex;
             if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
               draft.OutputField.splice(outputIndex, 1);
+            }
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const outputs = getOutputs(pmml, modelIndex);
+            if (miningSchema !== undefined && outputs !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forOutput()
+                  .build()
+              );
+              validateOutputs(modelIndex, outputs.OutputField, miningSchema.MiningField, validationRegistry);
             }
           }
         );
@@ -95,8 +148,116 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
                 dataType: "string"
               });
             });
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const outputs = getOutputs(pmml, modelIndex);
+            if (outputs !== undefined && miningSchema !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forOutput()
+                  .build()
+              );
+              validateOutputs(
+                action.payload.modelIndex,
+                outputs.OutputField,
+                miningSchema.MiningField,
+                validationRegistry
+              );
+              if (isOutputsTargetFieldRequired(miningSchema.MiningField)) {
+                outputs.OutputField.forEach((name, index) => {
+                  validationRegistry.set(
+                    Builder()
+                      .forModel(action.payload.modelIndex)
+                      .forOutput()
+                      .forOutputField(index)
+                      .forTargetField()
+                      .build(),
+                    new ValidationEntry(
+                      ValidationLevel.WARNING,
+                      `"${name}" output field, target field is required if Mining Schema has multiple target fields.`
+                    )
+                  );
+                });
+              }
+            }
           }
         );
+        break;
+
+      case Actions.DeleteMiningSchemaField:
+        if (state.OutputField.length > 0) {
+          const modelIndex = action.payload.modelIndex;
+          historyService.batch(
+            state,
+            Builder()
+              .forModel(modelIndex)
+              .build(),
+            draft => {
+              state.OutputField.forEach((outputField, outputFieldIndex) => {
+                if (outputField.targetField === action.payload.name) {
+                  draft!.OutputField[outputFieldIndex] = {
+                    ...draft!.OutputField[outputFieldIndex],
+                    targetField: undefined
+                  };
+                }
+              });
+            },
+            pmml => {
+              const miningSchema = getMiningSchema(pmml, modelIndex);
+              const outputs = getOutputs(pmml, modelIndex);
+              if (miningSchema !== undefined && outputs !== undefined) {
+                validationRegistry.clear(
+                  Builder()
+                    .forModel(modelIndex)
+                    .forOutput()
+                    .build()
+                );
+                validateOutputs(modelIndex, outputs.OutputField, miningSchema.MiningField, validationRegistry);
+              }
+            }
+          );
+        }
+        break;
+
+      case Actions.UpdateMiningSchemaField:
+        if (state.OutputField.length > 0) {
+          const modelIndex = action.payload.modelIndex;
+          historyService.batch(
+            state,
+            Builder()
+              .forModel(modelIndex)
+              .build(),
+            draft => {
+              if (action.payload.usageType !== "target") {
+                state.OutputField.forEach((outputField, outputFieldIndex) => {
+                  if (outputField.targetField === action.payload.name) {
+                    draft!.OutputField[outputFieldIndex] = {
+                      ...draft!.OutputField[outputFieldIndex],
+                      targetField: undefined
+                    };
+                  }
+                });
+              }
+            },
+            pmml => {
+              const miningSchema = getMiningSchema(pmml, modelIndex);
+              const outputs = getOutputs(pmml, modelIndex);
+              const characteristics = getCharacteristics(pmml, modelIndex);
+              if (miningSchema !== undefined && outputs !== undefined && characteristics !== undefined) {
+                validationRegistry.clear(
+                  Builder()
+                    .forModel(modelIndex)
+                    .forOutput()
+                    .build()
+                );
+                validateOutputs(modelIndex, outputs.OutputField, miningSchema.MiningField, validationRegistry);
+              }
+            }
+          );
+        }
     }
 
     return state;
