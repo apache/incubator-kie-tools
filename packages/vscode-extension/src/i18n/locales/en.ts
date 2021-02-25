@@ -21,5 +21,9 @@ export const en: VsCodeI18n = {
   ...en_common,
   savedSvg: fileName => `${en_common.names.svg} saved at ${fileName}.`,
   openSvg: `Open ${en_common.names.svg}`,
-  savedSuccessfully: "Saved successfully!"
+  savedSuccessfully: "Saved successfully!",
+  errorOpeningFileText: "Error opening file.",
+  openAsTextButton: "Open as text",
+  reopenAsDiagramText: "After you're finished fixing it, you can reopen it as diagram.",
+  reopenAsDiagramButton: "Reopen as diagram",
 };

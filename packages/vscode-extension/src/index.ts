@@ -58,7 +58,9 @@ export async function startExtension(args: {
     messageBroadcaster,
     workspaceApi,
     args.backendProxy,
-    vsCodeNotificationsApi
+    vsCodeNotificationsApi,
+    args.viewType,
+    vsCodeI18n
   );
 
   const editorWebviewProvider = new KogitoEditorWebviewProvider(

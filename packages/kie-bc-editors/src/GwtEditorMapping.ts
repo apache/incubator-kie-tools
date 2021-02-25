@@ -45,12 +45,7 @@ export class GwtEditorMapping {
         },
         {
           type: "js",
-          paths: [
-            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/ace.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/mode-xml.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/theme-chrome.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`
-          ]
+          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`]
         }
       ]
     };
@@ -73,9 +68,6 @@ export class GwtEditorMapping {
             `${editorInitArgs.resourcesPathPrefix}/model/DMN12.js`,
             `${editorInitArgs.resourcesPathPrefix}/model/KIE.js`,
             `${editorInitArgs.resourcesPathPrefix}/model/MainJs.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/ace.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/mode-xml.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/theme-chrome.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`
           ]
         }

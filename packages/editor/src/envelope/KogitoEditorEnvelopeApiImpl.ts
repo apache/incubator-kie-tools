@@ -27,7 +27,7 @@ import {
 } from "../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
-import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
+import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
@@ -100,10 +100,11 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
     this.args.view().setLoading();
 
-    const content = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
+    const editorContent = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
 
     await this.editor
-      .setContent(content.path ?? "", content.content)
+      .setContent(editorContent.path ?? "", editorContent.content)
+      .catch(e => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
 
     this.args.envelopeContext.channelApi.notifications.receive_ready();
@@ -113,6 +114,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.args.view().setLoading();
     this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
+      .catch(e => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
   };
 

@@ -17,7 +17,7 @@
 import { StateControl } from "../../channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
-import { KogitoEditorChannelApi, StateControlCommand } from "../../api";
+import { KogitoEditorChannelApi, StateControlCommand, EditorContent } from "../../api";
 import {
   KogitoEdit,
   ResourceContent,
@@ -85,8 +85,8 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.overrides.receive_ready?.();
   }
 
-  public receive_setContentError(errorMessage: string): void {
-    this.overrides.receive_setContentError?.(errorMessage);
+  public receive_setContentError(editorContent: EditorContent): void {
+    this.overrides.receive_setContentError?.(editorContent);
   }
 
   public receive_getLocale(): Promise<string> {
@@ -96,9 +96,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   public createNotification(notification: Notification): void {
     this.overrides.createNotification?.(notification);
   }
+
   public setNotifications(path: string, notifications: Notification[]): void {
     this.overrides.setNotifications?.(path, notifications);
   }
+
   public removeNotifications(path: string): void {
     this.overrides.removeNotifications?.(path);
   }

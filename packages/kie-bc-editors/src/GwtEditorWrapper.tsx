@@ -87,12 +87,8 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public setContent(path: string, content: string) {
-    const i18n = this.kieBcEditorsI18n.getCurrent();
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
-    return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.channelApi.notifications.receive_setContentError(i18n.unsupportedFile);
-      return Promise.resolve();
-    });
+    return this.gwtEditor.setContent(path, content.trim());
   }
 
   public getPreview(): Promise<string | undefined> {
