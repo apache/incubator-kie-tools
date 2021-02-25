@@ -30,7 +30,7 @@ import {
   Tooltip,
   DropdownToggle
 } from "@patternfly/react-core";
-import { EllipsisVIcon, PlayIcon } from "@patternfly/react-icons";
+import { ConnectedIcon, DisconnectedIcon, EllipsisVIcon, PlayIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
@@ -51,7 +51,8 @@ interface Props {
   isPageFullscreen: boolean;
   isEdited: boolean;
   isDmnRunning: boolean;
-  onRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  setDmnRunnerDrawerOpen: React.Dispatch<boolean>;
+  onSetupDmnRunner: () => void;
 }
 
 export function EditorToolbar(props: Props) {
@@ -59,9 +60,11 @@ export function EditorToolbar(props: Props) {
   const location = useLocation();
   const [fileName, setFileName] = useState(context.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
+  const [isDmnRunnerMenuOpen, setDmnRunnerMenuOpen] = useState(false);
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
+  const runLabel = useMemo(() => (props.isDmnRunning ? "Running" : "Run"), [props.isDmnRunning]);
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };
@@ -92,8 +95,6 @@ export function EditorToolbar(props: Props) {
     [saveNewName, cancelNewName]
   );
 
-  const runLabel = useMemo(() => (props.isDmnRunning ? "Running" : "Run"), [props.isDmnRunning]);
-
   const viewItems = useCallback(
     (dropdownId: string) => [
       <React.Fragment key={`dropdown-${dropdownId}-close`}>
@@ -110,14 +111,6 @@ export function EditorToolbar(props: Props) {
       </React.Fragment>,
       <DropdownItem key={`dropdown-${dropdownId}-fullscreen`} component={"button"} onClick={props.onFullScreen}>
         {i18n.editorToolbar.enterFullScreenView}
-      </DropdownItem>,
-      <DropdownItem
-        key={`dropdown-${dropdownId}-run`}
-        isDisabled={props.isDmnRunning}
-        component={"button"}
-        onClick={props.onRunDmn}
-      >
-        {runLabel}
       </DropdownItem>
     ],
     [i18n, context, props, runLabel]
@@ -186,6 +179,30 @@ export function EditorToolbar(props: Props) {
     [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
 
+  const dmnRunnerItems = useMemo(() => {
+    return (
+      <>
+        {props.isDmnRunning ? (
+          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => props.setDmnRunnerDrawerOpen(true)}>
+            Open DMN Runner
+          </DropdownItem>
+        ) : (
+          <DropdownItem key={"setup-dmn-runner"} component={"button"} onClick={props.onSetupDmnRunner}>
+            Setup DMN Runner
+          </DropdownItem>
+        )}
+      </>
+    );
+  }, [props]);
+
+  const onDmnRunner = useCallback(() => {
+    if (!props.isDmnRunning) {
+      props.onSetupDmnRunner();
+    } else {
+      props.setDmnRunnerDrawerOpen(true);
+    }
+  }, [props]);
+
   return !props.isPageFullscreen ? (
     <PageHeader
       logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
@@ -207,13 +224,28 @@ export function EditorToolbar(props: Props) {
                 <Button
                   data-testid="run-button"
                   variant={"tertiary"}
-                  onClick={props.onRunDmn}
+                  onClick={onDmnRunner}
                   aria-label={"Run"}
                   className={"kogito--editor__toolbar"}
-                  icon={<PlayIcon />}
-                  isDisabled={props.isDmnRunning}
+                  icon={
+                    props.isDmnRunning ? (
+                      <Tooltip
+                        key={"connected"}
+                        content={"The DMN Runner is connected"}
+                        flipBehavior={["bottom"]}
+                        children={<ConnectedIcon />}
+                      />
+                    ) : (
+                      <Tooltip
+                        key={"disconnected"}
+                        content={"The DMN Runner is not connected"}
+                        flipBehavior={["bottom"]}
+                        children={<DisconnectedIcon />}
+                      />
+                    )
+                  }
                 >
-                  {runLabel}
+                  DMN Runner
                 </Button>
               </PageHeaderToolsItem>
             )}
@@ -329,6 +361,9 @@ export function EditorToolbar(props: Props) {
                   ...viewItems("sm"),
                   <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                     {...shareItems("sm")}
+                  </DropdownGroup>,
+                  <DropdownGroup key={"dmn-runner-group"} label={"DMN Runner"}>
+                    {dmnRunnerItems}
                   </DropdownGroup>
                 ]}
                 position={DropdownPosition.right}

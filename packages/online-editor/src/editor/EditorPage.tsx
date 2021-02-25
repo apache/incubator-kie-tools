@@ -36,6 +36,8 @@ import {
   DrawerContent,
   DrawerContentBody,
   DrawerPanelContent,
+  DrawerCloseButton,
+  DrawerActions,
   Page,
   PageSection
 } from "@patternfly/react-core";
@@ -259,71 +261,57 @@ export function EditorPage(props: Props) {
   }, [context.file.fileName]);
 
   // TODO: extract to custom hook
-  const [runDmn, setRunDmn] = useState(false);
+  const [isDmnRunnerDrawerOpen, setDmnRunnerDrawerOpen] = useState(false);
   const [dmnRunnerSchema, setDmnRunnerSchema] = useState<JSONSchemaBridge>();
+  // This state saves the current status of the Dmn Runner server on the user machine.
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
 
-  useEffect(() => {
-    if (runDmn && context.file.fileExtension === "dmn") {
-      // check crashes / manual stops
-      let polling1: number | undefined;
-      if (dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
-        polling1 = window.setInterval(() => {
-          DmnRunner.checkServer().catch(() => {
-            setModal(OpenedModal.DMN_RUNNER_HELPER);
-            setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
-            window.clearInterval(polling1);
-          });
-        }, 500);
-        editor
-          ?.getContent()
-          .then(content => DmnRunner.getFormSchema(content ?? ""))
-          .then(schema => setDmnRunnerSchema(schema));
-      }
+  const DMN_RUNNER_POLLING_TIME = 500;
 
+  useEffect(() => {
+    if (context.file.fileExtension === "dmn") {
       // detect dmn runner
       let polling2: number | undefined;
       if (dmnRunnerStatus !== DmnRunnerStatus.RUNNING) {
         polling2 = window.setInterval(() => {
+          console.log("polling 2")
+
           DmnRunner.checkServer().then(() => {
             setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
             window.clearInterval(polling2);
           });
         }, 500);
+
+        return () => window.clearInterval(polling2);
       }
 
-      return () => {
-        if (polling1) {
-          window.clearInterval(polling1);
-        }
+      // check crashes / manual stops
+      let polling1: number | undefined;
+      if (dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
+        polling1 = window.setInterval(() => {
+          console.log("polling 1")
+          DmnRunner.checkServer().catch(() => {
+            setModal(OpenedModal.DMN_RUNNER_HELPER);
+            setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
+            window.clearInterval(polling1);
+          });
+        }, DMN_RUNNER_POLLING_TIME);
+        editor
+          ?.getContent()
+          .then(content => DmnRunner.getFormSchema(content ?? ""))
+          .then(schema => setDmnRunnerSchema(schema));
 
-        if (polling2) {
-          window.clearInterval(polling2);
-        }
-      };
+        return () => window.clearInterval(polling1);
+      }
     }
-  }, [runDmn, editor, dmnRunnerStatus, isEditorReady]);
+  }, [editor, dmnRunnerStatus, isEditorReady]);
 
-  const onRunDmn = useCallback((e: React.MouseEvent<any>) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setRunDmn(true);
-    DmnRunner.checkServer()
-      .then(() => {
-        setAlert(Alerts.SUCCESS_DMN_RUNNER);
-        setDmnRunnerStatus(DmnRunnerStatus.AVAILABLE);
-      })
-      .catch(() => {
-        setModal(OpenedModal.DMN_RUNNER_HELPER);
-        setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
-      });
+  const requestSetupDmnRunner = useCallback(() => {
+    setModal(OpenedModal.DMN_RUNNER_HELPER);
   }, []);
 
-  const onStopRunDmn = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
-    setRunDmn(false);
+  const requestCloseDmnRunnerDrawer = useCallback(() => {
+    setDmnRunnerDrawerOpen(false);
   }, []);
 
   useEffect(() => {
@@ -369,20 +357,21 @@ export function EditorPage(props: Props) {
           onEmbed={requestEmbed}
           isEdited={isDirty}
           isDmnRunning={dmnRunnerStatus === DmnRunnerStatus.RUNNING}
-          onRunDmn={onRunDmn}
+          setDmnRunnerDrawerOpen={setDmnRunnerDrawerOpen}
+          onSetupDmnRunner={requestSetupDmnRunner}
         />
       }
     >
       <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
-        <Drawer isInline={true} isExpanded={dmnRunnerStatus === DmnRunnerStatus.RUNNING}>
+        <Drawer isInline={true} isExpanded={isDmnRunnerDrawerOpen}>
           <DrawerContent
-            className={dmnRunnerStatus !== DmnRunnerStatus.RUNNING ? "kogito--editor__dmn-runner-drawer-content" : ""}
+            className={!isDmnRunnerDrawerOpen ? "kogito--editor__dmn-runner-drawer-content" : ""}
             panelContent={
               <DrawerPanelContent className={"kogito--editor__dmn-runner-drawer-panel"}>
                 <DmnRunnerDrawer
                   jsonSchemaBridge={dmnRunnerSchema}
                   editorContent={editor?.getContent}
-                  onStopRunDmn={onStopRunDmn}
+                  onStopRunDmn={requestCloseDmnRunnerDrawer}
                 />
               </DrawerPanelContent>
             }
@@ -491,7 +480,6 @@ export function EditorPage(props: Props) {
               )}
               {!fullscreen && (
                 <DmnRunnerModal
-                  setRunDmn={setRunDmn}
                   stopped={dmnRunnerStatus === DmnRunnerStatus.STOPPED}
                   isDmnRunning={dmnRunnerStatus === DmnRunnerStatus.RUNNING}
                   isOpen={modal === OpenedModal.DMN_RUNNER_HELPER}

@@ -18,18 +18,17 @@ import Ajv from "ajv";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { Schema } from "ajv";
 
-export interface JitDmnPayload {
+export interface DmnRunnerPayload {
   model: string;
   context: Map<string, object>;
 }
 
-const JIT_DMN_SERVER = "http://localhost:8080/";
-const JIT_DMN_URL = "http://localhost:8080/jitdmn";
-const JIT_DMN_SCHEMA_URL = "http://localhost:8080/jitdmn/schema";
-const JIT_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
+const DMN_RUNNER_SERVER = "http://localhost:8080/";
+const DMN_RUNNER_URL = "http://localhost:8080/jitdmn";
+const DMN_RUNNER_SCHEMA_URL = "http://localhost:8080/jitdmn/schema";
+const DMN_RUNNER_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
 
 export const ajv = new Ajv({ allErrors: true, useDefaults: true });
-// AjvErrors(ajv);
 
 export const schema = {
   definitions: {
@@ -161,13 +160,13 @@ function createValidator(jsonSchema: Schema) {
 
 export class DmnRunner {
   public static async checkServer(): Promise<boolean> {
-    const response = await fetch(JIT_DMN_SERVER, { method: "OPTIONS" });
+    const response = await fetch(DMN_RUNNER_SERVER, { method: "OPTIONS" });
     return response.status < 300;
   }
 
   public static async download() {
     try {
-      const response = await fetch(JIT_DOWNLOAD, { method: "GET" });
+      const response = await fetch(DMN_RUNNER_DOWNLOAD, { method: "GET" });
       const blob = await response.blob();
 
       const objectUrl = URL.createObjectURL(blob);
@@ -178,8 +177,8 @@ export class DmnRunner {
     }
   }
 
-  public static validateForm(payload: JitDmnPayload) {
-    return fetch(JIT_DMN_URL, {
+  public static sendForm(payload: DmnRunnerPayload) {
+    return fetch(DMN_RUNNER_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -191,7 +190,7 @@ export class DmnRunner {
 
   public static async getFormSchema(model: string) {
     try {
-      const response = await fetch(JIT_DMN_SCHEMA_URL, {
+      const response = await fetch(DMN_RUNNER_SCHEMA_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/xml;"

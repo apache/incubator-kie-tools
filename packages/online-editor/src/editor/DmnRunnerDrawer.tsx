@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
@@ -34,10 +34,10 @@ import {
   CardBody,
   EmptyState,
   EmptyStateIcon,
-  Button,
-  ButtonVariant,
   EmptyStateBody,
-  TextVariants
+  TextVariants,
+  Switch,
+  DrawerCloseButton
 } from "@patternfly/react-core";
 import { CubesIcon, InfoCircleIcon } from "@patternfly/react-icons";
 
@@ -63,6 +63,7 @@ const PF_BREAKPOINT_XL = 1200;
 export function DmnRunnerDrawer(props: Props) {
   const [dmnRunnerResponse, setDmnRunnerResponse] = useState();
   const [dmnRunnerResponseStatus, setDmnRunnerResponseStatus] = useState(DmnRunnerStatusResponse.NONE);
+  const [isAutoSubmit, setIsAutoSubmit] = useState(true);
   const autoFormRef = useRef<HTMLFormElement>();
 
   const alertMessage = useMemo(() => {
@@ -80,7 +81,7 @@ export function DmnRunnerDrawer(props: Props) {
     ({ context }) => {
       if (props.editorContent) {
         props.editorContent().then((model: string) => {
-          DmnRunner.validateForm({ context, model })
+          DmnRunner.sendForm({ context, model })
             .then(res => res.json())
             .then(json => {
               setDmnRunnerResponse(json);
@@ -90,7 +91,7 @@ export function DmnRunnerDrawer(props: Props) {
         });
       }
     },
-    [props.editorContent]
+    [props.editorContent, dmnRunnerResponse]
   );
 
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() => {
@@ -116,6 +117,12 @@ export function DmnRunnerDrawer(props: Props) {
     window.addEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (isAutoSubmit) {
+      autoFormRef.current?.submit();
+    }
+  }, [isAutoSubmit]);
+
   return (
     <>
       <div className={"kogito--editor__dmn-runner-drawer-div-page"}>
@@ -125,10 +132,9 @@ export function DmnRunnerDrawer(props: Props) {
               <TextContent>
                 <Text component={"h2"}>Inputs</Text>
               </TextContent>
+              <Switch label={"Auto-submit"} onChange={setIsAutoSubmit} isChecked={isAutoSubmit} />
               {buttonPosition === ButtonPosition.INPUT && (
-                <Button variant={ButtonVariant.secondary} onClick={e => props.onStopRunDmn(e)}>
-                  Stop Running
-                </Button>
+                <DrawerCloseButton onClick={(e: any) => props.onStopRunDmn(e)} />
               )}
             </PageSection>
 
@@ -140,12 +146,12 @@ export function DmnRunnerDrawer(props: Props) {
                     id={"form"}
                     ref={autoFormRef}
                     showInlineError={true}
-                    autosave={true}
+                    autosave={isAutoSubmit}
                     autosaveDelay={500}
                     schema={props.jsonSchemaBridge}
                     onSubmit={onSubmit}
                     errorsField={() => <></>}
-                    submitField={() => <></>}
+                    submitField={isAutoSubmit ? () => <></> : undefined}
                     placeholder={true}
                   />
                 ) : (
@@ -174,9 +180,7 @@ export function DmnRunnerDrawer(props: Props) {
                 <Text component={"h2"}>Outputs</Text>
               </TextContent>
               {buttonPosition === ButtonPosition.OUTPUT && (
-                <Button variant={ButtonVariant.secondary} onClick={e => props.onStopRunDmn(e)}>
-                  Stop Running
-                </Button>
+                <DrawerCloseButton onClick={(e: any) => props.onStopRunDmn(e)} />
               )}
             </PageSection>
 
@@ -248,7 +252,9 @@ function ResultCardLeaf(props: { label: string; value: string }) {
       <DescriptionListGroup>
         <DescriptionListTerm>{props.label}</DescriptionListTerm>
         {props.value ? (
-          <DescriptionListDescription>{props.value}</DescriptionListDescription>
+          <DescriptionListDescription>
+            {props.value}
+          </DescriptionListDescription>
         ) : (
           <DescriptionListDescription>
             <i>(null)</i>

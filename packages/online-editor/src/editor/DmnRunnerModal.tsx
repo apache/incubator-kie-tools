@@ -43,7 +43,6 @@ interface Props {
   onClose: () => void;
   isDmnRunning: boolean;
   stopped: boolean;
-  setRunDmn: React.Dispatch<boolean>;
 }
 
 // const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
@@ -154,12 +153,7 @@ export function DmnRunnerModal(props: Props) {
   return (
     <Modal
       isOpen={props.isOpen}
-      onClose={() => {
-        props.onClose();
-        if (!props.isDmnRunning) {
-          props.setRunDmn(false);
-        }
-      }}
+      onClose={props.onClose}
       variant={ModalVariant.large}
       aria-label={"Steps to enable the DMN Runner"}
       title={"DMN Runner setup"}
