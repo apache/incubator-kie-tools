@@ -16,13 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client.test;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 
 public abstract class TestLayoutDragComponent implements LayoutDragComponent {
 
@@ -37,32 +33,7 @@ public abstract class TestLayoutDragComponent implements LayoutDragComponent {
     }
 
     @Override
-    public String getDragComponentIconClass() {
-        return null;
-    }
-
-    @Override
-    public List<PropertyEditorCategory> getPropertyCategories(LayoutComponent layoutComponent) {
-        return null;
-    }
-
-    @Override
-    public String getDragComponentTitle() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getPreviewWidget(RenderingContext ctx) {
-        return null;
-    }
-
-    @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
         return null;
-    }
-
-    @Override
-    public void removeCurrentWidget(RenderingContext ctx) {
-
     }
 }

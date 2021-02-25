@@ -15,8 +15,8 @@
  */
 package org.uberfire.ext.layout.editor.client.generator;
 
-import javax.enterprise.inject.Default;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;

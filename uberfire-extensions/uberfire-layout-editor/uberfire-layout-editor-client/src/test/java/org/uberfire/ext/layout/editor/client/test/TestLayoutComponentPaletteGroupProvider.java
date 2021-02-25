@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutComponentPaletteGroupProvider;
 
 public abstract class TestLayoutComponentPaletteGroupProvider implements LayoutComponentPaletteGroupProvider {

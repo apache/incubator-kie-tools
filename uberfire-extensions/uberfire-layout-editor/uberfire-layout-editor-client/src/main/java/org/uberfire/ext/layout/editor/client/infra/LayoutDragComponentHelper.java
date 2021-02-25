@@ -19,7 +19,6 @@ package org.uberfire.ext.layout.editor.client.infra;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -28,10 +27,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.Factory;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 
 @Dependent
@@ -39,7 +38,6 @@ public class LayoutDragComponentHelper {
 
     private SyncBeanManager beanManager;
 
-    private DndDataJSONConverter converter = new DndDataJSONConverter();
     private List<Object> instances = new ArrayList<>();
 
     @Inject
@@ -92,23 +90,11 @@ public class LayoutDragComponentHelper {
     }
 
     public LayoutComponent getLayoutComponent(LayoutDragComponent dragComponent) {
-
-        LayoutComponent layoutComponent = new LayoutComponent(getRealBeanClass(dragComponent));
-
-        if (dragComponent instanceof HasDragAndDropSettings) {
-            Map<String, String> properties = ((HasDragAndDropSettings) dragComponent).getMapSettings();
-
-            if (properties != null) {
-                layoutComponent.addProperties(properties);
-            }
-        }
-
-        return layoutComponent;
+        return new LayoutComponent(getRealBeanClass(dragComponent));
     }
 
     private LayoutDragComponent extractComponent(String dropData) {
-        return converter
-                .readJSONDragComponent(dropData);
+        return null; //FIXME: tiago
     }
 
     private boolean hasComponent(LayoutComponent component) {
@@ -116,6 +102,6 @@ public class LayoutDragComponentHelper {
     }
 
     protected void destroy(Object o) {
-        BeanHelper.destroy(o);
+        IOC.getBeanManager().destroyBean(o);
     }
 }
