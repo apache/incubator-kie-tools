@@ -20,14 +20,10 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.Position;
 
 /**
  * Internal framework component that handles the creation, destruction, layout, and composition (parent-child nesting)
@@ -47,8 +43,7 @@ public interface PanelManager {
     PanelDefinition getRoot();
 
     /**
-     * Adds the given part to the given panel, which must already be part of the visible workbench layout. Fires a
-     * {@link SelectPlaceEvent} with the given {@link PlaceRequest} once the part has been added.
+     * Adds the given part to the given panel, which must already be part of the visible workbench layout.
      * @param place The PlaceRequest that the part was resolved from. Not null.
      * @param part The description of the part to add. Not null.
      * @param panel definition of the panel to add the part to (must describe a panel that is already present in the
@@ -67,36 +62,6 @@ public interface PanelManager {
                           final IsWidget widget,
                           final Integer minInitialWidth,
                           final Integer minInitialHeight);
-
-    /**
-     * Adds an empty child panel of the target panel's default child type at the given position within the target panel.
-     * The new child panel will have the given dimensions and minimum sizes set on it.
-     * <p>
-     * TODO: the usefulness of this method to callers is questionable (versus creating a new child panel definition and
-     * calling {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)}). candidate for deletion.
-     */
-    PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
-                                      final Position position,
-                                      final Integer height,
-                                      final Integer width,
-                                      final Integer minHeight,
-                                      final Integer minWidth);
-
-    /**
-     * Adds the given child panel to the given target panel at the given position within the target. Upon successful
-     * completion of this method, the child panel will have a new parent panel. Its {@link PanelDefinition},
-     * {@link WorkbenchPanelPresenter}, and {@link WorkbenchPanelView} and those of its new parent will be updated to
-     * reflect the new relationship. Note that the given target panel will not necessarily be the new parent: panel
-     * implementations may choose to avoid collisions (more than one child panel in the same position) by redirecting
-     * requests to add children.
-     * @throws IllegalStateException if {@code targetPanel} already has a child at {@code position} and it doesn't have any special
-     * collision avoidance logic
-     * @throws UnsupportedOperationException if {@code targetPanel} doesn't support child panels.
-     * @throws IllegalArgumentException if {@code targetPanel} doesn't understand the given {@code position} value.
-     */
-    PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
-                                      final PanelDefinition childPanel,
-                                      final Position position);
 
     /**
      * Creates an UberFire panel and installs its view in the given widget container.

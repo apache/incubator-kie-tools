@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
-import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -41,16 +40,13 @@ import static org.uberfire.debug.Debug.objectId;
  */
 public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenchPanelPresenter<P>> implements WorkbenchPanelPresenter {
 
-    protected final PerspectiveManager perspectiveManager;
     protected final Map<Position, WorkbenchPanelPresenter> childPanels = new LinkedHashMap<Position, WorkbenchPanelPresenter>();
     private final WorkbenchPanelView<P> view;
     private WorkbenchPanelPresenter parent;
     private PanelDefinition definition;
 
-    public AbstractWorkbenchPanelPresenter(final WorkbenchPanelView<P> view,
-                                           final PerspectiveManager perspectiveManager) {
+    public AbstractWorkbenchPanelPresenter(final WorkbenchPanelView<P> view) {
         this.view = view;
-        this.perspectiveManager = perspectiveManager;
     }
 
     /**

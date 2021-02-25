@@ -19,34 +19,21 @@ package org.uberfire.client.views.pfly.mock;
 import javax.enterprise.inject.Alternative;
 
 import com.google.gwt.user.client.ui.HasWidgets;
-import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
 
 @Alternative
 public class MockPlaceManager implements PlaceManager {
 
     @Override
-    public void goTo(PlaceRequest place) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(PlaceRequest place,
-                     PanelDefinition panel) {
+    public void bootstrapPerspective() {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
     public void goTo(PlaceRequest place,
                      HasWidgets addTo) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public Activity getActivity(PlaceRequest place) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

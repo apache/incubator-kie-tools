@@ -20,11 +20,9 @@
 <module>
   <!-- Inherit the core Web Toolkit stuff. -->
 
-  <inherits name="com.google.gwt.i18n.I18N"/>
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="com.google.gwt.resources.Resources"/>
-  <inherits name="com.google.gwt.activity.Activity"/>
 
   <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
@@ -32,14 +30,8 @@
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
 
-  <!-- GWT-DnD module inherits -->
-  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
-
   <!-- GuvnorNG API common interfaces -->
   <inherits name="org.uberfire.UberfireClientAPI"/>
-
-  <!-- Google Guava -->
-  <inherits name="com.google.common.collect.Collect"/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>

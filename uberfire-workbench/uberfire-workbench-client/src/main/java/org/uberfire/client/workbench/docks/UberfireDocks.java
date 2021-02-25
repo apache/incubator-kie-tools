@@ -57,8 +57,6 @@ public interface UberfireDocks {
      * Shows the docks bar associated with {@link UberfireDockPosition}
      * for a given perspective.
      * @param position the dock position that will be shown.
-     * @param perspectiveName perspective that the dock will be shown.
      */
-    void show(UberfireDockPosition position,
-              String perspectiveName);
+    void show(UberfireDockPosition position);
 }

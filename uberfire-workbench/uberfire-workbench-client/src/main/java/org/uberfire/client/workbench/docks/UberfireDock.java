@@ -29,8 +29,6 @@ public class UberfireDock {
 
     private UberfireDockPosition uberfireDockPosition;
 
-    private String associatedPerspective;
-
     private Double size;
 
     private String label;
@@ -43,46 +41,22 @@ public class UberfireDock {
 
     public UberfireDock(UberfireDockPosition uberfireDockPosition,
                         String iconType,
-                        PlaceRequest placeRequest,
-                        String associatedPerspective) {
+                        PlaceRequest placeRequest) {
         this.uberfireDockPosition = uberfireDockPosition;
         this.iconType = iconType;
         this.placeRequest = placeRequest;
-        this.associatedPerspective = associatedPerspective;
         this.label = placeRequest.getIdentifier();
-    }
-
-    public UberfireDock(UberfireDockPosition uberfireDockPosition,
-                        String iconType,
-                        PlaceRequest placeRequest) {
-        this(uberfireDockPosition,
-             iconType,
-             placeRequest,
-             null);
     }
 
     public UberfireDock(UberfireDockPosition uberfireDockPosition,
                         ImageResource imageIcon,
                         ImageResource imageIconFocused,
-                        PlaceRequest placeRequest,
-                        String associatedPerspective) {
+                        PlaceRequest placeRequest) {
         this.uberfireDockPosition = uberfireDockPosition;
         this.imageIcon = imageIcon;
         this.imageIconFocused = imageIconFocused;
         this.placeRequest = placeRequest;
-        this.associatedPerspective = associatedPerspective;
         this.label = placeRequest.getIdentifier();
-    }
-
-    public UberfireDock(UberfireDockPosition uberfireDockPosition,
-                        ImageResource imageIcon,
-                        ImageResource imageIconFocused,
-                        PlaceRequest placeRequest) {
-        this(uberfireDockPosition,
-             imageIcon,
-             imageIconFocused,
-             placeRequest,
-             null);
     }
 
     public UberfireDock withLabel(String label) {
@@ -102,10 +76,6 @@ public class UberfireDock {
 
     public void setUberfireDockPosition(UberfireDockPosition uberfireDockPosition) {
         this.uberfireDockPosition = uberfireDockPosition;
-    }
-
-    public String getAssociatedPerspective() {
-        return associatedPerspective;
     }
 
     public String getIdentifier() {
@@ -160,7 +130,6 @@ public class UberfireDock {
                 Objects.equals(imageIcon, that.imageIcon) &&
                 Objects.equals(imageIconFocused, that.imageIconFocused) &&
                 Objects.equals(placeRequest, that.placeRequest) &&
-                Objects.equals(associatedPerspective, that.associatedPerspective) &&
                 Objects.equals(size, that.size) &&
                 Objects.equals(label, that.label) &&
                 Objects.equals(tooltip, that.tooltip);
@@ -176,8 +145,6 @@ public class UberfireDock {
         result = 31 * result + (imageIcon != null ? imageIcon.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (imageIconFocused != null ? imageIconFocused.hashCode() : 0);
-        result = ~~result;
-        result = 31 * result + (associatedPerspective != null ? associatedPerspective.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (size != null ? size.hashCode() : 0);
         result = ~~result;

@@ -21,7 +21,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
@@ -39,10 +38,8 @@ public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
 
     @Inject
     public StaticWorkbenchPanelPresenter(@Named("StaticWorkbenchPanelView") final StaticWorkbenchPanelView view,
-                                         final PerspectiveManager perspectiveManager,
                                          final PlaceManager placeManager) {
-        super(view,
-              perspectiveManager);
+        super(view);
         this.placeManager = placeManager;
     }
 

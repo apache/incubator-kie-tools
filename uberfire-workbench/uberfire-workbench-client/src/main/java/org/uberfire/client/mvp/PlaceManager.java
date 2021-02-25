@@ -26,15 +26,14 @@ import org.uberfire.mvp.PlaceRequest;
 @JsType
 public interface PlaceManager {
 
-    @JsMethod(name = "goToPlace")
-    void goTo(final PlaceRequest place);
-
     @JsIgnore
     void goTo(final PlaceRequest place,
               final HasWidgets addTo);
 
-    Activity getActivity(final PlaceRequest place);
+    @JsIgnore
+    void bootstrapPerspective();
 
+    @JsMethod
     void closePlace(final PlaceRequest placeToClose);
 
     @JsMethod(name = "closePlaceWithCommand")

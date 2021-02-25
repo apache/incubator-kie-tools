@@ -33,7 +33,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @JsType
 public interface PlaceRequest {
 
-    public static final PlaceRequest NOWHERE = new DefaultPlaceRequest("NOWHERE");
+    PlaceRequest NOWHERE = new DefaultPlaceRequest("NOWHERE");
 
     String getIdentifier();
 

@@ -18,6 +18,7 @@ package org.uberfire.ext.widgets.core.client.editors.texteditor;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
@@ -27,7 +28,7 @@ import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
 @ApplicationScoped
-//@Named(TextEditorPresenter.IDENTIFIER) uncomment after removing TextEditorPresenterActivity
+@Named(TextEditorPresenter.IDENTIFIER)
 public class TextEditorPresenter extends AbstractActivity {
 
     public static final String IDENTIFIER = "TextEditor";
@@ -35,6 +36,7 @@ public class TextEditorPresenter extends AbstractActivity {
     @Inject
     private View view;
     protected Path path;
+
 
     @Override
     public ResourceType getResourceType() {

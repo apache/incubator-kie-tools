@@ -16,7 +16,6 @@
 
 package org.uberfire.client.workbench;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -24,9 +23,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.HeaderPanel;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 
@@ -36,69 +33,34 @@ import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 @ApplicationScoped
 public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
-    public static final String UF_ROOT_CSS_CLASS = "uf-workbench-layout";
-    /**
-     * Dock Layout panel: in center root perspective and also (if available) with east west south docks
-     */
+    private final UberfireDocksContainer uberfireDocksContainer;
     private final DockLayoutPanel rootContainer = new DockLayoutPanel(Unit.PX);
-    /**
-     * The panel within which the current perspective's root view resides. This panel lasts the lifetime of the app; it's
-     * cleared and repopulated with the new perspective's root view each time
-     */
-    private final SimpleLayoutPanel perspectiveRootContainer = new SimpleLayoutPanel();
-    /**
-     * Top-level widget of the whole workbench layout. This panel contains the nested container panels for headers,
-     * footers, and the current perspective. During a normal startup of UberFire, this panel would be added directly to
-     * the RootLayoutPanel.
-     */
-    private HeaderPanel root;
-    /**
-     * An abstraction for DockLayoutPanel used by Uberfire Docks.
-     */
-    private UberfireDocksContainer uberfireDocksContainer;
-
-    public WorkbenchLayoutImpl() {
-        // Empty
-    }
+    private Widget currentContent;
 
     @Inject
-    public WorkbenchLayoutImpl(HeaderPanel root,
-                               UberfireDocksContainer uberfireDocksContainer) {
-
-        this.root = root;
+    public WorkbenchLayoutImpl(final UberfireDocksContainer uberfireDocksContainer) {
         this.uberfireDocksContainer = uberfireDocksContainer;
     }
 
-    @PostConstruct
-    private void init() {
-        perspectiveRootContainer.ensureDebugId("perspectiveRootContainer");
-        root.addStyleName(UF_ROOT_CSS_CLASS);
+    @Override
+    public DockLayoutPanel getRoot() {
+        return rootContainer;
     }
 
     @Override
-    public HeaderPanel getRoot() {
-        return root;
-    }
-
-    @Override
-    public HasWidgets getPerspectiveContainer() {
-        return perspectiveRootContainer;
+    public void addContent(Widget content) {
+        if (currentContent != null) {
+            rootContainer.remove(currentContent);
+        }
+        rootContainer.add(content);
+        Layouts.setToFillParent(content);
     }
 
     @Override
     public void onBootstrap() {
-        setupDocksContainer();
-        rootContainer.add(perspectiveRootContainer);
-
-        Layouts.setToFillParent(perspectiveRootContainer);
-        Layouts.setToFillParent(rootContainer);
-
-        root.setContentWidget(rootContainer);
-    }
-
-    private void setupDocksContainer() {
         uberfireDocksContainer.setup(rootContainer,
                                      () -> Scheduler.get().scheduleDeferred(this::onResize));
+        Layouts.setToFillParent(rootContainer);
     }
 
     @Override
@@ -110,11 +72,11 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Override
     public void resizeTo(int width,
                          int height) {
-        root.setPixelSize(width,
-                          height);
+        rootContainer.setPixelSize(width,
+                                   height);
 
         // The dragBoundary can't be a LayoutPanel, so it doesn't support ProvidesResize/RequiresResize.
         // We start the cascade of onResize() calls at its immediate child.
-        perspectiveRootContainer.onResize();
+        rootContainer.onResize();
     }
 }

@@ -17,14 +17,11 @@
 package org.uberfire.client.workbench;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -41,18 +38,14 @@ import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.debug.Debug;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.ensureIterable;
@@ -81,7 +74,6 @@ public class PanelManagerImpl implements PanelManager {
      */
     protected final Map<PanelDefinition, elemental2.dom.HTMLElement> customPanelsInsideElemental2HTMLElements = new HashMap<>();
 
-    protected Event<SelectPlaceEvent> selectPlaceEvent;
     protected SyncBeanManager iocManager;
     protected Instance<PlaceManager> placeManager;
     /**
@@ -100,13 +92,11 @@ public class PanelManagerImpl implements PanelManager {
 
     @Inject
     public PanelManagerImpl(
-            Event<SelectPlaceEvent> selectPlaceEvent,
             SyncBeanManager iocManager,
             Instance<PlaceManager> placeManager,
             BeanFactory beanFactory,
             Elemental2DomUtil elemental2DomUtil,
             WorkbenchLayout workbenchLayout) {
-        this.selectPlaceEvent = selectPlaceEvent;
         this.iocManager = iocManager;
         this.placeManager = placeManager;
         this.beanFactory = beanFactory;
@@ -149,20 +139,15 @@ public class PanelManagerImpl implements PanelManager {
             throw new IllegalStateException(message);
         }
 
-        HasWidgets perspectiveContainer = workbenchLayout.getPerspectiveContainer();
-        perspectiveContainer.clear();
-
         getBeanFactory().destroy(oldRootPanelPresenter);
 
         this.rootPanelDef = root;
-        WorkbenchPanelPresenter newPresenter = mapPanelDefinitionToPresenter.get(root);
-        if (newPresenter == null) {
-            newPresenter = getBeanFactory().newRootPanel(activity,
-                                                         root);
-            mapPanelDefinitionToPresenter.put(root,
-                                              newPresenter);
-        }
-        perspectiveContainer.add(newPresenter.getPanelView().asWidget());
+        WorkbenchPanelPresenter newPresenter =
+                mapPanelDefinitionToPresenter.computeIfAbsent(root, p ->
+                        getBeanFactory().newRootPanel(activity,
+                                                      root)
+                );
+        workbenchLayout.addContent(newPresenter.getPanelView().asWidget());
     }
 
     @Override
@@ -180,19 +165,15 @@ public class PanelManagerImpl implements PanelManager {
             throw new IllegalArgumentException("Target panel is not part of the layout");
         }
 
-        WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get(partDef);
-        if (partPresenter == null) {
-            partPresenter = getBeanFactory().newWorkbenchPart(partDef,
-                                                              panelPresenter.getPartType());
-            partPresenter.setWrappedWidget(widget); //FIXME: TIAGO: AQUI O ATTACH NO DOM ACONTECE
-            mapPartDefinitionToPresenter.put(partDef,
-                                             partPresenter);
-        }
+        WorkbenchPartPresenter partPresenter =
+                mapPartDefinitionToPresenter.computeIfAbsent(partDef, p -> {
+                    WorkbenchPartPresenter part = getBeanFactory().newWorkbenchPart(p,
+                                                                                    panelPresenter.getPartType());
+                    part.setWrappedWidget(widget);
+                    return part;
+                });
 
         panelPresenter.addPart(partPresenter);
-
-        //Select newly inserted part
-        selectPlaceEvent.fire(new SelectPlaceEvent(place));
     }
 
     @Override
@@ -203,24 +184,6 @@ public class PanelManagerImpl implements PanelManager {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
-                                             final Position position,
-                                             final Integer height,
-                                             final Integer width,
-                                             final Integer minHeight,
-                                             final Integer minWidth) {
-        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl(PanelDefinition.PARENT_CHOOSES_TYPE);
-
-        childPanel.setHeight(height);
-        childPanel.setWidth(width);
-        childPanel.setMinHeight(minHeight);
-        childPanel.setMinWidth(minWidth);
-        return addWorkbenchPanel(targetPanel,
-                                 childPanel,
-                                 position);
     }
 
     @Override
@@ -277,20 +240,6 @@ public class PanelManagerImpl implements PanelManager {
         }
     }
 
-    void onSelectPlaceEvent(@Observes SelectPlaceEvent event) {
-        final PlaceRequest place = event.getPlace();
-
-        // TODO (hbraun): PanelDefinition is not distinct (missing hashcode)
-        for (Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : new HashSet<>(mapPanelDefinitionToPresenter.entrySet())) {
-            WorkbenchPanelPresenter panelPresenter = e.getValue();
-            for (PartDefinition part : ensureIterable(panelPresenter.getDefinition().getParts())) {
-                if (part.getPlace().asString().equals(place.asString())) {
-                    panelPresenter.selectPart(part);
-                }
-            }
-        }
-    }
-
     /**
      * Returns the first live (associated with an active presenter) PartDefinition whose place matches the given one.
      *
@@ -323,49 +272,6 @@ public class PanelManagerImpl implements PanelManager {
 
         WorkbenchPartPresenter deadPartPresenter = mapPartDefinitionToPresenter.remove(part);
         getBeanFactory().destroy(deadPartPresenter);
-    }
-
-    @Override
-    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
-                                             final PanelDefinition childPanel,
-                                             final Position position) {
-
-        WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get(targetPanel);
-
-        if (targetPanelPresenter == null) {
-            targetPanelPresenter = beanFactory.newWorkbenchPanel(targetPanel);
-            mapPanelDefinitionToPresenter.put(targetPanel,
-                                              targetPanelPresenter);
-        }
-
-        PanelDefinition newPanel;
-
-        // Position instance could come from a different script so we compare using position.getName
-        if (CompassPosition.ROOT.getName().equals(position.getName())) {
-            newPanel = rootPanelDef;
-        } else if (CompassPosition.SELF.getName().equals(position.getName())) {
-            newPanel = targetPanelPresenter.getDefinition();
-        } else {
-            String defaultChildType = targetPanelPresenter.getDefaultChildType();
-            if (defaultChildType == null) {
-                throw new IllegalArgumentException("Target panel (type " + targetPanelPresenter.getClass().getName() + ")"
-                                                           + " does not allow child panels");
-            }
-
-            if (childPanel.getPanelType().equals(PanelDefinition.PARENT_CHOOSES_TYPE)) {
-                childPanel.setPanelType(defaultChildType);
-            }
-
-            final WorkbenchPanelPresenter childPanelPresenter = beanFactory.newWorkbenchPanel(childPanel);
-            mapPanelDefinitionToPresenter.put(childPanel,
-                                              childPanelPresenter);
-
-            targetPanelPresenter.addPanel(childPanelPresenter,
-                                          position);
-            newPanel = childPanel;
-        }
-
-        return newPanel;
     }
 
     @Override

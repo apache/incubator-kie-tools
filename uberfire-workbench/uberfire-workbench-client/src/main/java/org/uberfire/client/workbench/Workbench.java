@@ -24,10 +24,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.uberfire.client.mvp.DefaultPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
@@ -86,7 +84,7 @@ public class Workbench {
 
         workbenchLayout.onBootstrap();
         RootLayoutPanel.get().add(workbenchLayout.getRoot());
-        placeManager.goTo(new DefaultPlaceRequest(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME));
+        placeManager.bootstrapPerspective();
 
         // Resizing the Window should resize everything
         Window.addResizeHandler(event -> workbenchLayout.resizeTo(event.getWidth(),

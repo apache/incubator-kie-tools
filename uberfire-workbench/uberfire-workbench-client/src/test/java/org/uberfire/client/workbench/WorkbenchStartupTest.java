@@ -57,15 +57,9 @@ public class WorkbenchStartupTest {
     @Mock
     SyncBeanManager bm;
     @Mock
-    WorkbenchPickupDragController dragController;
-    @Mock
-    WorkbenchDragAndDropManager dndManager;
-    @Mock
     PanelManager panelManager;
     @Mock
     WorkbenchLayout layout;
-    @Mock
-    LayoutSelection layoutSelection;
     @Mock
     PlaceManager placeManager;
     @Mock

@@ -47,11 +47,6 @@ public class MockPartView implements View {
     }
 
     @Override
-    public IsWidget getWrappedWidget() {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
     public void setWrappedWidget(IsWidget widget) {
         throw new UnsupportedOperationException("Not implemented.");
     }

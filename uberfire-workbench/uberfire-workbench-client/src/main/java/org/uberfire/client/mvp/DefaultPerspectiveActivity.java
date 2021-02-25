@@ -16,22 +16,43 @@
 
 package org.uberfire.client.mvp;
 
+import java.util.Collection;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
-public abstract class DefaultPerspectiveActivity extends AbstractActivity implements PerspectiveActivity {
+@ApplicationScoped
+@Named(DefaultPerspectiveActivity.DEFAULT_PERSPECTIVE_NAME)
+public class DefaultPerspectiveActivity extends AbstractActivity implements PerspectiveActivity {
 
     public static final String DEFAULT_PERSPECTIVE_NAME = "AuthoringPerspective";
 
-    public abstract String getPlaceRequestIdentifier();
+    @Inject
+    private SyncBeanManager iocManager;
+
+    private String resolveEditorPlaceRequest() {
+        final Collection<SyncBeanDef<EditorActivity>> editors = iocManager.lookupBeans(EditorActivity.class);
+
+        if (editors.size() != 1) {
+            throw new RuntimeException("There must be exactly one instance of EditorActivity.");
+        }
+
+        return editors.iterator().next().getInstance().getIdentifier();
+    }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
         final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl();
-        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(getPlaceRequestIdentifier())));
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(resolveEditorPlaceRequest())));
         return perspective;
     }
 

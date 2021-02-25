@@ -23,20 +23,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.client.workbench.pmgr.nswe.part.WorkbenchPartPresenterDefault;
-import org.uberfire.client.workbench.pmgr.unanchored.part.UnanchoredWorkbenchPartPresenter;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultBeanFactoryTest {
 
     @Mock
-    private UnanchoredWorkbenchPartPresenter unanchoredWorkbenchPartPresenter;
-
-    @Mock
-    private WorkbenchPartPresenterDefault workbenchPartPresenterDefault;
+    private StaticWorkbenchPanelPresenter staticWorkbenchPanelPresenter;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private SyncBeanManager iocManager;
@@ -46,31 +43,13 @@ public class DefaultBeanFactoryTest {
 
     @Before
     public void setup() {
-        when(iocManager.lookupBean(UnanchoredWorkbenchPartPresenter.class).getInstance()).thenReturn(unanchoredWorkbenchPartPresenter);
-        when(iocManager.lookupBean(WorkbenchPartPresenterDefault.class).getInstance()).thenReturn(workbenchPartPresenterDefault);
+        when(iocManager.lookupBean(StaticWorkbenchPanelPresenter.class).getInstance()).thenReturn(staticWorkbenchPanelPresenter);
     }
 
     @Test
     public void testNewTemplateWorkbenchPartPresenter() {
         beanFactory.newWorkbenchPart(null,
-                                     null,
-                                     null,
-                                     null,
-                                     UnanchoredWorkbenchPartPresenter.class);
-        verify(iocManager.lookupBean(UnanchoredWorkbenchPartPresenter.class)).getInstance();
-        verify(iocManager.lookupBean(WorkbenchPartPresenterDefault.class),
-               never()).getInstance();
-    }
-
-    @Test
-    public void testNewWorkbenchPartPresenterDefault() {
-        beanFactory.newWorkbenchPart(null,
-                                     null,
-                                     null,
-                                     null,
-                                     WorkbenchPartPresenterDefault.class);
-        verify(iocManager.lookupBean(WorkbenchPartPresenterDefault.class)).getInstance();
-        verify(iocManager.lookupBean(UnanchoredWorkbenchPartPresenter.class),
-               never()).getInstance();
+                                     null);
+        verify(iocManager.lookupBean(StaticWorkbenchPanelPresenter.class)).getInstance();
     }
 }

@@ -16,8 +16,8 @@
 
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Used by the workbench to construct the outer most DOM structure (header, footer and perspective container).
@@ -29,12 +29,6 @@ public interface WorkbenchLayout {
      * @return the outer most workbench widget
      */
     IsWidget getRoot();
-
-    /**
-     * Gives access to the element of the workbench that hosts perspective widgets.
-     * @return the perspective container element
-     */
-    HasWidgets getPerspectiveContainer();
 
     /**
      * Will be invoked by the {@link org.uberfire.client.workbench.Workbench}
@@ -51,9 +45,17 @@ public interface WorkbenchLayout {
 
     /**
      * See {@link #onResize()}
+     *
      * @param width
      * @param height
      */
     void resizeTo(int width,
                   int height);
+
+    /**
+     * Add content on the center of the layout.
+     *
+     * @param content Widget to be added
+     */
+    void addContent(Widget content);
 }

@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.TabPane;
-import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.util.Layouts;
 
 @Dependent
@@ -42,7 +41,7 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
             return;
         }
 
-        height = height - getTabBarHeight();
+        height = height - tabBar.getOffsetHeight();
         Layouts.setToFillParent(this);
 
         // TabContent is just a container for all the TabPane divs, one of which is made visible at a time.
@@ -66,25 +65,6 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Returns the height (in pixels) taken up by the tab bar.
-     */
-    public int getTabBarHeight() {
-        return tabBar.getOffsetHeight();
-    }
-
-    /**
-     * Makes the tab panel look more or less prominent.
-     * @param hasFocus if true, the tab panel will look more prominent. If false, the tab panel will look normal.
-     */
-    public void setFocus(boolean hasFocus) {
-        if (hasFocus) {
-            tabBar.addStyleName(WorkbenchResources.INSTANCE.CSS().activeNavTabs());
-        } else {
-            tabBar.removeStyleName(WorkbenchResources.INSTANCE.CSS().activeNavTabs());
         }
     }
 }
