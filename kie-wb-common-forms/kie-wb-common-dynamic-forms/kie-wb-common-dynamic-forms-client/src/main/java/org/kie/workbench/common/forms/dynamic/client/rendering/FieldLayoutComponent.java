@@ -72,28 +72,6 @@ public class FieldLayoutComponent implements FormLayoutComponent,
     }
 
     @Override
-    public String getDragComponentTitle() {
-
-        String name = "";
-
-        if (field.getBinding() != null) {
-            name = field.getBinding();
-        } else {
-            name = translationService.getTranslation(fieldRenderer.getName());
-            if (name == null || name.isEmpty()) {
-                name = fieldRenderer.getName();
-            }
-        }
-
-        return name;
-    }
-
-    @Override
-    public IsWidget getPreviewWidget(RenderingContext ctx) {
-        return generateContent(ctx);
-    }
-
-    @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
         return generateContent(ctx);
     }

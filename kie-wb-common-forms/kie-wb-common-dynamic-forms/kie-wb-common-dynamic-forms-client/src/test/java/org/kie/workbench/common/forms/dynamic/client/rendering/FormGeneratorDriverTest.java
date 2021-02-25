@@ -24,7 +24,6 @@ import org.assertj.core.api.Assertions;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Assert;
@@ -41,7 +40,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
 
 import static org.kie.workbench.common.forms.dynamic.client.rendering.FormGeneratorDriver.CONTAINER_TAG;
@@ -59,9 +57,6 @@ public class FormGeneratorDriverTest {
 
     @Mock
     private SyncBeanManager beanManager;
-
-    @Mock
-    private ManagedInstance<LayoutDragComponent> instance;
 
     @Mock
     private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
@@ -82,17 +77,9 @@ public class FormGeneratorDriverTest {
             return Collections.singletonList(beanDef);
         });
 
-        when(instance.select(any(Class.class))).thenAnswer(invocationOnMock -> {
-            ManagedInstance<FieldLayoutComponent> nestedInstance = mock(ManagedInstance.class);
-            FieldLayoutComponent component = mock(FieldLayoutComponent.class);
-            when(component.getContentPart(any(), any())).thenReturn(Optional.of(mock(IsWidget.class)));
-            when(nestedInstance.get()).thenReturn(component);
-            return nestedInstance;
-        });
-
         when(document.createElement(Mockito.<String>any())).thenAnswer(invocationOnMock -> mock(HTMLElement.class));
 
-        driver = new FormGeneratorDriver(beanManager, instance, wrapperWidgetUtil, document) {
+        driver = new FormGeneratorDriver(beanManager, wrapperWidgetUtil, document) {
             @Override
             FieldDefinition getFieldForLayoutComponent(LayoutComponent layoutComponent) {
                 return new TextBoxFieldDefinition();
@@ -135,7 +122,6 @@ public class FormGeneratorDriverTest {
         driver.createComponent(column, layoutComponent);
 
         verify(beanManager).lookupBeans(Mockito.<String>any());
-        verify(instance).select(eq(FieldLayoutComponent.class));
         verify(wrapperWidgetUtil).getWidget(same(driver), any(HTMLElement.class));
 
         Assertions.assertThat(driver.getLayoutFields())
@@ -152,7 +138,6 @@ public class FormGeneratorDriverTest {
         driver.createComponent(column, layoutComponent);
 
         verify(beanManager, times(1)).lookupBeans(Mockito.<String>any());
-        verify(instance, times(2)).select(eq(FieldLayoutComponent.class));
         verify(wrapperWidgetUtil, times(2)).getWidget(same(driver), any(HTMLElement.class));
 
         Assertions.assertThat(driver.getLayoutFields())
@@ -185,8 +170,6 @@ public class FormGeneratorDriverTest {
     @Test
     public void testClear() {
         driver.clear();
-
-        verify(instance).destroyAll();
         verify(wrapperWidgetUtil).clear(same(driver));
     }
 }

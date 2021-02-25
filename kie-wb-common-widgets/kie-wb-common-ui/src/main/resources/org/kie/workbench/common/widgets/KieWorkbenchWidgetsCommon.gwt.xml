@@ -36,7 +36,6 @@
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
 
   <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorClient'/>
-  <inherits name="org.uberfire.ext.properties.editor.PropertiesEditorClient"/>
   <inherits name="org.uberfire.UberfireAPI"/>
 
 </module>

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -106,18 +105,6 @@ public class FormGeneratorDriver implements LayoutGeneratorDriver {
             return dragComponent.getShowWidget(componentContext);
         }
         return null;
-    }
-
-    @Override
-    public Optional<IsWidget> getComponentPart(HTMLElement column, LayoutComponent layoutComponent, String partId) {
-        FieldDefinition field = getFieldForLayoutComponent(layoutComponent);
-        FieldLayoutComponent dragComponent = getFieldLayoutComponentForField(field);
-        if (dragComponent != null) {
-            Widget columnWidget = getWidget(column);
-            RenderingContext componentContext = new RenderingContext(layoutComponent, columnWidget);
-            return dragComponent.getContentPart(partId, componentContext);
-        }
-        return Optional.empty();
     }
 
     private LayoutDragComponent lookupComponent(LayoutComponent layoutComponent) {

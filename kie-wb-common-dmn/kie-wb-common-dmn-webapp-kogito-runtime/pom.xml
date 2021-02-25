@@ -492,7 +492,6 @@
                   <!-- Errai, Drools etc -->
                   <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
                   <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.kie.workbench.profile:kie-wb-common-profile-api</compileSourcesArtifact>
                   <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
 
                   <!-- UF-ext -->
@@ -500,8 +499,6 @@
                   <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
                   <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
                   <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
                   <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
                   <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-editors</compileSourcesArtifact>
 
