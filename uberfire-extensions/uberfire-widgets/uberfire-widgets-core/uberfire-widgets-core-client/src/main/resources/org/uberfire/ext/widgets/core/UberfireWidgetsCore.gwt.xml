@@ -26,6 +26,5 @@
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
-  <inherits name="org.uberfire.ext.widgets.common.UberfireAceEditor"/>
 
 </module>

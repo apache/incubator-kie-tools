@@ -34,8 +34,6 @@
 
   <modules>
     <module>uberfire-widgets-core-client</module>
-    <module>uberfire-widgets-core-ace</module>
-    <module>uberfire-widgets-core-editors</module>
   </modules>
 
 </project>
