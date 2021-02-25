@@ -65,7 +65,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.bridge.Notification;
@@ -101,7 +100,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final MultiPageEditorContainerView multiPageEditorContainerView,
                              final Event<NotificationEvent> notificationEvent,
                              final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                             final TextEditorView xmlEditorView,
                              final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                              final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                              final DiagramClientErrorHandler diagramClientErrorHandler,
@@ -121,7 +119,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
               multiPageEditorContainerView,
               notificationEvent,
               onDiagramFocusEvent,
-              xmlEditorView,
               editorSessionPresenterInstances,
               viewerSessionPresenterInstances,
               diagramClientErrorHandler,

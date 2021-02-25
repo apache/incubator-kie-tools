@@ -47,7 +47,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.kogito.api.editor.KogitoDiagramResource;
 import org.kie.workbench.common.stunner.kogito.client.resources.i18n.KogitoClientConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -57,7 +56,6 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
     private static final Logger LOGGER = Logger.getLogger(AbstractDiagramEditorCore.class.getName());
 
     private final View baseEditorView;
-    private final TextEditorView xmlEditorView;
     private final Event<NotificationEvent> notificationEvent;
     private final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
     private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
@@ -70,18 +68,16 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
     private P editorProxy = makeEditorProxy();
 
     public AbstractDiagramEditorCore() {
-        this(null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     public AbstractDiagramEditorCore(final View baseEditorView,
-                                     final TextEditorView xmlEditorView,
                                      final Event<NotificationEvent> notificationEvent,
                                      final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                      final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                      final DiagramClientErrorHandler diagramClientErrorHandler,
                                      final ClientTranslationService translationService) {
         this.baseEditorView = baseEditorView;
-        this.xmlEditorView = xmlEditorView;
         this.notificationEvent = notificationEvent;
         this.editorSessionPresenterInstances = editorSessionPresenterInstances;
         this.viewerSessionPresenterInstances = viewerSessionPresenterInstances;
@@ -151,13 +147,6 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
                                              Double.hashCode(shape.getShapeView().getShapeY()));
         }
         return hash;
-    }
-
-    public P makeXmlEditorProxy() {
-        final P proxy = makeEditorProxy();
-        proxy.setContentSupplier(() -> makeDiagramResourceImpl(xmlEditorView.getContent()));
-        proxy.setHashCodeSupplier(() -> xmlEditorView.getContent().hashCode());
-        return proxy;
     }
 
     public void openSession(final D diagram,
@@ -259,10 +248,6 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
 
     protected View getBaseEditorView() {
         return baseEditorView;
-    }
-
-    protected TextEditorView getXMLEditorView() {
-        return xmlEditorView;
     }
 
     protected Event<NotificationEvent> getNotificationEvent() {

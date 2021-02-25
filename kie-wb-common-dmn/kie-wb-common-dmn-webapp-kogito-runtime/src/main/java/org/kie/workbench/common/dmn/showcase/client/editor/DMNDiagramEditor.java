@@ -66,7 +66,6 @@ import org.kie.workbench.common.widgets.client.search.component.SearchBarCompone
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @ApplicationScoped
@@ -82,7 +81,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final MultiPageEditorContainerView multiPageEditorContainerView,
                             final Event<NotificationEvent> notificationEvent,
                             final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                            final TextEditorView xmlEditorView,
                             final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                             final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                             final DiagramClientErrorHandler diagramClientErrorHandler,
@@ -114,7 +112,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               multiPageEditorContainerView,
               notificationEvent,
               onDiagramFocusEvent,
-              xmlEditorView,
               editorSessionPresenterInstances,
               viewerSessionPresenterInstances,
               diagramClientErrorHandler,

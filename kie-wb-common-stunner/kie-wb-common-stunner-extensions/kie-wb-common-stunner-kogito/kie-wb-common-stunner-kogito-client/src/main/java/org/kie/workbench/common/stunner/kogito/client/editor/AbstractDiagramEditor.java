@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.logging.client.LogConfiguration;
+import com.google.gwt.user.client.ui.Label;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -51,8 +51,6 @@ import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramReso
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.resources.i18n.KogitoClientConstants;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -69,14 +67,12 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     public class DiagramEditorCore extends AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> {
 
         public DiagramEditorCore(final View baseEditorView,
-                                 final TextEditorView xmlEditorView,
                                  final Event<NotificationEvent> notificationEvent,
                                  final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                  final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                  final DiagramClientErrorHandler diagramClientErrorHandler,
                                  final ClientTranslationService translationService) {
             super(baseEditorView,
-                  xmlEditorView,
                   notificationEvent,
                   editorSessionPresenterInstances,
                   viewerSessionPresenterInstances,
@@ -128,15 +124,18 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                 final String xml = dpe.getXml();
 
                 resetEditorPages();
-                getXMLEditorView().setReadOnly(isReadOnly());
-                getXMLEditorView().setContent(xml, AceEditorMode.XML);
-                getView().setWidget(getXMLEditorView().asWidget());
-                setEditorProxy(makeXmlEditorProxy());
+// FIXME: tiago
+//
+//                getXMLEditorView().setReadOnly(isReadOnly());
+//                getXMLEditorView().setContent(xml, AceEditorMode.XML);
+                getView().setWidget(new Label("Error opening the file")); //TODO: Put a nice error screen/empty state here.
+
+//                setEditorProxy(makeXmlEditorProxy());
                 hideLoadingViews();
                 getNotificationEvent().fire(new NotificationEvent(translationService.getValue(KogitoClientConstants.DIAGRAM_PARSING_ERROR, Objects.toString(e.getMessage(), "")),
                                                                   NotificationEvent.NotificationType.ERROR));
 
-                Scheduler.get().scheduleDeferred(getXMLEditorView()::onResize);
+//                Scheduler.get().scheduleDeferred(getXMLEditorView()::onResize);
             } else {
                 setEditorProxy(new DiagramEditorProxy<>());
                 showError(error);
@@ -154,7 +153,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                  final MultiPageEditorContainerView multiPageEditorContainerView,
                                  final Event<NotificationEvent> notificationEvent,
                                  final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                                 final TextEditorView xmlEditorView,
                                  final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                  final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                  final DiagramClientErrorHandler diagramClientErrorHandler,
@@ -168,7 +166,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
         this.documentationView = documentationView;
 
         this.editor = makeCore(view,
-                               xmlEditorView,
                                notificationEvent,
                                editorSessionPresenterInstances,
                                viewerSessionPresenterInstances,
@@ -177,14 +174,12 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     }
 
     protected AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> makeCore(final View view,
-                                                                                                                                              final TextEditorView xmlEditorView,
                                                                                                                                               final Event<NotificationEvent> notificationEvent,
                                                                                                                                               final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                                                                                                                               final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                                                                                                                               final DiagramClientErrorHandler diagramClientErrorHandler,
                                                                                                                                               final ClientTranslationService translationService) {
         return new DiagramEditorCore(view,
-                                     xmlEditorView,
                                      notificationEvent,
                                      editorSessionPresenterInstances,
                                      viewerSessionPresenterInstances,
@@ -308,5 +303,4 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     protected ClientTranslationService getTranslationService() {
         return translationService;
     }
-
 }

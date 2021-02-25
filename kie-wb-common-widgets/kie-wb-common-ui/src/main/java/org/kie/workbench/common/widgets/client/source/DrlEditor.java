@@ -17,24 +17,26 @@ package org.kie.workbench.common.widgets.client.source;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.uberfire.ext.widgets.common.client.ace.AceEditor;
-import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
+//import org.uberfire.ext.widgets.common.client.ace.AceEditor;
+//import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 
 public class DrlEditor
         extends Composite
         implements RequiresResize {
 
-    private final AceEditor editor = new AceEditor();
+//FIXME: tiago
+//
+//    private final AceEditor editor = new AceEditor();
 
     public DrlEditor() {
-        editor.startEditor();
-        editor.setModeByName( "drools" );
-        editor.setTheme( AceEditorTheme.CHROME );
-        initWidget( editor );
+//        editor.startEditor();
+//        editor.setModeByName( "drools" );
+//        editor.setTheme( AceEditorTheme.CHROME );
+//        initWidget( editor );
     }
 
     public void setReadOnly( boolean readOnly ) {
-        editor.setReadOnly( readOnly );
+//        editor.setReadOnly( readOnly );
     }
 
     public void setText( final String input ) {
@@ -44,16 +46,17 @@ public class DrlEditor
         } else {
             content = input;
         }
-        editor.setText( content );
-        editor.setFocus();
+//        editor.setText( content );
+//        editor.setFocus();
     }
 
     public void insertAtCursor( String ins ) {
-        editor.insertAtCursor( ins );
+//        editor.insertAtCursor( ins );
     }
 
     public String getText() {
-        return editor.getValue();
+//        return editor.getValue();
+        return "";
     }
 
     @Override
@@ -62,8 +65,8 @@ public class DrlEditor
         int width = getParent().getOffsetWidth();
         setPixelSize( width,
                       height );
-        editor.setHeight( height + "px" );
-        editor.redisplay();
+//        editor.setHeight( height + "px" );
+//        editor.redisplay();
     }
 
 }

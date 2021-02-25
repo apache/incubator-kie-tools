@@ -376,13 +376,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Needed for the ACE XML Editor -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-core-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Core utility classes -->
     <dependency>
       <groupId>org.kie.soup</groupId>
@@ -622,7 +615,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-editors</compileSourcesArtifact>
 
             <!-- Forms -->
             <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-api</compileSourcesArtifact>
