@@ -25,7 +25,7 @@ import {
 } from "@patternfly/react-core";
 import { ModelType } from "../../..";
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import "./ModelCard.scss";
 import { ModelCardIcon } from "../atoms";
 
@@ -60,6 +60,8 @@ export const ModelCard = (props: ModelCardProps) => {
     [index]
   );
 
+  const _modelName = useMemo(() => (modelName === "" ? "<Undefined>" : modelName), [modelName]);
+
   return (
     <Card data-testid="model-card" isHoverable={true} className="model-card" onClick={onClickModel}>
       <CardHeader>
@@ -67,9 +69,9 @@ export const ModelCard = (props: ModelCardProps) => {
           <ModelCardIcon type={modelType} />
         </CardHeaderMain>
       </CardHeader>
-      <Tooltip content={<div>{modelName}</div>}>
+      <Tooltip content={<div>{_modelName}</div>}>
         <CardTitle className="model-card__title">
-          <span data-testid="model-card__title">{modelName}</span>
+          <span data-testid="model-card__title">{_modelName}</span>
         </CardTitle>
       </Tooltip>{" "}
       <CardBody>

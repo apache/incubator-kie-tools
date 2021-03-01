@@ -62,7 +62,7 @@ export type ModelType =
   | "Text Model"
   | "Time Series Model"
   | "Tree Model"
-  | "<Unknown>";
+  | undefined;
 
 export enum SupportedCapability {
   NONE,
@@ -231,16 +231,15 @@ export const isCollection = <T>(collection: T[] | undefined): boolean => {
 };
 
 export const getModelName = (model: Model): string => {
-  return get(model, "modelName") ?? "<Undefined>";
+  return get(model, "modelName") ?? "";
 };
 
-export const getModelType = (model: Model): ModelType => {
+export const getModelType = (model: Model): ModelType | undefined => {
   for (const _mapping of PMMLModels) {
     if (model instanceof _mapping.model) {
       return _mapping.type;
     }
   }
-  return "<Unknown>";
 };
 
 export const getModelIconUrlByType = (type: ModelType): string => {

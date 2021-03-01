@@ -19,7 +19,7 @@ import { ModelCardIcon } from "../../../../../editor/components/LandingPage/atom
 
 describe("ModelCardIcon", () => {
   test("render::Undefined", () => {
-    const { getByTestId } = render(<ModelCardIcon type={"<Unknown>"} />);
+    const { getByTestId } = render(<ModelCardIcon type={undefined} />);
     const element: HTMLElement = getByTestId("model-card__icon");
     expect(element).toBeInTheDocument();
     expect(element instanceof HTMLImageElement);

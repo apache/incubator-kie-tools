@@ -18,7 +18,7 @@ import { Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
 
 describe("PMMLModelHelper::getModelIconUrl", () => {
   test("getModelIconUrlByType::Undefined", () => {
-    expect(getModelIconUrlByType("<Unknown>")).toContain("card-icon-default.svg");
+    expect(getModelIconUrlByType(undefined)).toContain("card-icon-default.svg");
   });
 
   test("getModelIconUrlByType::Scorecard", () => {
@@ -28,7 +28,7 @@ describe("PMMLModelHelper::getModelIconUrl", () => {
 
 describe("PMMLModelHelper::getModelName", () => {
   test("getModelName::No Model Name", () => {
-    expect(getModelName({})).toBe("<Undefined>");
+    expect(getModelName({})).toBe("");
   });
 
   test("getModelName::With Model Name", () => {
@@ -38,7 +38,7 @@ describe("PMMLModelHelper::getModelName", () => {
 
 describe("PMMLModelHelper::getModelType", () => {
   test("getModelType::Undefined", () => {
-    expect(getModelType({})).toBe("<Unknown>");
+    expect(getModelType({})).toBeUndefined();
   });
 
   test("getModelType::Scorecard", () => {
