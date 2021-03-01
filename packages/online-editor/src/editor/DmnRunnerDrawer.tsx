@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
@@ -39,6 +39,8 @@ import {
   DrawerCloseButton
 } from "@patternfly/react-core";
 import { CubesIcon, InfoCircleIcon } from "@patternfly/react-icons";
+import { diff } from "deep-object-diff";
+import { getObjectLeaf } from "../common/utils";
 
 enum ButtonPosition {
   INPUT,
@@ -59,23 +61,30 @@ export function DmnRunnerDrawer(props: Props) {
   const [dmnRunnerResponse, setDmnRunnerResponse] = useState();
   const [isAutoSubmit, setIsAutoSubmit] = useState(true);
   const autoFormRef = useRef<HTMLFormElement>();
+  const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object>();
 
   const onSubmit = useCallback(
-    ({ context }) => {
+    async ({ context }) => {
       props.setFormContext(context);
       if (props.editorContent) {
-        props.editorContent().then((model: string) => {
-          DmnRunner.sendForm({ context, model })
-            .then(res => res.json())
-            .then(json => {
-              console.log(json)
-              setDmnRunnerResponse(json);
-            })
-            .catch(() => setDmnRunnerResponse(undefined));
-        });
+        const model = await props.editorContent();
+        try {
+          const dmnRunnerRes = await DmnRunner.sendForm({ context, model });
+          const dmnRunnerJson = await dmnRunnerRes.json();
+          if (
+            Object.hasOwnProperty.call(dmnRunnerJson, "details") &&
+            Object.hasOwnProperty.call(dmnRunnerJson, "stack")
+          ) {
+            return;
+          }
+          setDmnRunnerResponseDiffs(diff(dmnRunnerResponse ?? {}, dmnRunnerJson));
+          setDmnRunnerResponse(dmnRunnerJson);
+        } catch (err) {
+          setDmnRunnerResponse(undefined);
+        }
       }
     },
-    [props]
+    [props, dmnRunnerResponse]
   );
 
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() => {
@@ -173,7 +182,7 @@ export function DmnRunnerDrawer(props: Props) {
             <div className={"kogito--editor__dmn-runner-drawer-page-section-div"}>
               <PageSection style={{ paddingLeft: 0, paddingTop: 0 }}>
                 {dmnRunnerResponse ? (
-                  <DmnRunnerResponse responseObject={dmnRunnerResponse!} depth={0} />
+                  <DmnRunnerResponse diffs={dmnRunnerResponseDiffs} responseObject={dmnRunnerResponse!} depth={0} />
                 ) : (
                   <EmptyState>
                     <EmptyStateIcon icon={InfoCircleIcon} />
@@ -196,12 +205,13 @@ export function DmnRunnerDrawer(props: Props) {
   );
 }
 
-interface RecursiveDmnRunnerResponse {
+interface DmnRunnerResponseProps {
   responseObject: object;
   depth: number;
+  diffs?: object;
 }
 
-function DmnRunnerResponse(props: RecursiveDmnRunnerResponse) {
+function DmnRunnerResponse(props: DmnRunnerResponseProps) {
   return (
     <div>
       {[...Object.entries(props.responseObject)].reverse().map(([key, value]: any[], index) => (
@@ -210,7 +220,7 @@ function DmnRunnerResponse(props: RecursiveDmnRunnerResponse) {
             <Card isFlat={true} style={{ border: 0, background: "transparent" }}>
               <CardTitle>{key}</CardTitle>
               <CardBody isFilled={true} style={props.depth > 0 ? { paddingBottom: 0 } : {}}>
-                <DmnRunnerResponse responseObject={value} depth={props.depth + 1} />
+                <DmnRunnerResponse diffs={props.diffs} responseObject={value} depth={props.depth + 1} />
               </CardBody>
             </Card>
           ) : (
@@ -218,11 +228,11 @@ function DmnRunnerResponse(props: RecursiveDmnRunnerResponse) {
               {props.depth === 0 ? (
                 <Card isFlat={true} style={{ border: 0, background: "transparent" }}>
                   <CardBody isFilled={true} style={{ paddingBottom: 0, paddingTop: 0 }}>
-                    <ResultCardLeaf label={key} value={value} />
+                    <ResultCardLeaf diffs={props.diffs} label={key} value={value} />
                   </CardBody>
                 </Card>
               ) : (
-                <ResultCardLeaf label={key} value={value} />
+                <ResultCardLeaf diffs={props.diffs} label={key} value={value} />
               )}
             </>
           )}
@@ -232,9 +242,26 @@ function DmnRunnerResponse(props: RecursiveDmnRunnerResponse) {
   );
 }
 
-function ResultCardLeaf(props: { label: string; value: string }) {
+interface ResultCardLeafProps {
+  label: string;
+  value: string;
+  diffs?: object;
+}
+
+function ResultCardLeaf(props: ResultCardLeafProps) {
+  const [style, setStyle] = useState<object>();
+
+  useEffect(() => {
+    const hasKey = [...Object.keys(getObjectLeaf(props.diffs ?? {}))].find(key => key === props.label);
+    if (hasKey) {
+      setStyle({ color: "red" });
+    } else {
+      setStyle({ color: "black" });
+    }
+  }, [props.diffs]);
+
   return (
-    <DescriptionList isHorizontal={true}>
+    <DescriptionList id={props.label} style={style} isHorizontal={true}>
       <DescriptionListGroup>
         <DescriptionListTerm>{props.label}</DescriptionListTerm>
         {props.value ? (
