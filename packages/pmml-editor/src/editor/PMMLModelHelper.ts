@@ -184,6 +184,7 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
     capability: SupportedCapability.EDITOR,
     factory: () => {
       const model: Scorecard = new Scorecard({
+        modelName: "Untitled model",
         MiningSchema: { MiningField: [] },
         Characteristics: { Characteristic: [] },
         Output: { OutputField: [] },

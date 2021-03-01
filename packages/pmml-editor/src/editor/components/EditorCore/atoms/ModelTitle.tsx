@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Title } from "@patternfly/react-core";
+import { Form, FormGroup, Split, SplitItem, Stack, StackItem, Text, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
@@ -23,12 +23,15 @@ import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";
 import { ValidationIndicator } from "./ValidationIndicator";
 import { Builder } from "../../../paths";
+import { validateModelName } from "../../../validation/Model";
 
 interface ModelTitleProps {
-  modelIndex?: number;
+  modelIndex: number;
   modelName: string;
   commitModelName?: (_modelName: string) => void;
 }
+
+const MODEL_NAME_NOT_SET = "Model Name not set";
 
 export const ModelTitle = (props: ModelTitleProps) => {
   const { modelIndex, commitModelName } = props;
@@ -52,7 +55,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
           .forModelName()
           .build()
       ),
-    [modelIndex, props.modelName]
+    [modelIndex, modelName]
   );
 
   useEffect(() => {
@@ -67,7 +70,11 @@ export const ModelTitle = (props: ModelTitleProps) => {
   };
 
   const onCommitAndClose = () => {
-    onCommit();
+    if (validations.length === 0) {
+      onCommit();
+    } else {
+      validateAndSetModelName(props.modelName);
+    }
     onCancel();
   };
 
@@ -82,26 +89,40 @@ export const ModelTitle = (props: ModelTitleProps) => {
     setActiveOperation(Operation.NONE);
   };
 
+  const validateAndSetModelName = (_modelName: string) => {
+    validationRegistry.clear(
+      Builder()
+        .forModel(modelIndex)
+        .forModelName()
+        .build()
+    );
+    validateModelName(modelIndex, _modelName, validationRegistry);
+    setModelName(_modelName);
+  };
+
   const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_NAME, [
     isEditing,
     activeOperation
   ]);
 
+  const modelTitleClassNames = useMemo(
+    () => `${commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"} pf-c-form-control`,
+    [commitModelName]
+  );
+
   return (
     <div
       ref={ref}
-      tabIndex={0}
-      onClick={onEdit}
       onKeyDown={e => {
         if (e.key === "Enter") {
           onEdit();
         }
       }}
-      className={`modelTitle ${isEditModeEnabled ? "modelTitle--editing" : ""}`}
     >
       <Stack hasGutter={true} className={"modelTitle--full-width"}>
         <StackItem>
           <Form
+            id={"modelTitle-form"}
             onSubmit={e => {
               e.stopPropagation();
               e.preventDefault();
@@ -120,10 +141,15 @@ export const ModelTitle = (props: ModelTitleProps) => {
                   helperText={validations[0] ? validations[0].message : ""}
                   validated={validations.length === 0 ? "default" : "warning"}
                 >
-                  {!isEditModeEnabled && validations.length === 0 && (
-                    <Title size="lg" headingLevel="h1" className="modelTitle__truncate">
-                      {modelName}
-                    </Title>
+                  {!isEditModeEnabled && (
+                    <div className={modelTitleClassNames} onClick={onEdit}>
+                      {validations.length === 0 && <Text className="modelTitle__truncate">{modelName}</Text>}
+                      {validations.length !== 0 && (
+                        <Text className="modelTitle__truncate modelTitle__truncate--disabled">
+                          {MODEL_NAME_NOT_SET}
+                        </Text>
+                      )}
+                    </div>
                   )}
                   {isEditModeEnabled && (
                     <TextInput
@@ -131,11 +157,12 @@ export const ModelTitle = (props: ModelTitleProps) => {
                       id="modelName"
                       name="modelName"
                       aria-describedby="modelName"
+                      className="modelTitle--editing"
                       autoFocus={true}
                       value={modelName}
                       validated={validations.length === 0 ? "default" : "warning"}
-                      placeholder={"<Not set>"}
-                      onChange={e => setModelName(e)}
+                      placeholder={MODEL_NAME_NOT_SET}
+                      onChange={e => validateAndSetModelName(e)}
                       onBlur={onCommitAndClose}
                     />
                   )}

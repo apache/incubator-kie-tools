@@ -15,7 +15,7 @@
  */
 import { ModelTitle } from "../atoms";
 import * as React from "react";
-import { Split, SplitItem, Title } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../../Outputs/organisms";
 import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
@@ -24,11 +24,10 @@ import "./EditorHeader.scss";
 
 interface EditorHeaderViewerProps {
   modelName: string;
+  modelIndex: number;
 }
 
-interface EditorHeaderEditorProps {
-  modelName: string;
-  modelIndex: number;
+interface EditorHeaderEditorProps extends EditorHeaderViewerProps {
   output?: Output;
   miningSchema?: MiningSchema;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
@@ -44,12 +43,11 @@ const isEditor = (props: EditorHeaderProps): props is EditorHeaderEditorProps =>
 };
 
 export const EditorHeader = (props: EditorHeaderProps) => {
-  const { modelName } = props;
+  const { modelName, modelIndex } = props;
 
   if (isEditor(props)) {
     const {
       miningSchema,
-      modelIndex,
       output,
       validateOutputFieldName,
       deleteOutputField,
@@ -59,9 +57,10 @@ export const EditorHeader = (props: EditorHeaderProps) => {
 
     return (
       <Split hasGutter={true} className={"editorHeader"}>
-        <SplitItem isFilled={true} className={"editorHeader--hide-overflow"}>
+        <SplitItem className={"editorHeader--modelName"}>
           <ModelTitle modelIndex={modelIndex} modelName={modelName} commitModelName={commitModelName} />
         </SplitItem>
+        <SplitItem isFilled={true} />
         <SplitItem>
           <DataDictionaryHandler />
         </SplitItem>
@@ -83,10 +82,8 @@ export const EditorHeader = (props: EditorHeaderProps) => {
   } else {
     return (
       <Split hasGutter={true} className={"editorHeader"}>
-        <SplitItem isFilled={true} className={"editorHeader--hide-overflow"}>
-          <Title size="lg" headingLevel="h1" className="modelTitle__truncate">
-            {modelName}
-          </Title>
+        <SplitItem isFilled={true} className={"editorHeader--modelName"}>
+          <ModelTitle modelIndex={modelIndex} modelName={modelName} />
         </SplitItem>
       </Split>
     );

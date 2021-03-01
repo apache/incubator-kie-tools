@@ -28,7 +28,7 @@ export const validateModelName = (
         .forModel(modelIndex)
         .forModelName()
         .build(),
-      new ValidationEntry(ValidationLevel.WARNING, `Model Name will be generated at runtime.`)
+      new ValidationEntry(ValidationLevel.WARNING, "Model Name is missing. It will be generated at runtime.")
     );
   }
 };

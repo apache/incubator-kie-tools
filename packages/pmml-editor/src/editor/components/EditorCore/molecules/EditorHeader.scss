@@ -16,10 +16,8 @@
 
 .editorHeader {
 
-  align-items: baseline;
-
-  &--hide-overflow {
-    overflow: hidden;
+  &--modelName {
+    width: 25em;
   }
 }
 

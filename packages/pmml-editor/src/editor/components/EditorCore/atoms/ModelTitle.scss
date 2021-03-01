@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+//Ensure PF warning message is aligned with the field value
+#modelTitle-form .pf-m-warning {
+  padding-left: 8px;
+}
+
+//The padding above means the default PF Split Gutter spacing is too large so reduce. Total remains 16px.
+.pf-l-split__item .modelTitle__icon {
+  margin-right: 8px;
+}
+
 .modelTitle {
 
   &--full-width {
@@ -29,34 +39,31 @@
   display: flex;
   flex-direction: row;
 
-  background-color: #ffffff;
-  margin-right: 1em;
-  margin-bottom: 1em;
   cursor: text;
+  white-space: nowrap;
 
+  // Ensure the text appears in the same place as the Textbox when editing
+  margin-top: 1px;
+  padding-left: 8px;
+  padding-right: 8px;
+
+  // Ensure the border transition does not flicker with default black borders
   border-left: 1px solid #ffffff;
   border-right: 1px solid #ffffff;
   border-top: 1px solid #ffffff;
   border-bottom: 1px solid #ffffff;
   transition: margin-bottom 0.15s var(--sizeEasing), border-left 0.12s ease-in, border-right 0.12s ease-in, border-top 0.12s ease-in, border-bottom 0.12s ease-in;
-  user-select: none;
-
-  padding: 16px 16px 16px 16px;
 
   &:not(.modelTitle--editing):hover {
-    box-shadow: var(--pf-global--BoxShadow--lg);
-    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--BorderColor--light-100);
+    border-left: 1px solid var(--pf-global--BorderColor--100);
     border-right: 1px solid var(--pf-global--BorderColor--100);
     border-top: 1px solid var(--pf-global--BorderColor--100);
     border-bottom: 1px solid var(--pf-global--BorderColor--100);
   }
 
+  // Ensure the Textbox when editing does not affect content positioning below.
   &--editing {
-    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
-    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
-    border-right: 1px solid var(--pf-global--BorderColor--100);
-    border-top: 1px solid var(--pf-global--BorderColor--100);
-    border-bottom: 1px solid var(--pf-global--BorderColor--100);
+    margin-bottom: 1px;
   }
 
   &__icon {
@@ -66,9 +73,13 @@
   }
 
   &__truncate {
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &--disabled {
+      color: var(--pf-global--Color--200);
+    }
+
   }
 
 }
