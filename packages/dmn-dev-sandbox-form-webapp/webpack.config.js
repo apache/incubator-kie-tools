@@ -50,7 +50,6 @@ module.exports = async (env, argv) => {
         patterns: [
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
-          { from: "./static/index.html", to: "./index.html" },
           { from: "./static/favicon.ico", to: "./favicon.ico" },
         ],
       }),

@@ -157,7 +157,7 @@ jobs:
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
       DMN_DEV_SANDBOX__baseImageTag: ${{ needs.create_release.outputs.tag }}
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
-      DMN_DEV_SANDBOX__gtmId: "TODO CAPONETTO"
+      DMN_DEV_SANDBOX__gtmId: "GTM-PMJ42HB"
 
     if: ${{ always() && github.event.inputs.online_editor == 'true' && (needs.hub.result == 'success' || needs.hub.result == 'skipped') }}
     runs-on: ubuntu-latest
