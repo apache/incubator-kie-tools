@@ -17,15 +17,17 @@ package kogitoservice
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"regexp"
+	"strings"
+
 	grafanav1 "github.com/integr8ly/grafana-operator/v3/pkg/apis/integreatly/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/core/framework"
 	"github.com/kiegroup/kogito-cloud-operator/core/operator"
-	"io/ioutil"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"net/http"
-	"strings"
 )
 
 const (
@@ -54,6 +56,10 @@ func NewGrafanaDashboardManager(context *operator.Context) GrafanaDashboardManag
 		context,
 	}
 }
+
+var (
+	dashboardNameRegex = regexp.MustCompile("[^a-zA-Z0-9-_]+")
+)
 
 func (d *grafanaDashboardManager) ConfigureGrafanaDashboards(kogitoService api.KogitoService) error {
 	grafanaAvailable := d.isGrafanaAvailable()
@@ -156,7 +162,7 @@ func (d *grafanaDashboardManager) fetchDashboard(name, dashboardURL string) (*Gr
 
 func (d *grafanaDashboardManager) deployGrafanaDashboards(dashboards []GrafanaDashboard, kogitoService api.KogitoService) error {
 	for _, dashboard := range dashboards {
-		resourceName := strings.ReplaceAll(strings.ToLower(dashboard.Name), ".json", "")
+		resourceName := sanitizeDashboardName(dashboard.Name)
 		dashboardDefinition := &grafanav1.GrafanaDashboard{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      resourceName,
@@ -176,4 +182,9 @@ func (d *grafanaDashboardManager) deployGrafanaDashboards(dashboards []GrafanaDa
 		}
 	}
 	return nil
+}
+
+func sanitizeDashboardName(name string) string {
+	name = strings.ReplaceAll(strings.ToLower(name), ".json", "")
+	return dashboardNameRegex.ReplaceAllString(name, "")
 }

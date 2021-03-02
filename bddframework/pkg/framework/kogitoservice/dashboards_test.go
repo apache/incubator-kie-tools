@@ -15,13 +15,14 @@
 package kogitoservice
 
 import (
+	"testing"
+
 	grafanav1 "github.com/integr8ly/grafana-operator/v3/pkg/apis/integreatly/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/core/operator"
 	"github.com/kiegroup/kogito-cloud-operator/core/test"
 	"github.com/kiegroup/kogito-cloud-operator/meta"
 	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
 )
 
 func Test_fetchDashboardNames(t *testing.T) {
@@ -89,11 +90,11 @@ func Test_serviceDeployer_DeployGrafanaDashboards(t *testing.T) {
 
 	dashboards := []GrafanaDashboard{
 		{
-			Name:             "mydashboard",
+			Name:             "my dash-board* .json",
 			RawJSONDashboard: "[]",
 		},
 		{
-			Name:             "myseconddashboard",
+			Name:             "mySecond%Dashboard@.json",
 			RawJSONDashboard: "[]",
 		},
 	}
@@ -108,7 +109,7 @@ func Test_serviceDeployer_DeployGrafanaDashboards(t *testing.T) {
 
 	dashboard := &grafanav1.GrafanaDashboard{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "mydashboard",
+			Name:      "mydash-board",
 			Namespace: t.Name(),
 		},
 	}
