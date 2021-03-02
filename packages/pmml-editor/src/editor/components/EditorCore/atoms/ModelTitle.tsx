@@ -116,6 +116,9 @@ export const ModelTitle = (props: ModelTitleProps) => {
       onKeyDown={e => {
         if (e.key === "Enter") {
           onEdit();
+        } else if (e.key === "Escape") {
+          validateAndSetModelName(props.modelName);
+          onCancel();
         }
       }}
     >
