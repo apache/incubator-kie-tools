@@ -144,7 +144,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
     private final DOMGlyphRenderers glyphRenderer;
     private final ClientTranslationService translationService;
     private final ManagedInstance<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
-    private final DefinitionHelper definitionHelper;
+    protected final DefinitionHelper definitionHelper;
     private final PropertyDecorators propertyDecorators;
 
     @Inject
@@ -474,7 +474,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                 .collect(Collectors.toMap(id -> id, id -> Boolean.TRUE));
     }
 
-    private class DefinitionHelper {
+    protected class DefinitionHelper {
 
         final Map<Class, Function<Object, Optional<String>>> iconFactory;
         final Map<Class, Function<Object, Optional<String>>> categoryFactory;
@@ -571,8 +571,10 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                             .map(data -> createImageTag(data)).orElse(""));
         }
 
-        private String createImageTag(String data) {
-            return "<img src=\"" + data + "\">";
+        protected String createImageTag(String data) {
+            return "<div style=\"width:" + ICON_WIDTH + "px; height: " + ICON_HEIGHT + "px\">" +
+                    "<img src=\"" + data + "\" style=\"max-width: 100%; max-height: 100%\">" +
+                    "</div>";
         }
     }
 }

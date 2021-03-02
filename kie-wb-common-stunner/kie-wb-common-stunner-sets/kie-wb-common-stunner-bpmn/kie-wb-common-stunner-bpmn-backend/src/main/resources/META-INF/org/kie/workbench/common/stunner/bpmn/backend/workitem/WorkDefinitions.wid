@@ -6,7 +6,7 @@
         "description" : "",
         "defaultHandler" : "mvel: new org.jbpm.process.workitem.bpmn2.BusinessRuleTaskHandler()",
         "documentation" : "jbpm-workitems-bpmn2/index.html",
-        "icon" : "BusinessRuleTask.png",
+        "icon" : "defaultbusinessruletaskicon.png",
 
         "parameters" : [
             "KieSessionName" : new StringDataType(),
@@ -21,7 +21,7 @@
         "description" : "",
         "defaultHandler" : "mvel: new org.jbpm.process.workitem.bpmn2.DecisionTaskHandler()",
         "documentation" : "jbpm-workitems-bpmn2/index.html",
-        "icon" : "DecisionTask.png",
+        "icon" : "defaultdecisiontaskicon.png",
 
         "parameters" : [
             "Model" : new StringDataType(),
@@ -37,7 +37,7 @@
         "description" : "",
         "defaultHandler" : "mvel: new org.jbpm.process.workitem.email.EmailWorkItemHandler()",
         "documentation" : "jbpm-workitems-email/index.html",
-        "icon" : "Email.png",
+        "icon" : "defaultemailicon.png",
 
         "parameters" : [
             "Reply-To" : new StringDataType(),
@@ -60,7 +60,7 @@
         "description" : "",
         "defaultHandler" : "mvel: new org.jbpm.process.workitem.rest.RESTWorkItemHandler()",
         "documentation" : "jbpm-workitems-rest/index.html",
-        "icon" : "Rest.png",
+        "icon" : "defaultresticon.png",
 
         "parameters" : [
             "ConnectTimeout" : new StringDataType(),
@@ -93,7 +93,7 @@
         "description" : "",
         "defaultHandler" : "mvel: new org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler()",
         "documentation" : "jbpm-workitems-webservice/index.html",
-        "icon" : "WebService.png",
+        "icon" : "defaultwebserviceicon.png",
 
         "parameters" : [
             "Endpoint" : new StringDataType(),
@@ -112,7 +112,7 @@
     [
         "name" : "Log",
         "displayName" : "Log",
-        "icon" : "defaultlogicon.gif",
+        "icon" : "defaultlogicon.png",
 
         "parameters" : [
           "Message" : new StringDataType()
