@@ -27,7 +27,7 @@ export const en: ChromeExtensionI18n = {
   single: {
     exitFullScreen: `${en_common.terms.exit} ${en_common.terms.fullScreen}`,
     editorToolbar: {
-      fixAndSeeAsDiagram: "Try opening as Diagram after fixing the file.",
+      fixAndSeeAsDiagram: "Try opening as diagram after fixing the file.",
       errorOpeningFile: "There was an error opening the file.",
       seeAsSource: "See as source",
       copyLinkTo: (name: string) => `Copy link to ${name}`,
