@@ -183,6 +183,7 @@ export function IsolatedPrEditor(props: {
           openFileExtension={props.fileExtension}
           readonly={true}
           keepRenderedEditorInTextMode={false}
+          onSetContentError={() => {/**/}} //FIXME: Tiago
         />,
         iframeContainer(
           globals.id,

@@ -96,14 +96,13 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
-    this.registerDefaultShortcuts(initArgs);
-
     this.args.view().setLoading();
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
+      .then(() => this.registerDefaultShortcuts(initArgs))
       .catch(e => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
 
@@ -112,9 +111,12 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
   public receive_contentChanged = (editorContent: EditorContent) => {
     this.args.view().setLoading();
-    this.editor
+    return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch(e => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
+      .catch(e => {
+        this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent)
+        throw e;
+      })
       .finally(() => this.args.view().setLoadingFinished());
   };
 

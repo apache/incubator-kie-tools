@@ -49,7 +49,8 @@ export function SingleEditorApp(props: {
   fileInfo: FileInfo;
 }) {
   const [textMode, setTextMode] = useState(false);
-  const [textModeEnabled, setTextModeEnabled] = useState(false);
+  const [errorOpeningFile, setErrorOpeningFile] = useState(false);
+  const [textModeAvailable, setTextModeAvailable] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const globals = useGlobals();
   const { isolatedEditor, isolatedEditorRef } = useIsolatedEditorRef();
@@ -57,29 +58,43 @@ export function SingleEditorApp(props: {
   useFullScreenEditorTogglingEffect(fullscreen);
   useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace);
 
+  const onSetContentError = useCallback(() => {
+    setErrorOpeningFile(true);
+  }, []);
+
   const IsolatedEditorComponent = useMemo(
     () => (
       <IsolatedEditor
+        ref={isolatedEditorRef}
         getFileContents={props.getFileContents}
         contentPath={props.fileInfo.path}
         openFileExtension={props.openFileExtension}
         textMode={textMode}
         readonly={props.readonly}
         keepRenderedEditorInTextMode={true}
-        ref={isolatedEditorRef}
+        onSetContentError={onSetContentError}
       />
     ),
-    [textMode]
+    [textMode, onSetContentError]
   );
 
   const exitFullScreen = useCallback(() => {
     setFullscreen(false);
-    setTextModeEnabled(false);
+    setTextModeAvailable(false);
   }, []);
 
-  const deactivateTextMode = useCallback(() => setTextMode(false), []);
-  const activateTextMode = useCallback(() => setTextMode(true), []);
-  const goFullScreen = useCallback(() => setFullscreen(true), []);
+  const deactivateTextMode = useCallback(() => {
+    setTextMode(false);
+    setErrorOpeningFile(prev => props.readonly ? prev : false);
+  }, [props.readonly]);
+
+  const activateTextMode = useCallback(() => {
+    setTextMode(true);
+  }, []);
+
+  const goFullScreen = useCallback(() => {
+    setFullscreen(true);
+  }, []);
 
   const openExternalEditor = useCallback(() => {
     props.getFileContents().then(fileContent => {
@@ -104,7 +119,7 @@ export function SingleEditorApp(props: {
   }, [globals.externalEditorManager, isolatedEditor]);
 
   const onEditorReady = useCallback(() => {
-    setTextModeEnabled(true);
+    setTextModeAvailable(true);
   }, []);
 
   const repoInfo = useMemo(() => {
@@ -131,13 +146,14 @@ export function SingleEditorApp(props: {
             {ReactDOM.createPortal(
               <SingleEditorToolbar
                 textMode={textMode}
-                textModeEnabled={textModeEnabled}
+                textModeAvailable={textModeAvailable}
                 onSeeAsDiagram={deactivateTextMode}
                 onSeeAsSource={activateTextMode}
                 onOpenInExternalEditor={openExternalEditor}
                 linkToExternalEditor={linkToExternalEditor}
                 onFullScreen={goFullScreen}
                 readonly={props.readonly}
+                errorOpeningFile={errorOpeningFile}
               />,
               props.toolbarContainer
             )}

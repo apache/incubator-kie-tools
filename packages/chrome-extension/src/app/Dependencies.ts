@@ -20,7 +20,7 @@ export class Dependencies {
       return document.querySelector(".file") as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
-      return document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null;
+      return document.querySelector(".js-breadcrumb-container.d-flex.flex-items-center.flex-wrap.flex-auto") as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
       return document.querySelector(".js-code-editor") as HTMLElement | null;

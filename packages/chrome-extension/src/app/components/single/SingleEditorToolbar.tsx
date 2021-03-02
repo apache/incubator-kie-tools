@@ -24,7 +24,8 @@ export const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 export function SingleEditorToolbar(props: {
   readonly: boolean;
   textMode: boolean;
-  textModeEnabled: boolean;
+  errorOpeningFile: boolean;
+  textModeAvailable: boolean;
   onFullScreen: () => void;
   onSeeAsSource: () => void;
   onSeeAsDiagram: () => void;
@@ -84,25 +85,43 @@ export function SingleEditorToolbar(props: {
   return (
     <>
       <div style={{ display: "flex" }}>
+        <textarea
+          ref={linkToExternalEditorTextAreaRef}
+          defaultValue={props.linkToExternalEditor}
+          style={{ opacity: 0, width: 0, height: 0 }}
+        />
+        {!props.textMode && (
+          <button
+            data-testid={"go-fullscreen-button"}
+            className={"btn d-none d-md-inline-block kogito-button"}
+            onClick={goFullScreen}
+          >
+            {i18n.terms.fullScreen}
+          </button>
+        )}
         {!props.textMode && (
           <button
             data-testid={"see-as-source-button"}
-            disabled={!props.textModeEnabled}
-            className={"btn btn-sm kogito-button"}
+            disabled={!props.textModeAvailable}
+            className={"btn d-none d-md-inline-block kogito-button"}
             onClick={seeAsSource}
           >
             {i18n.single.editorToolbar.seeAsSource}
           </button>
         )}
         {props.textMode && (
-          <button data-testid={"see-as-diagram-button"} className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
+          <button
+            data-testid={"see-as-diagram-button"}
+            className={"btn d-none d-md-inline-block kogito-button"}
+            onClick={seeAsDiagram}
+          >
             {i18n.seeAsDiagram}
           </button>
         )}
         {globals.externalEditorManager && (
           <button
             data-testid={"open-ext-editor-button"}
-            className={"btn btn-sm kogito-button"}
+            className={"btn d-none d-md-inline-block kogito-button"}
             onClick={openInExternalEditor}
           >
             {i18n.openIn(globals.externalEditorManager.name)}
@@ -112,7 +131,7 @@ export function SingleEditorToolbar(props: {
           <div className={"position-relative"}>
             <button
               data-testid={"copy-link-button"}
-              className={"btn btn-sm kogito-button"}
+              className={"btn d-none d-md-inline-block kogito-button"}
               onClick={copyLinkToExternalEditor}
             >
               {i18n.single.editorToolbar.copyLinkTo(globals.externalEditorManager.name)}
@@ -131,22 +150,45 @@ export function SingleEditorToolbar(props: {
             )}
           </div>
         )}
-        {!props.textMode && (
-          <button data-testid={"go-fullscreen-button"} className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
-            {i18n.terms.fullScreen}
-          </button>
-        )}
-        <textarea
-          ref={linkToExternalEditorTextAreaRef}
-          defaultValue={props.linkToExternalEditor}
-          style={{ opacity: 0, width: 0, height: 0 }}
-        />
       </div>
-      {props.readonly && !props.textMode && (
-        <>
+      {!props.errorOpeningFile && props.readonly && !props.textMode && (
+        <div style={{ height: "32px", padding: "5px 15px 5px 15px" }} className={"flash flash-info"}>
           {/* TODO: Add "info" icon with hint explaining how to edit the file */}
-          <h4>{i18n.single.editorToolbar.readOnly}</h4>
-        </>
+          <h5>{i18n.single.editorToolbar.readOnly}</h5>
+        </div>
+      )}
+      {props.errorOpeningFile && props.textMode && !props.readonly && (
+        <div style={{ height: "32px", padding: "5px 15px 5px 15px" }} className={"flash flash-info"}>
+          <h5>
+            {i18n.single.editorToolbar.fixAndSeeAsDiagram}
+            &nbsp;
+            {props.textModeAvailable && (
+              <>
+                <a href={"#"} onClick={seeAsDiagram}>
+                  {i18n.seeAsDiagram}
+                </a>
+                {"."}
+              </>
+            )}
+          </h5>
+        </div>
+      )}
+      {props.errorOpeningFile && !props.textMode && (
+        <div style={{ height: "32px", padding: "5px 15px 5px 15px" }} className={"flash flash-error"}>
+          {/* TODO: Add "info" icon with hint explaining how to edit the file */}
+          <h5>
+            {i18n.single.editorToolbar.errorOpeningFile}
+            &nbsp;
+            {props.textModeAvailable && (
+              <>
+                <a href={"#"} onClick={seeAsSource}>
+                  {i18n.single.editorToolbar.seeAsSource}
+                </a>
+                {"."}
+              </>
+            )}
+          </h5>
+        </div>
       )}
     </>
   );

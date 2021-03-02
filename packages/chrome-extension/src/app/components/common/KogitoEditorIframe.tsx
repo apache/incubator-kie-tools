@@ -26,13 +26,13 @@ import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useChromeExtensionI18n } from "../../i18n";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
-const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
 
 interface Props {
   openFileExtension: string;
   contentPath: string;
   getFileContents: () => Promise<string | undefined>;
   readonly: boolean;
+  onSetContentError: () => void;
 }
 
 const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
@@ -60,7 +60,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     [resourceContentService]
   );
 
-  //Wrap file content into object for EmbeddedEditor
+  // Wrap file content into object for EmbeddedEditor
   const file = useMemo(() => {
     return {
       fileName: props.contentPath,
@@ -70,9 +70,18 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     };
   }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 
+  const updateGitHubsTextEditor = useCallback(() => {
+    editor?.getContent().then(content => {
+      runScriptOnPage(
+        `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}")
+            .CodeMirror
+            .setValue('${content.split("\n").join("\\n")}')` //keep line breaks
+      );
+    });
+  }, [editor]);
+
   useEffect(() => {
     if (textMode) {
-      editor?.getContent();
       return;
     }
 
@@ -80,33 +89,30 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       return;
     }
 
-    let task: number;
+    let stateControlSubscription: ((isDirty: boolean) => void) | undefined;
+
     Promise.resolve()
-      .then(() => props.getFileContents())
-      .then(c => editor?.setContent(c ?? "", props.contentPath))
+      .then(props.getFileContents)
+      .then(content => editor?.setContent(props.contentPath, content ?? ""))
       .then(() => {
-        task = window.setInterval(
-          () =>
-            editor?.getContent().then(c => {
-              if (props.readonly) {
-                return;
-              }
+        // Update GitHub's default text editor right away.
+        updateGitHubsTextEditor();
 
-              //keep line breaks
-              const content = c.split("\n").join("\\n");
-
-              runScriptOnPage(
-                `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
-              );
-            }),
-          GITHUB_EDITOR_SYNC_POLLING_INTERVAL
-        );
+        // Subscribe to changes on the Diagram to update GitHub's default text editor.
+        stateControlSubscription = editor?.getStateControl().subscribe(updateGitHubsTextEditor);
+      })
+      .catch(e => {
+        console.error("Error setting content.", e);
       });
 
-    return () => clearInterval(task);
+    return () => {
+      if (stateControlSubscription) {
+        editor?.getStateControl().unsubscribe(stateControlSubscription);
+      }
+    };
   }, [textMode, editor]);
 
-  //Forward reference methods to set content programmatically vs property
+  // Forward reference methods to set content programmatically vs property
   useImperativeHandle(
     forwardedRef,
     () => {
@@ -115,10 +121,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       }
 
       return {
-        setContent: (content: string) => {
-          editor?.setContent(content, props.contentPath);
-          return Promise.resolve();
-        }
+        setContent: (content: string) => editor?.setContent(props.contentPath, content)
       };
     },
     [editor]
@@ -134,6 +137,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           receive_ready={onEditorReady}
           receive_resourceContentRequest={onResourceContentRequest}
           receive_resourceListRequest={onResourceContentList}
+          receive_setContentError={props.onSetContentError}
           editorEnvelopeLocator={envelopeLocator}
           locale={locale}
         />

@@ -26,6 +26,8 @@ interface ChromeExtensionDictionary extends ReferenceDictionary<ChromeExtensionD
   single: {
     exitFullScreen: string;
     editorToolbar: {
+      fixAndSeeAsDiagram: string;
+      errorOpeningFile: string;
       seeAsSource: string;
       copyLinkTo: (text: string) => string;
       linkCopied: string;

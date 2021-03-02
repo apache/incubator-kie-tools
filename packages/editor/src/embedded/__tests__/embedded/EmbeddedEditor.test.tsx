@@ -73,7 +73,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     const spyOnContentChangedNotification = jest.spyOn(
-      editorRef.current!.getEnvelopeServer().envelopeApi.notifications,
+      editorRef.current!.getEnvelopeServer().envelopeApi.requests,
       "receive_contentChanged"
     );
 
