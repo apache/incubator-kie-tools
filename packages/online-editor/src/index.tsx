@@ -32,6 +32,7 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import "../static/resources/style.css";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import "@kiegroup/monaco-editor";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();

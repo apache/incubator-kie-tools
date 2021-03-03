@@ -102,9 +102,10 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .then(() => this.registerDefaultShortcuts(initArgs))
       .catch(e => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
+
+    this.registerDefaultShortcuts(initArgs)
 
     this.args.envelopeContext.channelApi.notifications.receive_ready();
   };

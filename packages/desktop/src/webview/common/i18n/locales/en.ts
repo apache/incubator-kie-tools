@@ -24,7 +24,7 @@ export const en: DesktopI18n = {
   },
   editorPage: {
     textEditorModal: {
-      title: (fileName: string) => `Editing ${fileName}`;
+      title: (fileName: string) => `Editing ${fileName}`
     },
     alerts: {
       setContentError: {

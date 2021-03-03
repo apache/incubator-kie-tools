@@ -227,47 +227,53 @@ export function EditorPage(props: Props) {
 
   const openFileAsText = useCallback(() => {
     setFileOpenedAsText(true);
-  }, [context.file]);
+  }, []);
 
   const refreshDiagramEditor = useCallback(() => {
     setFileOpenedAsText(false);
     setSetContentError(false);
-  }, [editor, context.file]);
+  }, []);
+
+  const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    context.file.getFileContents().then(content => {
+      setTextEditorContext(content);
+    });
+  }, [context.file]);
 
   useEffect(() => {
     if (!fileOpenedAsText) {
       return;
     }
 
-    let monacoInstance: any; //monaco.editor.IStandaloneCodeEditor;
-    let originalContent: string | undefined;
-
-    context.file.getFileContents().then(contents => {
-      originalContent = contents;
-      monacoInstance = (window as any).monaco.editor.create(textEditorContainerRef.current!, {
-        value: contents,
-        language: "xml", //FIXME: Not all editors will be XML when converted to text
-        scrollBeyondLastLine: false
-      });
+    const monacoInstance = (window as any).monaco.editor.create(textEditorContainerRef.current, {
+      value: textEditorContent,
+      language: "xml", //FIXME: Not all editors will be XML when converted to text
+      scrollBeyondLastLine: false
     });
 
     return () => {
-      Promise.resolve()
-        .then(() => {
-          const contentAfterFix = monacoInstance.getValue();
-          editor?.setContent(context.file.fileName, contentAfterFix);
-          return contentAfterFix;
-        })
-        .then(contentAfterFix =>
-          editor?.getStateControl().updateCommandStack({
-            id: "fix-from-text-editor",
-            undo: () => editor?.setContent(context.file.fileName, originalContent!),
-            redo: () => editor?.setContent(context.file.fileName, contentAfterFix).then(() => setSetContentError(false))
-          })
-        )
-        .then(() => monacoInstance.dispose());
+      const contentAfterFix = monacoInstance.getValue();
+      monacoInstance.dispose();
+
+      editor?.setContent(context.file.fileName, contentAfterFix).then(() => {
+        editor?.getStateControl().updateCommandStack({
+          id: "fix-from-text-editor",
+          undo: () => {
+            console.info("a");
+            editor?.setContent(context.file.fileName, textEditorContent!);
+          },
+          redo: () => {
+            console.info("b");
+            editor?.setContent(context.file.fileName, contentAfterFix).then(() => setFileOpenedAsText(false));
+          }
+        });
+      });
+
+      setTextEditorContext(contentAfterFix);
     };
-  }, [fileOpenedAsText, editor, context.file]);
+  }, [fileOpenedAsText, editor, context.file, textEditorContent]);
 
   return (
     <Page className={"kogito--editor-page"}>
@@ -357,24 +363,20 @@ export function EditorPage(props: Props) {
               channelType={ChannelType.DESKTOP}
               locale={locale}
             />
-            {fileOpenedAsText && (
-              <>
-                <Modal
-                  showClose={false}
-                  width={"100%"}
-                  height={"100%"}
-                  title={i18n.editorPage.textEditorModal.title(context.file.fileName.split("/").pop())}
-                  isOpen={fileOpenedAsText}
-                  actions={[
-                    <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
-                      {i18n.terms.done}
-                    </Button>
-                  ]}
-                >
-                  <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />
-                </Modal>
-              </>
-            )}
+            <Modal
+              showClose={false}
+              width={"100%"}
+              height={"100%"}
+              title={i18n.editorPage.textEditorModal.title(context.file.fileName.split("/").pop()!)}
+              isOpen={fileOpenedAsText}
+              actions={[
+                <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
+                  {i18n.terms.done}
+                </Button>
+              ]}
+            >
+              <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />
+            </Modal>
           </StackItem>
         </Stack>
         <textarea ref={copyContentTextArea} style={{ opacity: 0, width: 0, height: 0 }} />

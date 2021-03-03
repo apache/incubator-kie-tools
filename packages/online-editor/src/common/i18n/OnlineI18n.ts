@@ -43,7 +43,14 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
   };
   editorFullScreenToolbar: string;
   editorPage: {
+    textEditorModal: {
+      title: (fileName: string) => string;
+    };
     alerts: {
+      setContentError: {
+        action: string;
+        title: string;
+      };
       copy: string;
       updateGist: string;
       updateGistFilename: {
