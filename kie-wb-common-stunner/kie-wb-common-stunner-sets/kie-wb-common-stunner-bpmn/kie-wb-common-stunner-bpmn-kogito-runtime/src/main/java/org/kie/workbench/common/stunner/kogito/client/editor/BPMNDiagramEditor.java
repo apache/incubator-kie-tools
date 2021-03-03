@@ -61,6 +61,7 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPreview
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
@@ -113,7 +114,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final FormsFlushManager formsFlushManager,
                              final CanvasFileExport canvasFileExport,
                              final Promises promises,
-                             final CanvasDiagramValidator<AbstractCanvasHandler> validator) {
+                             final CanvasDiagramValidator<AbstractCanvasHandler> validator,
+                             final EditorSessionCommands editorSessionCommands) {
         super(view,
               placeManager,
               multiPageEditorContainerView,
@@ -123,7 +125,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
               viewerSessionPresenterInstances,
               diagramClientErrorHandler,
               translationService,
-              documentationView);
+              documentationView,
+              editorSessionCommands);
         this.diagramPreviewAndExplorerDock = diagramPreviewAndExplorerDock;
         this.diagramPropertiesDock = diagramPropertiesDock;
         this.layoutHelper = layoutHelper;

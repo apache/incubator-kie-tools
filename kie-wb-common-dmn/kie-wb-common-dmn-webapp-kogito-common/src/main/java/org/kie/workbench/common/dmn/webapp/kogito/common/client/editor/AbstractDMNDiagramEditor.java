@@ -65,6 +65,7 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropert
 import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditor;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
@@ -127,7 +128,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final IncludedModelsPage includedModelsPage,
                                     final IncludedModelsContext includedModelContext,
                                     final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
-                                    final DRDNameChanger drdNameChanger) {
+                                    final DRDNameChanger drdNameChanger,
+                                    final EditorSessionCommands editorSessionCommands) {
         super(view,
               placeManager,
               multiPageEditorContainerView,
@@ -137,7 +139,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
               viewerSessionPresenterInstances,
               diagramClientErrorHandler,
               translationService,
-              documentationView);
+              documentationView,
+              editorSessionCommands);
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;

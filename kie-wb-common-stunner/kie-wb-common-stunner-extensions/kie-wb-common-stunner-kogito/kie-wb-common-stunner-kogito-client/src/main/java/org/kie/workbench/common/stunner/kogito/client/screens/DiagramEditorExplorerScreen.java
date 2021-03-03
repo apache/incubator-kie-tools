@@ -98,7 +98,7 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
 
     @Override
     public ResourceType getResourceType() {
-        return ActivityResourceType.SCREEN;
+        return ActivityResourceType.DOCK;
     }
 
     @Override

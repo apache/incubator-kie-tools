@@ -50,6 +50,7 @@ import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.resources.i18n.KogitoClientConstants;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -71,13 +72,15 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                  final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                  final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                  final DiagramClientErrorHandler diagramClientErrorHandler,
-                                 final ClientTranslationService translationService) {
+                                 final ClientTranslationService translationService,
+                                 final EditorSessionCommands editorSessionCommands) {
             super(baseEditorView,
                   notificationEvent,
                   editorSessionPresenterInstances,
                   viewerSessionPresenterInstances,
                   diagramClientErrorHandler,
-                  translationService);
+                  translationService,
+                  editorSessionCommands);
         }
 
         @Override
@@ -141,7 +144,7 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                 showError(error);
 
                 //close editor in case of error when opening the editor
-                getPlaceManager().closePlace(getPlaceRequest());
+                getPlaceManager().closePlace(getPlaceRequest(), null);
             }
         }
     }
@@ -157,7 +160,8 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                  final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                  final DiagramClientErrorHandler diagramClientErrorHandler,
                                  final ClientTranslationService translationService,
-                                 final DocumentationView documentationView) {
+                                 final DocumentationView documentationView,
+                                 final EditorSessionCommands editorSessionCommands) {
         super(view,
               placeManager,
               multiPageEditorContainerView);
@@ -170,7 +174,8 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                editorSessionPresenterInstances,
                                viewerSessionPresenterInstances,
                                diagramClientErrorHandler,
-                               translationService);
+                               translationService,
+                               editorSessionCommands);
     }
 
     protected AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> makeCore(final View view,
@@ -178,13 +183,15 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                                                                                                                               final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                                                                                                                               final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                                                                                                                               final DiagramClientErrorHandler diagramClientErrorHandler,
-                                                                                                                                              final ClientTranslationService translationService) {
+                                                                                                                                              final ClientTranslationService translationService,
+                                                                                                                                              final EditorSessionCommands editorSessionCommands) {
         return new DiagramEditorCore(view,
                                      notificationEvent,
                                      editorSessionPresenterInstances,
                                      viewerSessionPresenterInstances,
                                      diagramClientErrorHandler,
-                                     translationService);
+                                     translationService,
+                                     editorSessionCommands);
     }
 
     @PostConstruct

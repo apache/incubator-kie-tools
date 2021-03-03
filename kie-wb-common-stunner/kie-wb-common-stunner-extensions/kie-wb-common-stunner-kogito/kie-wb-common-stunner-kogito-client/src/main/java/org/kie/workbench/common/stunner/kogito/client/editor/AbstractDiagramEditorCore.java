@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.kogito.api.editor.KogitoDiagramResource;
 import org.kie.workbench.common.stunner.kogito.client.resources.i18n.KogitoClientConstants;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -61,6 +62,7 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
     private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
     private final DiagramClientErrorHandler diagramClientErrorHandler;
     private final ClientTranslationService translationService;
+    private final EditorSessionCommands editorSessionCommands;
 
     private Optional<SessionEditorPresenter<EditorSession>> editorSessionPresenter = Optional.empty();
     private Optional<SessionViewerPresenter<ViewerSession>> viewerSessionPresenter = Optional.empty();
@@ -68,7 +70,7 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
     private P editorProxy = makeEditorProxy();
 
     public AbstractDiagramEditorCore() {
-        this(null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null);
     }
 
     public AbstractDiagramEditorCore(final View baseEditorView,
@@ -76,13 +78,15 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
                                      final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                      final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                      final DiagramClientErrorHandler diagramClientErrorHandler,
-                                     final ClientTranslationService translationService) {
+                                     final ClientTranslationService translationService,
+                                     final EditorSessionCommands editorSessionCommands) {
         this.baseEditorView = baseEditorView;
         this.notificationEvent = notificationEvent;
         this.editorSessionPresenterInstances = editorSessionPresenterInstances;
         this.viewerSessionPresenterInstances = viewerSessionPresenterInstances;
         this.diagramClientErrorHandler = diagramClientErrorHandler;
         this.translationService = translationService;
+        this.editorSessionCommands = editorSessionCommands;
     }
 
     @Override
@@ -171,6 +175,7 @@ public abstract class AbstractDiagramEditorCore<M extends Metadata, D extends Di
             @Override
             public void onSuccess() {
                 initialiseKieEditorForSession(diagram);
+                editorSessionCommands.bind(getSession());
                 callback.onSuccess();
             }
 

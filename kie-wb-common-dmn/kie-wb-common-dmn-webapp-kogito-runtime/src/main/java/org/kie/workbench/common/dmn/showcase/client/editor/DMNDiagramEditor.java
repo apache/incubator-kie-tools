@@ -62,6 +62,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
+import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
@@ -106,7 +107,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                             final @DMNEditor ReadOnlyProvider readOnlyProvider,
                             final DRDNameChanger drdNameChanger,
-                            final LazyCanvasFocusUtils lazyCanvasFocusUtils) {
+                            final LazyCanvasFocusUtils lazyCanvasFocusUtils,
+                            final EditorSessionCommands editorSessionCommands) {
         super(view,
               placeManager,
               multiPageEditorContainerView,
@@ -135,7 +137,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               includedModelsPage,
               includedModelContext,
               guidedTourBridgeInitializer,
-              drdNameChanger);
+              drdNameChanger,
+              editorSessionCommands);
         this.readOnlyProvider = readOnlyProvider;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
     }
