@@ -17,8 +17,6 @@
 package org.uberfire.client.workbench.part;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.model.PartDefinition;
 
 public interface WorkbenchPartPresenter {
@@ -27,17 +25,7 @@ public interface WorkbenchPartPresenter {
 
     void setDefinition(PartDefinition definition);
 
-    View getPartView();
+    WorkbenchPartView getPartView();
 
     void setWrappedWidget(IsWidget widget);
-
-    interface View
-            extends
-            UberView<WorkbenchPartPresenter>,
-            RequiresResize {
-
-        WorkbenchPartPresenter getPresenter();
-
-        void setWrappedWidget(IsWidget widget);
-    }
 }

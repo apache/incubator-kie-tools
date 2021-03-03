@@ -63,11 +63,6 @@
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client</artifactId>
-    </dependency>
-
     <!-- CDI Integration Modules -->
     <dependency>
       <groupId>javax.enterprise</groupId>

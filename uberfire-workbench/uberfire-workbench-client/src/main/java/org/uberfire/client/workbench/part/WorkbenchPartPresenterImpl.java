@@ -23,18 +23,15 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.workbench.model.PartDefinition;
 
-/**
- * A Workbench panel part.
- */
 @Dependent
 public class WorkbenchPartPresenterImpl implements WorkbenchPartPresenter {
 
-    private final View view;
+    private final WorkbenchPartView view;
 
     private PartDefinition definition;
 
     @Inject
-    public WorkbenchPartPresenterImpl(final View view) {
+    public WorkbenchPartPresenterImpl(final WorkbenchPartView view) {
         this.view = view;
     }
 
@@ -54,7 +51,7 @@ public class WorkbenchPartPresenterImpl implements WorkbenchPartPresenter {
     }
 
     @Override
-    public View getPartView() {
+    public WorkbenchPartView getPartView() {
         return view;
     }
 

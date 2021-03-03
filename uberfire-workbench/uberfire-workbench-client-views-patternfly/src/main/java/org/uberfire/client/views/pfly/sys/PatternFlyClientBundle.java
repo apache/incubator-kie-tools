@@ -36,15 +36,6 @@ public interface PatternFlyClientBundle extends ClientBundle {
     @Source("org/uberfire/client/views/static/moment-timezone/moment-timezone-with-data-2012-2022.min.js")
     TextResource momentTimeZone();
 
-    @Source("org/uberfire/client/views/static/bootstrap-daterangepicker/daterangepicker.js")
-    TextResource bootstrapDateRangePicker();
-
-    @Source("org/uberfire/client/views/static/d3/d3.min.js")
-    TextResource d3();
-
-    @Source("org/uberfire/client/views/static/jquery-ui/jquery-ui.min.js")
-    TextResource jQueryUI();
-
     @Source("org/uberfire/client/views/static/appformer-js-monaco/monaco.min.js")
     TextResource monacoEditor();
 }

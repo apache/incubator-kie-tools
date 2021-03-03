@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.mvp;
 
-import jsinterop.annotations.JsType;
-import org.uberfire.security.ResourceType;
-import org.uberfire.workbench.model.ActivityResourceType;
-import org.uberfire.workbench.model.PerspectiveDefinition;
+package org.uberfire.client.workbench.panels;
 
-@JsType
-public interface PerspectiveActivity extends Activity {
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
 
-    PerspectiveDefinition getDefaultPerspectiveLayout();
+public class RequiresResizeFocusPanel
+        extends FocusPanel
+        implements RequiresResize {
 
     @Override
-    default ResourceType getResourceType() {
-        return ActivityResourceType.PERSPECTIVE;
+    public void onResize() {
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
+        }
     }
 }

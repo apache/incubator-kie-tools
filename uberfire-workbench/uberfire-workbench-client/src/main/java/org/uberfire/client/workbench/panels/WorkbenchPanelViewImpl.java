@@ -13,38 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.workbench.panels.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+package org.uberfire.client.workbench.panels;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
-import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
+import org.uberfire.client.workbench.part.WorkbenchPartView;
 import org.uberfire.workbench.model.PartDefinition;
 
-/**
- * The view component of {@link StaticWorkbenchPanelPresenter}.
- */
 @Dependent
-@Named("StaticWorkbenchPanelView")
-public class StaticWorkbenchPanelView
-        extends AbstractWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
-
-    @Inject
-    PlaceManager placeManager;
+public class WorkbenchPanelViewImpl extends ResizeComposite implements WorkbenchPanelView {
 
     @Inject
     StaticFocusedResizePanel panel;
+
+    protected WorkbenchPanelPresenter presenter;
 
     @PostConstruct
     void postConstruct() {
@@ -52,40 +41,24 @@ public class StaticWorkbenchPanelView
         initWidget(panel);
     }
 
-    // override is for unit test: super.getWidget() returns a new mock every time
     @Override
     public Widget getWidget() {
         return panel;
     }
 
-    public StaticFocusedResizePanel getPanel() {
-        return panel;
-    }
-
     @Override
-    public void init(final StaticWorkbenchPanelPresenter presenter) {
+    public void init(final WorkbenchPanelPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public StaticWorkbenchPanelPresenter getPresenter() {
-        return this.presenter;
-    }
-
-    @Override
-    public void addPart(final WorkbenchPartPresenter.View view) {
+    public void addPart(final WorkbenchPartView view) {
         if (panel.getPartView() == null) {
             panel.setPart(view);
             onResize();
         } else {
             throw new RuntimeException("Uberfire Panel Invalid State: This panel support only one part.");
         }
-    }
-
-    @Override
-    public boolean selectPart(final PartDefinition part) {
-        PartDefinition currentPartDefinition = getCurrentPartDefinition();
-        return currentPartDefinition != null && currentPartDefinition.equals(part);
     }
 
     @Override
@@ -106,7 +79,7 @@ public class StaticWorkbenchPanelView
     }
 
     PartDefinition getCurrentPartDefinition() {
-        View partView = panel.getPartView();
+        WorkbenchPartView partView = panel.getPartView();
         if (partView == null) {
             return null;
         }
@@ -120,11 +93,18 @@ public class StaticWorkbenchPanelView
     }
 
     @Override
-    public Collection<PartDefinition> getParts() {
-        PartDefinition currentPartDefinition = getCurrentPartDefinition();
-        if (currentPartDefinition == null) {
-            return new ArrayList<>();
+    public void setElementId(String elementId) {
+        if (elementId == null) {
+            getElement().removeAttribute("id");
+        } else {
+            getElement().setAttribute("id",
+                                      elementId);
         }
-        return Collections.singletonList(currentPartDefinition);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + "@" + System.identityHashCode(this) +
+                " id=" + getElement().getAttribute("id");
     }
 }

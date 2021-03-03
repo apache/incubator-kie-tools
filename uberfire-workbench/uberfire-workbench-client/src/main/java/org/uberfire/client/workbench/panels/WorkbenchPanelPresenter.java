@@ -15,34 +15,14 @@
  */
 package org.uberfire.client.workbench.panels;
 
-import java.util.Map;
-
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.Position;
 
 /**
  * Top-level interface for all panel presenters within the UberFire MVP framework.
  */
 public interface WorkbenchPanelPresenter {
-
-    /**
-     * Returns the current parent of this panel presenter.
-     *
-     * @return the parent panel presenter. If this panel is the root, or it is not attached to a parent, the return
-     * value is null.
-     */
-    WorkbenchPanelPresenter getParent();
-
-    /**
-     * Sets the current parent of this panel presenter. This method should only be called by another
-     * WorkbenchPanelPresenter when adding or removing this panel as a child.
-     *
-     * @param parent the new parent of this panel. If this panel is being removed, the parent should be set to null.
-     */
-    void setParent(final WorkbenchPanelPresenter parent);
 
     /**
      * Returns a {@code @Portable} description of the current state of this panel.
@@ -84,57 +64,10 @@ public interface WorkbenchPanelPresenter {
     boolean removePart(final PartDefinition part);
 
     /**
-     * Adds the given panel as a subpanel of this one in the given position. Panels typically only allow one child panel
-     * in each position, and may throw an exception or make alternative arrangements (for example, forward the request
-     * to a child panel) when you try to add a child panel to an already-occupied slot.
-     * <p>
-     * Subpanels are typically always visible, and take up space within the bounds of their parent panel.
-     *
-     * @param child    the panel to add. The presenter, its view, and its definition must not belong to any parent. As a side
-     *                 effect of this call (if the call is successful), the given presenter, its view, and its definition
-     *                 will get attached to their new parents.
-     * @param position the position to add the child at. Different panel implementations support different position types.
-     */
-    void addPanel(final WorkbenchPanelPresenter child,
-                  final Position position);
-
-    /**
-     * Removes the given panel presenter and its view from this panel, freeing all resources associated with them.
-     * @param child The child panel to remove. Must be a direct child of this panel, and must be empty (contain no parts
-     * or child panels). Null is not permitted.
-     * @return true if the child was found and removed from this panel; false if the child panel could not be found.
-     */
-    boolean removePanel(WorkbenchPanelPresenter child);
-
-    /**
-     * Returns the immediate child panels of this panel. Note that panels and parts are not the same thing; this method
-     * only returns the panels.
-     * @return an unmodifiable snapshot of the immediate child panels nested within this one. Never null, and will not
-     * update to reflect subsequent changes to this panel's children. Safe to iterate over when adding or
-     * removing child panels.
-     */
-    Map<Position, WorkbenchPanelPresenter> getPanels();
-
-    boolean selectPart(final PartDefinition part);
-
-    /**
      * Returns the view that was given to this panel when it was first created.
      */
     WorkbenchPanelView getPanelView();
 
     void onResize(final int width,
                   final int height);
-
-    /**
-     * Returns the panel type that should be used when adding child panels of type
-     * {@link PanelDefinition#PARENT_CHOOSES_TYPE}.
-     * @return the fully-qualified class name of a WorkbenchPanelPresenter implementation. Returns null if
-     * this panel presenter does not allow child panels.
-     */
-    String getDefaultChildType();
-
-    /**
-     * Returns the type of new parts.
-     */
-    Class<? extends WorkbenchPartPresenter> getPartType();
 }

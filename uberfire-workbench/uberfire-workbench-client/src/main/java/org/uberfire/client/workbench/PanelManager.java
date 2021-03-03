@@ -18,7 +18,6 @@ package org.uberfire.client.workbench;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CustomPanelDefinition;
@@ -36,11 +35,6 @@ import org.uberfire.workbench.model.PartDefinition;
  * initiate Workbench actions through the public methods on {@link PlaceManager}.
  */
 public interface PanelManager {
-
-    /**
-     * Returns the description of the entire panel + part tree that makes up the UI in its current state.
-     */
-    PanelDefinition getRoot();
 
     /**
      * Adds the given part to the given panel, which must already be part of the visible workbench layout.
@@ -72,12 +66,10 @@ public interface PanelManager {
      * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
      * (whether directly removed from its parent or some ancestor is removed,) all the panel's parts are closed and then
      * the associated panel is disposed.
-     * @param container the widget container to install the new panel in. The new panel will fill the container.
      * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
      * its parent will be null; {@code isRoot()} will return false.
      */
-    CustomPanelDefinition addCustomPanel(HasWidgets container,
-                                         String panelType);
+    CustomPanelDefinition addCustomPanel(HasWidgets container);
 
     /**
      * Removes the panel associated with the given definition, removing the panel's presenter and view from the
@@ -104,6 +96,5 @@ public interface PanelManager {
      * panel/part structure recursively.
      * @param root description of the new root panel to install. Must not be null.
      */
-    void setRoot(PerspectiveActivity activity,
-                 PanelDefinition root);
+    void setRoot(PanelDefinition root);
 }

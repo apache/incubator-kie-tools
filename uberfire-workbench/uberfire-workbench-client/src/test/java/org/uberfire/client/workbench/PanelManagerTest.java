@@ -41,7 +41,7 @@ import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenterImpl;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -296,7 +296,7 @@ public class PanelManagerTest {
     public void addedCustomPanelsShouldBeRemembered() throws Exception {
         HasWidgets container = mock(HasWidgets.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                                                                  StaticWorkbenchPanelPresenter.class.getName());
+                                                                  WorkbenchPanelPresenterImpl.class.getName());
 
         assertTrue(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
@@ -305,7 +305,7 @@ public class PanelManagerTest {
     public void addedCustomPanelsInsideHTMLElementsShouldBeRemembered() throws Exception {
         HTMLElement container = mock(HTMLElement.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                                                                  StaticWorkbenchPanelPresenter.class.getName());
+                                                                  WorkbenchPanelPresenterImpl.class.getName());
 
         assertTrue(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
@@ -328,7 +328,7 @@ public class PanelManagerTest {
     public void explicitlyRemovedCustomPanelsShouldBeForgotten() throws Exception {
         HasWidgets container = mock(HasWidgets.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                                                                  StaticWorkbenchPanelPresenter.class.getName());
+                                                                  WorkbenchPanelPresenterImpl.class.getName());
         panelManager.removeWorkbenchPanel(customPanel);
 
         assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
@@ -338,7 +338,7 @@ public class PanelManagerTest {
     public void explicitlyRemovedCustomPanelsInsideHTMLElementsShouldBeForgotten() throws Exception {
         HTMLElement container = mock(HTMLElement.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                                                                  StaticWorkbenchPanelPresenter.class.getName());
+                                                                  WorkbenchPanelPresenterImpl.class.getName());
         panelManager.removeWorkbenchPanel(customPanel);
 
         assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
@@ -348,7 +348,7 @@ public class PanelManagerTest {
     public void explicitlyRemovedCustomPanelsInsideElemental2HTMLElementsShouldBeForgotten() {
         elemental2.dom.HTMLElement container = mock(elemental2.dom.HTMLElement.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                                                                  StaticWorkbenchPanelPresenter.class.getName());
+                                                                  WorkbenchPanelPresenterImpl.class.getName());
         panelManager.removeWorkbenchPanel(customPanel);
 
         assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));

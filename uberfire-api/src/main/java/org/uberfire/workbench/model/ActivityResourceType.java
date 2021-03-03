@@ -25,8 +25,7 @@ import org.uberfire.security.ResourceType;
 @JsType
 public enum ActivityResourceType implements ResourceType {
 
-    PERSPECTIVE,
-    SCREEN,
+    DOCK,
     EDITOR;
 
     @Override

@@ -26,21 +26,13 @@ import static org.uberfire.client.views.pfly.sys.MomentUtils.setMomentLocale;
  */
 public class PatternFlyBootstrapper {
 
-    private static boolean isPrettifyLoaded = false;
-
     private static boolean isBootstrapSelectLoaded = false;
-
-    private static boolean isBootstrapDateRangePickerLoaded = false;
 
     private static boolean isMomentLoaded = false;
 
     private static boolean isMomentTimeZoneLoaded = false;
 
     private static boolean isPatternFlyLoaded = false;
-
-    private static boolean isD3Loaded = false;
-
-    private static boolean isJQueryUILoaded = false;
 
     private static boolean isMonacoEditorLoaded = false;
 
@@ -92,34 +84,6 @@ public class PatternFlyBootstrapper {
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
             isMomentTimeZoneLoaded = true;
-        }
-    }
-
-    public static void ensureBootstrapDateRangePickerIsAvailable() {
-        ensureMomentIsAvailable();
-        if (!isBootstrapDateRangePickerLoaded) {
-            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.bootstrapDateRangePicker().getText())
-                    .setWindow(ScriptInjector.TOP_WINDOW)
-                    .inject();
-            isBootstrapDateRangePickerLoaded = true;
-        }
-    }
-
-    public static void ensureD3IsAvailable() {
-        if (!isD3Loaded) {
-            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.d3().getText())
-                    .setWindow(ScriptInjector.TOP_WINDOW)
-                    .inject();
-            isD3Loaded = true;
-        }
-    }
-
-    public static void ensureJQueryUIIsAvailable() {
-        if (!isJQueryUILoaded) {
-            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.jQueryUI().getText())
-                    .setWindow(ScriptInjector.TOP_WINDOW)
-                    .inject();
-            isJQueryUILoaded = true;
         }
     }
 

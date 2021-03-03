@@ -22,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenterImpl;
+import org.uberfire.client.workbench.panels.WorkbenchPanelViewImpl;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
@@ -35,16 +37,16 @@ import static org.mockito.Mockito.*;
 public class StaticWorkbenchPanelPresenterTest {
 
     @Mock
-    StaticWorkbenchPanelView view;
-    StaticWorkbenchPanelPresenter presenter;
+    WorkbenchPanelViewImpl view;
+    WorkbenchPanelPresenterImpl presenter;
     @Mock
     private PlaceManager placeManager;
 
     @Before
     public void setup() {
-        presenter = new StaticWorkbenchPanelPresenter(view,
-                                                      mock(PerspectiveManager.class),
-                                                      placeManager);
+        presenter = new WorkbenchPanelPresenterImpl(view,
+                                                    mock(PerspectiveManager.class),
+                                                    placeManager);
         presenter.init();
         presenter.setDefinition(new PanelDefinitionImpl());
     }
@@ -71,9 +73,9 @@ public class StaticWorkbenchPanelPresenterTest {
 
         SinglePartPanelHelper singlePartPanelHelper = mock(SinglePartPanelHelper.class);
 
-        StaticWorkbenchPanelPresenter presenter = new StaticWorkbenchPanelPresenter(view,
-                                                                                    mock(PerspectiveManager.class),
-                                                                                    placeManager) {
+        WorkbenchPanelPresenterImpl presenter = new WorkbenchPanelPresenterImpl(view,
+                                                                                mock(PerspectiveManager.class),
+                                                                                placeManager) {
             SinglePartPanelHelper createSinglePartPanelHelper() {
                 return singlePartPanelHelper;
             }

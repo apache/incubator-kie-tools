@@ -227,8 +227,8 @@ public class DocksBars {
     private void goToPlace(DocksExpandedBar expandedBar,
                            PlaceRequest placeRequest) {
         placeRequest.setUpdateLocationBar(false);
-        placeManager.goTo(placeRequest,
-                          expandedBar.targetPanel());
+        placeManager.goToDock(placeRequest,
+                              expandedBar.targetPanel());
     }
 
     private void setupCollapsedBar(UberfireDock targetDock,

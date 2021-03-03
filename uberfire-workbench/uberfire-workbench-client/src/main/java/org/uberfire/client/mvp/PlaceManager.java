@@ -17,26 +17,16 @@
 package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.HasWidgets;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsType;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
-@JsType
 public interface PlaceManager {
 
-    @JsIgnore
-    void goTo(final PlaceRequest place,
-              final HasWidgets addTo);
+    void bootstrapRootPanel();
 
-    @JsIgnore
-    void bootstrapPerspective();
+    void goToDock(final PlaceRequest place,
+                  final HasWidgets addTo);
 
-    @JsMethod
-    void closePlace(final PlaceRequest placeToClose);
-
-    @JsMethod(name = "closePlaceWithCommand")
     void closePlace(final PlaceRequest placeToClose,
                     final Command onAfterClose);
 }

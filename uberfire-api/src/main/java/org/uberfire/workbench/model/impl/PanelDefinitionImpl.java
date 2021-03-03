@@ -58,10 +58,6 @@ public class PanelDefinitionImpl implements PanelDefinition {
     private ContextDisplayMode contextDisplayMode = SHOW;
     private PanelDefinition parent = null;
 
-    @JsIgnore
-    public PanelDefinitionImpl() {
-        this("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
-    }
 
     @JsIgnore
     public PanelDefinitionImpl(final String type) {

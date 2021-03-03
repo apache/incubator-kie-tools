@@ -21,7 +21,6 @@ import java.util.Set;
 
 import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 /**
  * A request to navigate to a particular UberFire Workbench Place (a WorkbenchPerspective, a WorkbenchScreen, or a
@@ -32,8 +31,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
  */
 @JsType
 public interface PlaceRequest {
-
-    PlaceRequest NOWHERE = new DefaultPlaceRequest("NOWHERE");
 
     String getIdentifier();
 

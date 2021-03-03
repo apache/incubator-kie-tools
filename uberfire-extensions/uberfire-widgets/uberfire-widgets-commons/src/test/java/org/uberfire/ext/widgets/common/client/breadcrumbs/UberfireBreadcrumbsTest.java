@@ -22,7 +22,6 @@ import java.util.List;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -222,10 +221,10 @@ public class UberfireBreadcrumbsTest {
                                                             placeRequest,
                                                             command).execute();
 
-        verify(placeManager).goTo(placeRequest);
+        verify(placeManager).goToDock(placeRequest);
         verify(placeManager,
-               never()).goTo(eq(placeRequest),
-                             any(HasWidgets.class));
+               never()).goToDock(eq(placeRequest),
+                                 any(HasWidgets.class));
         verify(command).execute();
     }
 

@@ -26,8 +26,10 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenterImpl;
+import org.uberfire.client.workbench.panels.WorkbenchPanelViewImpl;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
+import org.uberfire.client.workbench.panels.StaticFocusedResizePanel;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
@@ -44,9 +46,9 @@ import static org.mockito.Mockito.when;
 public class StaticWorkbenchPanelViewTest {
 
     // Not a @Mock or @GwtMock because we want to test the view.init() method
-    private final StaticWorkbenchPanelPresenter presenter = mock(StaticWorkbenchPanelPresenter.class);
+    private final WorkbenchPanelPresenterImpl presenter = mock(WorkbenchPanelPresenterImpl.class);
     @InjectMocks
-    private StaticWorkbenchPanelView view;
+    private WorkbenchPanelViewImpl view;
     @Mock
     private PanelManager panelManager;
 
