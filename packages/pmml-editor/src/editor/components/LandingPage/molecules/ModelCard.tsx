@@ -28,6 +28,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import "./ModelCard.scss";
 import { ModelCardIcon } from "../atoms";
+import { MODEL_NAME_NOT_SET } from "../../EditorCore/atoms";
 
 interface ModelCardProps {
   index: number | undefined;
@@ -60,7 +61,7 @@ export const ModelCard = (props: ModelCardProps) => {
     [index]
   );
 
-  const _modelName = useMemo(() => (modelName === "" ? "<Undefined>" : modelName), [modelName]);
+  const _modelName = useMemo(() => (modelName === "" ? MODEL_NAME_NOT_SET : modelName), [modelName]);
 
   return (
     <Card data-testid="model-card" isHoverable={true} className="model-card" onClick={onClickModel}>

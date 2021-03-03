@@ -31,7 +31,7 @@ interface ModelTitleProps {
   commitModelName?: (_modelName: string) => void;
 }
 
-const MODEL_NAME_NOT_SET = "Model Name not set";
+export const MODEL_NAME_NOT_SET = "<Model Name not set>";
 
 export const ModelTitle = (props: ModelTitleProps) => {
   const { modelIndex, commitModelName } = props;
