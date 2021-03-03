@@ -128,7 +128,7 @@ export function FilesPage(props: Props) {
   );
 
   const filteredLastOpenedFiles = useMemo(() => {
-    // condition used to avoid MacOS issue during first load
+    // condition used to avoid macOS issue during first load
     if (lastOpenedFiles.filter === undefined) {
       return [];
     }

@@ -20,6 +20,8 @@ import {
   Alert,
   AlertActionCloseButton,
   AlertActionLink,
+  Button,
+  Modal,
   Page,
   PageSection,
   Stack,
@@ -31,8 +33,8 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { FileSaveActions } from "../../common/ElectronFile";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
-import IpcRendererEvent = Electron.IpcRendererEvent;
 import { useDesktopI18n } from "../common/i18n";
+import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
   onClose: () => void;
@@ -50,7 +52,10 @@ export function EditorPage(props: Props) {
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
   const isDirty = useDirtyState(editor);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
+  const [setContentError, setSetContentError] = useState(false);
+  const [fileOpenedAsText, setFileOpenedAsText] = useState(false);
   const { locale, i18n } = useDesktopI18n();
+  const textEditorContainerRef = useRef<HTMLDivElement>(null);
 
   const onClose = useCallback(() => {
     if (!isDirty) {
@@ -216,6 +221,54 @@ export function EditorPage(props: Props) {
     };
   }, []);
 
+  const onSetContentError = useCallback(() => {
+    setSetContentError(true);
+  }, []);
+
+  const openFileAsText = useCallback(() => {
+    setFileOpenedAsText(true);
+  }, [context.file]);
+
+  const refreshDiagramEditor = useCallback(() => {
+    setFileOpenedAsText(false);
+    setSetContentError(false);
+  }, [editor, context.file]);
+
+  useEffect(() => {
+    if (!fileOpenedAsText) {
+      return;
+    }
+
+    let monacoInstance: any; //monaco.editor.IStandaloneCodeEditor;
+    let originalContent: string | undefined;
+
+    context.file.getFileContents().then(contents => {
+      originalContent = contents;
+      monacoInstance = (window as any).monaco.editor.create(textEditorContainerRef.current!, {
+        value: contents,
+        language: "xml",
+        scrollBeyondLastLine: false
+      });
+    });
+
+    return () => {
+      Promise.resolve()
+        .then(() => {
+          const contentAfterFix = monacoInstance.getValue();
+          editor?.setContent(context.file.fileName, contentAfterFix);
+          return contentAfterFix;
+        })
+        .then(contentAfterFix =>
+          editor?.getStateControl().updateCommandStack({
+            id: "fix-from-text-editor",
+            undo: () => editor?.setContent(context.file.fileName, originalContent!),
+            redo: () => editor?.setContent(context.file.fileName, contentAfterFix).then(() => setSetContentError(false))
+          })
+        )
+        .then(() => monacoInstance.dispose());
+    };
+  }, [fileOpenedAsText, editor, context.file]);
+
   return (
     <Page className={"kogito--editor-page"}>
       <PageSection variant="dark" padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
@@ -262,6 +315,21 @@ export function EditorPage(props: Props) {
                 />
               </div>
             )}
+            {setContentError && !fileOpenedAsText && (
+              <div className={"kogito--alert-container"}>
+                <Alert
+                  variant="danger"
+                  title={"Error opening file. You can edit it as text and reopen the diagram after you've fixed it."}
+                  actionLinks={
+                    <>
+                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={openFileAsText}>
+                        {"Open as text"}
+                      </AlertActionLink>
+                    </>
+                  }
+                />
+              </div>
+            )}
             {saveFileSuccessAlertVisible && (
               <div className={"kogito--alert-container"}>
                 <Alert
@@ -284,10 +352,29 @@ export function EditorPage(props: Props) {
               ref={editorRef}
               file={context.file}
               receive_ready={saveOpenedFileThumbnail}
+              receive_setContentError={onSetContentError}
               editorEnvelopeLocator={context.editorEnvelopeLocator}
               channelType={ChannelType.DESKTOP}
               locale={locale}
             />
+            {fileOpenedAsText && (
+              <>
+                <Modal
+                  showClose={false}
+                  width={"100%"}
+                  height={"100%"}
+                  title={`Editing '${context.file.fileName.split("/").pop()}'`}
+                  isOpen={fileOpenedAsText}
+                  actions={[
+                    <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
+                      Done
+                    </Button>
+                  ]}
+                >
+                  <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />
+                </Modal>
+              </>
+            )}
           </StackItem>
         </Stack>
         <textarea ref={copyContentTextArea} style={{ opacity: 0, width: 0, height: 0 }} />

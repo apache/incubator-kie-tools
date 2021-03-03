@@ -37,7 +37,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   ) {}
 
   public receive_newEdit(edit: KogitoEdit) {
-    this.stateControl.updateCommandStack(edit.id);
+    this.stateControl.updateCommandStack({ id: edit.id });
     this.overrides.receive_newEdit?.(edit);
   }
 

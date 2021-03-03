@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-type Command = undefined | string;
+type Command =
+  | {
+      id: string;
+      undo?: () => void;
+      redo?: () => void;
+    }
+  | undefined;
 
 export class StateControl {
-  private commandStack: string[];
+  private commandStack: Command[];
   private currentCommand: Command;
   private savedCommand: Command;
   private registeredCallbacks: Array<(isDirty: boolean) => void>;
@@ -61,7 +67,7 @@ export class StateControl {
     return this.commandStack;
   }
 
-  public setCommandStack(commandStack: string[]) {
+  public setCommandStack(commandStack: Command[]) {
     this.commandStack = commandStack;
   }
 
@@ -74,19 +80,22 @@ export class StateControl {
   }
 
   public undo() {
-    const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
+    const indexOfCommandToUndo = this.commandStack.indexOf(this.currentCommand!);
 
-    let commandUndone: Command;
-    if (this.commandStack[indexOfCurrentCommand - 1]) {
-      commandUndone = this.commandStack[indexOfCurrentCommand - 1];
+    let nextCurrentCommandAfterUndo: Command;
+    if (this.commandStack[indexOfCommandToUndo - 1]) {
+      nextCurrentCommandAfterUndo = this.commandStack[indexOfCommandToUndo - 1];
     }
-    this.setCurrentCommand(commandUndone);
+
+    this.currentCommand?.undo?.();
+    this.setCurrentCommand(nextCurrentCommandAfterUndo);
   }
 
   public redo() {
     const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
     if (this.commandStack[indexOfCurrentCommand + 1]) {
       const commandRedone = this.commandStack[indexOfCurrentCommand + 1];
+      commandRedone?.redo?.();
       this.setCurrentCommand(commandRedone);
     }
   }
@@ -95,7 +104,7 @@ export class StateControl {
     return this.commandStack.slice(0, this.commandStack.indexOf(this.currentCommand!) + 1);
   }
 
-  public updateCommandStack(command: string) {
+  public updateCommandStack(command: Command) {
     this.commandStack = this.eraseRedoCommands().concat(command);
     this.setCurrentCommand(command);
   }

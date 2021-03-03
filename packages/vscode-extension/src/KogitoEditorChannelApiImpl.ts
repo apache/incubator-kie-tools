@@ -65,28 +65,33 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   public receive_setContentError(editorContent: EditorContent) {
     const i18n = this.i18n.getCurrent();
 
-    vscode.window.showErrorMessage(i18n.errorOpeningFileText, i18n.openAsTextButton).then(s1 => {
-      if (s1 !== i18n.openAsTextButton) {
-        return;
-      }
-
-      vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, "default");
-      vscode.window.showInformationMessage(i18n.reopenAsDiagramText, i18n.reopenAsDiagramButton).then(s2 => {
-        if (s2 !== i18n.reopenAsDiagramButton) {
+    vscode.window
+      .showErrorMessage(
+        i18n.errorOpeningFileText(this.editor.document.uri.fsPath.split("/").pop()!),
+        i18n.openAsTextButton
+      )
+      .then(s1 => {
+        if (s1 !== i18n.openAsTextButton) {
           return;
         }
 
-        const reopenAsDiagram = () =>
-          vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, this.viewType);
+        vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, "default");
+        vscode.window.showInformationMessage(i18n.reopenAsDiagramText, i18n.reopenAsDiagramButton).then(s2 => {
+          if (s2 !== i18n.reopenAsDiagramButton) {
+            return;
+          }
 
-        if (vscode.window.activeTextEditor?.document.uri.fsPath !== this.editor.document.uri.fsPath) {
-          reopenAsDiagram();
-          return;
-        }
+          const reopenAsDiagram = () =>
+            vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, this.viewType);
 
-        vscode.window.activeTextEditor?.document.save().then(() => reopenAsDiagram());
+          if (vscode.window.activeTextEditor?.document.uri.fsPath !== this.editor.document.uri.fsPath) {
+            reopenAsDiagram();
+            return;
+          }
+
+          vscode.window.activeTextEditor?.document.save().then(() => reopenAsDiagram());
+        });
       });
-    });
   }
 
   public receive_ready() {

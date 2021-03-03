@@ -63,7 +63,6 @@ export class BpmnEditorResources extends BaseEditorResources {
       { path: `${resourcesPathPrefix}/${gwtModuleName}/jquery-ui/jquery-ui.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-daterangepicker/daterangepicker.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-select/css/bootstrap-select.min.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/prettify/bin/prettify.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/uberfire-patternfly.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/patternfly-additions.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-datepicker3-1.6.4.min.cache.css` },

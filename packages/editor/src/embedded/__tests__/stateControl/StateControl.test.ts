@@ -29,16 +29,18 @@ describe("StateControl", () => {
     });
 
     test("should set new commands on the stack", () => {
-      const commands = ["1", "2", "3", "4"];
+      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
       stateControl.setCommandStack(commands);
       expect(stateControl.getCommandStack()).toEqual(commands);
     });
 
     test("should set new commands on the stack", () => {
-      ["1", "2", "3", "4"].forEach((command, index, commands) => {
-        stateControl.updateCommandStack(command);
-        expect(stateControl.getCommandStack()).toEqual(commands.slice(0, index + 1));
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach((command, index, commands) => {
+          stateControl.updateCommandStack(command);
+          expect(stateControl.getCommandStack()).toEqual(commands.slice(0, index + 1));
+        });
     });
   });
 
@@ -48,10 +50,12 @@ describe("StateControl", () => {
     });
 
     test("should be the last added command on the stack", () => {
-      ["1", "2", "3", "4"].forEach(command => {
-        stateControl.updateCommandStack(command);
-        expect(stateControl.getCurrentCommand()).toEqual(command);
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach(command => {
+          stateControl.updateCommandStack(command);
+          expect(stateControl.getCurrentCommand()).toEqual(command);
+        });
     });
   });
 
@@ -61,29 +65,35 @@ describe("StateControl", () => {
       stateControl.getSavedCommand();
       expect(stateControl.getSavedCommand()).toBeUndefined();
 
-      ["1", "2", "3", "4"].forEach(command => {
-        stateControl.updateCommandStack(command);
-        expect(stateControl.getSavedCommand()).toBeUndefined();
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach(command => {
+          stateControl.updateCommandStack(command);
+          expect(stateControl.getSavedCommand()).toBeUndefined();
+        });
     });
 
     test("should be the last command added", () => {
-      ["1", "2", "3", "4"].forEach(command => {
-        stateControl.updateCommandStack(command);
-        stateControl.setSavedCommand();
-        expect(stateControl.getSavedCommand()).toEqual(command);
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach(command => {
+          stateControl.updateCommandStack(command);
+          stateControl.setSavedCommand();
+          expect(stateControl.getSavedCommand()).toEqual(command);
+        });
     });
 
     test("should be the saved command", () => {
-      const specialCommand = "special";
+      const specialCommand = { id: "special" };
       stateControl.updateCommandStack(specialCommand);
       stateControl.setSavedCommand();
 
-      ["1", "2", "3", "4"].forEach(command => {
-        stateControl.updateCommandStack(command);
-        expect(stateControl.getSavedCommand()).toEqual(specialCommand);
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach(command => {
+          stateControl.updateCommandStack(command);
+          expect(stateControl.getSavedCommand()).toEqual(specialCommand);
+        });
     });
   });
 
@@ -91,30 +101,36 @@ describe("StateControl", () => {
     test("should be false", () => {
       expect(stateControl.isDirty()).toBeFalsy();
 
-      ["1", "2", "3", "4"].forEach(command => {
-        stateControl.updateCommandStack(command);
-        stateControl.setSavedCommand();
-        expect(stateControl.isDirty()).toBeFalsy();
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach(command => {
+          stateControl.updateCommandStack(command);
+          stateControl.setSavedCommand();
+          expect(stateControl.isDirty()).toBeFalsy();
+        });
     });
 
     test("should be true", () => {
-      ["1", "2", "3", "4"].forEach(command => {
-        stateControl.updateCommandStack(command);
-        expect(stateControl.isDirty()).toBeTruthy();
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach(command => {
+          stateControl.updateCommandStack(command);
+          expect(stateControl.isDirty()).toBeTruthy();
+        });
     });
 
     test("should be true", () => {
-      const specialCommand = "special";
+      const specialCommand = { id: "special" };
       stateControl.updateCommandStack(specialCommand);
       stateControl.setSavedCommand();
       expect(stateControl.isDirty()).toBeFalsy();
 
-      ["1", "2", "3", "4"].forEach(command => {
-        stateControl.updateCommandStack(command);
-        expect(stateControl.isDirty()).toBeTruthy();
-      });
+      ["1", "2", "3", "4"]
+        .map(id => ({ id }))
+        .forEach(command => {
+          stateControl.updateCommandStack(command);
+          expect(stateControl.isDirty()).toBeTruthy();
+        });
       stateControl.setSavedCommand();
       expect(stateControl.isDirty()).toBeFalsy();
     });
@@ -122,20 +138,20 @@ describe("StateControl", () => {
 
   describe("updateCommandStack::StateControl", () => {
     test("shouldn't erase commands", () => {
-      stateControl.updateCommandStack("1");
+      stateControl.updateCommandStack({ id: "1" });
       expect(stateControl.getCommandStack()).toEqual(["1"]);
 
-      const commands = ["1", "2", "3", "4"];
+      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
       commands.forEach(command => stateControl.updateCommandStack(command));
 
       expect(stateControl.getCommandStack()).toEqual(commands);
     });
 
     test("should erase", () => {
-      const commands = ["1", "2", "3", "4"];
+      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
       commands.forEach(command => stateControl.updateCommandStack(command));
-      stateControl.setCurrentCommand("2");
-      stateControl.updateCommandStack("5");
+      stateControl.setCurrentCommand({ id: "2" });
+      stateControl.updateCommandStack({ id: "5" });
 
       expect(stateControl.getCommandStack()).toEqual(["1", "2", "5"]);
     });
@@ -148,7 +164,7 @@ describe("StateControl", () => {
     });
 
     test("should undo to previous command and maintain command stack", () => {
-      const commands = ["1", "2", "3", "4"];
+      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
       commands.forEach(command => stateControl.updateCommandStack(command));
 
       ["4", "3", "2", "1"].forEach(command => {
@@ -167,7 +183,7 @@ describe("StateControl", () => {
     });
 
     test("should redo to the next possible command on the command stack", () => {
-      const commands = ["1", "2", "3", "4"];
+      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
       commands.forEach(command => stateControl.updateCommandStack(command));
 
       commands.forEach(command => stateControl.undo());
@@ -193,7 +209,7 @@ describe("StateControl", () => {
       stateControl.subscribe(setIsDirty);
       expect(stateControl.isDirty()).toBeFalsy();
 
-      stateControl.updateCommandStack("1");
+      stateControl.updateCommandStack({ id: "1" });
       expect(stateControl.isDirty()).toBeTruthy();
       expect(isDirty).toBeTruthy();
 
@@ -211,7 +227,7 @@ describe("StateControl", () => {
 
     test("should unsubscribe and make inconsistent data", () => {
       stateControl.subscribe(setIsDirty);
-      stateControl.updateCommandStack("1");
+      stateControl.updateCommandStack({ id: "1" });
       stateControl.unsubscribe(setIsDirty);
       stateControl.setSavedCommand();
 
@@ -222,8 +238,8 @@ describe("StateControl", () => {
 
   describe("complete workflow", () => {
     test("shouldn't redo an empty command stack", () => {
-      stateControl.updateCommandStack("1");
-      stateControl.updateCommandStack("2");
+      stateControl.updateCommandStack({ id: "1" });
+      stateControl.updateCommandStack({ id: "2" });
       expect(stateControl.isDirty()).toBeTruthy();
       stateControl.setSavedCommand();
       expect(stateControl.isDirty()).toBeFalsy();
@@ -236,7 +252,7 @@ describe("StateControl", () => {
       expect(stateControl.getCommandStack()).toEqual(["1", "2"]);
       stateControl.undo();
       expect(stateControl.getCurrentCommand()).toEqual("1");
-      stateControl.updateCommandStack("3");
+      stateControl.updateCommandStack({ id: "3" });
       expect(stateControl.getCommandStack()).toEqual(["1", "3"]);
       stateControl.redo();
       expect(stateControl.getCurrentCommand()).toEqual("3");

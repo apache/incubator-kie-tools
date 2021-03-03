@@ -42,7 +42,6 @@ export function KogitoMenu() {
       setPotentialToken("");
     } else {
       gitHubApi.setToken("");
-      setWholeMenuOpen(true);
     }
 
     return validToken;
