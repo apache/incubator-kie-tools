@@ -338,3 +338,23 @@
   flex-grow: 0;
   flex-shrink: 0;
 }
+
+.kogito--editor__dmn-runner-response-leaf {
+  background-color: transparent;
+}
+
+.kogito--editor__dmn-runner-response-leaf-updated {
+  animation-name: kogito--editor__dmn-runner-leaf;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  border-radius: 4px;
+}
+
+@keyframes kogito--editor__dmn-runner-leaf {
+  from {
+    background-color: red;
+  }
+  to {
+    background-color: transparent;
+  }
+}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
@@ -40,7 +40,7 @@ import {
 } from "@patternfly/react-core";
 import { CubesIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
-import { getObjectLeaf } from "../common/utils";
+import { flatObject } from "../common/utils";
 
 enum ButtonPosition {
   INPUT,
@@ -249,19 +249,30 @@ interface ResultCardLeafProps {
 }
 
 function ResultCardLeaf(props: ResultCardLeafProps) {
-  const [style, setStyle] = useState<object>();
+  const [ariaLabel, setAriaLabel] = useState<string>(props.label);
+  const [className, setClassName] = useState<string>("kogito--editor__dmn-runner-response-leaf");
 
   useEffect(() => {
-    const hasKey = [...Object.keys(getObjectLeaf(props.diffs ?? {}))].find(key => key === props.label);
+    const hasKey = [...Object.keys(flatObject(props.diffs ?? {}))].find(key => key === props.label);
     if (hasKey) {
-      setStyle({ color: "red" });
+      setAriaLabel(`${props.label} field updated`);
+      setClassName("kogito--editor__dmn-runner-response-leaf-updated");
     } else {
-      setStyle({ color: "black" });
+      setAriaLabel(`${props.label}`);
+      setClassName("kogito--editor__dmn-runner-response-leaf");
     }
-  }, [props.diffs]);
+  }, [props.diffs, props.label]);
+
+  const onAnimationEnd = useCallback(() => setClassName("kogito--editor__dmn-runner-response-leaf"), []);
 
   return (
-    <DescriptionList id={props.label} style={style} isHorizontal={true}>
+    <DescriptionList
+      id={props.label}
+      aria-label={ariaLabel}
+      className={className}
+      onAnimationEnd={onAnimationEnd}
+      isHorizontal={true}
+    >
       <DescriptionListGroup>
         <DescriptionListTerm>{props.label}</DescriptionListTerm>
         {props.value ? (
