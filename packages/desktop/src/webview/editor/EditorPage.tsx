@@ -246,7 +246,7 @@ export function EditorPage(props: Props) {
       originalContent = contents;
       monacoInstance = (window as any).monaco.editor.create(textEditorContainerRef.current!, {
         value: contents,
-        language: "xml",
+        language: "xml", //FIXME: Not all editors will be XML when converted to text
         scrollBeyondLastLine: false
       });
     });
@@ -319,11 +319,11 @@ export function EditorPage(props: Props) {
               <div className={"kogito--alert-container"}>
                 <Alert
                   variant="danger"
-                  title={"Error opening file. You can edit it as text and reopen the diagram after you've fixed it."}
+                  title={i18n.editorPage.alerts.setContentError.title}
                   actionLinks={
                     <>
                       <AlertActionLink data-testid="unsaved-alert-save-button" onClick={openFileAsText}>
-                        {"Open as text"}
+                        {i18n.editorPage.alerts.setContentError.action}
                       </AlertActionLink>
                     </>
                   }
@@ -363,11 +363,11 @@ export function EditorPage(props: Props) {
                   showClose={false}
                   width={"100%"}
                   height={"100%"}
-                  title={`Editing '${context.file.fileName.split("/").pop()}'`}
+                  title={i18n.editorPage.textEditorModal.title(context.file.fileName.split("/").pop())}
                   isOpen={fileOpenedAsText}
                   actions={[
                     <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
-                      Done
+                      {i18n.terms.done}
                     </Button>
                   ]}
                 >

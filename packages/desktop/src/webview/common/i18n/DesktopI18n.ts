@@ -22,7 +22,14 @@ interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
     title: string;
   }
   editorPage: {
+    textEditorModal: {
+      title: (fileName: string) => string
+    },
     alerts: {
+      setContentError: {
+        action: string;
+        title: string;
+      }
       copy: string;
       unsaved: {
         title: string;
