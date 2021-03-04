@@ -19,11 +19,23 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: ${{ github.base_ref }}
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
         with:
           node-version: 16.2.0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge Changes"
+        shell: bash
+        run: |
+          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+          git remote add $user https://github.com/$user/kogito-tooling.git
+          git fetch $user
+          git merge --squash $user/${{ github.head_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
