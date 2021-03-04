@@ -15,7 +15,10 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.enterprise.context.Dependent;
 
@@ -44,8 +47,9 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
         implements ScenarioSimulationGridPanelMouseMoveHandler {
 
     /* This parameter must be synchronized with POPOVER_WIDTH static variable in ErrorReportPopoverView.less */
-    private static final int POPOVER_WIDTH = 200;
+    private static final int POPOVER_WIDTH = 220;
     private static final String NULL = "null";
+    private static final String BR = "<br>";
 
     protected ErrorReportPopoverPresenter errorReportPopupPresenter;
 
@@ -133,35 +137,104 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
         errorReportPopupPresenter.show();
     }
 
-    protected void setupPopupPresenter(final FactMappingValue toManage, final  int uiRowIndex, final int uiColumnIndex, final int xPosition,final  int yPosition,final  PopoverView.Position position) {
-        /* Parameters for the error message */
-        final Object expectedValue = toManage.getRawValue();
-        final Object errorValue = toManage.getErrorValue();
-        /* It shows the popover, the view depends on failed type (ERROR or EXCEPTION) */
-        if (FactMappingValueStatus.FAILED_WITH_ERROR == toManage.getStatus()) {
-            errorReportPopupPresenter.setup(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
-                                            ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(
-                                                    expectedValue != null ? expectedValue.toString() : NULL,
-                                                    errorValue != null ? errorValue.toString() : NULL),
-                                            ScenarioSimulationEditorConstants.INSTANCE.keep(),
-                                            ScenarioSimulationEditorConstants.INSTANCE.apply(),
-                                            () -> scenarioGrid.getEventBus().fireEvent(
-                                                    new SetGridCellValueEvent(scenarioGrid.getGridWidget(),
-                                                                              uiRowIndex,
-                                                                              uiColumnIndex,
-                                                                              errorValue != null ? errorValue.toString() : NULL)),
-                                            xPosition,
-                                            yPosition,
-                                            position);
-        } else {
-            errorReportPopupPresenter.setup(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
-                                            ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithException(
-                                                    toManage.getExceptionMessage()),
-                                            ScenarioSimulationEditorConstants.INSTANCE.close(),
-                                            xPosition,
-                                            yPosition,
-                                            position);
+    protected void setupPopupPresenter(final FactMappingValue factMappingValue,
+                                       final int uiRowIndex,
+                                       final int uiColumnIndex,
+                                       final int xPosition,
+                                       final int yPosition,
+                                       final PopoverView.Position position) {
+        final Object expectedValue = factMappingValue.getRawValue();
+        final Object errorValue = factMappingValue.getErrorValue();
+        if (FactMappingValueStatus.FAILED_WITH_ERROR == factMappingValue.getStatus()) {
+            if (Objects.isNull(factMappingValue.getCollectionPathToValue())) {
+                showErrorPopoverWithSuggestion(expectedValue, errorValue, uiRowIndex, uiColumnIndex, xPosition, yPosition, position);
+            } else {
+                showErrorPopoverWithoutSuggestion(getCollectionHTMLErrorMessage(errorValue,
+                                                                                factMappingValue.getCollectionPathToValue()),
+                                                  xPosition,
+                                                  yPosition,
+                                                  position);
+            }
+        } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
+            showErrorPopoverWithoutSuggestion(factMappingValue.getExceptionMessage(), xPosition, yPosition, position);
         }
+    }
+
+    protected void showErrorPopoverWithoutSuggestion(final String errorMessage,
+                                                     final int xPosition,
+                                                     final int yPosition,
+                                                     final PopoverView.Position position) {
+        errorReportPopupPresenter.setup(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
+                                        errorMessage,
+                                        ScenarioSimulationEditorConstants.INSTANCE.close(),
+                                        xPosition,
+                                        yPosition,
+                                        position);
+    }
+
+    protected void showErrorPopoverWithSuggestion(final Object expectedValue,
+                                                  final Object errorValue,
+                                                  final int uiRowIndex,
+                                                  final int uiColumnIndex,
+                                                  final int xPosition,
+                                                  final int yPosition,
+                                                  final PopoverView.Position position) {
+        errorReportPopupPresenter.setup(ScenarioSimulationEditorConstants.INSTANCE.errorReason(),
+                                        ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(
+                                                decorateWithStrongHTMLTag(expectedValue != null ? expectedValue.toString() : NULL),
+                                                decorateWithStrongHTMLTag(errorValue != null ? errorValue.toString() : NULL)),
+                                        ScenarioSimulationEditorConstants.INSTANCE.keep(),
+                                        ScenarioSimulationEditorConstants.INSTANCE.apply(),
+                                        () -> scenarioGrid.getEventBus().fireEvent(
+                                                new SetGridCellValueEvent(scenarioGrid.getGridWidget(),
+                                                                          uiRowIndex,
+                                                                          uiColumnIndex,
+                                                                          errorValue != null ? errorValue.toString() : NULL)),
+                                        xPosition,
+                                        yPosition,
+                                        position);
+    }
+
+    protected String getCollectionHTMLErrorMessage(Object wrongValue, List<String> pathToWrongValue) {
+        if (pathToWrongValue.isEmpty()) {
+            return ScenarioSimulationEditorConstants.INSTANCE.errorPopoverGenericCollectionErrorMessage();
+        }
+        if (pathToWrongValue.size() == 1) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLFailureMessage(decorateWithEMHTMLTag(pathToWrongValue.get(0))));
+            if (wrongValue != null) {
+                builder.append(BR);
+                builder.append(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLValue(decorateWithStrongHTMLTag(wrongValue.toString())));
+            }
+            return builder.toString();
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLFailureMessage(decorateWithEMHTMLTag(pathToWrongValue.get(0))));
+        builder.append(BR);
+        builder.append(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLField(decorateWithEMHTMLTag(generateFieldsHierarchy(pathToWrongValue.subList(1, pathToWrongValue.size())))));
+        if (wrongValue != null) {
+            builder.append(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLValue(decorateWithStrongHTMLTag(wrongValue.toString())));
+        }
+        return builder.toString();
+    }
+
+    protected String decorateWithStrongHTMLTag(String value) {
+        return "<strong>\"" + value + "\"</strong>";
+    }
+
+    protected String decorateWithEMHTMLTag(String value) {
+        return "<em>" + value + "</em>";
+    }
+
+    protected String generateFieldsHierarchy(List<String> hierarchy) {
+        if (hierarchy.size() == 1) {
+            return hierarchy.get(0) + BR;
+        }
+        StringBuilder builder = new StringBuilder();
+        hierarchy.forEach(step -> builder.append("<ul><li>" + step));
+        IntStream.range(0, hierarchy.size()).forEach(i -> builder.append("</li></ul>"));
+        return builder.toString();
     }
 
     //Indirection for test
@@ -173,4 +246,5 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
     protected int getCellHeight(GridColumn<?> column, int uiRowIndex) {
         return ScenarioSimulationUtils.getCellHeight(scenarioGrid, column, false, uiRowIndex);
     }
+
 }

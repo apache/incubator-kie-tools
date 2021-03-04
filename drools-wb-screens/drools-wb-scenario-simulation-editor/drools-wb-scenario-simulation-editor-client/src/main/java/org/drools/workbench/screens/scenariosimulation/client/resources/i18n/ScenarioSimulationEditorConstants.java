@@ -348,6 +348,14 @@ public interface ScenarioSimulationEditorConstants
 
     String errorPopoverMessageFailedWithException(String errorMsg);
 
+    String errorPopoverGenericCollectionErrorMessage();
+
+    String errorPopoverCollectionHTMLFailureMessage(String failureMessage);
+
+    String errorPopoverCollectionHTMLField(String field);
+
+    String errorPopoverCollectionHTMLValue(String value);
+
     String skipSimulation();
 
     String downloadReportLabel();
