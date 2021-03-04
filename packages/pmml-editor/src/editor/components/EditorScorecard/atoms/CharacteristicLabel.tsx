@@ -23,7 +23,7 @@ import { DataField, Predicate } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicLabelProps {
   name: string;
-  value: any;
+  value: string;
 }
 
 export const CharacteristicLabel = (props: CharacteristicLabelProps) => {

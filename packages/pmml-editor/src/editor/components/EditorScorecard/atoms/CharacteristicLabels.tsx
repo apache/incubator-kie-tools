@@ -71,7 +71,7 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
         </ValidationIndicatorLabel>
       )}
       {activeCharacteristic.baselineScore !== undefined && baselineScoreValidation.length === 0 && (
-        <CharacteristicLabel name={"Baseline score"} value={activeCharacteristic.baselineScore} />
+        <CharacteristicLabel name={"Baseline score"} value={activeCharacteristic.baselineScore.toString()} />
       )}
       {areReasonCodesUsed && activeCharacteristic.baselineScore === undefined && baselineScoreValidation.length > 0 && (
         <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="characteristic-list__item__label">
