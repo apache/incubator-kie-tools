@@ -21,7 +21,9 @@ if [ -s golint_errors ]  ; then
 fi
 rm -f golint_errors
 # The command in or will fetch the latest tag available for golangci-lint and install in $GOPATH/bin/
-command -v golangci-lint > /dev/null || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+# Switch back to latest lint (commented line) once https://issues.redhat.com/browse/KOGITO-4575 is fixed
+# command -v golangci-lint > /dev/null || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+command -v golangci-lint > /dev/null || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.37.1
 golangci-lint run ./... --enable golint --timeout 10m0s
 
 exit ${code:0}
