@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Characteristic, DataField, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  Characteristic,
+  DataField,
+  MiningField,
+  Model,
+  PMML,
+  Scorecard
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";
@@ -28,10 +36,19 @@ interface AttributesTableProps {
   areReasonCodesUsed: boolean;
   viewAttribute: (index: number | undefined) => void;
   deleteAttribute: (index: number) => void;
+  onCommit: (index: number, partial: Partial<Attribute>) => void;
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { modelIndex, characteristicIndex, characteristic, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    characteristic,
+    areReasonCodesUsed,
+    viewAttribute,
+    deleteAttribute,
+    onCommit
+  } = props;
 
   const { setActiveOperation } = useOperation();
 
@@ -73,6 +90,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
             miningFields={miningFields}
             onEdit={() => onEdit(index)}
             onDelete={() => onDelete(index)}
+            onCommit={partial => onCommit(index, partial)}
           />
         );
       })}

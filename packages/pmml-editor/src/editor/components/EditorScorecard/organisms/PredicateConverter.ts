@@ -136,6 +136,9 @@ export const fromText = (text: string | undefined): Predicate | undefined => {
   }
 
   text = text.trim();
+  if (text === "") {
+    return undefined;
+  }
 
   //Quick RegEx based match for SimplePredicates.. Need a parser for ALL Predicates
   const regTrue = /^True$/gm;

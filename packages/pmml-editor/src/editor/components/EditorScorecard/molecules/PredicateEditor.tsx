@@ -15,22 +15,20 @@
  */
 import * as React from "react";
 import { useRef } from "react";
-import { ValidatedType } from "../../../types";
 import MonacoEditor from "react-monaco-editor";
 import { EditorDidMount } from "react-monaco-editor/src/types";
 import * as monacoEditor from "monaco-editor";
 import { bootstrapMonaco } from "./PredicateEditorSetup";
 
 interface PredicateEditorProps {
-  text: ValidatedType<string | undefined>;
-  setText: (_text: ValidatedType<string | undefined>) => void;
-  validateText: (text: string | undefined) => boolean;
+  text: string | undefined;
+  setText: (_text: string | undefined) => void;
 }
 
 bootstrapMonaco();
 
 export const PredicateEditor = (props: PredicateEditorProps) => {
-  const { text, setText, validateText } = props;
+  const { text, setText } = props;
 
   const monaco = useRef<MonacoEditor>(null);
 
@@ -48,13 +46,8 @@ export const PredicateEditor = (props: PredicateEditorProps) => {
         glyphMargin: false,
         scrollBeyondLastLine: false
       }}
-      value={text.value ?? ""}
-      onChange={e =>
-        setText({
-          value: e,
-          valid: validateText(e)
-        })
-      }
+      value={text ?? ""}
+      onChange={e => setText(e)}
       editorDidMount={editorDidMount}
     />
   );

@@ -18,6 +18,8 @@ import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
 import "./CharacteristicLabel.scss";
 import { ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { toText } from "../organisms";
+import { DataField, Predicate } from "@kogito-tooling/pmml-editor-marshaller";
 
 export const CharacteristicLabel = (name: string, value: any, tooltip?: string) => {
   return (
@@ -47,7 +49,12 @@ export const CharacteristicLabel = (name: string, value: any, tooltip?: string) 
   );
 };
 
-export const CharacteristicPredicateLabel = (value: string, validations: ValidationEntry[]) => {
+export const CharacteristicPredicateLabel = (
+  predicate: Predicate | undefined,
+  dataFields: DataField[],
+  validations: ValidationEntry[]
+) => {
+  const value = toText(predicate, dataFields);
   const truncatedText = value.length > 32 ? value.slice(0, 29) + "..." : value;
 
   return (
@@ -78,7 +85,15 @@ export const CharacteristicPredicateLabel = (value: string, validations: Validat
           {validations.length > 0 && (
             <span className="characteristic-list__item__label">
               <ValidationIndicatorLabel validations={validations}>
-                <pre>{value}</pre>
+                <>
+                  {predicate && <pre>{value}</pre>}
+                  {!predicate && (
+                    <>
+                      <strong>Predicate:</strong>&nbsp;
+                      <em>Missing</em>
+                    </>
+                  )}
+                </>
               </ValidationIndicatorLabel>
             </span>
           )}

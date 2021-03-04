@@ -22,7 +22,6 @@ import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
-import { ValidationIndicator } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
@@ -36,6 +35,7 @@ interface AttributesTableRowProps {
   miningFields: MiningField[];
   onEdit: () => void;
   onDelete: () => void;
+  onCommit: (partial: Partial<Attribute>) => void;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
@@ -49,7 +49,8 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     dataFields,
     miningFields,
     onEdit,
-    onDelete
+    onDelete,
+    onCommit
   } = props;
 
   const { validationRegistry } = useValidationRegistry();
@@ -85,11 +86,27 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           <>
             {validations.length > 0 && (
               <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
-                <pre>{toText(attribute.predicate, dataFields)}</pre>
+                <>
+                  {attribute.predicate && <pre>{toText(attribute.predicate, dataFields)}</pre>}
+                  {!attribute.predicate && (
+                    <>
+                      <strong>Predicate:</strong>&nbsp;
+                      <em>Missing</em>
+                    </>
+                  )}
+                </>
               </ValidationIndicatorLabel>
             )}
             {validations.length === 0 && (
-              <Label tabIndex={0} color="blue">
+              <Label
+                tabIndex={0}
+                color="blue"
+                onClose={e => {
+                  e.nativeEvent.stopImmediatePropagation();
+                  e.stopPropagation();
+                  onCommit({ predicate: undefined });
+                }}
+              >
                 <pre>{toText(attribute.predicate, dataFields)}</pre>
               </Label>
             )}
@@ -103,6 +120,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
             activeAttribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}
             characteristicReasonCode={characteristicReasonCode}
+            commit={onCommit}
           />
         </SplitItem>
         <SplitItem>
