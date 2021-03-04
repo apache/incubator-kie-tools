@@ -54,7 +54,7 @@ Parameters description:
 
 The returned object will contain the methods needed to manipulate the Editor:
 * `getContent(): Promise<string>`: Returns a Promise containing the Editor content.
-* `setContent(content: string): void`: Sets the content of the Editor. Promise will be rejected if setting the content fails.
+* `setContent(content: string): Promise<void>`: Sets the content of the Editor. The returning Promise will be rejected if setting the content fails.
 * `getPreview(): Promise<string>`: Returns a Promise containing the SVG string of the current diagram.
 * `subscribeToContentChanges(callback: (isDirty: boolean) => void): (isDirty: boolean) => void`: Setup a callback to be called on every content change in the Editor. Returns the same callback to be used for unsubscription.
 * `unsubscribeToContentChanges(callback: (isDirty: boolean) => void): void`: Unsubscribes the passed callback from content changes.
