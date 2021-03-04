@@ -257,21 +257,25 @@ export function EditorPage(props: Props) {
       const contentAfterFix = monacoInstance.getValue();
       monacoInstance.dispose();
 
-      editor?.setContent(context.file.fileName, contentAfterFix).then(() => {
-        editor?.getStateControl().updateCommandStack({
-          id: "fix-from-text-editor",
-          undo: () => {
-            console.info("a");
-            editor?.setContent(context.file.fileName, textEditorContent!);
-          },
-          redo: () => {
-            console.info("b");
-            editor?.setContent(context.file.fileName, contentAfterFix).then(() => setFileOpenedAsText(false));
-          }
+      editor
+        ?.setContent(context.file.fileName, contentAfterFix)
+        .then(() => {
+          editor?.getStateControl().updateCommandStack({
+            id: "fix-from-text-editor",
+            undo: () => {
+              editor?.setContent(context.file.fileName, textEditorContent!);
+            },
+            redo: () => {
+              editor?.setContent(context.file.fileName, contentAfterFix).then(() => {
+                setFileOpenedAsText(false);
+                setSetContentError(false);
+              });
+            }
+          });
+        })
+        .catch(() => {
+          setTextEditorContext(contentAfterFix);
         });
-      });
-
-      setTextEditorContext(contentAfterFix);
     };
   }, [fileOpenedAsText, editor, context.file, textEditorContent]);
 
