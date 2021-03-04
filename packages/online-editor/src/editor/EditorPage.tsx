@@ -358,12 +358,12 @@ export function EditorPage(props: Props) {
         />
       }
     >
-      <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
+      <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
         <Drawer isInline={true} isExpanded={isDmnRunnerDrawerOpen}>
           <DrawerContent
-            className={!isDmnRunnerDrawerOpen ? "kogito--editor__dmn-runner-drawer-content" : ""}
+            className={!isDmnRunnerDrawerOpen ? "kogito--editor__drawer-content" : ""}
             panelContent={
-              <DrawerPanelContent className={"kogito--editor__dmn-runner-drawer-panel"}>
+              <DrawerPanelContent className={"kogito--editor__drawer-content-panel"}>
                 <DmnRunnerDrawer
                   jsonSchemaBridge={dmnRunnerSchema}
                   editorContent={editor?.getContent}
@@ -374,7 +374,7 @@ export function EditorPage(props: Props) {
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody style={{ position: "relative" }}>
+            <DrawerContentBody className={"kogito--editor__drawer-content-body"}>
               {!fullscreen && alert === Alerts.COPY && (
                 <div className={"kogito--alert-container"}>
                   <Alert

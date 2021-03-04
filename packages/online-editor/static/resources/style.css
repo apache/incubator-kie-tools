@@ -219,9 +219,24 @@
   font-weight: var(--pf-global--FontWeight--normal);
   line-height: var(--pf-global--LineHeight--md);
   font-size: var(--pf-global--FontSize--md);
+  display: inline;
 }
 
-.kogito--editor__dmn-runner-drawer-panel {
+.kogito--editor__page-section {
+  flex-basis: 100%;
+}
+
+.kogito--editor__drawer-content {
+  flex-basis: 100vw;
+  flex-grow: 0;
+  flex-shrink: 0 !important;
+}
+
+.kogito--editor__drawer-content-body {
+  position: relative;
+}
+
+.kogito--editor__drawer-content-panel {
   flex-grow: 0;
   flex-shrink: 0;
   position: relative;
@@ -229,125 +244,152 @@
 }
 
 @media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-panel {
+  .kogito--editor__drawer-content-panel {
     max-height: calc(100vh - 76px);
     flex-basis: 700px;
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-panel {
+  .kogito--editor__drawer-content-panel {
     max-height: calc(100vh - 108px);
     flex-basis: 350px;
   }
 }
 
-.kogito--editor__dmn-runner-drawer-div-page {
+.kogito--editor__dmn-runner {
   display: flex;
   height: 100%;
 }
 
 @media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-div-page {
+  .kogito--editor__dmn-runner {
     flex-direction: row;
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-div-page {
+  .kogito--editor__dmn-runner {
     flex-direction: column;
   }
 }
 
 @media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-div-page-div {
+  .kogito--editor__dmn-runner-content {
     width: 50%;
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-div-page-div {
+  .kogito--editor__dmn-runner-content {
     width: 100%;
     flex-grow: 1;
     height: 50%;
   }
 }
 
-.kogito--editor__dmn-runner-drawer-page {
+.kogito--editor__dmn-runner-content-page {
   flex-grow: 0;
   flex-shrink: 0;
   overflow: hidden;
 }
 
 @media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-page {
+  .kogito--editor__dmn-runner-content-page {
     max-height: calc(100vh - 76px);
     flex-basis: 50%;
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-page {
+  .kogito--editor__dmn-runner-content-page {
     max-height: unset;
     flex-basis: 100%;
   }
 }
 
-.kogito--editor__dmn-runner-drawer-page-section {
+.kogito--editor__dmn-runner-content-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 9999;
+  height: 60px;
 }
 
 @media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-page-section {
+  .kogito--editor__dmn-runner-content-header {
     width: 50%;
     position: fixed;
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-page-section {
+  .kogito--editor__dmn-runner-content-header {
     width: 100%;
     position: static;
   }
 }
 
 @media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-page-section-div {
+  .kogito--editor__dmn-runner-drawer-content-body {
     margin-top: 60px;
     overflow-y: auto;
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner-drawer-page-section-div {
+  .kogito--editor__dmn-runner-drawer-content-body {
     overflow-y: auto;
   }
 }
 
-.kogito--editor__dmn-runner-drawer-content {
-  flex-basis: 100vw;
-  flex-grow: 0;
-  flex-shrink: 0 !important;
+.kogito--editor__dmn-runner-drawer-content-body-input {
+  padding-top: 0;
 }
 
-.kogito--editor__dmn-runner-drawer-content-form {
-  flex-basis: 100vw;
-  flex-grow: 0;
-  flex-shrink: 0;
+.kogito--editor__dmn-runner-drawer-content-body-output {
+  padding-top: 0;
+  padding-left: 0;
 }
 
-.kogito--editor__dmn-runner-response-leaf {
+.kogito--editor__dmn-runner-drawer-content-body-output-card {
+  border: 0 !important;
+  background: transparent;
+}
+
+.kogito--editor__dmn-runner-drawer-content-body-output-card-body {
+  padding-bottom: 0;
+}
+
+.kogito--editor__dmn-runner-drawer-content-body-output-card-body-leaf {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.kogito--editor__dmn-runner-drawer-output-leaf {
   background-color: transparent;
 }
 
-.kogito--editor__dmn-runner-response-leaf-updated {
+.kogito--editor__dmn-runner-drawer-output-leaf-updated {
   animation-name: kogito--editor__dmn-runner-leaf;
   animation-duration: 1s;
   animation-timing-function: linear;
   border-radius: 4px;
+}
+
+.kogito--editor__dmn-runner-modal-footer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.kogito--editor__dmn-runner-modal-footer-alert {
+  width: 100%
+}
+
+.kogito--editor__dmn-runner-modal-footer-alert-success {
+  display: flex;
+  justify-content: space-between;
 }
 
 @keyframes kogito--editor__dmn-runner-leaf {

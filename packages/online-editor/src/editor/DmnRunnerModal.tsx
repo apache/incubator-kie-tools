@@ -32,7 +32,8 @@ import {
   WizardContextConsumer,
   AlertVariant,
   List,
-  ListItem
+  ListItem,
+  Button
 } from "@patternfly/react-core";
 import { getOperatingSystem, OperatingSystem } from "../common/utils";
 import { SelectOs } from "../common/SelectOs";
@@ -117,7 +118,7 @@ export function DmnRunnerModal(props: Props) {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     To stop the DMN Runner you can press{" "}
-                    <Text component={TextVariants.p} className={"kogito--code"} style={{ display: "inline" }}>
+                    <Text component={TextVariants.p} className={"kogito--code"}>
                       CTRL + C
                     </Text>{" "}
                     on the terminal.
@@ -166,39 +167,37 @@ export function DmnRunnerModal(props: Props) {
       }
       footer={
         <>
-          <>
-            {props.isDmnRunning ? (
-              <>
-                <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                  <Alert
-                    variant={"success"}
-                    isInline={true}
-                    style={{ width: "100%" }}
-                    title={
-                      <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <p>Connected to DMN Runner</p>
-                        <a
-                          key="back-to-editor"
-                          onClick={() => {
-                            props.onClose();
-                          }}
-                        >
-                          Back to Editor
-                        </a>
-                      </div>
-                    }
-                  />
-                </div>
-              </>
-            ) : (
-              <Alert
-                variant={"default"}
-                isInline={true}
-                style={{ width: "100%" }}
-                title={<AnimatedTripleDotLabel label={"Waiting to connect to DMN Runner"} interval={750} />}
-              />
-            )}
-          </>
+          {props.isDmnRunning ? (
+            <>
+              <div className={"kogito--editor__dmn-runner-modal-footer"}>
+                <Alert
+                  variant={"success"}
+                  isInline={true}
+                  className={"kogito--editor__dmn-runner-modal-footer-alert"}
+                  title={
+                    <div className={"kogito--editor__dmn-runner-modal-footer-alert-success"}>
+                      <p>Connected to DMN Runner</p>
+                      <a
+                        key="back-to-editor"
+                        onClick={() => {
+                          props.onClose();
+                        }}
+                      >
+                        Back to Editor
+                      </a>
+                    </div>
+                  }
+                />
+              </div>
+            </>
+          ) : (
+            <Alert
+              variant={"default"}
+              isInline={true}
+              className={"kogito--editor__dmn-runner-modal-footer-alert"}
+              title={<AnimatedTripleDotLabel label={"Waiting to connect to DMN Runner"} interval={750} />}
+            />
+          )}
         </>
       }
     >

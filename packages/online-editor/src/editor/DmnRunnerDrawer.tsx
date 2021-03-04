@@ -40,7 +40,7 @@ import {
 } from "@patternfly/react-core";
 import { CubesIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
-import { flatObject } from "../common/utils";
+import { flatten } from "../common/utils";
 
 enum ButtonPosition {
   INPUT,
@@ -61,32 +61,7 @@ export function DmnRunnerDrawer(props: Props) {
   const [dmnRunnerResponse, setDmnRunnerResponse] = useState();
   const [isAutoSubmit, setIsAutoSubmit] = useState(true);
   const autoFormRef = useRef<HTMLFormElement>();
-  const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object>();
-
-  const onSubmit = useCallback(
-    async ({ context }) => {
-      props.setFormContext(context);
-      if (props.editorContent) {
-        const model = await props.editorContent();
-        try {
-          const dmnRunnerRes = await DmnRunner.sendForm({ context, model });
-          const dmnRunnerJson = await dmnRunnerRes.json();
-          if (
-            Object.hasOwnProperty.call(dmnRunnerJson, "details") &&
-            Object.hasOwnProperty.call(dmnRunnerJson, "stack")
-          ) {
-            return;
-          }
-          setDmnRunnerResponseDiffs(diff(dmnRunnerResponse ?? {}, dmnRunnerJson));
-          setDmnRunnerResponse(dmnRunnerJson);
-        } catch (err) {
-          setDmnRunnerResponse(undefined);
-        }
-      }
-    },
-    [props, dmnRunnerResponse]
-  );
-
+  const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<string[]>();
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() => {
     const width = window.innerWidth;
 
@@ -95,6 +70,31 @@ export function DmnRunnerDrawer(props: Props) {
     }
     return ButtonPosition.OUTPUT;
   });
+
+  const onSubmit = useCallback(
+    async ({ context }) => {
+      props.setFormContext(context);
+      if (props.editorContent) {
+        try {
+          const model = await props.editorContent();
+          const dmnRunnerRes = await DmnRunner.sendForm({ context, model });
+          const dmnRunnerJson = await dmnRunnerRes.json();
+          if (
+            Object.hasOwnProperty.call(dmnRunnerJson, "details") &&
+            Object.hasOwnProperty.call(dmnRunnerJson, "stack")
+          ) {
+            // DMN Runner Error
+            return;
+          }
+          setDmnRunnerResponseDiffs([...Object.keys(flatten(diff(dmnRunnerResponse ?? {}, dmnRunnerJson)))]);
+          setDmnRunnerResponse(dmnRunnerJson);
+        } catch (err) {
+          setDmnRunnerResponse(undefined);
+        }
+      }
+    },
+    [props, dmnRunnerResponse]
+  );
 
   const handleResize = useCallback(() => {
     const width = window.innerWidth;
@@ -112,18 +112,20 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, [isAutoSubmit]);
 
+  // Execute one time when component is mounted.
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
     autoFormRef.current?.change("context", props.formContext);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <>
-      <div className={"kogito--editor__dmn-runner-drawer-div-page"}>
-        <div className={"kogito--editor__dmn-runner-drawer-div-page-div"}>
-          <Page className={"kogito--editor__dmn-runner-drawer-page"}>
-            <PageSection className={"kogito--editor__dmn-runner-drawer-page-section"} style={{ height: "60px" }}>
+      <div className={"kogito--editor__dmn-runner"}>
+        <div className={"kogito--editor__dmn-runner-content"}>
+          <Page className={"kogito--editor__dmn-runner-content-page"}>
+            <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
                 <Text component={"h2"}>Inputs</Text>
               </TextContent>
@@ -133,8 +135,8 @@ export function DmnRunnerDrawer(props: Props) {
               )}
             </PageSection>
 
-            <div className={"kogito--editor__dmn-runner-drawer-page-section-div"}>
-              <PageSection style={{ paddingTop: 0 }}>
+            <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+              <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                 {props.jsonSchemaBridge ? (
                   <AutoForm
                     style={{ maxWidth: "350px" }}
@@ -168,9 +170,9 @@ export function DmnRunnerDrawer(props: Props) {
             </div>
           </Page>
         </div>
-        <div className={"kogito--editor__dmn-runner-drawer-div-page-div"}>
-          <Page className={"kogito--editor__dmn-runner-drawer-page"}>
-            <PageSection style={{ height: "60px" }} className={"kogito--editor__dmn-runner-drawer-page-section"}>
+        <div className={"kogito--editor__dmn-runner-content"}>
+          <Page className={"kogito--editor__dmn-runner-content-page"}>
+            <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
                 <Text component={"h2"}>Outputs</Text>
               </TextContent>
@@ -179,8 +181,8 @@ export function DmnRunnerDrawer(props: Props) {
               )}
             </PageSection>
 
-            <div className={"kogito--editor__dmn-runner-drawer-page-section-div"}>
-              <PageSection style={{ paddingLeft: 0, paddingTop: 0 }}>
+            <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+              <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
                 {dmnRunnerResponse ? (
                   <DmnRunnerResponse diffs={dmnRunnerResponseDiffs} responseObject={dmnRunnerResponse!} depth={0} />
                 ) : (
@@ -208,7 +210,7 @@ export function DmnRunnerDrawer(props: Props) {
 interface DmnRunnerResponseProps {
   responseObject: object;
   depth: number;
-  diffs?: object;
+  diffs?: string[];
 }
 
 function DmnRunnerResponse(props: DmnRunnerResponseProps) {
@@ -217,17 +219,23 @@ function DmnRunnerResponse(props: DmnRunnerResponseProps) {
       {[...Object.entries(props.responseObject)].reverse().map(([key, value]: any[], index) => (
         <div key={`${key}-${index}-dmn-runner-response`}>
           {typeof value === "object" && value !== null ? (
-            <Card isFlat={true} style={{ border: 0, background: "transparent" }}>
+            <Card isFlat={true} className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}>
               <CardTitle>{key}</CardTitle>
-              <CardBody isFilled={true} style={props.depth > 0 ? { paddingBottom: 0 } : {}}>
+              <CardBody
+                isFilled={true}
+                className={props.depth > 0 ? "kogito--editor__dmn-runner-drawer-content-body-output-card-body" : ""}
+              >
                 <DmnRunnerResponse diffs={props.diffs} responseObject={value} depth={props.depth + 1} />
               </CardBody>
             </Card>
           ) : (
             <>
               {props.depth === 0 ? (
-                <Card isFlat={true} style={{ border: 0, background: "transparent" }}>
-                  <CardBody isFilled={true} style={{ paddingBottom: 0, paddingTop: 0 }}>
+                <Card isFlat={true} className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}>
+                  <CardBody
+                    isFilled={true}
+                    className={"kogito--editor__dmn-runner-drawer-content-body-output-card-body-leaf"}
+                  >
                     <ResultCardLeaf diffs={props.diffs} label={key} value={value} />
                   </CardBody>
                 </Card>
@@ -245,25 +253,25 @@ function DmnRunnerResponse(props: DmnRunnerResponseProps) {
 interface ResultCardLeafProps {
   label: string;
   value: string;
-  diffs?: object;
+  diffs?: string[];
 }
 
 function ResultCardLeaf(props: ResultCardLeafProps) {
   const [ariaLabel, setAriaLabel] = useState<string>(props.label);
-  const [className, setClassName] = useState<string>("kogito--editor__dmn-runner-response-leaf");
+  const [className, setClassName] = useState<string>("kogito--editor__dmn-runner-drawer-output-leaf");
 
   useEffect(() => {
-    const hasKey = [...Object.keys(flatObject(props.diffs ?? {}))].find(key => key === props.label);
+    const hasKey = props.diffs?.find(key => key === props.label);
     if (hasKey) {
       setAriaLabel(`${props.label} field updated`);
-      setClassName("kogito--editor__dmn-runner-response-leaf-updated");
+      setClassName("kogito--editor__dmn-runner-drawer-output-leaf-updated");
     } else {
       setAriaLabel(`${props.label}`);
-      setClassName("kogito--editor__dmn-runner-response-leaf");
+      setClassName("kogito--editor__dmn-runner-drawer-output-leaf");
     }
   }, [props.diffs, props.label]);
 
-  const onAnimationEnd = useCallback(() => setClassName("kogito--editor__dmn-runner-response-leaf"), []);
+  const onAnimationEnd = useCallback(() => setClassName("kogito--editor__dmn-runner-drawer-output-leaf"), []);
 
   return (
     <DescriptionList

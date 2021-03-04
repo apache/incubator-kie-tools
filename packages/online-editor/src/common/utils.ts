@@ -96,11 +96,11 @@ export function setCookie(name: string, value: string) {
   document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
 
-export function flatObject(obj: object): object {
+export function flatten(obj: object): object {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (value && typeof value === "object") {
-      return { ...acc, ...flatObject(value) }
+      return { ...acc, ...flatten(value) };
     }
-    return { ...acc, [`${key}`]: value }
-  }, {})
+    return { ...acc, [`${key}`]: value };
+  }, {});
 }
