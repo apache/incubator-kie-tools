@@ -152,13 +152,19 @@ export function SingleEditorToolbar(props: {
         )}
       </div>
       {!props.errorOpeningFile && props.readonly && !props.textMode && (
-        <div style={{ height: "32px", padding: "5px 15px 5px 15px" }} className={"flash flash-info"}>
+        <div
+          style={{ height: "32px", padding: "5px 15px 5px 15px", whiteSpace: "nowrap" }}
+          className={"flash flash-info"}
+        >
           {/* TODO: Add "info" icon with hint explaining how to edit the file */}
           <h5>{i18n.single.editorToolbar.readOnly}</h5>
         </div>
       )}
       {props.errorOpeningFile && props.textMode && !props.readonly && (
-        <div style={{ height: "32px", padding: "5px 15px 5px 15px" }} className={"flash flash-info"}>
+        <div
+          style={{ height: "32px", padding: "5px 15px 5px 15px", whiteSpace: "nowrap" }}
+          className={"flash flash-info"}
+        >
           <h5>
             {i18n.single.editorToolbar.fixAndSeeAsDiagram}
             &nbsp;
@@ -174,7 +180,10 @@ export function SingleEditorToolbar(props: {
         </div>
       )}
       {props.errorOpeningFile && !props.textMode && (
-        <div style={{ height: "32px", padding: "5px 15px 5px 15px" }} className={"flash flash-error"}>
+        <div
+          style={{ height: "32px", padding: "5px 15px 5px 15px", whiteSpace: "nowrap" }}
+          className={"flash flash-error"}
+        >
           {/* TODO: Add "info" icon with hint explaining how to edit the file */}
           <h5>
             {i18n.single.editorToolbar.errorOpeningFile}
