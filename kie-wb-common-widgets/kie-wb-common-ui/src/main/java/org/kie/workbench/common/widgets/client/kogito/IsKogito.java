@@ -21,9 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class IsKogito {
 
-    private boolean isKogito = false;
-
     public boolean get() {
-        return isKogito;
+        return true;
     }
 }
