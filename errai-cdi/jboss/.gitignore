@@ -1,7 +1,0 @@
-.project
-.classpath
-.settings
-src/main/resources/jboss-as-7.1.1.Final/standalone/log/
-src/main/resources/jboss-as-7.1.1.Final/standalone/tmp/
-src/main/resources/jboss-as-7.1.1.Final/standalone/data/
-src/main/resources/jboss-as-7.1.1.Final/standalone/configuration/standalone_xml_history/

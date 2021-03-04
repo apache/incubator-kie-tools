@@ -111,12 +111,6 @@
                   <name>errai.hosted_mode_testing</name>
                   <value>true</value>
                 </property>
-                <!-- Do not accidently package server test marshallers when 
-                  building Errai -->
-                <property>
-                  <name>errai.marshalling.server.classOutput.enabled</name>
-                  <value>false</value>
-                </property>
               </systemProperties>
             </configuration>
           </plugin>

@@ -178,12 +178,6 @@
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-annotation-processors</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-api</artifactId>
         <version>${project.version}</version>
       </dependency>

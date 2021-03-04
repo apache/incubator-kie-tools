@@ -9,13 +9,6 @@
   <name>Errai::API</name>
   <description>An aggregate jar of public API (annotations and interfaces) from various Errai modules.</description>
   
-  <dependencies>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-javaee-all</artifactId>
-    </dependency>
-  </dependencies>
-  
   <build>
     <plugins>
       <plugin>
@@ -53,8 +46,6 @@
                 <include>org/jboss/errai/jpa/client/shared/GlobalEntityListener.*</include>
                 <include>org/jboss/errai/jpa/sync/client/local/Sync.*</include>
                 <include>org/jboss/errai/jpa/sync/client/local/SyncParam.*</include>
-                <include>org/jboss/errai/marshalling/client/api/annotations/*</include>
-                <include>org/jboss/errai/marshalling/rebind/api/*</include>
                 <include>org/jboss/errai/ui/nav/client/local/PageHidden.*</include>
                 <include>org/jboss/errai/ui/nav/client/local/PageHiding.*</include>
                 <include>org/jboss/errai/ui/nav/client/local/PageShowing.*</include>

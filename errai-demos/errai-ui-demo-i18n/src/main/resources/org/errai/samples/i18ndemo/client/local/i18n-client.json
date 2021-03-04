@@ -1,8 +1,0 @@
-{
-    "TemplatedWidget.welcome": "Welcome to the errai-ui i18n demo.",
-    "TemplatedWidget.Label_1_": "Label 1:",
-    "TemplatedWidget.value_one": "value one",
-    "TemplatedWidget.Label_2_": "Label 2:",
-    "TemplatedWidget.value_two": "value two",
-    "translatable.messages.message-2" : "Message {0} value"
-}

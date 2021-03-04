@@ -16,7 +16,6 @@
 
 package org.jboss.errai.ioc.client.container;
 
-import org.jboss.errai.common.client.api.WrappedPortable;
 
 /**
  * Normal scoped beans or dependent scoped beans decorated with AOP features
@@ -27,7 +26,7 @@ import org.jboss.errai.common.client.api.WrappedPortable;
  *
  * @author Max Barkley <mbarkley@redhat.com>
  */
-public interface Proxy<T> extends WrappedPortable {
+public interface Proxy<T> {
 
   /**
    * @return Returns this proxy as the type of the instance it is proxying.
@@ -65,4 +64,9 @@ public interface Proxy<T> extends WrappedPortable {
    */
   void initProxyProperties(final T instance);
 
+  /** Migrated from deleted WrappedPortal
+   *
+   * @return The wrapped object
+   */
+  Object unwrap();
 }

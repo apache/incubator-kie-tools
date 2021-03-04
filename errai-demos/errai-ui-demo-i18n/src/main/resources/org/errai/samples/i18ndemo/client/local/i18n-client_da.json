@@ -1,8 +1,0 @@
-{
-    "TemplatedWidget.welcome": "Velkommen til errai-ui i18n demo.",
-    "TemplatedWidget.Label_1_": "label 1:",
-    "TemplatedWidget.value_one": "værdi, en",
-    "TemplatedWidget.Label_2_": "label 2:",
-    "TemplatedWidget.value_two": "værdi to",
-    "translatable.messages.message-2" : "Besked {0} værdi"
-}

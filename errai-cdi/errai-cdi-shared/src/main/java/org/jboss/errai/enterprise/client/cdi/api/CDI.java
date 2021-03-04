@@ -24,13 +24,11 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.WrappedPortable;
 import org.jboss.errai.common.client.api.extension.InitVotes;
 import org.jboss.errai.common.client.protocols.MessageParts;
 import org.jboss.errai.enterprise.client.cdi.AbstractCDIEventCallback;
@@ -120,19 +118,10 @@ public class CDI {
 
     if (payload == null) return;
 
-    final Object beanRef;
-    if (payload instanceof WrappedPortable) {
-      beanRef = ((WrappedPortable) payload).unwrap();
-      if (beanRef == null) return;
-    }
-    else {
-      beanRef = payload;
-    }
-
     final Map<String, Object> messageMap = new HashMap<>();
     messageMap.put(MessageParts.CommandType.name(), CDICommands.CDIEvent.name());
-    messageMap.put(CDIProtocol.BeanType.name(), beanRef.getClass().getName());
-    messageMap.put(CDIProtocol.BeanReference.name(), beanRef);
+    messageMap.put(CDIProtocol.BeanType.name(), payload.getClass().getName());
+    messageMap.put(CDIProtocol.BeanReference.name(), payload);
     messageMap.put(CDIProtocol.FromClient.name(), "1");
 
     if (qualifiers != null && qualifiers.length > 0) {

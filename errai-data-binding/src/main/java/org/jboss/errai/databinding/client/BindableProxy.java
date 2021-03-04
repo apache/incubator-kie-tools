@@ -16,7 +16,6 @@
 
 package org.jboss.errai.databinding.client;
 
-import org.jboss.errai.common.client.api.WrappedPortable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.jboss.errai.databinding.client.api.Converter;
 
@@ -27,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Christian Sadilek <csadilek@redhat.com>
  */
-public interface BindableProxy<T> extends WrappedPortable, HasProperties {
+public interface BindableProxy<T> extends HasProperties {
 
   /**
    * Returns the {@link BindableProxyAgent} of this proxy.
@@ -50,4 +49,10 @@ public interface BindableProxy<T> extends WrappedPortable, HasProperties {
    * @return A recursively unwrapped (i.e. non-proxied) instance with state copied from the proxy target.
    */
   public T deepUnwrap();
+
+  /** Migrated from deleted WrappedPortal
+   *
+   * @return The wrapped object
+   */
+  Object unwrap();
 }
