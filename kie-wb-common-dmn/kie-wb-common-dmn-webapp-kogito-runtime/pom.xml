@@ -95,17 +95,6 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-jboss</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
       <scope>provided</scope>
     </dependency>
