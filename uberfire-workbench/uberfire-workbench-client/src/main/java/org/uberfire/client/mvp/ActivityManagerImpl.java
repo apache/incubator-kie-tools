@@ -62,7 +62,7 @@ public class ActivityManagerImpl implements ActivityManager {
                         throw new RuntimeException("Conflict detected: Activity already exists with id " + id);
                     }
                     activitiesById.put(id, bean);
-                    if (bean.getInstance() instanceof EditorActivity) {
+                    if (bean.isAssignableTo(EditorActivity.class)) {
                         gwtEditorNativeRegister.nativeRegisterGwtClientBean(id, bean);
                     }
                 });
