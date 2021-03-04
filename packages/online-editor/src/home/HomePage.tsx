@@ -41,7 +41,7 @@ import { FileLabel } from "../workspace/pages/FileLabel";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 
-export function NewHomePage() {
+export function HomePage() {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();

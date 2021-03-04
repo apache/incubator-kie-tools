@@ -26,7 +26,7 @@ import { NoMatchPage } from "./NoMatchPage";
 import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
-import { NewHomePage } from "./home/NewHomePage";
+import { HomePage } from "./home/HomePage";
 import { WorkspaceOverviewPage } from "./workspace/pages/WorkspaceOverviewPage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/pages/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/pages/NewWorkspaceFromUrlPage";
@@ -86,7 +86,7 @@ function RoutesSwitch() {
         )}
       </Route>
       <Route exact={true} path={globals.routes.home.path({})}>
-        <NewHomePage />
+        <HomePage />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>
