@@ -85,7 +85,6 @@
     <module>errai-ui</module>
     <module>errai-data-binding</module>
     <module>errai-validation</module>
-    <module>errai-html5</module>
     <module>errai-reflections</module>
     <module>errai-config</module>
     <module>errai-codegen-gwt</module>
