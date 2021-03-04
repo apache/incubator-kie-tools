@@ -32,8 +32,9 @@
   <properties>
     <skipITs>false</skipITs>
     <org.kie.dmn.kogito.browser.headless>true</org.kie.dmn.kogito.browser.headless>
-    <!-- We do not want to run selenium tests in default profile -->
-    <kogito.it.tests.excludes>**/*IT.java</kogito.it.tests.excludes>
+    <kogito.large.model.it.tests>**/large/model/*IT.java</kogito.large.model.it.tests>
+    <kogito.backward.compatibility.it.tests>**/backward/compatibility/*IT.java</kogito.backward.compatibility.it.tests>
+    <kogito.selenium.it.tests>**/selenium/*IT.java</kogito.selenium.it.tests>
   </properties>
 
   <dependencies>
@@ -527,8 +528,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
+          <includes>
+            <include>${kogito.backward.compatibility.it.tests}</include>
+            <include>${kogito.selenium.it.tests}</include>
+          </includes>
           <excludes>
-            <exclude>${kogito.it.tests.excludes}</exclude>
+            <exclude>${kogito.large.model.it.tests}</exclude>
           </excludes>
           <systemPropertyVariables>
             <org.kie.dmn.kogito.browser.headless>${org.kie.dmn.kogito.browser.headless}</org.kie.dmn.kogito.browser.headless>
@@ -740,17 +745,30 @@
 
   <profiles>
     <profile>
-      <id>kogito-it-tests</id>
+      <id>kogito-performance-it-tests</id>
       <activation>
         <property>
-          <name>integration-tests</name>
+          <name>performance-tests</name>
           <value>true</value>
         </property>
       </activation>
-      <properties>
-        <!-- We want to run selenium tests in kogito-tests profile -->
-        <kogito.it.tests.excludes></kogito.it.tests.excludes>
-      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>${kogito.backward.compatibility.it.tests}</exclude>
+                <exclude>${kogito.selenium.it.tests}</exclude>
+              </excludes>
+              <includes>
+                <include>${kogito.large.model.it.tests}</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 

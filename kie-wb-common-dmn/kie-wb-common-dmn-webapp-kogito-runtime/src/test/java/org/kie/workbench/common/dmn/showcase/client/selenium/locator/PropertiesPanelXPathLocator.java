@@ -59,6 +59,9 @@ public class PropertiesPanelXPathLocator implements XPathLocator {
         return new PropertiesPanelXPathLocator(String.format(".//div[@data-i18n-prefix='ParameterGroup.']/div[text()='%s']/../ul[@id='parameters']/li/div/span[@data-field='parameter-name']",
                                                              detailsGroup.getLabel()));
     }
+    public static PropertiesPanelXPathLocator propertiesPanelButton() {
+        return new PropertiesPanelXPathLocator(".//div[@data-ouia-component-id='docks-item-DiagramEditorPropertiesScreen']");
+    }
 
     @Override
     public String getXPathLocator() {

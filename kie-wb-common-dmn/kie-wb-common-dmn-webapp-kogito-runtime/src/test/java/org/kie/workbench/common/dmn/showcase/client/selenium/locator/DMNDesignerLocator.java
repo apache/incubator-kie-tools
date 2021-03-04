@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,7 @@ package org.kie.workbench.common.dmn.showcase.client.selenium.locator;
 
 import org.openqa.selenium.By;
 
-public interface XPathLocator extends DMNDesignerLocator {
+public interface DMNDesignerLocator {
 
-    /**
-     * @return xPath locator of an html element
-     */
-    String getXPathLocator();
-
-    @Override
-    default By locator() {
-        return By.xpath(getXPathLocator());
-    }
+    By locator();
 }

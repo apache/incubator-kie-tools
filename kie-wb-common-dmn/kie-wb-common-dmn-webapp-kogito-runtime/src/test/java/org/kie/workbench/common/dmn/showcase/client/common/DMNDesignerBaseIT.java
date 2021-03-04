@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +31,10 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.kie.workbench.common.dmn.showcase.client.common.wait.WaitUtils;
+import org.kie.workbench.common.dmn.showcase.client.selenium.component.DecisionNavigator;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.CommonCSSLocator;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.PropertiesPanelXPathLocator;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -39,7 +42,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmlunit.assertj.XmlAssert;
@@ -47,8 +49,6 @@ import org.xmlunit.assertj.XmlAssert;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.By.className;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class DMNDesignerBaseIT {
 
@@ -64,17 +64,15 @@ public class DMNDesignerBaseIT {
 
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
-    private static final String DECISION_NAVIGATOR_EXPAND = "docks-item-W-org.kie.dmn.decision.navigator";
-
-    private static final String PROPERTIES_PANEL = "docks-item-E-DiagramEditorPropertiesScreen";
-
     private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
 
     private static final String SCREENSHOTS_DIR = System.getProperty("org.kie.dmn.kogito.screenshots.dir");
 
     private WebDriver driver;
 
-    protected WebElement decisionNavigatorExpandButton;
+    protected WaitUtils waitUtils;
+
+    protected DecisionNavigator decisionNavigator;
 
     protected WebElement propertiesPanel;
 
@@ -88,6 +86,9 @@ public class DMNDesignerBaseIT {
         driver = new FirefoxDriver(getFirefoxOptions());
         driver.get(INDEX_HTML_PATH);
         driver.manage().window().maximize();
+
+        waitUtils = new WaitUtils(driver);
+        decisionNavigator = DecisionNavigator.initialize(waitUtils);
 
         waitDMNDesignerElements();
     }
@@ -126,13 +127,9 @@ public class DMNDesignerBaseIT {
     }
 
     private void waitDMNDesignerElements() {
-        decisionNavigatorExpandButton = waitOperation()
-                .withMessage("Presence of decision navigator expand button is prerequisite for all tests")
-                .until(visibilityOfElementLocated(className(DECISION_NAVIGATOR_EXPAND)));
-
-        propertiesPanel = waitOperation()
-                .withMessage("Presence of properties panel expand button is prerequisite for all tests")
-                .until(visibilityOfElementLocated(className(PROPERTIES_PANEL)));
+        propertiesPanel = waitUtils.waitUntilElementIsVisible(
+                PropertiesPanelXPathLocator.propertiesPanelButton(),
+                "Presence of properties panel expand button is prerequisite for all tests");
     }
 
     private final File screenshotDirectory = initScreenshotDirectory();
@@ -149,19 +146,15 @@ public class DMNDesignerBaseIT {
 
     protected void setContent(final String xml) {
         ((JavascriptExecutor) driver).executeScript(String.format(SET_CONTENT_TEMPLATE, xml));
-        waitOperation()
-                .withMessage("Designer was not loaded")
-                .until(visibilityOfElementLocated(className("uf-multi-page-editor")));
+        waitUtils.waitUntilElementIsVisible(
+                CommonCSSLocator.multiPageEditor(),
+                "Designer was not loaded");
     }
 
     protected String getContent() {
         final Object result = ((JavascriptExecutor) driver).executeScript(GET_CONTENT_TEMPLATE);
         assertThat(result).isInstanceOf(String.class);
         return (String) result;
-    }
-
-    protected WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
     }
 
     protected void executeDMNTestCase(final String directory,
