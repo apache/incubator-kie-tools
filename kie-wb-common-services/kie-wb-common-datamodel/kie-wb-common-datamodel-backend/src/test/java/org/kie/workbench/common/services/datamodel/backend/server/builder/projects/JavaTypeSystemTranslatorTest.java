@@ -26,7 +26,7 @@ public class JavaTypeSystemTranslatorTest {
                 {BigDecimal.class, "BigDecimal"},
                 {Date.class, "Date"},
                 {LocalDate.class, "LocalDate"},
-                {LocalDateTime.class, "Comparable"}
+                {LocalDateTime.class, "LocalDateTime"}
         });
     }
 

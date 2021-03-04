@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
@@ -79,6 +80,8 @@ public class JavaTypeSystemTranslator implements ClassToGenericClassConverter {
                 fieldType = DataType.TYPE_DATE;
             } else if (LocalDate.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_LOCAL_DATE;
+            } else if (LocalDateTime.class.isAssignableFrom(type)) {
+                fieldType = DataType.TYPE_LOCAL_DATE_TIME;
             } else if (Comparable.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_COMPARABLE;
             } else {
