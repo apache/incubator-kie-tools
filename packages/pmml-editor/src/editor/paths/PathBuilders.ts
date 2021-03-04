@@ -77,10 +77,6 @@ class ModelBuilder extends BaseBuilder {
     return new BaselineScoreBuilder(this.builders);
   };
 
-  public forModelName = () => {
-    return new ModelNameBuilder(this.builders);
-  };
-
   public forCharacteristics = () => {
     return new CharacteristicsBuilder(this.builders);
   };
@@ -106,17 +102,6 @@ class HeaderBuilder extends BaseBuilder {
 
   protected segment(): string {
     return `Header`;
-  }
-}
-
-class ModelNameBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
-    super(builders);
-    this.builders.add(this);
-  }
-
-  protected segment(): string {
-    return `modelName`;
   }
 }
 

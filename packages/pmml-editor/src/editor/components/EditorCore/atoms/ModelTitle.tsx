@@ -15,18 +15,13 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Stack, StackItem, Text, TextInput } from "@patternfly/react-core";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { Form, FormGroup, Split, SplitItem, Stack, StackItem, Text, TextInput, Tooltip } from "@patternfly/react-core";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
-import { useValidationRegistry } from "../../../validation";
-import { ValidationIndicator } from "./ValidationIndicator";
-import { Builder } from "../../../paths";
-import { validateModelName } from "../../../validation/Model";
+import { HelpIcon } from "@patternfly/react-icons";
 
 interface ModelTitleProps {
-  modelIndex: number;
   modelName: string;
   commitModelName?: (_modelName: string) => void;
 }
@@ -34,7 +29,7 @@ interface ModelTitleProps {
 export const MODEL_NAME_NOT_SET = "<Model Name not set>";
 
 export const ModelTitle = (props: ModelTitleProps) => {
-  const { modelIndex, commitModelName } = props;
+  const { commitModelName } = props;
 
   const [isEditing, setEditing] = useState(false);
   const [modelName, setModelName] = useState("");
@@ -46,21 +41,9 @@ export const ModelTitle = (props: ModelTitleProps) => {
     eventTypes: ["click"]
   });
 
-  const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forModelName()
-          .build()
-      ),
-    [modelIndex, modelName]
-  );
-
   useEffect(() => {
     setModelName(props.modelName);
-  }, [props.modelIndex, props.modelName]);
+  }, [props.modelName]);
 
   const onEdit = () => {
     if (commitModelName !== undefined) {
@@ -70,11 +53,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
   };
 
   const onCommitAndClose = () => {
-    if (validations.length === 0) {
-      onCommit();
-    } else {
-      validateAndSetModelName(props.modelName);
-    }
+    onCommit();
     onCancel();
   };
 
@@ -87,17 +66,6 @@ export const ModelTitle = (props: ModelTitleProps) => {
   const onCancel = () => {
     setEditing(false);
     setActiveOperation(Operation.NONE);
-  };
-
-  const validateAndSetModelName = (_modelName: string) => {
-    validationRegistry.clear(
-      Builder()
-        .forModel(modelIndex)
-        .forModelName()
-        .build()
-    );
-    validateModelName(modelIndex, _modelName, validationRegistry);
-    setModelName(_modelName);
   };
 
   const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_NAME, [
@@ -117,7 +85,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
         if (e.key === "Enter") {
           onEdit();
         } else if (e.key === "Escape") {
-          validateAndSetModelName(props.modelName);
+          setModelName(props.modelName);
           onCancel();
         }
       }}
@@ -132,22 +100,23 @@ export const ModelTitle = (props: ModelTitleProps) => {
             }}
           >
             <Split hasGutter={true} className={"modelTitle--hide-overflow"}>
-              {validations.length !== 0 && (
-                <SplitItem className="modelTitle__icon">
-                  <ValidationIndicator validations={validations} />
-                </SplitItem>
-              )}
+              <SplitItem className="modelTitle__icon">
+                <Tooltip content={"The Model Name will be generated at runtime if not set."}>
+                  <button
+                    aria-label="More info about Model Name"
+                    onClick={e => e.preventDefault()}
+                    className="pf-c-form__group-label-help modelTitle__icon"
+                  >
+                    <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                  </button>
+                </Tooltip>
+              </SplitItem>
               <SplitItem isFilled={true} className={"modelTitle--hide-overflow"}>
-                <FormGroup
-                  fieldId="modelName"
-                  helperTextInvalidIcon={<ExclamationCircleIcon />}
-                  helperText={validations[0] ? validations[0].message : ""}
-                  validated={validations.length === 0 ? "default" : "warning"}
-                >
+                <FormGroup fieldId="modelName">
                   {!isEditModeEnabled && (
                     <div className={modelTitleClassNames} onClick={onEdit}>
-                      {validations.length === 0 && <Text className="modelTitle__truncate">{modelName}</Text>}
-                      {validations.length !== 0 && (
+                      {modelName.trim() !== "" && <Text className="modelTitle__truncate">{modelName}</Text>}
+                      {modelName.trim() === "" && (
                         <Text className="modelTitle__truncate modelTitle__truncate--disabled">
                           {MODEL_NAME_NOT_SET}
                         </Text>
@@ -163,9 +132,8 @@ export const ModelTitle = (props: ModelTitleProps) => {
                       className="modelTitle--editing"
                       autoFocus={true}
                       value={modelName}
-                      validated={validations.length === 0 ? "default" : "warning"}
                       placeholder={MODEL_NAME_NOT_SET}
-                      onChange={e => validateAndSetModelName(e)}
+                      onChange={setModelName}
                       onBlur={onCommitAndClose}
                     />
                   )}

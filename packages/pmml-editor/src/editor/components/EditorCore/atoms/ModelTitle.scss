@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-//Ensure PF warning message is aligned with the field value
-#modelTitle-form .pf-m-warning {
-  padding-left: 8px;
-}
-
-//The padding above means the default PF Split Gutter spacing is too large so reduce. Total remains 16px.
-.pf-l-split__item .modelTitle__icon {
-  margin-right: 8px;
+// The title text itself has padding-left of 8px to align with the Textbox content when editing.
+// Therefore the default PF Split Gutter spacing is too large so reduce. Total remains 16px.
+.pf-l-split__item.modelTitle__icon {
+  margin-right: 8px !important;
+  display: flex;
 }
 
 .modelTitle {
@@ -66,10 +63,10 @@
     margin-bottom: 1px;
   }
 
+  // Overrides for pf-c-form__group-label-help
   &__icon {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+    padding: 0 0 2px 0;
+    margin: 0 0 0 0;
   }
 
   &__truncate {

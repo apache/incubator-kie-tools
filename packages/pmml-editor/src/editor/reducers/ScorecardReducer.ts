@@ -39,7 +39,6 @@ import { ValidationEntry, ValidationLevel, ValidationRegistry } from "../validat
 import { Builder } from "../paths";
 import { validateCharacteristic, validateCharacteristics } from "../validation/Characteristics";
 import { validateBaselineScore } from "../validation/ModelCoreProperties";
-import { validateModelName } from "../validation/Model";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -205,14 +204,6 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             .build(),
           draft => {
             draft.modelName = action.payload.modelName;
-
-            validationRegistry.clear(
-              Builder()
-                .forModel(action.payload.modelIndex)
-                .forModelName()
-                .build()
-            );
-            validateModelName(action.payload.modelIndex, action.payload.modelName, validationRegistry);
           }
         );
         break;
@@ -592,14 +583,6 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
-          validationRegistry.clear(
-            Builder()
-              .forModel(action.payload.modelIndex)
-              .forModelName()
-              .build()
-          );
-          validateModelName(action.payload.modelIndex, state.modelName, validationRegistry);
-
           const modelIndex = action.payload.modelIndex;
           validationRegistry.clear(
             Builder()
