@@ -33,8 +33,8 @@ import {
   DmnResult,
   extractDifferences,
 } from "@kogito-tooling/form/dist/dmn";
-import { ErrorBoundary } from "@kogito-tooling/form/dist/common";
 import { usePrevious } from "../../common/Hooks";
+import { ErrorBoundary } from "../../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";

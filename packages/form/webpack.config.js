@@ -22,7 +22,6 @@ const patternflyBase = require("@kie-tooling-core/patternfly-base");
 module.exports = (env, argv) => [
   merge(common(env, argv), {
     entry: {
-      common: "./src/common/index.ts",
       core: "./src/core/index.ts",
       dmn: "./src/dmn/index.ts",
     },

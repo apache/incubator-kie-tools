@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { ErrorBoundary } from "@kogito-tooling/form/dist/common";
-import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kogito-tooling/form/dist/dmn";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
+import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kogito-tooling/form/dist/dmn";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -27,6 +26,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppData } from "./DmnDevSandboxAppDataApi";
 import { fetchDmnResult } from "./DmnDevSandboxRuntimeApi";
 import { DmnFormToolbar } from "./DmnFormToolbar";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { useDmnFormI18n } from "./i18n";
 
 interface Props {
