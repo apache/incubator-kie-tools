@@ -14,108 +14,134 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { Form, FormGroup, TextContent, TextInput, Title, Tooltip } from "@patternfly/react-core";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { useEffect, useMemo, useState } from "react";
+import { Form, FormGroup, Split, SplitItem, Text, TextInput, Tooltip } from "@patternfly/react-core";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
-import { ValidatedType } from "../../../types";
 import { Operation, useOperation } from "../../EditorScorecard";
+import { HelpIcon } from "@patternfly/react-icons";
 
-interface HeaderTitleProps {
+interface ModelTitleProps {
   modelName: string;
   commitModelName?: (_modelName: string) => void;
 }
 
-export const ModelTitle = (props: HeaderTitleProps) => {
-  const { commitModelName } = props;
+export const MODEL_NAME_NOT_SET = "<Model Name not set>";
 
-  const [modelName, setModelName] = useState<ValidatedType<string>>({ value: "", valid: true });
+export const ModelTitle = (props: ModelTitleProps) => {
+  const { modelName, commitModelName } = props;
+
+  const [isEditing, setEditing] = useState(false);
+  const [title, setTitle] = useState("");
 
   const { activeOperation, setActiveOperation } = useOperation();
 
-  const ref = useOnclickOutside(event => onCancel(), {
+  const ref = useOnclickOutside(event => onCommitAndClose(), {
     disabled: activeOperation !== Operation.UPDATE_NAME,
     eventTypes: ["click"]
   });
 
   useEffect(() => {
-    setModelName({ value: props.modelName, valid: true });
-  }, [props]);
+    setTitle(modelName);
+  }, [modelName]);
 
-  const onCommit = () => {
-    if (modelName.value !== props.modelName) {
-      if (commitModelName !== undefined) {
-        commitModelName(modelName.value);
-      }
+  const onEdit = () => {
+    if (commitModelName !== undefined) {
+      setEditing(true);
+      setActiveOperation(Operation.UPDATE_NAME);
     }
+  };
+
+  const onCommitAndClose = () => {
+    onCommit();
     onCancel();
   };
 
+  const onCommit = () => {
+    if (commitModelName !== undefined) {
+      commitModelName(title);
+    }
+  };
+
   const onCancel = () => {
+    setEditing(false);
     setActiveOperation(Operation.NONE);
   };
 
+  const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_NAME, [
+    isEditing,
+    activeOperation
+  ]);
+
+  const modelTitleClassNames = useMemo(
+    () =>
+      `${
+        commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"
+      } pf-c-title pf-m-2xl pf-c-form-control`,
+    [commitModelName]
+  );
+
   return (
-    <Form
-      className="modelTitle"
-      onSubmit={e => {
-        e.stopPropagation();
-        e.preventDefault();
+    <div
+      ref={ref}
+      onKeyDown={e => {
+        if (e.key === "Enter") {
+          onEdit();
+        } else if (e.key === "Escape") {
+          setTitle(modelName);
+          onCancel();
+        }
       }}
     >
-      <FormGroup
-        fieldId="modelName"
-        helperTextInvalid="Name must be present"
-        helperTextInvalidIcon={<ExclamationCircleIcon />}
-        validated={modelName.valid ? "default" : "error"}
-      >
-        {activeOperation !== Operation.UPDATE_NAME && (
-          <Tooltip content={<div>{props.modelName}</div>}>
-            <TextContent
-              tabIndex={0}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  if (commitModelName !== undefined) {
-                    setActiveOperation(Operation.UPDATE_NAME);
-                  }
-                }
-              }}
-            >
-              <Title
-                size="3xl"
-                headingLevel="h2"
-                className="modelTitle__truncate"
-                onClick={e => {
-                  if (commitModelName !== undefined) {
-                    setActiveOperation(Operation.UPDATE_NAME);
-                  }
-                }}
-              >
-                {modelName.value}
-              </Title>
-            </TextContent>
-          </Tooltip>
-        )}
-        {activeOperation === Operation.UPDATE_NAME && (
-          <TextInput
-            ref={ref}
-            type="text"
-            id="modelName"
-            name="modelName"
-            aria-describedby="modelName"
-            autoFocus={true}
-            value={modelName.value}
-            validated={modelName.valid ? "default" : "error"}
-            onChange={e => setModelName({ value: e, valid: e.length > 0 })}
-            onBlur={e => {
-              if (modelName.valid) {
-                onCommit();
-              }
-            }}
-          />
-        )}
-      </FormGroup>
-    </Form>
+      <div className={"modelTitle--full-width"}>
+        <Form
+          id={"modelTitle-form"}
+          onSubmit={e => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+        >
+          <Split hasGutter={true} className={"modelTitle--hide-overflow"}>
+            <SplitItem className="modelTitle__icon">
+              <Tooltip content={"The Model Name will be generated at runtime if not set."}>
+                <button
+                  aria-label="More info about Model Name"
+                  onClick={e => e.preventDefault()}
+                  className="pf-c-form__group-label-help modelTitle__icon"
+                >
+                  <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                </button>
+              </Tooltip>
+            </SplitItem>
+            <SplitItem isFilled={true} className={"modelTitle--hide-overflow"}>
+              <FormGroup fieldId="modelName">
+                {!isEditModeEnabled && (
+                  <div className={modelTitleClassNames} onClick={onEdit}>
+                    {modelName.trim() !== "" && <Text className="modelTitle__truncate">{modelName}</Text>}
+                    {modelName.trim() === "" && (
+                      <Text className="modelTitle__truncate modelTitle__truncate--disabled">{MODEL_NAME_NOT_SET}</Text>
+                    )}
+                  </div>
+                )}
+                {isEditModeEnabled && (
+                  <TextInput
+                    type="text"
+                    id="modelName"
+                    name="modelName"
+                    aria-describedby="modelName "
+                    className={`${modelTitleClassNames} modelTitle--editing`}
+                    autoFocus={true}
+                    value={title}
+                    placeholder={MODEL_NAME_NOT_SET}
+                    onChange={setTitle}
+                    onBlur={onCommitAndClose}
+                  />
+                )}
+              </FormGroup>
+            </SplitItem>
+          </Split>
+        </Form>
+      </div>
+    </div>
   );
 };

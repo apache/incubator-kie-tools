@@ -53,6 +53,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return undefined;
   });
 
+  const modelName = useMemo(() => getModelName(model as Model), [model]);
+
   const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
   const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
@@ -86,7 +88,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
             <div className={"editor__header__content"}>
               <PageSection variant={PageSectionVariants.light} isFilled={false}>
                 <EditorHeader
-                  modelName={getModelName(model)}
+                  modelName={modelName}
                   modelIndex={modelIndex}
                   miningSchema={miningSchema}
                   output={output}
@@ -123,13 +125,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                     }
                   }}
                   commitModelName={(_modelName: string) => {
-                    dispatch({
-                      type: Actions.Scorecard_SetModelName,
-                      payload: {
-                        modelIndex: modelIndex,
-                        modelName: _modelName
-                      }
-                    });
+                    if (_modelName !== modelName) {
+                      dispatch({
+                        type: Actions.Scorecard_SetModelName,
+                        payload: {
+                          modelIndex: modelIndex,
+                          modelName: _modelName === "" ? undefined : _modelName
+                        }
+                      });
+                    }
                   }}
                 />
               </PageSection>
