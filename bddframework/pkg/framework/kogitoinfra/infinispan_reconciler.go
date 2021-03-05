@@ -17,13 +17,15 @@ package kogitoinfra
 import (
 	"context"
 	"fmt"
+	"sort"
+	"strings"
+
 	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/core/operator"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"software.sslmate.com/src/go-pkcs12"
-	"sort"
 
 	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
@@ -388,7 +390,8 @@ func getInfinispanWellFormedCondition(instance *infinispan.Infinispan) *infinisp
 
 	// Infinispan does not have a condition transition date, so let's get the wellFormed condition
 	for _, condition := range instance.Status.Conditions {
-		if condition.Type == infinispanConditionWellFormed {
+		// Can be replaced by instance.IsWellFormed() once Infinispan release operator 2.0.7 and we update the dependency
+		if strings.EqualFold(condition.Type, infinispanConditionWellFormed) {
 			return &condition
 		}
 	}
