@@ -30,7 +30,6 @@ import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext
 import { useSettings } from "../settings/SettingsContext";
 import { SupportedFileExtensions } from "../common/GlobalContext";
 import { extractFileExtension } from "../common/utils";
-import { WorkspaceOverview } from "./model/WorkspaceOverview";
 import { emptyTemplates } from "./FileTemplates";
 
 const INDEXED_DB_NAME = "kogito-online";
@@ -68,19 +67,19 @@ export function WorkspacesContextProvider(props: Props) {
         workspaceId: workspaceService.newContext(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { kind: WorkspaceKind.LOCAL },
-        createdIn: new Date().toString(),
+        createdDateISO: new Date().toISOString(),
+        lastUpdatedDateISO: new Date().toISOString(),
       };
 
       const supportedFiles = files.filter((file) => SUPPORTED_FILES.includes(extractFileExtension(file.path)!));
       const fileHandler = new LocalFileHandler({
         files: supportedFiles,
         workspaceService: workspaceService,
-        storageService: storageService,
       });
       const suggestedFirstFile = await createWorkspace(descriptor, fileHandler);
       return { descriptor, suggestedFirstFile };
     },
-    [createWorkspace, storageService, workspaceService]
+    [createWorkspace, workspaceService]
   );
 
   const createWorkspaceFromGitHubRepository = useCallback(
@@ -93,7 +92,8 @@ export function WorkspacesContextProvider(props: Props) {
         workspaceId: workspaceService.newContext(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
-        createdIn: new Date().toString(),
+        createdDateISO: new Date().toISOString(),
+        lastUpdatedDateISO: new Date().toISOString(),
       };
 
       const authInfo = {
@@ -111,27 +111,26 @@ export function WorkspacesContextProvider(props: Props) {
         sourceBranch: sourceBranch,
         gitService: gitService,
         workspaceService: workspaceService,
-        storageService: storageService,
       });
       await createWorkspace(descriptor, fileHandler);
       return descriptor;
     },
-    [workspaceService, settings.github.user, settings.github.token, gitService, storageService, createWorkspace]
+    [workspaceService, settings.github.user, settings.github.token, gitService, createWorkspace]
   );
 
   const renameFile = useCallback(
     async (file: WorkspaceFile, newFileName: string) => {
-      return await storageService.renameFile(file, newFileName, { broadcast: true });
+      return await workspaceService.renameFile(file, newFileName, { broadcast: true });
     },
-    [storageService]
+    [workspaceService]
   );
 
   const updateFile = useCallback(
     async (file: WorkspaceFile, getNewContents: () => Promise<string>) => {
       const updatedFile = new WorkspaceFile({ path: file.path, getFileContents: getNewContents });
-      await storageService.updateFile(updatedFile, { broadcast: true });
+      await workspaceService.updateFile(updatedFile, { broadcast: true });
     },
-    [storageService]
+    [workspaceService]
   );
 
   const addEmptyFile = useCallback(
@@ -142,7 +141,7 @@ export function WorkspacesContextProvider(props: Props) {
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         const index = i === 0 ? "" : `-${i}`;
         const path = `${contextPath}/Untitled${index}.${fileExtension}`;
-        if (await storageService.exists(path)) {
+        if (await workspaceService.exists(path)) {
           continue;
         }
         const contents =
@@ -151,13 +150,13 @@ export function WorkspacesContextProvider(props: Props) {
             : emptyTemplates.default;
 
         const newEmptyFile = new WorkspaceFile({ path, getFileContents: () => Promise.resolve(contents) });
-        await storageService.createFile(newEmptyFile, { broadcast: true });
+        await workspaceService.createFile(newEmptyFile, { broadcast: true });
         return newEmptyFile;
       }
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [workspaceService, storageService]
+    [workspaceService]
   );
 
   const prepareZip = useCallback(
@@ -189,7 +188,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const resourceContentGet = useCallback(
     async (path: string) => {
-      const file = await storageService.getFile(path);
+      const file = await workspaceService.getFile(path);
 
       if (!file) {
         throw new Error(`File ${path} not found`);
@@ -198,7 +197,7 @@ export function WorkspacesContextProvider(props: Props) {
       const content = await file.getFileContents();
       return new ResourceContent(path, content, ContentType.TEXT);
     },
-    [storageService]
+    [workspaceService]
   );
 
   const resourceContentList = useCallback(
@@ -210,20 +209,6 @@ export function WorkspacesContextProvider(props: Props) {
     },
     [workspaceService]
   );
-
-  const listWorkspaceOverviews = useCallback(async () => {
-    const descriptors = await workspaceService.list();
-    return descriptors.map((descriptor) => {
-      return {
-        workspaceId: descriptor.workspaceId,
-        name: descriptor.name,
-        createdIn: new Date(descriptor.createdIn),
-        lastUpdatedIn: new Date(), // TODO CAPONETTO: implement
-        filesCount: -999, // TODO CAPONETTO: implement
-        modelsCount: -999, // TODO CAPONETTO: implement
-      } as WorkspaceOverview;
-    });
-  }, [workspaceService]);
 
   useEffect(() => {
     workspaceService.init();
@@ -240,13 +225,11 @@ export function WorkspacesContextProvider(props: Props) {
       addEmptyFile,
       updateFile,
       prepareZip,
-      listWorkspaceOverviews,
     };
   }, [
     addEmptyFile,
     createWorkspaceFromGitHubRepository,
     createWorkspaceFromLocal,
-    listWorkspaceOverviews,
     prepareZip,
     renameFile,
     resourceContentGet,

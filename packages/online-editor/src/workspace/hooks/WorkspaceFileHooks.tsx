@@ -12,7 +12,7 @@ export function useWorkspaceFilePromise(
 
   const refresh = useCallback(
     (path: string, canceled: Holder<boolean>) => {
-      workspaces.workspaceService.storageService.getFile(path).then((workspaceFile) => {
+      workspaces.workspaceService.getFile(path).then((workspaceFile) => {
         if (canceled.get()) {
           return;
         }

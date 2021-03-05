@@ -1,27 +1,32 @@
 import { useWorkspaces } from "../WorkspacesContext";
 import { useCallback } from "react";
-import { WorkspaceOverview } from "../model/WorkspaceOverview";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
+import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 
-export function useWorkspaceOverviewsPromise() {
+export function useWorkspaceDescriptorsPromise() {
   const workspaces = useWorkspaces();
-  const [workspaceOverviewsPromise, setWorkspaceOverviewsPromise] = usePromiseState<WorkspaceOverview[]>();
+  const [workspaceDescriptorsPromise, setWorkspaceDescriptorsPromise] = usePromiseState<WorkspaceDescriptor[]>();
 
-  const refresh = useCallback((canceled: Holder<boolean>) => {
-    workspaces
-      .listWorkspaceOverviews()
-      .then((workspaceOverviews) => {
-        if (!canceled.get()) {
-          setWorkspaceOverviewsPromise({ data: workspaceOverviews });
-        }
-      })
-      .catch((error) => {
-        if (!canceled.get()) {
-          setWorkspaceOverviewsPromise({ error });
-        }
-      });
-  }, []); //TODO: fix this dependency array
+  const refresh = useCallback(
+    (canceled: Holder<boolean>) => {
+      workspaces.workspaceService
+        .list()
+        .then((descriptors) => {
+          if (!canceled.get()) {
+            setWorkspaceDescriptorsPromise({
+              data: descriptors,
+            });
+          }
+        })
+        .catch((error) => {
+          if (!canceled.get()) {
+            setWorkspaceDescriptorsPromise({ error });
+          }
+        });
+    },
+    [setWorkspaceDescriptorsPromise, workspaces.workspaceService]
+  );
 
   useCancelableEffect(
     useCallback(
@@ -35,7 +40,7 @@ export function useWorkspaceOverviewsPromise() {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        const broadcastChannel = new BroadcastChannel(workspaces.workspaceService.storageService.rootPath);
+        const broadcastChannel = new BroadcastChannel(workspaces.workspaceService.rootPath);
         broadcastChannel.onmessage = ({ data }) => {
           console.info(`WORKSPACES: ${JSON.stringify(data)}`);
           refresh(canceled);
@@ -49,7 +54,7 @@ export function useWorkspaceOverviewsPromise() {
     )
   );
 
-  return workspaceOverviewsPromise;
+  return workspaceDescriptorsPromise;
 }
 
 export type WorkspacesEvents =

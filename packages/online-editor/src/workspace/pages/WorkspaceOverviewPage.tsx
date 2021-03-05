@@ -110,7 +110,9 @@ export function WorkspaceOverviewPage(props: Props) {
                       </DescriptionListGroup>
                       <DescriptionListGroup>
                         <DescriptionListTerm>Created in</DescriptionListTerm>
-                        <DescriptionListDescription>{workspace.descriptor.createdIn}</DescriptionListDescription>
+                        <DescriptionListDescription>
+                          {new Date(workspace.descriptor.createdDateISO).toLocaleString()}
+                        </DescriptionListDescription>
                       </DescriptionListGroup>
                     </DescriptionList>
                   </GalleryItem>

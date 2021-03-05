@@ -23,7 +23,6 @@ import {
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { WorkspaceOverview } from "./model/WorkspaceOverview";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname } from "path";
 import { removeFileExtension } from "../common/utils";
@@ -75,7 +74,6 @@ export interface LocalFile {
 
 export interface WorkspacesContextType {
   workspaceService: WorkspaceService;
-  listWorkspaceOverviews: () => Promise<WorkspaceOverview[]>;
 
   // create
   createWorkspaceFromLocal: (

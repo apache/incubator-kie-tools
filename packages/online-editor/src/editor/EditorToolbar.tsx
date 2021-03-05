@@ -635,7 +635,7 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    workspaces.workspaceService.storageService.deleteFile(props.workspaceFile!, { broadcast: true }).then(() =>
+    workspaces.workspaceService.deleteFile(props.workspaceFile, { broadcast: true }).then(() =>
       history.push({
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: nextFile.workspaceId,

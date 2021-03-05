@@ -25,7 +25,7 @@ export interface LocalFileHandlerArgs extends FileHandlerCommonArgs {
 
 export class LocalFileHandler extends FileHandler {
   public constructor(private readonly args: LocalFileHandlerArgs) {
-    super(args.workspaceService, args.storageService);
+    super(args.workspaceService);
   }
 
   public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
@@ -35,7 +35,7 @@ export class LocalFileHandler extends FileHandler {
       return new WorkspaceFile({ getFileContents: file.getFileContents, path: updatedPath });
     });
 
-    await this.storageService.createFiles(updatedFiles, { broadcast: false });
+    await this.workspaceService.createFiles(updatedFiles, { broadcast: false });
     return updatedFiles;
   }
 

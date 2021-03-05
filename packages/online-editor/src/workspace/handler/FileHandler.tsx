@@ -16,19 +16,14 @@
 
 import { WorkspaceFile } from "../WorkspacesContext";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
-import { StorageService } from "../services/StorageService";
 import { WorkspaceService } from "../services/WorkspaceService";
 
 export interface FileHandlerCommonArgs {
   workspaceService: WorkspaceService;
-  storageService: StorageService;
 }
 
 export abstract class FileHandler {
-  protected constructor(
-    protected readonly workspaceService: WorkspaceService,
-    protected readonly storageService: StorageService
-  ) {}
+  protected constructor(protected readonly workspaceService: WorkspaceService) {}
 
   public abstract store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]>;
 

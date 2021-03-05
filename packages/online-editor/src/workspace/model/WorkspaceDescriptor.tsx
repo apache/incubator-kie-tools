@@ -20,5 +20,6 @@ export interface WorkspaceDescriptor {
   workspaceId: string;
   name: string;
   origin: WorkspaceOrigin;
-  createdIn: string;
+  createdDateISO: string;
+  lastUpdatedDateISO: string;
 }

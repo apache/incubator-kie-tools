@@ -32,7 +32,7 @@ export class GitRepositoryFileHandler extends FileHandler {
   private readonly COMMIT_MESSAGE = "Update from the Online Editor";
 
   public constructor(private readonly args: GitRepositoryFileHandlerArgs) {
-    super(args.workspaceService, args.storageService);
+    super(args.workspaceService);
   }
 
   public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
@@ -43,12 +43,12 @@ export class GitRepositoryFileHandler extends FileHandler {
       repositoryUrl: this.args.repositoryUrl,
       sourceBranch: this.args.sourceBranch,
     });
-    return await this.storageService.getFiles(contextPath);
+    return await this.workspaceService.getFiles(contextPath);
   }
 
   public async sync(descriptor: WorkspaceDescriptor): Promise<void> {
     const contextPath = await this.workspaceService.resolveContextPath(descriptor);
-    const files = await this.storageService.getFiles(contextPath, SUPPORTED_FILES_EDITABLE_PATTERN);
+    const files = await this.workspaceService.getFiles(contextPath, SUPPORTED_FILES_EDITABLE_PATTERN);
     const targetBranch = (descriptor.origin as GitHubRepositoryOrigin).branch;
     await this.args.gitService.gitCommit({
       contextPath: contextPath,

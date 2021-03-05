@@ -27,12 +27,11 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { WorkspaceOverview } from "../workspace/model/WorkspaceOverview";
 import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
 import { QueryParams } from "../common/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
-import { useWorkspaceOverviewsPromise } from "../workspace/hooks/WorkspacesHooks";
+import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
@@ -40,13 +39,14 @@ import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { FileLabel } from "../workspace/pages/FileLabel";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 
 export function HomePage() {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const queryParams = useQueryParams();
-  const workspaceOverviewsPromise = useWorkspaceOverviewsPromise();
+  const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const [url, setUrl] = useState("");
   const [filesToUpload, setFilesToUpload] = useState<LocalFile[]>([]);
 
@@ -305,21 +305,21 @@ export function HomePage() {
           <PageSection isFilled={true} style={{ height: "100%" }}>
             <PageSection variant={"light"}>
               <PromiseStateWrapper
-                promise={workspaceOverviewsPromise}
+                promise={workspaceDescriptorsPromise}
                 rejected={() => <></>}
-                resolved={(workspaceOverviews) => (
+                resolved={(workspaceDescriptors) => (
                   <>
                     <TextContent>
-                      {workspaceOverviews.length > 0 && (
+                      {workspaceDescriptors.length > 0 && (
                         <Stack hasGutter={true}>
-                          {workspaceOverviews.map((workspace: WorkspaceOverview) => (
-                            <StackItem key={workspace.name}>
-                              <WorkspaceCard workspaceOverview={workspace} />
+                          {workspaceDescriptors.map((descriptor: WorkspaceDescriptor) => (
+                            <StackItem key={descriptor.name}>
+                              <WorkspaceCard workspaceId={descriptor.workspaceId} />
                             </StackItem>
                           ))}
                         </Stack>
                       )}
-                      {workspaceOverviews.length === 0 && (
+                      {workspaceDescriptors.length === 0 && (
                         <EmptyState>
                           <EmptyStateIcon icon={CubesIcon} />
                           <Title headingLevel="h4" size="lg">
@@ -404,12 +404,12 @@ function WorkspaceLoadingCard() {
   );
 }
 
-function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
+function WorkspaceCard(props: { workspaceId: string }) {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
-  const workspacePromise = useWorkspacePromise(props.workspaceOverview.workspaceId);
+  const workspacePromise = useWorkspacePromise(props.workspaceId);
 
   const deleteWorkspaceIcon = useMemo(() => {
     return (
@@ -434,6 +434,22 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
   const editableFiles = useMemo(
     () => workspacePromise.data?.files.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension)) ?? [],
     [workspacePromise]
+  );
+
+  const workspaceName = useMemo(
+    () => (workspacePromise.data ? workspacePromise.data.descriptor.name : null),
+    [workspacePromise.data]
+  );
+
+  const createdDate = useMemo(
+    () => (workspacePromise.data ? new Date(workspacePromise.data.descriptor.createdDateISO).toLocaleString() : null),
+    [workspacePromise.data]
+  );
+
+  const lastUpdatedDate = useMemo(
+    () =>
+      workspacePromise.data ? new Date(workspacePromise.data.descriptor.lastUpdatedDateISO).toLocaleString() : null,
+    [workspacePromise.data]
   );
 
   return (
@@ -481,9 +497,9 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <b>{`Created: `}</b>
-                    {`-`}
+                    {createdDate}
                     <b>{`, Last updated: `}</b>
-                    {`-`}
+                    {lastUpdatedDate}
                   </Text>
                 </TextContent>
               </CardBody>
@@ -499,7 +515,7 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
               onClick={() => {
                 history.push({
                   pathname: globals.routes.workspaceOverview.path({
-                    workspaceId: props.workspaceOverview.workspaceId,
+                    workspaceId: props.workspaceId,
                   }),
                 });
               }}
@@ -513,7 +529,7 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
                           <Text component={TextVariants.h3}>
                             <FolderIcon />
                             &nbsp;&nbsp;
-                            {props.workspaceOverview.name}
+                            {workspaceName}
                           </Text>
                         </TextContent>
                       </CardTitle>
@@ -531,9 +547,9 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <b>{`Created: `}</b>
-                    {props.workspaceOverview.createdIn.toLocaleString()}
+                    {createdDate}
                     <b>{`, Last updated: `}</b>
-                    {props.workspaceOverview.lastUpdatedIn.toLocaleString()}
+                    {lastUpdatedDate}
                   </Text>
                 </TextContent>
               </CardBody>
