@@ -336,6 +336,24 @@ export function EditorPage(props: Props) {
 
   const closeAlert = useCallback(() => setAlert(Alerts.NONE), []);
 
+  useEffect(() => {
+    const iframe = document.getElementById("kogito-iframe");
+    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
+
+    if (iframe && drawerResizableSplitter) {
+      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
+      const addPointerEvents = () => (iframe.style.pointerEvents = "visible");
+
+      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
+      drawerResizableSplitter.addEventListener("mouseup", addPointerEvents);
+
+      return () => {
+        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
+        drawerResizableSplitter.removeEventListener("mouseup", addPointerEvents);
+      };
+    }
+  }, [isDmnRunnerDrawerOpen]);
+
   return (
     <Page
       header={
@@ -363,7 +381,12 @@ export function EditorPage(props: Props) {
           <DrawerContent
             className={!isDmnRunnerDrawerOpen ? "kogito--editor__drawer-content" : ""}
             panelContent={
-              <DrawerPanelContent className={"kogito--editor__drawer-content-panel"}>
+              <DrawerPanelContent
+                id={"kogito-panel-content"}
+                className={"kogito--editor__drawer-content-panel"}
+                minSize={350}
+                isResizable={true}
+              >
                 <DmnRunnerDrawer
                   jsonSchemaBridge={dmnRunnerSchema}
                   editorContent={editor?.getContent}

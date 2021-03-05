@@ -228,8 +228,8 @@
 
 .kogito--editor__drawer-content {
   flex-basis: 100vw;
-  flex-grow: 0;
-  flex-shrink: 0 !important;
+  /*flex-grow: 0;*/
+  /*flex-shrink: 0 !important;*/
 }
 
 .kogito--editor__drawer-content-body {
@@ -237,8 +237,8 @@
 }
 
 .kogito--editor__drawer-content-panel {
-  flex-grow: 0;
-  flex-shrink: 0;
+  /*flex-grow: 0;*/
+  /*flex-shrink: 0;*/
   position: relative;
   overflow: hidden;
 }
@@ -246,14 +246,14 @@
 @media screen and (min-width: 1200px) {
   .kogito--editor__drawer-content-panel {
     max-height: calc(100vh - 76px);
-    flex-basis: 700px;
+    /*flex-basis: 700px;*/
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
   .kogito--editor__drawer-content-panel {
     max-height: calc(100vh - 108px);
-    flex-basis: 350px;
+    /*flex-basis: 350px;*/
   }
 }
 
@@ -262,17 +262,17 @@
   height: 100%;
 }
 
-@media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner {
-    flex-direction: row;
-  }
-}
+/*@media screen and (min-width: 1200px) {*/
+/*  .kogito--editor__dmn-runner {*/
+/*    flex-direction: row;*/
+/*  }*/
+/*}*/
 
-@media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner {
-    flex-direction: column;
-  }
-}
+/*@media screen and (min-width: 0px) and (max-width: 1200px) {*/
+/*  .kogito--editor__dmn-runner {*/
+/*    flex-direction: column;*/
+/*  }*/
+/*}*/
 
 @media screen and (min-width: 1200px) {
   .kogito--editor__dmn-runner-content {
@@ -371,11 +371,34 @@
 }
 
 .kogito--editor__dmn-runner-drawer-output-leaf-updated {
-  animation-name: kogito--editor__dmn-runner-leaf;
+  animation-name: highlight;
   animation-duration: 1s;
-  animation-timing-function: linear;
   border-radius: 4px;
 }
+
+@keyframes highlight {
+  0% {
+    background-color: var(--pf-global--palette--red-300);
+    color: var(--pf-global--palette--black-200);
+  }
+  25% {
+    background-color: var(--pf-global--palette--red-200);
+    color: var(--pf-global--palette--black-400);
+  }
+  50% {
+    background-color: var(--pf-global--palette--red-100);
+    color: var(--pf-global--palette--black-600);
+  }
+  75% {
+    background-color: var(--pf-global--palette--red-50);
+    color: var(--pf-global--palette--black-800);
+  }
+  100% {
+    background-color: transparent;
+    color: var(--pf-global--palette--black-1000);
+  }
+}
+
 
 .kogito--editor__dmn-runner-modal-footer {
   display: flex;
@@ -392,11 +415,3 @@
   justify-content: space-between;
 }
 
-@keyframes kogito--editor__dmn-runner-leaf {
-  from {
-    background-color: red;
-  }
-  to {
-    background-color: transparent;
-  }
-}

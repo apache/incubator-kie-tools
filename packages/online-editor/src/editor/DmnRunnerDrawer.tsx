@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
@@ -86,7 +86,10 @@ export function DmnRunnerDrawer(props: Props) {
             // DMN Runner Error
             return;
           }
-          setDmnRunnerResponseDiffs([...Object.keys(flatten(diff(dmnRunnerResponse ?? {}, dmnRunnerJson)))]);
+          const differences = diff(dmnRunnerResponse ?? {}, dmnRunnerJson);
+          if (Object.keys(differences).length !== 0) {
+            setDmnRunnerResponseDiffs([...Object.keys(flatten(diff(dmnRunnerResponse ?? {}, dmnRunnerJson)))]);
+          }
           setDmnRunnerResponse(dmnRunnerJson);
         } catch (err) {
           setDmnRunnerResponse(undefined);
@@ -95,6 +98,12 @@ export function DmnRunnerDrawer(props: Props) {
     },
     [props, dmnRunnerResponse]
   );
+
+  useEffect(() => {
+    if (isAutoSubmit) {
+      autoFormRef.current?.submit();
+    }
+  }, [isAutoSubmit]);
 
   const handleResize = useCallback(() => {
     const width = window.innerWidth;
@@ -106,23 +115,44 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, []);
 
-  useEffect(() => {
-    if (isAutoSubmit) {
-      autoFormRef.current?.submit();
-    }
-  }, [isAutoSubmit]);
-
   // Execute one time when component is mounted.
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-    autoFormRef.current?.change("context", props.formContext);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useLayoutEffect(() => {
+    autoFormRef.current?.change("context", props.formContext);
+  });
+
+  const [dmnRunnerFlexDirection, setDmnRunnerFlexDirection] = useState<"row" | "column">("row");
+
+  const handlePanelContentResize = useCallback(() => {
+    const panelContent = document.getElementById("kogito-panel-content");
+    console.log(panelContent);
+
+    if (panelContent) {
+      console.log(panelContent.style.width);
+
+      setDmnRunnerFlexDirection("row");
+    } else {
+      setDmnRunnerFlexDirection("column");
+    }
+  }, []);
+
+  useEffect(() => {
+    const panelContent = document.getElementById("kogito-panel-content");
+
+    if (panelContent) {
+      panelContent.addEventListener("resize", handlePanelContentResize);
+      return () => panelContent.removeEventListener("resize", handlePanelContentResize);
+    }
+  }, []);
+
   return (
     <>
-      <div className={"kogito--editor__dmn-runner"}>
+      <div className={"kogito--editor__dmn-runner"} style={{ flexDirection: dmnRunnerFlexDirection }}>
         <div className={"kogito--editor__dmn-runner-content"}>
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
@@ -271,26 +301,32 @@ function ResultCardLeaf(props: ResultCardLeafProps) {
     }
   }, [props.diffs, props.label]);
 
-  const onAnimationEnd = useCallback(() => setClassName("kogito--editor__dmn-runner-drawer-output-leaf"), []);
+  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLDListElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setClassName("kogito--editor__dmn-runner-drawer-output-leaf");
+  }, []);
 
   return (
-    <DescriptionList
-      id={props.label}
-      aria-label={ariaLabel}
-      className={className}
-      onAnimationEnd={onAnimationEnd}
-      isHorizontal={true}
-    >
-      <DescriptionListGroup>
-        <DescriptionListTerm>{props.label}</DescriptionListTerm>
-        {props.value ? (
-          <DescriptionListDescription>{props.value}</DescriptionListDescription>
-        ) : (
-          <DescriptionListDescription>
-            <i>(null)</i>
-          </DescriptionListDescription>
-        )}
-      </DescriptionListGroup>
-    </DescriptionList>
+    <div>
+      <DescriptionList
+        id={props.label}
+        aria-label={ariaLabel}
+        className={className}
+        onAnimationEnd={onAnimationEnd}
+        isHorizontal={true}
+      >
+        <DescriptionListGroup>
+          <DescriptionListTerm>{props.label}</DescriptionListTerm>
+          {props.value ? (
+            <DescriptionListDescription>{props.value}</DescriptionListDescription>
+          ) : (
+            <DescriptionListDescription>
+              <i>(null)</i>
+            </DescriptionListDescription>
+          )}
+        </DescriptionListGroup>
+      </DescriptionList>
+    </div>
   );
 }
