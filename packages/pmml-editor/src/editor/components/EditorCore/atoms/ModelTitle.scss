@@ -41,32 +41,27 @@
 
   // Ensure the text appears in the same place as the Textbox when editing
   margin-top: 1px;
+  padding-top: 0;
   padding-left: 8px;
   padding-right: 8px;
 
   // Ensure the border transition does not flicker with default black borders
-  border-left: 1px solid #ffffff;
-  border-right: 1px solid #ffffff;
-  border-top: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border: 1px solid #ffffff;
   transition: margin-bottom 0.15s var(--sizeEasing), border-left 0.12s ease-in, border-right 0.12s ease-in, border-top 0.12s ease-in, border-bottom 0.12s ease-in;
 
   &:not(.modelTitle--editing):hover {
-    border-left: 1px solid var(--pf-global--BorderColor--100);
-    border-right: 1px solid var(--pf-global--BorderColor--100);
-    border-top: 1px solid var(--pf-global--BorderColor--100);
-    border-bottom: 1px solid var(--pf-global--BorderColor--100);
+    border: 1px solid var(--pf-global--BorderColor--100);
   }
 
   // Ensure the Textbox when editing does not affect content positioning below.
   &--editing {
-    margin-bottom: 1px;
+    padding-top: 2px;
   }
 
   // Overrides for pf-c-form__group-label-help
   &__icon {
     padding: 0 0 2px 0;
-    margin: 0 0 0 0;
+    margin: 0;
   }
 
   &__truncate {

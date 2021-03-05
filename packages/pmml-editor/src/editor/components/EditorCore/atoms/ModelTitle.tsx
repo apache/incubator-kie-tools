@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Stack, StackItem, Text, TextInput, Tooltip } from "@patternfly/react-core";
+import { Form, FormGroup, Split, SplitItem, Text, TextInput, Tooltip } from "@patternfly/react-core";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
@@ -29,10 +29,10 @@ interface ModelTitleProps {
 export const MODEL_NAME_NOT_SET = "<Model Name not set>";
 
 export const ModelTitle = (props: ModelTitleProps) => {
-  const { commitModelName } = props;
+  const { modelName, commitModelName } = props;
 
   const [isEditing, setEditing] = useState(false);
-  const [modelName, setModelName] = useState("");
+  const [title, setTitle] = useState("");
 
   const { activeOperation, setActiveOperation } = useOperation();
 
@@ -42,8 +42,8 @@ export const ModelTitle = (props: ModelTitleProps) => {
   });
 
   useEffect(() => {
-    setModelName(props.modelName);
-  }, [props.modelName]);
+    setTitle(modelName);
+  }, [modelName]);
 
   const onEdit = () => {
     if (commitModelName !== undefined) {
@@ -59,7 +59,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
 
   const onCommit = () => {
     if (commitModelName !== undefined) {
-      commitModelName(modelName);
+      commitModelName(title);
     }
   };
 
@@ -74,7 +74,10 @@ export const ModelTitle = (props: ModelTitleProps) => {
   ]);
 
   const modelTitleClassNames = useMemo(
-    () => `${commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"} pf-c-form-control`,
+    () =>
+      `${
+        commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"
+      } pf-c-title pf-m-2xl pf-c-form-control`,
     [commitModelName]
   );
 
@@ -85,64 +88,60 @@ export const ModelTitle = (props: ModelTitleProps) => {
         if (e.key === "Enter") {
           onEdit();
         } else if (e.key === "Escape") {
-          setModelName(props.modelName);
+          setTitle(modelName);
           onCancel();
         }
       }}
     >
-      <Stack hasGutter={true} className={"modelTitle--full-width"}>
-        <StackItem>
-          <Form
-            id={"modelTitle-form"}
-            onSubmit={e => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-          >
-            <Split hasGutter={true} className={"modelTitle--hide-overflow"}>
-              <SplitItem className="modelTitle__icon">
-                <Tooltip content={"The Model Name will be generated at runtime if not set."}>
-                  <button
-                    aria-label="More info about Model Name"
-                    onClick={e => e.preventDefault()}
-                    className="pf-c-form__group-label-help modelTitle__icon"
-                  >
-                    <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                  </button>
-                </Tooltip>
-              </SplitItem>
-              <SplitItem isFilled={true} className={"modelTitle--hide-overflow"}>
-                <FormGroup fieldId="modelName">
-                  {!isEditModeEnabled && (
-                    <div className={modelTitleClassNames} onClick={onEdit}>
-                      {modelName.trim() !== "" && <Text className="modelTitle__truncate">{modelName}</Text>}
-                      {modelName.trim() === "" && (
-                        <Text className="modelTitle__truncate modelTitle__truncate--disabled">
-                          {MODEL_NAME_NOT_SET}
-                        </Text>
-                      )}
-                    </div>
-                  )}
-                  {isEditModeEnabled && (
-                    <TextInput
-                      type="text"
-                      id="modelName"
-                      name="modelName"
-                      aria-describedby="modelName"
-                      className="modelTitle--editing"
-                      autoFocus={true}
-                      value={modelName}
-                      placeholder={MODEL_NAME_NOT_SET}
-                      onChange={setModelName}
-                      onBlur={onCommitAndClose}
-                    />
-                  )}
-                </FormGroup>
-              </SplitItem>
-            </Split>
-          </Form>
-        </StackItem>
-      </Stack>
+      <div className={"modelTitle--full-width"}>
+        <Form
+          id={"modelTitle-form"}
+          onSubmit={e => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+        >
+          <Split hasGutter={true} className={"modelTitle--hide-overflow"}>
+            <SplitItem className="modelTitle__icon">
+              <Tooltip content={"The Model Name will be generated at runtime if not set."}>
+                <button
+                  aria-label="More info about Model Name"
+                  onClick={e => e.preventDefault()}
+                  className="pf-c-form__group-label-help modelTitle__icon"
+                >
+                  <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                </button>
+              </Tooltip>
+            </SplitItem>
+            <SplitItem isFilled={true} className={"modelTitle--hide-overflow"}>
+              <FormGroup fieldId="modelName">
+                {!isEditModeEnabled && (
+                  <div className={modelTitleClassNames} onClick={onEdit}>
+                    {modelName.trim() !== "" && <Text className="modelTitle__truncate">{modelName}</Text>}
+                    {modelName.trim() === "" && (
+                      <Text className="modelTitle__truncate modelTitle__truncate--disabled">{MODEL_NAME_NOT_SET}</Text>
+                    )}
+                  </div>
+                )}
+                {isEditModeEnabled && (
+                  <TextInput
+                    type="text"
+                    id="modelName"
+                    name="modelName"
+                    aria-describedby="modelName "
+                    className={`${modelTitleClassNames} modelTitle--editing`}
+                    autoFocus={true}
+                    value={title}
+                    placeholder={MODEL_NAME_NOT_SET}
+                    onChange={setTitle}
+                    onBlur={onCommitAndClose}
+                  />
+                )}
+              </FormGroup>
+            </SplitItem>
+          </Split>
+        </Form>
+      </div>
     </div>
   );
 };

@@ -57,7 +57,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
 
     return (
       <Split hasGutter={true} className={"editorHeader"}>
-        <SplitItem className={"editorHeader--modelName"}>
+        <SplitItem className={"editorHeader__modelName"}>
           <ModelTitle modelName={modelName} commitModelName={commitModelName} />
         </SplitItem>
         <SplitItem isFilled={true} />
