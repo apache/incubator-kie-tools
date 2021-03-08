@@ -274,6 +274,10 @@
 /*  }*/
 /*}*/
 
+.kogito--editor__dmn-runner-content {
+  min-width: 350px;
+}
+
 @media screen and (min-width: 1200px) {
   .kogito--editor__dmn-runner-content {
     width: 50%;
@@ -316,12 +320,12 @@
   height: 60px;
 }
 
-@media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-content-header {
-    width: 50%;
-    position: fixed;
-  }
-}
+/*@media screen and (min-width: 1200px) {*/
+/*  .kogito--editor__dmn-runner-content-header {*/
+/*    width: 50%;*/
+/*    position: fixed;*/
+/*  }*/
+/*}*/
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
   .kogito--editor__dmn-runner-content-header {
@@ -332,7 +336,6 @@
 
 @media screen and (min-width: 1200px) {
   .kogito--editor__dmn-runner-drawer-content-body {
-    margin-top: 60px;
     overflow-y: auto;
   }
 }

@@ -169,7 +169,6 @@ export function DmnRunnerDrawer(props: Props) {
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                 {props.jsonSchemaBridge ? (
                   <AutoForm
-                    style={{ maxWidth: "350px" }}
                     id={"form"}
                     ref={autoFormRef}
                     showInlineError={true}
