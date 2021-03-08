@@ -15057,8 +15057,10 @@ uniforms-bridge-json-schema@^3.0.0:
     tslib "^1.10.0"
     uniforms "^3.0.0"
 
-"uniforms-patternfly@file:../uniforms-patternfly":
-  version "4.1.2"
+uniforms-patternfly@^4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.1.3.tgz#7401348703ab0785648ae0505f776a290e4a804d"
+  integrity sha512-2kUPetkzat5yBUjU+LHUJBne2KPHu5vIwu6wR99atRoK2gzi6cG8Pt9Gv9WGOCiMriHIzWq1g9b7UBxaSsRYDw==
   dependencies:
     "@patternfly/react-core" "4.84.4"
     "@patternfly/react-icons" "4.7.22"

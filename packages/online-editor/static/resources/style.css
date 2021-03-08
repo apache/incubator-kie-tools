@@ -381,15 +381,15 @@
     background-color: var(--pf-global--palette--red-300);
     color: var(--pf-global--palette--black-200);
   }
-  25% {
+  20% {
     background-color: var(--pf-global--palette--red-200);
     color: var(--pf-global--palette--black-400);
   }
-  50% {
+  40% {
     background-color: var(--pf-global--palette--red-100);
     color: var(--pf-global--palette--black-600);
   }
-  75% {
+  90% {
     background-color: var(--pf-global--palette--red-50);
     color: var(--pf-global--palette--black-800);
   }
