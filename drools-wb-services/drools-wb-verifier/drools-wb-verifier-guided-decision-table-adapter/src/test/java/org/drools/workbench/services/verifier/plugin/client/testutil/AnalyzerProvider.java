@@ -46,6 +46,8 @@ public class AnalyzerProvider {
                                              new HashSet<FactTypes.Field>() {{
                                                  add(new FactTypes.Field("age",
                                                                          DataType.TYPE_NUMERIC_INTEGER));
+                                                 add(new FactTypes.Field("applicationDate",
+                                                                         DataType.TYPE_DATE));
                                              }}));
 
         factTypes.add(new FactTypes.FactType("Account",

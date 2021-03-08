@@ -162,9 +162,9 @@ public class Receiver {
 
             analyzer.resetChecks();
             analyzer.analyze();
-        } catch (final BuildException e) {
+        } catch (final Exception e) {
             poster.post(new WebWorkerException("Initialization failed: " +
                                                        e.getMessage()));
-        }
+        } 
     }
 }

@@ -93,7 +93,11 @@ public class VerifierWebWorker
         }
 
         if (o != null) {
-            receiver.received(o);
+            try{
+                receiver.received(o);
+            } catch (Exception e){
+                error("Failed to pass the received object for receiver: " + o.getClass() + " " + json);
+            }
         }
     }
 

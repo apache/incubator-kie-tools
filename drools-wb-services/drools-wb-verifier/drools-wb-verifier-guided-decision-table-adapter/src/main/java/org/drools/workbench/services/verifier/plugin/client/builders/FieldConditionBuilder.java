@@ -86,7 +86,8 @@ public class FieldConditionBuilder {
                     .with(conditionCol52)
                     .resolve();
         } catch (final Exception e) {
-            throw new BuildException("Failed to resolve field " + pattern.getName() + " # " + ToString.toString(conditionCol52));
+            throw new BuildException( e.getMessage() +
+                                      " Failed to resolve field " + pattern.getName() + " # " + ToString.toString(conditionCol52));
         }
     }
 

@@ -22,4 +22,9 @@ public class BuildException
     public BuildException(final String s) {
         super(s);
     }
+
+    @Override
+    public String getMessage() {
+        return "BuildException " + super.getMessage();
+    }
 }

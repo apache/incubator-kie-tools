@@ -67,43 +67,49 @@ public class RuleBuilder {
 
         List<BaseColumn> expandedColumns = model.getExpandedColumns();
         for (final BaseColumn baseColumn : expandedColumns) {
+            try {
 
-            if (baseColumn instanceof AttributeCol52) {
-                final String attribute = ((AttributeCol52) baseColumn).getAttribute();
-                final DTCellValue52 realCellValue = getRealCellValue((AttributeCol52) baseColumn,
-                                                                     row.get(columnIndex));
+                if (baseColumn instanceof AttributeCol52) {
+                    final String attribute = ((AttributeCol52) baseColumn).getAttribute();
+                    final DTCellValue52 realCellValue = getRealCellValue((AttributeCol52) baseColumn,
+                                                                         row.get(columnIndex));
 
-                final Optional<RuleAttribute> ruleAttribute = AttributeBuilder.build(columnIndex,
-                                                                                     configuration,
-                                                                                     attribute,
-                                                                                     realCellValue);
-                if (ruleAttribute.isPresent()) {
-                    rule.addRuleAttribute(ruleAttribute.get());
+                    final Optional<RuleAttribute> ruleAttribute = AttributeBuilder.build(columnIndex,
+                                                                                         configuration,
+                                                                                         attribute,
+                                                                                         realCellValue);
+                    if (ruleAttribute.isPresent()) {
+                        rule.addRuleAttribute(ruleAttribute.get());
+                    }
+                } else if (baseColumn instanceof ConditionCol52) {
+                    final Condition condition = builderFactory.getConditionBuilder()
+                            .with((ConditionCol52) baseColumn)
+                            .with(rule)
+                            .with(row)
+                            .with(columnIndex)
+                            .build();
+
+                    rule.getConditions()
+                            .add(condition);
+                } else if (baseColumn instanceof ActionCol52) {
+
+                    final Action action = builderFactory.getActionBuilder()
+                            .with(rule)
+                            .with((ActionCol52) baseColumn)
+                            .with(row)
+                            .with(columnIndex)
+                            .build();
+
+                    rule.getActions()
+                            .add(action);
                 }
-            } else if (baseColumn instanceof ConditionCol52) {
-                final Condition condition = builderFactory.getConditionBuilder()
-                        .with((ConditionCol52) baseColumn)
-                        .with(rule)
-                        .with(row)
-                        .with(columnIndex)
-                        .build();
 
-                rule.getConditions()
-                        .add(condition);
-            } else if (baseColumn instanceof ActionCol52) {
-
-                final Action action = builderFactory.getActionBuilder()
-                        .with(rule)
-                        .with((ActionCol52) baseColumn)
-                        .with(row)
-                        .with(columnIndex)
-                        .build();
-
-                rule.getActions()
-                        .add(action);
+                columnIndex++;
+            } catch (BuildException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new BuildException("Could not resolve column: Index: " + columnIndex + " header: " + baseColumn.getHeader() + " error message: " + e.getMessage());
             }
-
-            columnIndex++;
         }
     }
 
