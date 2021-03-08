@@ -47,9 +47,9 @@ And finally, we run these tests by:
 ../hack/run-tests.sh --feature "features/deploy_kogito_runtime.feature" --runtime_application_image_namespace <namespace> --runtime_application_image_registry <registry>
 ```
 
-| Note that if we use quay.io, the repositories must be public **before** running the tests. Concretely, the repositories that will be used are:
-| - https://quay.io/<namespace>/process-springboot-example
-| - https://quay.io/<namespace>/process-quarkus-example
+> Note that if we use quay.io, the repositories must be public **before** running the tests. Concretely, the repositories that will be used are:
+> - https://quay.io/<namespace\>/process-springboot-example
+> - https://quay.io/<namespace\>/process-quarkus-example
 
 ### Other options
 
@@ -76,7 +76,31 @@ In case you need to add a new Kogito example, which has not been handled yet int
 - [Go](https://github.com/microsoft/vscode-go) extension
 - [Go Documentation](https://github.com/msyrus/vscode-go-doc)
 
-### How to Debug in VS Code
+### How to Debug BDD tests
+
+- Install Delve go module:
+
+```sh
+go get -v github.com/go-delve/delve/cmd/dlv
+```
+
+- Start the Delve process to launch our tests:
+
+```sh
+dlv test --headless --listen=:2345 --log --api-version=2 -- -godog.tags="" features/my_feature.feature
+```
+
+The program will wait until you launch the Debug mode from your favourite IDE (next step).
+
+> It must run in the /test folder.
+> Any arguments must be passed after the "--" token, for example: "-- -godog.tags="" -tests.services-image-version=0.9.0-rc2"  
+
+**TIP:** If you are (likely) running BDD tests using `make` and you are not sure how are these parameters transformed
+to `go test` parameters, you may try running the `make` command with `dry_run=true` which will print the `go test` command
+along with its parameters. Then you can just copy parameters starting with the first `--godog` parameter, e.g. you will remove
+`DEBUG=false go test ./hack/../test -v -timeout "240m"` from the original command. Then you add all these parameters after the `--` token as stated above.
+
+#### Attaching a debugger from VS Code
 
 - Run the command (press *F1*), type "Go: Install/Update Tools", select dlv, press Ok to install/update delve.
 - Run the command (press *F1*), type "Debug: Open launch.json" with *attach* mode:
@@ -101,30 +125,16 @@ In case you need to add a new Kogito example, which has not been handled yet int
 }
 ```
 
-| If you didnt already have a launch.json file, this will create one with the below default configuration which can be used to debug the current package.
-
-- Install Delve go module:
-
-```sh
-go get -v github.com/go-delve/delve/cmd/dlv
-```
-
-- Start the Delve process to launch our tests:
-
-```sh
-dlv test --headless --listen=:2345 --log --api-version=2 -- -godog.tags="" features/my_feature.feature
-```
-
-The program will wait until you launch the Debug mode from VS Code (next step).
-
-| It must run in the /test folder
-| Any arguments must be passed after the "--" token, for example: "-- -godog.tags="" -tests.services-image-version=0.9.0-rc2"
-
 - Launch Debug from VS Code
 
 Launch debug session by selecting Run/Start Debugging from top menu.
 
-Further information [here](https://github.com/Microsoft/vscode-go/wiki/Debugging-Go-code-using-VS-Code).
+Further information [here](https://github.com/golang/vscode-go/blob/master/docs/debugging.md).
+
+#### Attaching a debugger from GoLand/IntelliJ IDEA
+
+- Create a remote debugger configuration as stated in the [Remote Debug Kogito Operator using Intellij IDEA](../README.md#remote-debug-kogito-operator-using-intellij-idea) section of the Operator README file.
+- Launch the debugger configuration to connect to the waiting BDD tests. The tests should continue and after a while hit your breakpoint.
 
 ### Prune namespaces
 
