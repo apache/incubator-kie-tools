@@ -1,6 +1,6 @@
 {
   "name": "kogito-tooling-examples",
-  "version": "0.7.0",
+  "version": "0.8.3",
   "license": "Apache-2.0",
   "private": true,
   "workspaces": [
@@ -48,5 +48,8 @@
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
+  },
+  "resolutions": {
+    "@patternfly/react-styles": "4.7.22"
   }
 }

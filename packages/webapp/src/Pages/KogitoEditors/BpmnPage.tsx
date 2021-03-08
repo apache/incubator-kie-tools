@@ -54,15 +54,15 @@ export function BpmnPage() {
         [
           "bpmn",
           {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.2/bpmn",
-            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.2/envelope",
+            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.3/bpmn",
+            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.3/envelope",
           },
         ],
         [
           "bpmn2",
           {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.2/bpmn2",
-            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.2/envelope",
+            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/0.8.3/bpmn2",
+            envelopePath: "https://kiegroup.github.io/kogito-online/editors/0.8.3/envelope",
           },
         ],
       ]),
