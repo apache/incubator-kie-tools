@@ -57,14 +57,15 @@ const DataDictionaryHandler = () => {
   };
 
   const deleteField = (index: number) => {
-    if (window.confirm(`Delete Output "${dictionary[index].name}"?`)) {
-      dispatch({
-        type: Actions.DeleteDataDictionaryField,
-        payload: {
-          index
-        }
-      });
-    }
+    //TODO {manstis} How are we to handle channel-agnostic confirmations?
+    //if (window.confirm(`Delete Output "${dictionary[index].name}"?`)) {
+    dispatch({
+      type: Actions.DeleteDataDictionaryField,
+      payload: {
+        index
+      }
+    });
+    // }
   };
 
   const reorderFields = (oldIndex: number, newIndex: number) => {

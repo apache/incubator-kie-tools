@@ -138,15 +138,16 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const deleteCharacteristic = useCallback(
     (characteristicIndex: number) => {
-      if (window.confirm(`Delete Characteristic "${characteristics?.[characteristicIndex].name}"?`)) {
-        dispatch({
-          type: Actions.Scorecard_DeleteCharacteristic,
-          payload: {
-            modelIndex: modelIndex,
-            characteristicIndex: characteristicIndex
-          }
-        });
-      }
+      //TODO {manstis} How are we to handle channel-agnostic confirmations?
+      //if (window.confirm(`Delete Characteristic "${characteristics?.[characteristicIndex].name}"?`)) {
+      dispatch({
+        type: Actions.Scorecard_DeleteCharacteristic,
+        payload: {
+          modelIndex: modelIndex,
+          characteristicIndex: characteristicIndex
+        }
+      });
+      // }
     },
     [characteristics]
   );

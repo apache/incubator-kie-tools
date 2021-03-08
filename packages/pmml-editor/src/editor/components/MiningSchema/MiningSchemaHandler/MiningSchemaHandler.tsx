@@ -44,16 +44,17 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   };
 
   const deleteMiningField = (index: number) => {
-    if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
-      dispatch({
-        type: Actions.DeleteMiningSchemaField,
-        payload: {
-          modelIndex: modelIndex,
-          miningSchemaIndex: index,
-          name: miningSchema?.MiningField[index].name
-        }
-      });
-    }
+    //TODO {manstis} How are we to handle channel-agnostic confirmations?
+    //if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
+    dispatch({
+      type: Actions.DeleteMiningSchemaField,
+      payload: {
+        modelIndex: modelIndex,
+        miningSchemaIndex: index,
+        name: miningSchema?.MiningField[index].name
+      }
+    });
+    // }
   };
 
   const updateField = (index: number, originalName: FieldName | undefined, field: MiningField) => {
