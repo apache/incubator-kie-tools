@@ -1,6 +1,6 @@
 {
   "name": "webapp",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "license": "Apache-2.0",
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
@@ -12,17 +12,14 @@
   },
   "dependencies": {
     "@kogito-tooling/dmn-editor-unpacked": "7.47.0-Final",
-    "@kogito-tooling/envelope-bus": "0.8.2",
-    "@kogito-tooling/kie-bc-editors": "0.8.2",
-    "@kogito-tooling/kie-editors-standalone": "0.8.2",
-    "@kogito-tooling/patternfly-base": "0.8.2",
-    "base64png-editor": "0.8.2",
-    "ping-pong-view": "0.8.2",
-    "ping-pong-view-react": "0.8.2",
-    "todo-list-view": "0.8.2"
-  },
-  "resolutions": {
-    "@patternfly/react-styles": "4.4.2"
+    "@kogito-tooling/envelope-bus": "0.8.3",
+    "@kogito-tooling/kie-bc-editors": "0.8.3",
+    "@kogito-tooling/kie-editors-standalone": "0.8.3",
+    "@kogito-tooling/patternfly-base": "0.8.3",
+    "base64png-editor": "0.8.3",
+    "ping-pong-view": "0.8.3",
+    "ping-pong-view-react": "0.8.3",
+    "todo-list-view": "0.8.3"
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.5",

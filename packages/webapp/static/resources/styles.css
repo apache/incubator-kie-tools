@@ -40,6 +40,10 @@
   align-items: center;
 }
 
+.webapp--page-base64png-gallery--navigation-nav-item:hover {
+  width: 200px;
+}
+
 .webapp--page-base64png-gallery--navigation-nav-item-card {
   width: 200px;
 }
