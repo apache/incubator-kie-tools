@@ -16,11 +16,12 @@
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import * as __path from "path";
-import * as fs from "fs";
 import * as vscode from "vscode";
 import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
+
+const encoder = new TextEncoder();
 
 export async function generateSvg(
   editorStore: KogitoEditorStore,
@@ -43,14 +44,14 @@ export async function generateSvg(
 
   const parsedPath = __path.parse(editor.document.uri.fsPath);
   const svgFileName = `${parsedPath.name}-svg.svg`;
-  const svgAbsoluteFilePath = __path.join(parsedPath.dir, svgFileName);
-  fs.writeFileSync(svgAbsoluteFilePath, previewSvg);
+  const svgUri = editor.document.uri.with({ path: __path.join(parsedPath.dir, svgFileName) });
+  await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 
   vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
     if (selection !== i18n.openSvg) {
       return;
     }
 
-    workspaceApi.kogitoWorkspace_openFile(svgAbsoluteFilePath);
+    workspaceApi.kogitoWorkspace_openFile(svgUri.fsPath);
   });
 }

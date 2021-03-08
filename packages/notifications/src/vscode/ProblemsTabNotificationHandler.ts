@@ -35,20 +35,20 @@ export class ProblemsTabNotificationHandler implements NotificationsApi {
   private readonly diagnosticCollection = vscode.languages.createDiagnosticCollection(DIAGNOSTIC_COLLECTION_NAME);
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    const uri = vscode.Uri.file(notification.path);
+    const uri = vscode.Uri.parse(notification.path);
     const diagnostics: vscode.Diagnostic[] = this.diagnosticCollection.get(uri)?.map((elem) => elem) || [];
     diagnostics.push(this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
   public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    const uri = vscode.Uri.file(path);
+    const uri = vscode.Uri.parse(path);
     const diagnostics = notifications.map((notification) => this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
   public kogitoNotifications_removeNotifications(path: string) {
-    this.diagnosticCollection.delete(vscode.Uri.file(path));
+    this.diagnosticCollection.delete(vscode.Uri.parse(path));
   }
 
   private buildDiagnostic(notification: Notification): vscode.Diagnostic {

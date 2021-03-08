@@ -25,7 +25,6 @@ import {
   Uri,
   WebviewPanel,
 } from "vscode";
-import * as fs from "fs";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
@@ -63,10 +62,10 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
   }
 
   public async openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, cancellation: CancellationToken) {
-    this.createStorageFolder();
+    await this.createStorageFolder();
     const document = new KogitoEditableDocument(
       uri,
-      this.resolveBackup(openContext.backupId),
+      this.resolveBackupUri(openContext.backupId),
       this.editorStore,
       this.vsCodeI18n,
       this.vsCodeNotificationsApi
@@ -95,12 +94,8 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
     return document.backup(context.destination, cancellation);
   }
 
-  private createStorageFolder() {
-    const storagePath = this.context.storagePath ?? this.context.globalStoragePath;
-
-    if (storagePath && !fs.existsSync(storagePath)) {
-      fs.mkdirSync(storagePath);
-    }
+  private async createStorageFolder() {
+    await vscode.workspace.fs.createDirectory(this.context.storageUri ?? this.context.globalStorageUri);
   }
 
   private setupListeners(document: KogitoEditableDocument) {
@@ -108,11 +103,7 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
     document.onDidDispose(() => listeners.forEach((listener) => listener.dispose()));
   }
 
-  private resolveBackup(backupId: string | undefined): Uri | undefined {
-    if (!backupId || !fs.existsSync(backupId)) {
-      return undefined;
-    }
-
-    return Uri.file(backupId);
+  private resolveBackupUri(backupId: string | undefined): Uri | undefined {
+    return backupId ? Uri.parse(backupId) : undefined;
   }
 }

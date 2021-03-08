@@ -50,13 +50,15 @@ jobs:
 
       - name: "Build dependencies"
         shell: bash
+        env:
+          KOGITO_TOOLING_BUILD_examples: "true"
         run: |
           export REF=${{ github.event.pull_request.base.sha }} &&
           export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies --all | cut -d' ' -f1)") <(echo "$(lerna ls --since $REF  --all | cut -d' ' -f1)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
             --then "echo No dependencies to build." \
-            --else "lerna run --stream build:dev $SCOPE"
+            --else "lerna run --stream --concurrency 1 build:dev $SCOPE"
 
       - name: "Build changed and dependents"
         env:
