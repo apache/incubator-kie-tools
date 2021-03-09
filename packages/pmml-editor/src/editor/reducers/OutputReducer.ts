@@ -194,6 +194,7 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
             state,
             Builder()
               .forModel(modelIndex)
+              .forOutput()
               .build(),
             draft => {
               state.OutputField.forEach((outputField, outputFieldIndex) => {
@@ -229,6 +230,7 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
             state,
             Builder()
               .forModel(modelIndex)
+              .forOutput()
               .build(),
             draft => {
               if (action.payload.usageType !== "target") {
