@@ -127,6 +127,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const dataTypeNameValidation = (dataTypeName: string) => {
     let isValid = true;
+    if (dataTypeName.trim().length === 0) {
+      return false;
+    }
     const match = dataTypes.find((item, index) => item.name === dataTypeName.trim() && index !== editing);
     if (match !== undefined) {
       isValid = false;

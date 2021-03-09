@@ -18,7 +18,7 @@ import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../../Outputs/organisms";
-import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 import "./EditorHeader.scss";
 
@@ -30,7 +30,7 @@ interface EditorHeaderViewerProps {
 interface EditorHeaderEditorProps extends EditorHeaderViewerProps {
   output?: Output;
   miningSchema?: MiningSchema;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
   deleteOutputField: (index: number) => void;
   commitOutputField: (index: number | undefined, outputField: OutputField) => void;
   commitModelName: (modelName: string) => void;

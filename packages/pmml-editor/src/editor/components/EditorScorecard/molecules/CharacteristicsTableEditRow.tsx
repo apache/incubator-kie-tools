@@ -160,10 +160,10 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 label="Name"
                 isRequired={true}
                 fieldId="characteristic-form-name-helper"
-                helperTextInvalid="Name must be unique and present"
+                helperTextInvalid="Name is mandatory and must be unique"
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={name.valid ? "default" : "error"}
-                style={{ width: "16em" }}
+                style={{ width: "18em" }}
               >
                 <TextInput
                   type="text"
@@ -183,6 +183,11 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     if (name?.valid) {
                       onCommit({
                         name: name.value
+                      });
+                    } else {
+                      setName({
+                        value: characteristic.characteristic.name,
+                        valid: validateCharacteristicName(characteristic.characteristic.name)
                       });
                     }
                   }}
