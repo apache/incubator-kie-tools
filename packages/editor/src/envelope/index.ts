@@ -65,5 +65,3 @@ export function init(args: {
     envelope
   ).start(args.container);
 }
-
-export * from "./CompositeEditorFactory";

@@ -40,9 +40,6 @@ describe("EditorEnvelope.init", () => {
   test("initialisation", () => {
     expect(mockEditorEnvelope.init.mock.calls.length).toEqual(1);
     expect(mockEditorEnvelope.init.mock.calls[0][0].editorContext.channel).toBe(ChannelType.DESKTOP);
-    expect(mockEditorEnvelope.init.mock.calls[0][0].editorFactory).toBeInstanceOf(
-      EditorEnvelope.CompositeEditorFactory
-    );
   });
 });
 

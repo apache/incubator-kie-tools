@@ -35,6 +35,7 @@ import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDesktopI18n } from "../common/i18n";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import * as monaco from "@kiegroup/monaco-editor";
 
 interface Props {
   onClose: () => void;
@@ -247,7 +248,7 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    const monacoInstance = (window as any).monaco.editor.create(textEditorContainerRef.current, {
+    const monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
       value: textEditorContent,
       language: "xml", //FIXME: Not all editors will be XML when converted to text
       scrollBeyondLastLine: false

@@ -17,7 +17,6 @@
 import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
 import { GwtEditorWrapperFactory } from "..";
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
-import { CompositeEditorFactory } from "@kogito-tooling/editor/dist/envelope";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 
 EditorEnvelope.init({
@@ -27,7 +26,7 @@ EditorEnvelope.init({
       window.parent.postMessage(message, "*", _);
     }
   },
-  editorFactory: new CompositeEditorFactory([new GwtEditorWrapperFactory()]),
+  editorFactory: new GwtEditorWrapperFactory(),
   editorContext: { channel: getChannelType(), operatingSystem: getOperatingSystem() }
 });
 

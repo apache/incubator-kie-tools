@@ -1279,10 +1279,10 @@
     eol "^0.9.1"
     glob "^7.1.6"
 
-"@kiegroup/monaco-editor@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@kiegroup/monaco-editor/-/monaco-editor-2.1.0.tgz#70b2bd4f0888bc02b1361893226ba71aa07f50bd"
-  integrity sha512-YcZ65b1dJgqm/b93F2IThvXTvqHKfdAD9v+M8nmd2UA8wVjfnqMGcgxIA3qA67BG8mioV99DbQ+HSoqKMiGjHQ==
+"@kiegroup/monaco-editor@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@kiegroup/monaco-editor/-/monaco-editor-2.2.0.tgz#d4d3542f444c03da9dea65ec39a1066bc3aa97ce"
+  integrity sha512-xucirwln8b2JnyhCVY8iVeKo6YXANJ85XRA48FXwTzeXiJ1v2TVeWHjfS9MJKBw1NJCp1UkEf2rr0sU8s3rJCQ==
 
 "@kogito-tooling/bpmn-editor-unpacked@7.51.0-SNAPSHOT-20210223.204010":
   version "7.51.0-SNAPSHOT-20210223.204010"

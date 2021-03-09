@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-type Command =
-  | {
-      id: string;
-      undo?: () => void;
-      redo?: () => void;
-    }
-  | undefined;
+interface Command {
+  id: string;
+  undo?: () => void;
+  redo?: () => void;
+}
 
 export class StateControl {
   private commandStack: Command[];
-  private currentCommand: Command;
-  private savedCommand: Command;
+  private currentCommand?: Command;
+  private savedCommand?: Command;
   private registeredCallbacks: Array<(isDirty: boolean) => void>;
 
   constructor() {
@@ -49,30 +47,28 @@ export class StateControl {
     return this.savedCommand;
   }
 
-  public setSavedCommand() {
-    this.savedCommand = this.currentCommand;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
-  }
-
   public getCurrentCommand() {
     return this.currentCommand;
-  }
-
-  public setCurrentCommand(command: Command) {
-    this.currentCommand = command;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
   }
 
   public getCommandStack() {
     return this.commandStack;
   }
 
-  public setCommandStack(commandStack: Command[]) {
-    this.commandStack = commandStack;
-  }
-
   public getRegisteredCallbacks() {
     return this.registeredCallbacks;
+  }
+
+  public setSavedCommand() {
+    this.savedCommand = this.currentCommand;
+    const isDirty = this.isDirty();
+    this.registeredCallbacks.forEach(callback => callback(isDirty));
+  }
+
+  private setCurrentCommand(command: Command | undefined) {
+    this.currentCommand = command;
+    const isDirty = this.isDirty();
+    this.registeredCallbacks.forEach(callback => callback(isDirty));
   }
 
   public isDirty() {
@@ -82,7 +78,7 @@ export class StateControl {
   public undo() {
     const indexOfCommandToUndo = this.commandStack.indexOf(this.currentCommand!);
 
-    let nextCurrentCommandAfterUndo: Command;
+    let nextCurrentCommandAfterUndo: Command | undefined;
     if (this.commandStack[indexOfCommandToUndo - 1]) {
       nextCurrentCommandAfterUndo = this.commandStack[indexOfCommandToUndo - 1];
     }
@@ -105,7 +101,11 @@ export class StateControl {
   }
 
   public updateCommandStack(command: Command) {
-    this.commandStack = this.eraseRedoCommands().concat(command);
-    this.setCurrentCommand(command);
+    this.commandStack = this.eraseRedoCommands();
+
+    if (command.id !== this.currentCommand?.id) {
+      this.setCurrentCommand(command);
+      this.commandStack = this.commandStack.concat(command);
+    }
   }
 }

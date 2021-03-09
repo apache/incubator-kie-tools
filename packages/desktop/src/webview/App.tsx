@@ -31,7 +31,6 @@ import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
 import { File } from "@kogito-tooling/editor/dist/channel";
-import "@kiegroup/monaco-editor";
 
 enum Pages {
   HOME,

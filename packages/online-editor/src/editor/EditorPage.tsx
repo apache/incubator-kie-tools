@@ -37,6 +37,7 @@ import {
   Page,
   PageSection
 } from "@patternfly/react-core";
+import * as monaco from "@kiegroup/monaco-editor";
 
 export enum AlertTypes {
   NONE,
@@ -297,7 +298,7 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    const monacoInstance = (window as any).monaco.editor.create(textEditorContainerRef.current!, {
+    const monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
       value: textEditorContent!,
       language: "xml", //FIXME: Not all editors will be XML when converted to text
       scrollBeyondLastLine: false
