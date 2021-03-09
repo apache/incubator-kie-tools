@@ -27,7 +27,6 @@ import javax.enterprise.event.Event;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -55,8 +54,6 @@ import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionComma
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import static com.google.gwt.dom.client.Style.Unit.EM;
 
 public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPresenter<KogitoDiagramResourceImpl> implements DiagramEditorCore<Metadata, Diagram> {
 
