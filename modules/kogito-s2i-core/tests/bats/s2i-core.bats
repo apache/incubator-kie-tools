@@ -88,6 +88,40 @@ teardown() {
     [ "${lines[5]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
 }
 
+
+@test "test runtime_assemble with binary builds with new Quarkus 1.12+ default builds" {
+    mkdir -p "${KOGITO_HOME}"/bin
+    # emulating an upload
+    mkdir -p /tmp/src/quarkus-app/{app,quarkus}
+    mkdir -p /tmp/src/quarkus-app/lib/{boot,main}
+
+    touch /tmp/src/quarkus-app/my-app-run.jar
+
+    touch /tmp/src/quarkus-app/lib/boot/my-boot-dependency-1.0.jar
+    touch /tmp/src/quarkus-app/lib/main/my-main-dependency-1.0.jar
+
+    touch /tmp/src/quarkus-app/quarkus/{generated-bytecode.jar,quarkus-application.dat}
+
+    touch /tmp/src/quarkus-app/app/my-1.0.jar
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+    [ "${lines[5]}" = "'./quarkus-app/app' -> '/tmp/kogito_home/bin/app'" ]
+    [ "${lines[6]}" = "'./quarkus-app/app/my-1.0.jar' -> '/tmp/kogito_home/bin/app/my-1.0.jar'" ]
+    [ "${lines[7]}" = "'./quarkus-app/lib' -> '/tmp/kogito_home/bin/lib'" ]
+    [ "${lines[8]}" = "'./quarkus-app/lib/boot' -> '/tmp/kogito_home/bin/lib/boot'" ]
+    [ "${lines[9]}" = "'./quarkus-app/lib/boot/my-boot-dependency-1.0.jar' -> '/tmp/kogito_home/bin/lib/boot/my-boot-dependency-1.0.jar'" ]
+    [ "${lines[10]}" = "'./quarkus-app/lib/main' -> '/tmp/kogito_home/bin/lib/main'" ]
+    [ "${lines[11]}" = "'./quarkus-app/lib/main/my-main-dependency-1.0.jar' -> '/tmp/kogito_home/bin/lib/main/my-main-dependency-1.0.jar'" ]
+    [ "${lines[12]}" = "'./quarkus-app/my-app-run.jar' -> '/tmp/kogito_home/bin/my-app-run.jar'" ]
+    [ "${lines[13]}" = "'./quarkus-app/quarkus' -> '/tmp/kogito_home/bin/quarkus'" ]
+    [ "${lines[14]}" = "'./quarkus-app/quarkus/generated-bytecode.jar' -> '/tmp/kogito_home/bin/quarkus/generated-bytecode.jar'" ]
+    [ "${lines[15]}" = "'./quarkus-app/quarkus/quarkus-application.dat' -> '/tmp/kogito_home/bin/quarkus/quarkus-application.dat'" ]
+}
+
+
 @test "test runtime_assemble with binary builds native binary" {
     mkdir -p "${KOGITO_HOME}"/bin
     # emulating an upload
@@ -120,6 +154,41 @@ teardown() {
     [ "$status" -eq 0 ]
     [ "${lines[7]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
 }
+
+
+@test "test runtime_assemble with binary builds entire target with new Quarkus 1.12+ default builds" {
+    mkdir -p "${KOGITO_HOME}"/bin
+    # emulating an upload
+    mkdir -p /tmp/src/target/quarkus-app/{app,quarkus}
+    mkdir -p /tmp/src/target/quarkus-app/lib/{boot,main}
+
+    touch /tmp/src/target/quarkus-app/my-app-run.jar
+
+    touch /tmp/src/target/quarkus-app/lib/boot/my-boot-dependency-1.0.jar
+    touch /tmp/src/target/quarkus-app/lib/main/my-main-dependency-1.0.jar
+
+    touch /tmp/src/target/quarkus-app/quarkus/{generated-bytecode.jar,quarkus-application.dat}
+
+    touch /tmp/src/target/quarkus-app/app/my-1.0.jar
+
+    run runtime_assemble
+
+    echo "result= ${lines[@]}"
+    [ "$status" -eq 0 ]
+    [ "${lines[6]}" = "'./quarkus-app/app' -> '/tmp/kogito_home/bin/app'" ]
+    [ "${lines[7]}" = "'./quarkus-app/app/my-1.0.jar' -> '/tmp/kogito_home/bin/app/my-1.0.jar'" ]
+    [ "${lines[8]}" = "'./quarkus-app/lib' -> '/tmp/kogito_home/bin/lib'" ]
+    [ "${lines[9]}" = "'./quarkus-app/lib/boot' -> '/tmp/kogito_home/bin/lib/boot'" ]
+    [ "${lines[10]}" = "'./quarkus-app/lib/boot/my-boot-dependency-1.0.jar' -> '/tmp/kogito_home/bin/lib/boot/my-boot-dependency-1.0.jar'" ]
+    [ "${lines[11]}" = "'./quarkus-app/lib/main' -> '/tmp/kogito_home/bin/lib/main'" ]
+    [ "${lines[12]}" = "'./quarkus-app/lib/main/my-main-dependency-1.0.jar' -> '/tmp/kogito_home/bin/lib/main/my-main-dependency-1.0.jar'" ]
+    [ "${lines[13]}" = "'./quarkus-app/my-app-run.jar' -> '/tmp/kogito_home/bin/my-app-run.jar'" ]
+    [ "${lines[14]}" = "'./quarkus-app/quarkus' -> '/tmp/kogito_home/bin/quarkus'" ]
+    [ "${lines[15]}" = "'./quarkus-app/quarkus/generated-bytecode.jar' -> '/tmp/kogito_home/bin/quarkus/generated-bytecode.jar'" ]
+    [ "${lines[16]}" = "'./quarkus-app/quarkus/quarkus-application.dat' -> '/tmp/kogito_home/bin/quarkus/quarkus-application.dat'" ]
+}
+
+
 
 # Check that the irrelevant binaries are excluded
 @test "test runtime_assemble with binary builds entire target SpringBoot build" {
@@ -222,7 +291,7 @@ teardown() {
     echo "result= ${lines[@]}"
     echo "status= $status"
     [ "$status" -eq 1 ]
-    [ "${lines[0]}" = "---> Installing application binaries" ]
+    [ "${lines[0]}" = "---> Installing common application binaries" ]
     [ "${lines[1]}" = "cp: cannot stat 'target/*.jar': No such file or directory" ]
 }
 
@@ -235,7 +304,7 @@ teardown() {
     echo "result= ${lines[@]}"
     echo "status= $status"
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> Installing application binaries" ]
+    [ "${lines[0]}" = "---> Installing common application binaries" ]
     [ "${lines[1]}" = "'target/app.jar' -> '"${KOGITO_HOME}"/bin'" ]
 }
 
@@ -254,7 +323,7 @@ teardown() {
     echo "status= $status"
 
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> Installing jar file" ]
+    [ "${lines[0]}" = "---> Installing runner jar file" ]
     [ "${lines[1]}" = "'target/app-runner.jar' -> '"${KOGITO_HOME}"/bin/app-runner.jar'" ]
     [ "${lines[2]}" = "---> Copying application libraries" ]
 }
@@ -271,7 +340,7 @@ teardown() {
     echo "status= $status"
 
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> Installing jar file" ]
+    [ "${lines[0]}" = "---> Installing runner jar file" ]
     [ "${lines[1]}" = "'target/app-runner.jar' -> '"${KOGITO_HOME}"/bin/app-runner.jar'" ]
 }
 
@@ -290,7 +359,7 @@ teardown() {
     echo "status= $status"
 
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "---> Installing application binaries" ]
+    [ "${lines[0]}" = "---> Installing native application binaries" ]
     [ "${lines[1]}" = "'target/app-runner' -> '"${KOGITO_HOME}"/bin/app-runner'" ]
 }
 
