@@ -27,6 +27,7 @@ import javax.enterprise.event.Event;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -54,6 +55,8 @@ import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionComma
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static com.google.gwt.dom.client.Style.Unit.EM;
 
 public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPresenter<KogitoDiagramResourceImpl> implements DiagramEditorCore<Metadata, Diagram> {
 
@@ -127,18 +130,13 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                 final String xml = dpe.getXml();
 
                 resetEditorPages();
-// FIXME: tiago
-//
-//                getXMLEditorView().setReadOnly(isReadOnly());
-//                getXMLEditorView().setContent(xml, AceEditorMode.XML);
-                getView().setWidget(new Label("Error opening the file")); //TODO: Put a nice error screen/empty state here.
 
-//                setEditorProxy(makeXmlEditorProxy());
+                getView().setWidget(new Label("Error opening file."));
+
                 hideLoadingViews();
                 getNotificationEvent().fire(new NotificationEvent(translationService.getValue(KogitoClientConstants.DIAGRAM_PARSING_ERROR, Objects.toString(e.getMessage(), "")),
                                                                   NotificationEvent.NotificationType.ERROR));
 
-//                Scheduler.get().scheduleDeferred(getXMLEditorView()::onResize);
             } else {
                 setEditorProxy(new DiagramEditorProxy<>());
                 showError(error);
