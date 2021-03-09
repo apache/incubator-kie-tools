@@ -101,9 +101,12 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Build repository and run integration tests
+        run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
+
+      - name: Run integration tests
         env:
           DISPLAY: ":99.0"
-        run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
+        run: npx lerna run test:it --scope '@kogito-tooling/online-editor' --stream
 
       - name: Archive it test screenshots	
         if: failure()
