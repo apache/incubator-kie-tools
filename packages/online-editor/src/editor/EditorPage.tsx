@@ -342,17 +342,38 @@ export function EditorPage(props: Props) {
 
     if (iframe && drawerResizableSplitter) {
       const removePointerEvents = () => (iframe.style.pointerEvents = "none");
-      const addPointerEvents = () => (iframe.style.pointerEvents = "visible");
-
       drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
-      drawerResizableSplitter.addEventListener("mouseup", addPointerEvents);
 
       return () => {
         drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
-        drawerResizableSplitter.removeEventListener("mouseup", addPointerEvents);
       };
     }
   }, [isDmnRunnerDrawerOpen]);
+
+  const [dmnRunnerFlexDirection, setDmnRunnerFlexDirection] = useState<"row" | "column">("row");
+  const handlePanelContentResize = useCallback((width: number) => {
+    const iframe = document.getElementById("kogito-iframe");
+    if (iframe) {
+      iframe.style.pointerEvents = "visible";
+    }
+
+    // FIXME: Patternfly bug. The first interaction with the splitter without resizing will result in 0.
+    if (width === 0) {
+      return;
+    }
+
+    if (width > 700) {
+      setDmnRunnerFlexDirection("row");
+    } else {
+      setDmnRunnerFlexDirection("column");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (window.innerWidth < 1200) {
+      setDmnRunnerFlexDirection("column");
+    }
+  }, []);
 
   return (
     <Page
@@ -379,12 +400,15 @@ export function EditorPage(props: Props) {
       <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
         <Drawer isInline={true} isExpanded={isDmnRunnerDrawerOpen}>
           <DrawerContent
-            className={!isDmnRunnerDrawerOpen ? "kogito--editor__drawer-content" : ""}
+            className={
+              !isDmnRunnerDrawerOpen ? "kogito--editor__drawer-content-close" : "kogito--editor__drawer-content-open"
+            }
             panelContent={
               <DrawerPanelContent
                 id={"kogito-panel-content"}
                 className={"kogito--editor__drawer-content-panel"}
-                minSize={350}
+                defaultSize={"350"}
+                onResize={handlePanelContentResize}
                 isResizable={true}
               >
                 <DmnRunnerDrawer
@@ -393,6 +417,7 @@ export function EditorPage(props: Props) {
                   onStopRunDmn={requestCloseDmnRunnerDrawer}
                   formContext={formContext}
                   setFormContext={setFormContext}
+                  flexDirection={dmnRunnerFlexDirection}
                 />
               </DrawerPanelContent>
             }

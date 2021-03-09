@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import * as React from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
@@ -53,6 +54,7 @@ interface Props {
   onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
   formContext: any;
   setFormContext: React.Dispatch<any>;
+  flexDirection: "column" | "row";
 }
 
 const PF_BREAKPOINT_XL = 1200;
@@ -62,14 +64,12 @@ export function DmnRunnerDrawer(props: Props) {
   const [isAutoSubmit, setIsAutoSubmit] = useState(true);
   const autoFormRef = useRef<HTMLFormElement>();
   const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<string[]>();
-  const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() => {
-    const width = window.innerWidth;
-
-    if (width <= PF_BREAKPOINT_XL) {
-      return ButtonPosition.INPUT;
-    }
-    return ButtonPosition.OUTPUT;
-  });
+  const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() =>
+    window.innerWidth <= PF_BREAKPOINT_XL ? ButtonPosition.INPUT : ButtonPosition.OUTPUT
+  );
+  const [dmnRunnerContentStyles, setDmnRunnerContentStyles] = useState<{ width: string; height: string }>(() =>
+    props.flexDirection === "row" ? { width: "50%", height: "100%" } : { width: "100%", height: "50%" }
+  );
 
   const onSubmit = useCallback(
     async ({ context }) => {
@@ -105,55 +105,28 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, [isAutoSubmit]);
 
-  const handleResize = useCallback(() => {
-    const width = window.innerWidth;
-
-    if (width <= PF_BREAKPOINT_XL) {
-      setButtonPosition(ButtonPosition.INPUT);
-    } else {
-      setButtonPosition(ButtonPosition.OUTPUT);
-    }
-  }, []);
-
-  // Execute one time when component is mounted.
   useEffect(() => {
-    window.addEventListener("resize", handleResize);
+    switch (props.flexDirection) {
+      case "row":
+        setButtonPosition(ButtonPosition.OUTPUT);
+        setDmnRunnerContentStyles({ width: "50%", height: "100%" });
+        return;
+      case "column":
+        setButtonPosition(ButtonPosition.INPUT);
+        setDmnRunnerContentStyles({ width: "100%", height: "50%" });
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+        return;
+    }
+  }, [props.flexDirection]);
 
   useLayoutEffect(() => {
     autoFormRef.current?.change("context", props.formContext);
   });
 
-  const [dmnRunnerFlexDirection, setDmnRunnerFlexDirection] = useState<"row" | "column">("row");
-
-  const handlePanelContentResize = useCallback(() => {
-    const panelContent = document.getElementById("kogito-panel-content");
-    console.log(panelContent);
-
-    if (panelContent) {
-      console.log(panelContent.style.width);
-
-      setDmnRunnerFlexDirection("row");
-    } else {
-      setDmnRunnerFlexDirection("column");
-    }
-  }, []);
-
-  useEffect(() => {
-    const panelContent = document.getElementById("kogito-panel-content");
-
-    if (panelContent) {
-      panelContent.addEventListener("resize", handlePanelContentResize);
-      return () => panelContent.removeEventListener("resize", handlePanelContentResize);
-    }
-  }, []);
-
   return (
     <>
-      <div className={"kogito--editor__dmn-runner"} style={{ flexDirection: dmnRunnerFlexDirection }}>
-        <div className={"kogito--editor__dmn-runner-content"}>
+      <div className={"kogito--editor__dmn-runner"} style={{ flexDirection: props.flexDirection }}>
+        <div className={"kogito--editor__dmn-runner-content"} style={dmnRunnerContentStyles}>
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
@@ -199,7 +172,7 @@ export function DmnRunnerDrawer(props: Props) {
             </div>
           </Page>
         </div>
-        <div className={"kogito--editor__dmn-runner-content"}>
+        <div className={"kogito--editor__dmn-runner-content"} style={dmnRunnerContentStyles}>
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
