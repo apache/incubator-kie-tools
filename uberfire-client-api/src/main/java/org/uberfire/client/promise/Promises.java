@@ -16,15 +16,6 @@
 
 package org.uberfire.client.promise;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import elemental2.promise.Promise;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -34,15 +25,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.uberfire.client.promise.PromisePolyfillBootstrapper.ensurePromiseApiIsAvailable;
+import javax.enterprise.context.Dependent;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import elemental2.promise.Promise;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 
 @Dependent
 public class Promises {
-
-    @PostConstruct
-    public void init() {
-        ensurePromiseApiIsAvailable();
-    }
 
     // Reducers
 

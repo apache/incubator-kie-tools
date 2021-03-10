@@ -28,8 +28,6 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import static org.uberfire.debug.Debug.objectId;
-
 @Dependent
 public class WorkbenchPanelPresenterImpl implements WorkbenchPanelPresenter {
 
@@ -97,7 +95,6 @@ public class WorkbenchPanelPresenterImpl implements WorkbenchPanelPresenter {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getName());
-        sb.append(objectId(this));
         if (getDefinition() == null) {
             sb.append(" (no definition)");
         } else {

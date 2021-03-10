@@ -33,7 +33,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenterImpl;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.debug.Debug;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -214,7 +213,6 @@ public class PanelManagerImpl implements PanelManager {
                 return;
             }
             if (!detaching && mapPanelDefinitionToPresenter.containsKey(panelPresenter.getDefinition())) {
-                System.out.println("Running cleanup for " + Debug.objectId(this));
                 detaching = true;
                 Scheduler.get().scheduleFinally(() -> {
                     try {
