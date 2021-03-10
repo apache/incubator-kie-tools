@@ -27,7 +27,8 @@ import {
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ModalBoxCloseButton } from "@patternfly/react-core/dist/js/components/Modal";
-import { BookIcon, TimesCircleIcon } from "@patternfly/react-icons";
+import { BookIcon } from "@patternfly/react-icons/dist/js/icons/book-icon";
+import { TimesCircleIcon } from "@patternfly/react-icons/dist/js/icons/times-circle-icon";
 import { NavigationControls } from "..";
 import { CurrentTutorialContext } from "../../contexts";
 import { Step } from "../../api";

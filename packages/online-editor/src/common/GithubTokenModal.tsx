@@ -15,20 +15,17 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useState, useMemo, useEffect } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "./GlobalContext";
-import {
-  Modal,
-  ModalVariant,
-  Button,
-  BaseSizes,
-  Title,
-  InputGroup,
-  TextInput,
-  InputGroupText
-} from "@patternfly/react-core";
-import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
-import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { BaseSizes } from "@patternfly/react-core/dist/js/styles/sizes";
+import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_HOW_TO_URL, GITHUB_TOKENS_URL } from "./GithubService";
 import { useOnlineI18n } from "./i18n";
 import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
 
@@ -70,7 +67,7 @@ export function GithubTokenModal(props: Props) {
   useEffect(() => {
     context.githubService.authenticate().then(isAuthenticated => {
       setAuthenticated(isAuthenticated);
-      potentialToken.length === 0 ? setIsTokenInvalid(false) : setIsTokenInvalid(!isAuthenticated)
+      potentialToken.length === 0 ? setIsTokenInvalid(false) : setIsTokenInvalid(!isAuthenticated);
     });
   }, []);
 

@@ -27,7 +27,13 @@ import {
   removeFileExtension
 } from "./common/utils";
 import { GithubService } from "./common/GithubService";
-import { Alert, AlertActionLink, AlertActionCloseButton, AlertVariant, List, ListItem } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertActionLink,
+  AlertVariant
+} from "@patternfly/react-core/dist/js/components/Alert";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import "../static/resources/style.css";
 import { I18n } from "@kogito-tooling/i18n/dist/core";

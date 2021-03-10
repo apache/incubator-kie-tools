@@ -15,14 +15,12 @@
  */
 
 import * as React from "react";
-import { useContext, useCallback, useMemo } from "react";
-
+import { useCallback, useContext, useMemo } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { AngleLeftIcon, AngleRightIcon } from "@patternfly/react-icons";
-
-import { getSteps, getCurrentStep } from "./utils";
+import { AngleLeftIcon } from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
+import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
+import { getCurrentStep, getSteps } from "./utils";
 import { CurrentTutorialContext } from "../contexts";
-
 import "./NavigationControls.sass";
 
 export const NavigationControls = () => {

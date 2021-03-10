@@ -15,8 +15,12 @@
  */
 
 import * as React from "react";
-import { Button, Modal, ModalVariant, Radio, Tooltip, ClipboardCopy } from "@patternfly/react-core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";

@@ -16,19 +16,13 @@
 
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
-import {
-  Modal,
-  ModalVariant,
-  Button,
-  Select,
-  SelectOption,
-  SelectDirection,
-  SelectVariant
-} from "@patternfly/react-core";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
-import { OperatingSystem, getOperatingSystem } from "../common/utils";
+import { getOperatingSystem, OperatingSystem } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
+import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 
 enum ModalState {
   SELECT_OS,

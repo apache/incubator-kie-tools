@@ -26,7 +26,7 @@ import {
   TextVariants
 } from "@patternfly/react-core/dist/js/components/Text";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
-import { KeyboardIcon } from "@patternfly/react-icons";
+import { KeyboardIcon } from "@patternfly/react-icons/dist/js/icons/keyboard-icon";
 import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { useKogitoEditorEnvelopeContext } from "../../api";
 import { useEditorEnvelopeI18nContext } from "../i18n";

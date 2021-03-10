@@ -28,15 +28,10 @@ import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
 import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertActionLink,
-  Button,
-  Modal,
-  Page,
-  PageSection
-} from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import * as monaco from "@kiegroup/monaco-editor";
 
 export enum AlertTypes {

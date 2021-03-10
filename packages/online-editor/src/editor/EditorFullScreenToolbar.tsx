@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Button } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useOnlineI18n } from "../common/i18n";
 
 interface Props {
