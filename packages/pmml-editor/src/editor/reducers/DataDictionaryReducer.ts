@@ -22,6 +22,7 @@ import { Builder } from "../paths";
 
 interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
+    readonly modelIndex?: number;
     readonly name?: string;
     readonly type: DataType;
     readonly optype: OpType;

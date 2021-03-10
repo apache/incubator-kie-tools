@@ -32,6 +32,7 @@ import {
   isInvalidValueReplacementRequired,
   isMissingValueReplacementRequired,
   validateMiningField,
+  validateMiningFieldDataFieldReference,
   validateMiningFields,
   validateMiningFieldsDataFieldReference
 } from "../validation/MiningSchema";
@@ -119,8 +120,10 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
           pmml => {
             const modelIndex = action.payload.modelIndex;
             const miningSchemaIndex = action.payload.miningSchemaIndex;
+            const dataDictionary = getDataDictionary(pmml);
+            const miningSchema = getMiningSchema(pmml, modelIndex);
             const miningField = getMiningField(pmml, modelIndex, miningSchemaIndex);
-            if (miningField !== undefined) {
+            if (dataDictionary !== undefined && miningSchema !== undefined && miningField !== undefined) {
               validationRegistry.clear(
                 Builder()
                   .forModel(modelIndex)
@@ -128,48 +131,14 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
                   .forMiningField(miningSchemaIndex)
                   .build()
               );
-              validateMiningField(
-                action.payload.modelIndex,
-                action.payload.miningSchemaIndex,
+              validateMiningField(modelIndex, miningSchemaIndex, miningField, validationRegistry);
+              validateMiningFieldDataFieldReference(
+                modelIndex,
+                dataDictionary.DataField,
+                miningSchemaIndex,
                 miningField,
                 validationRegistry
               );
-            }
-          }
-        );
-        break;
-
-      case Actions.DeleteDataDictionaryField:
-        historyService.batch(
-          state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forMiningSchema()
-            .forMiningField()
-            .build(),
-          () => {
-            // No changes to model. Only validation is required.
-          },
-          pmml => {
-            if (action.payload.modelIndex !== undefined) {
-              const modelIndex = action.payload.modelIndex;
-              const dataDictionary = getDataDictionary(pmml);
-              const miningSchema = getMiningSchema(pmml, modelIndex);
-              if (dataDictionary !== undefined && miningSchema !== undefined) {
-                validationRegistry.clear(
-                  Builder()
-                    .forModel(modelIndex)
-                    .forMiningSchema()
-                    .build()
-                );
-                validateMiningFields(modelIndex, miningSchema.MiningField, validationRegistry);
-                validateMiningFieldsDataFieldReference(
-                  modelIndex,
-                  dataDictionary.DataField,
-                  miningSchema.MiningField,
-                  validationRegistry
-                );
-              }
             }
           }
         );
@@ -194,6 +163,45 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
             );
           }
         });
+      //Note no break here, since we want the validation below to apply.
+      case Actions.AddDataDictionaryField:
+      case Actions.DeleteDataDictionaryField:
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forMiningSchema()
+            .forMiningField()
+            .build(),
+          () => {
+            // No changes to model. Only validation is required.
+          },
+          pmml => {
+            if (action.payload.modelIndex !== undefined) {
+              const modelIndex = action.payload.modelIndex;
+              const dataDictionary = getDataDictionary(pmml);
+              const miningSchema = getMiningSchema(pmml, modelIndex);
+              if (dataDictionary !== undefined && miningSchema !== undefined) {
+                miningSchema.MiningField.forEach((miningField, miningFieldIndex) => {
+                  validationRegistry.clear(
+                    Builder()
+                      .forModel(modelIndex)
+                      .forMiningSchema()
+                      .forMiningField(miningFieldIndex)
+                      .forDataFieldMissing()
+                      .build()
+                  );
+                });
+                validateMiningFieldsDataFieldReference(
+                  modelIndex,
+                  dataDictionary.DataField,
+                  miningSchema.MiningField,
+                  validationRegistry
+                );
+              }
+            }
+          }
+        );
         break;
 
       case Actions.Validate:

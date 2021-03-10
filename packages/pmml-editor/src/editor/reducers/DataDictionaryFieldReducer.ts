@@ -26,7 +26,6 @@ import {
   ValidationRegistry
 } from "../validation";
 import { Builder } from "../paths";
-import { getMiningSchema } from "../PMMLModelHelper";
 
 interface DataDictionaryFieldPayload {
   [Actions.UpdateDataDictionaryField]: {
@@ -96,7 +95,7 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
               draft[dataDictionaryIndex] = dataField;
             }
           },
-          pmml => {
+          () => {
             validationRegistry.clear(
               Builder()
                 .forDataDictionary()

@@ -168,11 +168,28 @@ export const validateMiningFieldsDataFieldReference = (
 ): void => {
   const dataFieldNames = dataFields.map(dataField => dataField.name);
   miningFields.forEach((miningField, miningFieldIndex) =>
-    validateMiningFieldDataFieldReference(modelIndex, dataFieldNames, miningFieldIndex, miningField, validationRegistry)
+    _validateMiningFieldDataFieldReference(
+      modelIndex,
+      dataFieldNames,
+      miningFieldIndex,
+      miningField,
+      validationRegistry
+    )
   );
 };
 
-const validateMiningFieldDataFieldReference = (
+export const validateMiningFieldDataFieldReference = (
+  modelIndex: number,
+  dataFields: DataField[],
+  miningFieldIndex: number,
+  miningField: MiningField,
+  validationRegistry: ValidationRegistry
+): void => {
+  const dataFieldNames = dataFields.map(dataField => dataField.name);
+  _validateMiningFieldDataFieldReference(modelIndex, dataFieldNames, miningFieldIndex, miningField, validationRegistry);
+};
+
+const _validateMiningFieldDataFieldReference = (
   modelIndex: number,
   dataFieldNames: FieldName[],
   miningFieldIndex: number,
