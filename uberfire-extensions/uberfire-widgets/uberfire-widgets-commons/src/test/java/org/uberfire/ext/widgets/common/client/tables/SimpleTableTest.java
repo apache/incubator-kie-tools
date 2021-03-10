@@ -25,19 +25,10 @@ import org.gwtbootstrap3.client.ui.html.Text;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
-import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
-import org.uberfire.ext.services.shared.preferences.UserPreference;
-import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
-import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
 import org.uberfire.ext.widgets.table.client.DataGrid;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({Image.class, Label.class, Text.class})
@@ -46,23 +37,11 @@ public class SimpleTableTest {
     @GwtMock
     DataGrid dataGridMock;
 
-    @Mock
-    protected UserPreferencesService userPreferencesServiceMock;
-
     private SimpleTable simpleTable;
-    private GridPreferencesStore gridPreferencesStore;
 
     @Before
     public void setupMocks() {
         simpleTable = new SimpleTable();
-        gridPreferencesStore = new GridPreferencesStore(new GridGlobalPreferences("key", null, null));
-        simpleTable.setGridPreferencesStore(gridPreferencesStore);
-
-        //TODO
-/*
-        userPreferencesService = new CallerMock<>(userPreferencesServiceMock);
-
-        simpleTable.setPreferencesService(userPreferencesService);*/
     }
 
     @Test
@@ -80,7 +59,6 @@ public class SimpleTableTest {
         simpleTable.afterColumnChangedHandler();
 
         assertTrue(simpleTable.isPersistingPreferencesOnChange());
-        verify(userPreferencesServiceMock).saveUserPreferences(any(UserPreference.class));
     }
 
     @Test
@@ -88,39 +66,7 @@ public class SimpleTableTest {
         simpleTable.setPersistPreferencesOnChange(true);
         simpleTable.afterColumnChangedHandler();
 
-        verify(userPreferencesServiceMock).saveUserPreferences(any(UserPreference.class));
-
         simpleTable.setPersistPreferencesOnChange(false);
         simpleTable.afterColumnChangedHandler();
-
-        verifyNoMoreInteractions(userPreferencesServiceMock);
-    }
-    @Test
-    public void testDefaultSavePreferencesUsingGlobalPreferencesKey() {
-        String newKey = "newKey";
-        gridPreferencesStore.setPreferenceKey(newKey);
-
-        simpleTable.saveGridPreferences();
-
-        ArgumentCaptor<UserPreference> argumentCaptor = ArgumentCaptor.forClass(UserPreference.class);
-        verify(userPreferencesServiceMock).saveUserPreferences(argumentCaptor.capture());
-
-        assertEquals(gridPreferencesStore.getGlobalPreferences().getKey(), argumentCaptor.getValue().getPreferenceKey());
-        assertNotEquals(newKey, argumentCaptor.getValue().getPreferenceKey());
-        assertEquals(UserPreferencesType.GRIDPREFERENCES, argumentCaptor.getValue().getType());
-    }
-
-    @Test
-    public void testSaveUserPreferencesUsingPreferencesKey() {
-        String newKey = "newKey";
-        gridPreferencesStore.setPreferenceKey(newKey);
-
-        simpleTable.saveGridToUserPreferences();
-
-        ArgumentCaptor<UserPreference> argumentCaptor = ArgumentCaptor.forClass(UserPreference.class);
-        verify(userPreferencesServiceMock).saveUserPreferences(argumentCaptor.capture());
-
-        assertEquals(newKey, argumentCaptor.getValue().getPreferenceKey());
-        assertEquals(UserPreferencesType.GRIDPREFERENCES, argumentCaptor.getValue().getType());
     }
 }

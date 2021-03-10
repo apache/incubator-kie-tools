@@ -56,13 +56,11 @@ public class SouthDockItemTest {
     public void setup() {
         dockWithFontIcon = new UberfireDock(UberfireDockPosition.EAST,
                                             "BRIEFCASE",
-                                            placeRequest,
-                                            "").withSize(450).withLabel("dock");
+                                            placeRequest).withSize(450).withLabel("dock");
         dockWithImageIcon = new UberfireDock(UberfireDockPosition.EAST,
                                              imageResource,
                                              imageResourceFocused,
-                                             placeRequest,
-                                             "").withSize(450).withLabel("dock");
+                                             placeRequest).withSize(450).withLabel("dock");
 
         southDockWithFontIcon = spy(new SouthDockItem(dockWithFontIcon,
                                                       emptyCommand,

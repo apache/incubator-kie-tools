@@ -25,7 +25,6 @@ public class FileExportsPreferencesTest {
     @Test
     public void testDefaultValues() {
         FileExportsPreferences fileExportsPreferences = new FileExportsPreferences();
-        fileExportsPreferences = fileExportsPreferences.defaultValue(fileExportsPreferences);
         final PdfExportPreferences pdfPreferences = fileExportsPreferences.getPdfPreferences();
         assertEquals(PdfExportPreferences.Orientation.PORTRAIT,
                      pdfPreferences.getOrientation());

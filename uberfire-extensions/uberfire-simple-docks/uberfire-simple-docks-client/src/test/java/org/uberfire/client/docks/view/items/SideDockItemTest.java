@@ -57,15 +57,13 @@ public class SideDockItemTest {
     public void setup() {
         dockWithFontIcon = new UberfireDock(UberfireDockPosition.EAST,
                                             "BRIEFCASE",
-                                            placeRequest,
-                                            "")
+                                            placeRequest)
                 .withSize(450)
                 .withLabel("dock");
         dockWithImageIcon = new UberfireDock(UberfireDockPosition.EAST,
                                              imageResource,
                                              imageResourceFocused,
-                                             placeRequest,
-                                             "")
+                                             placeRequest)
                 .withSize(450)
                 .withLabel("dock");
 
@@ -144,8 +142,7 @@ public class SideDockItemTest {
 
         UberfireDock dock1 = new UberfireDock(UberfireDockPosition.EAST,
                                               "BRIEFCASE",
-                                              placeRequest,
-                                              "")
+                                              placeRequest)
                 .withLabel(dock_label)
                 .withTooltip(dock_tooltip);
         SideDockItem tested1 = spy(new SideDockItem(dock1, emptyCommand, emptyCommand));
@@ -154,8 +151,7 @@ public class SideDockItemTest {
 
         UberfireDock dock2 = new UberfireDock(UberfireDockPosition.EAST,
                                               "BRIEFCASE",
-                                              placeRequest,
-                                              "")
+                                              placeRequest)
                 .withLabel(dock_label);
         SideDockItem tested2 = spy(new SideDockItem(dock2, emptyCommand, emptyCommand));
         tested2.createButton();
@@ -163,8 +159,7 @@ public class SideDockItemTest {
 
         UberfireDock dock3 = new UberfireDock(UberfireDockPosition.EAST,
                                               "BRIEFCASE",
-                                              new DefaultPlaceRequest(dock_screenID),
-                                              "");
+                                              new DefaultPlaceRequest(dock_screenID));
         SideDockItem tested3 = spy(new SideDockItem(dock3, emptyCommand, emptyCommand));
         tested3.createButton();
         verify(tested3).configureTooltip(any(Tooltip.class), eq(dock_screenID));

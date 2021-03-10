@@ -34,9 +34,9 @@ public class PanelDefinitionImplTest {
 
     @Before
     public void setUp() throws Exception {
-        panelDefinition = new PanelDefinitionImpl();
-        otherPanel = new PanelDefinitionImpl();
-        parent = new PanelDefinitionImpl();
+        panelDefinition = new PanelDefinitionImpl("foo1");
+        otherPanel = new PanelDefinitionImpl("foo2");
+        parent = new PanelDefinitionImpl("foo3");
         placeRequest = mock(PlaceRequest.class);
         part = new PartDefinitionImpl(placeRequest);
     }

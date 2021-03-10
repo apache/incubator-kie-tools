@@ -37,8 +37,8 @@ public class PartDefinitionImplTest {
     public void setUp() throws Exception {
         PlaceRequest placeRequest = mock(PlaceRequest.class);
         part = new PartDefinitionImpl(placeRequest);
-        parent = new PanelDefinitionImpl();
-        anotherParent = new PanelDefinitionImpl();
+        parent = new PanelDefinitionImpl("foo1");
+        anotherParent = new PanelDefinitionImpl("foo2");
     }
 
     @Test(expected = IllegalStateException.class)
