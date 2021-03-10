@@ -15,16 +15,17 @@
 package kogitosupportingservice
 
 import (
+	"time"
+
 	"github.com/kiegroup/kogito-cloud-operator/core/connector"
 	"github.com/kiegroup/kogito-cloud-operator/core/kogitoservice"
 	"k8s.io/apimachinery/pkg/types"
 	controller "sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"time"
 )
 
 const (
 	// DefaultTrustyImageName is just the image name for the Trusty Service
-	DefaultTrustyImageName = "kogito-trusty"
+	DefaultTrustyImageName = "kogito-trusty-infinispan"
 	// DefaultTrustyName is the default name for the Trusty instance service
 	DefaultTrustyName = "trusty"
 )
