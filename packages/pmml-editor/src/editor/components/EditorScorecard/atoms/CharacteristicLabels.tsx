@@ -59,10 +59,9 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
   );
   return (
     <>
-      {areReasonCodesUsed &&
-        activeCharacteristic.reasonCode !== undefined &&
-        reasonCodeValidation.length === 0 &&
-        CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
+      {areReasonCodesUsed && activeCharacteristic.reasonCode !== undefined && reasonCodeValidation.length === 0 && (
+        <CharacteristicLabel name={"Reason code"} value={activeCharacteristic.reasonCode} />
+      )}
       {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
         <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
           <>
@@ -71,10 +70,9 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
           </>
         </ValidationIndicatorLabel>
       )}
-
-      {activeCharacteristic.baselineScore !== undefined &&
-        baselineScoreValidation.length === 0 &&
-        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
+      {activeCharacteristic.baselineScore !== undefined && baselineScoreValidation.length === 0 && (
+        <CharacteristicLabel name={"Baseline score"} value={activeCharacteristic.baselineScore.toString()} />
+      )}
       {areReasonCodesUsed && activeCharacteristic.baselineScore === undefined && baselineScoreValidation.length > 0 && (
         <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="characteristic-list__item__label">
           <>

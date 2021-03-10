@@ -79,6 +79,80 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     );
   }, [characteristics]);
 
+  const onDeleteOutputField = useCallback(
+    _index => {
+      if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
+        dispatch({
+          type: Actions.DeleteOutput,
+          payload: {
+            modelIndex: modelIndex,
+            outputIndex: _index
+          }
+        });
+      }
+    },
+    [modelIndex, output]
+  );
+
+  const onUpdateOutputField = useCallback(
+    (_index, _outputField) => {
+      if (_index === undefined) {
+        dispatch({
+          type: Actions.AddOutput,
+          payload: {
+            modelIndex: modelIndex,
+            outputField: _outputField
+          }
+        });
+      } else {
+        dispatch({
+          type: Actions.UpdateOutput,
+          payload: {
+            modelIndex: modelIndex,
+            outputIndex: _index,
+            outputField: _outputField
+          }
+        });
+      }
+    },
+    [modelIndex]
+  );
+
+  const onUpdateModelName = useCallback(
+    (_modelName: string) => {
+      if (_modelName !== modelName) {
+        dispatch({
+          type: Actions.Scorecard_SetModelName,
+          payload: {
+            modelIndex: modelIndex,
+            modelName: _modelName === "" ? undefined : _modelName
+          }
+        });
+      }
+    },
+    [modelIndex]
+  );
+
+  const onUpdateCoreProperty = useCallback(
+    _props => {
+      dispatch({
+        type: Actions.Scorecard_SetCoreProperties,
+        payload: {
+          modelIndex: modelIndex,
+          isScorable: _props.isScorable,
+          functionName: _props.functionName,
+          algorithmName: _props.algorithmName,
+          baselineScore: _props.baselineScore,
+          baselineMethod: _props.baselineMethod,
+          initialScore: _props.initialScore,
+          useReasonCodes: _props.areReasonCodesUsed,
+          reasonCodeAlgorithm: _props.reasonCodeAlgorithm
+        }
+      });
+    },
+    [modelIndex]
+  );
+
   return (
     <div data-testid="editor-page" className={"editor"}>
       {!model && <EmptyStateModelNotFound />}
@@ -93,48 +167,9 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   miningSchema={miningSchema}
                   output={output}
                   validateOutputFieldName={validateOutputName}
-                  deleteOutputField={_index => {
-                    if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
-                      dispatch({
-                        type: Actions.DeleteOutput,
-                        payload: {
-                          modelIndex: modelIndex,
-                          outputIndex: _index
-                        }
-                      });
-                    }
-                  }}
-                  commitOutputField={(_index, _outputField: OutputField) => {
-                    if (_index === undefined) {
-                      dispatch({
-                        type: Actions.AddOutput,
-                        payload: {
-                          modelIndex: modelIndex,
-                          outputField: _outputField
-                        }
-                      });
-                    } else {
-                      dispatch({
-                        type: Actions.UpdateOutput,
-                        payload: {
-                          modelIndex: modelIndex,
-                          outputIndex: _index,
-                          outputField: _outputField
-                        }
-                      });
-                    }
-                  }}
-                  commitModelName={(_modelName: string) => {
-                    if (_modelName !== modelName) {
-                      dispatch({
-                        type: Actions.Scorecard_SetModelName,
-                        payload: {
-                          modelIndex: modelIndex,
-                          modelName: _modelName === "" ? undefined : _modelName
-                        }
-                      });
-                    }
-                  }}
+                  deleteOutputField={onDeleteOutputField}
+                  commitOutputField={onUpdateOutputField}
+                  commitModelName={onUpdateModelName}
                 />
               </PageSection>
             </div>
@@ -154,22 +189,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   initialScore={model.initialScore}
                   areReasonCodesUsed={model.useReasonCodes ?? true}
                   reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
-                  commit={_props => {
-                    dispatch({
-                      type: Actions.Scorecard_SetCoreProperties,
-                      payload: {
-                        modelIndex: modelIndex,
-                        isScorable: _props.isScorable,
-                        functionName: _props.functionName,
-                        algorithmName: _props.algorithmName,
-                        baselineScore: _props.baselineScore,
-                        baselineMethod: _props.baselineMethod,
-                        initialScore: _props.initialScore,
-                        useReasonCodes: _props.areReasonCodesUsed,
-                        reasonCodeAlgorithm: _props.reasonCodeAlgorithm
-                      }
-                    });
-                  }}
+                  commit={onUpdateCoreProperty}
                 />
               </PageSection>
 
