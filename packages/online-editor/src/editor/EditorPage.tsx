@@ -292,6 +292,8 @@ export function EditorPage(props: Props) {
             window.clearInterval(polling1);
           });
         }, DMN_RUNNER_POLLING_TIME);
+
+        // TODO: do it on isDirty
         editor
           ?.getContent()
           .then(content => DmnRunner.getFormSchema(content ?? ""))
@@ -407,7 +409,7 @@ export function EditorPage(props: Props) {
               <DrawerPanelContent
                 id={"kogito-panel-content"}
                 className={"kogito--editor__drawer-content-panel"}
-                defaultSize={"350"}
+                defaultSize={"700px"}
                 onResize={handlePanelContentResize}
                 isResizable={true}
               >

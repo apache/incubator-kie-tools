@@ -121,7 +121,12 @@ export function DmnRunnerDrawer(props: Props) {
 
   useLayoutEffect(() => {
     autoFormRef.current?.change("context", props.formContext);
-  });
+  }, []);
+
+  const tweakAutoSubmit = useCallback((value) => {
+    autoFormRef.current?.submit();
+    setIsAutoSubmit(value)
+  }, [])
 
   return (
     <>
@@ -132,7 +137,7 @@ export function DmnRunnerDrawer(props: Props) {
               <TextContent>
                 <Text component={"h2"}>Inputs</Text>
               </TextContent>
-              <Switch label={"Auto-submit"} onChange={setIsAutoSubmit} isChecked={isAutoSubmit} />
+              <Switch label={"Auto-submit"} onChange={tweakAutoSubmit} isChecked={isAutoSubmit} />
               {buttonPosition === ButtonPosition.INPUT && (
                 <DrawerCloseButton onClick={(e: any) => props.onStopRunDmn(e)} />
               )}
