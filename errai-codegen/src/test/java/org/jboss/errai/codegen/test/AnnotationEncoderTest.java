@@ -40,7 +40,7 @@ public class AnnotationEncoderTest extends AbstractCodegenTest {
             " return java.lang.annotation.Target.class; " +
             "} " +
             "public String toString() { " +
-            " return \"@java.lang.annotation.Target(value=[METHOD])\"; " +
+            " return \"@java.lang.annotation.Target(value={METHOD})\"; " +
             "} " +
             "public java.lang.annotation.ElementType[] value() { " +
             " return new java.lang.annotation.ElementType[] { " +
@@ -64,7 +64,7 @@ public class AnnotationEncoderTest extends AbstractCodegenTest {
             "    return org.jboss.errai.codegen.test.model.TEnum.FOURTH; " +
             "} " +
             "public String toString() { " +
-            "    return \"@org.jboss.errai.codegen.test.model.MyTestAnnotation(foo=barfoo, testEum=FOURTH)\"; " +
+            "    return \"@org.jboss.errai.codegen.test.model.MyTestAnnotation(foo=\\\"barfoo\\\", testEum=FOURTH)\"; " +
             "} " +
             "}", enc);
   }
