@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
 import { GwtEditorWrapperFactory } from "..";
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
@@ -26,10 +25,5 @@ EditorEnvelope.init({
       window.parent.postMessage(message, "*", _);
     }
   },
-  editorFactory: new GwtEditorWrapperFactory(),
-  editorContext: { channel: getChannelType(), operatingSystem: getOperatingSystem() }
+  editorFactory: new GwtEditorWrapperFactory()
 });
-
-export function getChannelType(): ChannelType {
-  return frameElement.attributes.getNamedItem("data-envelope-channel")?.value as ChannelType;
-}

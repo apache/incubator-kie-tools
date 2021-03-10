@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator } from "../../../api";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel"
+import { EditorEnvelopeLocator, ChannelType } from "../../../api";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { File } from "../../../channel";
 import { EmbeddedViewer } from "../../embedded";
@@ -46,7 +45,12 @@ describe("EmbeddedViewer::ONLINE", () => {
 
   test("EmbeddedViewer::defaults", () => {
     const { getByTestId, container } = render(
-      <EmbeddedViewer file={file} editorEnvelopeLocator={editorEnvelopeLocator} channelType={channelType} locale={"en"}/>
+      <EmbeddedViewer
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+        locale={"en"}
+      />
     );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();

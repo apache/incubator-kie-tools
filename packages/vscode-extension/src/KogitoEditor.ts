@@ -16,6 +16,7 @@
 
 import * as vscode from "vscode";
 import {
+  ChannelType,
   EditorApi,
   EditorEnvelopeLocator,
   EnvelopeMapping,
@@ -57,7 +58,8 @@ export class KogitoEditor implements EditorApi {
             fileExtension: document.fileExtension,
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
             initialLocale: vscode.env.language,
-            isReadOnly: false
+            isReadOnly: false,
+            channel: ChannelType.VSCODE
           }
         )
     )

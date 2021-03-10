@@ -17,7 +17,6 @@
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import {  GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
@@ -26,6 +25,5 @@ EditorEnvelope.init({
       window.parent.postMessage(message, targetOrigin!, _);
     }
   },
-  editorFactory: new GwtEditorWrapperFactory(),
-  editorContext: { channel: ChannelType.GITHUB, operatingSystem: getOperatingSystem() }
+  editorFactory: new GwtEditorWrapperFactory()
 });

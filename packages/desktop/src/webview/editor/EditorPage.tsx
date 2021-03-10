@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import {
   Alert,
@@ -34,8 +34,8 @@ import { FileSaveActions } from "../../common/ElectronFile";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDesktopI18n } from "../common/i18n";
-import IpcRendererEvent = Electron.IpcRendererEvent;
 import * as monaco from "@kiegroup/monaco-editor";
+import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
   onClose: () => void;

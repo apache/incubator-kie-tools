@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 
 /**
  * PUBLIC ENVELOPE API

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { NotificationsApi, Notification } from "@kogito-tooling/notifications/dist/api";
+import { Notification, NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
 import {
+  ChannelType,
   Editor,
   EditorFactory,
   EditorInitArgs,
@@ -76,7 +77,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         fileExtension: fileExtension,
         resourcesPathPrefix: "",
         initialLocale: "",
-        isReadOnly: false
+        isReadOnly: false,
+        channel: ChannelType.OTHER
       }) !== undefined
     );
   }
@@ -132,8 +134,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
 
     window.envelope = {
       editorContext: {
-        operatingSystem: envelopeContext.context.operatingSystem,
-        channel: envelopeContext.context.channel,
+        operatingSystem: envelopeContext.operatingSystem,
+        channel: initArgs.channel,
         readOnly: initArgs.isReadOnly
       },
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,

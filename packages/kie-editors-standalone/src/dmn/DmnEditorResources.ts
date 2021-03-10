@@ -18,6 +18,7 @@ import { GwtEditorMapping } from "@kogito-tooling/kie-bc-editors";
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
 import * as externalAssets from "@kogito-tooling/external-assets-base";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 
 export class DmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
@@ -25,7 +26,8 @@ export class DmnEditorResources extends BaseEditorResources {
       resourcesPathPrefix: args.resourcesPathPrefix,
       fileExtension: "dmn",
       initialLocale: "",
-      isReadOnly: false
+      isReadOnly: false,
+      channel: ChannelType.EMBEDDED
     })!;
 
     const dmnEditorResources: EditorResources = {

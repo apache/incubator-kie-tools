@@ -23,9 +23,9 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
-  StateControlCommand
+  StateControlCommand,
+  ChannelType
 } from "../api";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
@@ -105,7 +105,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       .catch(e => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
 
-    this.registerDefaultShortcuts(initArgs)
+    this.registerDefaultShortcuts(initArgs);
 
     this.args.envelopeContext.channelApi.notifications.receive_ready();
   };
@@ -115,7 +115,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
       .catch(e => {
-        this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent)
+        this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent);
         throw e;
       })
       .finally(() => this.args.view().setLoadingFinished());
@@ -162,7 +162,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   }
 
   private registerDefaultShortcuts(initArgs: EditorInitArgs) {
-    if (this.args.envelopeContext.context.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
+    if (initArgs.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
       return;
     }
 

@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-import { EditorApi, EditorEnvelopeLocator, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "../../api";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
+import {
+  ChannelType,
+  EditorApi,
+  EditorEnvelopeLocator,
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi
+} from "../../api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
 import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/channel";
 import * as CSS from "csstype";
@@ -95,7 +100,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
             fileExtension: props.file.fileExtension,
             resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "",
             initialLocale: props.locale,
-            isReadOnly: props.file.isReadOnly
+            isReadOnly: props.file.isReadOnly,
+            channel: props.channelType
           }
         )
     );

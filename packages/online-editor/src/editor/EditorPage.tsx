@@ -26,7 +26,7 @@ import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
 import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import {
   Alert,

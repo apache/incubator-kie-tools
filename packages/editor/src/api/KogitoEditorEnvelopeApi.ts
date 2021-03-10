@@ -25,11 +25,21 @@ export interface Association {
   envelopeServerId: string;
 }
 
+export enum ChannelType {
+  VSCODE = "VSCODE",
+  ONLINE = "ONLINE",
+  GITHUB = "GITHUB",
+  DESKTOP = "DESKTOP",
+  EMBEDDED = "EMBEDDED",
+  OTHER = "OTHER"
+}
+
 export interface EditorInitArgs {
   resourcesPathPrefix: string;
   fileExtension: string;
   initialLocale: string;
   isReadOnly: boolean;
+  channel: ChannelType;
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {

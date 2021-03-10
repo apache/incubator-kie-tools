@@ -16,10 +16,10 @@
 
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
+import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
-import { ContentType } from "@kogito-tooling/channel-common-api/dist";
+import { ContentType } from "@kogito-tooling/channel-common-api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
 
 declare global {
@@ -44,7 +44,8 @@ const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, ori
           resourcesPathPrefix: "",
           fileExtension: "bpmn",
           initialLocale: "en-US",
-          isReadOnly: readOnly ?? true
+          isReadOnly: readOnly ?? true,
+          channel: ChannelType.EMBEDDED
         }
       );
     }

@@ -17,7 +17,6 @@
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
 
 const initEnvelope = () => {
   const container = document.getElementById("envelope-app")!;
@@ -52,8 +51,7 @@ const initEnvelope = () => {
     },
     // The Editor's scripts are proactively loaded in this distribution, thus
     // it should not be loaded again by the Editor wrapper.
-    editorFactory: new GwtEditorWrapperFactory({ shouldLoadResourcesDynamically: false }),
-    editorContext: { channel: ChannelType.EMBEDDED, operatingSystem: getOperatingSystem() }
+    editorFactory: new GwtEditorWrapperFactory({ shouldLoadResourcesDynamically: false })
   });
 };
 

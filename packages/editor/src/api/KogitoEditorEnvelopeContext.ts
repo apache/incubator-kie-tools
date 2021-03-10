@@ -18,13 +18,13 @@ import * as React from "react";
 import { useContext } from "react";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
-import { EditorContext } from "./EditorContext";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 
 export interface KogitoEditorEnvelopeContextType {
   channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
-  context: EditorContext;
+  operatingSystem?: OperatingSystem;
   services: {
     keyboardShortcuts: DefaultKeyboardShortcutsService;
     guidedTour: { isEnabled: () => boolean };

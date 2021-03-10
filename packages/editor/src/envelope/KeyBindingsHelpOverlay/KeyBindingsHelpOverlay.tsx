@@ -27,7 +27,6 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
-import { EditorContext } from "../../api";
 import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { useKogitoEditorEnvelopeContext } from "../../api";
 import { useEditorEnvelopeI18nContext } from "../i18n";
@@ -46,7 +45,7 @@ export function KeyBindingsHelpOverlay() {
       .filter(k => !k.opts?.hidden)
       .map(k => {
         return {
-          combination: handleMacOsCombination(k.combination, envelopeContext.context),
+          combination: handleMacOsCombination(k.combination, envelopeContext.operatingSystem),
           category: k.label.split("|")[0]?.trim(),
           label: k.label.split("|")[1]?.trim()
         };
@@ -120,8 +119,8 @@ export function KeyBindingsHelpOverlay() {
   );
 }
 
-function handleMacOsCombination(combination: string, context: EditorContext) {
-  if (context.operatingSystem === OperatingSystem.MACOS) {
+function handleMacOsCombination(combination: string, os?: OperatingSystem) {
+  if (os === OperatingSystem.MACOS) {
     return combination.replace("ctrl", "cmd");
   }
 

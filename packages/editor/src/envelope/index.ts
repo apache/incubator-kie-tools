@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-
 import {
   EditorFactory,
-  EditorContext,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType
@@ -31,7 +29,8 @@ import { Envelope } from "@kogito-tooling/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import "./styles.scss"
+import "./styles.scss";
+import { getOperatingSystem } from "@kogito-tooling/channel-common-api";
 
 /**
  * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.
@@ -40,15 +39,10 @@ import "./styles.scss"
  * @param args.editorFactory The factory of Editors provided by this EditorEnvelope.
  * @param args.editorContext The context for Editors with information about the running channel.
  */
-export function init(args: {
-  container: HTMLElement;
-  bus: EnvelopeBus;
-  editorFactory: EditorFactory;
-  editorContext: EditorContext;
-}) {
+export function init(args: { container: HTMLElement; bus: EnvelopeBus; editorFactory: EditorFactory }) {
   const i18n = new I18n<EditorEnvelopeI18n>(editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries);
   const kogitoEditorFactory = new KogitoEditorEnvelopeApiFactory(args.editorFactory, i18n);
-  const defaultKeyboardShortcuts = new DefaultKeyboardShortcutsService({ os: args.editorContext.operatingSystem });
+  const defaultKeyboardShortcuts = new DefaultKeyboardShortcutsService({ os: getOperatingSystem() });
   const i18nService = new I18nService();
   const envelope = new Envelope<
     KogitoEditorEnvelopeApi,
@@ -57,11 +51,7 @@ export function init(args: {
     KogitoEditorEnvelopeContextType
   >(args.bus);
 
-  return new KogitoEditorEnvelope(
-    args.editorContext,
-    kogitoEditorFactory,
-    defaultKeyboardShortcuts,
-    i18nService,
-    envelope
-  ).start(args.container);
+  return new KogitoEditorEnvelope(kogitoEditorFactory, defaultKeyboardShortcuts, i18nService, envelope).start(
+    args.container
+  );
 }
