@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  Modal,
   Text,
   TextContent,
   TextList,
@@ -25,7 +24,8 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/Text";
+import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { KeyboardIcon } from "@patternfly/react-icons";
 import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { useKogitoEditorEnvelopeContext } from "../../api";

@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useContext, useCallback, useMemo } from "react";
 
-import { Button } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { AngleLeftIcon, AngleRightIcon } from "@patternfly/react-icons";
 
 import { getSteps, getCurrentStep } from "./utils";

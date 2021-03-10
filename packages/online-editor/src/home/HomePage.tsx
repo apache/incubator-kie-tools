@@ -17,7 +17,6 @@
 import { File as UploadFile, newFile } from "@kogito-tooling/editor/dist/channel";
 import {
   Brand,
-  Bullseye,
   Button,
   Card,
   CardBody,
@@ -32,19 +31,19 @@ import {
   Gallery,
   Page,
   PageHeader,
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem,
   PageSection,
   Text,
   TextContent,
   TextInput,
   TextVariants,
-  Title,
-  PageHeaderTools,
-  PageHeaderToolsGroup,
-  PageHeaderToolsItem
+  Title
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";

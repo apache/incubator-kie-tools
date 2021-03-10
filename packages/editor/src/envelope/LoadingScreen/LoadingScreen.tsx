@@ -15,7 +15,10 @@
  */
 
 import * as React from "react";
-import { Bullseye, Page, Spinner, Title } from "@patternfly/react-core";
+import { Page } from "@patternfly/react-core/dist/js/components/Page"
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner"
+import { Title } from "@patternfly/react-core/dist/js/components/Title"
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye"
 import { useEditorEnvelopeI18nContext } from "../i18n";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 
