@@ -27,9 +27,8 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
-import { EditorContext } from "../../api";
+import { EditorContext, useKogitoEditorEnvelopeContext } from "../../api";
 import { OperatingSystem } from "@kogito-tooling/channel-common-api";
-import { useKogitoEditorEnvelopeContext } from "../../api";
 import { useEditorEnvelopeI18nContext } from "../i18n";
 
 export function KeyBindingsHelpOverlay() {
@@ -84,7 +83,7 @@ export function KeyBindingsHelpOverlay() {
     <>
       <div
         onClick={() => setShowing(!showing)}
-        className={"kogito-tooling--keyboard-shortcuts-icon"}
+        className={"kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"}
         data-testid={"keyboard-shortcuts-help-overlay-icon"}
       >
         <KeyboardIcon />
@@ -97,6 +96,7 @@ export function KeyBindingsHelpOverlay() {
         width={"60%"}
         onClose={toggle}
         data-testid={"keyboard-shortcuts-help-overlay"}
+        className={"kogito-tooling--keyboard-shortcuts"}
       >
         <TextContent>
           <TextList component={TextListVariants.dl}>

@@ -4,7 +4,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 <body>
   <div>
     <div
-      class="kogito-tooling--keyboard-shortcuts-icon"
+      class="kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
@@ -33,7 +33,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <body>
   <div>
     <div
-      class="kogito-tooling--keyboard-shortcuts-icon"
+      class="kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
@@ -69,7 +69,7 @@ exports[`EditorEnvelopeView after set content 1`] = `
 <body>
   <div>
     <div
-      class="kogito-tooling--keyboard-shortcuts-icon"
+      class="kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
