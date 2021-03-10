@@ -16,9 +16,7 @@ package infrastructure
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/core/framework"
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure/kafka/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/core/operator"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -27,8 +25,6 @@ import (
 
 const (
 	strimziServerGroup = "kafka.strimzi.io"
-	// StrimziOperatorName is the default Strimzi operator name
-	StrimziOperatorName = "strimzi-cluster-operator"
 
 	strimziBrokerLabel         = "strimzi.io/cluster"
 	defaultKafkaTopicPartition = 1
@@ -38,8 +34,7 @@ const (
 	KafkaKind = "Kafka"
 
 	// KafkaInstanceName is the default name for the Kafka cluster managed by KogitoInfra
-	KafkaInstanceName    = "kogito-kafka"
-	kafkaDefaultReplicas = 1
+	KafkaInstanceName = "kogito-kafka"
 )
 
 var (
@@ -51,7 +46,6 @@ var (
 type KafkaHandler interface {
 	IsStrimziAvailable() bool
 	FetchKafkaInstance(key types.NamespacedName) (*v1beta1.Kafka, error)
-	CreateKafkaInstance(key types.NamespacedName, owner resource.KubernetesResource) (*v1beta1.Kafka, error)
 	FetchKafkaTopic(key types.NamespacedName) (*v1beta1.KafkaTopic, error)
 	CreateKafkaTopic(topicName, kafkaName, kafkaNamespace string) (*v1beta1.KafkaTopic, error)
 	ResolveKafkaServerURI(kafka *v1beta1.Kafka) (string, error)
@@ -85,55 +79,6 @@ func (k *kafkaHandler) FetchKafkaInstance(key types.NamespacedName) (*v1beta1.Ka
 	} else {
 		k.Log.Debug("kafka instance found")
 		return kafkaInstance, nil
-	}
-}
-
-func (k *kafkaHandler) CreateKafkaInstance(key types.NamespacedName, owner resource.KubernetesResource) (*v1beta1.Kafka, error) {
-	k.Log.Debug("Going to create Kafka instance")
-	kafkaInstance := GetKafkaDefaultResource(key.Name, key.Namespace)
-	if err := framework.SetOwner(owner, k.Scheme, kafkaInstance); err != nil {
-		return nil, err
-	}
-	if err := kubernetes.ResourceC(k.Client).Create(kafkaInstance); err != nil {
-		k.Log.Error(err, "Error occurs while creating Kafka instance")
-		return nil, err
-	}
-	k.Log.Debug("Kafka instance created successfully")
-	return kafkaInstance, nil
-}
-
-// GetKafkaDefaultResource returns a Kafka resource with default configuration
-func GetKafkaDefaultResource(name, namespace string) *v1beta1.Kafka {
-	return &v1beta1.Kafka{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-		},
-		Spec: v1beta1.KafkaSpec{
-			EntityOperator: v1beta1.EntityOperatorSpec{
-				TopicOperator: v1beta1.EntityTopicOperatorSpec{},
-				UserOperator:  v1beta1.EntityUserOperatorSpec{},
-			},
-			Kafka: v1beta1.KafkaClusterSpec{
-				Replicas: kafkaDefaultReplicas,
-				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
-				Listeners: v1beta1.KafkaListeners{
-					Plain: v1beta1.KafkaListenerPlain{},
-				},
-				JvmOptions: map[string]interface{}{"gcLoggingEnabled": false},
-				Config: map[string]interface{}{
-					"log.message.format.version":               "2.3",
-					"offsets.topic.replication.factor":         kafkaDefaultReplicas,
-					"transaction.state.log.min.isr":            1,
-					"transaction.state.log.replication.factor": kafkaDefaultReplicas,
-					"auto.create.topics.enable":                true,
-				},
-			},
-			Zookeeper: v1beta1.ZookeeperClusterSpec{
-				Replicas: kafkaDefaultReplicas,
-				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
-			},
-		},
 	}
 }
 

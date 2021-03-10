@@ -130,7 +130,6 @@ func (i *infinispanInfraReconciler) Reconcile() (requeue bool, resultErr error) 
 		return false, errorForResourceAPINotFound(i.instance.GetSpec().GetResource().GetAPIVersion())
 	}
 
-	// Step 1: check whether user has provided custom infinispan instance reference
 	if len(i.instance.GetSpec().GetResource().GetName()) > 0 {
 		i.Log.Debug("Custom infinispan instance reference is provided")
 
@@ -147,21 +146,7 @@ func (i *infinispanInfraReconciler) Reconcile() (requeue bool, resultErr error) 
 			return false, errorForResourceNotFound("Infinispan", i.instance.GetSpec().GetResource().GetName(), namespace)
 		}
 	} else {
-		// create/refer kogito-infinispan instance
-		i.Log.Debug("Custom infinispan instance reference is not provided")
-		infinispanInstance, resultErr = infinispanHandler.FetchInfinispanInstance(types.NamespacedName{Name: infrastructure.InfinispanInstanceName, Namespace: i.instance.GetNamespace()})
-		if resultErr != nil {
-			return false, resultErr
-		}
-
-		if infinispanInstance == nil {
-			// if not exist then create new Infinispan instance. Infinispan operator creates Infinispan instance, secret & service resource
-			_, resultErr = infinispanHandler.CreateInfinispanInstance(types.NamespacedName{Name: infrastructure.InfinispanInstanceName, Namespace: i.instance.GetNamespace()}, i.instance)
-			if resultErr != nil {
-				return false, resultErr
-			}
-			return true, nil
-		}
+		return false, errorForResourceConfigError(i.instance, "No Infinispan resource name given")
 	}
 	infinispanCondition := getInfinispanWellFormedCondition(infinispanInstance)
 	if infinispanCondition == nil || infinispanCondition.Status != string(v1.ConditionTrue) {

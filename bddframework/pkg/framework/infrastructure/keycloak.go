@@ -22,9 +22,6 @@ import (
 const (
 	// KeycloakKind refers to Keycloak Kind
 	KeycloakKind = "Keycloak"
-
-	// KeycloakInstanceName is the default instance name for Keycloak CR managed by Kogito
-	KeycloakInstanceName = "kogito-keycloak"
 )
 
 var (

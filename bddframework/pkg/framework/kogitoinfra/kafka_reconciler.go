@@ -80,24 +80,9 @@ func (k *kafkaInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 				errorForResourceNotFound("Kafka", k.instance.GetSpec().GetResource().GetName(), namespace)
 		}
 	} else {
-		// create/refer kogito-kafka instance
-		k.Log.Debug("Custom kafka instance reference is not provided")
-
-		// check whether kafka instance exist
-		kafkaInstance, resultErr = kafkaHandler.FetchKafkaInstance(types.NamespacedName{Name: infrastructure.KafkaInstanceName, Namespace: k.instance.GetNamespace()})
-		if resultErr != nil {
-			return false, resultErr
-		}
-
-		if kafkaInstance == nil {
-			// if not exist then create new Kafka instance. Strimzi operator creates Kafka instance, secret & service resource
-			_, resultErr = kafkaHandler.CreateKafkaInstance(types.NamespacedName{Name: infrastructure.KafkaInstanceName, Namespace: k.instance.GetNamespace()}, k.instance)
-			if resultErr != nil {
-				return false, resultErr
-			}
-			return true, nil
-		}
+		return false, errorForResourceConfigError(k.instance, "No Kafka resource name given")
 	}
+
 	kafkaStatus := k.getLatestKafkaCondition(kafkaInstance)
 	if kafkaStatus == nil || kafkaStatus.Type != kafkabetav1.KafkaConditionTypeReady {
 		return false, errorForResourceNotReadyError(fmt.Errorf("kafka instance %s not ready yet. Waiting for Condition status Ready", kafkaInstance.Name))

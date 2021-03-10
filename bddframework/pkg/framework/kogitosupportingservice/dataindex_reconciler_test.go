@@ -25,12 +25,14 @@ import (
 
 func TestKogitoSupportingServiceDataIndex_Reconcile(t *testing.T) {
 	ns := t.Name()
+	kafka := test.CreateFakeKafka("my-kafka", t.Name())
 	kogitoKafka := test.CreateFakeKogitoKafka(t.Name())
+	kogitoKafka.GetSpec().GetResource().SetName(kafka.Name)
 	kogitoInfinispan := test.CreateFakeKogitoInfinispan(t.Name())
 	dataIndex := test.CreateFakeDataIndex(ns)
 	dataIndex.GetSpec().AddInfra(kogitoKafka.GetName())
 	dataIndex.GetSpec().AddInfra(kogitoInfinispan.GetName())
-	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, kogitoKafka, kogitoInfinispan).OnOpenShift().Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, kogitoKafka, kogitoInfinispan, kafka).OnOpenShift().Build()
 	context := &operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,

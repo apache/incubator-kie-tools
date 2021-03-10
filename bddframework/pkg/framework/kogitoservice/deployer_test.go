@@ -89,13 +89,15 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 
 func Test_serviceDeployer_DataIndex(t *testing.T) {
 	requiredTopic := "dataindex-required-topic"
+	kafka := test.CreateFakeKafka("my-kafka", t.Name())
 	infraKafka := test.CreateFakeKogitoKafka(t.Name())
+	infraKafka.GetSpec().GetResource().SetName(kafka.Name)
 	infraInfinispan := test.CreateFakeKogitoInfinispan(t.Name())
 	dataIndex := test.CreateFakeDataIndex(t.Name())
 	dataIndex.GetSpec().AddInfra(infraKafka.GetName())
 	dataIndex.GetSpec().AddInfra(infraInfinispan.GetName())
 
-	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, infraKafka, infraInfinispan).Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, infraKafka, infraInfinispan, kafka).Build()
 	definition := ServiceDefinition{
 		DefaultImageName: "kogito-data-index-infinispan",
 		Request:          newReconcileRequest(t.Name()),

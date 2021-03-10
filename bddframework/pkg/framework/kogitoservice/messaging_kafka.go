@@ -15,6 +15,7 @@
 package kogitoservice
 
 import (
+	"fmt"
 	"github.com/kiegroup/kogito-cloud-operator/api"
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	infra2 "github.com/kiegroup/kogito-cloud-operator/core/kogitoinfra"
@@ -67,7 +68,10 @@ func (k *kafkaMessagingDeployer) createRequiredKafkaTopics(infra api.KogitoInfra
 func (k *kafkaMessagingDeployer) createKafkaTopicIfNotExists(topicName string, instance api.KogitoInfraInterface) error {
 	k.Log.Debug("Going to create kafka topic it is not exists", "topicName", topicName)
 
-	kafkaNamespaceName := k.getKafkaInstanceNamespaceName(instance)
+	kafkaNamespaceName, err := k.getKafkaInstanceNamespaceName(instance)
+	if err != nil {
+		return err
+	}
 	k.Log.Debug("Resolved kafka instance", "name", kafkaNamespaceName.Name, "namespace", kafkaNamespaceName.Namespace)
 
 	kafkaHandler := infrastructure.NewKafkaHandler(k.Context)
@@ -85,21 +89,18 @@ func (k *kafkaMessagingDeployer) createKafkaTopicIfNotExists(topicName string, i
 	return nil
 }
 
-func (k *kafkaMessagingDeployer) getKafkaInstanceNamespaceName(instance api.KogitoInfraInterface) *types.NamespacedName {
-	// Step 1: check whether user has provided custom Kafka instance reference
-	isCustomReferenceProvided := len(instance.GetSpec().GetResource().GetName()) > 0
-	if isCustomReferenceProvided {
+func (k *kafkaMessagingDeployer) getKafkaInstanceNamespaceName(instance api.KogitoInfraInterface) (*types.NamespacedName, error) {
+	if len(instance.GetSpec().GetResource().GetName()) > 0 {
 		k.Log.Debug("Custom kafka instance reference is provided")
 		namespace := instance.GetSpec().GetResource().GetNamespace()
 		if len(namespace) == 0 {
 			namespace = instance.GetNamespace()
 			k.Log.Debug("Namespace is not provided for custom resource, taking instance namespace as default", "instance namespace", namespace)
 		}
-		return &types.NamespacedName{Namespace: namespace, Name: instance.GetSpec().GetResource().GetName()}
+		return &types.NamespacedName{Namespace: namespace, Name: instance.GetSpec().GetResource().GetName()}, nil
 	}
-	// create/refer kogito-kafka instance
 	k.Log.Debug("Custom kafka instance reference is not provided")
-	return &types.NamespacedName{Namespace: instance.GetNamespace(), Name: infrastructure.KafkaInstanceName}
+	return nil, fmt.Errorf("no Kafka instances found on KogitoInfra reference: %s", instance.GetName())
 }
 
 // IsKafkaResource checks if provided KogitoInfra instance is for kafka resource

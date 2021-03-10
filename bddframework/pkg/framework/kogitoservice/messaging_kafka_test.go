@@ -34,9 +34,11 @@ func Test_createKafkaTopics(t *testing.T) {
 	appProps[kogitoinfra.QuarkusKafkaBootstrapAppProp] = "kogito-kafka:9092"
 
 	infraKafka := test.CreateFakeKogitoKafka(t.Name())
+	kafka := test.CreateFakeKafka("my-kafka", t.Name())
+	infraKafka.GetSpec().GetResource().SetName(kafka.GetName())
 	service := test.CreateFakeDataIndex(t.Name())
 	service.GetSpec().AddInfra(infraKafka.GetName())
-	client := test.NewFakeClientBuilder().AddK8sObjects(infraKafka, service).Build()
+	client := test.NewFakeClientBuilder().AddK8sObjects(infraKafka, service, kafka).Build()
 	context := &operator.Context{
 		Client: client,
 		Log:    test.TestLogger,

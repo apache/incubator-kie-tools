@@ -16,11 +16,9 @@ package infrastructure
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
-	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-
 	ispn "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/core/operator"
 	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -44,13 +42,11 @@ const (
 
 	// InfinispanInstanceName is the default name for Infinispan managed by KogitoInfra
 	InfinispanInstanceName = "kogito-infinispan"
-	replicasSize           = 1
 )
 
 // InfinispanHandler ...
 type InfinispanHandler interface {
 	FetchInfinispanInstance(key types.NamespacedName) (*ispn.Infinispan, error)
-	CreateInfinispanInstance(key types.NamespacedName, owner metav1.Object) (*ispn.Infinispan, error)
 	IsInfinispanAvailable() bool
 	FetchInfinispanInstanceURI(key types.NamespacedName) (string, error)
 	GetInfinispanCredential(infinispanInstance *ispn.Infinispan) (*InfinispanCredential, error)
@@ -133,32 +129,6 @@ func (i *infinispanHandler) GetInfinispanCredential(infinispanInstance *ispn.Inf
 	}
 	i.Log.Warn("Infinispan credential not found", "secret", infinispanInstance.GetSecretName())
 	return nil, nil
-}
-
-func (i *infinispanHandler) CreateInfinispanInstance(key types.NamespacedName, owner metav1.Object) (*ispn.Infinispan, error) {
-	i.Log.Info("Going to create a kogito infinispan instance (not for production use)")
-	infinispanRes := &ispn.Infinispan{
-		ObjectMeta: metav1.ObjectMeta{
-			Namespace: key.Namespace,
-			Name:      key.Name,
-		},
-		Spec: ispn.InfinispanSpec{
-			Replicas: replicasSize,
-			Service: ispn.InfinispanServiceSpec{
-				ReplicationFactor: int32(1),
-				Type:              ispn.ServiceTypeCache,
-			},
-		},
-	}
-	if err := controllerutil.SetOwnerReference(owner, infinispanRes, i.Scheme); err != nil {
-		return nil, err
-	}
-	if err := kubernetes.ResourceC(i.Client).Create(infinispanRes); err != nil {
-		i.Log.Error(err, "Error occurs while creating infinispan instance")
-		return nil, err
-	}
-	i.Log.Debug("Infinispan instance created successfully")
-	return infinispanRes, nil
 }
 
 // getDefaultInfinispanCredential will return the credential to be used by internal services

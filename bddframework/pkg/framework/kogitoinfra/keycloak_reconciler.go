@@ -18,15 +18,8 @@ import (
 	keycloakv1alpha1 "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
-	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-)
-
-const (
-	// keycloakMetricsExtension default extension enabled in Keycloak default installations
-	keycloakMetricsExtension = "https://github.com/aerogear/keycloak-metrics-spi/releases/download/1.0.4/keycloak-metrics-spi-1.0.4.jar"
 )
 
 // keycloakInfraReconciler implementation of KogitoInfraResource
@@ -67,21 +60,7 @@ func (k *keycloakInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 			return false, errorForResourceNotFound("Keycloak", k.instance.GetSpec().GetResource().GetName(), namespace)
 		}
 	} else {
-		k.Log.Debug("Custom Keycloak instance reference is not provided")
-		// check whether Keycloak instance exist
-		keycloakInstance, resultErr := k.loadDeployedKeycloakInstance(infrastructure.KeycloakInstanceName, k.instance.GetNamespace())
-		if resultErr != nil {
-			return false, resultErr
-		}
-
-		if keycloakInstance == nil {
-			// if not exist then create new Keycloak instance. Keycloak operator creates Keycloak instance, secret & service resource
-			_, resultErr = k.createNewKeycloakInstance(infrastructure.KeycloakInstanceName, k.instance.GetNamespace())
-			if resultErr != nil {
-				return false, resultErr
-			}
-			return true, nil
-		}
+		return false, errorForResourceConfigError(k.instance, "No Keycloak resource name given")
 	}
 	return false, nil
 }
@@ -99,26 +78,4 @@ func (k *keycloakInfraReconciler) loadDeployedKeycloakInstance(name string, name
 		k.Log.Debug("Kogito Keycloak instance found")
 		return keycloakInstance, nil
 	}
-}
-
-func (k *keycloakInfraReconciler) createNewKeycloakInstance(name string, namespace string) (*keycloakv1alpha1.Keycloak, error) {
-	k.Log.Debug("Going to create kogito Keycloak instance")
-	k.Log.Debug("Creating default resources for Keycloak installation for Kogito Infra", "Namespace", namespace)
-	keycloakInstance := &keycloakv1alpha1.Keycloak{
-		ObjectMeta: v1.ObjectMeta{Namespace: namespace, Name: name},
-		Spec: keycloakv1alpha1.KeycloakSpec{
-			Extensions:     []string{keycloakMetricsExtension},
-			Instances:      1,
-			ExternalAccess: keycloakv1alpha1.KeycloakExternalAccess{Enabled: true},
-		},
-	}
-	if err := controllerutil.SetOwnerReference(k.instance, keycloakInstance, k.Scheme); err != nil {
-		return nil, err
-	}
-	if err := kubernetes.ResourceC(k.Client).Create(keycloakInstance); err != nil {
-		k.Log.Error(err, "Error occurs while creating kogito Keycloak instance")
-		return nil, err
-	}
-	k.Log.Debug("Successfully created Kogito Keycloak instance")
-	return keycloakInstance, nil
 }
