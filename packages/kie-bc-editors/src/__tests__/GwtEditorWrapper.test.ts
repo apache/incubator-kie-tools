@@ -52,13 +52,9 @@ describe("GwtEditorWrapper", () => {
   });
 
   test("set content error", async () => {
-    mockEditor.setContent = jest.fn(() => {
-      return Promise.reject();
-    });
-
-    await wrapper.setContent("path", " a content ");
+    mockEditor.setContent = jest.fn(() => Promise.reject());
+    await expect(wrapper.setContent("path", " a content ")).rejects.toEqual(undefined);
     expect(mockEditor.setContent).toHaveBeenCalledWith("path", "a content");
-    expect(mockChannelApi.notifications.receive_setContentError).toHaveBeenCalled();
   });
 
   test("af_onOpen removes header", () => {

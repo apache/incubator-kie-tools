@@ -77,9 +77,9 @@ describe("EmbeddedEditor::ONLINE", () => {
       "receive_contentChanged"
     );
 
-    editorRef.current?.setContent("content", "");
+    editorRef.current?.setContent("path", "content");
 
-    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content" });
+    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content", path: "path" });
   });
 
   test("EmbeddedEditor::requestContent", () => {
@@ -245,7 +245,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       data: [new KogitoEdit("1")]
     });
 
-    expect(editorRef.current?.getStateControl().getCommandStack()).toEqual(["1"]);
+    expect(editorRef.current?.getStateControl().getCommandStack()).toEqual([{ id: "1" }]);
     expect(onNewEdit).toBeCalled();
     expect(container.firstChild).toMatchSnapshot();
   });

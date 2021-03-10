@@ -39,7 +39,8 @@ describe("SingleEditorToolbar", () => {
             <SingleEditorToolbar
               readonly={true}
               textMode={true}
-              textModeEnabled={true}
+              errorOpeningFile={false}
+              textModeAvailable={true}
               onFullScreen={undefined as any}
               onSeeAsSource={onSeeAsSource}
               onSeeAsDiagram={onSeeAsDiagram}
@@ -57,7 +58,7 @@ describe("SingleEditorToolbar", () => {
     expect(onSeeAsDiagram).toHaveBeenCalled();
   });
 
-  test("readonly false | textMode true | textModeEnabled true", () => {
+  test("readonly false | textMode true | textModeAvailable true", () => {
     expect(
       render(
         usingTestingChromeExtensionI18nContext(
@@ -66,7 +67,8 @@ describe("SingleEditorToolbar", () => {
               <SingleEditorToolbar
                 readonly={false}
                 textMode={true}
-                textModeEnabled={true}
+                errorOpeningFile={false}
+                textModeAvailable={true}
                 onFullScreen={undefined as any}
                 onSeeAsSource={undefined as any}
                 onSeeAsDiagram={undefined as any}
@@ -80,7 +82,7 @@ describe("SingleEditorToolbar", () => {
     ).toMatchSnapshot();
   });
 
-  test("readonly false | textMode false | textModeEnabled true", () => {
+  test("readonly false | textMode false | textModeAvailable true", () => {
     expect(
       render(
         usingTestingChromeExtensionI18nContext(
@@ -89,7 +91,8 @@ describe("SingleEditorToolbar", () => {
               <SingleEditorToolbar
                 readonly={true}
                 textMode={false}
-                textModeEnabled={true}
+                errorOpeningFile={false}
+                textModeAvailable={true}
                 onFullScreen={undefined as any}
                 onSeeAsSource={undefined as any}
                 onSeeAsDiagram={undefined as any}
@@ -114,7 +117,8 @@ describe("SingleEditorToolbar", () => {
             <SingleEditorToolbar
               readonly={false}
               textMode={false}
-              textModeEnabled={true}
+              errorOpeningFile={false}
+              textModeAvailable={true}
               onFullScreen={undefined as any}
               onSeeAsSource={onSeeAsSource}
               onSeeAsDiagram={onSeeAsDiagram}
@@ -132,7 +136,7 @@ describe("SingleEditorToolbar", () => {
     expect(component.asFragment()).toMatchSnapshot();
   });
 
-  test("readonly true | textMode true | textModeEnabled false", () => {
+  test("readonly true | textMode true | textModeAvailable false", () => {
     expect(
       render(
         usingTestingChromeExtensionI18nContext(
@@ -141,7 +145,8 @@ describe("SingleEditorToolbar", () => {
               <SingleEditorToolbar
                 readonly={true}
                 textMode={true}
-                textModeEnabled={false}
+                errorOpeningFile={false}
+                textModeAvailable={false}
                 onFullScreen={undefined as any}
                 onSeeAsSource={undefined as any}
                 onSeeAsDiagram={undefined as any}
@@ -155,7 +160,7 @@ describe("SingleEditorToolbar", () => {
     ).toMatchSnapshot();
   });
 
-  test("readonly false | textMode true | textModeEnabled false", () => {
+  test("readonly false | textMode true | textModeAvailable false", () => {
     expect(
       render(
         usingTestingChromeExtensionI18nContext(
@@ -164,7 +169,8 @@ describe("SingleEditorToolbar", () => {
               <SingleEditorToolbar
                 readonly={false}
                 textMode={true}
-                textModeEnabled={false}
+                errorOpeningFile={false}
+                textModeAvailable={false}
                 onFullScreen={undefined as any}
                 onSeeAsSource={undefined as any}
                 onSeeAsDiagram={undefined as any}
@@ -178,7 +184,7 @@ describe("SingleEditorToolbar", () => {
     ).toMatchSnapshot();
   });
 
-  test("readonly true | textMode false | textModeEnabled false", () => {
+  test("readonly true | textMode false | textModeAvailable false", () => {
     expect(
       render(
         usingTestingChromeExtensionI18nContext(
@@ -187,7 +193,8 @@ describe("SingleEditorToolbar", () => {
               <SingleEditorToolbar
                 readonly={true}
                 textMode={false}
-                textModeEnabled={false}
+                errorOpeningFile={false}
+                textModeAvailable={false}
                 onFullScreen={undefined as any}
                 onSeeAsSource={undefined as any}
                 onSeeAsDiagram={undefined as any}
@@ -201,7 +208,7 @@ describe("SingleEditorToolbar", () => {
     ).toMatchSnapshot();
   });
 
-  test("readonly false | textMode false | textModeEnabled false", () => {
+  test("readonly false | textMode false | textModeAvailable false", () => {
     expect(
       render(
         usingTestingChromeExtensionI18nContext(
@@ -210,7 +217,8 @@ describe("SingleEditorToolbar", () => {
               <SingleEditorToolbar
                 readonly={false}
                 textMode={false}
-                textModeEnabled={false}
+                errorOpeningFile={false}
+                textModeAvailable={false}
                 onFullScreen={undefined as any}
                 onSeeAsSource={undefined as any}
                 onSeeAsDiagram={undefined as any}
@@ -236,7 +244,8 @@ describe("SingleEditorToolbar", () => {
           <SingleEditorToolbar
             readonly={false}
             textMode={false}
-            textModeEnabled={false}
+            errorOpeningFile={false}
+            textModeAvailable={false}
             onFullScreen={onFullScreen}
             onSeeAsSource={onSeeAsSource}
             onSeeAsDiagram={onSeeAsDiagram}
@@ -264,7 +273,8 @@ describe("SingleEditorToolbar", () => {
           <SingleEditorToolbar
             readonly={false}
             textMode={false}
-            textModeEnabled={false}
+            errorOpeningFile={false}
+            textModeAvailable={false}
             onFullScreen={undefined as any}
             onSeeAsSource={undefined as any}
             onSeeAsDiagram={undefined as any}
