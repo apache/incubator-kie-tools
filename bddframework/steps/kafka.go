@@ -17,8 +17,10 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure/kafka/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/installers"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {
@@ -37,7 +39,7 @@ func (data *Data) kafkaInstanceHasPodsRunningWithinMinutes(name string, numberOf
 }
 
 func (data *Data) kafkaInstanceIsDeployed(name string) error {
-	kafka := infrastructure.GetKafkaDefaultResource(name, data.Namespace)
+	kafka := getKafkaDefaultResource(name, data.Namespace)
 
 	if err := framework.DeployKafkaInstance(data.Namespace, kafka); err != nil {
 		return err
@@ -48,4 +50,38 @@ func (data *Data) kafkaInstanceIsDeployed(name string) error {
 
 func (data *Data) kafkaTopicIsDeployed(name string) error {
 	return framework.DeployKafkaTopic(data.Namespace, name, infrastructure.KafkaInstanceName)
+}
+
+func getKafkaDefaultResource(name, namespace string) *v1beta1.Kafka {
+	return &v1beta1.Kafka{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Spec: v1beta1.KafkaSpec{
+			EntityOperator: v1beta1.EntityOperatorSpec{
+				TopicOperator: v1beta1.EntityTopicOperatorSpec{},
+				UserOperator:  v1beta1.EntityUserOperatorSpec{},
+			},
+			Kafka: v1beta1.KafkaClusterSpec{
+				Replicas: 1,
+				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
+				Listeners: v1beta1.KafkaListeners{
+					Plain: v1beta1.KafkaListenerPlain{},
+				},
+				JvmOptions: map[string]interface{}{"gcLoggingEnabled": false},
+				Config: map[string]interface{}{
+					"log.message.format.version":               "2.3",
+					"offsets.topic.replication.factor":         1,
+					"transaction.state.log.min.isr":            1,
+					"transaction.state.log.replication.factor": 1,
+					"auto.create.topics.enable":                true,
+				},
+			},
+			Zookeeper: v1beta1.ZookeeperClusterSpec{
+				Replicas: 1,
+				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
+			},
+		},
+	}
 }
