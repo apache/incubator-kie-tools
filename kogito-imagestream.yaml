@@ -114,24 +114,45 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-trusty
+      name: kogito-trusty-infinispan
       annotations:
-        openshift.io/display-name: Runtime image for the Kogito Trusty Service
+        openshift.io/display-name: Runtime image for the Kogito Trusty Service for Infinispan persistence provider
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
         - name: '2.0.0-snapshot'
           annotations:
-            description: Runtime image for the Kogito Trusty Service
+            description: Runtime image for the Kogito Trusty Service with Infinispan
             iconClass: icon-jbpm
-            tags: kogito,trusty
+            tags: kogito,trusty,trusty-infinispan
             supports: persistence backed by Infinispan server
             version: '2.0.0-snapshot'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-trusty:2.0.0-snapshot
+            name: quay.io/kiegroup/kogito-trusty-infinispan:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-trusty-redis
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Trusty Service for Redis persistence provider
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Runtime image for the Kogito Trusty Service with Redis
+            iconClass: icon-jbpm
+            tags: kogito,trusty,trusty-redis
+            supports: persistence backed by Redis server
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-trusty-redis:2.0.0-snapshot
   - kind: ImageStream
     apiVersion: v1
     metadata:

@@ -10,8 +10,8 @@ else
     rm -rf bats-core
 fi 
 
-echo  "----> running bats on kogito-trusty"
-./bats/bin/bats modules/kogito-trusty/tests/bats
+echo  "----> running bats on kogito-trusty-common"
+./bats/bin/bats modules/kogito-trusty-common/tests/bats
 
 echo "----> running bats on kogito-explainability"
 ./bats/bin/bats modules/kogito-explainability/tests/bats

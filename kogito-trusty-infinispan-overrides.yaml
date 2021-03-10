@@ -1,15 +1,15 @@
 schema_version: 1
 
-name: "quay.io/kiegroup/kogito-data-index-infinispan"
-description: "Runtime image for Kogito Data Index Service for Infinispan persistence provider"
+name: "quay.io/kiegroup/kogito-trusty-infinispan"
+description: "Runtime image for Kogito Trusty Service for Infinispan persistence provider"
 
 labels:
 - name: "io.k8s.description"
-  value: "Runtime image for Kogito Data Index Service for Infinispan persistence provider"
+  value: "Runtime image for Kogito Trusty Service for Infinispan persistence provider"
 - name: "io.k8s.display-name"
-  value: "Kogito Data Index Service - Infinispan"
+  value: "Kogito Trusty Service - Infinispan"
 - name: "io.openshift.tags"
-  value: "kogito,data-index,data-index-infinispan"
+  value: "kogito,trusty,trusty-infinispan"
 - name: "io.openshift.expose-services"
   value: "8080:http"
 
@@ -47,8 +47,8 @@ modules:
   - name: org.kie.kogito.openjdk
     version: "11-headless"
   - name: org.kie.kogito.launch.scripts
-  - name: org.kie.kogito.dataindex.infinispan
-  - name: org.kie.kogito.dataindex.common
+  - name: org.kie.kogito.trusty.infinispan
+  - name: org.kie.kogito.trusty.common
 
 run:
   workdir: "/home/kogito"

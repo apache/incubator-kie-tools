@@ -26,7 +26,8 @@ Modules = {
     #Note: Service name should be same as given in the repository
     "data-index-service-infinispan": "kogito-data-index-infinispan",
     "data-index-service-mongodb": "kogito-data-index-mongodb",
-    "trusty-service": "kogito-trusty",
+    "trusty-service-infinispan": "kogito-trusty-infinispan",
+    "trusty-service-redis": "kogito-trusty-redis",
     "explainability-service-rest": "kogito-explainability",
     "explainability-service-messaging": "kogito-explainability",
     "jobs-service": "kogito-jobs-service",

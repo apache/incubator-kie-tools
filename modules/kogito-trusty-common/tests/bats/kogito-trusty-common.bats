@@ -12,7 +12,6 @@ teardown() {
     rm -rf "${KOGITO_HOME}"
 }
 
-
 @test "explainability is enabled by default" {
     enable_explainability
     expected=" -Dtrusty.explainability.enabled=true"
