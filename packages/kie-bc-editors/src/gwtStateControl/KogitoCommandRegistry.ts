@@ -33,22 +33,30 @@ export interface KogitoCommandRegistry<T> {
   setMaxSize(size: number): void;
 }
 
-export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
+export class DefaultKogitoCommandRegistry<T>
+  implements KogitoCommandRegistry<T> {
   private maxStackSize = 200;
   private commands: Array<GwtStateControlCommand<T>> = [];
   private undoneCommands: string[] = [];
 
-  constructor(private readonly channelApi: MessageBusClientApi<KogitoEditorChannelApi>) {}
+  constructor(
+    private readonly channelApi: MessageBusClientApi<KogitoEditorChannelApi>
+  ) {}
 
   private onNewCommand(newCommand: GwtStateControlCommand<T>) {
     if (!this.undoneCommands.includes(newCommand.getId())) {
       // Only notifying if the command is a new command. Also clearing the removedCommands registry, since the undone
       // commands won't be redone
-      this.channelApi.notifications.receive_newEdit(new KogitoEdit(newCommand.getId()));
+      this.channelApi.notifications.receive_newEdit(
+        new KogitoEdit(newCommand.getId())
+      );
       this.undoneCommands = [];
     } else {
       // Removing the command from the removedCommands registry since it's been registered again (redo).
-      this.undoneCommands.splice(this.undoneCommands.indexOf(newCommand.getId()), 1);
+      this.undoneCommands.splice(
+        this.undoneCommands.indexOf(newCommand.getId()),
+        1
+      );
     }
   }
 
@@ -91,7 +99,7 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
   }
 
   public getCommands(): T[] {
-    return this.commands.map(command => command.get());
+    return this.commands.map((command) => command.get());
   }
 
   public clear(): void {

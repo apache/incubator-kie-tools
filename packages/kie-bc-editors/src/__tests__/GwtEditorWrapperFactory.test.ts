@@ -50,7 +50,8 @@ const jsResource: Resource = {
 const xmlFormatter = { format: (c: string) => c };
 
 const gwtAppFormerApi = {
-  onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
+  onFinishedLoading: (callback: () => Promise<any>) =>
+    (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
   setClientSideOnly: jest.fn()
 };
@@ -61,7 +62,7 @@ function waitForNScriptsToLoad(remaining: number) {
   }
 
   const script = Array.from(document.getElementsByTagName("script")).pop()!;
-  return new Promise<void>(res => {
+  return new Promise<void>((res) => {
     script.addEventListener("load", () => {
       waitForNScriptsToLoad(remaining - 1).then(res);
     });
@@ -96,7 +97,12 @@ describe("GwtEditorWrapperFactory", () => {
           i18n: new I18nService()
         }
       },
-      { resourcesPathPrefix: "", fileExtension: "txt", initialLocale: "en", isReadOnly: false }
+      {
+        resourcesPathPrefix: "",
+        fileExtension: "txt",
+        initialLocale: "en",
+        isReadOnly: false
+      }
     );
 
     await waitForNScriptsToLoad(jsResource.paths.length);

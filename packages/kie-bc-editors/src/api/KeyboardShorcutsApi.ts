@@ -27,7 +27,12 @@ export interface KeyboardShortcutsApi {
    *
    * @return An id representing this registration. This id can be used to 'deregister' the Keyboard Shortcut.
    */
-  registerKeyPress(combination: string, label: string, onKeyPress: () => Thenable<void>, opts?: Opts): number;
+  registerKeyPress(
+    combination: string,
+    label: string,
+    onKeyPress: () => Thenable<void>,
+    opts?: Opts
+  ): number;
 
   /**
    * Register a Keyboard Shortcuts for a keypress event.

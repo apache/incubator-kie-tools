@@ -28,7 +28,8 @@ export const editors = {
   },
   scesim: {
     id: "ScenarioSimulationEditor",
-    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime"
+    name:
+      "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime"
   }
 };
 
@@ -41,7 +42,9 @@ export class GwtEditorMapping {
       resources: [
         {
           type: "css",
-          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/css/patternfly.min.css`]
+          paths: [
+            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/css/patternfly.min.css`
+          ]
         },
         {
           type: "js",
@@ -61,7 +64,9 @@ export class GwtEditorMapping {
       resources: [
         {
           type: "css",
-          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/css/patternfly.min.css`]
+          paths: [
+            `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/css/patternfly.min.css`
+          ]
         },
         {
           type: "js",
@@ -88,7 +93,9 @@ export class GwtEditorMapping {
       resources: [
         {
           type: "css",
-          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.scesim.name}/css/patternfly.min.css`]
+          paths: [
+            `${editorInitArgs.resourcesPathPrefix}/${editors.scesim.name}/css/patternfly.min.css`
+          ]
         },
         {
           type: "js",

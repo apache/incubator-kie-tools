@@ -35,7 +35,9 @@ export class GwtStateControlService {
     }
   }
 
-  public exposeApi(channelApi: MessageBusClientApi<KogitoEditorChannelApi>): StateControlApi {
+  public exposeApi(
+    channelApi: MessageBusClientApi<KogitoEditorChannelApi>
+  ): StateControlApi {
     const stateControl = this;
 
     return {

@@ -16,6 +16,7 @@
 
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
-export interface KieBcEditorsI18n extends ReferenceDictionary<KieBcEditorsI18n> {
-  unsupportedFile: string
+export interface KieBcEditorsI18n
+  extends ReferenceDictionary<KieBcEditorsI18n> {
+  unsupportedFile: string;
 }

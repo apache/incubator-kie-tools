@@ -34,7 +34,9 @@ module.exports = [
     entry: {
       "envelope-dist/envelope": "./src/envelope/envelope.ts"
     },
-    plugins: [new CopyPlugin([{ from: "./static/envelope", to: "./envelope-dist" }])],
+    plugins: [
+      new CopyPlugin([{ from: "./static/envelope", to: "./envelope-dist" }])
+    ],
     module: { rules: [...pfWebpackOptions.patternflyRules] }
   })
 ];

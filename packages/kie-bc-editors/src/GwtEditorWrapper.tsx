@@ -16,7 +16,10 @@
 
 import * as React from "react";
 import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
-import { Editor, KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import {
+  Editor,
+  KogitoEditorChannelApi
+} from "@kogito-tooling/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
@@ -79,7 +82,9 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public getContent() {
-    return this.gwtEditor.getContent().then(content => this.xmlFormatter.format(content));
+    return this.gwtEditor
+      .getContent()
+      .then((content) => this.xmlFormatter.format(content));
   }
 
   public getElementPosition(selector: string) {
@@ -90,7 +95,9 @@ export class GwtEditorWrapper implements Editor {
     const i18n = this.kieBcEditorsI18n.getCurrent();
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.channelApi.notifications.receive_setContentError(i18n.unsupportedFile);
+      this.channelApi.notifications.receive_setContentError(
+        i18n.unsupportedFile
+      );
       return Promise.resolve();
     });
   }
@@ -114,22 +121,30 @@ export class GwtEditorWrapper implements Editor {
   }
 
   private removeBusinessCentralPanelHeader() {
-    const panelHeaderSpan = document.querySelector(".panel-heading.uf-listbar-panel-header span");
+    const panelHeaderSpan = document.querySelector(
+      ".panel-heading.uf-listbar-panel-header span"
+    );
     if (panelHeaderSpan) {
       panelHeaderSpan.textContent = "";
     }
   }
 
   private removeHeaderIfOnlyOneItemOnTable() {
-    const headerTable = document.querySelector(".tabbable.uf-tabbar-panel.uf-multi-page-editor > table");
-    if (headerTable && headerTable.querySelectorAll("td > ul > li").length <= 1) {
+    const headerTable = document.querySelector(
+      ".tabbable.uf-tabbar-panel.uf-multi-page-editor > table"
+    );
+    if (
+      headerTable &&
+      headerTable.querySelectorAll("td > ul > li").length <= 1
+    ) {
       headerTable.remove();
     }
   }
 
   private injectStyleToFixResponsivenessIssue_DROOLS_3995() {
     const style = document.createElement("style");
-    style.textContent = '[data-i18n-prefix="DataTypeListItemView."] .list-view-pf-body { display: flex !important; }';
+    style.textContent =
+      '[data-i18n-prefix="DataTypeListItemView."] .list-view-pf-body { display: flex !important; }';
     document.head.appendChild(style);
   }
 }

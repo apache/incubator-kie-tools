@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-import { NotificationsApi, Notification } from "@kogito-tooling/notifications/dist/api";
-import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
+import {
+  NotificationsApi,
+  Notification
+} from "@kogito-tooling/notifications/dist/api";
+import {
+  ResourceContentOptions,
+  ResourceListOptions
+} from "@kogito-tooling/channel-common-api";
 import {
   Editor,
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType
 } from "@kogito-tooling/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import {
+  Tutorial,
+  UserInteraction
+} from "@kogito-tooling/guided-tour/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 import { EditorContextApi } from "./api/EditorContextApi";
@@ -67,7 +76,10 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
     private readonly gwtStateControlService = new GwtStateControlService(),
     private readonly gwtEditorMapping = new GwtEditorMapping(),
-    private readonly kieBcEditorsI18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries)
+    private readonly kieBcEditorsI18n = new I18n(
+      kieBcEditorsI18nDefaults,
+      kieBcEditorsI18nDictionaries
+    )
   ) {}
 
   public supports(fileExtension: string) {
@@ -81,7 +93,10 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     );
   }
 
-  public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
+  public createEditor(
+    envelopeContext: KogitoEditorEnvelopeContextType,
+    initArgs: EditorInitArgs
+  ) {
     this.gwtAppFormerApi.setClientSideOnly(true);
 
     const languageData = this.gwtEditorMapping.getLanguageData(initArgs);
@@ -90,7 +105,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     }
 
     this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
-    envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+    envelopeContext.services.i18n.subscribeToLocaleChange((locale) => {
       this.kieBcEditorsI18n.setLocale(locale);
       window.alert("This Editor doesn't support changing locales yet.");
     });
@@ -98,7 +113,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     this.appendGwtLocaleMetaTag();
     this.exposeEnvelopeContext(envelopeContext, initArgs);
 
-    const gwtFinishedLoading = new Promise<Editor>(res => {
+    const gwtFinishedLoading = new Promise<Editor>((res) => {
       this.gwtAppFormerApi.onFinishedLoading(() => {
         res(this.newGwtEditorWrapper(languageData, envelopeContext));
         return Promise.resolve();
@@ -109,12 +124,17 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       return gwtFinishedLoading;
     }
 
-    return Promise.all(languageData.resources.map(resource => this.loadResource(resource))).then(() => {
+    return Promise.all(
+      languageData.resources.map((resource) => this.loadResource(resource))
+    ).then(() => {
       return gwtFinishedLoading;
     });
   }
 
-  private newGwtEditorWrapper(languageData: GwtLanguageData, envelopeContext: KogitoEditorEnvelopeContextType) {
+  private newGwtEditorWrapper(
+    languageData: GwtLanguageData,
+    envelopeContext: KogitoEditorEnvelopeContextType
+  ) {
     return new GwtEditorWrapper(
       languageData.editorId,
       this.gwtAppFormerApi.getEditor(languageData.editorId),
@@ -125,9 +145,14 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     );
   }
 
-  private exposeEnvelopeContext(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
+  private exposeEnvelopeContext(
+    envelopeContext: KogitoEditorEnvelopeContextType,
+    initArgs: EditorInitArgs
+  ) {
     window.gwt = {
-      stateControl: this.gwtStateControlService.exposeApi(envelopeContext.channelApi)
+      stateControl: this.gwtStateControlService.exposeApi(
+        envelopeContext.channelApi
+      )
     };
 
     window.envelope = {
@@ -139,10 +164,14 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
       guidedTourService: {
         refresh(userInteraction: UserInteraction): void {
-          envelopeContext.channelApi.notifications.receive_guidedTourUserInteraction(userInteraction);
+          envelopeContext.channelApi.notifications.receive_guidedTourUserInteraction(
+            userInteraction
+          );
         },
         registerTutorial(tutorial: Tutorial): void {
-          envelopeContext.channelApi.notifications.receive_guidedTourRegisterTutorial(tutorial);
+          envelopeContext.channelApi.notifications.receive_guidedTourRegisterTutorial(
+            tutorial
+          );
         },
         isEnabled(): boolean {
           return envelopeContext.services.guidedTour.isEnabled();
@@ -152,12 +181,12 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         get(path: string, opts?: ResourceContentOptions) {
           return envelopeContext.channelApi.requests
             .receive_resourceContentRequest({ path, opts })
-            .then(r => r?.content);
+            .then((r) => r?.content);
         },
         list(pattern: string, opts?: ResourceListOptions) {
           return envelopeContext.channelApi.requests
             .receive_resourceListRequest({ pattern, opts })
-            .then(r => r.paths.sort());
+            .then((r) => r.paths.sort());
         }
       },
       workspaceService: {
@@ -176,13 +205,18 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       pmmlEditorMarshallerService: new PMMLEditorMarshallerService(),
       notificationsService: {
         createNotification: (notification: Notification) => {
-          envelopeContext.channelApi.notifications.createNotification(notification);
+          envelopeContext.channelApi.notifications.createNotification(
+            notification
+          );
         },
         removeNotifications: (path: string) => {
           envelopeContext.channelApi.notifications.removeNotifications(path);
         },
         setNotifications: (path: string, notifications: Notification[]) => {
-          envelopeContext.channelApi.notifications.setNotifications(path, notifications);
+          envelopeContext.channelApi.notifications.setNotifications(
+            path,
+            notifications
+          );
         }
       }
     };
@@ -219,12 +253,16 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       return Promise.resolve();
     }
 
-    return new Promise<void>(res => {
+    return new Promise<void>((res) => {
       const script = document.createElement("script");
       script.type = "text/javascript";
       script.async = true;
       script.src = urls[i];
-      script.addEventListener("load", () => this.recursivelyLoadScriptsStartingFrom(urls, i + 1).then(res), false);
+      script.addEventListener(
+        "load",
+        () => this.recursivelyLoadScriptsStartingFrom(urls, i + 1).then(res),
+        false
+      );
       document.head.appendChild(script);
     });
   }

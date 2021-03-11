@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import {
+  ChannelType,
+  getOperatingSystem
+} from "@kogito-tooling/channel-common-api";
 import { GwtEditorWrapperFactory } from "..";
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import { CompositeEditorFactory } from "@kogito-tooling/editor/dist/envelope";
@@ -23,14 +26,22 @@ import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: {
-    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
+    postMessage<D, Type>(
+      message: EnvelopeBusMessage<D, Type>,
+      targetOrigin?: string,
+      _?: any
+    ) {
       window.parent.postMessage(message, "*", _);
     }
   },
   editorFactory: new CompositeEditorFactory([new GwtEditorWrapperFactory()]),
-  editorContext: { channel: getChannelType(), operatingSystem: getOperatingSystem() }
+  editorContext: {
+    channel: getChannelType(),
+    operatingSystem: getOperatingSystem()
+  }
 });
 
 export function getChannelType(): ChannelType {
-  return frameElement.attributes.getNamedItem("data-envelope-channel")?.value as ChannelType;
+  return frameElement.attributes.getNamedItem("data-envelope-channel")
+    ?.value as ChannelType;
 }

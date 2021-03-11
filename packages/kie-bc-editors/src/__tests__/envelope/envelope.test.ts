@@ -26,7 +26,9 @@ Object.defineProperty(global, "frameElement", {
     return {
       attributes: {
         getNamedItem: (key: string) => {
-          return { value: key === "data-envelope-channel" ? channelType : undefined };
+          return {
+            value: key === "data-envelope-channel" ? channelType : undefined
+          };
         }
       }
     };
@@ -39,10 +41,12 @@ import module = require("../../envelope/envelope");
 describe("EditorEnvelope.init", () => {
   test("initialisation", () => {
     expect(mockEditorEnvelope.init.mock.calls.length).toEqual(1);
-    expect(mockEditorEnvelope.init.mock.calls[0][0].editorContext.channel).toBe(ChannelType.DESKTOP);
-    expect(mockEditorEnvelope.init.mock.calls[0][0].editorFactory).toBeInstanceOf(
-      EditorEnvelope.CompositeEditorFactory
+    expect(mockEditorEnvelope.init.mock.calls[0][0].editorContext.channel).toBe(
+      ChannelType.DESKTOP
     );
+    expect(
+      mockEditorEnvelope.init.mock.calls[0][0].editorFactory
+    ).toBeInstanceOf(EditorEnvelope.CompositeEditorFactory);
   });
 });
 
