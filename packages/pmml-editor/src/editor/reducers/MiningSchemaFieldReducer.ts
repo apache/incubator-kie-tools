@@ -166,6 +166,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
       //Note no break here, since we want the validation below to apply.
       case Actions.AddDataDictionaryField:
       case Actions.DeleteDataDictionaryField:
+      case Actions.AddBatchDataDictionaryFields:
         historyService.batch(
           state,
           Builder()

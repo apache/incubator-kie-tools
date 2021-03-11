@@ -15,7 +15,6 @@
  */
 import {
   DataField,
-  FieldName,
   InvalidValueTreatmentMethod,
   MiningField,
   MissingValueTreatmentMethod,
@@ -166,15 +165,8 @@ export const validateMiningFieldsDataFieldReference = (
   miningFields: MiningField[],
   validationRegistry: ValidationRegistry
 ): void => {
-  const dataFieldNames = dataFields.map(dataField => dataField.name);
   miningFields.forEach((miningField, miningFieldIndex) =>
-    _validateMiningFieldDataFieldReference(
-      modelIndex,
-      dataFieldNames,
-      miningFieldIndex,
-      miningField,
-      validationRegistry
-    )
+    validateMiningFieldDataFieldReference(modelIndex, dataFields, miningFieldIndex, miningField, validationRegistry)
   );
 };
 
@@ -185,18 +177,7 @@ export const validateMiningFieldDataFieldReference = (
   miningField: MiningField,
   validationRegistry: ValidationRegistry
 ): void => {
-  const dataFieldNames = dataFields.map(dataField => dataField.name);
-  _validateMiningFieldDataFieldReference(modelIndex, dataFieldNames, miningFieldIndex, miningField, validationRegistry);
-};
-
-const _validateMiningFieldDataFieldReference = (
-  modelIndex: number,
-  dataFieldNames: FieldName[],
-  miningFieldIndex: number,
-  miningField: MiningField,
-  validationRegistry: ValidationRegistry
-): void => {
-  if (dataFieldNames.filter(dataFieldName => dataFieldName === miningField.name).length === 0) {
+  if (dataFields.filter(dataField => dataField.name === miningField.name).length === 0) {
     validationRegistry.set(
       Builder()
         .forModel(modelIndex)

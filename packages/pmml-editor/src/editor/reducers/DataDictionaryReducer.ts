@@ -32,6 +32,7 @@ interface DataDictionaryPayload {
     readonly index: number;
   };
   [Actions.AddBatchDataDictionaryFields]: {
+    readonly modelIndex?: number;
     readonly dataDictionaryFields: FieldName[];
   };
   [Actions.ReorderDataDictionaryFields]: {
