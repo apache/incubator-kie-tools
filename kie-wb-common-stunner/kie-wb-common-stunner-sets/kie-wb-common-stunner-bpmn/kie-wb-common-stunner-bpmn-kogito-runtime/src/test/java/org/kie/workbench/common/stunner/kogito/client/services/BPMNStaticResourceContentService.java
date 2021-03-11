@@ -31,6 +31,7 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
 
     static final String LOG_SERVICE_TASK_DATA_URI = "data:image/gif;base64,R0lGODlhEAAQAMQAAG+Fr3CFr3yRuIOSsYaUroidwIuWrI+ZqJGlx5WdpZugoKGknaeomK6slLKvkL21idSyaNq9fN3o+ODIj+Ps+evx+vP2+/f4+/n6/AAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABkALAAAAAAQABAAAAVlYCaOZEk+aIqa4oO9MPSwLvxGsvlcwYUglwluRnJYjkiko9SwBCy/guDZKDEq2GyWUVpUApXotLIoKSjodFpRSlACFDGAkigdJHg8Gn8oGSQBEnISBiUEeYh4BCUDjY6PAyySIyEAOw==";
     static final String EMAIL_SERVICE_TASK_DATA_URI = "data:image/gif;base64,R0lGODlhEAAQAPcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgMDAwP8AAAD/AP//AAAA/////wD//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBmAABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNmZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZmzGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZAJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+ZzP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///yH5BAEAAA0ALAAAAAAQABAAQAhPABsIHEiwYAMADxICQKiQ4QMABx0mnDhxYcSFGDNmNMiRIEOJFRUefEixJEKIHVOqLKix5caTJSmePOhPocmKI0k+XGjzYcSYJlGuHNoxIAA7";
+    static final String MILESTONE_SERVICE_TASK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAArklEQVR42mNQUVH5GyMnt+s+P/+zBwICTx/w8S0HsjMecHEZvWJg4GEgBIAG/NNQUXkO1HQbaMB/JPz1AS/vRiBOusvAwE+OARj4IR/f0ftcXP5PeXlFyDIAGd/j47v/iIfHjjgD+Pl/3efjOwF0QdwVBgaJUAYGZtwu4Of/B8TfgXj/fR6e+v8MDCzYvF7IwMCJYgDQSUcfsbKa7sehAW8gAvFjBnLBqAGjBgABAJ+4l3hcf8LlAAAAAElFTkSuQmCC";
 
     static final String DEFAULT_DECLARATIONS = "[\n" +
             "  [\n" +
@@ -77,18 +78,7 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
             "     \"displayName\" : \"Decision Task\",\n" +
             "     \"icon\" : \"defaultdecisionicon.png\",\n" +
             "     \"category\" : \"Decision tasks\"\n" +
-            "   ],\n" +
-            "\n" +
-            "   [\n" +
-            "    \"name\" : \"Milestone\",\n" +
-            "    \"parameters\" : [\n" +
-            "        \"Condition\" : new StringDataType()\n" +
-            "    ],\n" +
-            "    \"displayName\" : \"Milestone\",\n" +
-            "    \"icon\" : \"defaultmilestoneicon.png\",\n" +
-            "    \"category\" : \"Milestone\"\n" +
-            "    ]\n" +
-            "]";
+            "   ]]";
 
     static final String ANOTHER_DECLARATION = "[\n" +
             "  [\n" +
@@ -102,15 +92,25 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
             "]";
 
     private static final String PATTERN_ALL_WID = "*.wid";
-    private static final Map<String, String> WID_ENTRIES =
+    private static final String PATTERN_GLOBAL_WID = "global/*.wid";
+    private static final Map<String, String> GLOBAL_WID_ENTRIES =
             new HashMap<String, String>() {{
-                put("default.wid", DEFAULT_DECLARATIONS);
-                put("another.wid", ANOTHER_DECLARATION);
+                put("global/default.wid", DEFAULT_DECLARATIONS);
+                put("global/test_empty_wid.wid", "[ [] ]");
+                put("global/test_empty_wids.wid", "[[ ] ,[ ]]");
+            }};
+    private static final Map<String, String> ALL_WID_ENTRIES =
+            new HashMap<String, String>() {{
+                put("src/main/resources/org/test/test_empty_file.wid", "");
+                put("src/main/resources/org/test/test_empty_list.wid", "[]");
+                put("src/main/resources/org/test/another.wid", ANOTHER_DECLARATION);
             }};
     private static final Map<String, String> ICON_ENTRIES =
             new HashMap<String, String>() {{
-                put("defaultemailicon.gif", EMAIL_SERVICE_TASK_DATA_URI);
-                put("defaultlogicon.gif", LOG_SERVICE_TASK_DATA_URI);
+                put("global/defaultemailicon.gif", EMAIL_SERVICE_TASK_DATA_URI);
+                put("global/defaultlogicon.gif", LOG_SERVICE_TASK_DATA_URI);
+                put("src/main/resources/org/test/defaultlogicon.gif", LOG_SERVICE_TASK_DATA_URI);
+                put("global/defaultmilestoneicon.png", MILESTONE_SERVICE_TASK_DATA_URI);
             }};
 
     private final Promises promises;
@@ -123,7 +123,11 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
     @Override
     public Promise<String> get(final String uri) {
         if (uri.endsWith(".wid")) {
-            return promises.resolve(WID_ENTRIES.getOrDefault(uri, ""));
+            if (uri.startsWith("global")) {
+                return promises.resolve(GLOBAL_WID_ENTRIES.getOrDefault(uri, ""));
+            } else {
+                return promises.resolve(ALL_WID_ENTRIES.getOrDefault(uri, ""));
+            }
         }
         return promises.resolve(ICON_ENTRIES.getOrDefault(uri, ""));
     }
@@ -136,10 +140,14 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
 
     @Override
     public Promise<String[]> list(final String pattern) {
-        final String[] allUris = PATTERN_ALL_WID.equalsIgnoreCase(pattern) ?
-                WID_ENTRIES.keySet().toArray(new String[0]) :
-                new String[0];
-        return promises.resolve(allUris);
+        switch (pattern) {
+            case PATTERN_GLOBAL_WID:
+                return promises.resolve(GLOBAL_WID_ENTRIES.keySet().toArray(new String[0]));
+            case PATTERN_ALL_WID:
+                return promises.resolve(ALL_WID_ENTRIES.keySet().toArray(new String[0]));
+            default:
+                return promises.resolve(new String[0]);
+        }
     }
 
     @Override

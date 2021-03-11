@@ -18,13 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.client.workitem;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.guvnor.common.services.project.model.Dependencies;
@@ -32,6 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 
+import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.isEmpty;
 import static org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils.getDefaultIconData;
 
 public class WorkItemDefinitionClientParser {
@@ -42,73 +40,113 @@ public class WorkItemDefinitionClientParser {
     private static final String PARAMETERS = "parameters";
     private static final String RESULTS = "results";
     private static final String CATEGORY = "category";
+    private static final String DOCUMENTATION = "documentation";
+
+    private static final String DEFAULT_HANDLER = "defaultHandler";
+    private static final String DESCRIPTION = "description";
+
+    // KOGITO-4372. Properties supported by the engine but not supported by Designer    .
+    private static final String CUSTOM_EDITOR = "customEditor";
+    private static final String PARAMETER_VALUES = "parameterValues";
+    private static final String DEPENDENCIES = "dependencies";
+    private static final String VERSION = "version";
+    private static final String MAVEN_DEPENDENCIES = "mavenDependencies";
+
+    private static final String ICON_PREFIX = "data:image";
     private static final String NEW = "new";
-    private static final String STRING_DATA_TYPE = "StringDataType";
-    private static final String OBJECT_DATA_TYPE = "ObjectDataType";
+
+    private static int index;
+    // Waiting for KOGITO-3846 before we can use it
+    private static int lineNumber;
+    private static String widString;
 
     public static List<WorkItemDefinition> parse(String widStr) {
-        if (empty(widStr)) {
-            return Collections.emptyList();
+        if (widStr == null || isEmpty(widStr.trim())) {
+            return new ArrayList<>();
         }
 
-        List<WorkItemDefinition> widList = new ArrayList<>();
-        String[] lines = widStr.split("\r\n|\r|\n");
-        Queue<String> linesQueue = new LinkedList<>(Arrays.asList(lines));
-        while (!linesQueue.isEmpty()) {
-            String line = linesQueue.peek().trim();
-            if (!(empty(line) || isStartingObject(line) || isEndingObject(line))) {
-                WorkItemDefinition wid = parseWorkItemDefinitionObject(linesQueue);
-                widList.add(wid);
-            }
-            linesQueue.poll();
+        index = 0;
+        lineNumber = 1;
+        widString = widStr;
+        try {
+            return parseWid();
+        } catch (Exception ex) {
+            reportAnError(ex.getMessage());
+            return new ArrayList<>();
         }
-        return widList;
     }
 
-    private static boolean empty(String line) {
-        return line == null || "".equals(line.trim());
-    }
+    private static List<WorkItemDefinition> parseWid() {
+        if (notObjectStart(skipWhitespace())) {
+            throw new IllegalArgumentException("Invalid parameter");
+        }
+        findNextToken();
 
-    private static WorkItemDefinition parseWorkItemDefinitionObject(Queue<String> objectQueue) {
-        WorkItemDefinition wid = emptyWid();
-        wid.setDependencies(new Dependencies());
-        String line = objectQueue.poll();
-        while (!isEndingObject(line) && !objectQueue.isEmpty()) {
-            Map.Entry<String, String> attributes = getAttribute(line);
-            switch (attributes.getKey()) {
-                case NAME:
-                    wid.setName(attributes.getValue());
+        List<Map<String, Object>> widFile = new ArrayList<>();
+        while (isObjectStart(skipWhitespace())) {
+            switch (findNextToken()) {
+                case '"':
+                    widFile.add(getMapEntries());
                     break;
-                case DISPLAY_NAME:
-                    wid.setDisplayName(attributes.getValue());
+                case ']':
+                    // WID is empty, just skip it
                     break;
-                case ICON:
-                    wid.getIconDefinition().setUri(attributes.getValue());
-                    break;
-                case PARAMETERS:
-                    if (!isEndingObject(attributes.getValue())) {
-                        Collection<Map.Entry<String, String>> parameters = retrieveParameters(objectQueue);
-                        wid.setParameters(parseParameters(parameters));
-                    }
-                    break;
-                case RESULTS:
-                    if (!isEndingObject(attributes.getValue())) {
-                        Collection<Map.Entry<String, String>> results = retrieveParameters(objectQueue);
-                        wid.setResults(parseParameters(results));
-                    }
-                    break;
-                case CATEGORY:
-                    wid.setCategory(attributes.getValue());
                 default:
-                    break;
+                    // If current WID file is incorrect return all already parsed and skip others
+                    return convertMvelToWid(widFile);
             }
-            line = objectQueue.poll();
+            if (isElementSeparator(skipWhitespace())) {
+                findNextToken();
+            }
         }
 
-        if (empty(wid.getCategory())) {
-            wid.setCategory(BPMNCategories.CUSTOM_TASKS);
+        return convertMvelToWid(widFile);
+    }
+
+    private static List<WorkItemDefinition> convertMvelToWid(List<Map<String, Object>> widFile) {
+        List<WorkItemDefinition> wids = new ArrayList<>();
+        for (Map<String, Object> widItem : widFile) {
+            WorkItemDefinition wid = emptyWid();
+            if (widItem.get(NAME) != null) {
+                wid.setName(widItem.get(NAME).toString());
+            }
+            if (widItem.get(DISPLAY_NAME) != null) {
+                wid.setDisplayName(widItem.get(DISPLAY_NAME).toString());
+            }
+            if (widItem.get(ICON) != null) {
+                wid.getIconDefinition().setUri(widItem.get(ICON).toString());
+                if (widItem.get(ICON).toString().startsWith(ICON_PREFIX)) {
+                    wid.getIconDefinition().setIconData(widItem.get(ICON).toString());
+                }
+            }
+            if (widItem.get(DOCUMENTATION) != null) {
+                wid.setDocumentation(widItem.get(DOCUMENTATION).toString());
+            }
+            if (widItem.get(CATEGORY) != null) {
+                wid.setCategory(widItem.get(CATEGORY).toString());
+            }
+            if (isEmpty(wid.getCategory())) {
+                wid.setCategory(BPMNCategories.CUSTOM_TASKS);
+            }
+
+            if (widItem.get(DEFAULT_HANDLER) != null) {
+                // It has no visual representation in the Designer so far but model already done, so parsing it
+                wid.setDefaultHandler(widItem.get(DEFAULT_HANDLER).toString());
+            }
+
+            if (widItem.get(DESCRIPTION) != null) {
+                wid.setDescription(widItem.get(DESCRIPTION).toString());
+            }
+            if (widItem.get(PARAMETERS) != null) {
+                wid.setParameters(retrieveParameters((Map<String, Object>) widItem.get(PARAMETERS)));
+            }
+            if (widItem.get(RESULTS) != null) {
+                wid.setResults(retrieveParameters((Map<String, Object>) widItem.get(RESULTS)));
+            }
+
+            wids.add(wid);
         }
-        return wid;
+        return wids;
     }
 
     private static WorkItemDefinition emptyWid() {
@@ -129,62 +167,206 @@ public class WorkItemDefinitionClientParser {
         return wid;
     }
 
-    private static Collection<Map.Entry<String, String>> retrieveParameters(Queue<String> objectQueue) {
-        String param = objectQueue.poll();
-        List<Map.Entry<String, String>> params = new ArrayList<>();
-        while (!(isEndingObject(param) || objectQueue.isEmpty())) {
-            String[] paramsParts = param.trim().split(":");
-            String paramName = cleanProp(paramsParts[0]);
-            String paramType = paramsParts[1].replaceAll(NEW, "")
-                    .replaceAll(",", "")
-                    .replaceAll("\\(\\)", "").trim();
-            params.add(new SimpleEntry<>(paramName, toJavaType(paramType)));
-            param = objectQueue.poll();
+    private static String retrieveParameters(Map<String, Object> params) {
+        params.entrySet().forEach(v -> v.setValue(updateMvelType(v)));
+
+        return parametersToString(params);
+    }
+
+    private static Object updateMvelType(Map.Entry<String, Object> entry) {
+        String paramType = entry.getValue().toString().trim()
+                .replaceAll(NEW, "")
+                .replaceAll(",", "")
+                .replaceAll("\\(\\)", "").trim();
+        return MvelDataType.getJavaTypeByMvelType(paramType);
+    }
+
+    private static Map<String, Object> getMapEntries() {
+        Map<String, Object> params = new HashMap<>();
+        while (notObjectEnd(skipWhitespace())) {
+            if (isElementSeparator(getCurrentSymbol())) {
+                index++;
+                continue;
+            }
+            if (isAttributeWrapper(getCurrentSymbol())) {
+                Map.Entry<String, Object> entry = getEntry();
+                params.put(entry.getKey(), entry.getValue());
+                continue;
+            }
+            throw new IllegalArgumentException("Invalid parameter");
         }
+        index++;
+
         return params;
     }
 
-    private static Map.Entry<String, String> getAttribute(String value) {
-        Map.Entry<String, String> attrs = new SimpleEntry<>("", "");
-        if (value.indexOf(':') != -1) {
-            String[] values = value.split(":");
-            attrs = new SimpleEntry<>(cleanProp(values[0]), cleanProp(values[1]));
+    private static boolean isElementSeparator(char symbol) {
+        return symbol == ',';
+    }
+
+    private static Map.Entry<String, Object> getEntry() {
+        skipWhitespace();
+        String name = parseString();
+        if (notParameterDivider(skipWhitespace())) {
+            throw new IllegalArgumentException("Invalid parameter");
         }
-        return attrs;
+
+        index++;
+
+        char currentToken = skipWhitespace();
+
+        Object parameterValue;
+
+        switch (currentToken) {
+            // String
+            case '"':
+            case '\'':
+                parameterValue = parseString();
+                break;
+            case '[':
+                // Object Start
+                findNextToken();
+                parameterValue = getMapEntries();
+                index++;
+                break;
+            default:
+                // Literal (type, numeric, Floating Point, BigInteger, BigDecimal, boolean, null)
+                parameterValue = parseLiteral();
+                break;
+        }
+
+        return new SimpleEntry<>(name, parameterValue);
     }
 
-    private static String cleanProp(String prop) {
-        return prop.trim().replaceAll("\"", "").replaceAll(",", "");
+    private static void reportAnError(String message) {
+        // Show error message here. You can use Message and lineNumber variables.
+        // See KOGITO-3846 for more details
     }
 
-    private static boolean isStartingObject(String line) {
-        return line.startsWith("[");
+    private static char findNextToken() {
+        index++;
+        return skipWhitespace();
     }
 
-    private static boolean isEndingObject(String line) {
-        return line == null || line.endsWith("]") || line.endsWith("],");
+    private static char getCurrentSymbol() {
+        return widString.charAt(index);
     }
 
-    private static String parseParameters(final Collection<Map.Entry<String, String>> parameters) {
-        return "|" + parameters.stream()
+    private static char skipWhitespace() {
+        while (isWhitespace(getCurrentSymbol())) {
+            if (getCurrentSymbol() == '\n') {
+                lineNumber++;
+            }
+            index++;
+        }
+
+        return getCurrentSymbol();
+    }
+
+    private static boolean isWhitespace(char symbol) {
+        switch (symbol) {
+            case ' ':
+            case '\n':
+            case '\r':
+            case '\t':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static String parseString() {
+        char wrapper = getCurrentSymbol();
+        index++;
+        if (notAttributeWrapper(wrapper)) {
+            throw new IllegalArgumentException("Invalid wrapper symbol");
+        }
+
+        StringBuilder name = new StringBuilder();
+        for (; nonStringEnd(wrapper); index++) {
+            name.append(getCurrentSymbol());
+        }
+
+        index++;
+        return name.toString();
+    }
+
+    private static String parseLiteral() {
+        StringBuilder literal = new StringBuilder();
+        for (; widString.length() > index && isLiteralSymbol(getCurrentSymbol()); index++) {
+            literal.append(getCurrentSymbol());
+        }
+
+        return literal.toString();
+    }
+
+    private static boolean nonStringEnd(char endOfString) {
+        if (isEscape(getCurrentSymbol())) {
+            index++;
+            return true;
+        }
+        return getCurrentSymbol() != endOfString;
+    }
+
+    private static boolean isLiteralSymbol(char symbol) {
+        return !notLiteralSymbol(symbol);
+    }
+
+    private static boolean notLiteralSymbol(char symbol) {
+        switch (symbol) {
+            case '\n':
+            case '\r':
+            case '\t':
+            case '"':
+            case '\'':
+            case ',':
+            case ']':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static boolean isObjectStart(char symbol) {
+        return symbol == '[';
+    }
+
+    private static boolean isAttributeWrapper(char symbol) {
+        return symbol == '"' || symbol == '\'';
+    }
+
+    private static boolean isEscape(char symbol) {
+        return symbol == '\\';
+    }
+
+    private static boolean isParameterDivider(char symbol) {
+        return symbol == ':';
+    }
+
+    private static boolean notParameterDivider(char symbol) {
+        return !isParameterDivider(symbol);
+    }
+
+    private static boolean notAttributeWrapper(char symbol) {
+        return !isAttributeWrapper(symbol);
+    }
+
+    private static boolean isObjectEnd(char symbol) {
+        return symbol == ']';
+    }
+
+    private static boolean notObjectEnd(char symbol) {
+        return !isObjectEnd(symbol);
+    }
+
+    private static boolean notObjectStart(char symbol) {
+        return !isObjectStart(symbol);
+    }
+
+    private static String parametersToString(final Map<String, Object> parameters) {
+        return "|" + parameters.entrySet().stream()
                 .map(param -> param.getKey() + ":" + param.getValue())
                 .sorted(String::compareTo)
                 .collect(Collectors.joining(",")) + "|";
-    }
-
-    /**
-     * Converts a MVEL datatype to Java type. Could be extended for all MVEL possible types.
-     * @param mvelType The MVEL type, e.g. StringDataType
-     * @return The Java corresponding type e.g. String
-     */
-    private static String toJavaType(String mvelType) {
-        switch (mvelType) {
-            case STRING_DATA_TYPE:
-                return "String";
-            case OBJECT_DATA_TYPE:
-                return "java.lang.Object";
-            default:
-                return mvelType;
-        }
     }
 }
