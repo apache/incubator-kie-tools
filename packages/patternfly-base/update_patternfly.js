@@ -22,18 +22,18 @@ async function executeCommand(command) {
   });
 }
 
-function upgradeDependencies() {
+function updateDependencies() {
   return executeCommand(UPDATE_PATTERNFLY_COMMAND)
     .then(() => executeCommand(LINK_DEPENDENCIES_COMMAND))
     .then(() => executeCommand(BUILD_PROJECT_COMMAND));
 }
 
-function upgradeSnapshot() {
+function updateSnapshots() {
   return executeCommand(UPDATE_SNAPSHOTS_COMMAND);
 }
 
 function usageExample() {
-  console.log("Usage yarn upgrade:patternfly [options]");
+  console.log("Usage yarn update [options]");
   console.log("Options:");
   console.log("-d, --dependencies           Update Patternfly dependencies");
   console.log("-s, --snapshots              Update project test snapshots");
@@ -52,21 +52,21 @@ function start() {
   switch (argument) {
     case "-d":
     case "--dependencies": {
-      upgradeDependencies()
+      updateDependencies()
         .then(() => console.log("Success"))
         .catch(err => console.error("Error", err));
       break;
     }
     case "-s":
     case "--snapshots": {
-      upgradeSnapshot()
+      updateSnapshots()
         .then(() => console.log("Success"))
         .catch(err => console.error("Error", err));
       break;
     }
     case undefined: {
-      upgradeDependencies()
-        .then(() => upgradeSnapshot())
+      updateDependencies()
+        .then(() => updateSnapshots())
         .then(() => console.log("Success"))
         .catch(err => console.error("Error", err));
       break;

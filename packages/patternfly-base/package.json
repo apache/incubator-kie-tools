@@ -17,6 +17,6 @@
     "@patternfly/react-icons": "^4.9.5"
   },
   "scripts": {
-    "upgrade:patternfly": "node upgrade_patternfly.js"
+    "update": "node update_patternfly.js"
   }
 }
