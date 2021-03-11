@@ -24,7 +24,8 @@ const BG_IMAGES_DIRNAME = "bgimages";
  * (2) When developing for kogito-tooling,
  *     patternfly-base is accessed directly so nodeModulesDir needs node_modules appended.
  */
-const nodeModulesDir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
+const nodeModulesDir =
+  "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
 
 module.exports = {
   patternflyRules: [
@@ -42,10 +43,22 @@ module.exports = {
       // if they live under a 'fonts' or 'pficon' directory
       include: [
         path.resolve(__dirname, nodeModulesDir + "/patternfly/dist/fonts"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/fonts"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/pficon"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/fonts"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/pficon")
+        path.resolve(
+          __dirname,
+          nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/fonts"
+        ),
+        path.resolve(
+          __dirname,
+          nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/pficon"
+        ),
+        path.resolve(
+          __dirname,
+          nodeModulesDir + "/@patternfly/patternfly/assets/fonts"
+        ),
+        path.resolve(
+          __dirname,
+          nodeModulesDir + "/@patternfly/patternfly/assets/pficon"
+        )
       ],
       use: {
         loader: "file-loader",
@@ -59,7 +72,7 @@ module.exports = {
     },
     {
       test: /\.svg$/,
-      include: input => input.indexOf("background-filter.svg") > 1,
+      include: (input) => input.indexOf("background-filter.svg") > 1,
       use: [
         {
           loader: "url-loader",
@@ -75,7 +88,7 @@ module.exports = {
       test: /\.svg$/,
       // only process SVG modules with this loader if they live under a 'bgimages' directory
       // this is primarily useful when applying a CSS background using an SVG
-      include: input => input.indexOf(BG_IMAGES_DIRNAME) > -1,
+      include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
       use: {
         loader: "svg-url-loader",
         options: {}
@@ -85,7 +98,7 @@ module.exports = {
       test: /\.svg$/,
       // only process SVG modules with this loader when they don't live under a 'bgimages',
       // 'fonts', or 'pficon' directory, those are handled with other loaders
-      include: input =>
+      include: (input) =>
         input.indexOf(BG_IMAGES_DIRNAME) === -1 &&
         input.indexOf("fonts") === -1 &&
         input.indexOf("background-filter") === -1 &&
@@ -100,16 +113,27 @@ module.exports = {
       include: [
         path.resolve(__dirname, "src"),
         path.resolve(__dirname, nodeModulesDir + "/patternfly"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/images"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-styles/css/assets/images"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/images"),
         path.resolve(
           __dirname,
-          nodeModulesDir + "/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
+          nodeModulesDir + "/@patternfly/patternfly/assets/images"
         ),
         path.resolve(
           __dirname,
-          nodeModulesDir + "/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
+          nodeModulesDir + "/@patternfly/react-styles/css/assets/images"
+        ),
+        path.resolve(
+          __dirname,
+          nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/images"
+        ),
+        path.resolve(
+          __dirname,
+          nodeModulesDir +
+            "/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
+        ),
+        path.resolve(
+          __dirname,
+          nodeModulesDir +
+            "/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
         ),
         path.resolve(
           __dirname,
