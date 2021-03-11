@@ -1,10 +1,6 @@
 {
   "defaultSeverity": "error",
-  "extends": [
-    "tslint:recommended",
-    "tslint-react",
-    "tslint-config-prettier"
-  ],
+  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "jsRules": {},
   "rules": {
     "forin": false,
@@ -13,10 +9,7 @@
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "no-console": false,
-    "interface-name": [
-      true,
-      "never-prefix"
-    ],
+    "interface-name": [true, "never-prefix"],
     "max-classes-per-file": false,
     "jsx-no-lambda": false,
     "member-ordering": [

@@ -102,14 +102,14 @@ jobs:
       - name: Run integration tests
         run: npx lerna run test:it --scope '@kogito-tooling/online-editor' --stream
 
-      - name: Archive it test screenshots	
+      - name: Archive it test screenshots
         if: failure()
-        uses: actions/upload-artifact@v1	
-        with:	
-          name: online-editor-it-tests-screenshots-${{ matrix.os }}	
+        uses: actions/upload-artifact@v1
+        with:
+          name: online-editor-it-tests-screenshots-${{ matrix.os }}
           path: packages/online-editor/it-tests/screenshots
 
-      - name: Archive it test videos	
+      - name: Archive it test videos
         if: failure()
         uses: actions/upload-artifact@v1
         with:

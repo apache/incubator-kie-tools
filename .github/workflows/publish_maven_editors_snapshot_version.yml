@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       kogitoToolingForkToUpdate:
-        description: 'PR Fork to update (optional)'
+        description: "PR Fork to update (optional)"
         required: false
       kogitoToolingBranchToUpdate:
-        description: 'PR Branch to update (optional)'
+        description: "PR Branch to update (optional)"
         required: false
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/setup-java@v1
         with:
-          java-version: '8'
+          java-version: "8"
 
       - name: Checkout droolsjbpm-build-bootstrap
         uses: actions/checkout@v2
@@ -47,7 +47,7 @@ jobs:
           path: ${{ github.workspace }}/kie-wb-common
           repository: kiegroup/kie-wb-common
           fetch-depth: 0
-      
+
       - name: Checkout drools-wb
         uses: actions/checkout@v2
         with:
@@ -115,7 +115,7 @@ jobs:
           NPM_VERSION=`echo $MVN_VERSION-$DATE.$TIME`
           echo $NPM_VERSION
           echo ::set-output name=version::$NPM_VERSION
-      
+
       - name: Publish BPMN Editor
         run: |
           cd ${{ github.workspace }}/kogito-tooling/.github/supporting-files/publish_maven_editors_snapshot_version/bpmn-editor-unpacked
@@ -124,7 +124,7 @@ jobs:
           npm version ${{ steps.newEditorsVersionOnNpm.outputs.version }}
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           npm publish --access public --tag snapshot
-          
+
       - name: Publish DMN Editor
         run: |
           cd ${{ github.workspace }}/kogito-tooling/.github/supporting-files/publish_maven_editors_snapshot_version/dmn-editor-unpacked
@@ -133,7 +133,7 @@ jobs:
           npm version ${{ steps.newEditorsVersionOnNpm.outputs.version }}
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           npm publish --access public --tag snapshot
-          
+
       - name: Publish SceSim Editor
         run: |
           cd ${{ github.workspace }}/kogito-tooling/.github/supporting-files/publish_maven_editors_snapshot_version/scesim-editor-unpacked
@@ -180,8 +180,3 @@ jobs:
           git add .
           git commit -m "Update Editors to ${{ steps.newEditorsVersionOnNpm.outputs.version }}"
           git push
-
-
-
-
-        

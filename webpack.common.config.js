@@ -24,7 +24,11 @@ module.exports = {
     filename: "[name].js"
   },
   stats: {
-    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeAssets: [
+      (name) => !name.endsWith(".js"),
+      /gwt-editors\/.*/,
+      /editors\/.*/
+    ],
     excludeModules: true
   },
   performance: {
@@ -33,7 +37,11 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    modules: [
+      path.resolve("../../node_modules"),
+      path.resolve("./node_modules"),
+      path.resolve("./src")
+    ]
   },
   module: {
     rules: [
