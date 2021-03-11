@@ -7,17 +7,18 @@ const BUILD_PROJECT_COMMAND = "(cd ../../; npx lerna run build:fast)";
 const UPDATE_SNAPSHOTS_COMMAND = "(cd ../../; npx lerna run test --stream -- -u)";
 
 async function executeCommand(command) {
-  const execution = exec(command);
+  return new Promise((resolve, reject) => {
+    const execution = exec(command);
 
-  execution.stdout.pipe(process.stdout);
-  execution.stderr.pipe(process.stderr);
+    execution.stdout.pipe(process.stdout);
+    execution.stderr.pipe(process.stderr);
 
-  execution.on("close", code => {
-    if (code !== 0) {
+    execution.on("close", code => {
+      if (code === 0) {
+        resolve();
+      }
       reject(`child process exited with code ${code}`);
-    } else {
-      resolve();
-    }
+    });
   });
 }
 
