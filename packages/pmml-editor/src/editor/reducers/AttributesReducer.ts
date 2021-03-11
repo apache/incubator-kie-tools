@@ -15,7 +15,12 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  CompoundPredicate,
+  Predicate,
+  SimplePredicate
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { ValidationRegistry } from "../validation";
@@ -69,7 +74,7 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
             .forCharacteristic(action.payload.characteristicIndex)
             .forAttribute()
             .build(),
-          draft => {
+          (draft) => {
             draft.push({
               predicate: action.payload.predicate,
               partialScore: action.payload.partialScore,
@@ -88,7 +93,7 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
             .forCharacteristic(action.payload.characteristicIndex)
             .forAttribute()
             .build(),
-          draft => {
+          (draft) => {
             const attributeIndex = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft.splice(attributeIndex, 1);
@@ -106,7 +111,7 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
             .forCharacteristic(action.payload.characteristicIndex)
             .forAttribute()
             .build(),
-          draft => {
+          (draft) => {
             const attributeIndex: number = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft[attributeIndex] = {

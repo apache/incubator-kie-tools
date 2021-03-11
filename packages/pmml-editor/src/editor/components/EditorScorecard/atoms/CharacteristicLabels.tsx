@@ -30,7 +30,13 @@ interface CharacteristicLabelsProps {
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { modelIndex, characteristicIndex, activeCharacteristic, areReasonCodesUsed, scorecardBaselineScore } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    activeCharacteristic,
+    areReasonCodesUsed,
+    scorecardBaselineScore
+  } = props;
 
   const { validationRegistry } = useValidationRegistry();
   const reasonCodeValidation = useMemo(
@@ -55,32 +61,55 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
           .forBaselineScore()
           .build()
       ),
-    [modelIndex, characteristicIndex, areReasonCodesUsed, scorecardBaselineScore, activeCharacteristic]
+    [
+      modelIndex,
+      characteristicIndex,
+      areReasonCodesUsed,
+      scorecardBaselineScore,
+      activeCharacteristic
+    ]
   );
   return (
     <>
-      {areReasonCodesUsed && activeCharacteristic.reasonCode !== undefined && reasonCodeValidation.length === 0 && (
-        <CharacteristicLabel name={"Reason code"} value={activeCharacteristic.reasonCode} />
-      )}
+      {areReasonCodesUsed &&
+        activeCharacteristic.reasonCode !== undefined &&
+        reasonCodeValidation.length === 0 && (
+          <CharacteristicLabel
+            name={"Reason code"}
+            value={activeCharacteristic.reasonCode}
+          />
+        )}
       {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
-        <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
+        <ValidationIndicatorLabel
+          validations={reasonCodeValidation}
+          cssClass="characteristic-list__item__label"
+        >
           <>
             <strong>Reason code:</strong>&nbsp;
             <em>Missing</em>
           </>
         </ValidationIndicatorLabel>
       )}
-      {activeCharacteristic.baselineScore !== undefined && baselineScoreValidation.length === 0 && (
-        <CharacteristicLabel name={"Baseline score"} value={activeCharacteristic.baselineScore.toString()} />
-      )}
-      {areReasonCodesUsed && activeCharacteristic.baselineScore === undefined && baselineScoreValidation.length > 0 && (
-        <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="characteristic-list__item__label">
-          <>
-            <strong>Baseline score:</strong>&nbsp;
-            <em>Missing</em>
-          </>
-        </ValidationIndicatorLabel>
-      )}
+      {activeCharacteristic.baselineScore !== undefined &&
+        baselineScoreValidation.length === 0 && (
+          <CharacteristicLabel
+            name={"Baseline score"}
+            value={activeCharacteristic.baselineScore.toString()}
+          />
+        )}
+      {areReasonCodesUsed &&
+        activeCharacteristic.baselineScore === undefined &&
+        baselineScoreValidation.length > 0 && (
+          <ValidationIndicatorLabel
+            validations={baselineScoreValidation}
+            cssClass="characteristic-list__item__label"
+          >
+            <>
+              <strong>Baseline score:</strong>&nbsp;
+              <em>Missing</em>
+            </>
+          </ValidationIndicatorLabel>
+        )}
     </>
   );
 };

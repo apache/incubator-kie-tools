@@ -23,7 +23,10 @@ import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor, PMMLEditorInterface } from "../../editor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import {
+  ChannelType,
+  OperatingSystem
+} from "@kogito-tooling/channel-common-api";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
@@ -39,12 +42,16 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({
+      os: editorContext.operatingSystem
+    }),
     i18n: new I18nService()
   }
 };
 
-const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(envelopeContext);
+const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(
+  envelopeContext
+);
 let editor: PMMLEditor;
 
 beforeEach(() => {

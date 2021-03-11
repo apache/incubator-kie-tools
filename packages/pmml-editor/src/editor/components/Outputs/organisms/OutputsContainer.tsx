@@ -17,9 +17,27 @@ import * as React from "react";
 import { useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Alert, Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
-import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
-import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Alert,
+  Button,
+  Flex,
+  FlexItem,
+  Stack,
+  StackItem,
+  TextContent,
+  Title
+} from "@patternfly/react-core";
+import {
+  ArrowAltCircleLeftIcon,
+  BoltIcon,
+  PlusIcon
+} from "@patternfly/react-icons";
+import {
+  FieldName,
+  MiningSchema,
+  Output,
+  OutputField
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
@@ -37,24 +55,44 @@ interface OutputsContainerProps {
   modelIndex: number;
   output?: Output;
   miningSchema?: MiningSchema;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (
+    index: number | undefined,
+    name: string | undefined
+  ) => boolean;
   deleteOutputField: (index: number) => void;
-  commitOutputField: (index: number | undefined, outputField: OutputField) => void;
+  commitOutputField: (
+    index: number | undefined,
+    outputField: OutputField
+  ) => void;
 }
 
 type OutputsViewSection = "overview" | "extended-properties" | "batch-add";
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { modelIndex, output, miningSchema, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
+  const {
+    modelIndex,
+    output,
+    miningSchema,
+    validateOutputFieldName,
+    deleteOutputField,
+    commitOutputField
+  } = props;
 
-  const [selectedOutputIndex, setSelectedOutputIndex] = useState<number | undefined>(undefined);
-  const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
+  const [selectedOutputIndex, setSelectedOutputIndex] = useState<
+    number | undefined
+  >(undefined);
+  const [viewSection, setViewSection] = useState<OutputsViewSection>(
+    "overview"
+  );
 
   const { activeOperation, setActiveOperation } = useOperation();
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
-  const targetFields = useMemo(() => getMiningSchemaTargetFields(miningSchema), [miningSchema]);
+  const targetFields = useMemo(
+    () => getMiningSchemaTargetFields(miningSchema),
+    [miningSchema]
+  );
 
   const editItem: OutputField | undefined = useMemo(() => {
     if (selectedOutputIndex === undefined) {
@@ -86,8 +124,13 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const addOutputField = () => {
     const numberOfOutputFields = output?.OutputField.length;
     if (numberOfOutputFields !== undefined) {
-      const existingNames: string[] = output?.OutputField.map(of => of.name.toString()) ?? [];
-      const newOutputFieldName: FieldName = findIncrementalName("New output", existingNames, 1) as FieldName;
+      const existingNames: string[] =
+        output?.OutputField.map((of) => of.name.toString()) ?? [];
+      const newOutputFieldName: FieldName = findIncrementalName(
+        "New output",
+        existingNames,
+        1
+      ) as FieldName;
       const newOutputField: OutputField = {
         name: newOutputFieldName,
         dataType: "string",
@@ -109,7 +152,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const addBatchOutputs = (outputs: string) => {
-    const outputsNames = outputs.split("\n").filter(item => item.trim().length > 0);
+    const outputsNames = outputs
+      .split("\n")
+      .filter((item) => item.trim().length > 0);
     dispatch({
       type: Actions.AddBatchOutputs,
       payload: {
@@ -129,7 +174,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     if (output !== undefined && selectedOutputIndex !== undefined) {
       const outputField = output.OutputField[selectedOutputIndex];
       const existingPartial: Partial<OutputField> = {};
-      Object.keys(partial).forEach(key => set(existingPartial, key, get(outputField, key)));
+      Object.keys(partial).forEach((key) =>
+        set(existingPartial, key, get(outputField, key))
+      );
 
       if (!isEqual(partial, existingPartial)) {
         commitOutputField(selectedOutputIndex, { ...outputField, ...partial });
@@ -146,10 +193,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const validations = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forOutput()
-          .build()
+        Builder().forModel(modelIndex).forOutput().build()
       ),
     [modelIndex, output?.OutputField]
   );
@@ -214,7 +258,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     selectedOutputIndex={selectedOutputIndex}
                     setSelectedOutputIndex={setSelectedOutputIndex}
                     validateOutputFieldName={validateOutputFieldName}
-                    viewExtendedProperties={() => setViewSection("extended-properties")}
+                    viewExtendedProperties={() =>
+                      setViewSection("extended-properties")
+                    }
                     onAddOutputField={addOutputField}
                     onDeleteOutputField={deleteOutputField}
                     onCommitAndClose={onCommitAndClose}
@@ -229,7 +275,10 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 <StackItem>
                   <TextContent>
                     <Title size="lg" headingLevel="h1">
-                      <a onClick={() => setViewSection("overview")}>{editItem?.name}</a>&nbsp;/&nbsp;Properties
+                      <a onClick={() => setViewSection("overview")}>
+                        {editItem?.name}
+                      </a>
+                      &nbsp;/&nbsp;Properties
                     </Title>
                   </TextContent>
                 </StackItem>
@@ -255,7 +304,10 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
               </Stack>
             )}
             {viewSection === "batch-add" && (
-              <OutputsBatchAdd onAdd={addBatchOutputs} onCancel={() => setViewSection("overview")} />
+              <OutputsBatchAdd
+                onAdd={addBatchOutputs}
+                onCancel={() => setViewSection("overview")}
+              />
             )}
           </>
         </CSSTransition>
@@ -265,5 +317,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
 };
 
 const getMiningSchemaTargetFields = (miningSchema?: MiningSchema) => {
-  return miningSchema?.MiningField.filter(field => field.usageType === "target").map(field => field.name) as string[];
+  return miningSchema?.MiningField.filter(
+    (field) => field.usageType === "target"
+  ).map((field) => field.name) as string[];
 };

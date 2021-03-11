@@ -13,7 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { MiningField, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  MiningField,
+  OutputField
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder } from "../paths";
@@ -26,15 +29,21 @@ export const validateOutputs = (
 ): void => {
   if (outputFields.length === 0) {
     validationRegistry.set(
-      Builder()
-        .forModel(modelIndex)
-        .forOutput()
-        .build(),
-      new ValidationEntry(ValidationLevel.WARNING, `At least one Output Field is required.`)
+      Builder().forModel(modelIndex).forOutput().build(),
+      new ValidationEntry(
+        ValidationLevel.WARNING,
+        `At least one Output Field is required.`
+      )
     );
   }
   outputFields?.forEach((outputField, dataDictionaryIndex) =>
-    validateOutput(modelIndex, outputField, dataDictionaryIndex, miningFields, validationRegistry)
+    validateOutput(
+      modelIndex,
+      outputField,
+      dataDictionaryIndex,
+      miningFields,
+      validationRegistry
+    )
   );
 };
 
@@ -45,7 +54,10 @@ export const validateOutput = (
   miningFields: MiningField[],
   validationRegistry: ValidationRegistry
 ): void => {
-  if (isOutputsTargetFieldRequired(miningFields) && outputField.targetField === undefined) {
+  if (
+    isOutputsTargetFieldRequired(miningFields) &&
+    outputField.targetField === undefined
+  ) {
     validationRegistry.set(
       Builder()
         .forModel(modelIndex)
@@ -62,5 +74,7 @@ export const validateOutput = (
 };
 
 export const isOutputsTargetFieldRequired = (miningFields: MiningField[]) => {
-  return miningFields.filter(field => field.usageType === "target").length > 1;
+  return (
+    miningFields.filter((field) => field.usageType === "target").length > 1
+  );
 };

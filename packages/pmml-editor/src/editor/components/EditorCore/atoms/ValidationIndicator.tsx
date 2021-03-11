@@ -16,7 +16,10 @@
 import * as React from "react";
 import { ReactElement, useMemo } from "react";
 import { Label, Tooltip } from "@patternfly/react-core";
-import { ExclamationCircleIcon, ExclamationTriangleIcon } from "@patternfly/react-icons";
+import {
+  ExclamationCircleIcon,
+  ExclamationTriangleIcon
+} from "@patternfly/react-icons";
 import "./ModelTitle.scss";
 import { ValidationEntry, ValidationLevel } from "../../../validation";
 
@@ -34,8 +37,12 @@ export const ValidationIndicator = (props: ValidationIndicatorProps) => {
       {maxLevel !== undefined && (
         <ValidationIndicatorTooltip validations={validations}>
           <>
-            {maxLevel === ValidationLevel.ERROR && <ExclamationCircleIcon size={"sm"} color={"red"} />}
-            {maxLevel === ValidationLevel.WARNING && <ExclamationTriangleIcon size={"sm"} color={"orange"} />}
+            {maxLevel === ValidationLevel.ERROR && (
+              <ExclamationCircleIcon size={"sm"} color={"red"} />
+            )}
+            {maxLevel === ValidationLevel.WARNING && (
+              <ExclamationTriangleIcon size={"sm"} color={"orange"} />
+            )}
           </>
         </ValidationIndicatorTooltip>
       )}
@@ -48,7 +55,9 @@ interface ValidationIndicatorTooltipProps extends ValidationIndicatorProps {
   customTooltipContent?: string;
 }
 
-export const ValidationIndicatorTooltip = (props: ValidationIndicatorTooltipProps) => {
+export const ValidationIndicatorTooltip = (
+  props: ValidationIndicatorTooltipProps
+) => {
   const { validations, children, customTooltipContent } = props;
 
   return (
@@ -57,7 +66,9 @@ export const ValidationIndicatorTooltip = (props: ValidationIndicatorTooltipProp
         <Tooltip
           maxWidth={"100%"}
           isContentLeftAligned={true}
-          content={customTooltipContent ? customTooltipContent : list(validations)}
+          content={
+            customTooltipContent ? customTooltipContent : list(validations)
+          }
         >
           {children}
         </Tooltip>
@@ -73,8 +84,16 @@ interface ValidationIndicatorLabelProps extends ValidationIndicatorProps {
   cssClass?: string;
 }
 
-export const ValidationIndicatorLabel = (props: ValidationIndicatorLabelProps) => {
-  const { validations, children, customTooltipContent, onClose, cssClass } = props;
+export const ValidationIndicatorLabel = (
+  props: ValidationIndicatorLabelProps
+) => {
+  const {
+    validations,
+    children,
+    customTooltipContent,
+    onClose,
+    cssClass
+  } = props;
 
   const maxLevel = useMemo(() => getMaxLevel(validations), [validations]);
   const labelColor = useMemo(() => {
@@ -102,8 +121,16 @@ export const ValidationIndicatorLabel = (props: ValidationIndicatorLabelProps) =
   return (
     <>
       {maxLevel !== undefined && (
-        <ValidationIndicatorTooltip validations={validations} customTooltipContent={customTooltipContent}>
-          <Label onClose={onClose} className={cssClass} color={labelColor} icon={labelIcon}>
+        <ValidationIndicatorTooltip
+          validations={validations}
+          customTooltipContent={customTooltipContent}
+        >
+          <Label
+            onClose={onClose}
+            className={cssClass}
+            color={labelColor}
+            icon={labelIcon}
+          >
             {children}
           </Label>
         </ValidationIndicatorTooltip>
@@ -112,7 +139,9 @@ export const ValidationIndicatorLabel = (props: ValidationIndicatorLabelProps) =
   );
 };
 
-const getMaxLevel = (validations: ValidationEntry[]): ValidationLevel | undefined => {
+const getMaxLevel = (
+  validations: ValidationEntry[]
+): ValidationLevel | undefined => {
   if (validations.length === 0) {
     return undefined;
   }

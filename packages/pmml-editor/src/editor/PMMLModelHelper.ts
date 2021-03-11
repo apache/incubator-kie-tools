@@ -78,7 +78,9 @@ export interface PMMLModelMapping<M> {
   factory: (() => M) | undefined;
 }
 
-export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMapping<any>>(
+export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<
+  PMMLModelMapping<any>
+>(
   {
     model: AnomalyDetectionModel,
     type: "Anomaly Detection Model",
@@ -255,19 +257,28 @@ export const getModelIconUrlByType = (type: ModelType): string => {
 export const isSupportedModelType = (model: Model): boolean => {
   for (const _mapping of PMMLModels) {
     if (model instanceof _mapping.model) {
-      return _mapping.capability === SupportedCapability.VIEWER || _mapping.capability === SupportedCapability.EDITOR;
+      return (
+        _mapping.capability === SupportedCapability.VIEWER ||
+        _mapping.capability === SupportedCapability.EDITOR
+      );
     }
   }
   return false;
 };
 
 // TODO {kelvah} rough implementation for demoing purposes. to be done properly.
-export const findIncrementalName = (name: string, existingNames: string[], startsFrom: number): string => {
+export const findIncrementalName = (
+  name: string,
+  existingNames: string[],
+  startsFrom: number
+): string => {
   let newName = "";
   let counter = startsFrom;
   do {
     const potentialName = `${name}${counter !== 1 ? ` ${counter}` : ""}`;
-    const found = existingNames.filter(existingName => existingName === potentialName);
+    const found = existingNames.filter(
+      (existingName) => existingName === potentialName
+    );
     if (found.length === 0) {
       newName = potentialName;
     }

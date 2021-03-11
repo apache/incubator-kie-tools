@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FieldName, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  FieldName,
+  MiningField,
+  Model,
+  PMML,
+  Scorecard
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
@@ -35,7 +41,15 @@ const models: Model[] = [
 ];
 const pmml: PMML = {
   version: "1.0",
-  DataDictionary: { DataField: [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }] },
+  DataDictionary: {
+    DataField: [
+      {
+        name: "field1" as FieldName,
+        dataType: "boolean",
+        optype: "categorical"
+      }
+    ]
+  },
   Header: {},
   models: models
 };
@@ -63,7 +77,11 @@ describe("DelegatingModelReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: 0,
-        dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
+        dataField: {
+          name: "updated" as FieldName,
+          dataType: "string",
+          optype: "ordinal"
+        },
         originalName: "field1" as FieldName
       }
     });

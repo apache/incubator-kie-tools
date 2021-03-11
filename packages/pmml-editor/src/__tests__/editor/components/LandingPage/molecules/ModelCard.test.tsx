@@ -24,7 +24,13 @@ describe("ModelCard", () => {
     const onDelete = jest.fn((index: number) => null);
 
     const { getByTestId } = render(
-      <ModelCard index={0} modelName={"Name"} modelType={"Scorecard"} onClick={onClick} onDelete={onDelete} />
+      <ModelCard
+        index={0}
+        modelName={"Name"}
+        modelType={"Scorecard"}
+        onClick={onClick}
+        onDelete={onDelete}
+      />
     );
     expect(getByTestId("model-card")).toMatchSnapshot();
 
@@ -38,7 +44,13 @@ describe("ModelCard", () => {
     const onDelete = jest.fn((index: number) => null);
 
     const { getByTestId } = render(
-      <ModelCard index={0} modelName={"Name"} modelType={"Scorecard"} onClick={onClick} onDelete={onDelete} />
+      <ModelCard
+        index={0}
+        modelName={"Name"}
+        modelType={"Scorecard"}
+        onClick={onClick}
+        onDelete={onDelete}
+      />
     );
     const element: HTMLElement = getByTestId("model-card__delete");
     expect(element).toBeInTheDocument();
@@ -55,7 +67,13 @@ describe("ModelCard", () => {
     const onDelete = jest.fn((index: number) => null);
 
     const { getByTestId } = render(
-      <ModelCard index={0} modelName={"Name"} modelType={"Scorecard"} onClick={onClick} onDelete={onDelete} />
+      <ModelCard
+        index={0}
+        modelName={"Name"}
+        modelType={"Scorecard"}
+        onClick={onClick}
+        onDelete={onDelete}
+      />
     );
     const element: HTMLElement = getByTestId("model-card");
     expect(element).toBeInTheDocument();

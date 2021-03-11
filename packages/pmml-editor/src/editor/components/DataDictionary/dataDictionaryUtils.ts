@@ -1,11 +1,24 @@
-import { Closure, DataDictionary, DataField, FieldName, Interval } from "@kogito-tooling/pmml-editor-marshaller";
-import { ConstraintType, DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
+import {
+  Closure,
+  DataDictionary,
+  DataField,
+  FieldName,
+  Interval
+} from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  ConstraintType,
+  DDDataField
+} from "./DataDictionaryContainer/DataDictionaryContainer";
 
-export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DDDataField[] => {
+export const convertPMML2DD = (
+  PMMLDataDictionary: DataDictionary | undefined
+): DDDataField[] => {
   if (PMMLDataDictionary === undefined) {
     return [];
   } else {
-    return PMMLDataDictionary.DataField.filter(item => item.dataType !== undefined).map(item => {
+    return PMMLDataDictionary.DataField.filter(
+      (item) => item.dataType !== undefined
+    ).map((item) => {
       return convertFromDataField(item);
     });
   }
@@ -38,10 +51,15 @@ export const convertToDataField = (item: DDDataField): DataField => {
   }
 
   if (item.constraints) {
-    if (item.constraints.type === ConstraintType.RANGE && item.constraints.value.length > 0) {
-      convertedField.Interval = item.constraints.value.map(range => {
+    if (
+      item.constraints.type === ConstraintType.RANGE &&
+      item.constraints.value.length > 0
+    ) {
+      convertedField.Interval = item.constraints.value.map((range) => {
         const interval: Interval = {
-          closure: `${range?.start?.included ? "closed" : "open"}${range?.end?.included ? "Closed" : "Open"}` as Closure
+          closure: `${range?.start?.included ? "closed" : "open"}${
+            range?.end?.included ? "Closed" : "Open"
+          }` as Closure
         };
         if (range.start && range.start.value) {
           interval.leftMargin = Number(range.start.value);
@@ -52,9 +70,12 @@ export const convertToDataField = (item: DDDataField): DataField => {
         return interval;
       });
     }
-    if (item.constraints.type === ConstraintType.ENUMERATION && item.constraints.value.length > 0) {
+    if (
+      item.constraints.type === ConstraintType.ENUMERATION &&
+      item.constraints.value.length > 0
+    ) {
       convertedField.Value = (convertedField.Value || []).concat(
-        item.constraints.value.map(value => {
+        item.constraints.value.map((value) => {
           return { value };
         })
       );
@@ -90,7 +111,7 @@ export const convertFromDataField = (item: DataField) => {
     convertedField.isCyclic = item.isCyclic === "1";
   }
   if (item.Value) {
-    item.Value.forEach(value => {
+    item.Value.forEach((value) => {
       if (value.property === "missing") {
         convertedField.missingValue = value.value;
       }
@@ -110,7 +131,7 @@ export const convertFromDataField = (item: DataField) => {
   if (item.Interval && item.Interval.length > 0) {
     convertedField.constraints = {
       type: ConstraintType.RANGE,
-      value: item.Interval.map(interval => {
+      value: item.Interval.map((interval) => {
         /* A note about the included value and how it's calculated.
         PMML presents a single property to handle the inclusion of both interval limits called Closure.
         Closure combines both inclusion values in camel case, i.e. "openClosed", meaning that the left margin is open

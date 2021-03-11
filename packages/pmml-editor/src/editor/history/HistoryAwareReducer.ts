@@ -19,7 +19,9 @@ import { ModelType } from "..";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationRegistry } from "../validation";
 
-export type HistoryAwareReducer<S, A> = (historyService: HistoryService) => Reducer<S, A>;
+export type HistoryAwareReducer<S, A> = (
+  historyService: HistoryService
+) => Reducer<S, A>;
 
 export type HistoryAwareValidatingReducer<S, A> = (
   historyService: HistoryService,

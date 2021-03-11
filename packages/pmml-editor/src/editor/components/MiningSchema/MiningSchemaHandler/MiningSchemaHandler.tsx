@@ -12,7 +12,13 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
-import { DataDictionary, FieldName, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  DataDictionary,
+  FieldName,
+  MiningField,
+  MiningSchema,
+  PMML
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 import { useBatchDispatch, useHistoryService } from "../../../history";
@@ -28,7 +34,9 @@ interface MiningSchemaHandlerProps {
 const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   const { miningSchema, modelIndex } = props;
   const [isMiningSchemaOpen, setIsMiningSchemaOpen] = useState(false);
-  const dataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
+  const dataDictionary = useSelector<PMML, DataDictionary | undefined>(
+    (state: PMML) => state.DataDictionary
+  );
 
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
@@ -44,7 +52,11 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   };
 
   const deleteMiningField = (index: number) => {
-    if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
+    if (
+      window.confirm(
+        `Delete Mining Field "${miningSchema?.MiningField[index].name}"?`
+      )
+    ) {
       dispatch({
         type: Actions.DeleteMiningSchemaField,
         payload: {
@@ -56,7 +68,11 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
     }
   };
 
-  const updateField = (index: number, originalName: FieldName | undefined, field: MiningField) => {
+  const updateField = (
+    index: number,
+    originalName: FieldName | undefined,
+    field: MiningField
+  ) => {
     dispatch({
       type: Actions.UpdateMiningSchemaField,
       payload: {
@@ -76,10 +92,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   const validations = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().build()
       ),
     [modelIndex, miningSchema, dataDictionary]
   );
@@ -92,7 +105,11 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button type="button" variant={ButtonVariant.plain} onClick={handleMiningSchemaToggle}>
+        <Button
+          type="button"
+          variant={ButtonVariant.plain}
+          onClick={handleMiningSchemaToggle}
+        >
           <CloseIcon />
         </Button>
       </SplitItem>

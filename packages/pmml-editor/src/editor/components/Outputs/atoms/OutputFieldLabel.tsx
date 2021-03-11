@@ -18,7 +18,11 @@ import { Label } from "@patternfly/react-core";
 
 import "./OutputFieldLabel.scss";
 
-export const OutputFieldLabel = (name: string, value: any, onClose?: () => void) => {
+export const OutputFieldLabel = (
+  name: string,
+  value: any,
+  onClose?: () => void
+) => {
   return (
     <>
       {!onClose && (
@@ -32,7 +36,7 @@ export const OutputFieldLabel = (name: string, value: any, onClose?: () => void)
         <Label
           color="cyan"
           className="output-fields-list__item__label"
-          onClose={e => {
+          onClose={(e) => {
             e.nativeEvent.stopImmediatePropagation();
             onClose();
           }}

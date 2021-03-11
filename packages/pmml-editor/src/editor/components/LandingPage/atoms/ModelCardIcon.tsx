@@ -25,5 +25,12 @@ export const ModelCardIcon = (props: ModelIconProps) => {
   const { type } = props;
   const modelIconUrl: string = getModelIconUrlByType(type);
 
-  return <img data-testid="model-card__icon" src={modelIconUrl} alt={type} className="model-card__icon" />;
+  return (
+    <img
+      data-testid="model-card__icon"
+      src={modelIconUrl}
+      alt={type}
+      className="model-card__icon"
+    />
+  );
 };

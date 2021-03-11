@@ -63,9 +63,16 @@ export const App = () => {
         />
       )}
       <div style={{ display: displayPMMLEditor() }}>
-        <HistoryButtons undo={undo} redo={redo} get={() => editor.getContent()} />
+        <HistoryButtons
+          undo={undo}
+          redo={redo}
+          get={() => editor.getContent()}
+        />
         <div className="editor-container">
-          <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
+          <PMMLEditor
+            exposing={(self: PMMLEditor) => (editor = self)}
+            channelApi={manager.clientApi}
+          />
         </div>
       </div>
     </div>

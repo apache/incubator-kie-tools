@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Chart, ChartAxis, ChartGroup, ChartLabel, ChartLine, ChartVoronoiContainer } from "@patternfly/react-charts";
+import {
+  Chart,
+  ChartAxis,
+  ChartGroup,
+  ChartLabel,
+  ChartLine,
+  ChartVoronoiContainer
+} from "@patternfly/react-charts";
 
 export class Line {
   //y=mx+c
@@ -73,7 +80,7 @@ const getTicks = (range: Range, count: number): number[] => {
 
 export const LinearRegressionView = (props: LinearRegressionViewProps) => {
   const legendData: any = [];
-  props.lines.forEach(line => {
+  props.lines.forEach((line) => {
     legendData.push({ name: line.title });
   });
 
@@ -85,7 +92,9 @@ export const LinearRegressionView = (props: LinearRegressionViewProps) => {
         ariaTitle={modelName}
         containerComponent={
           <ChartVoronoiContainer
-            labels={({ datum }) => `${roundedToFixed(datum._x, 2)}, ${roundedToFixed(datum._y, 2)}`}
+            labels={({ datum }) =>
+              `${roundedToFixed(datum._x, 2)}, ${roundedToFixed(datum._y, 2)}`
+            }
             constrainToVisibleArea={true}
           />
         }
@@ -106,17 +115,17 @@ export const LinearRegressionView = (props: LinearRegressionViewProps) => {
           label={props.independentAxisTitle}
           showGrid={true}
           tickValues={getTicks(props.rangeX, 8)}
-          tickFormat={x => roundedToFixed(x, 2)}
+          tickFormat={(x) => roundedToFixed(x, 2)}
         />
         <ChartAxis
           label={props.dependentAxisTitle}
           dependentAxis={true}
           showGrid={true}
           tickValues={getTicks(props.rangeY, 8)}
-          tickFormat={x => roundedToFixed(x, 2)}
+          tickFormat={(x) => roundedToFixed(x, 2)}
         />
         <ChartGroup>
-          {props.lines.map(line => {
+          {props.lines.map((line) => {
             return (
               <ChartLine
                 key={line.title}

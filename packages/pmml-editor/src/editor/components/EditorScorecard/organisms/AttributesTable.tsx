@@ -52,16 +52,22 @@ export const AttributesTable = (props: AttributesTableProps) => {
 
   const { setActiveOperation } = useOperation();
 
-  const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
-    return state.DataDictionary.DataField;
-  });
-  const miningFields: MiningField[] = useSelector<PMML, MiningField[]>((state: PMML) => {
-    const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
-    if (_model && _model instanceof Scorecard) {
-      return (_model as Scorecard).MiningSchema.MiningField;
+  const dataFields: DataField[] = useSelector<PMML, DataField[]>(
+    (state: PMML) => {
+      return state.DataDictionary.DataField;
     }
-    return [];
-  });
+  );
+  const miningFields: MiningField[] = useSelector<PMML, MiningField[]>(
+    (state: PMML) => {
+      const _model: Model | undefined = state.models
+        ? state.models[props.modelIndex]
+        : undefined;
+      if (_model && _model instanceof Scorecard) {
+        return (_model as Scorecard).MiningSchema.MiningField;
+      }
+      return [];
+    }
+  );
 
   const onEdit = (index: number | undefined) => {
     setActiveOperation(Operation.UPDATE_ATTRIBUTE);
@@ -90,7 +96,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
             miningFields={miningFields}
             onEdit={() => onEdit(index)}
             onDelete={() => onDelete(index)}
-            onCommit={partial => onCommit(index, partial)}
+            onCommit={(partial) => onCommit(index, partial)}
           />
         );
       })}

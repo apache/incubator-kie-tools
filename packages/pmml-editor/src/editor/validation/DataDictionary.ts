@@ -13,12 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { Cyclic, DataField, DataType, OpType } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Cyclic,
+  DataField,
+  DataType,
+  OpType
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder } from "../paths";
 
-export const validateDataFields = (dataFields: DataField[], validationRegistry: ValidationRegistry): void => {
+export const validateDataFields = (
+  dataFields: DataField[],
+  validationRegistry: ValidationRegistry
+): void => {
   dataFields.forEach((dataField, dataDictionaryIndex) =>
     validateDataField(dataField, dataDictionaryIndex, validationRegistry)
   );
@@ -31,7 +39,10 @@ export const validateDataField = (
 ): void => {
   // required interval margins
   dataField.Interval?.forEach((interval, index) => {
-    if (interval.leftMargin === undefined && interval.rightMargin === undefined) {
+    if (
+      interval.leftMargin === undefined &&
+      interval.rightMargin === undefined
+    ) {
       validationRegistry.set(
         Builder()
           .forDataDictionary()
@@ -40,7 +51,9 @@ export const validateDataField = (
           .build(),
         new ValidationEntry(
           ValidationLevel.WARNING,
-          `"${dataField.name}" data type, Interval (${index + 1}) must have the start and/or end value set.`
+          `"${dataField.name}" data type, Interval (${
+            index + 1
+          }) must have the start and/or end value set.`
         )
       );
     }
@@ -129,7 +142,9 @@ export const validateDataField = (
 export const hasValidValues = (dataField: DataField) => {
   return (
     dataField.Value &&
-    dataField.Value.filter(value => value.property === "valid" || value.property === undefined).length > 0
+    dataField.Value.filter(
+      (value) => value.property === "valid" || value.property === undefined
+    ).length > 0
   );
 };
 
@@ -138,12 +153,17 @@ export const hasIntervals = (dataField: DataField) => {
 };
 
 export const hasOnlyEmptyIntervals = (dataField: DataField) => {
-  return dataField.Interval?.every(interval => interval.leftMargin === undefined && interval.rightMargin === undefined);
+  return dataField.Interval?.every(
+    (interval) =>
+      interval.leftMargin === undefined && interval.rightMargin === undefined
+  );
 };
 
 export const hasOnlyEmptyValues = (dataField: DataField) => {
-  const validValues = dataField.Value?.filter(value => value.property === undefined || value.property === "valid");
-  return validValues?.every(value => value.value === "");
+  const validValues = dataField.Value?.filter(
+    (value) => value.property === undefined || value.property === "valid"
+  );
+  return validValues?.every((value) => value.value === "");
 };
 
 export const shouldConstraintsBeCleared = (
@@ -157,8 +177,12 @@ export const shouldConstraintsBeCleared = (
   if (
     isCyclic === "1" &&
     updatedDataField.isCyclic !== "1" &&
-    !(updatedDataField.optype === "ordinal" && updatedDataField.dataType === "string") &&
-    (hasOnlyEmptyIntervals(updatedDataField) || hasOnlyEmptyValues(updatedDataField))
+    !(
+      updatedDataField.optype === "ordinal" &&
+      updatedDataField.dataType === "string"
+    ) &&
+    (hasOnlyEmptyIntervals(updatedDataField) ||
+      hasOnlyEmptyValues(updatedDataField))
   ) {
     result = true;
   }
@@ -166,7 +190,8 @@ export const shouldConstraintsBeCleared = (
   if (
     isCyclic !== "1" &&
     updatedDataField.isCyclic !== "1" &&
-    (updatedDataField.optype !== "ordinal" || updatedDataField.dataType !== "string") &&
+    (updatedDataField.optype !== "ordinal" ||
+      updatedDataField.dataType !== "string") &&
     optype === "ordinal" &&
     dataType === "string" &&
     hasOnlyEmptyValues(updatedDataField)

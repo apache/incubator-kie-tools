@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { HistoryAwareModelReducer, HistoryService, ModelReducerBinding } from "../history";
+import {
+  HistoryAwareModelReducer,
+  HistoryService,
+  ModelReducerBinding
+} from "../history";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { getModelType, ModelType } from "../PMMLModelHelper";
 import { AllActions } from "./Actions";
 import get = Reflect.get;
 
-const reduce = (model: Model, action: AllActions, reducers: Map<ModelType, ModelReducerBinding<any, any>>) => {
+const reduce = (
+  model: Model,
+  action: AllActions,
+  reducers: Map<ModelType, ModelReducerBinding<any, any>>
+) => {
   const modelType = getModelType(model);
   const reducer = reducers.get(modelType);
   return reducer?.factory(reducer.reducer(model, action)) ?? model;
@@ -32,7 +40,11 @@ export const DelegatingModelReducer: HistoryAwareModelReducer<AllActions> = (
 ): Reducer<Model[], AllActions> => {
   return (state: Model[], action: AllActions) => {
     //Redux calls all reducers when the Store is created to allow initialisation.
-    if (state === undefined || action === undefined || action.payload === undefined) {
+    if (
+      state === undefined ||
+      action === undefined ||
+      action.payload === undefined
+    ) {
       return state;
     }
 
@@ -41,13 +53,15 @@ export const DelegatingModelReducer: HistoryAwareModelReducer<AllActions> = (
     //to be correctly detected.
     let changed = false;
     const newState: Model[] = [];
-    state.forEach(m => newState.push(m));
+    state.forEach((m) => newState.push(m));
     const modelIndex: number = get(action.payload, "modelIndex");
 
     //Delegate Model agnostic actions to all Model reducers
     if (modelIndex === undefined) {
       state.forEach((model, index) => {
-        const modelAction = Object.assign({}, action, { payload: { ...action.payload, modelIndex: index } });
+        const modelAction = Object.assign({}, action, {
+          payload: { ...action.payload, modelIndex: index }
+        });
         const newModel = reduce(model, modelAction, reducers);
         if (model !== newModel) {
           changed = true;

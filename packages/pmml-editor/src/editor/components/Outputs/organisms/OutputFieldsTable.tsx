@@ -28,7 +28,10 @@ interface OutputFieldsTableProps {
   outputs: OutputField[];
   selectedOutputIndex: number | undefined;
   setSelectedOutputIndex: (index: number | undefined) => void;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (
+    index: number | undefined,
+    name: string | undefined
+  ) => boolean;
   viewExtendedProperties: () => void;
   onAddOutputField: () => void;
   onDeleteOutputField: (index: number) => void;
@@ -57,7 +60,10 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   const { activeOperation, setActiveOperation } = useOperation();
 
   useEffect(() => {
-    if (activeOperation === Operation.UPDATE_OUTPUT && addOutputRowRef.current) {
+    if (
+      activeOperation === Operation.UPDATE_OUTPUT &&
+      addOutputRowRef.current
+    ) {
       addOutputRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
@@ -81,24 +87,31 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   };
 
-  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: string | undefined): boolean => {
+  const onValidateOutputFieldName = (
+    index: number | undefined,
+    nameToValidate: string | undefined
+  ): boolean => {
     return validateOutputFieldName(index, nameToValidate);
   };
 
   return (
     <Form
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();
       }}
     >
       <section>
         {outputs.map((o, index) => {
-          const isRowInEditMode = selectedOutputIndex === index && activeOperation === Operation.UPDATE_OUTPUT;
+          const isRowInEditMode =
+            selectedOutputIndex === index &&
+            activeOperation === Operation.UPDATE_OUTPUT;
           return (
             <article
               key={index}
-              className={`editable-item output-item-n${index} ${isRowInEditMode ? "editable-item--editing" : ""}`}
+              className={`editable-item output-item-n${index} ${
+                isRowInEditMode ? "editable-item--editing" : ""
+              }`}
             >
               {isRowInEditMode && (
                 <div ref={addOutputRowRef}>
@@ -106,7 +119,9 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
                     modelIndex={modelIndex}
                     outputField={o}
                     outputFieldIndex={index}
-                    validateOutputName={_name => onValidateOutputFieldName(index, _name)}
+                    validateOutputName={(_name) =>
+                      onValidateOutputFieldName(index, _name)
+                    }
                     viewExtendedProperties={viewExtendedProperties}
                     onCommitAndClose={onCommitAndClose}
                     onCommit={onCommit}

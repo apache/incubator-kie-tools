@@ -37,19 +37,33 @@ interface ModelPayload {
 
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
-export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = (
+export const ModelReducer: HistoryAwareValidatingReducer<
+  Model[],
+  AllActions
+> = (
   historyService: HistoryService,
   validationRegistry: ValidationRegistry
 ): Reducer<Model[], AllActions> => {
-  const scorecardReducer = mergeReducers(ScorecardReducer(historyService, validationRegistry), {
-    MiningSchema: mergeReducers(MiningSchemaReducer(historyService, validationRegistry), {
-      MiningField: MiningSchemaFieldReducer(historyService, validationRegistry)
-    }),
-    Output: mergeReducers(OutputReducer(historyService), { OutputField: OutputFieldReducer(historyService) }),
-    Characteristics: mergeReducers(CharacteristicsReducer(historyService), {
-      Characteristic: CharacteristicReducer(historyService)
-    })
-  });
+  const scorecardReducer = mergeReducers(
+    ScorecardReducer(historyService, validationRegistry),
+    {
+      MiningSchema: mergeReducers(
+        MiningSchemaReducer(historyService, validationRegistry),
+        {
+          MiningField: MiningSchemaFieldReducer(
+            historyService,
+            validationRegistry
+          )
+        }
+      ),
+      Output: mergeReducers(OutputReducer(historyService), {
+        OutputField: OutputFieldReducer(historyService)
+      }),
+      Characteristics: mergeReducers(CharacteristicsReducer(historyService), {
+        Characteristic: CharacteristicReducer(historyService)
+      })
+    }
+  );
 
   const delegate = DelegatingModelReducer(
     historyService,
@@ -74,10 +88,8 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
       case Actions.DeleteModel:
         return historyService.mutate(
           state,
-          Builder()
-            .forModel()
-            .build(),
-          draft => {
+          Builder().forModel().build(),
+          (draft) => {
             if (draft !== undefined) {
               const modelIndex: number = action.payload.modelIndex;
               if (modelIndex >= 0 && modelIndex < draft.length) {

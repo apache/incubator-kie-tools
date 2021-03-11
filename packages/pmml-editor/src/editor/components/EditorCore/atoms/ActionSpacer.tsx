@@ -19,7 +19,10 @@ import { TrashIcon } from "@patternfly/react-icons";
 
 export const ActionSpacer = () => {
   return (
-    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%", visibility: "hidden" }}>
+    <Flex
+      alignItems={{ default: "alignItemsCenter" }}
+      style={{ height: "100%", visibility: "hidden" }}
+    >
       <FlexItem>
         <Button variant="plain" isDisabled={true}>
           <TrashIcon />

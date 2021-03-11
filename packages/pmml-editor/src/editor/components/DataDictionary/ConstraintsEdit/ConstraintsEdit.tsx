@@ -16,9 +16,21 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Card, CardBody, FormGroup, Select, SelectOption, SelectVariant, Tooltip } from "@patternfly/react-core";
+import {
+  Card,
+  CardBody,
+  FormGroup,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Tooltip
+} from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
-import { ConstraintType, DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
+import {
+  ConstraintType,
+  DDDataField,
+  RangeConstraint
+} from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
 import "./ConstraintsEdit.scss";
@@ -31,23 +43,40 @@ interface ConstraintsEditProps {
 
 const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const { dataType, dataFieldIndex, onSave } = props;
-  const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
+  const [constraintType, setConstraintType] = useState<string>(
+    dataType.constraints?.type ?? ""
+  );
   const [typeSelectIsOpen, setTypeSelectIsOpen] = useState(false);
-  const { typeOptions, enabledTypeOptionsCount } = useMemo(() => getConstraintsTypeOptions(dataType), [dataType]);
-  const typeDescription = useMemo(() => getConstraintsTypeDescription(dataType), [dataType]);
+  const { typeOptions, enabledTypeOptionsCount } = useMemo(
+    () => getConstraintsTypeOptions(dataType),
+    [dataType]
+  );
+  const typeDescription = useMemo(
+    () => getConstraintsTypeDescription(dataType),
+    [dataType]
+  );
 
   const [ranges, setRanges] = useState<RangeConstraint[] | undefined>(
-    dataType.constraints?.type === ConstraintType.RANGE ? dataType.constraints.value : undefined
+    dataType.constraints?.type === ConstraintType.RANGE
+      ? dataType.constraints.value
+      : undefined
   );
   const [enums, setEnums] = useState(
-    dataType.constraints?.type === ConstraintType.ENUMERATION ? dataType.constraints.value : undefined
+    dataType.constraints?.type === ConstraintType.ENUMERATION
+      ? dataType.constraints.value
+      : undefined
   );
 
-  const rangeConstraintLimit = useMemo(() => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined), [
-    dataType
-  ]);
+  const rangeConstraintLimit = useMemo(
+    () =>
+      dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined,
+    [dataType]
+  );
 
-  const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
+  const handleTypeChange = (
+    event: React.MouseEvent | React.ChangeEvent,
+    value: string
+  ) => {
     if (value !== constraintType) {
       setConstraintType(value);
       if (value === ConstraintType.RANGE) {
@@ -190,18 +219,22 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
         fieldId="constraints-type"
         label="Constraints Type"
         helperText={
-          enabledTypeOptionsCount > 1 ? "Select the type of constraint and then fill in the required fields." : ""
+          enabledTypeOptionsCount > 1
+            ? "Select the type of constraint and then fill in the required fields."
+            : ""
         }
         labelIcon={
           typeDescription.length > 0 ? (
             <Tooltip content={typeDescription}>
               <button
                 aria-label="More info for Constraints Type"
-                onClick={e => e.preventDefault()}
+                onClick={(e) => e.preventDefault()}
                 aria-describedby="constraints-type"
                 className="pf-c-form__group-label-help"
               >
-                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                <HelpIcon
+                  style={{ color: "var(--pf-global--info-color--100)" }}
+                />
               </button>
             </Tooltip>
           ) : (
@@ -223,7 +256,11 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
             isDisabled={enabledTypeOptionsCount === 1}
           >
             {typeOptions.map((item, index) => (
-              <SelectOption key={index} value={item.value} isDisabled={item.disabled}>
+              <SelectOption
+                key={index}
+                value={item.value}
+                isDisabled={item.disabled}
+              >
                 {item.label}
               </SelectOption>
             ))}
@@ -264,7 +301,11 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
 
 export default ConstraintsEdit;
 
-const reorderArray = <T extends unknown>(list: T[], startIndex: number, endIndex: number) => {
+const reorderArray = <T extends unknown>(
+  list: T[],
+  startIndex: number,
+  endIndex: number
+) => {
   const result = [...list];
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
@@ -288,7 +329,9 @@ const getConstraintsTypeOptions = (dataType: DDDataField) => {
   if (dataType.isCyclic) {
     typeOptions[0].disabled = true;
   }
-  const enabledTypeOptionsCount = typeOptions.filter(option => !option.disabled).length;
+  const enabledTypeOptionsCount = typeOptions.filter(
+    (option) => !option.disabled
+  ).length;
   return { typeOptions, enabledTypeOptionsCount };
 };
 

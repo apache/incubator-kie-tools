@@ -31,7 +31,12 @@ export const validateMiningFields = (
   validationRegistry: ValidationRegistry
 ): void => {
   miningFields.forEach((miningField, miningFieldIndex) =>
-    validateMiningField(modelIndex, miningFieldIndex, miningField, validationRegistry)
+    validateMiningField(
+      modelIndex,
+      miningFieldIndex,
+      miningField,
+      validationRegistry
+    )
   );
 };
 
@@ -51,7 +56,10 @@ export const validateMiningField = (
         .forMiningField(miningFieldIndex)
         .forImportance()
         .build(),
-      new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Importance must be between 0 and 1.`)
+      new ValidationEntry(
+        ValidationLevel.WARNING,
+        `"${miningField.name}" Importance must be between 0 and 1.`
+      )
     );
   }
 
@@ -66,7 +74,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forLowValue()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" Low and/or High Value must be set.`
+        )
       );
       validationRegistry.set(
         Builder()
@@ -75,7 +86,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forHighValue()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" Low and/or High Value must be set.`
+        )
       );
     }
   } else {
@@ -87,7 +101,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forLowValue()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low Value is not needed.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" Low Value is not needed.`
+        )
       );
     }
     if (highValue !== undefined) {
@@ -98,7 +115,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forHighValue()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" High Value is not needed.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" High Value is not needed.`
+        )
       );
     }
   }
@@ -114,7 +134,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forMissingValueReplacement()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Missing Value Replacement must be set.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" Missing Value Replacement must be set.`
+        )
       );
     }
   } else {
@@ -126,7 +149,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forMissingValueReplacement()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Missing Value Replacement is not required.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" Missing Value Replacement is not required.`
+        )
       );
     }
   }
@@ -142,7 +168,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forInvalidValueReplacement()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Invalid Value Replacement must be set.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" Invalid Value Replacement must be set.`
+        )
       );
     }
   } else {
@@ -154,7 +183,10 @@ export const validateMiningField = (
           .forMiningField(miningFieldIndex)
           .forInvalidValueReplacement()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Invalid Value Replacement is not required.`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `"${miningField.name}" Invalid Value Replacement is not required.`
+        )
       );
     }
   }
@@ -166,9 +198,15 @@ export const validateMiningFieldsDataFieldReference = (
   miningFields: MiningField[],
   validationRegistry: ValidationRegistry
 ): void => {
-  const dataFieldNames = dataFields.map(dataField => dataField.name);
+  const dataFieldNames = dataFields.map((dataField) => dataField.name);
   miningFields.forEach((miningField, miningFieldIndex) =>
-    validateMiningFieldDataFieldReference(modelIndex, dataFieldNames, miningFieldIndex, miningField, validationRegistry)
+    validateMiningFieldDataFieldReference(
+      modelIndex,
+      dataFieldNames,
+      miningFieldIndex,
+      miningField,
+      validationRegistry
+    )
   );
 };
 
@@ -179,7 +217,10 @@ const validateMiningFieldDataFieldReference = (
   miningField: MiningField,
   validationRegistry: ValidationRegistry
 ): void => {
-  if (dataFieldNames.filter(dataFieldName => dataFieldName === miningField.name).length === 0) {
+  if (
+    dataFieldNames.filter((dataFieldName) => dataFieldName === miningField.name)
+      .length === 0
+  ) {
     validationRegistry.set(
       Builder()
         .forModel(modelIndex)
@@ -187,17 +228,24 @@ const validateMiningFieldDataFieldReference = (
         .forMiningField(miningFieldIndex)
         .forDataFieldMissing()
         .build(),
-      new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" cannot be not found in the Data Dictionary.`)
+      new ValidationEntry(
+        ValidationLevel.WARNING,
+        `"${miningField.name}" cannot be not found in the Data Dictionary.`
+      )
     );
   }
 };
 
-export const areLowHighValuesRequired = (outliers: OutlierTreatmentMethod | string | undefined) =>
-  outliers === "asExtremeValues" || outliers === "asMissingValues";
+export const areLowHighValuesRequired = (
+  outliers: OutlierTreatmentMethod | string | undefined
+) => outliers === "asExtremeValues" || outliers === "asMissingValues";
 
 export const isMissingValueReplacementRequired = (
   missingValueTreatment: MissingValueTreatmentMethod | string | undefined
-) => missingValueTreatment === "asMean" || missingValueTreatment === "asMedian" || missingValueTreatment === "asMode";
+) =>
+  missingValueTreatment === "asMean" ||
+  missingValueTreatment === "asMedian" ||
+  missingValueTreatment === "asMode";
 
 export const isInvalidValueReplacementRequired = (
   invalidValueTreatment: InvalidValueTreatmentMethod | string | undefined

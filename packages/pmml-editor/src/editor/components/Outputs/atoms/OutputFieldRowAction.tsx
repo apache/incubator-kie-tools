@@ -29,12 +29,15 @@ export const OutputFieldRowAction = (props: OutputsTableActionProps) => {
   };
 
   return (
-    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+    <Flex
+      alignItems={{ default: "alignItemsCenter" }}
+      style={{ height: "100%" }}
+    >
       <FlexItem>
         <Button
           variant="plain"
           onClick={onDelete}
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
               onDelete(e);
             }

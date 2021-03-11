@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
+import {
+  Button,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Title
+} from "@patternfly/react-core";
 import { SignOutAltIcon } from "@patternfly/react-icons";
 
 interface EmptyStateNoOutputProps {
@@ -22,15 +29,23 @@ interface EmptyStateNoOutputProps {
 }
 
 export const EmptyStateNoOutput = (props: EmptyStateNoOutputProps) => (
-  <EmptyState data-testid="empty-state-no-output" variant={EmptyStateVariant.small}>
+  <EmptyState
+    data-testid="empty-state-no-output"
+    variant={EmptyStateVariant.small}
+  >
     <EmptyStateIcon icon={SignOutAltIcon} />
     <Title headingLevel="h4" size="lg">
       No Outputs have been defined for this model.
     </Title>
     <EmptyStateBody>
-      PMML uses Output elements to describe a set of result values that can be returned from a model.
+      PMML uses Output elements to describe a set of result values that can be
+      returned from a model.
     </EmptyStateBody>
-    <Button data-testid="empty-state-no-output__add-model" variant="primary" onClick={props.onAddOutputField}>
+    <Button
+      data-testid="empty-state-no-output__add-model"
+      variant="primary"
+      onClick={props.onAddOutputField}
+    >
       Add Output
     </Button>
   </EmptyState>

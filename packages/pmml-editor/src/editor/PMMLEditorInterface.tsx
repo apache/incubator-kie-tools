@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import {
+  Editor,
+  KogitoEditorEnvelopeContextType
+} from "@kogito-tooling/editor/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
 import * as React from "react";
@@ -25,7 +28,9 @@ export class PMMLEditorInterface implements Editor {
   public af_componentId: "pmml-editor";
   public af_componentTitle: "PMML Editor";
 
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType) {}
+  constructor(
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType
+  ) {}
 
   public async getElementPosition() {
     return DEFAULT_RECT;
@@ -44,7 +49,12 @@ export class PMMLEditorInterface implements Editor {
   }
 
   public af_componentRoot() {
-    return <PMMLEditor exposing={s => (this.self = s)} channelApi={this.envelopeContext.channelApi} />;
+    return (
+      <PMMLEditor
+        exposing={(s) => (this.self = s)}
+        channelApi={this.envelopeContext.channelApi}
+      />
+    );
   }
 
   public async undo(): Promise<void> {

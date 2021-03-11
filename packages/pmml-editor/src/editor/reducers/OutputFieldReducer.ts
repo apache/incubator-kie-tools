@@ -29,9 +29,10 @@ interface OutputFieldPayload {
 
 export type OutputFieldActions = ActionMap<OutputFieldPayload>[keyof ActionMap<OutputFieldPayload>];
 
-export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> = (
-  historyService: HistoryService
-): Reducer<OutputField[], AllActions> => {
+export const OutputFieldReducer: HistoryAwareReducer<
+  OutputField[],
+  AllActions
+> = (historyService: HistoryService): Reducer<OutputField[], AllActions> => {
   return (state: OutputField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateOutput:
@@ -42,7 +43,7 @@ export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> 
             .forOutput()
             .forOutputField()
             .build(),
-          draft => {
+          (draft) => {
             const outputIndex = action.payload.outputIndex;
             if (outputIndex >= 0 && outputIndex < draft.length) {
               draft[outputIndex] = {
@@ -73,7 +74,7 @@ export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> 
                 .forOutput()
                 .forOutputField()
                 .build(),
-              draft => {
+              (draft) => {
                 draft[index] = {
                   ...draft[index],
                   targetField: action.payload.dataField.name

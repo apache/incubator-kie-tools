@@ -28,13 +28,21 @@ interface PropertiesLabelsProps {
 const PropertiesLabels = (props: PropertiesLabelsProps) => {
   const { dataType, editingIndex, onPropertyDelete } = props;
 
-  const propertyLabel = (name: string, value: any, updatedField: DDDataField) => {
+  const propertyLabel = (
+    name: string,
+    value: any,
+    updatedField: DDDataField
+  ) => {
     return (
       <Label
         className="properties-labels__item"
         color="cyan"
         closeBtnProps={{ className: "ignore-onclickoutside" }}
-        onClose={editingIndex !== undefined ? () => onPropertyDelete?.(updatedField, editingIndex) : undefined}
+        onClose={
+          editingIndex !== undefined
+            ? () => onPropertyDelete?.(updatedField, editingIndex)
+            : undefined
+        }
       >
         <strong>{name}:</strong>
         &nbsp;
@@ -46,13 +54,25 @@ const PropertiesLabels = (props: PropertiesLabelsProps) => {
   return (
     <>
       {dataType.displayName !== undefined &&
-        propertyLabel("Display Name", dataType.displayName, { ...dataType, displayName: undefined })}
+        propertyLabel("Display Name", dataType.displayName, {
+          ...dataType,
+          displayName: undefined
+        })}
       {dataType.isCyclic !== undefined &&
-        propertyLabel("Is Cyclic", dataType.isCyclic ? "Yes" : "No", { ...dataType, isCyclic: undefined })}
+        propertyLabel("Is Cyclic", dataType.isCyclic ? "Yes" : "No", {
+          ...dataType,
+          isCyclic: undefined
+        })}
       {dataType.invalidValue !== undefined &&
-        propertyLabel("Invalid Value", dataType.invalidValue, { ...dataType, invalidValue: undefined })}
+        propertyLabel("Invalid Value", dataType.invalidValue, {
+          ...dataType,
+          invalidValue: undefined
+        })}
       {dataType.missingValue !== undefined &&
-        propertyLabel("Missing Value", dataType.missingValue, { ...dataType, missingValue: undefined })}
+        propertyLabel("Missing Value", dataType.missingValue, {
+          ...dataType,
+          missingValue: undefined
+        })}
     </>
   );
 };

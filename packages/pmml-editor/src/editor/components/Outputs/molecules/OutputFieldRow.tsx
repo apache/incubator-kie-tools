@@ -15,7 +15,13 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Flex, FlexItem, Label, Split, SplitItem } from "@patternfly/react-core";
+import {
+  Flex,
+  FlexItem,
+  Label,
+  Split,
+  SplitItem
+} from "@patternfly/react-core";
 import {
   DataType,
   FieldName,
@@ -52,11 +58,26 @@ interface Values {
 }
 
 const OutputFieldRow = (props: OutputFieldRowProps) => {
-  const { modelIndex, outputFieldIndex, outputField, onEditOutputField, onDeleteOutputField } = props;
+  const {
+    modelIndex,
+    outputFieldIndex,
+    outputField,
+    onEditOutputField,
+    onDeleteOutputField
+  } = props;
 
-  const { name, dataType, optype, targetField, feature, value, rank, rankOrder, segmentId, isFinalResult } = useMemo<
-    Values
-  >(() => {
+  const {
+    name,
+    dataType,
+    optype,
+    targetField,
+    feature,
+    value,
+    rank,
+    rankOrder,
+    segmentId,
+    isFinalResult
+  } = useMemo<Values>(() => {
     return {
       name: outputField?.name,
       dataType: outputField?.dataType,
@@ -101,7 +122,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
       className={"editable-item__inner"}
       onClick={onEditOutputField}
       tabIndex={0}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();

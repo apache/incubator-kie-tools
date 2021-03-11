@@ -16,7 +16,11 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
-import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  BaselineMethod,
+  MiningFunction,
+  ReasonCodeAlgorithm
+} from "@kogito-tooling/pmml-editor-marshaller";
 import {
   Form,
   FormGroup,
@@ -70,7 +74,15 @@ const GenericSelectorEditor = (
   onSelect: (_selection: string) => void,
   isDisabled?: boolean
 ) => {
-  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} isDisabled={isDisabled} />;
+  return (
+    <GenericSelector
+      id={id}
+      items={items}
+      selection={selection}
+      onSelect={onSelect}
+      isDisabled={isDisabled}
+    />
+  );
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
@@ -81,10 +93,16 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const [functionName, setFunctionName] = useState<MiningFunction>();
   const [algorithmName, setAlgorithmName] = useState<string | undefined>();
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
-  const [baselineMethod, setBaselineMethod] = useState<BaselineMethod | undefined>();
+  const [baselineMethod, setBaselineMethod] = useState<
+    BaselineMethod | undefined
+  >();
   const [initialScore, setInitialScore] = useState<number | undefined>();
-  const [areReasonCodesUsed, setAreReasonCodesUsed] = useState<boolean | undefined>();
-  const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState<ReasonCodeAlgorithm | undefined>();
+  const [areReasonCodesUsed, setAreReasonCodesUsed] = useState<
+    boolean | undefined
+  >();
+  const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState<
+    ReasonCodeAlgorithm | undefined
+  >();
 
   useEffect(() => {
     setScorable(props.isScorable);
@@ -129,7 +147,9 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
   const onCommit = (partial: Partial<CoreProperties>) => {
     const existingPartial: Partial<CoreProperties> = {};
-    Object.keys(partial).forEach(key => set(existingPartial, key, get(props, key)));
+    Object.keys(partial).forEach((key) =>
+      set(existingPartial, key, get(props, key))
+    );
 
     if (!isEqual(partial, existingPartial)) {
       props.commit({ ...props, ...partial });
@@ -141,17 +161,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setActiveOperation(Operation.NONE);
   };
 
-  const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_CORE, [
-    isEditing,
-    activeOperation
-  ]);
+  const isEditModeEnabled = useMemo(
+    () => isEditing && activeOperation === Operation.UPDATE_CORE,
+    [isEditing, activeOperation]
+  );
 
   const { validationRegistry } = useValidationRegistry();
   const baselineScoreValidation = validationRegistry.get(
-    Builder()
-      .forModel(props.modelIndex)
-      .forBaselineScore()
-      .build()
+    Builder().forModel(props.modelIndex).forBaselineScore().build()
   );
 
   return (
@@ -159,7 +176,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       ref={ref}
       onClick={onEdit}
       tabIndex={0}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
@@ -169,7 +186,9 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     >
       <PageSection
         variant={PageSectionVariants.light}
-        className={isEditModeEnabled ? "editable-item--editing" : "editable-item"}
+        className={
+          isEditModeEnabled ? "editable-item--editing" : "editable-item"
+        }
       >
         <Stack hasGutter={true}>
           <StackItem>
@@ -181,25 +200,40 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
               </SplitItem>
               {!isEditModeEnabled && (
                 <SplitItem>
-                  {isScorable !== undefined && CorePropertyLabel("Is Scorable", toYesNo(isScorable))}
-                  {functionName !== undefined && CorePropertyLabel("Function", functionName)}
-                  {algorithmName !== undefined && CorePropertyLabel("Algorithm", algorithmName)}
-                  {initialScore !== undefined && CorePropertyLabel("Initial Score", initialScore)}
+                  {isScorable !== undefined &&
+                    CorePropertyLabel("Is Scorable", toYesNo(isScorable))}
+                  {functionName !== undefined &&
+                    CorePropertyLabel("Function", functionName)}
+                  {algorithmName !== undefined &&
+                    CorePropertyLabel("Algorithm", algorithmName)}
+                  {initialScore !== undefined &&
+                    CorePropertyLabel("Initial Score", initialScore)}
                   {areReasonCodesUsed !== undefined &&
-                    CorePropertyLabel("Use Reason Codes", toYesNo(areReasonCodesUsed))}
-                  {reasonCodeAlgorithm !== undefined && CorePropertyLabel("Reason Code Algorithm", reasonCodeAlgorithm)}
+                    CorePropertyLabel(
+                      "Use Reason Codes",
+                      toYesNo(areReasonCodesUsed)
+                    )}
+                  {reasonCodeAlgorithm !== undefined &&
+                    CorePropertyLabel(
+                      "Reason Code Algorithm",
+                      reasonCodeAlgorithm
+                    )}
                   {baselineScore !== undefined &&
                     baselineScoreValidation.length === 0 &&
                     CorePropertyLabel("Baseline Score", baselineScore)}
                   {baselineScoreValidation.length > 0 && (
-                    <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="core-properties__label">
+                    <ValidationIndicatorLabel
+                      validations={baselineScoreValidation}
+                      cssClass="core-properties__label"
+                    >
                       <>
                         <strong>Baseline score:</strong>&nbsp;
                         <em>Missing</em>
                       </>
                     </ValidationIndicatorLabel>
                   )}
-                  {baselineMethod !== undefined && CorePropertyLabel("Baseline Method", baselineMethod)}
+                  {baselineMethod !== undefined &&
+                    CorePropertyLabel("Baseline Method", baselineMethod)}
                 </SplitItem>
               )}
             </Split>
@@ -207,7 +241,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
           {isEditModeEnabled && (
             <StackItem>
               <Form
-                onSubmit={e => {
+                onSubmit={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                 }}
@@ -219,7 +253,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <Switch
                         id="core-isScorable"
                         isChecked={isScorable === true}
-                        onChange={checked => {
+                        onChange={(checked) => {
                           setScorable(checked);
                           onCommit({ isScorable: checked });
                         }}
@@ -227,7 +261,11 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     </FormGroup>
                   </LevelItem>
                   <LevelItem>
-                    <FormGroup label="Function" fieldId="core-functionName" required={true}>
+                    <FormGroup
+                      label="Function"
+                      fieldId="core-functionName"
+                      required={true}
+                    >
                       {GenericSelectorEditor(
                         "core-functionName",
                         [
@@ -240,9 +278,11 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           "mixed"
                         ],
                         functionName,
-                        _selection => {
+                        (_selection) => {
                           setFunctionName(_selection as MiningFunction);
-                          onCommit({ functionName: _selection as MiningFunction });
+                          onCommit({
+                            functionName: _selection as MiningFunction
+                          });
                         },
                         // TODO {manstis] Scorecards are ALWAYS regression. We probably don't need this field.
                         // See http://dmg.org/pmml/v4-4/Scorecard.html
@@ -258,7 +298,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         name="core-algorithmName"
                         aria-describedby="core-algorithmName"
                         value={algorithmName ?? ""}
-                        onChange={e => setAlgorithmName(e)}
+                        onChange={(e) => setAlgorithmName(e)}
                         onBlur={() => {
                           onCommit({ algorithmName: algorithmName });
                         }}
@@ -266,11 +306,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     </FormGroup>
                   </LevelItem>
                   <LevelItem>
-                    <FormGroup label="Initial score" fieldId="core-initialScore">
+                    <FormGroup
+                      label="Initial score"
+                      fieldId="core-initialScore"
+                    >
                       <TextInput
                         id="core-initialScore"
                         value={initialScore}
-                        onChange={e => setInitialScore(toNumber(e))}
+                        onChange={(e) => setInitialScore(toNumber(e))}
                         onBlur={() => {
                           onCommit({ initialScore: initialScore });
                         }}
@@ -279,11 +322,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     </FormGroup>
                   </LevelItem>
                   <LevelItem>
-                    <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
+                    <FormGroup
+                      label="Use reason codes?"
+                      fieldId="core-useReasonCodes"
+                    >
                       <Switch
                         id="core-useReasonCodes"
                         isChecked={areReasonCodesUsed}
-                        onChange={checked => {
+                        onChange={(checked) => {
                           setAreReasonCodesUsed(checked);
                           onCommit({ areReasonCodesUsed: checked });
                         }}
@@ -291,14 +337,21 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     </FormGroup>
                   </LevelItem>
                   <LevelItem>
-                    <FormGroup label="Reason code algorithm" fieldId="core-reasonCodeAlgorithm">
+                    <FormGroup
+                      label="Reason code algorithm"
+                      fieldId="core-reasonCodeAlgorithm"
+                    >
                       {GenericSelectorEditor(
                         "core-reasonCodeAlgorithm",
                         ["pointsAbove", "pointsBelow"],
                         reasonCodeAlgorithm,
-                        _selection => {
-                          setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
-                          onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
+                        (_selection) => {
+                          setReasonCodeAlgorithm(
+                            _selection as ReasonCodeAlgorithm
+                          );
+                          onCommit({
+                            reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm
+                          });
                         },
                         // Reason Code Algorithm is only required when Reason Codes are enabled.
                         // See http://dmg.org/pmml/v4-4/Scorecard.html
@@ -310,8 +363,16 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     <FormGroup
                       label="Baseline score"
                       fieldId="core-baselineScore"
-                      validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                      helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
+                      validated={
+                        baselineScoreValidation.length > 0
+                          ? "warning"
+                          : "default"
+                      }
+                      helperText={
+                        baselineScoreValidation.length > 0
+                          ? baselineScoreValidation[0].message
+                          : undefined
+                      }
                       labelIcon={
                         <Tooltip
                           content={
@@ -325,10 +386,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         >
                           <button
                             aria-label="More information for Baseline score"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon
+                              style={{
+                                color: "var(--pf-global--info-color--100)"
+                              }}
+                            />
                           </button>
                         </Tooltip>
                       }
@@ -336,25 +401,34 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <TextInput
                         id="core-baselineScore"
                         value={baselineScore ?? ""}
-                        onChange={e => setBaselineScore(toNumber(e))}
+                        onChange={(e) => setBaselineScore(toNumber(e))}
                         onBlur={() => {
                           onCommit({ baselineScore: baselineScore });
                         }}
                         type="number"
-                        validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                        validated={
+                          baselineScoreValidation.length > 0
+                            ? "warning"
+                            : "default"
+                        }
                         isDisabled={props.isBaselineScoreDisabled}
                       />
                     </FormGroup>
                   </LevelItem>
                   <LevelItem>
-                    <FormGroup label="Baseline method" fieldId="core-baselineMethod">
+                    <FormGroup
+                      label="Baseline method"
+                      fieldId="core-baselineMethod"
+                    >
                       {GenericSelectorEditor(
                         "core-baselineMethod",
                         ["max", "min", "mean", "neutral", "other"],
                         baselineMethod,
-                        _selection => {
+                        (_selection) => {
                           setBaselineMethod(_selection as BaselineMethod);
-                          onCommit({ baselineMethod: _selection as BaselineMethod });
+                          onCommit({
+                            baselineMethod: _selection as BaselineMethod
+                          });
                         },
                         // Baseline Method is only required when Reason Codes are enabled.
                         // See http://dmg.org/pmml/v4-4/Scorecard.html

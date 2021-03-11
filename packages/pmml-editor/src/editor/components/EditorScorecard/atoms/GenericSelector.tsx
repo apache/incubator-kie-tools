@@ -15,7 +15,12 @@
  */
 import * as React from "react";
 import { useState } from "react";
-import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core";
+import {
+  Select,
+  SelectOption,
+  SelectOptionObject,
+  SelectVariant
+} from "@patternfly/react-core";
 
 interface GenericSelectorProps {
   id: string;
@@ -31,7 +36,10 @@ export const GenericSelector = (props: GenericSelectorProps) => {
   const onToggle = (_isOpen: boolean) => {
     setOpen(_isOpen);
   };
-  const onSelect = (event: React.MouseEvent | React.ChangeEvent, value: string | SelectOptionObject) => {
+  const onSelect = (
+    event: React.MouseEvent | React.ChangeEvent,
+    value: string | SelectOptionObject
+  ) => {
     props.onSelect(value.toString());
     setOpen(!isOpen);
   };
@@ -49,13 +57,15 @@ export const GenericSelector = (props: GenericSelectorProps) => {
       menuAppendTo={() => document.body}
       isDisabled={props.isDisabled ?? false}
     >
-      {props.items.map((item: string | GenericSelectorOption, index: number) => (
-        <SelectOption
-          key={index}
-          value={typeof item === "string" ? item : item.value}
-          isDisabled={typeof item === "string" ? false : item.isDisabled}
-        />
-      ))}
+      {props.items.map(
+        (item: string | GenericSelectorOption, index: number) => (
+          <SelectOption
+            key={index}
+            value={typeof item === "string" ? item : item.value}
+            isDisabled={typeof item === "string" ? false : item.isDisabled}
+          />
+        )
+      )}
     </Select>
   );
 };

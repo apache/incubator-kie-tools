@@ -15,7 +15,10 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  Characteristic
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { useValidationRegistry } from "../../../validation";
 import { AttributeLabel } from "./AttributeLabel";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
@@ -79,40 +82,59 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
 
   return (
     <>
-      {areReasonCodesUsed && activeAttribute.reasonCode !== undefined && reasonCodeValidation.length === 0 && (
-        <>
-          {commit && (
-            <AttributeLabel
-              name={"Reason code"}
-              value={activeAttribute.reasonCode}
-              onClose={() => commit({ reasonCode: undefined })}
-            />
-          )}
-          {!commit && <AttributeLabel name={"Reason code"} value={activeAttribute.reasonCode} />}
-        </>
-      )}
+      {areReasonCodesUsed &&
+        activeAttribute.reasonCode !== undefined &&
+        reasonCodeValidation.length === 0 && (
+          <>
+            {commit && (
+              <AttributeLabel
+                name={"Reason code"}
+                value={activeAttribute.reasonCode}
+                onClose={() => commit({ reasonCode: undefined })}
+              />
+            )}
+            {!commit && (
+              <AttributeLabel
+                name={"Reason code"}
+                value={activeAttribute.reasonCode}
+              />
+            )}
+          </>
+        )}
       {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
-        <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
+        <ValidationIndicatorLabel
+          validations={reasonCodeValidation}
+          cssClass="characteristic-list__item__label"
+        >
           <>
             <strong>Reason code:</strong>&nbsp;
             <em>Missing</em>
           </>
         </ValidationIndicatorLabel>
       )}
-      {partialScoreValidation.length === 0 && activeAttribute.partialScore !== undefined && (
-        <>
-          {commit && (
-            <AttributeLabel
-              name={"Partial score"}
-              value={activeAttribute.partialScore}
-              onClose={() => commit({ partialScore: undefined })}
-            />
-          )}
-          {!commit && <AttributeLabel name={"Partial score"} value={activeAttribute.partialScore} />}
-        </>
-      )}
+      {partialScoreValidation.length === 0 &&
+        activeAttribute.partialScore !== undefined && (
+          <>
+            {commit && (
+              <AttributeLabel
+                name={"Partial score"}
+                value={activeAttribute.partialScore}
+                onClose={() => commit({ partialScore: undefined })}
+              />
+            )}
+            {!commit && (
+              <AttributeLabel
+                name={"Partial score"}
+                value={activeAttribute.partialScore}
+              />
+            )}
+          </>
+        )}
       {partialScoreValidation.length > 0 && (
-        <ValidationIndicatorLabel validations={partialScoreValidation} cssClass="characteristic-list__item__label">
+        <ValidationIndicatorLabel
+          validations={partialScoreValidation}
+          cssClass="characteristic-list__item__label"
+        >
           <>
             <strong>Partial score:</strong>&nbsp;
             <em>Missing</em>

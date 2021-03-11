@@ -44,11 +44,12 @@ export const PMMLEmptyState = (props: AllProps) => (
       No PMML document
     </Title>
     <EmptyStateBody>
-      No PMML document has been selected. Please either upload an existing document or create a new one.
+      No PMML document has been selected. Please either upload an existing
+      document or create a new one.
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
     <EmptyStateSecondaryActions>
-      <Button variant="link" onClick={e => props.newContent()}>
+      <Button variant="link" onClick={(e) => props.newContent()}>
         New
       </Button>
     </EmptyStateSecondaryActions>
@@ -80,7 +81,13 @@ const FileChooser = (props: UploadProps) => {
         <i className="fa fa-cloud-upload" />
         Upload
       </label>
-      <input id="file-upload" style={{ display: "none" }} type="file" accept={".pmml"} onChange={e => showFile(e)} />
+      <input
+        id="file-upload"
+        style={{ display: "none" }}
+        type="file"
+        accept={".pmml"}
+        onChange={(e) => showFile(e)}
+      />
     </div>
   );
 };

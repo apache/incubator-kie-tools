@@ -57,12 +57,19 @@ export const CharacteristicPredicateLabel = (
         >
           <>
             {validations.length > 0 && (
-              <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
+              <ValidationIndicatorLabel
+                validations={validations}
+                cssClass="characteristic-list__item__label"
+              >
                 <pre>{truncatedText}</pre>
               </ValidationIndicatorLabel>
             )}
             {validations.length === 0 && (
-              <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+              <Label
+                tabIndex={0}
+                color="blue"
+                className="characteristic-list__item__label"
+              >
                 <pre>{truncatedText}</pre>
               </Label>
             )}
@@ -87,7 +94,11 @@ export const CharacteristicPredicateLabel = (
             </span>
           )}
           {validations.length === 0 && (
-            <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+            <Label
+              tabIndex={0}
+              color="blue"
+              className="characteristic-list__item__label"
+            >
               <pre>{value}</pre>
             </Label>
           )}

@@ -32,7 +32,9 @@ export const PredicateEditor = (props: PredicateEditorProps) => {
 
   const monaco = useRef<MonacoEditor>(null);
 
-  const editorDidMount: EditorDidMount = (editor: monacoEditor.editor.IStandaloneCodeEditor) => {
+  const editorDidMount: EditorDidMount = (
+    editor: monacoEditor.editor.IStandaloneCodeEditor
+  ) => {
     editor.focus();
   };
 
@@ -47,7 +49,7 @@ export const PredicateEditor = (props: PredicateEditorProps) => {
         scrollBeyondLastLine: false
       }}
       value={text ?? ""}
-      onChange={e => setText(e)}
+      onChange={(e) => setText(e)}
       editorDidMount={editorDidMount}
     />
   );

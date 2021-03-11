@@ -21,7 +21,9 @@ interface CharacteristicsTableActionProps {
   onDelete: () => void;
 }
 
-export const CharacteristicsTableAction = (props: CharacteristicsTableActionProps) => {
+export const CharacteristicsTableAction = (
+  props: CharacteristicsTableActionProps
+) => {
   const onDelete = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -29,12 +31,15 @@ export const CharacteristicsTableAction = (props: CharacteristicsTableActionProp
   };
 
   return (
-    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+    <Flex
+      alignItems={{ default: "alignItemsCenter" }}
+      style={{ height: "100%" }}
+    >
       <FlexItem>
         <Button
           variant="plain"
           onClick={onDelete}
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
               onDelete(e);
             }

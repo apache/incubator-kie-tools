@@ -54,10 +54,14 @@
     height: calc(60vh - 52px);
     // overriding disabled select background color because it doesn't play nice with --pf-global--BackgroundColor--200
     .pf-c-select__toggle.pf-m-disabled {
-      --pf-c-select__toggle--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+      --pf-c-select__toggle--disabled--BackgroundColor: var(
+        --pf-global--disabled-color--200
+      );
     }
     .pf-c-form-control:disabled {
-      --pf-c-form-control--BackgroundColor: var(--pf-global--disabled-color--200);
+      --pf-c-form-control--BackgroundColor: var(
+        --pf-global--disabled-color--200
+      );
     }
     &__field {
       width: 320px;

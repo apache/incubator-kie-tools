@@ -14,16 +14,29 @@
  * limitations under the License.
  */
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions, DataDictionaryFieldReducer } from "../../../editor/reducers";
+import {
+  Actions,
+  AllActions,
+  DataDictionaryFieldReducer
+} from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 import { ValidationRegistry } from "../../../editor/validation";
 
 const historyService = new HistoryService();
 const validationRegistry = new ValidationRegistry();
-const dataFields: DataField[] = [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }];
-const pmml = { version: "1.0", DataDictionary: { DataField: dataFields }, Header: {} };
-const reducer: Reducer<DataField[], AllActions> = DataDictionaryFieldReducer(historyService, validationRegistry);
+const dataFields: DataField[] = [
+  { name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }
+];
+const pmml = {
+  version: "1.0",
+  DataDictionary: { DataField: dataFields },
+  Header: {}
+};
+const reducer: Reducer<DataField[], AllActions> = DataDictionaryFieldReducer(
+  historyService,
+  validationRegistry
+);
 
 describe("DataDictionaryFieldReducer::Valid actions", () => {
   test("Actions.UpdateDataDictionaryField", () => {
@@ -31,11 +44,16 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: 0,
-        dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
+        dataField: {
+          name: "updated" as FieldName,
+          dataType: "string",
+          optype: "ordinal"
+        },
         originalName: "field1" as FieldName
       }
     });
-    const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
+    const updated = historyService.commit(pmml)?.DataDictionary
+      .DataField as DataField[];
 
     expect(updated).not.toEqual(dataFields);
     expect(updated.length).toBe(1);
@@ -49,11 +67,16 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: -1,
-        dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" },
+        dataField: {
+          name: "updated" as FieldName,
+          dataType: "boolean",
+          optype: "categorical"
+        },
         originalName: "field1" as FieldName
       }
     });
-    const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
+    const updated = historyService.commit(pmml)?.DataDictionary
+      .DataField as DataField[];
 
     expect(updated).toEqual(dataFields);
   });
@@ -63,11 +86,16 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: 1,
-        dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" },
+        dataField: {
+          name: "updated" as FieldName,
+          dataType: "boolean",
+          optype: "categorical"
+        },
         originalName: "field1" as FieldName
       }
     });
-    const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
+    const updated = historyService.commit(pmml)?.DataDictionary
+      .DataField as DataField[];
 
     expect(updated).toEqual(dataFields);
   });

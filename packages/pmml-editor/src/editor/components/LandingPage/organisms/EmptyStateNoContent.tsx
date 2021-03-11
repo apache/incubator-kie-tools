@@ -14,17 +14,27 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Title
+} from "@patternfly/react-core";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 
 export const EmptyStateNoContent = () => (
-  <EmptyState data-testid="empty-state-no-content" variant={EmptyStateVariant.small}>
+  <EmptyState
+    data-testid="empty-state-no-content"
+    variant={EmptyStateVariant.small}
+  >
     <EmptyStateIcon icon={ExclamationTriangleIcon} />
     <Title headingLevel="h4" size="lg">
       Editor content has not been set.
     </Title>
     <EmptyStateBody>
-      Something went wrong. An attempt has been made to view the editor before content is set.
+      Something went wrong. An attempt has been made to view the editor before
+      content is set.
     </EmptyStateBody>
   </EmptyState>
 );

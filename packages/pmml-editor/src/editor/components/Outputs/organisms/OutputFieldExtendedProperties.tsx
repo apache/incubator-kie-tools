@@ -16,9 +16,25 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, FormSelect, FormSelectOption, TextInput, Tooltip } from "@patternfly/react-core";
-import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
-import { GenericSelector, GenericSelectorOption } from "../../EditorScorecard/atoms";
+import {
+  Form,
+  FormGroup,
+  FormSelect,
+  FormSelectOption,
+  TextInput,
+  Tooltip
+} from "@patternfly/react-core";
+import {
+  FieldName,
+  OpType,
+  OutputField,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  GenericSelector,
+  GenericSelectorOption
+} from "../../EditorScorecard/atoms";
 import { HelpIcon } from "@patternfly/react-icons";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
@@ -31,8 +47,16 @@ interface OutputFieldExtendedPropertiesProps {
   commit: (outputField: Partial<OutputField>) => void;
 }
 
-export const OutputFieldExtendedProperties = (props: OutputFieldExtendedPropertiesProps) => {
-  const { activeOutputField, activeOutputFieldIndex, modelIndex, targetFields, commit } = props;
+export const OutputFieldExtendedProperties = (
+  props: OutputFieldExtendedPropertiesProps
+) => {
+  const {
+    activeOutputField,
+    activeOutputFieldIndex,
+    modelIndex,
+    targetFields,
+    commit
+  } = props;
 
   const [optype, setOptype] = useState<OpType | undefined>();
   const [targetField, setTargetField] = useState<FieldName | undefined>();
@@ -80,7 +104,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
     "output-optype",
     ["", "categorical", "continuous", "ordinal"],
     (optype ?? "").toString(),
-    _selection => {
+    (_selection) => {
       setOptype(_selection === "" ? undefined : (_selection as OpType));
       commit({
         optype: _selection === "" ? undefined : (_selection as OpType)
@@ -100,7 +124,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       { value: "warning" }
     ],
     (feature ?? "").toString(),
-    _selection => {
+    (_selection) => {
       setFeature(_selection === "" ? undefined : (_selection as ResultFeature));
       commit({
         feature: _selection === "" ? undefined : (_selection as ResultFeature)
@@ -112,7 +136,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
     "output-rankOrder",
     ["", "ascending", "descending"],
     (rankOrder ?? "").toString(),
-    _selection => {
+    (_selection) => {
       setRankOrder(_selection === "" ? undefined : (_selection as RankOrder));
       commit({
         rankOrder: _selection === "" ? undefined : (_selection as RankOrder)
@@ -125,7 +149,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
     "output-isFinalResult",
     ["", "true", "false"],
     (isFinalResult ?? "").toString(),
-    _selection => {
+    (_selection) => {
       setIsFinalResult(_selection === "" ? undefined : Boolean(_selection));
       commit({
         isFinalResult: _selection === "" ? undefined : Boolean(_selection)
@@ -160,18 +184,28 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Target field"
         fieldId="output-targetField-helper"
-        helperText={validationsTargetField.length === 0 ? "" : validationsTargetField[0].message}
+        helperText={
+          validationsTargetField.length === 0
+            ? ""
+            : validationsTargetField[0].message
+        }
         className="outputs-container__extended-properties__field"
         validated={validationsTargetField.length === 0 ? "default" : "warning"}
         labelIcon={
           !targetFieldsOptions.length ? (
-            <Tooltip content={"There are no Mining Schema fields with target usage type."}>
+            <Tooltip
+              content={
+                "There are no Mining Schema fields with target usage type."
+              }
+            >
               <button
                 aria-label="More info for Target Field"
-                onClick={e => e.preventDefault()}
+                onClick={(e) => e.preventDefault()}
                 className="pf-c-form__group-label-help"
               >
-                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                <HelpIcon
+                  style={{ color: "var(--pf-global--info-color--100)" }}
+                />
               </button>
             </Tooltip>
           ) : (
@@ -182,14 +216,21 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         <FormSelect
           id="output-targetField"
           value={(targetField ?? "").toString()}
-          onChange={selection => {
+          onChange={(selection) => {
             if (selection !== targetField?.value) {
-              setTargetField(selection === "" ? undefined : (selection as FieldName));
-              commit({ targetField: selection === "" ? undefined : (selection as FieldName) });
+              setTargetField(
+                selection === "" ? undefined : (selection as FieldName)
+              );
+              commit({
+                targetField:
+                  selection === "" ? undefined : (selection as FieldName)
+              });
             }
           }}
           isDisabled={!targetFieldsOptions.length}
-          validated={validationsTargetField.length === 0 ? "default" : "warning"}
+          validated={
+            validationsTargetField.length === 0 ? "default" : "warning"
+          }
         >
           {targetFieldsOptions.map((option, index) => (
             <FormSelectOption value={option} key={index} label={option} />
@@ -202,13 +243,19 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         helperText="Specifies the value the output field takes from the computed mining result."
         className="outputs-container__extended-properties__field"
         labelIcon={
-          <Tooltip content={"Decision and Transformed value are not supported by scorecards"}>
+          <Tooltip
+            content={
+              "Decision and Transformed value are not supported by scorecards"
+            }
+          >
             <button
               aria-label="More info about Feature"
-              onClick={e => e.preventDefault()}
+              onClick={(e) => e.preventDefault()}
               className="pf-c-form__group-label-help"
             >
-              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              <HelpIcon
+                style={{ color: "var(--pf-global--info-color--100)" }}
+              />
             </button>
           </Tooltip>
         }
@@ -221,13 +268,19 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         helperText="Used in conjunction with result features referring to specific values."
         className="outputs-container__extended-properties__field"
         labelIcon={
-          <Tooltip content={"Value property cannot be used together with Rank property"}>
+          <Tooltip
+            content={
+              "Value property cannot be used together with Rank property"
+            }
+          >
             <button
               aria-label="More info about Feature"
-              onClick={e => e.preventDefault()}
+              onClick={(e) => e.preventDefault()}
               className="pf-c-form__group-label-help"
             >
-              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              <HelpIcon
+                style={{ color: "var(--pf-global--info-color--100)" }}
+              />
             </button>
           </Tooltip>
         }
@@ -239,7 +292,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           aria-describedby="output-value-helper"
           autoComplete="off"
           value={(value ?? "").toString()}
-          onChange={e => setValue(e)}
+          onChange={(e) => setValue(e)}
           onBlur={() =>
             commit({
               value: value === "" ? undefined : value
@@ -254,13 +307,19 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         helperText="Specifies the rank of the feature value from the mining result that should be selected."
         className="outputs-container__extended-properties__field"
         labelIcon={
-          <Tooltip content={"Rank property cannot be used together with Value property"}>
+          <Tooltip
+            content={
+              "Rank property cannot be used together with Value property"
+            }
+          >
             <button
               aria-label="More info about Feature"
-              onClick={e => e.preventDefault()}
+              onClick={(e) => e.preventDefault()}
               className="pf-c-form__group-label-help"
             >
-              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              <HelpIcon
+                style={{ color: "var(--pf-global--info-color--100)" }}
+              />
             </button>
           </Tooltip>
         }
@@ -272,7 +331,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           aria-describedby="output-rank-helper"
           autoComplete="off"
           value={rank ?? ""}
-          onChange={e => setRank(toNumber(e))}
+          onChange={(e) => setRank(toNumber(e))}
           onBlur={() =>
             commit({
               rank: rank
@@ -302,7 +361,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           aria-describedby="output-segmentId-helper"
           autoComplete="off"
           value={segmentId ?? ""}
-          onChange={e => setSegmentId(e)}
+          onChange={(e) => setSegmentId(e)}
           onBlur={() =>
             commit({
               segmentId: segmentId
@@ -329,5 +388,13 @@ const GenericSelectorEditor = (
   onSelect: (_selection: string) => void,
   isDisabled?: boolean
 ) => {
-  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} isDisabled={isDisabled} />;
+  return (
+    <GenericSelector
+      id={id}
+      items={items}
+      selection={selection}
+      onSelect={onSelect}
+      isDisabled={isDisabled}
+    />
+  );
 };

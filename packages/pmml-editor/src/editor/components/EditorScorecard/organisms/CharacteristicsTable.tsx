@@ -15,9 +15,16 @@
  */
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Characteristic, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Characteristic,
+  DataField,
+  PMML
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Form } from "@patternfly/react-core";
-import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
+import {
+  CharacteristicsTableEditRow,
+  CharacteristicsTableRow
+} from "../molecules";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
@@ -35,7 +42,10 @@ interface CharacteristicsTableProps {
   characteristicsUnfilteredLength: number;
   selectedCharacteristicIndex: number | undefined;
   setSelectedCharacteristicIndex: (index: number | undefined) => void;
-  validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
+  validateCharacteristicName: (
+    index: number | undefined,
+    name: string | undefined
+  ) => boolean;
   viewAttribute: (index: number | undefined) => void;
   deleteCharacteristic: (index: number) => void;
   onAddAttribute: () => void;
@@ -66,12 +76,17 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const { activeOperation, setActiveOperation } = useOperation();
 
-  const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
-    return state.DataDictionary.DataField;
-  });
+  const dataFields: DataField[] = useSelector<PMML, DataField[]>(
+    (state: PMML) => {
+      return state.DataDictionary.DataField;
+    }
+  );
 
   useEffect(() => {
-    if (activeOperation === Operation.UPDATE_CHARACTERISTIC && addCharacteristicRowRef.current) {
+    if (
+      activeOperation === Operation.UPDATE_CHARACTERISTIC &&
+      addCharacteristicRowRef.current
+    ) {
       addCharacteristicRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
@@ -96,21 +111,25 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     }
   };
 
-  const onValidateCharacteristicName = (index: number | undefined, name: string | undefined): boolean => {
+  const onValidateCharacteristicName = (
+    index: number | undefined,
+    name: string | undefined
+  ): boolean => {
     return validateCharacteristicName(index, name);
   };
 
   return (
     <Form
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();
       }}
       className="characteristics-container__overview__form"
     >
-      {characteristics.map(ic => {
+      {characteristics.map((ic) => {
         const isRowInEditMode =
-          selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC;
+          selectedCharacteristicIndex === ic.index &&
+          activeOperation === Operation.UPDATE_CHARACTERISTIC;
         return (
           <article
             key={ic.index}
@@ -125,7 +144,9 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                   areReasonCodesUsed={areReasonCodesUsed}
                   scorecardBaselineScore={scorecardBaselineScore}
                   characteristic={ic}
-                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                  validateCharacteristicName={(_name) =>
+                    onValidateCharacteristicName(ic.index, _name)
+                  }
                   viewAttribute={viewAttribute}
                   onAddAttribute={onAddAttribute}
                   onCommitAndClose={onCommitAndClose}

@@ -14,17 +14,27 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Title
+} from "@patternfly/react-core";
 import { DiceSixIcon } from "@patternfly/react-icons";
 
 export const EmptyStateNoAttributes = () => (
-  <EmptyState data-testid="empty-state-no-attributes" variant={EmptyStateVariant.small}>
+  <EmptyState
+    data-testid="empty-state-no-attributes"
+    variant={EmptyStateVariant.small}
+  >
     <EmptyStateIcon icon={DiceSixIcon} />
     <Title headingLevel="h4" size="lg">
       No Attributes defined
     </Title>
     <EmptyStateBody>
-      Input attributes for each scorecard characteristic are defined in terms of predicates.
+      Input attributes for each scorecard characteristic are defined in terms of
+      predicates.
     </EmptyStateBody>
   </EmptyState>
 );

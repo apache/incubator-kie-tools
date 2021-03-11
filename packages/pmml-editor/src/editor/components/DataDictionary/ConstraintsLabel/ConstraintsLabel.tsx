@@ -2,7 +2,10 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Label } from "@patternfly/react-core";
 import { every } from "lodash";
-import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import {
+  ConstraintType,
+  DDDataField
+} from "../DataDictionaryContainer/DataDictionaryContainer";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
@@ -16,7 +19,12 @@ interface ConstraintsLabelProps {
 }
 
 const ConstraintsLabel = (props: ConstraintsLabelProps) => {
-  const { dataType, dataTypeIndex, editMode = false, onConstraintsDelete } = props;
+  const {
+    dataType,
+    dataTypeIndex,
+    editMode = false,
+    onConstraintsDelete
+  } = props;
 
   const onClose = useMemo(() => {
     if (editMode && !areConstraintsRequired(dataType)) {
@@ -36,10 +44,12 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
       switch (dataType.constraints.type) {
         case ConstraintType.RANGE:
           return dataType.constraints.value
-            .map(range => {
+            .map((range) => {
               return (
                 `${range.start.included ? "[" : "("}` +
-                `${range.start.value || `${String.fromCharCode(8722, 8734)}`}, ` +
+                `${
+                  range.start.value || `${String.fromCharCode(8722, 8734)}`
+                }, ` +
                 `${range.end.value || `${String.fromCharCode(43, 8734)}`}` +
                 `${range.end.included ? "]" : ")"}`
               );
@@ -47,10 +57,12 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
             .join(" ");
 
         case ConstraintType.ENUMERATION:
-          if (every(dataType.constraints.value, value => value === "")) {
+          if (every(dataType.constraints.value, (value) => value === "")) {
             return <em>No values</em>;
           }
-          return dataType.constraints.value.map(item => `"${item}"`).join(", ");
+          return dataType.constraints.value
+            .map((item) => `"${item}"`)
+            .join(", ");
         default:
           return "";
       }
@@ -62,10 +74,7 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
   const validations = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .forDataField(dataTypeIndex)
-          .build()
+        Builder().forDataDictionary().forDataField(dataTypeIndex).build()
       ),
     [dataTypeIndex, dataType]
   );
@@ -73,14 +82,21 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
   return (
     <>
       {missingRequiredConstraints && (
-        <ValidationIndicatorLabel validations={validations} cssClass="constraints-label">
+        <ValidationIndicatorLabel
+          validations={validations}
+          cssClass="constraints-label"
+        >
           <em>Missing required constraints</em>
         </ValidationIndicatorLabel>
       )}
       {!missingRequiredConstraints && dataType.constraints && (
         <>
           {validations.length > 0 && (
-            <ValidationIndicatorLabel validations={validations} onClose={onClose} cssClass="constraints-label">
+            <ValidationIndicatorLabel
+              validations={validations}
+              onClose={onClose}
+              cssClass="constraints-label"
+            >
               <>
                 <strong>Constraints:</strong>&nbsp;
                 <span>{constraintValue}</span>
@@ -102,5 +118,8 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
 export default ConstraintsLabel;
 
 const areConstraintsRequired = (dataType: DDDataField) => {
-  return dataType.isCyclic || (dataType.type === "string" && dataType.optype === "ordinal");
+  return (
+    dataType.isCyclic ||
+    (dataType.type === "string" && dataType.optype === "ordinal")
+  );
 };

@@ -22,20 +22,19 @@
   justify-content: stretch;
 
   &__header {
-
     &__container {
-      background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
+      background-color: var(
+        --pf-c-page__main-section--m-light--BackgroundColor
+      );
     }
 
     &__content {
       margin: 0 auto;
       max-width: 1920px;
     }
-
   }
 
   &__body {
-
     &__container {
       background-color: var(--pf-c-page__main-section--BackgroundColor);
       flex-grow: 1;
@@ -49,7 +48,6 @@
       flex-direction: column;
       justify-content: stretch;
     }
-
   }
 }
 
@@ -69,7 +67,8 @@
 
   &:not(.editable-item--editing):hover {
     box-shadow: var(--pf-global--BoxShadow--lg);
-    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--BorderColor--light-100);
+    border-left: var(--pf-global--BorderWidth--lg) solid
+      var(--pf-global--BorderColor--light-100);
   }
 
   // from 5 items reduce spacing
@@ -94,8 +93,10 @@
 
   &--editing {
     cursor: auto;
-    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
-    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
+    box-shadow: var(--pf-global--BoxShadow--sm-top),
+      var(--pf-global--BoxShadow--sm-bottom);
+    border-left: var(--pf-global--BorderWidth--lg) solid
+      var(--pf-global--active-color--100);
 
     .editable-item__inner {
       padding: 1em !important;
@@ -105,6 +106,4 @@
   &:last-child {
     margin-bottom: 0 !important;
   }
-
 }
-

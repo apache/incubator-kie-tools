@@ -47,7 +47,14 @@ interface ConstraintsRangeEditProps {
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, countLimit } = props;
+  const {
+    dataFieldIndex,
+    ranges,
+    onAdd,
+    onChange,
+    onDelete,
+    countLimit
+  } = props;
   const [addedRange, setAddedRange] = useState<number>();
 
   const updateRange = (index: number, range: RangeConstraint) => {
@@ -117,23 +124,47 @@ interface RangeEditProps {
 }
 
 const RangeEdit = (props: RangeEditProps) => {
-  const { dataFieldIndex, range, rangesCount, index, onSave, onDelete, addedRange, updateAddedRange } = props;
+  const {
+    dataFieldIndex,
+    range,
+    rangesCount,
+    index,
+    onSave,
+    onDelete,
+    addedRange,
+    updateAddedRange
+  } = props;
   const [rangeValues, setRangeValues] = useState(range);
   const [submitChanges, setSubmitChanges] = useState(false);
 
-  const handleRangeChange = (value: string | boolean, event: React.FormEvent<HTMLInputElement>) => {
+  const handleRangeChange = (
+    value: string | boolean,
+    event: React.FormEvent<HTMLInputElement>
+  ) => {
     switch ((event.target as HTMLInputElement).name) {
       case "start-value":
-        setRangeValues({ ...rangeValues, start: { ...rangeValues.start, value: value as string } });
+        setRangeValues({
+          ...rangeValues,
+          start: { ...rangeValues.start, value: value as string }
+        });
         break;
       case "start-included":
-        setRangeValues({ ...rangeValues, start: { ...rangeValues.start, included: value as boolean } });
+        setRangeValues({
+          ...rangeValues,
+          start: { ...rangeValues.start, included: value as boolean }
+        });
         break;
       case "end-value":
-        setRangeValues({ ...rangeValues, end: { ...rangeValues.end, value: value as string } });
+        setRangeValues({
+          ...rangeValues,
+          end: { ...rangeValues.end, value: value as string }
+        });
         break;
       case "end-included":
-        setRangeValues({ ...rangeValues, end: { ...rangeValues.end, included: value as boolean } });
+        setRangeValues({
+          ...rangeValues,
+          end: { ...rangeValues.end, included: value as boolean }
+        });
         break;
       default:
         break;
@@ -163,7 +194,9 @@ const RangeEdit = (props: RangeEditProps) => {
 
   useEffect(() => {
     if (rangeRef.current && addedRange === index) {
-      const container = document.querySelector(".data-dictionary__properties-edit__form .constraints__form");
+      const container = document.querySelector(
+        ".data-dictionary__properties-edit__form .constraints__form"
+      );
       container?.scroll({ top: container?.scrollHeight, behavior: "smooth" });
       updateAddedRange(undefined);
     }
@@ -189,7 +222,9 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="Start Value"
             fieldId={`start-value-${index}`}
-            helperText={validations[0] ? "Please enter start and/or end value" : ""}
+            helperText={
+              validations[0] ? "Please enter start and/or end value" : ""
+            }
           >
             <TextInput
               type="number"
@@ -203,7 +238,10 @@ const RangeEdit = (props: RangeEditProps) => {
               autoComplete="off"
             />
           </FormGroup>
-          <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
+          <FormGroup
+            fieldId={`start-included-${index}`}
+            className="constraints__include-range"
+          >
             <Checkbox
               label="Include Start Value"
               aria-label="Include Start Value"
@@ -220,7 +258,9 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="End Value"
             fieldId={`end-value-${index}`}
-            helperText={validations[0] ? "Please enter start and/or end value" : ""}
+            helperText={
+              validations[0] ? "Please enter start and/or end value" : ""
+            }
           >
             <TextInput
               type="number"
@@ -234,7 +274,10 @@ const RangeEdit = (props: RangeEditProps) => {
               autoComplete="off"
             />
           </FormGroup>
-          <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">
+          <FormGroup
+            fieldId={`end-included-${index}`}
+            className="constraints__include-range"
+          >
             <Checkbox
               label="Include End Value"
               aria-label="Include End Value"

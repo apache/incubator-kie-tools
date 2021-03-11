@@ -15,7 +15,12 @@
  */
 import * as React from "react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { CancellationToken, editor, languages, Position } from "monaco-editor/esm/vs/editor/editor.api";
+import {
+  CancellationToken,
+  editor,
+  languages,
+  Position
+} from "monaco-editor/esm/vs/editor/editor.api";
 import CompletionItemKind = languages.CompletionItemKind;
 import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
 
@@ -87,14 +92,24 @@ export const bootstrapMonaco = () => {
             insertText: "True",
             kind: CompletionItemKind.Keyword,
             insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
-            range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 }
+            range: {
+              startLineNumber: 1,
+              endLineNumber: 1,
+              startColumn: 1,
+              endColumn: 1
+            }
           },
           {
             label: "False",
             insertText: "False",
             kind: CompletionItemKind.Keyword,
             insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
-            range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 }
+            range: {
+              startLineNumber: 1,
+              endLineNumber: 1,
+              startColumn: 1,
+              endColumn: 1
+            }
           }
         ]
       };

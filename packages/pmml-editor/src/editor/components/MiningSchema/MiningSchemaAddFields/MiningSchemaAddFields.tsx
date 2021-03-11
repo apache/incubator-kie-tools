@@ -16,18 +16,26 @@ interface MiningSchemaAddFieldsProps {
   onAdd: (fields: string[]) => void;
 }
 
-const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) => {
+const MiningSchemaAddFields = ({
+  options,
+  onAdd
+}: MiningSchemaAddFieldsProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectOptions, setSelectOptions] = useState<Array<{ value: string; disabled: boolean }>>([]);
+  const [selectOptions, setSelectOptions] = useState<
+    Array<{ value: string; disabled: boolean }>
+  >([]);
   const [selected, setSelected] = useState<string[]>([]);
 
   const onToggle = (openStatus: boolean) => {
     setIsOpen(openStatus);
   };
 
-  const onSelect = (event: React.MouseEvent | React.ChangeEvent, selection: SelectOptionObject) => {
+  const onSelect = (
+    event: React.MouseEvent | React.ChangeEvent,
+    selection: SelectOptionObject
+  ) => {
     if (selected.includes(selection.toString())) {
-      const newSelections = selected.filter(item => item !== selection);
+      const newSelections = selected.filter((item) => item !== selection);
       setSelected(newSelections);
     } else {
       setSelected([...selected, selection.toString()]);
@@ -40,9 +48,9 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
   };
 
   const addAllFields = () => {
-    const availableOptions = selectOptions.filter(item => !item.disabled);
+    const availableOptions = selectOptions.filter((item) => !item.disabled);
     if (availableOptions.length) {
-      onAdd(availableOptions.map(item => item.value));
+      onAdd(availableOptions.map((item) => item.value));
     }
   };
 
@@ -53,7 +61,7 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
 
   useEffect(() => {
     setSelectOptions(
-      options.map(option => ({
+      options.map((option) => ({
         value: option.name,
         disabled: option.isSelected
       }))
@@ -77,17 +85,29 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
             isDisabled={options.length === 0}
           >
             {selectOptions.map((option, index) => (
-              <SelectOption isDisabled={option.disabled} key={index} value={option.value} />
+              <SelectOption
+                isDisabled={option.disabled}
+                key={index}
+                value={option.value}
+              />
             ))}
           </Select>
         </SplitItem>
         <SplitItem>
-          <Button variant="primary" onClick={handleAdd} isDisabled={options.length === 0}>
+          <Button
+            variant="primary"
+            onClick={handleAdd}
+            isDisabled={options.length === 0}
+          >
             Add Field(s)
           </Button>
         </SplitItem>
         <SplitItem>
-          <Button variant="secondary" onClick={addAllFields} isDisabled={options.length === 0}>
+          <Button
+            variant="secondary"
+            onClick={addAllFields}
+            isDisabled={options.length === 0}
+          >
             Add All Fields
           </Button>
         </SplitItem>

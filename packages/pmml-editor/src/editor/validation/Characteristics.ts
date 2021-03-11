@@ -13,9 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { Characteristic, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Characteristic,
+  MiningField
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationRegistry } from "./ValidationRegistry";
-import { areAttributesReasonCodesMissing, validateAttributes } from "./Attributes";
+import {
+  areAttributesReasonCodesMissing,
+  validateAttributes
+} from "./Attributes";
 import { ValidationEntry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder } from "../paths";
@@ -32,7 +38,10 @@ export const validateCharacteristic = (
   validationRegistry: ValidationRegistry
 ): void => {
   if (scorecardProperties.useReasonCodes !== false) {
-    if (characteristic.reasonCode === undefined && areAttributesReasonCodesMissing(characteristic.Attribute)) {
+    if (
+      characteristic.reasonCode === undefined &&
+      areAttributesReasonCodesMissing(characteristic.Attribute)
+    ) {
       validationRegistry.set(
         Builder()
           .forModel(modelIndex)
@@ -40,10 +49,16 @@ export const validateCharacteristic = (
           .forCharacteristic(characteristicIndex)
           .forReasonCode()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `${characteristic.name}: Reason code is required`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `${characteristic.name}: Reason code is required`
+        )
       );
     }
-    if (scorecardProperties.baselineScore === undefined && characteristic.baselineScore === undefined) {
+    if (
+      scorecardProperties.baselineScore === undefined &&
+      characteristic.baselineScore === undefined
+    ) {
       validationRegistry.set(
         Builder()
           .forModel(modelIndex)
@@ -51,7 +66,10 @@ export const validateCharacteristic = (
           .forCharacteristic(characteristicIndex)
           .forBaselineScore()
           .build(),
-        new ValidationEntry(ValidationLevel.WARNING, `${characteristic.name}: Baseline score is required`)
+        new ValidationEntry(
+          ValidationLevel.WARNING,
+          `${characteristic.name}: Baseline score is required`
+        )
       );
     }
   }

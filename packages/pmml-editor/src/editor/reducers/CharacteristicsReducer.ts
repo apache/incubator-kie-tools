@@ -38,9 +38,10 @@ interface CharacteristicsPayload {
 
 export type CharacteristicsActions = ActionMap<CharacteristicsPayload>[keyof ActionMap<CharacteristicsPayload>];
 
-export const CharacteristicsReducer: HistoryAwareReducer<Characteristics, AllActions> = (
-  historyService: HistoryService
-): Reducer<Characteristics, AllActions> => {
+export const CharacteristicsReducer: HistoryAwareReducer<
+  Characteristics,
+  AllActions
+> = (historyService: HistoryService): Reducer<Characteristics, AllActions> => {
   return (state: Characteristics, action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_AddCharacteristic:
@@ -50,7 +51,7 @@ export const CharacteristicsReducer: HistoryAwareReducer<Characteristics, AllAct
             .forModel(action.payload.modelIndex)
             .forCharacteristics()
             .build(),
-          draft => {
+          (draft) => {
             draft.Characteristic.push({
               name: action.payload.name,
               reasonCode: action.payload.reasonCode,
@@ -68,9 +69,12 @@ export const CharacteristicsReducer: HistoryAwareReducer<Characteristics, AllAct
             .forModel(action.payload.modelIndex)
             .forCharacteristics()
             .build(),
-          draft => {
+          (draft) => {
             const characteristicIndex = action.payload.characteristicIndex;
-            if (characteristicIndex >= 0 && characteristicIndex < draft.Characteristic.length) {
+            if (
+              characteristicIndex >= 0 &&
+              characteristicIndex < draft.Characteristic.length
+            ) {
               draft.Characteristic.splice(characteristicIndex, 1);
             }
           }

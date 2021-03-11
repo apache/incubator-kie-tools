@@ -37,7 +37,9 @@ export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
 
   const { setActiveOperation } = useOperation();
 
-  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
+  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>(
+    (state: PMML) => state.models
+  );
   if (!models) {
     return <EmptyStateModelNotFound />;
   }
@@ -53,13 +55,15 @@ export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
   return (
     <div
       tabIndex={-1}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Escape") {
           setActiveOperation(Operation.NONE);
         }
       }}
     >
-      {!_isSupportedModelType && <UnsupportedModelPage path={props.path} model={model} />}
+      {!_isSupportedModelType && (
+        <UnsupportedModelPage path={props.path} model={model} />
+      )}
       {_isSupportedModelType && modelType === "Scorecard" && (
         <ScorecardEditorPage path={props.path} modelIndex={_index} />
       )}

@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { FieldName, OpType, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  FieldName,
+  OpType,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldLabel } from "./OutputFieldLabel";
 import { ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
@@ -48,7 +53,10 @@ export const OutputLabels = (props: OutputLabelsProps) => {
     <>
       {optype && OutputFieldLabel("OpType", optype)}
       {targetFieldValidation.length > 0 ? (
-        <ValidationIndicatorLabel validations={targetFieldValidation} cssClass="output-fields-list__item__label">
+        <ValidationIndicatorLabel
+          validations={targetFieldValidation}
+          cssClass="output-fields-list__item__label"
+        >
           <strong>TargetField:</strong>&nbsp;
           <em>Missing</em>
         </ValidationIndicatorLabel>
@@ -60,7 +68,8 @@ export const OutputLabels = (props: OutputLabelsProps) => {
       {rank !== undefined && OutputFieldLabel("Rank", rank)}
       {rankOrder && OutputFieldLabel("RankOrder", rankOrder)}
       {segmentId && OutputFieldLabel("SegmentId", segmentId)}
-      {isFinalResult && OutputFieldLabel("FinalResult", isFinalResult.toString())}
+      {isFinalResult &&
+        OutputFieldLabel("FinalResult", isFinalResult.toString())}
     </>
   );
 };

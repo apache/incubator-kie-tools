@@ -28,7 +28,12 @@ import {
   ModelReducer,
   PMMLReducer
 } from "./reducers";
-import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Model,
+  PMML,
+  PMML2XML,
+  XML2PMML
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HistoryContext, HistoryService } from "./history";
@@ -38,7 +43,11 @@ import { HashRouter } from "react-router-dom";
 import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
-import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
+import {
+  PMMLModelMapping,
+  PMMLModels,
+  SupportedCapability
+} from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { ValidationContext, ValidationRegistry } from "./validation";
 
@@ -74,13 +83,22 @@ export class PMMLEditor extends React.Component<Props, State> {
 
     enableAllPlugins();
 
-    this.reducer = mergeReducers(PMMLReducer(this.history, this.validationRegistry), {
-      Header: HeaderReducer(this.history),
-      DataDictionary: mergeReducers(DataDictionaryReducer(this.history, this.validationRegistry), {
-        DataField: DataDictionaryFieldReducer(this.history, this.validationRegistry)
-      }),
-      models: ModelReducer(this.history, this.validationRegistry)
-    });
+    this.reducer = mergeReducers(
+      PMMLReducer(this.history, this.validationRegistry),
+      {
+        Header: HeaderReducer(this.history),
+        DataDictionary: mergeReducers(
+          DataDictionaryReducer(this.history, this.validationRegistry),
+          {
+            DataField: DataDictionaryFieldReducer(
+              this.history,
+              this.validationRegistry
+            )
+          }
+        ),
+        models: ModelReducer(this.history, this.validationRegistry)
+      }
+    );
   }
 
   public componentDidMount(): void {
@@ -100,9 +118,9 @@ export class PMMLEditor extends React.Component<Props, State> {
       pmml = XML2PMML(_content);
 
       //If there is only one supported type of model then create a default entry
-      const supportedEditorTypes: Array<PMMLModelMapping<any>> = PMMLModels.filter(
-        m => m.capability === SupportedCapability.EDITOR
-      );
+      const supportedEditorTypes: Array<
+        PMMLModelMapping<any>
+      > = PMMLModels.filter((m) => m.capability === SupportedCapability.EDITOR);
       if (content === "" && supportedEditorTypes.length === 1) {
         const factory = supportedEditorTypes[0].factory;
         if (factory) {
@@ -120,7 +138,12 @@ export class PMMLEditor extends React.Component<Props, State> {
       payload: {}
     });
 
-    this.setState({ path: path, content: _content, originalContent: _content, activeOperation: Operation.NONE });
+    this.setState({
+      path: path,
+      content: _content,
+      originalContent: _content,
+      activeOperation: Operation.NONE
+    });
   }
 
   public getContent(): Promise<string> {
@@ -190,7 +213,9 @@ export class PMMLEditor extends React.Component<Props, State> {
         <HashRouter>
           <Page>
             <Provider store={this.store}>
-              <ValidationContext.Provider value={{ validationRegistry: this.validationRegistry }}>
+              <ValidationContext.Provider
+                value={{ validationRegistry: this.validationRegistry }}
+              >
                 <HistoryContext.Provider
                   value={{
                     service: this.history,
@@ -200,13 +225,15 @@ export class PMMLEditor extends React.Component<Props, State> {
                   <Switch>
                     <Route exact={true} path={"/"}>
                       {!isSingleModel && <LandingPage path={path} />}
-                      {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
+                      {isSingleModel && (
+                        <Redirect from={"/"} to={"/editor/0"} />
+                      )}
                     </Route>
                     <Route exact={true} path={"/editor/:index"}>
                       <OperationContext.Provider
                         value={{
                           activeOperation: this.state.activeOperation,
-                          setActiveOperation: operation =>
+                          setActiveOperation: (operation) =>
                             this.setState({
                               ...this.state,
                               activeOperation: operation

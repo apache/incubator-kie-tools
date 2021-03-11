@@ -32,7 +32,10 @@ import {
   Tooltip
 } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, HelpIcon } from "@patternfly/react-icons";
-import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
+import {
+  ConstraintType,
+  DDDataField
+} from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
 
@@ -43,7 +46,9 @@ interface DataDictionaryPropertiesEditProps {
   onSave: (payload: Partial<DDDataField>) => void;
 }
 
-const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) => {
+const DataDictionaryPropertiesEdit = (
+  props: DataDictionaryPropertiesEditProps
+) => {
   const { dataType, dataFieldIndex, onClose, onSave } = props;
   const [displayName, setDisplayName] = useState(dataType.displayName ?? "");
   const [isCyclic, setIsCyclic] = useState(dataType.isCyclic);
@@ -64,10 +69,16 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
     });
   };
 
-  const isOptypeDisabled = useMemo(() => dataType.optype === "categorical", [dataType.optype]);
+  const isOptypeDisabled = useMemo(() => dataType.optype === "categorical", [
+    dataType.optype
+  ]);
 
   const constraintAlert = useMemo(() => {
-    if (dataType.optype === "continuous" && dataType.isCyclic && dataType.constraints === undefined) {
+    if (
+      dataType.optype === "continuous" &&
+      dataType.isCyclic &&
+      dataType.constraints === undefined
+    ) {
       return "Interval or Value constraints are required for cyclic continuous data types";
     }
     if (
@@ -108,11 +119,12 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="display-name"
                       aria-describedby="Display Name"
                       value={displayName}
-                      onChange={value => setDisplayName(value)}
+                      onChange={(value) => setDisplayName(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
-                          displayName: displayName === "" ? undefined : displayName
+                          displayName:
+                            displayName === "" ? undefined : displayName
                         })
                       }
                     />
@@ -126,13 +138,19 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     isInline={true}
                     labelIcon={
                       dataType.optype === "categorical" ? (
-                        <Tooltip content={"Categorical fields cannot be cyclic"}>
+                        <Tooltip
+                          content={"Categorical fields cannot be cyclic"}
+                        >
                           <button
                             aria-label="More info for Cyclic Type"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon
+                              style={{
+                                color: "var(--pf-global--info-color--100)"
+                              }}
+                            />
                           </button>
                         </Tooltip>
                       ) : (
@@ -188,11 +206,12 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="missing-value"
                       aria-describedby="Missing Value"
                       value={missingValue}
-                      onChange={value => setMissingValue(value)}
+                      onChange={(value) => setMissingValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
-                          missingValue: missingValue === "" ? undefined : missingValue
+                          missingValue:
+                            missingValue === "" ? undefined : missingValue
                         })
                       }
                     />
@@ -211,11 +230,12 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="invalid-value"
                       aria-describedby="Invalid Value"
                       value={invalidValue}
-                      onChange={value => setInvalidValue(value)}
+                      onChange={(value) => setInvalidValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
-                          invalidValue: invalidValue === "" ? undefined : invalidValue
+                          invalidValue:
+                            invalidValue === "" ? undefined : invalidValue
                         })
                       }
                     />
@@ -233,14 +253,23 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     title={constraintAlert}
                   />
                 )}
-                <ConstraintsEdit dataType={dataType} dataFieldIndex={dataFieldIndex} onSave={onSave} />
+                <ConstraintsEdit
+                  dataType={dataType}
+                  dataFieldIndex={dataFieldIndex}
+                  onSave={onSave}
+                />
               </section>
             </SplitItem>
           </Split>
         </Form>
       </StackItem>
       <StackItem>
-        <Button variant="primary" onClick={onClose} icon={<ArrowAltCircleLeftIcon />} iconPosition="left">
+        <Button
+          variant="primary"
+          onClick={onClose}
+          icon={<ArrowAltCircleLeftIcon />}
+          iconPosition="left"
+        >
           Back
         </Button>
       </StackItem>

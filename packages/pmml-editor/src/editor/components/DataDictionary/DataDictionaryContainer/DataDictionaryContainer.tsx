@@ -1,7 +1,13 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Alert, Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
+import {
+  Alert,
+  Bullseye,
+  Button,
+  Flex,
+  FlexItem
+} from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
@@ -16,7 +22,11 @@ import { Builder } from "../../../paths";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
-  onAdd: (name: string, type: DDDataField["type"], optype: DDDataField["optype"]) => void;
+  onAdd: (
+    name: string,
+    type: DDDataField["type"],
+    optype: DDDataField["optype"]
+  ) => void;
   onEdit: (index: number, originalName: string, field: DDDataField) => void;
   onDelete: (index: number) => void;
   onReorder: (oldIndex: number, newIndex: number) => void;
@@ -25,7 +35,15 @@ interface DataDictionaryContainerProps {
 }
 
 const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
-  const { dataDictionary, onAdd, onEdit, onDelete, onReorder, onBatchAdd, onEditingPhaseChange } = props;
+  const {
+    dataDictionary,
+    onAdd,
+    onEdit,
+    onDelete,
+    onReorder,
+    onBatchAdd,
+    onEditingPhaseChange
+  } = props;
   const [dataTypes, setDataTypes] = useState<DDDataField[]>(dataDictionary);
   const [editing, setEditing] = useState<number | undefined>();
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
@@ -57,7 +75,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     onAdd(
       findIncrementalName(
         "New Data Type",
-        dataTypes.map(dt => dt.name),
+        dataTypes.map((dt) => dt.name),
         1
       ),
       "string",
@@ -85,7 +103,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const handleMultipleAdd = (fields: string) => {
-    const fieldsNames = fields.split("\n").filter(item => item.trim().length > 0);
+    const fieldsNames = fields
+      .split("\n")
+      .filter((item) => item.trim().length > 0);
     onBatchAdd(fieldsNames);
     setViewSection("main");
   };
@@ -108,7 +128,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     if (editing !== undefined) {
       const dataType = dataTypes[editing];
       const existingPartial = {};
-      Object.keys(payload).forEach(key => Reflect.set(existingPartial, key, Reflect.get(dataType, key)));
+      Object.keys(payload).forEach((key) =>
+        Reflect.set(existingPartial, key, Reflect.get(dataType, key))
+      );
 
       if (!isEqual(payload, existingPartial)) {
         onEdit(editing, dataType.name, Object.assign(dataType, payload));
@@ -127,7 +149,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const dataTypeNameValidation = (dataTypeName: string) => {
     let isValid = true;
-    const match = dataTypes.find((item, index) => item.name === dataTypeName.trim() && index !== editing);
+    const match = dataTypes.find(
+      (item, index) => item.name === dataTypeName.trim() && index !== editing
+    );
     if (match !== undefined) {
       isValid = false;
     }
@@ -146,18 +170,12 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useRef(
-    validationRegistry.get(
-      Builder()
-        .forDataDictionary()
-        .build()
-    )
+    validationRegistry.get(Builder().forDataDictionary().build())
   );
   useEffect(() => {
     if (editing === undefined) {
       validations.current = validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .build()
+        Builder().forDataDictionary().build()
       );
     }
   }, [dataDictionary, editing]);
@@ -215,7 +233,11 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                   <>
                     {validations.current && validations.current.length > 0 && (
                       <section className="data-dictionary__validation-alert">
-                        <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
+                        <Alert
+                          variant="warning"
+                          isInline={true}
+                          title="Some items are invalid and need attention."
+                        />
                       </section>
                     )}
                     <section className="data-dictionary__types-list">
@@ -244,13 +266,19 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                 )}
                 {sorting && (
                   <section className="data-dictionary__types-list">
-                    <DataTypesSort dataTypes={dataTypes} onReorder={onReorder} />
+                    <DataTypesSort
+                      dataTypes={dataTypes}
+                      onReorder={onReorder}
+                    />
                   </section>
                 )}
               </section>
             )}
             {viewSection === "batch-add" && (
-              <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
+              <MultipleDataTypeAdd
+                onAdd={handleMultipleAdd}
+                onCancel={() => setViewSection("main")}
+              />
             )}
             {viewSection === "properties" && (
               <DataDictionaryPropertiesEdit

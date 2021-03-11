@@ -27,7 +27,10 @@ import {
   True
 } from "@kogito-tooling/pmml-editor-marshaller";
 
-const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map<SimplePredicateOperator, string>([
+const SimplePredicateOperatorMap: Map<
+  SimplePredicateOperator,
+  string
+> = new Map<SimplePredicateOperator, string>([
   ["equal", "="],
   ["notEqual", "<>"],
   ["lessThan", "<"],
@@ -38,8 +41,13 @@ const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map
   ["isNotMissing", "isNotMissing"]
 ]);
 
-export const toText = (predicate: Predicate | undefined, fields: DataField[]): string => {
-  const fieldToDataType: Map<FieldName, DataType> = new Map(fields.map(field => [field.name, field.dataType]));
+export const toText = (
+  predicate: Predicate | undefined,
+  fields: DataField[]
+): string => {
+  const fieldToDataType: Map<FieldName, DataType> = new Map(
+    fields.map((field) => [field.name, field.dataType])
+  );
   return _toText(predicate, fieldToDataType, 0);
 };
 
@@ -54,20 +62,22 @@ const _toText = (
     return "False";
   } else if (predicate instanceof SimpleSetPredicate) {
     const ssp: SimpleSetPredicate = predicate as SimpleSetPredicate;
-    return `${ssp.field.toString()} ${ssp.booleanOperator} ${ssp.Array.toString()} `;
+    return `${ssp.field.toString()} ${
+      ssp.booleanOperator
+    } ${ssp.Array.toString()} `;
   } else if (predicate instanceof SimplePredicate) {
     const sp: SimplePredicate = predicate as SimplePredicate;
-    return `${sp.field.toString()} ${SimplePredicateOperatorMap.get(sp.operator)} ${_value(
-      sp.field,
-      sp.value,
-      fieldToDataType
-    )}`;
+    return `${sp.field.toString()} ${SimplePredicateOperatorMap.get(
+      sp.operator
+    )} ${_value(sp.field, sp.value, fieldToDataType)}`;
   } else if (predicate instanceof CompoundPredicate) {
     const cp: CompoundPredicate = predicate as CompoundPredicate;
     let text: string = "";
     const children: string[] = [];
     // TODO {manstis} If parenthesis are needed: text = text + (nesting > 0 ? "( " : "");
-    cp.predicates?.forEach(p => children.push(_toText(p, fieldToDataType, nesting + 1)));
+    cp.predicates?.forEach((p) =>
+      children.push(_toText(p, fieldToDataType, nesting + 1))
+    );
     text = text + children.join(" " + cp.booleanOperator + " ");
     // TODO {manstis} If parenthesis are needed: text = text + (nesting > 0 ? ")" : "");
     return text;
@@ -87,14 +97,28 @@ const FalsePredicate = () => {
   return predicate;
 };
 
-const UnarySimplePredicate = (field: FieldName, operator: SimplePredicateOperator) => {
-  const predicate: SimplePredicate = new SimplePredicate({ field: field, operator: operator });
+const UnarySimplePredicate = (
+  field: FieldName,
+  operator: SimplePredicateOperator
+) => {
+  const predicate: SimplePredicate = new SimplePredicate({
+    field: field,
+    operator: operator
+  });
   (predicate as any)._type = "SimplePredicate";
   return predicate;
 };
 
-const BinarySimplePredicate = (field: FieldName, operator: SimplePredicateOperator, value: any) => {
-  const predicate: SimplePredicate = new SimplePredicate({ field: field, operator: operator, value: value });
+const BinarySimplePredicate = (
+  field: FieldName,
+  operator: SimplePredicateOperator,
+  value: any
+) => {
+  const predicate: SimplePredicate = new SimplePredicate({
+    field: field,
+    operator: operator,
+    value: value
+  });
   (predicate as any)._type = "SimplePredicate";
   return predicate;
 };
@@ -104,12 +128,19 @@ const SimpleCompoundPredicate = (
   predicate2: Predicate,
   booleanOperator: CompoundPredicateBooleanOperator
 ) => {
-  const predicate: CompoundPredicate = new CompoundPredicate({ predicates: [predicate1, predicate2], booleanOperator });
+  const predicate: CompoundPredicate = new CompoundPredicate({
+    predicates: [predicate1, predicate2],
+    booleanOperator
+  });
   (predicate as any)._type = "CompoundPredicate";
   return predicate;
 };
 
-const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, DataType>): string => {
+const _value = (
+  field: FieldName,
+  value: any,
+  fieldToDataType: Map<FieldName, DataType>
+): string => {
   if (value === undefined) {
     return "";
   }
@@ -156,7 +187,10 @@ export const fromText = (text: string | undefined): Predicate | undefined => {
 
   const unaryMatches = regUnaryOperator.exec(text);
   if (unaryMatches !== null) {
-    return UnarySimplePredicate(unaryMatches[1] as FieldName, unaryMatches[2] as SimplePredicateOperator);
+    return UnarySimplePredicate(
+      unaryMatches[1] as FieldName,
+      unaryMatches[2] as SimplePredicateOperator
+    );
   }
 
   const binaryMatches = regBinaryOperator.exec(text);
@@ -173,7 +207,11 @@ export const fromText = (text: string | undefined): Predicate | undefined => {
     const predicate1 = fromText(compoundMatches[1]);
     const predicate2 = fromText(compoundMatches[3]);
     const booleanOperator = compoundMatches[2] as CompoundPredicateBooleanOperator;
-    if (predicate1 !== undefined && predicate2 !== undefined && booleanOperator !== undefined) {
+    if (
+      predicate1 !== undefined &&
+      predicate2 !== undefined &&
+      booleanOperator !== undefined
+    ) {
       return SimpleCompoundPredicate(predicate1, predicate2, booleanOperator);
     }
   }

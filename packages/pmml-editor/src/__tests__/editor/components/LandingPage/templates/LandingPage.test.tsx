@@ -18,7 +18,11 @@ import * as React from "react";
 import { LandingPage } from "../../../../../editor/components/LandingPage/templates";
 import { Provider } from "react-redux";
 import { createStore, Store } from "redux";
-import { PMML, Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  PMML,
+  Scorecard,
+  TreeModel
+} from "@kogito-tooling/pmml-editor-marshaller";
 
 const PATH: string = "path";
 
@@ -31,7 +35,11 @@ jest.mock("react-router", () => ({
 
 describe("LandingPage", () => {
   test("render::No Models", () => {
-    const pmml: PMML = { version: "1.0", DataDictionary: { DataField: [] }, Header: {} };
+    const pmml: PMML = {
+      version: "1.0",
+      DataDictionary: { DataField: [] },
+      Header: {}
+    };
     const store: Store = createStore((state, action) => state, pmml);
 
     const { getByTestId } = render(
@@ -65,7 +73,9 @@ describe("LandingPage", () => {
     );
     expect(getByTestId("landing-page")).toMatchSnapshot();
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);
-    expect(() => getAllByTestId("landing-page-toolbar__supported-models")).toThrowError(
+    expect(() =>
+      getAllByTestId("landing-page-toolbar__supported-models")
+    ).toThrowError(
       'Unable to find an element by: [data-testid="landing-page-toolbar__supported-models"]'
     );
   });
@@ -93,7 +103,9 @@ describe("LandingPage", () => {
     );
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);
 
-    const element1: HTMLElement = getByTestId("landing-page-toolbar__model-filter");
+    const element1: HTMLElement = getByTestId(
+      "landing-page-toolbar__model-filter"
+    );
     const element2: HTMLElement = getByTestId("landing-page-toolbar__submit");
     expect(element1).toBeInstanceOf(HTMLInputElement);
     expect(element2).toBeInstanceOf(HTMLButtonElement);
@@ -130,7 +142,9 @@ describe("LandingPage", () => {
     );
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);
 
-    const input: HTMLInputElement = getByTestId("landing-page-toolbar__supported-models") as HTMLInputElement;
+    const input: HTMLInputElement = getByTestId(
+      "landing-page-toolbar__supported-models"
+    ) as HTMLInputElement;
 
     fireEvent.click(input);
 

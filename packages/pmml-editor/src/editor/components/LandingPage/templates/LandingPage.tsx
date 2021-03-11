@@ -15,12 +15,22 @@
  */
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { Gallery, GalleryItem, PageSection, PageSectionVariants } from "@patternfly/react-core";
+import {
+  Gallery,
+  GalleryItem,
+  PageSection,
+  PageSectionVariants
+} from "@patternfly/react-core";
 import { EmptyStateNoModels } from "../organisms";
 import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
-import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
+import {
+  getModelName,
+  getModelType,
+  isSupportedModelType,
+  ModelType
+} from "../../..";
 import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
 import { useHistory } from "react-router";
@@ -38,24 +48,35 @@ export const LandingPage = (props: LandingPageProps) => {
   const [filter, setFilter] = useState("");
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);
 
-  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
-  const hasUnsupportedModels = useMemo(() => (models ?? []).find(model => !isSupportedModelType(model)) !== undefined, [
-    models
-  ]);
+  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>(
+    (state: PMML) => state.models
+  );
+  const hasUnsupportedModels = useMemo(
+    () =>
+      (models ?? []).find((model) => !isSupportedModelType(model)) !==
+      undefined,
+    [models]
+  );
 
   const filterModels = useCallback((): Model[] => {
     const _lowerCaseFilter = filter.toLowerCase();
     const _filteredModels = models?.filter((_model: Model) => {
       const _modelName = getModelName(_model);
       const _isSupportedModelType = isSupportedModelType(_model);
-      const _nameMatch = _modelName === undefined || _modelName.toLowerCase().includes(_lowerCaseFilter);
+      const _nameMatch =
+        _modelName === undefined ||
+        _modelName.toLowerCase().includes(_lowerCaseFilter);
       const _supportMatch = showUnsupportedModels || _isSupportedModelType;
       return _nameMatch && _supportMatch;
     });
     return _filteredModels ?? [];
   }, [filter, showUnsupportedModels, models]);
 
-  const filteredModels: Model[] = useMemo(() => filterModels(), [filter, showUnsupportedModels, models]);
+  const filteredModels: Model[] = useMemo(() => filterModels(), [
+    filter,
+    showUnsupportedModels,
+    models
+  ]);
 
   const goToModel = useCallback(
     (index: number) => {
@@ -93,20 +114,23 @@ export const LandingPage = (props: LandingPageProps) => {
         <section>
           {filteredModels.length > 0 && (
             <Gallery hasGutter={true}>
-              {filteredModels.map(model => {
+              {filteredModels.map((model) => {
                 //model should always be a member of models at this point.
                 const index: number | undefined = models?.indexOf(model);
                 const modelName: string = getModelName(model);
                 const modelType: ModelType = getModelType(model);
 
                 return (
-                  <GalleryItem key={uuid()} data-testid="landing-page__model-card">
+                  <GalleryItem
+                    key={uuid()}
+                    data-testid="landing-page__model-card"
+                  >
                     <ModelCard
                       index={index}
                       modelName={modelName}
                       modelType={modelType}
                       onClick={goToModel}
-                      onDelete={_index => onDelete(_index, modelName)}
+                      onDelete={(_index) => onDelete(_index, modelName)}
                     />
                   </GalleryItem>
                 );

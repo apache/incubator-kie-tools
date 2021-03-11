@@ -16,7 +16,13 @@
 
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Button, Modal, ModalVariant, Split, SplitItem } from "@patternfly/react-core";
+import {
+  Button,
+  Modal,
+  ModalVariant,
+  Split,
+  SplitItem
+} from "@patternfly/react-core";
 import "./HistoryButtons.scss";
 
 interface HistoryButtonsProps {
@@ -83,7 +89,9 @@ const PMMLModal = (props: { get: () => Promise<string> }) => {
           </Button>
         ]}
         style={{ overflowX: "scroll" }}
-        appendTo={() => document.querySelector(".history-buttons") as HTMLElement}
+        appendTo={() =>
+          document.querySelector(".history-buttons") as HTMLElement
+        }
       >
         <pre>
           <div ref={textRef} />

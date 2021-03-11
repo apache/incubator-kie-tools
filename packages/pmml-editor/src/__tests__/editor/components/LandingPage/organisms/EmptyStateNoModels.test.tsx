@@ -23,13 +23,19 @@ const createModel = jest.fn(() => {
 
 describe("EmptyStateNoModels", () => {
   test("render", () => {
-    const { getByTestId } = render(<EmptyStateNoModels createModel={createModel} />);
+    const { getByTestId } = render(
+      <EmptyStateNoModels createModel={createModel} />
+    );
     expect(getByTestId("empty-state-no-models")).toMatchSnapshot();
   });
 
   test("render::createModel", async () => {
-    const { getByTestId } = render(<EmptyStateNoModels createModel={createModel} />);
-    const element: HTMLElement = await getByTestId("empty-state-no-models__create-model");
+    const { getByTestId } = render(
+      <EmptyStateNoModels createModel={createModel} />
+    );
+    const element: HTMLElement = await getByTestId(
+      "empty-state-no-models__create-model"
+    );
     expect(element).toBeInstanceOf(HTMLButtonElement);
 
     (element as HTMLButtonElement).click();

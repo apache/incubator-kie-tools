@@ -15,7 +15,11 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  FieldName,
+  Output,
+  OutputField
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { Builder } from "../paths";
 
@@ -44,11 +48,8 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
       case Actions.AddOutput:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forOutput()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forOutput().build(),
+          (draft) => {
             draft.OutputField.push({
               name: action.payload.outputField.name,
               dataType: action.payload.outputField.dataType,
@@ -68,11 +69,8 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
       case Actions.DeleteOutput:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forOutput()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forOutput().build(),
+          (draft) => {
             const outputIndex = action.payload.outputIndex;
             if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
               draft.OutputField.splice(outputIndex, 1);
@@ -84,12 +82,9 @@ export const OutputReducer: HistoryAwareReducer<Output, AllActions> = (
       case Actions.AddBatchOutputs:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forOutput()
-            .build(),
-          draft => {
-            action.payload.outputFields.forEach(name => {
+          Builder().forModel(action.payload.modelIndex).forOutput().build(),
+          (draft) => {
+            action.payload.outputFields.forEach((name) => {
               draft.OutputField.push({
                 name: name,
                 dataType: "string"

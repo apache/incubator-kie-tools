@@ -21,7 +21,9 @@ interface MultipleDataTypeAddProps {
 
 const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
   const [input, setInput] = useState("");
-  const [inputValidation, setInputValidation] = useState<"success" | "error" | "default">("default");
+  const [inputValidation, setInputValidation] = useState<
+    "success" | "error" | "default"
+  >("default");
 
   useEffect(() => {
     document.querySelector<HTMLInputElement>(`#data-types`)?.focus();
@@ -51,9 +53,11 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
           <TextContent>
             <Text component={TextVariants.h3}>Add Multiple Data Types</Text>
             <Text component={TextVariants.p}>
-              You can add multiple data types by entering their names below. Add them one per line.
+              You can add multiple data types by entering their names below. Add
+              them one per line.
               <br />
-              They will be created with the default type of <em>String</em>. You will be able to edit them later.
+              They will be created with the default type of <em>String</em>. You
+              will be able to edit them later.
             </Text>
           </TextContent>
         </StackItem>

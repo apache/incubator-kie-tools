@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Title
+} from "@patternfly/react-core";
 import { CalculatorIcon } from "@patternfly/react-icons";
 
 export const EmptyStateNoMatchingCharacteristics = () => (
-  <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.small}>
+  <EmptyState
+    data-testid="empty-state-no-characteristics"
+    variant={EmptyStateVariant.small}
+  >
     <EmptyStateIcon icon={CalculatorIcon} />
     <Title headingLevel="h4" size="lg">
       No Characteristics match filter
     </Title>
     <EmptyStateBody>
-      There are no Characteristics that match the name entered in the filter. Please amend or remove the filter and try
-      again.
+      There are no Characteristics that match the name entered in the filter.
+      Please amend or remove the filter and try again.
     </EmptyStateBody>
   </EmptyState>
 );

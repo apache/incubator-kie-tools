@@ -44,7 +44,11 @@ export class HistoryService {
     index: 0
   };
 
-  public batch = <M>(state: M, path: Path | null, recipe: (draft: WritableDraft<M>) => void): void => {
+  public batch = <M>(
+    state: M,
+    path: Path | null,
+    recipe: (draft: WritableDraft<M>) => void
+  ): void => {
     this.pending.push({ state: state, path: path, recipe: recipe });
   };
 
@@ -53,8 +57,8 @@ export class HistoryService {
       return;
     }
 
-    const newState = this.mutate(state, null, draft => {
-      this.pending.forEach(be => {
+    const newState = this.mutate(state, null, (draft) => {
+      this.pending.forEach((be) => {
         const segment = be.path === null ? draft : get(draft, be.path.path);
         be.recipe(segment as WritableDraft<any>);
       });
@@ -65,13 +69,21 @@ export class HistoryService {
     return newState;
   };
 
-  public mutate = <M>(state: M, path: Path | null, recipe: (draft: WritableDraft<M>) => void) => {
+  public mutate = <M>(
+    state: M,
+    path: Path | null,
+    recipe: (draft: WritableDraft<M>) => void
+  ) => {
     if (this.history.index < this.history.changes.length) {
       this.history.changes = this.history.changes.slice(0, this.history.index);
     }
 
     const newState: M = produce(state, recipe, (patches, inversePatches) => {
-      this.history.changes.push({ path: path, change: patches, reverse: inversePatches });
+      this.history.changes.push({
+        path: path,
+        change: patches,
+        reverse: inversePatches
+      });
     });
     this.history.index = this.history.changes.length;
     return newState;

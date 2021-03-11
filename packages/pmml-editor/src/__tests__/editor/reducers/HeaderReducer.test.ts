@@ -20,7 +20,11 @@ import { HistoryService } from "../../../editor/history";
 
 const service = new HistoryService();
 const header: Header = { description: "" };
-const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: header };
+const pmml = {
+  version: "1.0",
+  DataDictionary: { DataField: [] },
+  Header: header
+};
 const reducer: Reducer<Header, AllActions> = HeaderReducer(service);
 
 describe("HeaderReducer::Valid actions", () => {

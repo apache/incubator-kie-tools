@@ -55,7 +55,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onOutsideClick
   } = props;
   const [name, setName] = useState(dataType.name);
-  const [typeSelection, setTypeSelection] = useState<DDDataField["type"]>(dataType.type);
+  const [typeSelection, setTypeSelection] = useState<DDDataField["type"]>(
+    dataType.type
+  );
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
   const typeOptions = [
     { value: "string" },
@@ -66,7 +68,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   ];
   const [optypeSelection, setOptypeSelection] = useState(dataType.optype);
   const [isOptypeSelectOpen, setIsOptypeSelectOpen] = useState(false);
-  const optypeOptions = [{ value: "categorical" }, { value: "ordinal" }, { value: "continuous" }];
+  const optypeOptions = [
+    { value: "categorical" },
+    { value: "ordinal" },
+    { value: "continuous" }
+  ];
   const [validation, setValidation] = useState<Validated>("default");
 
   const ref = useOnclickOutside(
@@ -85,7 +91,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     setIsTypeSelectOpen(isOpen);
   };
 
-  const typeSelect = (event: React.MouseEvent | React.ChangeEvent, value: string | SelectOptionObject) => {
+  const typeSelect = (
+    event: React.MouseEvent | React.ChangeEvent,
+    value: string | SelectOptionObject
+  ) => {
     if (value !== typeSelection) {
       setTypeSelection(value as DDDataField["type"]);
       setIsTypeSelectOpen(false);
@@ -97,7 +106,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     setIsOptypeSelectOpen(isOpen);
   };
 
-  const optypeSelect = (event: React.MouseEvent | React.ChangeEvent, value: string | SelectOptionObject) => {
+  const optypeSelect = (
+    event: React.MouseEvent | React.ChangeEvent,
+    value: string | SelectOptionObject
+  ) => {
     if (value !== optypeSelection) {
       setOptypeSelection(value as DDDataField["optype"]);
       setIsOptypeSelectOpen(false);
@@ -111,7 +123,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
 
   const handleSave = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
-    onSave({ name: name.trim(), type: typeSelection, optype: optypeSelection }, index);
+    onSave(
+      { name: name.trim(), type: typeSelection, optype: optypeSelection },
+      index
+    );
   };
 
   const handleNameSave = () => {
@@ -141,13 +156,18 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onConstraintsSave(updatedDataType);
   };
 
-  const handlePropertiesDelete = (updatedDataType: DDDataField, updateIndex: number) => {
+  const handlePropertiesDelete = (
+    updatedDataType: DDDataField,
+    updateIndex: number
+  ) => {
     onSave(updatedDataType, updateIndex);
   };
 
   useEffect(() => {
     if (editingIndex === index) {
-      const input = document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`);
+      const input = document.querySelector<HTMLInputElement>(
+        `.data-type-item-n${index} #name`
+      );
       input?.focus();
       if (name.startsWith("New Data Type")) {
         input?.select();
@@ -170,24 +190,23 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   const validations = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .forDataField(index)
-          .build()
+        Builder().forDataDictionary().forDataField(index).build()
       ),
     [index, dataType]
   );
 
   return (
     <article
-      className={`editable-item ${editingIndex === index ? "editable-item--editing" : ""} data-type-item-n${index}`}
+      className={`editable-item ${
+        editingIndex === index ? "editable-item--editing" : ""
+      } data-type-item-n${index}`}
     >
       {editingIndex === index && (
         <section
           className={"editable-item__inner"}
           ref={ref}
           tabIndex={0}
-          onKeyDown={event => {
+          onKeyDown={(event) => {
             if (event.key === "Escape") {
               onOutsideClick();
             }
@@ -290,7 +309,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           color="cyan"
                           href="#"
                           icon={<ArrowAltCircleRightIcon />}
-                          onClick={event => {
+                          onClick={(event) => {
                             event.preventDefault();
                             handleConstraints();
                           }}
@@ -311,7 +330,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
           className={"editable-item__inner"}
           tabIndex={0}
           onClick={handleEditStatus}
-          onKeyDown={event => {
+          onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
               event.stopPropagation();

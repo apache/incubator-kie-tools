@@ -33,15 +33,9 @@ export const HeaderReducer: HistoryAwareReducer<Header, AllActions> = (
   return (state: Header, action: AllActions) => {
     switch (action.type) {
       case Actions.SetHeaderDescription:
-        historyService.batch(
-          state,
-          Builder()
-            .forHeader()
-            .build(),
-          draft => {
-            draft.description = action.payload.description;
-          }
-        );
+        historyService.batch(state, Builder().forHeader().build(), (draft) => {
+          draft.description = action.payload.description;
+        });
     }
 
     return state;

@@ -40,7 +40,7 @@ export const AttributeLabel = (props: AttributeLabelProps) => {
         <Label
           color="cyan"
           className="attribute-list__item__label"
-          onClose={e => {
+          onClose={(e) => {
             e.nativeEvent.stopImmediatePropagation();
             e.stopPropagation();
             onClose();

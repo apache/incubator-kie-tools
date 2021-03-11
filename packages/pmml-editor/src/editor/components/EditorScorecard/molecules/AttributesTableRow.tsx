@@ -16,7 +16,12 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { Label, Split, SplitItem } from "@patternfly/react-core";
-import { Attribute, Characteristic, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  Characteristic,
+  DataField,
+  MiningField
+} from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { useValidationRegistry } from "../../../validation";
@@ -73,7 +78,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
       className={`attribute-item attribute-item-n${attributeIndex} editable-item`}
       tabIndex={0}
       onClick={() => onEdit()}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
@@ -85,9 +90,14 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
         <SplitItem>
           <>
             {validations.length > 0 && (
-              <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
+              <ValidationIndicatorLabel
+                validations={validations}
+                cssClass="characteristic-list__item__label"
+              >
                 <>
-                  {attribute.predicate && <pre>{toText(attribute.predicate, dataFields)}</pre>}
+                  {attribute.predicate && (
+                    <pre>{toText(attribute.predicate, dataFields)}</pre>
+                  )}
                   {!attribute.predicate && (
                     <>
                       <strong>Predicate:</strong>&nbsp;
@@ -101,7 +111,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
               <Label
                 tabIndex={0}
                 color="blue"
-                onClose={e => {
+                onClose={(e) => {
                   e.nativeEvent.stopImmediatePropagation();
                   e.stopPropagation();
                   onCommit({ predicate: undefined });

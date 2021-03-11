@@ -17,7 +17,10 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Stack, StackItem } from "@patternfly/react-core";
 import { Operation } from "../Operation";
-import { CharacteristicsTable, IndexedCharacteristic } from "./CharacteristicsTable";
+import {
+  CharacteristicsTable,
+  IndexedCharacteristic
+} from "./CharacteristicsTable";
 import "./CharacteristicsContainer.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Actions } from "../../../reducers";
@@ -46,18 +49,34 @@ interface CharacteristicsContainerProps {
 
 type CharacteristicsViewSection = "overview" | "attribute";
 
-export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
-  const { modelIndex, areReasonCodesUsed, scorecardBaselineScore, characteristics } = props;
+export const CharacteristicsContainer = (
+  props: CharacteristicsContainerProps
+) => {
+  const {
+    modelIndex,
+    areReasonCodesUsed,
+    scorecardBaselineScore,
+    characteristics
+  } = props;
 
   const { setActiveOperation } = useOperation();
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
   const [filter, setFilter] = useState("");
-  const [filteredCharacteristics, setFilteredCharacteristics] = useState<IndexedCharacteristic[]>([]);
-  const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
-  const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
-  const [viewSection, setViewSection] = useState<CharacteristicsViewSection>("overview");
+  const [filteredCharacteristics, setFilteredCharacteristics] = useState<
+    IndexedCharacteristic[]
+  >([]);
+  const [
+    selectedCharacteristicIndex,
+    setSelectedCharacteristicIndex
+  ] = useState<number | undefined>(undefined);
+  const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<
+    number | undefined
+  >(undefined);
+  const [viewSection, setViewSection] = useState<CharacteristicsViewSection>(
+    "overview"
+  );
 
   useEffect(() => applyFilter(), [modelIndex, characteristics]);
 
@@ -68,9 +87,13 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   const applyFilter = () => {
     const _filteredCharacteristics = characteristics
       ?.map<IndexedCharacteristic>(
-        (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
+        (_characteristic, index) =>
+          ({
+            index: index,
+            characteristic: _characteristic
+          } as IndexedCharacteristic)
       )
-      .filter(ic => {
+      .filter((ic) => {
         const _characteristicName = ic.characteristic.name;
         return _characteristicName?.toLowerCase().includes(filter);
       });
@@ -103,7 +126,9 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       if (name === undefined || name.trim() === "") {
         return false;
       }
-      const matching = characteristics.filter((c, index) => editIndex !== index && c.name === name);
+      const matching = characteristics.filter(
+        (c, index) => editIndex !== index && c.name === name
+      );
       return matching.length === 0;
     },
     [characteristics]
@@ -115,8 +140,12 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       //Index of the new row is equal to the number of existing rows
       setSelectedCharacteristicIndex(numberOfCharacteristics);
 
-      const existingNames: string[] = characteristics.map(c => c.name ?? "");
-      const newCharacteristicName = findIncrementalName("New characteristic", existingNames, 1);
+      const existingNames: string[] = characteristics.map((c) => c.name ?? "");
+      const newCharacteristicName = findIncrementalName(
+        "New characteristic",
+        existingNames,
+        1
+      );
 
       dispatch({
         type: Actions.Scorecard_AddCharacteristic,
@@ -138,7 +167,11 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const deleteCharacteristic = useCallback(
     (characteristicIndex: number) => {
-      if (window.confirm(`Delete Characteristic "${characteristics?.[characteristicIndex].name}"?`)) {
+      if (
+        window.confirm(
+          `Delete Characteristic "${characteristics?.[characteristicIndex].name}"?`
+        )
+      ) {
         dispatch({
           type: Actions.Scorecard_DeleteCharacteristic,
           payload: {
@@ -155,7 +188,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     if (selectedCharacteristicIndex === undefined) {
       return;
     }
-    const numberOfAttributes = characteristics[selectedCharacteristicIndex].Attribute.length;
+    const numberOfAttributes =
+      characteristics[selectedCharacteristicIndex].Attribute.length;
     //Index of the new row is equal to the number of existing rows
     setSelectedAttributeIndex(numberOfAttributes);
     dispatch({
@@ -184,7 +218,9 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       }
       const characteristic = characteristics[selectedCharacteristicIndex];
       const existingPartial: Partial<Characteristic> = {};
-      Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
+      Object.keys(partial).forEach((key) =>
+        set(existingPartial, key, get(characteristic, key))
+      );
 
       if (!isEqual(partial, existingPartial)) {
         dispatch({
@@ -238,7 +274,9 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const emptyStateProvider = useMemo(() => {
     if (characteristics.length === 0) {
-      return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
+      return (
+        <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />
+      );
     } else {
       return (
         <Stack hasGutter={true}>
@@ -288,7 +326,9 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       characteristics={filteredCharacteristics}
                       characteristicsUnfilteredLength={characteristics.length}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
-                      setSelectedCharacteristicIndex={setSelectedCharacteristicIndex}
+                      setSelectedCharacteristicIndex={
+                        setSelectedCharacteristicIndex
+                      }
                       validateCharacteristicName={validateCharacteristicName}
                       viewAttribute={onViewAttribute}
                       deleteCharacteristic={deleteCharacteristic}

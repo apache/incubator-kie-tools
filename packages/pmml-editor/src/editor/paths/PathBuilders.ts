@@ -33,8 +33,8 @@ abstract class BaseBuilder {
 
   public build(): Path {
     const path = this.builders.builders
-      .map(builder => builder.segment())
-      .filter(segment => segment !== "")
+      .map((builder) => builder.segment())
+      .filter((segment) => segment !== "")
       .join(".");
     return { path: path };
   }
@@ -68,7 +68,10 @@ class PMMLBuilder extends BaseBuilder {
 }
 
 class ModelBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly modelIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly modelIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
@@ -90,7 +93,9 @@ class ModelBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.modelIndex !== undefined ? `models[${this.modelIndex}]` : `models`;
+    return this.modelIndex !== undefined
+      ? `models[${this.modelIndex}]`
+      : `models`;
   }
 }
 
@@ -121,7 +126,10 @@ class DataDictionaryBuilder extends BaseBuilder {
 }
 
 class DataFieldBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly dataFieldIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly dataFieldIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
@@ -135,29 +143,41 @@ class DataFieldBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.dataFieldIndex !== undefined ? `DataField[${this.dataFieldIndex}]` : `DataField`;
+    return this.dataFieldIndex !== undefined
+      ? `DataField[${this.dataFieldIndex}]`
+      : `DataField`;
   }
 }
 
 class IntervalBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly intervalIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly intervalIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
 
   protected segment(): string {
-    return this.intervalIndex !== undefined ? `Interval[${this.intervalIndex}]` : `Interval`;
+    return this.intervalIndex !== undefined
+      ? `Interval[${this.intervalIndex}]`
+      : `Interval`;
   }
 }
 
 class ValueBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly valueIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly valueIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
 
   protected segment(): string {
-    return this.valueIndex !== undefined ? `Value[${this.valueIndex}]` : `Value`;
+    return this.valueIndex !== undefined
+      ? `Value[${this.valueIndex}]`
+      : `Value`;
   }
 }
 
@@ -177,7 +197,10 @@ class CharacteristicsBuilder extends BaseBuilder {
 }
 
 class CharacteristicBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly characteristicIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly characteristicIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
@@ -195,7 +218,9 @@ class CharacteristicBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.characteristicIndex !== undefined ? `Characteristic[${this.characteristicIndex}]` : `Characteristic`;
+    return this.characteristicIndex !== undefined
+      ? `Characteristic[${this.characteristicIndex}]`
+      : `Characteristic`;
   }
 }
 
@@ -222,7 +247,10 @@ class BaselineScoreBuilder extends BaseBuilder {
 }
 
 class AttributeBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly attributeIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly attributeIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
@@ -240,7 +268,9 @@ class AttributeBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.attributeIndex !== undefined ? `Attribute[${this.attributeIndex}]` : `Attribute`;
+    return this.attributeIndex !== undefined
+      ? `Attribute[${this.attributeIndex}]`
+      : `Attribute`;
   }
 }
 
@@ -256,7 +286,10 @@ class PartialScoreBuilder extends BaseBuilder {
 }
 
 class PredicateBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly predicateIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly predicateIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
@@ -266,7 +299,9 @@ class PredicateBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.predicateIndex !== undefined ? `predicate[${this.predicateIndex}]` : `predicate`;
+    return this.predicateIndex !== undefined
+      ? `predicate[${this.predicateIndex}]`
+      : `predicate`;
   }
 }
 
@@ -297,7 +332,10 @@ class MiningSchemaBuilder extends BaseBuilder {
 }
 
 class MiningFieldBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly miningFieldIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly miningFieldIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
@@ -327,7 +365,9 @@ class MiningFieldBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.miningFieldIndex !== undefined ? `MiningField[${this.miningFieldIndex}]` : `MiningField`;
+    return this.miningFieldIndex !== undefined
+      ? `MiningField[${this.miningFieldIndex}]`
+      : `MiningField`;
   }
 }
 
@@ -413,7 +453,10 @@ class OutputBuilder extends BaseBuilder {
 }
 
 class OutputFieldBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly outputFieldIndex?: number) {
+  constructor(
+    protected builders: Builders,
+    private readonly outputFieldIndex?: number
+  ) {
     super(builders);
     this.builders.add(this);
   }
@@ -423,7 +466,9 @@ class OutputFieldBuilder extends BaseBuilder {
   };
 
   protected segment(): string {
-    return this.outputFieldIndex !== undefined ? `OutputField[${this.outputFieldIndex}]` : `OutputField`;
+    return this.outputFieldIndex !== undefined
+      ? `OutputField[${this.outputFieldIndex}]`
+      : `OutputField`;
   }
 }
 

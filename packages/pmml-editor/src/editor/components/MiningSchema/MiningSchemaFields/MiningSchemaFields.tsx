@@ -1,6 +1,12 @@
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { Button, Flex, FlexItem, Split, SplitItem } from "@patternfly/react-core";
+import {
+  Button,
+  Flex,
+  FlexItem,
+  Split,
+  SplitItem
+} from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
@@ -22,7 +28,15 @@ interface MiningSchemaFieldsProps {
 }
 
 const MiningSchemaFields = (props: MiningSchemaFieldsProps) => {
-  const { fields, modelIndex, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
+  const {
+    fields,
+    modelIndex,
+    onAddProperties,
+    onDelete,
+    onPropertyDelete,
+    onEdit,
+    onCancel
+  } = props;
   return (
     <ul className="mining-schema-list">
       {fields?.map((field, index) => {
@@ -58,7 +72,16 @@ interface MiningSchemaFieldProps {
 }
 
 const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
-  const { index, modelIndex, field, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
+  const {
+    index,
+    modelIndex,
+    field,
+    onAddProperties,
+    onDelete,
+    onPropertyDelete,
+    onEdit,
+    onCancel
+  } = props;
   const editing = useContext(MiningSchemaContext);
 
   const ref = useOnclickOutside(
@@ -75,7 +98,9 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     onAddProperties(index);
   };
 
-  const deleteField = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const deleteField = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
     event.stopPropagation();
     onDelete(index, field.name as string);
@@ -104,12 +129,14 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
 
   return (
     <li
-      className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
+      className={`editable-item ${
+        editing === index ? "editable-item--editing" : ""
+      }`}
       key={field.name.value}
       onClick={handleEdit}
       ref={ref}
       tabIndex={0}
-      onKeyDown={event => {
+      onKeyDown={(event) => {
         if (event.key === "Enter") {
           event.preventDefault();
           event.stopPropagation();

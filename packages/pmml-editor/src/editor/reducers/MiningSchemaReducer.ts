@@ -16,7 +16,10 @@
 import { Reducer } from "react";
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { FieldName, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  FieldName,
+  MiningSchema
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 import { validateMiningFields } from "../validation/MiningSchema";
@@ -35,7 +38,10 @@ interface MiningSchemaPayload {
 
 export type MiningSchemaActions = ActionMap<MiningSchemaPayload>[keyof ActionMap<MiningSchemaPayload>];
 
-export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, AllActions> = (
+export const MiningSchemaReducer: HistoryAwareValidatingReducer<
+  MiningSchema,
+  AllActions
+> = (
   historyService: HistoryService,
   validationRegistry: ValidationRegistry
 ): Reducer<MiningSchema, AllActions> => {
@@ -48,8 +54,8 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
             .forModel(action.payload.modelIndex)
             .forMiningSchema()
             .build(),
-          draft => {
-            action.payload.names.forEach(name => {
+          (draft) => {
+            action.payload.names.forEach((name) => {
               draft.MiningField.push({
                 name: name
               });
@@ -65,9 +71,12 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
             .forModel(action.payload.modelIndex)
             .forMiningSchema()
             .build(),
-          draft => {
+          (draft) => {
             const miningSchemaIndex = action.payload.miningSchemaIndex;
-            if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
+            if (
+              miningSchemaIndex >= 0 &&
+              miningSchemaIndex < draft.MiningField.length
+            ) {
               draft.MiningField.splice(miningSchemaIndex, 1);
             }
             validationRegistry.clear(
@@ -76,7 +85,11 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
                 .forMiningSchema()
                 .build()
             );
-            validateMiningFields(action.payload.modelIndex, draft.MiningField, validationRegistry);
+            validateMiningFields(
+              action.payload.modelIndex,
+              draft.MiningField,
+              validationRegistry
+            );
           }
         );
     }

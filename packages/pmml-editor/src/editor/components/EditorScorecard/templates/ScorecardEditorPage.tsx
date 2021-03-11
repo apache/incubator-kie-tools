@@ -45,18 +45,28 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
-  const model: Scorecard | undefined = useSelector<PMML, Scorecard | undefined>((state: PMML) => {
-    const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
-    if (_model && _model instanceof Scorecard) {
-      return _model as Scorecard;
+  const model: Scorecard | undefined = useSelector<PMML, Scorecard | undefined>(
+    (state: PMML) => {
+      const _model: Model | undefined = state.models
+        ? state.models[props.modelIndex]
+        : undefined;
+      if (_model && _model instanceof Scorecard) {
+        return _model as Scorecard;
+      }
+      return undefined;
     }
-    return undefined;
-  });
+  );
 
   const modelName = useMemo(() => getModelName(model as Model), [model]);
 
-  const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
-  const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
+  const characteristics: Characteristics | undefined = useMemo(
+    () => model?.Characteristics,
+    [model]
+  );
+  const miningSchema: MiningSchema | undefined = useMemo(
+    () => model?.MiningSchema,
+    [model]
+  );
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
 
   const validateOutputName = useCallback(
@@ -65,7 +75,9 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
         return false;
       }
       const existing: OutputField[] = output?.OutputField ?? [];
-      const matching = existing.filter((c, _index) => _index !== index && c.name === name);
+      const matching = existing.filter(
+        (c, _index) => _index !== index && c.name === name
+      );
       return matching.length === 0;
     },
     [output]
@@ -75,13 +87,17 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return (
       characteristics?.Characteristic !== undefined &&
       characteristics.Characteristic.length > 0 &&
-      characteristics.Characteristic.every(characteristic => characteristic.baselineScore !== undefined)
+      characteristics.Characteristic.every(
+        (characteristic) => characteristic.baselineScore !== undefined
+      )
     );
   }, [characteristics]);
 
   const onDeleteOutputField = useCallback(
-    _index => {
-      if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
+    (_index) => {
+      if (
+        window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)
+      ) {
         dispatch({
           type: Actions.DeleteOutput,
           payload: {
@@ -134,7 +150,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   );
 
   const onUpdateCoreProperty = useCallback(
-    _props => {
+    (_props) => {
       dispatch({
         type: Actions.Scorecard_SetCoreProperties,
         payload: {
@@ -188,13 +204,18 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   baselineMethod={model.baselineMethod ?? "other"}
                   initialScore={model.initialScore}
                   areReasonCodesUsed={model.useReasonCodes ?? true}
-                  reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
+                  reasonCodeAlgorithm={
+                    model.reasonCodeAlgorithm ?? "pointsBelow"
+                  }
                   commit={onUpdateCoreProperty}
                 />
               </PageSection>
 
               <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
-                <PageSection variant={PageSectionVariants.light} style={{ height: "100%" }}>
+                <PageSection
+                  variant={PageSectionVariants.light}
+                  style={{ height: "100%" }}
+                >
                   <CharacteristicsContainer
                     modelIndex={modelIndex}
                     areReasonCodesUsed={model.useReasonCodes ?? true}

@@ -24,7 +24,9 @@ interface CharacteristicLabelsEditModeProps {
 
 const PADDING: CSSProperties = { marginRight: "4px" };
 
-export const CharacteristicLabelsEditMode = (props: CharacteristicLabelsEditModeProps) => {
+export const CharacteristicLabelsEditMode = (
+  props: CharacteristicLabelsEditModeProps
+) => {
   const { viewAttributes } = props;
 
   return (
@@ -35,7 +37,7 @@ export const CharacteristicLabelsEditMode = (props: CharacteristicLabelsEditMode
         color="cyan"
         href="#outline"
         icon={<ArrowAltCircleRightIcon />}
-        onClick={e => {
+        onClick={(e) => {
           e.nativeEvent.stopImmediatePropagation();
           e.preventDefault();
           viewAttributes();

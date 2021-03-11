@@ -21,7 +21,10 @@ import { ValidationRegistry } from "../../../editor/validation";
 
 const historyService = new HistoryService();
 const validationRegistry = new ValidationRegistry();
-const reducer: Reducer<Model[], AllActions> = ModelReducer(historyService, validationRegistry);
+const reducer: Reducer<Model[], AllActions> = ModelReducer(
+  historyService,
+  validationRegistry
+);
 
 describe("ModelReducer::Valid actions", () => {
   test("Actions.DeleteModel", () => {

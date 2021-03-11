@@ -23,16 +23,25 @@ interface AttributesTableEditModeActionProps {
   disableCommit: boolean;
 }
 
-export const AttributesTableEditModeAction = (props: AttributesTableEditModeActionProps) => {
+export const AttributesTableEditModeAction = (
+  props: AttributesTableEditModeActionProps
+) => {
   const { onCommit, onCancel, disableCommit } = props;
 
   return (
-    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+    <Flex
+      alignItems={{ default: "alignItemsCenter" }}
+      style={{ height: "100%" }}
+    >
       <FlexItem>
-        <Button variant="plain" onClick={e => onCommit()} isDisabled={disableCommit}>
+        <Button
+          variant="plain"
+          onClick={(e) => onCommit()}
+          isDisabled={disableCommit}
+        >
           <CheckIcon />
         </Button>
-        <Button variant="plain" onClick={e => onCancel()}>
+        <Button variant="plain" onClick={(e) => onCancel()}>
           <TimesIcon />
         </Button>
       </FlexItem>

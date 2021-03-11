@@ -1,5 +1,11 @@
 import * as React from "react";
-import { EmptyState, EmptyStateVariant, EmptyStateIcon, EmptyStateBody, Title } from "@patternfly/react-core";
+import {
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  EmptyStateBody,
+  Title
+} from "@patternfly/react-core";
 import { BoxesIcon } from "@patternfly/react-icons";
 
 const NoMiningSchemaFieldsOptions = () => {
@@ -10,8 +16,9 @@ const NoMiningSchemaFieldsOptions = () => {
         No Data Fields defined
       </Title>
       <EmptyStateBody>
-        Mining schema can only include fields from the Data Dictionary. It seems there are none yet. Go to the Data
-        Dictionary and come back after creating them.
+        Mining schema can only include fields from the Data Dictionary. It seems
+        there are none yet. Go to the Data Dictionary and come back after
+        creating them.
       </EmptyStateBody>
     </EmptyState>
   );

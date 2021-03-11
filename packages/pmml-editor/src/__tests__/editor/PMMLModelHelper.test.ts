@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getModelIconUrlByType, getModelName, getModelType, isCollection, isSupportedModelType } from "../../editor";
+import {
+  getModelIconUrlByType,
+  getModelName,
+  getModelType,
+  isCollection,
+  isSupportedModelType
+} from "../../editor";
 import { Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
 
 describe("PMMLModelHelper::getModelIconUrl", () => {
@@ -22,7 +28,9 @@ describe("PMMLModelHelper::getModelIconUrl", () => {
   });
 
   test("getModelIconUrlByType::Scorecard", () => {
-    expect(getModelIconUrlByType("Scorecard")).toContain("card-icon-scorecard.svg");
+    expect(getModelIconUrlByType("Scorecard")).toContain(
+      "card-icon-scorecard.svg"
+    );
   });
 });
 

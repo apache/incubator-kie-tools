@@ -157,7 +157,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
       className={"editable-item__inner"}
       ref={ref}
       tabIndex={0}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Escape") {
           onCancel();
         }
@@ -183,13 +183,13 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   value={name?.value?.toString() ?? ""}
                   validated={name?.valid ? "default" : "error"}
                   autoFocus={true}
-                  onChange={e => {
+                  onChange={(e) => {
                     setName({
                       value: e as FieldName,
                       valid: validateOutputName(e)
                     });
                   }}
-                  onBlur={e => {
+                  onBlur={(e) => {
                     if (name?.valid) {
                       onCommit({
                         name: name.value as FieldName
@@ -200,7 +200,12 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
               </FormGroup>
             </SplitItem>
             <SplitItem isFilled={true}>
-              <FormGroup label="Data type" fieldId="output-dataType-helper" style={{ width: "12em" }} isRequired={true}>
+              <FormGroup
+                label="Data type"
+                fieldId="output-dataType-helper"
+                style={{ width: "12em" }}
+                isRequired={true}
+              >
                 <Select
                   id="output-dataType"
                   name="output-dataType"
@@ -209,7 +214,11 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   className="ignore-onclickoutside"
                   variant={SelectVariant.single}
                   onToggle={typeToggle}
-                  onSelect={(event: any, selection: any, isPlaceholder: boolean) => {
+                  onSelect={(
+                    event: any,
+                    selection: any,
+                    isPlaceholder: boolean
+                  ) => {
                     setIsTypeSelectOpen(false);
                     setDataType(isPlaceholder ? undefined : selection);
                     onCommit({

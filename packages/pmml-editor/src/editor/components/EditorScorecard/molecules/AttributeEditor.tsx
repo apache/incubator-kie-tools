@@ -15,7 +15,16 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
+import {
+  Form,
+  FormGroup,
+  Split,
+  SplitItem,
+  Stack,
+  StackItem,
+  TextInput,
+  Tooltip
+} from "@patternfly/react-core";
 import {
   Attribute,
   Characteristic,
@@ -52,11 +61,21 @@ interface AttributeEditorProps {
   attributeIndex: number | undefined;
   areReasonCodesUsed: boolean;
   onCancel: () => void;
-  onCommit: (index: number | undefined, content: AttributeEditorContent) => void;
+  onCommit: (
+    index: number | undefined,
+    content: AttributeEditorContent
+  ) => void;
 }
 
 export const AttributeEditor = (props: AttributeEditorProps) => {
-  const { modelIndex, characteristicIndex, attributeIndex, areReasonCodesUsed, onCancel, onCommit } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    attributeIndex,
+    areReasonCodesUsed,
+    onCancel,
+    onCommit
+  } = props;
 
   const [text, setText] = useState<string | undefined>();
   const [partialScore, setPartialScore] = useState<number | undefined>();
@@ -65,16 +84,22 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
 
   const { activeOperation } = useOperation();
 
-  const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
-    return state.DataDictionary.DataField;
-  });
-
-  const characteristic = useSelector<PMML, Characteristic | undefined>((state: PMML) => {
-    const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
-    if (model instanceof Scorecard && characteristicIndex !== undefined) {
-      return model.Characteristics.Characteristic[characteristicIndex]!;
+  const dataFields: DataField[] = useSelector<PMML, DataField[]>(
+    (state: PMML) => {
+      return state.DataDictionary.DataField;
     }
-  });
+  );
+
+  const characteristic = useSelector<PMML, Characteristic | undefined>(
+    (state: PMML) => {
+      const model: Model | undefined = state.models
+        ? state.models[modelIndex]
+        : undefined;
+      if (model instanceof Scorecard && characteristicIndex !== undefined) {
+        return model.Characteristics.Characteristic[characteristicIndex]!;
+      }
+    }
+  );
 
   const attribute = useMemo(() => {
     return characteristic && attributeIndex !== undefined
@@ -84,7 +109,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
 
   const commit = (partial: Partial<AttributeEditorContent>) => {
     const existingPartial: Partial<AttributeEditorContent> = {};
-    Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+    Object.keys(partial).forEach((key) =>
+      set(existingPartial, key, get(attribute, key))
+    );
 
     if (!isEqual(partial, existingPartial)) {
       onCommit(attributeIndex, { ...attribute, ...partial });
@@ -191,7 +218,8 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                   )}
                   {predicateValidation.length === 0 && (
                     <div className="pf-c-form__helper-text">
-                      The condition upon which the mapping between input attribute and partial score takes place.
+                      The condition upon which the mapping between input
+                      attribute and partial score takes place.
                     </div>
                   )}
                 </>
@@ -204,7 +232,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                 <FormGroup
                   label="Reason code"
                   fieldId="attribute-reason-code-helper"
-                  validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
+                  validated={
+                    reasonCodeValidation.length > 0 ? "warning" : "default"
+                  }
                   helperText={
                     reasonCodeValidation.length > 0
                       ? reasonCodeValidation[0].message
@@ -213,7 +243,8 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                   labelIcon={
                     <Tooltip
                       content={
-                        areReasonCodesUsed && characteristic?.reasonCode !== undefined
+                        areReasonCodesUsed &&
+                        characteristic?.reasonCode !== undefined
                           ? `Reason code already provided at the Characteristic level (${characteristic.reasonCode})`
                           : `When Use Reason Codes is set to yes in the Model Setup, a reason code must be provided \
                               for characteristics or it must be provided for all its attributes.`
@@ -221,10 +252,12 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     >
                       <button
                         aria-label="More information for Partial Score"
-                        onClick={e => e.preventDefault()}
+                        onClick={(e) => e.preventDefault()}
                         className="pf-c-form__group-label-help"
                       >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        <HelpIcon
+                          style={{ color: "var(--pf-global--info-color--100)" }}
+                        />
                       </button>
                     </Tooltip>
                   }
@@ -235,12 +268,19 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     name="attribute-reason-code"
                     aria-describedby="attribute-reason-code-helper"
                     value={reasonCode ?? ""}
-                    onChange={e => setReasonCode(e)}
+                    onChange={(e) => setReasonCode(e)}
                     onBlur={() => {
-                      commit({ reasonCode: reasonCode !== "" ? reasonCode : undefined });
+                      commit({
+                        reasonCode: reasonCode !== "" ? reasonCode : undefined
+                      });
                     }}
-                    validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                    isDisabled={!areReasonCodesUsed || characteristic?.reasonCode !== undefined}
+                    validated={
+                      reasonCodeValidation.length > 0 ? "warning" : "default"
+                    }
+                    isDisabled={
+                      !areReasonCodesUsed ||
+                      characteristic?.reasonCode !== undefined
+                    }
                   />
                 </FormGroup>
               </StackItem>
@@ -248,7 +288,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                 <FormGroup
                   label="Partial score"
                   fieldId="attribute-partial-score-helper"
-                  validated={partialScoreValidation.length > 0 ? "warning" : "default"}
+                  validated={
+                    partialScoreValidation.length > 0 ? "warning" : "default"
+                  }
                   helperText={
                     partialScoreValidation.length > 0
                       ? partialScoreValidation[0].message
@@ -262,10 +304,12 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     >
                       <button
                         aria-label="More information for Partial Score"
-                        onClick={e => e.preventDefault()}
+                        onClick={(e) => e.preventDefault()}
                         className="pf-c-form__group-label-help"
                       >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        <HelpIcon
+                          style={{ color: "var(--pf-global--info-color--100)" }}
+                        />
                       </button>
                     </Tooltip>
                   }
@@ -276,13 +320,15 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     name="attribute-partial-score"
                     aria-describedby="attribute-partial-score-helper"
                     value={partialScore ?? ""}
-                    onChange={e => setPartialScore(toNumber(e))}
+                    onChange={(e) => setPartialScore(toNumber(e))}
                     onBlur={() => {
                       commit({
                         partialScore: partialScore
                       });
                     }}
-                    validated={partialScoreValidation.length > 0 ? "warning" : "default"}
+                    validated={
+                      partialScoreValidation.length > 0 ? "warning" : "default"
+                    }
                   />
                 </FormGroup>
               </StackItem>

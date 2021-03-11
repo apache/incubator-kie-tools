@@ -15,7 +15,16 @@
  */
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
+import {
+  Button,
+  FormGroup,
+  Split,
+  SplitItem,
+  Stack,
+  StackItem,
+  TextInput,
+  Tooltip
+} from "@patternfly/react-core";
 import { ExclamationCircleIcon, HelpIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
@@ -25,7 +34,13 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
 import { useSelector } from "react-redux";
-import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  Characteristic,
+  Model,
+  PMML,
+  Scorecard
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
 import { Builder } from "../../../paths";
@@ -47,7 +62,9 @@ interface CharacteristicsTableEditRowProps {
   onCancel: () => void;
 }
 
-export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
+export const CharacteristicsTableEditRow = (
+  props: CharacteristicsTableEditRowProps
+) => {
   const {
     modelIndex,
     areReasonCodesUsed,
@@ -74,20 +91,28 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
 
-  const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
-    const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
-    if (model instanceof Scorecard && characteristicIndex !== undefined) {
-      const scorecard: Scorecard = model as Scorecard;
-      const _characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
-      if (_characteristic) {
-        return _characteristic.Attribute;
+  const attributes: Attribute[] = useSelector<PMML, Attribute[]>(
+    (state: PMML) => {
+      const model: Model | undefined = state.models
+        ? state.models[modelIndex]
+        : undefined;
+      if (model instanceof Scorecard && characteristicIndex !== undefined) {
+        const scorecard: Scorecard = model as Scorecard;
+        const _characteristic: Characteristic | undefined =
+          scorecard.Characteristics.Characteristic[characteristicIndex];
+        if (_characteristic) {
+          return _characteristic.Attribute;
+        }
       }
+      return [];
     }
-    return [];
-  });
+  );
 
   const isReasonCodeProvidedByAttributes = useMemo(() => {
-    return attributes.length > 0 && attributes.every(attribute => attribute.reasonCode !== undefined);
+    return (
+      attributes.length > 0 &&
+      attributes.every((attribute) => attribute.reasonCode !== undefined)
+    );
   }, [attributes]);
 
   const ref = useOnclickOutside(
@@ -151,7 +176,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   };
 
   const onDeleteAttribute = useCallback(
-    attributeIndex => {
+    (attributeIndex) => {
       if (window.confirm(`Delete Attribute?`)) {
         dispatch({
           type: Actions.Scorecard_DeleteAttribute,
@@ -170,7 +195,9 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     (attributeIndex, partial) => {
       const attribute = attributes[attributeIndex];
       const existingPartial: Partial<Attribute> = {};
-      Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+      Object.keys(partial).forEach((key) =>
+        set(existingPartial, key, get(attribute, key))
+      );
 
       if (!isEqual(partial, existingPartial)) {
         dispatch({
@@ -211,7 +238,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   value={name.value ?? ""}
                   validated={name.valid ? "default" : "error"}
                   autoFocus={true}
-                  onChange={e =>
+                  onChange={(e) =>
                     setName({
                       value: e,
                       valid: validateCharacteristicName(e)
@@ -245,15 +272,23 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   >
                     <button
                       aria-label="More information for Reason code"
-                      onClick={e => e.preventDefault()}
+                      onClick={(e) => e.preventDefault()}
                       className="pf-c-form__group-label-help"
                     >
-                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      <HelpIcon
+                        style={{ color: "var(--pf-global--info-color--100)" }}
+                      />
                     </button>
                   </Tooltip>
                 }
-                validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                helperText={reasonCodeValidation.length > 0 ? reasonCodeValidation[0].message : undefined}
+                validated={
+                  reasonCodeValidation.length > 0 ? "warning" : "default"
+                }
+                helperText={
+                  reasonCodeValidation.length > 0
+                    ? reasonCodeValidation[0].message
+                    : undefined
+                }
               >
                 <TextInput
                   type="text"
@@ -261,14 +296,18 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   name="characteristic-reason-code"
                   aria-describedby="characteristic-reason-code-helper"
                   value={reasonCode ?? ""}
-                  onChange={e => setReasonCode(e)}
+                  onChange={(e) => setReasonCode(e)}
                   onBlur={() => {
                     onCommit({
                       reasonCode: reasonCode === "" ? undefined : reasonCode
                     });
                   }}
-                  validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                  isDisabled={!areReasonCodesUsed || isReasonCodeProvidedByAttributes}
+                  validated={
+                    reasonCodeValidation.length > 0 ? "warning" : "default"
+                  }
+                  isDisabled={
+                    !areReasonCodesUsed || isReasonCodeProvidedByAttributes
+                  }
                 />
               </FormGroup>
             </SplitItem>
@@ -289,15 +328,23 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   >
                     <button
                       aria-label="More information for Baseline score"
-                      onClick={e => e.preventDefault()}
+                      onClick={(e) => e.preventDefault()}
                       className="pf-c-form__group-label-help"
                     >
-                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      <HelpIcon
+                        style={{ color: "var(--pf-global--info-color--100)" }}
+                      />
                     </button>
                   </Tooltip>
                 }
-                helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
-                validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                helperText={
+                  baselineScoreValidation.length > 0
+                    ? baselineScoreValidation[0].message
+                    : undefined
+                }
+                validated={
+                  baselineScoreValidation.length > 0 ? "warning" : "default"
+                }
                 style={{ width: "16em" }}
               >
                 <TextInput
@@ -306,8 +353,10 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   name="characteristic-baseline-score"
                   aria-describedby="characteristic-baseline-score-helper"
                   value={baselineScore ?? ""}
-                  validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                  onChange={e => setBaselineScore(toNumber(e))}
+                  validated={
+                    baselineScoreValidation.length > 0 ? "warning" : "default"
+                  }
+                  onChange={(e) => setBaselineScore(toNumber(e))}
                   onBlur={() => {
                     onCommit({
                       baselineScore: baselineScore
@@ -319,7 +368,11 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             </SplitItem>
 
             <SplitItem>
-              <Button id="add-attribute-button" variant="primary" onClick={onAddAttribute}>
+              <Button
+                id="add-attribute-button"
+                variant="primary"
+                onClick={onAddAttribute}
+              >
                 Add Attribute
               </Button>
             </SplitItem>

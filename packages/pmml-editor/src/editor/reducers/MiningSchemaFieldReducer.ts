@@ -56,7 +56,10 @@ interface MiningSchemaFieldPayload {
 
 export type MiningSchemaFieldActions = ActionMap<MiningSchemaFieldPayload>[keyof ActionMap<MiningSchemaFieldPayload>];
 
-export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField[], AllActions> = (
+export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<
+  MiningField[],
+  AllActions
+> = (
   historyService: HistoryService,
   validationRegistry: ValidationRegistry
 ): Reducer<MiningField[], AllActions> => {
@@ -72,7 +75,7 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
                 .forMiningSchema()
                 .forMiningField()
                 .build(),
-              draft => {
+              (draft) => {
                 draft[index] = {
                   ...draft[index],
                   name: action.payload.dataField.name
@@ -91,10 +94,12 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
             .forMiningSchema()
             .forMiningField()
             .build(),
-          draft => {
+          (draft) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchemaIndex = action.payload.miningSchemaIndex;
-            const _areLowHighValuesRequired = areLowHighValuesRequired(action.payload.outliers);
+            const _areLowHighValuesRequired = areLowHighValuesRequired(
+              action.payload.outliers
+            );
             const _isMissingValueReplacementRequired = isMissingValueReplacementRequired(
               action.payload.missingValueTreatment
             );
@@ -103,16 +108,28 @@ export const MiningSchemaFieldReducer: HistoryAwareValidatingReducer<MiningField
             );
 
             if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.length) {
-              const outlierChanged = draft[miningSchemaIndex].outliers !== action.payload.outliers;
+              const outlierChanged =
+                draft[miningSchemaIndex].outliers !== action.payload.outliers;
               const missingValueTreatmentChanged =
-                draft[miningSchemaIndex].missingValueTreatment !== action.payload.missingValueTreatment;
+                draft[miningSchemaIndex].missingValueTreatment !==
+                action.payload.missingValueTreatment;
               const invalidValueTreatmentChanged =
-                draft[miningSchemaIndex].invalidValueTreatment !== action.payload.invalidValueTreatment;
-              const clearLowHighValues = outlierChanged && !_areLowHighValuesRequired;
-              const clearMissingValueReplacement = missingValueTreatmentChanged && !_isMissingValueReplacementRequired;
-              const clearInvalidValueReplacement = invalidValueTreatmentChanged && !_isInvalidValueReplacementRequired;
-              const newLowValue = clearLowHighValues ? undefined : action.payload.lowValue;
-              const newHighValue = clearLowHighValues ? undefined : action.payload.highValue;
+                draft[miningSchemaIndex].invalidValueTreatment !==
+                action.payload.invalidValueTreatment;
+              const clearLowHighValues =
+                outlierChanged && !_areLowHighValuesRequired;
+              const clearMissingValueReplacement =
+                missingValueTreatmentChanged &&
+                !_isMissingValueReplacementRequired;
+              const clearInvalidValueReplacement =
+                invalidValueTreatmentChanged &&
+                !_isInvalidValueReplacementRequired;
+              const newLowValue = clearLowHighValues
+                ? undefined
+                : action.payload.lowValue;
+              const newHighValue = clearLowHighValues
+                ? undefined
+                : action.payload.highValue;
               const newMissingValueReplacement = clearMissingValueReplacement
                 ? undefined
                 : action.payload.missingValueReplacement;

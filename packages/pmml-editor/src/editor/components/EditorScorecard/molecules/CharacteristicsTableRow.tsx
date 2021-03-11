@@ -22,7 +22,10 @@ import {
   CharacteristicPredicateLabel,
   CharacteristicsTableAction
 } from "../atoms";
-import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Characteristic,
+  DataField
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
 import { useValidationRegistry } from "../../../validation";
@@ -39,7 +42,9 @@ interface CharacteristicsTableRowProps {
   onDelete: () => void;
 }
 
-export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
+export const CharacteristicsTableRow = (
+  props: CharacteristicsTableRowProps
+) => {
   const {
     modelIndex,
     characteristicIndex,
@@ -56,7 +61,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
       className={"editable-item__inner"}
       tabIndex={0}
       onClick={onEdit}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
@@ -100,13 +105,21 @@ interface CharacteristicAttributesListProps {
   dataFields: DataField[];
 }
 
-const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
-  const { modelIndex, characteristicIndex, characteristic, areReasonCodesUsed, dataFields } = props;
+const CharacteristicAttributesList = (
+  props: CharacteristicAttributesListProps
+) => {
+  const {
+    modelIndex,
+    characteristicIndex,
+    characteristic,
+    areReasonCodesUsed,
+    dataFields
+  } = props;
 
   const { validationRegistry } = useValidationRegistry();
 
   const validations = useCallback(
-    attributeIndex =>
+    (attributeIndex) =>
       validationRegistry.get(
         Builder()
           .forModel(modelIndex)
@@ -123,7 +136,11 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
     <ul>
       {characteristic.Attribute.map((item, index) => (
         <li key={index}>
-          {CharacteristicPredicateLabel(item.predicate, dataFields, validations(index))}
+          {CharacteristicPredicateLabel(
+            item.predicate,
+            dataFields,
+            validations(index)
+          )}
           <AttributeLabels
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}

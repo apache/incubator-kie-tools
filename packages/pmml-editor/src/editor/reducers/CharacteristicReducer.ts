@@ -15,7 +15,10 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  Characteristic
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
@@ -36,12 +39,16 @@ interface CharacteristicPayload {
 
 export type CharacteristicActions = ActionMap<CharacteristicPayload>[keyof ActionMap<CharacteristicPayload>];
 
-export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllActions> = (
-  historyService: HistoryService
-): Reducer<Characteristic[], AllActions> => {
+export const CharacteristicReducer: HistoryAwareReducer<
+  Characteristic[],
+  AllActions
+> = (historyService: HistoryService): Reducer<Characteristic[], AllActions> => {
   const attributesReducer = AttributesReducer(historyService);
 
-  const delegateToAttributes = (state: Characteristic[], action: AllActions) => {
+  const delegateToAttributes = (
+    state: Characteristic[],
+    action: AllActions
+  ) => {
     switch (action.type) {
       case Actions.Scorecard_AddAttribute:
       case Actions.Scorecard_UpdateAttribute:
@@ -64,9 +71,13 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
             .forCharacteristics()
             .forCharacteristic()
             .build(),
-          draft => {
-            const characteristicIndex: number = action.payload.characteristicIndex;
-            if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
+          (draft) => {
+            const characteristicIndex: number =
+              action.payload.characteristicIndex;
+            if (
+              characteristicIndex >= 0 &&
+              characteristicIndex < draft.length
+            ) {
               draft[characteristicIndex] = {
                 ...draft[characteristicIndex],
                 name: action.payload.name,
@@ -75,7 +86,9 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
               };
             }
             if (action.payload.reasonCode !== undefined) {
-              draft[characteristicIndex].Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+              draft[characteristicIndex].Attribute.forEach(
+                (attribute) => (attribute.reasonCode = undefined)
+              );
             }
           }
         );

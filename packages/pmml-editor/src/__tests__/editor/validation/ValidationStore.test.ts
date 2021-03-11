@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { ValidationEntry, ValidationLevel, ValidationStore } from "../../../editor/validation";
+import {
+  ValidationEntry,
+  ValidationLevel,
+  ValidationStore
+} from "../../../editor/validation";
 
 let store: ValidationStore;
 beforeEach(() => {
@@ -43,38 +47,67 @@ describe("ValidationStore", () => {
   });
 
   test("get::child", () => {
-    store.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
+    store.set(
+      asPath("root.child1"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
 
-    expect(store.get(asPath("root.child1"))[0].level).toBe(ValidationLevel.WARNING);
+    expect(store.get(asPath("root.child1"))[0].level).toBe(
+      ValidationLevel.WARNING
+    );
   });
 
   test("get::child::array", () => {
-    store.set(asPath("root.child1.0"), new ValidationEntry(ValidationLevel.WARNING));
+    store.set(
+      asPath("root.child1.0"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
 
-    expect(store.get(asPath("root.child1.0"))[0].level).toBe(ValidationLevel.WARNING);
+    expect(store.get(asPath("root.child1.0"))[0].level).toBe(
+      ValidationLevel.WARNING
+    );
   });
 
   test("get::child::array::nested", () => {
-    store.set(asPath("root.child.1.child.1"), new ValidationEntry(ValidationLevel.WARNING));
+    store.set(
+      asPath("root.child.1.child.1"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
 
-    expect(store.get(asPath("root.child.1"))[0].level).toBe(ValidationLevel.WARNING);
+    expect(store.get(asPath("root.child.1"))[0].level).toBe(
+      ValidationLevel.WARNING
+    );
   });
 
   test("get::child::array::non-existent", () => {
-    store.set(asPath("root.child1.0"), new ValidationEntry(ValidationLevel.WARNING));
+    store.set(
+      asPath("root.child1.0"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
 
     expect(store.get(asPath("root.child1.1")).length).toBe(0);
   });
 
   test("get::child::deep", () => {
-    store.set(asPath("root.leaf.child1"), new ValidationEntry(ValidationLevel.WARNING));
+    store.set(
+      asPath("root.leaf.child1"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
 
-    expect(store.get(asPath("root.leaf"))[0].level).toBe(ValidationLevel.WARNING);
+    expect(store.get(asPath("root.leaf"))[0].level).toBe(
+      ValidationLevel.WARNING
+    );
   });
 
   test("get::child::multiple", () => {
-    store.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
-    store.set(asPath("root.child2"), new ValidationEntry(ValidationLevel.ERROR));
+    store.set(
+      asPath("root.child1"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
+    store.set(
+      asPath("root.child2"),
+      new ValidationEntry(ValidationLevel.ERROR)
+    );
 
     const entries: ValidationEntry[] = store.get(asPath("root"));
 
@@ -94,7 +127,10 @@ describe("ValidationStore", () => {
   });
 
   test("clear::child", () => {
-    store.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
+    store.set(
+      asPath("root.child1"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
 
     expect(store.get(asPath("root")).length).toBe(1);
 
@@ -103,8 +139,14 @@ describe("ValidationStore", () => {
     expect(store.get(asPath("root")).length).toBe(0);
   });
   test("clear::child::multiple", () => {
-    store.set(asPath("root.child1"), new ValidationEntry(ValidationLevel.WARNING));
-    store.set(asPath("root.child2"), new ValidationEntry(ValidationLevel.ERROR));
+    store.set(
+      asPath("root.child1"),
+      new ValidationEntry(ValidationLevel.WARNING)
+    );
+    store.set(
+      asPath("root.child2"),
+      new ValidationEntry(ValidationLevel.ERROR)
+    );
 
     expect(store.get(asPath("root")).length).toBe(2);
 

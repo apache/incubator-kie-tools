@@ -1,5 +1,11 @@
 import * as React from "react";
-import { EmptyState, EmptyStateVariant, EmptyStateIcon, EmptyStateBody, Title } from "@patternfly/react-core";
+import {
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  EmptyStateBody,
+  Title
+} from "@patternfly/react-core";
 import { BoxesIcon } from "@patternfly/react-icons";
 
 const EmptyMiningSchema = () => {
@@ -10,7 +16,8 @@ const EmptyMiningSchema = () => {
         No Mining Fields found
       </Title>
       <EmptyStateBody>
-        Add some fields first from the section above. Then you will be able to add further information for each of them.
+        Add some fields first from the section above. Then you will be able to
+        add further information for each of them.
       </EmptyStateBody>
     </EmptyState>
   );

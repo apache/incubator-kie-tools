@@ -48,7 +48,6 @@
       opacity: 0;
       transition: opacity 100ms;
     }
-
   }
 
   &__attribute {
@@ -58,7 +57,9 @@
     height: 100%;
     // overriding disabled input background color because it doesn't play nice with --pf-global--BackgroundColor--200
     .pf-c-form-control:disabled {
-      --pf-c-form-control--BackgroundColor: var(--pf-global--disabled-color--200);
+      --pf-c-form-control--BackgroundColor: var(
+        --pf-global--disabled-color--200
+      );
     }
     &-enter {
       transform: translateX(100px);

@@ -53,7 +53,7 @@ export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
         return action.payload.pmml;
 
       case Actions.SetVersion:
-        historyService.batch(state, null, draft => {
+        historyService.batch(state, null, (draft) => {
           draft.version = action.payload.version;
         });
         break;
@@ -71,10 +71,7 @@ export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
           const miningSchema = get(model, "MiningSchema");
           if (miningSchema !== undefined) {
             validationRegistry.clear(
-              Builder()
-                .forModel(modelIndex)
-                .forMiningSchema()
-                .build()
+              Builder().forModel(modelIndex).forMiningSchema().build()
             );
             validateMiningFieldsDataFieldReference(
               modelIndex,

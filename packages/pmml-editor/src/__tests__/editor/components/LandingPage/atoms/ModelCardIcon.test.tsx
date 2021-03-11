@@ -23,7 +23,9 @@ describe("ModelCardIcon", () => {
     const element: HTMLElement = getByTestId("model-card__icon");
     expect(element).toBeInTheDocument();
     expect(element instanceof HTMLImageElement);
-    expect((element as HTMLImageElement).src).toContain("card-icon-default.svg");
+    expect((element as HTMLImageElement).src).toContain(
+      "card-icon-default.svg"
+    );
   });
 
   test("render::Scorecard", () => {
@@ -31,6 +33,8 @@ describe("ModelCardIcon", () => {
     const element: HTMLElement = getByTestId("model-card__icon");
     expect(element).toBeInTheDocument();
     expect(element instanceof HTMLImageElement);
-    expect((element as HTMLImageElement).src).toContain("card-icon-scorecard.svg");
+    expect((element as HTMLImageElement).src).toContain(
+      "card-icon-scorecard.svg"
+    );
   });
 });

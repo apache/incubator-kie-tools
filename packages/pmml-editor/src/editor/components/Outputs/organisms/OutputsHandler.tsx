@@ -26,7 +26,11 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
-import { MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  MiningSchema,
+  Output,
+  OutputField
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";
@@ -37,13 +41,26 @@ interface OutputsHandlerProps {
   modelIndex: number;
   output?: Output;
   miningSchema?: MiningSchema;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (
+    index: number | undefined,
+    name: string | undefined
+  ) => boolean;
   deleteOutputField: (index: number) => void;
-  commitOutputField: (index: number | undefined, outputField: OutputField) => void;
+  commitOutputField: (
+    index: number | undefined,
+    outputField: OutputField
+  ) => void;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
-  const { modelIndex, output, miningSchema, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
+  const {
+    modelIndex,
+    output,
+    miningSchema,
+    validateOutputFieldName,
+    deleteOutputField,
+    commitOutputField
+  } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,10 +70,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
   const validations = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forOutput()
-          .build()
+        Builder().forModel(modelIndex).forOutput().build()
       ),
     [modelIndex, output, miningSchema]
   );
@@ -74,7 +88,11 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button type="button" variant={ButtonVariant.plain} onClick={toggleModal}>
+        <Button
+          type="button"
+          variant={ButtonVariant.plain}
+          onClick={toggleModal}
+        >
           <CloseIcon />
         </Button>
       </SplitItem>
@@ -90,7 +108,11 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
       )}
       {validations.length > 0 && (
         <ValidationIndicatorTooltip validations={validations}>
-          <Button variant="secondary" icon={<WarningTriangleIcon size={"sm"} color={"orange"} />} onClick={toggleModal}>
+          <Button
+            variant="secondary"
+            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            onClick={toggleModal}
+          >
             Set Outputs
           </Button>
         </ValidationIndicatorTooltip>

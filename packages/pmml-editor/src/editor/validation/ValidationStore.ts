@@ -42,7 +42,9 @@ export class ValidationStore {
     if (!(node instanceof Object)) {
       return [];
     }
-    const mapped = ownKeys(node).map(key => this.get({ path: `${path.path}.${String(key)}` }));
+    const mapped = ownKeys(node).map((key) =>
+      this.get({ path: `${path.path}.${String(key)}` })
+    );
     if (mapped.length === 0) {
       return [];
     }

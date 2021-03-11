@@ -21,8 +21,15 @@ import { ValidationRegistry } from "../../../editor/validation";
 
 const historyService = new HistoryService();
 const validationRegistry = new ValidationRegistry();
-const pmml: PMML = { Header: {}, DataDictionary: { DataField: [] }, version: "" };
-const reducer: Reducer<PMML, AllActions> = PMMLReducer(historyService, validationRegistry);
+const pmml: PMML = {
+  Header: {},
+  DataDictionary: { DataField: [] },
+  version: ""
+};
+const reducer: Reducer<PMML, AllActions> = PMMLReducer(
+  historyService,
+  validationRegistry
+);
 
 describe("PMMLReducer::Valid actions", () => {
   test("Actions.SetVersion", () => {

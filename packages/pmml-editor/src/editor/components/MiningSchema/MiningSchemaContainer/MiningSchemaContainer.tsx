@@ -1,6 +1,13 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Bullseye, Stack, StackItem, Title, TitleSizes } from "@patternfly/react-core";
+import {
+  Alert,
+  Bullseye,
+  Stack,
+  StackItem,
+  Title,
+  TitleSizes
+} from "@patternfly/react-core";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { isEqual, pickBy } from "lodash";
 import EmptyMiningSchema from "../EmptyMiningSchema/EmptyMiningSchema";
@@ -9,7 +16,12 @@ import MiningSchemaAddFields from "../MiningSchemaAddFields/MiningSchemaAddField
 import MiningSchemaPropertiesEdit from "../MiningSchemaPropertiesEdit/MiningSchemaPropertiesEdit";
 import "./MiningSchemaContainer.scss";
 
-import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  DataDictionary,
+  FieldName,
+  MiningField,
+  MiningSchema
+} from "@kogito-tooling/pmml-editor-marshaller";
 import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
@@ -20,14 +32,29 @@ interface MiningSchemaContainerProps {
   miningSchema?: MiningSchema;
   onAddField: (name: string[]) => void;
   onDeleteField: (index: number) => void;
-  onUpdateField: (index: number, originalName: FieldName | undefined, field: MiningField) => void;
+  onUpdateField: (
+    index: number,
+    originalName: FieldName | undefined,
+    field: MiningField
+  ) => void;
 }
 
 const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
-  const { modelIndex, dataDictionary, miningSchema, onAddField, onDeleteField, onUpdateField } = props;
+  const {
+    modelIndex,
+    dataDictionary,
+    miningSchema,
+    onAddField,
+    onDeleteField,
+    onUpdateField
+  } = props;
 
-  const [fields, setFields] = useState<MiningSchemaOption[]>(prepareFieldOptions(dataDictionary, miningSchema));
-  const [viewSection, setViewSection] = useState<MiningSchemaSection>("overview");
+  const [fields, setFields] = useState<MiningSchemaOption[]>(
+    prepareFieldOptions(dataDictionary, miningSchema)
+  );
+  const [viewSection, setViewSection] = useState<MiningSchemaSection>(
+    "overview"
+  );
   const [editingField, setEditingField] = useState(-1);
 
   const handleAddFields = (fieldsToAdd: string[]) => {
@@ -56,10 +83,17 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     if (
       !isEqual(
         field,
-        pickBy(miningSchema?.MiningField[editingField], value => value !== undefined)
+        pickBy(
+          miningSchema?.MiningField[editingField],
+          (value) => value !== undefined
+        )
       )
     ) {
-      onUpdateField(editingField, miningSchema?.MiningField[editingField].name, field);
+      onUpdateField(
+        editingField,
+        miningSchema?.MiningField[editingField].name,
+        field
+      );
     }
   };
 
@@ -68,7 +102,11 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   };
 
   const handlePropertyDelete = (index: number, updatedField: MiningField) => {
-    onUpdateField(index, miningSchema?.MiningField[editingField].name, updatedField);
+    onUpdateField(
+      index,
+      miningSchema?.MiningField[editingField].name,
+      updatedField
+    );
   };
 
   const getTransition = (currentState: MiningSchemaSection) => {
@@ -87,10 +125,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   const validations = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().build()
       ),
     [miningSchema]
   );
@@ -116,11 +151,18 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                     </Title>
                   </StackItem>
                   <StackItem>
-                    <MiningSchemaAddFields options={fields} onAdd={handleAddFields} />
+                    <MiningSchemaAddFields
+                      options={fields}
+                      onAdd={handleAddFields}
+                    />
                   </StackItem>
                   {validations.length > 0 && (
                     <section className="mining-schema__validation-alert">
-                      <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
+                      <Alert
+                        variant="warning"
+                        isInline={true}
+                        title="Some items are invalid and need attention."
+                      />
                     </section>
                   )}
                   <StackItem className="mining-schema__fields">
@@ -178,14 +220,21 @@ export default MiningSchemaContainer;
 
 export const MiningSchemaContext = React.createContext<number>(-1);
 
-const prepareFieldOptions = (dictionary: DataDictionary | undefined, miningSchema: MiningSchema | undefined) => {
+const prepareFieldOptions = (
+  dictionary: DataDictionary | undefined,
+  miningSchema: MiningSchema | undefined
+) => {
   if (dictionary) {
-    return dictionary.DataField.filter(field => field.name !== undefined).map(field => ({
-      name: field.name as string,
-      isSelected: miningSchema
-        ? miningSchema?.MiningField.findIndex(miningField => miningField.name === field.name) > -1
-        : false
-    }));
+    return dictionary.DataField.filter((field) => field.name !== undefined).map(
+      (field) => ({
+        name: field.name as string,
+        isSelected: miningSchema
+          ? miningSchema?.MiningField.findIndex(
+              (miningField) => miningField.name === field.name
+            ) > -1
+          : false
+      })
+    );
   } else {
     return [];
   }

@@ -16,7 +16,11 @@
 import * as React from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
-import { Model, PMML, RegressionModel } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Model,
+  PMML,
+  RegressionModel
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { getModelName } from "../../..";
 import { useSelector } from "react-redux";
 import "./LinearRegressionViewerPage.scss";
@@ -28,14 +32,24 @@ interface LinearRegressionViewerPageProps {
   modelIndex: number;
 }
 
-export const LinearRegressionViewerPage = (props: LinearRegressionViewerPageProps) => {
+export const LinearRegressionViewerPage = (
+  props: LinearRegressionViewerPageProps
+) => {
   const { modelIndex } = props;
 
-  const model: RegressionModel | undefined = useSelector<PMML, RegressionModel | undefined>((state: PMML) => {
-    const _model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
+  const model: RegressionModel | undefined = useSelector<
+    PMML,
+    RegressionModel | undefined
+  >((state: PMML) => {
+    const _model: Model | undefined = state.models
+      ? state.models[modelIndex]
+      : undefined;
     if (_model && _model instanceof RegressionModel) {
       const _regressionModel = _model as RegressionModel;
-      if (_regressionModel.functionName === "regression" && _regressionModel.algorithmName === "linearRegression") {
+      if (
+        _regressionModel.functionName === "regression" &&
+        _regressionModel.algorithmName === "linearRegression"
+      ) {
         return _regressionModel;
       }
     }
@@ -48,7 +62,10 @@ export const LinearRegressionViewerPage = (props: LinearRegressionViewerPageProp
       {model && (
         <>
           <PageSection variant={PageSectionVariants.light} isFilled={false}>
-            <EditorHeader modelName={getModelName(model)} modelIndex={modelIndex} />
+            <EditorHeader
+              modelName={getModelName(model)}
+              modelIndex={modelIndex}
+            />
           </PageSection>
 
           <PageSection isFilled={true} style={{ paddingTop: "0px" }}>

@@ -15,7 +15,15 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Text, TextInput, Tooltip } from "@patternfly/react-core";
+import {
+  Form,
+  FormGroup,
+  Split,
+  SplitItem,
+  Text,
+  TextInput,
+  Tooltip
+} from "@patternfly/react-core";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
@@ -36,7 +44,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
 
   const { activeOperation, setActiveOperation } = useOperation();
 
-  const ref = useOnclickOutside(event => onCommitAndClose(), {
+  const ref = useOnclickOutside((event) => onCommitAndClose(), {
     disabled: activeOperation !== Operation.UPDATE_NAME,
     eventTypes: ["click"]
   });
@@ -68,15 +76,17 @@ export const ModelTitle = (props: ModelTitleProps) => {
     setActiveOperation(Operation.NONE);
   };
 
-  const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_NAME, [
-    isEditing,
-    activeOperation
-  ]);
+  const isEditModeEnabled = useMemo(
+    () => isEditing && activeOperation === Operation.UPDATE_NAME,
+    [isEditing, activeOperation]
+  );
 
   const modelTitleClassNames = useMemo(
     () =>
       `${
-        commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"
+        commitModelName !== undefined
+          ? "modelTitle"
+          : "modelTitle modelTitle--editing"
       } pf-c-title pf-m-2xl pf-c-form-control`,
     [commitModelName]
   );
@@ -84,7 +94,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
   return (
     <div
       ref={ref}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           onEdit();
         } else if (e.key === "Escape") {
@@ -96,20 +106,26 @@ export const ModelTitle = (props: ModelTitleProps) => {
       <div className={"modelTitle--full-width"}>
         <Form
           id={"modelTitle-form"}
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.stopPropagation();
             e.preventDefault();
           }}
         >
           <Split hasGutter={true} className={"modelTitle--hide-overflow"}>
             <SplitItem className="modelTitle__icon">
-              <Tooltip content={"The Model Name will be generated at runtime if not set."}>
+              <Tooltip
+                content={
+                  "The Model Name will be generated at runtime if not set."
+                }
+              >
                 <button
                   aria-label="More info about Model Name"
-                  onClick={e => e.preventDefault()}
+                  onClick={(e) => e.preventDefault()}
                   className="pf-c-form__group-label-help modelTitle__icon"
                 >
-                  <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                  <HelpIcon
+                    style={{ color: "var(--pf-global--info-color--100)" }}
+                  />
                 </button>
               </Tooltip>
             </SplitItem>
@@ -117,9 +133,13 @@ export const ModelTitle = (props: ModelTitleProps) => {
               <FormGroup fieldId="modelName">
                 {!isEditModeEnabled && (
                   <div className={modelTitleClassNames} onClick={onEdit}>
-                    {modelName.trim() !== "" && <Text className="modelTitle__truncate">{modelName}</Text>}
+                    {modelName.trim() !== "" && (
+                      <Text className="modelTitle__truncate">{modelName}</Text>
+                    )}
                     {modelName.trim() === "" && (
-                      <Text className="modelTitle__truncate modelTitle__truncate--disabled">{MODEL_NAME_NOT_SET}</Text>
+                      <Text className="modelTitle__truncate modelTitle__truncate--disabled">
+                        {MODEL_NAME_NOT_SET}
+                      </Text>
                     )}
                   </div>
                 )}

@@ -14,7 +14,13 @@ interface DataTypesSortProps {
 const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
   const [state, setState] = useState<DDDataField[]>(dataTypes);
 
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+  const onSortEnd = ({
+    oldIndex,
+    newIndex
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
     // still updating the internal state before calling the callback to avoid flickering
     const newOrder = reorder(state, oldIndex, newIndex);
     setState(newOrder);
@@ -34,20 +40,29 @@ const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
     setState(dataTypes);
   }, [dataTypes]);
 
-  return <SortableList items={state} onSortEnd={onSortEnd} lockAxis="y" helperClass={getHelperClass()} />;
+  return (
+    <SortableList
+      items={state}
+      onSortEnd={onSortEnd}
+      lockAxis="y"
+      helperClass={getHelperClass()}
+    />
+  );
 };
 
 export default DataTypesSort;
 
-const SortableList = SortableContainer(({ items }: { items: DDDataField[] }) => {
-  return (
-    <ul className="data-types-sorting">
-      {items.map((item, index) => (
-        <SortableItem key={`item-${item.name}`} index={index} item={item} />
-      ))}
-    </ul>
-  );
-});
+const SortableList = SortableContainer(
+  ({ items }: { items: DDDataField[] }) => {
+    return (
+      <ul className="data-types-sorting">
+        {items.map((item, index) => (
+          <SortableItem key={`item-${item.name}`} index={index} item={item} />
+        ))}
+      </ul>
+    );
+  }
+);
 
 const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
   <li className="editable-item data-type-item__sortable">
@@ -62,7 +77,8 @@ const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
           <strong>{item.name}</strong>
         </FlexItem>
         <FlexItem>
-          <Label color="blue">{item.type}</Label> <Label color="blue">{item.optype}</Label>
+          <Label color="blue">{item.type}</Label>{" "}
+          <Label color="blue">{item.optype}</Label>
         </FlexItem>
       </Flex>
     </section>

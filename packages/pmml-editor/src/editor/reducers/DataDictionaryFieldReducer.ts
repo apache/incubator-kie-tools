@@ -36,11 +36,12 @@ interface DataDictionaryFieldPayload {
   };
 }
 
-export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[keyof ActionMap<
-  DataDictionaryFieldPayload
->];
+export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[keyof ActionMap<DataDictionaryFieldPayload>];
 
-export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField[], DataDictionaryFieldActions> = (
+export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<
+  DataField[],
+  DataDictionaryFieldActions
+> = (
   historyService: HistoryService,
   validationRegistry: ValidationRegistry
 ): Reducer<DataField[], AllActions> => {
@@ -52,12 +53,12 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
 
         historyService.batch(
           state,
-          Builder()
-            .forDataDictionary()
-            .forDataField()
-            .build(),
-          draft => {
-            if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
+          Builder().forDataDictionary().forDataField().build(),
+          (draft) => {
+            if (
+              dataDictionaryIndex >= 0 &&
+              dataDictionaryIndex < draft.length
+            ) {
               if (
                 shouldConstraintsBeCleared(
                   dataField,
@@ -70,21 +71,31 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
                 // for non cyclic data types or for types different from ordinal strings)
                 delete dataField.Interval;
                 dataField.Value = dataField.Value?.filter(
-                  value => value.property === "invalid" || value.property === "missing"
+                  (value) =>
+                    value.property === "invalid" || value.property === "missing"
                 );
               }
 
-              if (dataField.isCyclic === "1" && dataField.optype === "ordinal" && hasIntervals(dataField)) {
+              if (
+                dataField.isCyclic === "1" &&
+                dataField.optype === "ordinal" &&
+                hasIntervals(dataField)
+              ) {
                 // ordinal cyclic fields cannot have interval constraints
                 delete dataField.Interval;
               }
-              if (dataField.optype === "categorical" && dataField.isCyclic !== undefined) {
+              if (
+                dataField.optype === "categorical" &&
+                dataField.isCyclic !== undefined
+              ) {
                 // categorical fields cannot be cyclic
                 delete dataField.isCyclic;
               }
               if (
-                ((dataField.isCyclic === "1" && dataField.optype === "ordinal") ||
-                  (dataField.dataType === "string" && dataField.optype === "ordinal")) &&
+                ((dataField.isCyclic === "1" &&
+                  dataField.optype === "ordinal") ||
+                  (dataField.dataType === "string" &&
+                    dataField.optype === "ordinal")) &&
                 !hasValidValues(dataField)
               ) {
                 // add automatically an empty value when value constraint is required because we want to save the user
@@ -100,17 +111,18 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
                 .forDataField(dataDictionaryIndex)
                 .build()
             );
-            validateDataField(dataField, dataDictionaryIndex, validationRegistry);
+            validateDataField(
+              dataField,
+              dataDictionaryIndex,
+              validationRegistry
+            );
           }
         );
         break;
 
       case Actions.Validate:
         validationRegistry.clear(
-          Builder()
-            .forDataDictionary()
-            .forDataField()
-            .build()
+          Builder().forDataDictionary().forDataField().build()
         );
         validateDataFields(state, validationRegistry);
     }

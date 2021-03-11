@@ -20,7 +20,10 @@ import { Dispatch } from "redux";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../reducers";
 
-export const useBatchDispatch = (service: HistoryService, getCurrentState: () => PMML | undefined): Dispatch<any> => {
+export const useBatchDispatch = (
+  service: HistoryService,
+  getCurrentState: () => PMML | undefined
+): Dispatch<any> => {
   const dispatch = useDispatch();
 
   return (action: any): any => {

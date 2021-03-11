@@ -71,7 +71,9 @@ describe("LandingPageToolbar", () => {
         showUnsupportedModels={true}
       />
     );
-    const element1: HTMLElement = getByTestId("landing-page-toolbar__model-filter");
+    const element1: HTMLElement = getByTestId(
+      "landing-page-toolbar__model-filter"
+    );
     const element2: HTMLElement = getByTestId("landing-page-toolbar__submit");
     expect(element1).toBeInstanceOf(HTMLInputElement);
     expect(element2).toBeInstanceOf(HTMLButtonElement);
@@ -94,7 +96,9 @@ describe("LandingPageToolbar", () => {
         showUnsupportedModels={true}
       />
     );
-    const element1: HTMLElement = getByTestId("landing-page-toolbar__supported-models");
+    const element1: HTMLElement = getByTestId(
+      "landing-page-toolbar__supported-models"
+    );
     expect(element1).toBeInstanceOf(HTMLInputElement);
 
     const input: HTMLInputElement = element1 as HTMLInputElement;

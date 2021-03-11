@@ -61,10 +61,18 @@ export const ModelCard = (props: ModelCardProps) => {
     [index]
   );
 
-  const _modelName = useMemo(() => (modelName === "" ? MODEL_NAME_NOT_SET : modelName), [modelName]);
+  const _modelName = useMemo(
+    () => (modelName === "" ? MODEL_NAME_NOT_SET : modelName),
+    [modelName]
+  );
 
   return (
-    <Card data-testid="model-card" isHoverable={true} className="model-card" onClick={onClickModel}>
+    <Card
+      data-testid="model-card"
+      isHoverable={true}
+      className="model-card"
+      onClick={onClickModel}
+    >
       <CardHeader>
         <CardHeaderMain>
           <ModelCardIcon type={modelType} />
@@ -79,7 +87,11 @@ export const ModelCard = (props: ModelCardProps) => {
         <div data-testid="model-card__model-type">{modelType}</div>
       </CardBody>
       <CardFooter>
-        <Button data-testid="model-card__delete" variant="primary" onClick={onDeleteModel}>
+        <Button
+          data-testid="model-card__delete"
+          variant="primary"
+          onClick={onDeleteModel}
+        >
           Delete
         </Button>
       </CardFooter>

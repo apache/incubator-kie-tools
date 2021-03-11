@@ -16,7 +16,13 @@
 import * as React from "react";
 import { CSSProperties } from "react";
 import { Label } from "@patternfly/react-core";
-import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  FieldName,
+  OpType,
+  OutputField,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { OutputFieldLabel } from "./OutputFieldLabel";
 import { ValidationEntry } from "../../../validation";
@@ -81,7 +87,10 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
           });
         })}
       {targetFieldValidation.length > 0 ? (
-        <ValidationIndicatorLabel validations={targetFieldValidation} cssClass="output-fields-list__item__label">
+        <ValidationIndicatorLabel
+          validations={targetFieldValidation}
+          cssClass="output-fields-list__item__label"
+        >
           <strong>TargetField:</strong>&nbsp;
           <em>Missing</em>
         </ValidationIndicatorLabel>
@@ -137,7 +146,11 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
           });
         })}
       {isDisabled && (
-        <Label style={PADDING} variant="outline" icon={<ArrowAltCircleRightIcon />}>
+        <Label
+          style={PADDING}
+          variant="outline"
+          icon={<ArrowAltCircleRightIcon />}
+        >
           Edit properties...
         </Label>
       )}
@@ -148,7 +161,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
           color="cyan"
           href="#outline"
           icon={<ArrowAltCircleRightIcon />}
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault();
             viewExtendedProperties();
           }}
