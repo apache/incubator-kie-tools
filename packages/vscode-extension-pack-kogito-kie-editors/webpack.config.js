@@ -55,9 +55,21 @@ module.exports = async (argv, env) => [
     plugins: [
       new CopyWebpackPlugin([
         { from: "./static", to: "static" },
-        { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "webview/editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] }
+        {
+          from: externalAssets.dmnEditorPath(argv),
+          to: "webview/editors/dmn",
+          ignore: ["WEB-INF/**/*"]
+        },
+        {
+          from: externalAssets.bpmnEditorPath(argv),
+          to: "webview/editors/bpmn",
+          ignore: ["WEB-INF/**/*"]
+        },
+        {
+          from: externalAssets.scesimEditorPath(argv),
+          to: "webview/editors/scesim",
+          ignore: ["WEB-INF/**/*"]
+        }
       ])
     ]
   })

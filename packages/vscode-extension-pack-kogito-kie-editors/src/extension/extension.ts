@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kogito-tooling/backend/dist/i18n";
-import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
+import {
+  backendI18nDefaults,
+  backendI18nDictionaries
+} from "@kogito-tooling/backend/dist/i18n";
+import {
+  registerTestScenarioRunnerCommand,
+  VsCodeBackendProxy
+} from "@kogito-tooling/backend/dist/vscode";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
 import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
@@ -30,9 +36,20 @@ export async function activate(context: vscode.ExtensionContext) {
   const envelopeTargetOrigin = "vscode";
 
   const workspaceApi = new VsCodeWorkspaceApi();
-  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  const notificationsApi = new VsCodeNotificationsApi(workspaceApi, backendI18n);
-  backendProxy = new VsCodeBackendProxy(context, backendI18n, "kie-group.vscode-extension-backend");
+  const backendI18n = new I18n(
+    backendI18nDefaults,
+    backendI18nDictionaries,
+    vscode.env.language
+  );
+  const notificationsApi = new VsCodeNotificationsApi(
+    workspaceApi,
+    backendI18n
+  );
+  backendProxy = new VsCodeBackendProxy(
+    context,
+    backendI18n,
+    "kie-group.vscode-extension-backend"
+  );
 
   registerTestScenarioRunnerCommand({
     command: "extension.kogito.runTest",
@@ -53,19 +70,31 @@ export async function activate(context: vscode.ExtensionContext) {
       mapping: new Map([
         [
           "bpmn",
-          { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/bpmn",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
         ],
         [
           "bpmn2",
-          { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/bpmn",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
         ],
         [
           "dmn",
-          { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/dmn",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
         ],
         [
           "scesim",
-          { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/scesim",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
         ]
       ])
     },

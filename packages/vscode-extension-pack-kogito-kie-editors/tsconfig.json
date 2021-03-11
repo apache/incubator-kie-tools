@@ -5,10 +5,6 @@
     "resolveJsonModule": true,
     "outDir": "out"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "test-resources"
-  ]
+  "include": ["src"],
+  "exclude": ["test-resources"]
 }

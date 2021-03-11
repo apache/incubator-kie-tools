@@ -24,79 +24,92 @@ import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
  * via contructor.
  */
 export default class BpmnEditorTestHelper {
+  /**
+   * WebView in whitch the editor Iframe is located.
+   * Initialize in constructor.
+   */
+  private webview: WebView;
 
-    /**
-     * WebView in whitch the editor Iframe is located.
-     * Initialize in constructor.
-     */
-    private webview: WebView;
+  constructor(webview: WebView) {
+    this.webview = webview;
+  }
 
-    constructor(webview: WebView) {
-        this.webview = webview;
-    }
+  /**
+   * Finds BPMN diagram properties element. Clicking it opens/closes properties panel.
+   *
+   * @returns Promise<WebElement> promise that resolves to BPMN diagram properties element.
+   */
+  public getDiagramProperties = async (): Promise<WebElement> => {
+    return await this.webview.findWebElement(
+      By.className("docks-item-E-DiagramEditorPropertiesScreen")
+    );
+  };
 
-    /**
-     * Finds BPMN diagram properties element. Clicking it opens/closes properties panel.
-     * 
-     * @returns Promise<WebElement> promise that resolves to BPMN diagram properties element. 
-     */
-    public getDiagramProperties = async (): Promise<WebElement> => {
-        return await this.webview.findWebElement(By.className("docks-item-E-DiagramEditorPropertiesScreen"));
-    }
+  /**
+   * Finds BPMN diagram explorer element. Clicking it opens/closes explorer panel.
+   *
+   * @returns Promise<WebElement> promise that resolves to BPMN diagram explorer element.
+   */
+  public getDiagramExplorer = async (): Promise<WebElement> => {
+    return await this.webview.findWebElement(
+      By.className("docks-item-E-ProjectDiagramExplorerScreen")
+    );
+  };
 
-    /**
-     * Finds BPMN diagram explorer element. Clicking it opens/closes explorer panel.
-     * 
-     * @returns Promise<WebElement> promise that resolves to BPMN diagram explorer element. 
-     */
-    public getDiagramExplorer = async (): Promise<WebElement> => {
-        return await this.webview.findWebElement(By.className("docks-item-E-ProjectDiagramExplorerScreen"));
-    }
+  /**
+   * Finds BPMN diagram palette element. Clicking it opens/closes the palette.
+   *
+   * @returns Promise<WebElement> promise that resolves to BPMN diagram palette element.
+   */
+  public getPalette = async (): Promise<WebElement> => {
+    return await this.webview.findWebElement(By.className("kie-palette"));
+  };
 
-    /**
-     * Finds BPMN diagram palette element. Clicking it opens/closes the palette.
-     * 
-     * @returns Promise<WebElement> promise that resolves to BPMN diagram palette element. 
-     */
-    public getPalette = async (): Promise<WebElement> => {
-        return await this.webview.findWebElement(By.className("kie-palette"));
-    }
+  /**
+   * Opens diagram properties panel
+   *
+   * Verifies the button is displayed and enabled.
+   * Verifies there is an expanded panel element displayed and enabled.
+   * Verifies there is a <h3> element with proper text.
+   *
+   * @returns a promise resolving to WebElement of openned panel.
+   */
+  public openDiagramProperties = async (): Promise<WebElement> => {
+    const properties = await this.getDiagramProperties();
+    await assertWebElementIsDisplayedEnabled(properties);
+    await properties.click();
+    const expandedPropertiesPanel = await this.webview.findWebElement(
+      expandedDocksBarE()
+    );
+    await assertWebElementIsDisplayedEnabled(
+      await properties.findElement(By.xpath(h3ComponentWithText("Properties")))
+    );
+    await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
+    return expandedPropertiesPanel;
+  };
 
-    /**
-     * Opens diagram properties panel
-     * 
-     * Verifies the button is displayed and enabled.
-     * Verifies there is an expanded panel element displayed and enabled.
-     * Verifies there is a <h3> element with proper text.
-     * 
-     * @returns a promise resolving to WebElement of openned panel.
-     */
-    public openDiagramProperties = async (): Promise<WebElement> => {
-        const properties = await this.getDiagramProperties();
-        await assertWebElementIsDisplayedEnabled(properties);
-        await properties.click();
-        const expandedPropertiesPanel = await this.webview.findWebElement(expandedDocksBarE());
-        await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText('Properties'))));
-        await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
-        return expandedPropertiesPanel;
-    }
-
-    /**
-     * Opens diagram explorer panel.
-     * 
-     * Verifies the button is displayed and enabled.
-     * Verifies there is an expanded panel element displayed and enabled.
-     * Verifies there is a <h3> element with proper text.
-     * 
-     * @returns a promise resolving to WebElement of openned panel.
-     */
-    public openDiagramExplorer = async (): Promise<WebElement> => {
-        const explorer = await this.getDiagramExplorer();
-        await assertWebElementIsDisplayedEnabled(explorer);
-        await explorer.click();
-        const expandedExplorerPanel = await this.webview.findWebElement(expandedDocksBarE());
-        await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(h3ComponentWithText('Explore Diagram'))));
-        await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
-        return expandedExplorerPanel;
-    }
+  /**
+   * Opens diagram explorer panel.
+   *
+   * Verifies the button is displayed and enabled.
+   * Verifies there is an expanded panel element displayed and enabled.
+   * Verifies there is a <h3> element with proper text.
+   *
+   * @returns a promise resolving to WebElement of openned panel.
+   */
+  public openDiagramExplorer = async (): Promise<WebElement> => {
+    const explorer = await this.getDiagramExplorer();
+    await assertWebElementIsDisplayedEnabled(explorer);
+    await explorer.click();
+    const expandedExplorerPanel = await this.webview.findWebElement(
+      expandedDocksBarE()
+    );
+    await assertWebElementIsDisplayedEnabled(
+      await explorer.findElement(
+        By.xpath(h3ComponentWithText("Explore Diagram"))
+      )
+    );
+    await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
+    return expandedExplorerPanel;
+  };
 }

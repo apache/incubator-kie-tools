@@ -16,7 +16,10 @@
 
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import {
+  ChannelType,
+  getOperatingSystem
+} from "@kogito-tooling/channel-common-api";
 
 declare global {
   export const acquireVsCodeApi: any;
@@ -28,6 +31,6 @@ EditorEnvelope.init({
   editorFactory: new GwtEditorWrapperFactory(),
   editorContext: {
     channel: ChannelType.VSCODE,
-    operatingSystem: getOperatingSystem(),
+    operatingSystem: getOperatingSystem()
   }
 });
