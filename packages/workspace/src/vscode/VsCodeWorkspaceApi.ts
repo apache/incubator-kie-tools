@@ -32,11 +32,15 @@ export class VsCodeWorkspaceApi implements WorkspaceApi {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(path));
   }
 
-  public async receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent> {
+  public async receive_resourceContentRequest(
+    request: ResourceContentRequest
+  ): Promise<ResourceContent> {
     throw new Error("This is not implemented yet.");
   }
 
-  public async receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
+  public async receive_resourceListRequest(
+    request: ResourceListRequest
+  ): Promise<ResourcesList> {
     throw new Error("This is not implemented yet.");
   }
 }

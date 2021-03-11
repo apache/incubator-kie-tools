@@ -23,6 +23,10 @@ import {
 
 export interface WorkspaceApi {
   receive_openFile(path: string): void;
-  receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
-  receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
+  receive_resourceContentRequest(
+    request: ResourceContentRequest
+  ): Promise<ResourceContent | undefined>;
+  receive_resourceListRequest(
+    request: ResourceListRequest
+  ): Promise<ResourcesList>;
 }
