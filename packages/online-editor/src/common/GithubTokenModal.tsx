@@ -28,7 +28,11 @@ import {
   InputGroupText
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
-import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
+import {
+  GITHUB_OAUTH_TOKEN_SIZE,
+  GITHUB_TOKENS_URL,
+  GITHUB_TOKENS_HOW_TO_URL
+} from "./GithubService";
 import { useOnlineI18n } from "./i18n";
 import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
 
@@ -41,18 +45,26 @@ export function GithubTokenModal(props: Props) {
   const context = useContext(GlobalContext);
   const { i18n } = useOnlineI18n();
 
-  const [potentialToken, setPotentialToken] = useState(context.githubService.resolveToken());
-  const [authenticated, setAuthenticated] = useState(context.githubService.isAuthenticated());
-  const [isTokenInvalid, setIsTokenInvalid] = useState(!context.githubService.isAuthenticated());
+  const [potentialToken, setPotentialToken] = useState(
+    context.githubService.resolveToken()
+  );
+  const [authenticated, setAuthenticated] = useState(
+    context.githubService.isAuthenticated()
+  );
+  const [isTokenInvalid, setIsTokenInvalid] = useState(
+    !context.githubService.isAuthenticated()
+  );
 
   const tokenToDisplay = useMemo(() => {
     return obfuscate(context.githubService.resolveToken() || potentialToken);
   }, [context.githubService, potentialToken]);
 
-  const onPasteHandler = useCallback(e => {
-    const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
+  const onPasteHandler = useCallback((e) => {
+    const token = e.clipboardData
+      .getData("text/plain")
+      .slice(0, GITHUB_OAUTH_TOKEN_SIZE);
     setPotentialToken(token);
-    context.githubService.authenticate(token).then(isAuthenticated => {
+    context.githubService.authenticate(token).then((isAuthenticated) => {
       setAuthenticated(isAuthenticated);
       setIsTokenInvalid(!isAuthenticated);
     });
@@ -65,12 +77,16 @@ export function GithubTokenModal(props: Props) {
     setIsTokenInvalid(false);
   }, []);
 
-  const validated = useMemo(() => (isTokenInvalid ? "error" : "default"), [isTokenInvalid]);
+  const validated = useMemo(() => (isTokenInvalid ? "error" : "default"), [
+    isTokenInvalid
+  ]);
 
   useEffect(() => {
-    context.githubService.authenticate().then(isAuthenticated => {
+    context.githubService.authenticate().then((isAuthenticated) => {
       setAuthenticated(isAuthenticated);
-      potentialToken.length === 0 ? setIsTokenInvalid(false) : setIsTokenInvalid(!isAuthenticated)
+      potentialToken.length === 0
+        ? setIsTokenInvalid(false)
+        : setIsTokenInvalid(!isAuthenticated);
     });
   }, []);
 
@@ -112,7 +128,9 @@ export function GithubTokenModal(props: Props) {
               autoFocus={true}
             />
             {authenticated && (
-              <InputGroupText style={{ border: "none", backgroundColor: "#ededed" }}>
+              <InputGroupText
+                style={{ border: "none", backgroundColor: "#ededed" }}
+              >
                 <CheckIcon />
               </InputGroupText>
             )}
@@ -121,7 +139,11 @@ export function GithubTokenModal(props: Props) {
             <Button variant="danger" onClick={onResetHandler}>
               {i18n.terms.reset}
             </Button>
-            <Button className="pf-u-ml-sm" variant="primary" onClick={props.onClose}>
+            <Button
+              className="pf-u-ml-sm"
+              variant="primary"
+              onClick={props.onClose}
+            >
               {i18n.terms.close}
             </Button>
           </div>
@@ -130,7 +152,9 @@ export function GithubTokenModal(props: Props) {
     >
       <>
         <p>
-          <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}</span>
+          <span className="pf-u-mr-sm">
+            {i18n.githubTokenModal.body.disclaimer}
+          </span>
           <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
             {i18n.githubTokenModal.body.learnMore}
             <ExternalLinkAltIcon className="pf-u-mx-sm" />

@@ -16,11 +16,22 @@
 
 import * as React from "react";
 import { useEffect } from "react";
-import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-core";
+import {
+  Button,
+  Divider,
+  List,
+  ListItem,
+  Text,
+  Title
+} from "@patternfly/react-core";
 import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 import { File } from "@kogito-tooling/editor/dist/channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
-import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour/dist/api";
+import {
+  DemoMode,
+  SubTutorialMode,
+  Tutorial
+} from "@kogito-tooling/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
 
@@ -80,7 +91,9 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
           <TrophyIcon size="xl" className="kgt-icon--with-accent" />
           <Text>{i18n.guidedTour.end.motivational}</Text>
           <Divider />
-          <Text className="pf-c-content--align-left">{i18n.guidedTour.end.nextSteps.title}:</Text>
+          <Text className="pf-c-content--align-left">
+            {i18n.guidedTour.end.nextSteps.title}:
+          </Text>
           <List className="pf-c-content--align-left">
             <ListItem>
               <I18nHtml>{i18n.guidedTour.end.nextSteps.firstStep}</I18nHtml>

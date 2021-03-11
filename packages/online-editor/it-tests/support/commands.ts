@@ -15,27 +15,31 @@
  */
 
 declare namespace Cypress {
-    interface Chainable {
-        /**
-         * Get Kogito editor iframe.
-         */
-        getEditor(): Chainable<JQuery<HTMLBodyElement>>;
+  interface Chainable {
+    /**
+     * Get Kogito editor iframe.
+     */
+    getEditor(): Chainable<JQuery<HTMLBodyElement>>;
 
-        /**
-         * Wait until Kogito editor is loaded.
-         */
-        loadEditor(): void;
-    }
+    /**
+     * Wait until Kogito editor is loaded.
+     */
+    loadEditor(): void;
+  }
 }
 
 Cypress.Commands.add("getEditor", () => {
-    cy.frameLoaded("iframe#kogito-iframe");
-    return cy.iframe("iframe#kogito-iframe");
+  cy.frameLoaded("iframe#kogito-iframe");
+  return cy.iframe("iframe#kogito-iframe");
 });
 
 Cypress.Commands.add("loadEditor", () => {
-    cy.getEditor().within(() => {
-        cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("be.visible");
-        cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
-    });
+  cy.getEditor().within(() => {
+    cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should(
+      "be.visible"
+    );
+    cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should(
+      "not.exist"
+    );
+  });
 });

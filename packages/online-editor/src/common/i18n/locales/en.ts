@@ -33,7 +33,8 @@ export const en: OnlineI18n = {
       },
       businessModeler: {
         title: `${en_common.names.businessModeler.name} Preview`,
-        description: "Provides a quick link to access the website in the same hub."
+        description:
+          "Provides a quick link to access the website in the same hub."
       }
     },
     afterDownload: {
@@ -53,7 +54,8 @@ export const en: OnlineI18n = {
         yourNewUrl: `Your new ${en_common.names.url}`
       },
       invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
-      invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
+      invalidGistFilename:
+        "Invalid filename. This gist already has a file with this name.",
       error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
       unsaved: {
         title: "Unsaved changes will be lost",
@@ -83,7 +85,8 @@ export const en: OnlineI18n = {
     source: {
       current: {
         label: "Current content",
-        description: "The embedded Editor will contain the current content, so it cannot be changed externally."
+        description:
+          "The embedded Editor will contain the current content, so it cannot be changed externally."
       },
       gist: {
         tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
@@ -185,7 +188,8 @@ export const en: OnlineI18n = {
       title: "An unexpected error happened while trying to fetch your file",
       possibleCauses: "Possible causes:",
       missingGitHubToken: `If you're trying to open a private file, make sure to set your GitHub token before. To do it use one of the Editor pages and open the "Set your GitHub token" modal under the Share dropdown.`,
-      cors: "The URL to your file must allow CORS in its response, which should contain the following header:"
+      cors:
+        "The URL to your file must allow CORS in its response, which should contain the following header:"
     }
   }
 };

@@ -41,19 +41,24 @@ export function DownloadHubModal(props: {}) {
   const { i18n } = useOnlineI18n();
 
   const [modalState, setModalState] = useState(ModalState.SELECT_OS);
-  const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
+  const [operationalSystem, setOperationalSystem] = useState(
+    getOperatingSystem() ?? OperatingSystem.LINUX
+  );
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 
-  const onDownload = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.stopPropagation();
-    setModalState(ModalState.DOWNLOADED);
-  }, []);
+  const onDownload = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.stopPropagation();
+      setModalState(ModalState.DOWNLOADED);
+    },
+    []
+  );
 
   const onClose = useCallback(() => {
     setModalState(ModalState.CLOSE);
   }, []);
 
-  const onSelectOsToggle = useCallback(isExpanded => {
+  const onSelectOsToggle = useCallback((isExpanded) => {
     setSelectIsExpanded(isExpanded);
   }, []);
 
@@ -86,7 +91,9 @@ export function DownloadHubModal(props: {}) {
 
   return (
     <div>
-      {modalState === ModalState.CLOSE && <Redirect push={true} to={context.routes.home.url({})} />}
+      {modalState === ModalState.CLOSE && (
+        <Redirect push={true} to={context.routes.home.url({})} />
+      )}
       {modalState === ModalState.SELECT_OS && (
         <Modal
           title={`${i18n.downloadHubModal.beforeDownload.title}:`}
@@ -106,22 +113,39 @@ export function DownloadHubModal(props: {}) {
         >
           <p>
             <strong>{i18n.names.vscode} </strong>
-            <small>{i18n.downloadHubModal.beforeDownload.vscodeDescription}</small>
+            <small>
+              {i18n.downloadHubModal.beforeDownload.vscodeDescription}
+            </small>
           </p>
           <br />
           <p>
-            <strong>{i18n.downloadHubModal.beforeDownload.githubChromeExtension.title} </strong>
-            <small>{i18n.downloadHubModal.beforeDownload.githubChromeExtension.description}</small>
+            <strong>
+              {i18n.downloadHubModal.beforeDownload.githubChromeExtension.title}{" "}
+            </strong>
+            <small>
+              {
+                i18n.downloadHubModal.beforeDownload.githubChromeExtension
+                  .description
+              }
+            </small>
           </p>
           <br />
           <p>
-            <strong>{i18n.downloadHubModal.beforeDownload.desktop.title} </strong>
-            <small>{i18n.downloadHubModal.beforeDownload.desktop.description}</small>
+            <strong>
+              {i18n.downloadHubModal.beforeDownload.desktop.title}{" "}
+            </strong>
+            <small>
+              {i18n.downloadHubModal.beforeDownload.desktop.description}
+            </small>
           </p>
           <br />
           <p>
-            <strong>{i18n.downloadHubModal.beforeDownload.businessModeler.title} </strong>
-            <small>{i18n.downloadHubModal.beforeDownload.businessModeler.description}</small>
+            <strong>
+              {i18n.downloadHubModal.beforeDownload.businessModeler.title}{" "}
+            </strong>
+            <small>
+              {i18n.downloadHubModal.beforeDownload.businessModeler.description}
+            </small>
           </p>
           <br />
           <p>{i18n.terms.os.full}:</p>
@@ -137,11 +161,18 @@ export function DownloadHubModal(props: {}) {
               isDisabled={false}
               direction={SelectDirection.up}
             >
-              {Array.from(availableOperatingSystems.entries()).map(([key, label]) => (
-                <SelectOption isDisabled={false} key={key} value={key} isPlaceholder={false}>
-                  {label}
-                </SelectOption>
-              ))}
+              {Array.from(availableOperatingSystems.entries()).map(
+                ([key, label]) => (
+                  <SelectOption
+                    isDisabled={false}
+                    key={key}
+                    value={key}
+                    isPlaceholder={false}
+                  >
+                    {label}
+                  </SelectOption>
+                )
+              )}
             </Select>
           </div>
         </Modal>

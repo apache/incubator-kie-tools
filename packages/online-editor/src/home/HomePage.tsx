@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { File as UploadFile, newFile } from "@kogito-tooling/editor/dist/channel";
+import {
+  File as UploadFile,
+  newFile
+} from "@kogito-tooling/editor/dist/channel";
 import {
   Brand,
   Bullseye,
@@ -42,9 +45,19 @@ import {
   PageHeaderToolsGroup,
   PageHeaderToolsItem
 } from "@patternfly/react-core";
-import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
+import {
+  ExternalLinkAltIcon,
+  OutlinedQuestionCircleIcon
+} from "@patternfly/react-icons";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
@@ -82,7 +95,10 @@ export function HomePage(props: Props) {
   const [isUploadRejected, setIsUploadRejected] = useState(false);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
-  const [inputFileUrlState, setInputFileUrlState] = useState<InputFileUrlStateType>({
+  const [
+    inputFileUrlState,
+    setInputFileUrlState
+  ] = useState<InputFileUrlStateType>({
     urlValidation: InputFileUrlState.INITIAL,
     urlToOpen: undefined
   });
@@ -103,7 +119,10 @@ export function HomePage(props: Props) {
       setIsUploadRejected(false);
 
       const fileExtension = extractFileExtension(fileName);
-      if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
+      if (
+        !fileExtension ||
+        !context.editorEnvelopeLocator.mapping.has(fileExtension)
+      ) {
         return;
       }
 
@@ -112,9 +131,10 @@ export function HomePage(props: Props) {
         fileExtension,
         fileName: removeFileExtension(fileName),
         getFileContents: () =>
-          new Promise<string | undefined>(resolve => {
+          new Promise<string | undefined>((resolve) => {
             const reader = new FileReader();
-            reader.onload = (event: any) => resolve(event.target.result as string);
+            reader.onload = (event: any) =>
+              resolve(event.target.result as string);
             reader.readAsText(file);
           })
       });
@@ -149,7 +169,8 @@ export function HomePage(props: Props) {
         isReadOnly: false,
         fileExtension: fileExtension,
         fileName: fileName,
-        getFileContents: () => fetch(filePath).then(response => response.text())
+        getFileContents: () =>
+          fetch(filePath).then((response) => response.text())
       });
       history.replace(context.routes.editor.url({ type: fileExtension }));
     },
@@ -200,7 +221,10 @@ export function HomePage(props: Props) {
 
       let rawUrl: string;
       try {
-        rawUrl = await context.githubService.getGistRawUrlFromId(gistId, gistFileName);
+        rawUrl = await context.githubService.getGistRawUrlFromId(
+          gistId,
+          gistFileName
+        );
       } catch (e) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.INVALID_GIST,
@@ -210,7 +234,10 @@ export function HomePage(props: Props) {
       }
 
       const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
-      if (gistExtension && context.editorEnvelopeLocator.mapping.has(gistExtension)) {
+      if (
+        gistExtension &&
+        context.editorEnvelopeLocator.mapping.has(gistExtension)
+      ) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
           urlToOpen: rawUrl
@@ -226,7 +253,10 @@ export function HomePage(props: Props) {
     }
 
     const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
+    if (
+      !fileExtension ||
+      !context.editorEnvelopeLocator.mapping.has(fileExtension)
+    ) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_EXTENSION,
         urlToOpen: undefined
@@ -240,7 +270,9 @@ export function HomePage(props: Props) {
     });
     if (context.githubService.isGithub(inputFileUrl)) {
       try {
-        const rawUrl = await context.githubService.getGithubRawUrl(inputFileUrl);
+        const rawUrl = await context.githubService.getGithubRawUrl(
+          inputFileUrl
+        );
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
           urlToOpen: rawUrl
@@ -292,7 +324,10 @@ export function HomePage(props: Props) {
     [inputFileUrlState]
   );
 
-  const urlCanBeOpen = useMemo(() => inputFileUrlState.urlValidation === InputFileUrlState.VALID, [inputFileUrlState]);
+  const urlCanBeOpen = useMemo(
+    () => inputFileUrlState.urlValidation === InputFileUrlState.VALID,
+    [inputFileUrlState]
+  );
 
   const onInputFileFromUrlBlur = useCallback(() => {
     if (inputFileUrl.trim() === "") {
@@ -305,7 +340,9 @@ export function HomePage(props: Props) {
 
   const openFileFromUrl = useCallback(() => {
     if (urlCanBeOpen && inputFileUrlState.urlToOpen) {
-      const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
+      const fileExtension = extractFileExtension(
+        new URL(inputFileUrlState.urlToOpen).pathname
+      );
       // FIXME: KOGITO-1202
       window.location.href = `?file=${inputFileUrlState.urlToOpen}#/editor/${fileExtension}`;
     }
@@ -314,7 +351,9 @@ export function HomePage(props: Props) {
   const helperMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState.urlValidation) {
       case InputFileUrlState.VALIDATING:
-        return <AnimatedTripleDotLabel label={i18n.homePage.openUrl.validating} />;
+        return (
+          <AnimatedTripleDotLabel label={i18n.homePage.openUrl.validating} />
+        );
       default:
         return "";
     }
@@ -354,13 +393,18 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}>{i18n.homePage.dropdown.getHub}</Link>
+      <Link to={context.routes.downloadHub.url({})}>
+        {i18n.homePage.dropdown.getHub}
+      </Link>
     </DropdownItem>
   ];
 
   const userDropdownItems = [
     <DropdownItem key="">
-      <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
+      <a
+        href={"https://groups.google.com/forum/#!forum/kogito-development"}
+        target={"_blank"}
+      >
         {i18n.homePage.dropdown.onlineForum}
         <ExternalLinkAltIcon className="pf-u-mx-sm" />
       </a>
@@ -374,7 +418,10 @@ export function HomePage(props: Props) {
     <PageHeaderTools>
       <PageHeaderToolsGroup>
         <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
-          <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+          <Link
+            to={context.routes.downloadHub.url({})}
+            className="kogito--editor-hub-download_link"
+          >
             {i18n.homePage.dropdown.getHub}
           </Link>
         </PageHeaderToolsItem>
@@ -401,7 +448,11 @@ export function HomePage(props: Props) {
             position="right"
             isOpen={isUserDropdownOpen}
             toggle={
-              <DropdownToggle toggleIndicator={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
+              <DropdownToggle
+                toggleIndicator={null}
+                onToggle={setIsUserDropdownOpen}
+                aria-label="Links"
+              >
                 <OutlinedQuestionCircleIcon />
               </DropdownToggle>
             }
@@ -422,13 +473,19 @@ export function HomePage(props: Props) {
 
   return (
     <Page header={Header} className="kogito--editor-landing">
-      <PageSection variant="dark" className="kogito--editor-landing__title-section pf-u-p-2xl-on-lg">
+      <PageSection
+        variant="dark"
+        className="kogito--editor-landing__title-section pf-u-p-2xl-on-lg"
+      >
         <TextContent>
           <Title size="3xl" headingLevel="h1">
             {i18n.homePage.header.title}
           </Title>
           <Text>{i18n.homePage.header.welcomeText}</Text>
-          <Text component={TextVariants.small} className="pf-u-text-align-right">
+          <Text
+            component={TextVariants.small}
+            className="pf-u-text-align-right"
+          >
             {`${i18n.terms.poweredBy} `}
             <Brand
               src={"images/kogito_logo_white.png"}
@@ -446,9 +503,16 @@ export function HomePage(props: Props) {
                 {i18n.homePage.bpmnCard.title}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>{i18n.homePage.bpmnCard.explanation}</CardBody>
+            <CardBody isFilled={false}>
+              {i18n.homePage.bpmnCard.explanation}
+            </CardBody>
             <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={tryBpmnSample} ouiaId="try-bpmn-sample-button">
+              <Button
+                variant="link"
+                isInline={true}
+                onClick={tryBpmnSample}
+                ouiaId="try-bpmn-sample-button"
+              >
                 {i18n.homePage.trySample}
               </Button>
             </CardBody>
@@ -464,9 +528,16 @@ export function HomePage(props: Props) {
                 {i18n.homePage.dmnCard.title}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>{i18n.homePage.dmnCard.explanation}</CardBody>
+            <CardBody isFilled={false}>
+              {i18n.homePage.dmnCard.explanation}
+            </CardBody>
             <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={tryDmnSample} ouiaId="try-dmn-sample-button">
+              <Button
+                variant="link"
+                isInline={true}
+                onClick={tryDmnSample}
+                ouiaId="try-dmn-sample-button"
+              >
                 {i18n.homePage.trySample}
               </Button>
             </CardBody>
@@ -497,7 +568,9 @@ export function HomePage(props: Props) {
                     filename={uploadedFileName}
                     onChange={onFileUpload}
                     dropzoneProps={{
-                      accept: [...context.editorEnvelopeLocator.mapping.keys()].map(ext => "." + ext).join(", "),
+                      accept: [...context.editorEnvelopeLocator.mapping.keys()]
+                        .map((ext) => "." + ext)
+                        .join(", "),
                       onDropRejected
                     }}
                     validated={isUploadRejected ? "error" : "default"}
@@ -512,16 +585,24 @@ export function HomePage(props: Props) {
                 {i18n.homePage.openUrl.openFromSource}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>{i18n.homePage.openUrl.description}</CardBody>
+            <CardBody isFilled={false}>
+              {i18n.homePage.openUrl.description}
+            </CardBody>
             <CardBody isFilled={true}>
-              <Form onSubmit={externalFileFormSubmit} disabled={!isUrlInputTextValid} spellCheck={false}>
+              <Form
+                onSubmit={externalFileFormSubmit}
+                disabled={!isUrlInputTextValid}
+                spellCheck={false}
+              >
                 <FormGroup
                   label="URL"
                   fieldId="url-text-input"
                   data-testid="url-form-input"
                   validated={isUrlInputTextValid ? "default" : "error"}
                   helperText={helperMessageForInputFileFromUrlState}
-                  helperTextInvalid={helperInvalidMessageForInputFileFromUrlState}
+                  helperTextInvalid={
+                    helperInvalidMessageForInputFileFromUrlState
+                  }
                 >
                   <TextInput
                     isRequired={true}

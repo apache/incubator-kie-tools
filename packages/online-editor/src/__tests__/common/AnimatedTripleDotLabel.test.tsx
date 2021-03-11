@@ -26,12 +26,20 @@ describe("AnimatedTripleDotLabel", () => {
       ["label", "."],
       ["label", ".."],
       ["label", "..."],
-      ["label", ""],
+      ["label", ""]
     ];
-    const { getByText, getByTestId } = render(<AnimatedTripleDotLabel label={label} interval={50} />);
+    const { getByText, getByTestId } = render(
+      <AnimatedTripleDotLabel label={label} interval={50} />
+    );
     for (const [validLabel, dots] of validLabels) {
       expect(getByText(validLabel)).toBeInTheDocument();
-      await waitFor(() => expect(getByTestId("animated-triple-dot-label")).toHaveTextContent(dots), { interval: 20, timeout: 500 });
+      await waitFor(
+        () =>
+          expect(getByTestId("animated-triple-dot-label")).toHaveTextContent(
+            dots
+          ),
+        { interval: 20, timeout: 500 }
+      );
     }
   });
 });

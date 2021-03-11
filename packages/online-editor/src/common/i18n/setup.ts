@@ -21,9 +21,16 @@ import { OnlineI18n } from "./OnlineI18n";
 import { en } from "./locales";
 import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
 
-export const onlineI18nDefaults: I18nDefaults<OnlineI18n> = { locale: "en", dictionary: en };
-export const onlineI18nDictionaries: I18nDictionaries<OnlineI18n> = new Map([["en", en]]);
-export const OnlineI18nContext = React.createContext<I18nContextType<OnlineI18n>>({} as any);
+export const onlineI18nDefaults: I18nDefaults<OnlineI18n> = {
+  locale: "en",
+  dictionary: en
+};
+export const onlineI18nDictionaries: I18nDictionaries<OnlineI18n> = new Map([
+  ["en", en]
+]);
+export const OnlineI18nContext = React.createContext<
+  I18nContextType<OnlineI18n>
+>({} as any);
 
 export function useOnlineI18n() {
   return useContext(OnlineI18nContext);

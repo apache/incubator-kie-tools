@@ -15,7 +15,14 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { useLocation } from "react-router";
 import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
@@ -27,8 +34,18 @@ import { UpdateGistErrors } from "../common/GithubService";
 import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
-import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
+import {
+  EmbeddedEditor,
+  useDirtyState,
+  useEditorRef
+} from "@kogito-tooling/editor/dist/embedded";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertActionLink,
+  Page,
+  PageSection
+} from "@patternfly/react-core";
 
 export enum Alerts {
   NONE,
@@ -80,7 +97,7 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestSave = useCallback(() => {
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
@@ -96,7 +113,7 @@ export function EditorPage(props: Props) {
   const requestDownload = useCallback(() => {
     editor?.getStateControl().setSavedCommand();
     setAlert(Alerts.NONE);
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
@@ -106,7 +123,7 @@ export function EditorPage(props: Props) {
   }, [editor]);
 
   const requestPreview = useCallback(() => {
-    editor?.getPreview().then(previewSvg => {
+    editor?.getPreview().then((previewSvg) => {
       if (downloadPreviewRef.current && previewSvg) {
         const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
         downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
@@ -123,11 +140,16 @@ export function EditorPage(props: Props) {
 
       // update gist
       if (fileUrl && context.githubService.isGist(fileUrl)) {
-        const userLogin = context.githubService.extractUserLoginFromFileUrl(fileUrl);
+        const userLogin = context.githubService.extractUserLoginFromFileUrl(
+          fileUrl
+        );
         if (userLogin === context.githubService.getLogin()) {
           try {
             const filename = `${context.file.fileName}.${context.file.fileExtension}`;
-            const updateResponse = await context.githubService.updateGist({ filename, content });
+            const updateResponse = await context.githubService.updateGist({
+              filename,
+              content
+            });
 
             if (updateResponse === UpdateGistErrors.INVALID_CURRENT_GIST) {
               setAlert(Alerts.INVALID_CURRENT_GIST);
@@ -197,7 +219,7 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -279,7 +301,11 @@ export function EditorPage(props: Props) {
         />
       }
     >
-      <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
+      <PageSection
+        isFilled={true}
+        padding={{ default: "noPadding" }}
+        style={{ flexBasis: "100%" }}
+      >
         {!fullscreen && alert === Alerts.COPY && (
           <div className={"kogito--alert-container"}>
             <Alert
@@ -345,18 +371,32 @@ export function EditorPage(props: Props) {
           </div>
         )}
         {!fullscreen && alert === Alerts.UNSAVED && (
-          <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
+          <div
+            className={"kogito--alert-container-unsaved"}
+            data-testid="unsaved-alert"
+          >
             <Alert
               className={"kogito--alert"}
               variant="warning"
               title={i18n.editorPage.alerts.unsaved.title}
-              actionClose={<AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={closeAlert} />}
+              actionClose={
+                <AlertActionCloseButton
+                  data-testid="unsaved-alert-close-button"
+                  onClose={closeAlert}
+                />
+              }
               actionLinks={
                 <React.Fragment>
-                  <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+                  <AlertActionLink
+                    data-testid="unsaved-alert-save-button"
+                    onClick={requestDownload}
+                  >
                     {i18n.terms.save}
                   </AlertActionLink>
-                  <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
+                  <AlertActionLink
+                    data-testid="unsaved-alert-close-without-save-button"
+                    onClick={closeWithoutSaving}
+                  >
                     {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
                   </AlertActionLink>
                 </React.Fragment>
@@ -366,7 +406,12 @@ export function EditorPage(props: Props) {
             </Alert>
           </div>
         )}
-        {!fullscreen && <GithubTokenModal isOpen={modal === Modal.GITHUB_TOKEN} onClose={closeModal} />}
+        {!fullscreen && (
+          <GithubTokenModal
+            isOpen={modal === Modal.GITHUB_TOKEN}
+            onClose={closeModal}
+          />
+        )}
         {!fullscreen && (
           <EmbedModal
             isOpen={modal === Modal.EMBED}
@@ -385,7 +430,10 @@ export function EditorPage(props: Props) {
           locale={locale}
         />
       </PageSection>
-      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <textarea
+        ref={copyContentTextArea}
+        style={{ height: 0, position: "absolute", zIndex: -1 }}
+      />
       <a ref={downloadRef} />
       <a ref={downloadPreviewRef} />
     </Page>

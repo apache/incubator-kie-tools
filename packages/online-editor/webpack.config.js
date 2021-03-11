@@ -34,9 +34,12 @@ function getLatestGitTag() {
 }
 
 function getDownloadHubArgs(argv) {
-  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] || process.env["DOWNLOAD_HUB_linuxUrl"];
-  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] || process.env["DOWNLOAD_HUB_macOsUrl"];
-  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] || process.env["DOWNLOAD_HUB_windowsUrl"];
+  let linuxUrl =
+    argv["DOWNLOAD_HUB_linuxUrl"] || process.env["DOWNLOAD_HUB_linuxUrl"];
+  let macOsUrl =
+    argv["DOWNLOAD_HUB_macOsUrl"] || process.env["DOWNLOAD_HUB_macOsUrl"];
+  let windowsUrl =
+    argv["DOWNLOAD_HUB_windowsUrl"] || process.env["DOWNLOAD_HUB_windowsUrl"];
 
   linuxUrl =
     linuxUrl ||
@@ -56,7 +59,11 @@ function getDownloadHubArgs(argv) {
 }
 
 module.exports = async (env, argv) => {
-  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
+  const [
+    downloadHub_linuxUrl,
+    downloadHub_macOsUrl,
+    downloadHub_windowsUrl
+  ] = getDownloadHubArgs(argv);
 
   return merge(common, {
     entry: {
@@ -69,9 +76,21 @@ module.exports = async (env, argv) => {
         { from: "./static/samples", to: "./samples" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
-        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
+        {
+          from:
+            "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist",
+          to: "./envelope"
+        },
+        {
+          from: externalAssets.dmnEditorPath(argv),
+          to: "./gwt-editors/dmn",
+          ignore: ["WEB-INF/**/*"]
+        },
+        {
+          from: externalAssets.bpmnEditorPath(argv),
+          to: "./gwt-editors/bpmn",
+          ignore: ["WEB-INF/**/*"]
+        }
       ])
     ],
     module: {
@@ -103,7 +122,10 @@ module.exports = async (env, argv) => {
       historyApiFallback: false,
       disableHostCheck: true,
       watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      contentBase: [
+        path.join(__dirname, "./dist"),
+        path.join(__dirname, "./static")
+      ],
       compress: true,
       port: 9001
     }

@@ -104,7 +104,11 @@ export function EditorToolbar(props: Props) {
           </DropdownItem>
         )}
       </React.Fragment>,
-      <DropdownItem key={`dropdown-${dropdownId}-fullscreen`} component={"button"} onClick={props.onFullScreen}>
+      <DropdownItem
+        key={`dropdown-${dropdownId}-fullscreen`}
+        component={"button"}
+        onClick={props.onFullScreen}
+      >
         {i18n.editorToolbar.enterFullScreenView}
       </DropdownItem>
     ],
@@ -128,10 +132,18 @@ export function EditorToolbar(props: Props) {
       >
         {i18n.editorToolbar.copySource}
       </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
+      <DropdownItem
+        key={`dropdown-${dropdownId}-download-svg`}
+        component="button"
+        onClick={props.onPreview}
+      >
         {i18n.editorToolbar.downloadSVG}
       </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-embed`} component="button" onClick={props.onEmbed}>
+      <DropdownItem
+        key={`dropdown-${dropdownId}-embed`}
+        component="button"
+        onClick={props.onEmbed}
+      >
         {i18n.editorToolbar.embed}
       </DropdownItem>,
       <DropdownGroup key={"github-group"} label={i18n.names.github}>
@@ -140,7 +152,9 @@ export function EditorToolbar(props: Props) {
             data-testid={"gist-it-tooltip"}
             key={`dropdown-${dropdownId}-export-gist`}
             content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
-            trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
+            trigger={
+              !context.githubService.isAuthenticated() ? "mouseenter click" : ""
+            }
           >
             <DropdownItem
               data-testid={"gist-it-button"}
@@ -171,12 +185,24 @@ export function EditorToolbar(props: Props) {
         </DropdownItem>
       </DropdownGroup>
     ],
-    [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
+    [
+      i18n,
+      context,
+      props.onSave,
+      props.onDownload,
+      props.onCopyContentToClipboard,
+      props.onGistIt
+    ]
   );
 
   return !props.isPageFullscreen ? (
     <PageHeader
-      logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
+      logo={
+        <Brand
+          src={`images/${fileExtension}_kogito_logo.svg`}
+          alt={`${fileExtension} kogito logo`}
+        />
+      }
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>
@@ -219,7 +245,7 @@ export function EditorToolbar(props: Props) {
                   <DropdownToggle
                     id={"share-id-lg"}
                     data-testid={"share-menu"}
-                    onToggle={isOpen => setShareMenuOpen(isOpen)}
+                    onToggle={(isOpen) => setShareMenuOpen(isOpen)}
                   >
                     {i18n.editorToolbar.share}
                   </DropdownToggle>
@@ -251,7 +277,7 @@ export function EditorToolbar(props: Props) {
                     className={"kogito--editor__toolbar-icon-button"}
                     id={"view-id-lg"}
                     toggleIndicator={null}
-                    onToggle={isOpen => setViewKebabOpen(isOpen)}
+                    onToggle={(isOpen) => setViewKebabOpen(isOpen)}
                   >
                     <EllipsisVIcon />
                   </DropdownToggle>
@@ -280,7 +306,7 @@ export function EditorToolbar(props: Props) {
                     className={"kogito--editor__toolbar-icon-button"}
                     id={"kebab-id-sm"}
                     toggleIndicator={null}
-                    onToggle={isOpen => setKebabOpen(isOpen)}
+                    onToggle={(isOpen) => setKebabOpen(isOpen)}
                   >
                     <EllipsisVIcon />
                   </DropdownToggle>
@@ -289,7 +315,10 @@ export function EditorToolbar(props: Props) {
                 isPlain={true}
                 dropdownItems={[
                   ...viewItems("sm"),
-                  <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
+                  <DropdownGroup
+                    key={"share-group"}
+                    label={i18n.editorToolbar.share}
+                  >
                     {...shareItems("sm")}
                   </DropdownGroup>
                 ]}
@@ -301,7 +330,10 @@ export function EditorToolbar(props: Props) {
       }
       topNav={
         <>
-          <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+          <div
+            data-testid={"toolbar-title"}
+            className={"kogito--editor__toolbar-name-container"}
+          >
             <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
               {fileName}
             </Title>

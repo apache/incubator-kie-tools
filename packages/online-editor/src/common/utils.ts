@@ -24,7 +24,9 @@ export function extractFileExtension(fileName: string) {
     : undefined;
 }
 
-export function extractEditorFileExtensionFromUrl(supportedFileExtensions: string[]): string | undefined {
+export function extractEditorFileExtensionFromUrl(
+  supportedFileExtensions: string[]
+): string | undefined {
   const typeFromUrl = window.location.href
     .split("?")[0]
     .split("#")
@@ -32,7 +34,9 @@ export function extractEditorFileExtensionFromUrl(supportedFileExtensions: strin
     ?.split("/")
     ?.pop();
 
-  return supportedFileExtensions.indexOf(typeFromUrl!) !== -1 ? typeFromUrl : undefined;
+  return supportedFileExtensions.indexOf(typeFromUrl!) !== -1
+    ? typeFromUrl
+    : undefined;
 }
 
 export function removeFileExtension(fileName: string) {
@@ -81,10 +85,7 @@ export function getCookie(name: string) {
   const parts = value.split("; " + name + "=");
 
   if (parts.length === 2) {
-    return parts
-      .pop()!
-      .split(";")
-      .shift();
+    return parts.pop()!.split(";").shift();
   }
 }
 
@@ -93,5 +94,6 @@ export function setCookie(name: string, value: string) {
 
   date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60); // expires in 10 years
 
-  document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+  document.cookie =
+    name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }

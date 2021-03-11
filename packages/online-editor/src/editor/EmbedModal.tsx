@@ -15,7 +15,14 @@
  */
 
 import * as React from "react";
-import { Button, Modal, ModalVariant, Radio, Tooltip, ClipboardCopy } from "@patternfly/react-core";
+import {
+  Button,
+  Modal,
+  ModalVariant,
+  Radio,
+  Tooltip,
+  ClipboardCopy
+} from "@patternfly/react-core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
@@ -30,16 +37,34 @@ interface StandaloneConfigs {
   scriptUrl: string;
 }
 
-const editorStandaloneClassMapping = new Map<SupportedStandaloneEditorFileExtensions, StandaloneConfigs>([
+const editorStandaloneClassMapping = new Map<
+  SupportedStandaloneEditorFileExtensions,
+  StandaloneConfigs
+>([
   [
     "bpmn",
-    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" }
+    {
+      libraryName: "BpmnEditor",
+      scriptUrl:
+        "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js"
+    }
   ],
   [
     "bpmn2",
-    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" }
+    {
+      libraryName: "BpmnEditor",
+      scriptUrl:
+        "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js"
+    }
   ],
-  ["dmn", { libraryName: "DmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js" }]
+  [
+    "dmn",
+    {
+      libraryName: "DmnEditor",
+      scriptUrl:
+        "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js"
+    }
+  ]
 ]);
 
 enum ContentSource {
@@ -57,22 +82,36 @@ interface Props {
 export function EmbedModal(props: Props) {
   const context = useContext(GlobalContext);
   const [embedCode, setEmbedCode] = useState("");
-  const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
+  const [contentSource, setContentSource] = useState(
+    ContentSource.CURRENT_CONTENT
+  );
   const { i18n } = useOnlineI18n();
   const fileUrl = useFileUrl();
 
-  const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
+  const isGist = useMemo(() => context.githubService.isGist(fileUrl), [
+    fileUrl,
+    context
+  ]);
 
   const isSupportedStandaloneEditorFileExtensions = useCallback(
-    (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
-      return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
+    (
+      toBeDetermined: string
+    ): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
+      return (
+        toBeDetermined === "bpmn" ||
+        toBeDetermined === "bpmn2" ||
+        toBeDetermined === "dmn"
+      );
     },
     []
   );
 
   const getCurrentContentScript = useCallback(
     async (libraryName: string) => {
-      const editorContent = ((await props.editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
+      const editorContent = ((await props.editor?.getContent()) ?? "").replace(
+        /(\r\n|\n|\r)/gm,
+        ""
+      );
       return `
     <script>
       ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${editorContent}', origin: "*" })
@@ -93,8 +132,9 @@ export function EmbedModal(props: Props) {
     [fileUrl]
   );
 
-  const getStandaloneEditorIframeSrcdoc = useCallback((script: string, scriptUrl: string) => {
-    return `<!DOCTYPE html>
+  const getStandaloneEditorIframeSrcdoc = useCallback(
+    (script: string, scriptUrl: string) => {
+      return `<!DOCTYPE html>
     <html lang="en">
     <head>
       <script src="${scriptUrl}"></script>
@@ -115,7 +155,9 @@ export function EmbedModal(props: Props) {
       ${script}
     </body>
     </html>`;
-  }, []);
+    },
+    []
+  );
 
   const getStandaloneEditorIframeOuterHtml = useCallback(async () => {
     if (!isSupportedStandaloneEditorFileExtensions(props.fileExtension)) {
@@ -125,7 +167,9 @@ export function EmbedModal(props: Props) {
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";
-    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.fileExtension)!;
+    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(
+      props.fileExtension
+    )!;
 
     const script =
       contentSource === ContentSource.CURRENT_CONTENT
@@ -145,7 +189,9 @@ export function EmbedModal(props: Props) {
   ]);
 
   useEffect(() => {
-    getStandaloneEditorIframeOuterHtml().then(outerHtml => setEmbedCode(outerHtml));
+    getStandaloneEditorIframeOuterHtml().then((outerHtml) =>
+      setEmbedCode(outerHtml)
+    );
   }, [getStandaloneEditorIframeOuterHtml]);
 
   return (
@@ -189,7 +235,9 @@ export function EmbedModal(props: Props) {
       </Tooltip>
       <br />
       <div className={"kogito--editor__embed-modal-embed-code"}>
-        <p className={"kogito--editor__embed-modal-embed-code-items"}>{i18n.embedModal.embedCode}</p>
+        <p className={"kogito--editor__embed-modal-embed-code-items"}>
+          {i18n.embedModal.embedCode}
+        </p>
         <ClipboardCopy
           className={"kogito--editor__embed-modal-embed-code-items"}
           aria-label={"Embed code"}

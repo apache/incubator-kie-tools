@@ -33,41 +33,57 @@ describe("utils::extractEditorFileExtensionFromUrl", () => {
 
   test("should be 'bpmn' when #/editor/bpmn", () => {
     setWindowLocationHref("#/editor/bpmn");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("bpmn");
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual(
+      "bpmn"
+    );
   });
 
   test("should be 'dmn' when #/editor/dmn", () => {
     setWindowLocationHref("#/editor/dmn");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("dmn");
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual(
+      "dmn"
+    );
   });
 
   test("should be 'bpmn2' when #/editor/bpmn2?key=value", () => {
     setWindowLocationHref("#/editor/bpmn2?key=value");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("bpmn2");
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual(
+      "bpmn2"
+    );
   });
 
   test("should be 'bpmn2' when #/editor/myext?key=value", () => {
     setWindowLocationHref("#/editor/myext?key=value");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("myext");
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual(
+      "myext"
+    );
   });
 
   test("should be undefined when #/editor/invalid", () => {
     setWindowLocationHref("#/editor/invalid");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
+    expect(
+      extractEditorFileExtensionFromUrl(supportedFileExtensions)
+    ).toBeUndefined();
   });
 
   test("should be undefined when #/editor", () => {
     setWindowLocationHref("#/editor");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
+    expect(
+      extractEditorFileExtensionFromUrl(supportedFileExtensions)
+    ).toBeUndefined();
   });
 
   test("should be undefined when #/editor?key=value", () => {
     setWindowLocationHref("#/editor?key=value");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
+    expect(
+      extractEditorFileExtensionFromUrl(supportedFileExtensions)
+    ).toBeUndefined();
   });
 
   test("should be undefined when empty", () => {
     setWindowLocationHref("");
-    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
+    expect(
+      extractEditorFileExtensionFromUrl(supportedFileExtensions)
+    ).toBeUndefined();
   });
 });

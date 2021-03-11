@@ -18,7 +18,10 @@ import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
-import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
+import {
+  usingTestingGlobalContext,
+  usingTestingOnlineI18nContext
+} from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";
 
@@ -37,7 +40,9 @@ function mockFunctions() {
   const original = require.requireActual("../../common/Hooks");
   return {
     ...original,
-    useFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something")
+    useFileUrl: jest
+      .fn()
+      .mockImplementation(() => "gist.githubusercontent.com/?file=something")
   };
 }
 jest.mock("../../common/Hooks", () => mockFunctions());
@@ -143,14 +148,19 @@ describe("EditorToolbar", () => {
 
       fireEvent.click(getByTestId("share-menu"));
       expect(getByTestId("gist-it-button")).toBeVisible();
-      expect(getByTestId("gist-it-button")).toHaveAttribute("aria-disabled", "true");
+      expect(getByTestId("gist-it-button")).toHaveAttribute(
+        "aria-disabled",
+        "true"
+      );
       expect(getByTestId("share-menu")).toMatchSnapshot();
     });
 
     test("Set GitHub token button should open a GitHubTokenModal", async () => {
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+          usingTestingGlobalContext(
+            <EditorPage onFileNameChanged={onFileNameChanged} />
+          ).wrapper
         ).wrapper
       );
 

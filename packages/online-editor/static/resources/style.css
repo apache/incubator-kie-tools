@@ -29,7 +29,9 @@
 }
 
 .kogito--editor-landing__title-section.pf-m-dark-200 {
-  --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--dark-200);
+  --pf-c-page__main-section--BackgroundColor: var(
+    --pf-global--BackgroundColor--dark-200
+  );
   color: var(--pf-global--Color--light-200);
 }
 
@@ -46,12 +48,14 @@
   display: inline-block;
   visibility: hidden;
   white-space: pre;
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__header-nav--BackgroundColor);
+  border: var(--pf-global--BorderWidth--md) solid
+    var(--pf-c-page__header-nav--BackgroundColor);
   padding: var(--pf-global--spacer--xs);
 }
 
 .kogito--editor__toolbar-name-container input {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__header-nav--BackgroundColor);
+  border: var(--pf-global--BorderWidth--md) solid
+    var(--pf-c-page__header-nav--BackgroundColor);
   border-radius: var(--pf-global--BorderRadius--sm);
   padding: var(--pf-global--spacer--xs);
   position: absolute;
@@ -65,7 +69,8 @@
 }
 
 .kogito--editor__toolbar-name-container input:focus {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--active-color--100);
+  border: var(--pf-global--BorderWidth--md) solid
+    var(--pf-global--active-color--100);
 }
 
 .kogito--full-screen__toolbar {
@@ -122,7 +127,8 @@
 .kogito--editor__toolbar-title {
   background-color: var(--pf-c-page__header-nav--BackgroundColor);
   color: var(--pf-global--Color--light-100);
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+  border: var(--pf-global--BorderWidth--md) solid
+    var(--pf-global--BorderColor--200);
   font-size: var(--pf-global--FontSize--2xl);
   text-align: center;
 }
@@ -137,7 +143,8 @@
 }
 
 .kogito--editor__toolbar-title:hover {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+  border: var(--pf-global--BorderWidth--md) solid
+    var(--pf-global--BorderColor--200);
   border-radius: var(--pf-global--BorderRadius--sm);
   padding: var(--pf-global--spacer--xs);
 }

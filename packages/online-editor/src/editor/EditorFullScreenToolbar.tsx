@@ -26,7 +26,11 @@ export function FullScreenToolbar(props: Props) {
   const { i18n } = useOnlineI18n();
   return (
     <div className="kogito--full-screen__toolbar">
-      <Button className="kogito--full-screen__toolbar-button" variant="primary" onClick={props.onExitFullScreen}>
+      <Button
+        className="kogito--full-screen__toolbar-button"
+        variant="primary"
+        onClick={props.onExitFullScreen}
+      >
         {i18n.editorFullScreenToolbar}
       </Button>
     </div>

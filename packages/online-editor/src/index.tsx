@@ -27,22 +27,55 @@ import {
   removeFileExtension
 } from "./common/utils";
 import { GithubService } from "./common/GithubService";
-import { Alert, AlertActionLink, AlertActionCloseButton, AlertVariant, List, ListItem } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionLink,
+  AlertActionCloseButton,
+  AlertVariant,
+  List,
+  ListItem
+} from "@patternfly/react-core";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import "../static/resources/style.css";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import {
+  OnlineI18n,
+  onlineI18nDefaults,
+  onlineI18nDictionaries
+} from "./common/i18n";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
-const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionaries, "en");
+const onlineI18n = new I18n<OnlineI18n>(
+  onlineI18nDefaults,
+  onlineI18nDictionaries,
+  "en"
+);
 
 const editorEnvelopeLocator: EditorEnvelopeLocator = {
   targetOrigin: window.location.origin,
   mapping: new Map([
-    ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-    ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-    ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }]
+    [
+      "bpmn",
+      {
+        resourcesPathPrefix: "../gwt-editors/bpmn",
+        envelopePath: "envelope/envelope.html"
+      }
+    ],
+    [
+      "bpmn2",
+      {
+        resourcesPathPrefix: "../gwt-editors/bpmn",
+        envelopePath: "envelope/envelope.html"
+      }
+    ],
+    [
+      "dmn",
+      {
+        resourcesPathPrefix: "../gwt-editors/dmn",
+        envelopePath: "envelope/envelope.html"
+      }
+    ]
   ])
 };
 
@@ -57,7 +90,11 @@ if (urlParams.has("ext")) {
 function openDefaultOnlineEditor() {
   ReactDOM.render(
     <App
-      file={newFile(extractEditorFileExtensionFromUrl([...editorEnvelopeLocator.mapping.keys()]) ?? "dmn")}
+      file={newFile(
+        extractEditorFileExtensionFromUrl([
+          ...editorEnvelopeLocator.mapping.keys()
+        ]) ?? "dmn"
+      )}
       readonly={false}
       external={false}
       githubService={githubService}
@@ -91,37 +128,37 @@ function waitForEventWithFileData() {
 
 function openFileByUrl() {
   const i18n = onlineI18n.getCurrent();
-  const filePath = urlParams
-    .get("file")!
-    .split("?")
-    .shift()!;
+  const filePath = urlParams.get("file")!.split("?").shift()!;
 
   if (githubService.isGist(filePath)) {
     githubService
       .fetchGistFile(filePath)
-      .then(content => openFile(filePath, Promise.resolve(content)))
-      .catch(error => {
+      .then((content) => openFile(filePath, Promise.resolve(content)))
+      .catch((error) => {
         showFetchError(i18n.alerts.gistError);
       });
-  } else if (githubService.isGithub(filePath) || githubService.isGithubRaw(filePath)) {
+  } else if (
+    githubService.isGithub(filePath) ||
+    githubService.isGithubRaw(filePath)
+  ) {
     githubService
       .fetchGithubFile(filePath)
-      .then(response => {
+      .then((response) => {
         openFile(filePath, Promise.resolve(response));
       })
-      .catch(error => {
+      .catch((error) => {
         showFetchError(error.toString());
       });
   } else {
     fetch(filePath)
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           openFile(filePath, response.text());
         } else {
           showResponseError(response.status, response.statusText);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         showFetchError(error.toString());
       });
   }
@@ -153,7 +190,11 @@ function showResponseError(statusCode: number, description: string) {
       <Alert
         variant={AlertVariant.danger}
         title={i18n.alerts.responseError.title}
-        actionLinks={<AlertActionLink onClick={goToHomePage}>{i18n.alerts.goToHomePage}</AlertActionLink>}
+        actionLinks={
+          <AlertActionLink onClick={goToHomePage}>
+            {i18n.alerts.goToHomePage}
+          </AlertActionLink>
+        }
         actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
       >
         <br />
@@ -174,7 +215,11 @@ function showFetchError(description: string) {
       <Alert
         variant={AlertVariant.danger}
         title={i18n.alerts.fetchError.title}
-        actionLinks={<AlertActionLink onClick={goToHomePage}>{i18n.alerts.goToHomePage}</AlertActionLink>}
+        actionLinks={
+          <AlertActionLink onClick={goToHomePage}>
+            {i18n.alerts.goToHomePage}
+          </AlertActionLink>
+        }
         actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
       >
         <br />
