@@ -38,16 +38,26 @@ export class VsCodeResourceContentService implements ResourceContentService {
     this.currentAssetFolder = currentAssetFolder;
   }
 
-  public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-    const workspaceFolderPath = vscode.workspace!.workspaceFolders![0].uri.fsPath + nodePath.sep;
-    const basePath = opts?.type === SearchType.ASSET_FOLDER ? workspaceFolderPath + this.currentAssetFolder : workspaceFolderPath;
+  public async list(
+    pattern: string,
+    opts?: ResourceListOptions
+  ): Promise<ResourcesList> {
+    const workspaceFolderPath =
+      vscode.workspace!.workspaceFolders![0].uri.fsPath + nodePath.sep;
+    const basePath =
+      opts?.type === SearchType.ASSET_FOLDER
+        ? workspaceFolderPath + this.currentAssetFolder
+        : workspaceFolderPath;
     const relativePattern = new RelativePattern(basePath, pattern);
     const files = await vscode.workspace.findFiles(relativePattern);
-    const paths = files.map(f => vscode.workspace.asRelativePath(f.path));
+    const paths = files.map((f) => vscode.workspace.asRelativePath(f.path));
     return new ResourcesList(pattern, paths);
   }
 
-  public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
+  public async get(
+    path: string,
+    opts?: ResourceContentOptions
+  ): Promise<ResourceContent | undefined> {
     const contentPath = this.resolvePath(path);
 
     if (!contentPath) {
@@ -65,7 +75,8 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   private resolvePath(uri: string) {
-    const folders: ReadonlyArray<WorkspaceFolder> = vscode.workspace!.workspaceFolders!;
+    const folders: ReadonlyArray<WorkspaceFolder> = vscode.workspace!
+      .workspaceFolders!;
     if (folders) {
       const rootPath = folders[0].uri.path;
       if (!uri.startsWith(nodePath.sep)) {
@@ -76,15 +87,29 @@ export class VsCodeResourceContentService implements ResourceContentService {
     return null;
   }
 
-  private retrieveContent(type: ContentType | undefined, path: string, contentPath: string): Thenable<ResourceContent> {
+  private retrieveContent(
+    type: ContentType | undefined,
+    path: string,
+    contentPath: string
+  ): Thenable<ResourceContent> {
     if (type === ContentType.BINARY) {
       return vscode.workspace.fs
         .readFile(vscode.Uri.parse(contentPath))
-        .then(content => new ResourceContent(path, Buffer.from(content).toString("base64"), ContentType.BINARY));
+        .then(
+          (content) =>
+            new ResourceContent(
+              path,
+              Buffer.from(content).toString("base64"),
+              ContentType.BINARY
+            )
+        );
     } else {
       return vscode.workspace
         .openTextDocument(contentPath)
-        .then(textDoc => new ResourceContent(path, textDoc.getText(), ContentType.TEXT));
+        .then(
+          (textDoc) =>
+            new ResourceContent(path, textDoc.getText(), ContentType.TEXT)
+        );
     }
   }
 }

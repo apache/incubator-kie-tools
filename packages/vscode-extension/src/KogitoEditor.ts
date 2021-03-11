@@ -29,7 +29,9 @@ import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 export class KogitoEditor implements EditorApi {
-  private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
+  private broadcastSubscription: (
+    msg: EnvelopeBusMessage<unknown, any>
+  ) => void;
 
   public constructor(
     public readonly document: KogitoEditableDocument,
@@ -39,9 +41,12 @@ export class KogitoEditor implements EditorApi {
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly envelopeServer = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
+    private readonly envelopeServer = new EnvelopeServer<
+      KogitoEditorChannelApi,
+      KogitoEditorEnvelopeApi
+    >(
       {
-        postMessage: msg => {
+        postMessage: (msg) => {
           try {
             this.panel.webview.postMessage(msg);
           } catch (e) {
@@ -50,7 +55,7 @@ export class KogitoEditor implements EditorApi {
         }
       },
       envelopeLocator.targetOrigin,
-      self =>
+      (self) =>
         self.envelopeApi.requests.receive_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
@@ -64,15 +69,22 @@ export class KogitoEditor implements EditorApi {
   ) {}
 
   public getElementPosition(selector: string) {
-    return this.envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector);
+    return this.envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(
+      selector
+    );
   }
 
   public getContent() {
-    return this.envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content);
+    return this.envelopeServer.envelopeApi.requests
+      .receive_contentRequest()
+      .then((c) => c.content);
   }
 
   public async setContent(path: string, content: string) {
-    this.envelopeServer.envelopeApi.notifications.receive_contentChanged({ path: path, content: content });
+    this.envelopeServer.envelopeApi.notifications.receive_contentChanged({
+      path: path,
+      content: content
+    });
   }
 
   public async undo() {
@@ -96,13 +108,13 @@ export class KogitoEditor implements EditorApi {
   }
 
   public startListening(editorChannelApi: KogitoEditorChannelApi) {
-    this.broadcastSubscription = this.messageBroadcaster.subscribe(msg => {
+    this.broadcastSubscription = this.messageBroadcaster.subscribe((msg) => {
       this.envelopeServer.receive(msg, editorChannelApi);
     });
 
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => this.messageBroadcaster.broadcast(msg),
+        (msg) => this.messageBroadcaster.broadcast(msg),
         this,
         this.context.subscriptions
       )

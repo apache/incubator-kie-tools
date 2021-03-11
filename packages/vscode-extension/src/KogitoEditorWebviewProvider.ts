@@ -33,9 +33,13 @@ import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/src/vscode";
 
-export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
-  private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
-  public readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
+export class KogitoEditorWebviewProvider
+  implements CustomEditorProvider<KogitoEditableDocument> {
+  private readonly _onDidChangeCustomDocument = new EventEmitter<
+    CustomDocumentEditEvent<KogitoEditableDocument>
+  >();
+  public readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument
+    .event;
 
   public constructor(
     private readonly context: vscode.ExtensionContext,
@@ -62,7 +66,11 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
     this.editorFactory.configureNew(webviewPanel, document);
   }
 
-  public async openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, cancellation: CancellationToken) {
+  public async openCustomDocument(
+    uri: Uri,
+    openContext: CustomDocumentOpenContext,
+    cancellation: CancellationToken
+  ) {
     this.createStorageFolder();
     const document = new KogitoEditableDocument(
       uri,
@@ -75,15 +83,25 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
     return document;
   }
 
-  public async saveCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
+  public async saveCustomDocument(
+    document: KogitoEditableDocument,
+    cancellation: CancellationToken
+  ) {
     return document.save(document.uri, cancellation);
   }
 
-  public async saveCustomDocumentAs(document: KogitoEditableDocument, dest: Uri, cancellation: CancellationToken) {
+  public async saveCustomDocumentAs(
+    document: KogitoEditableDocument,
+    dest: Uri,
+    cancellation: CancellationToken
+  ) {
     return document.save(dest, cancellation);
   }
 
-  public async revertCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
+  public async revertCustomDocument(
+    document: KogitoEditableDocument,
+    cancellation: CancellationToken
+  ) {
     return document.revert(cancellation);
   }
 
@@ -96,7 +114,8 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
   }
 
   private createStorageFolder() {
-    const storagePath = this.context.storagePath ?? this.context.globalStoragePath;
+    const storagePath =
+      this.context.storagePath ?? this.context.globalStoragePath;
 
     if (storagePath && !fs.existsSync(storagePath)) {
       fs.mkdirSync(storagePath);
@@ -104,8 +123,14 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
   }
 
   private setupListeners(document: KogitoEditableDocument) {
-    const listeners = [document.onDidChange(e => this._onDidChangeCustomDocument.fire({ document, ...e }))];
-    document.onDidDispose(() => listeners.forEach(listener => listener.dispose()));
+    const listeners = [
+      document.onDidChange((e) =>
+        this._onDidChangeCustomDocument.fire({ document, ...e })
+      )
+    ];
+    document.onDidDispose(() =>
+      listeners.forEach((listener) => listener.dispose())
+    );
   }
 
   private resolveBackup(backupId: string | undefined): Uri | undefined {

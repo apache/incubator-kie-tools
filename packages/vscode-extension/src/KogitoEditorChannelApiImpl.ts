@@ -21,13 +21,22 @@ import {
   ResourceContentService,
   ResourceListRequest
 } from "@kogito-tooling/channel-common-api";
-import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import {
+  KogitoEditorChannelApi,
+  StateControlCommand
+} from "@kogito-tooling/editor/dist/api";
+import {
+  Tutorial,
+  UserInteraction
+} from "@kogito-tooling/guided-tour/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
-import { Notification, NotificationsApi } from "@kogito-tooling/notifications/dist/api";
+import {
+  Notification,
+  NotificationsApi
+} from "@kogito-tooling/notifications/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
@@ -47,15 +56,22 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public receive_openFile(path: string) {
     this.workspaceApi.receive_openFile(
-      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.uri.fsPath), path)
+      __path.isAbsolute(path)
+        ? path
+        : __path.join(__path.dirname(this.editor.document.uri.fsPath), path)
     );
   }
 
   public async receive_contentRequest() {
-    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then(contentArray => {
-      this.initialBackup = undefined;
-      return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
-    });
+    return vscode.workspace.fs
+      .readFile(this.initialBackup ?? this.editor.document.uri)
+      .then((contentArray) => {
+        this.initialBackup = undefined;
+        return {
+          content: this.decoder.decode(contentArray),
+          path: this.editor.document.relativePath
+        };
+      });
   }
 
   public receive_setContentError(errorMessage: string) {

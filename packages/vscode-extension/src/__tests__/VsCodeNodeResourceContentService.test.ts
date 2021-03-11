@@ -30,13 +30,19 @@ describe("VsCodeNodeResourceContentService", () => {
   test("Test list", async () => {
     const txtPattern = "*.txt";
 
-    const resourcesListWithAssets = await resourceContentServie.list(txtPattern);
+    const resourcesListWithAssets = await resourceContentServie.list(
+      txtPattern
+    );
 
     expect(resourcesListWithAssets).not.toBeNull();
     expect(resourcesListWithAssets.pattern).toBe(txtPattern);
     expect(resourcesListWithAssets.paths).toHaveLength(2);
-    expect(resourcesListWithAssets.paths).toContain(testWorkspace + "resource1.txt");
-    expect(resourcesListWithAssets.paths).toContain(testWorkspace + "resource2.txt");
+    expect(resourcesListWithAssets.paths).toContain(
+      testWorkspace + "resource1.txt"
+    );
+    expect(resourcesListWithAssets.paths).toContain(
+      testWorkspace + "resource2.txt"
+    );
 
     const pdfPattern = "*.pdf";
     const resourcesListEmpty = await resourceContentServie.list(pdfPattern);
@@ -46,7 +52,9 @@ describe("VsCodeNodeResourceContentService", () => {
   });
 
   test("Test list with errors", async () => {
-    resourceContentServie = new VsCodeNodeResourceContentService("/probably/an/unexisting/path/");
+    resourceContentServie = new VsCodeNodeResourceContentService(
+      "/probably/an/unexisting/path/"
+    );
 
     const pattern = "*.txt";
     const resourcesList = await resourceContentServie.list(pattern);
@@ -74,7 +82,9 @@ describe("VsCodeNodeResourceContentService", () => {
     expect(resource2Content?.content).toBe("content for resource 2");
 
     const iconPath = "icon.png";
-    const iconContent = await resourceContentServie.get(iconPath, { type: ContentType.BINARY });
+    const iconContent = await resourceContentServie.get(iconPath, {
+      type: ContentType.BINARY
+    });
 
     expect(iconContent).not.toBeNull();
     expect(iconContent?.path).toBe(iconPath);
@@ -83,7 +93,9 @@ describe("VsCodeNodeResourceContentService", () => {
   });
 
   test("Test get with errors", async () => {
-    resourceContentServie = new VsCodeNodeResourceContentService("/probably/an/unexisting/path/");
+    resourceContentServie = new VsCodeNodeResourceContentService(
+      "/probably/an/unexisting/path/"
+    );
 
     const txtResourcePath = "resource1.txt";
     const txtResourceContent = await resourceContentServie.get(txtResourcePath);
@@ -94,7 +106,9 @@ describe("VsCodeNodeResourceContentService", () => {
     expect(txtResourceContent?.content).toBe(undefined);
 
     const binaryPath = "icon.png";
-    const binaryContent = await resourceContentServie.get(binaryPath, { type: ContentType.BINARY });
+    const binaryContent = await resourceContentServie.get(binaryPath, {
+      type: ContentType.BINARY
+    });
 
     expect(binaryContent).not.toBeNull();
     expect(binaryContent?.path).toBe(binaryPath);

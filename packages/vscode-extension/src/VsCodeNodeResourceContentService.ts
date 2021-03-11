@@ -31,36 +31,44 @@ import * as minimatch from "minimatch";
  * Implementation of a ResourceContentService using the Node filesystem APIs. This should only be used when the edited
  * asset is not part the opened workspace.
  */
-export class VsCodeNodeResourceContentService implements ResourceContentService {
-
+export class VsCodeNodeResourceContentService
+  implements ResourceContentService {
   private readonly rootFolder: string;
 
   constructor(rootFolder: string) {
     this.rootFolder = rootFolder;
   }
 
-  public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
+  public async list(
+    pattern: string,
+    opts?: ResourceListOptions
+  ): Promise<ResourcesList> {
     return new Promise<ResourcesList>((resolve, reject) => {
       fs.readdir(this.rootFolder, { withFileTypes: true }, (err, files) => {
         if (err) {
           resolve(new ResourcesList(pattern, []));
         } else {
-          const paths = files.filter(file => {
-            let fileName;
-            if (opts?.type === SearchType.TRAVERSAL) {
-              fileName = this.rootFolder + file.name;
-            } else {
-              fileName = file.name;
-            }
-            return file.isFile() && minimatch(fileName, pattern);
-          }).map(file => this.rootFolder + file.name);
+          const paths = files
+            .filter((file) => {
+              let fileName;
+              if (opts?.type === SearchType.TRAVERSAL) {
+                fileName = this.rootFolder + file.name;
+              } else {
+                fileName = file.name;
+              }
+              return file.isFile() && minimatch(fileName, pattern);
+            })
+            .map((file) => this.rootFolder + file.name);
           resolve(new ResourcesList(pattern, paths));
         }
       });
     });
   }
 
-  public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
+  public async get(
+    path: string,
+    opts?: ResourceContentOptions
+  ): Promise<ResourceContent | undefined> {
     let assetPath = path;
 
     if (!assetPath.startsWith(this.rootFolder)) {
@@ -73,7 +81,13 @@ export class VsCodeNodeResourceContentService implements ResourceContentService 
           if (err) {
             resolve(new ResourceContent(path, undefined, ContentType.BINARY));
           } else {
-            resolve(new ResourceContent(path, Buffer.from(data).toString("base64"), ContentType.BINARY));
+            resolve(
+              new ResourceContent(
+                path,
+                Buffer.from(data).toString("base64"),
+                ContentType.BINARY
+              )
+            );
           }
         });
       });
@@ -83,7 +97,13 @@ export class VsCodeNodeResourceContentService implements ResourceContentService 
         if (err) {
           resolve(new ResourceContent(path, undefined));
         } else {
-          resolve(new ResourceContent(path, Buffer.from(data).toString(), ContentType.TEXT));
+          resolve(
+            new ResourceContent(
+              path,
+              Buffer.from(data).toString(),
+              ContentType.TEXT
+            )
+          );
         }
       });
     });

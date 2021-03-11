@@ -19,7 +19,10 @@ import * as nodePath from "path";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { BackendProxy } from "@kogito-tooling/backend/dist/api";
 import { ResourceContentService } from "@kogito-tooling/channel-common-api";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
+import {
+  EditorEnvelopeLocator,
+  EnvelopeMapping
+} from "@kogito-tooling/editor/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import { Uri, Webview } from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
@@ -41,19 +44,31 @@ export class KogitoEditorFactory {
     private readonly notificationsApi: NotificationsApi
   ) {}
 
-  public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
+  public configureNew(
+    webviewPanel: vscode.WebviewPanel,
+    document: KogitoEditableDocument
+  ) {
     webviewPanel.webview.options = {
       enableCommandUris: true,
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
     };
 
-    const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(webviewPanel.webview);
-    const resourceContentService = this.createResourceContentService(document.uri.fsPath, document.relativePath);
+    const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(
+      webviewPanel.webview
+    );
+    const resourceContentService = this.createResourceContentService(
+      document.uri.fsPath,
+      document.relativePath
+    );
 
-    const envelopeMapping = editorEnvelopeLocator.mapping.get(document.fileExtension);
+    const envelopeMapping = editorEnvelopeLocator.mapping.get(
+      document.fileExtension
+    );
     if (!envelopeMapping) {
-      throw new Error(`No envelope mapping found for '${document.fileExtension}'`);
+      throw new Error(
+        `No envelope mapping found for '${document.fileExtension}'`
+      );
     }
 
     const editor = new KogitoEditor(
@@ -82,33 +97,52 @@ export class KogitoEditorFactory {
     editor.setupWebviewContent();
   }
 
-  private getEditorEnvelopeLocatorForWebview(webview: vscode.Webview): EditorEnvelopeLocator {
+  private getEditorEnvelopeLocatorForWebview(
+    webview: vscode.Webview
+  ): EditorEnvelopeLocator {
     return {
       targetOrigin: this.editorEnvelopeLocator.targetOrigin,
-      mapping: [...this.editorEnvelopeLocator.mapping.entries()].reduce((mapping, [fileExtension, m]) => {
-        mapping.set(fileExtension, {
-          envelopePath: this.getWebviewPath(webview, m.envelopePath),
-          resourcesPathPrefix: this.getWebviewPath(webview, m.resourcesPathPrefix)
-        });
-        return mapping;
-      }, new Map<string, EnvelopeMapping>())
+      mapping: [...this.editorEnvelopeLocator.mapping.entries()].reduce(
+        (mapping, [fileExtension, m]) => {
+          mapping.set(fileExtension, {
+            envelopePath: this.getWebviewPath(webview, m.envelopePath),
+            resourcesPathPrefix: this.getWebviewPath(
+              webview,
+              m.resourcesPathPrefix
+            )
+          });
+          return mapping;
+        },
+        new Map<string, EnvelopeMapping>()
+      )
     };
   }
 
   private getWebviewPath(webview: Webview, relativePath: string) {
-    return webview.asWebviewUri(Uri.file(this.context.asAbsolutePath(relativePath))).toString();
+    return webview
+      .asWebviewUri(Uri.file(this.context.asAbsolutePath(relativePath)))
+      .toString();
   }
 
-  public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
+  public createResourceContentService(
+    path: string,
+    workspacePath: string
+  ): ResourceContentService {
     if (this.isAssetInWorkspace(path)) {
-      return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
+      return new VsCodeResourceContentService(
+        this.getParentFolder(workspacePath)
+      );
     } else {
       return new VsCodeNodeResourceContentService(this.getParentFolder(path));
     }
   }
 
   private isAssetInWorkspace(path: string): boolean {
-    return vscode.workspace.workspaceFolders?.map(f => f.uri.fsPath).find(p => path.startsWith(p)) !== undefined;
+    return (
+      vscode.workspace.workspaceFolders
+        ?.map((f) => f.uri.fsPath)
+        .find((p) => path.startsWith(p)) !== undefined
+    );
   }
 
   private getParentFolder(assetPath: string) {

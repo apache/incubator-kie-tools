@@ -46,11 +46,18 @@ export async function startExtension(args: {
 }) {
   await args.backendProxy.tryLoadBackendExtension(true);
 
-  const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
+  const vsCodeI18n = new I18n(
+    vsCodeI18nDefaults,
+    vsCodeI18nDictionaries,
+    vscode.env.language
+  );
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
-  const vsCodeNotificationsApi = new VsCodeNotificationsApi(workspaceApi, vsCodeI18n);
+  const vsCodeNotificationsApi = new VsCodeNotificationsApi(
+    workspaceApi,
+    vsCodeI18n
+  );
   const editorFactory = new KogitoEditorFactory(
     args.context,
     editorStore,
@@ -71,12 +78,18 @@ export async function startExtension(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.window.registerCustomEditorProvider(args.viewType, editorWebviewProvider, {
-      webviewOptions: { retainContextWhenHidden: true }
-    })
+    vscode.window.registerCustomEditorProvider(
+      args.viewType,
+      editorWebviewProvider,
+      {
+        webviewOptions: { retainContextWhenHidden: true }
+      }
+    )
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi, vsCodeI18n))
+    vscode.commands.registerCommand(args.getPreviewCommandId, () =>
+      generateSvg(editorStore, workspaceApi, vsCodeI18n)
+    )
   );
 }

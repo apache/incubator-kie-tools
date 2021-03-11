@@ -53,7 +53,7 @@ export class KogitoEditorStore {
   public get(uri: Uri) {
     let found: KogitoEditor | undefined;
 
-    this.openEditors.forEach(editor => {
+    this.openEditors.forEach((editor) => {
       if (editor.hasUri(uri)) {
         found = editor;
       }

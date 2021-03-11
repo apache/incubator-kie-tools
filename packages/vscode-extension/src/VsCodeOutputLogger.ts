@@ -22,8 +22,15 @@ export class VsCodeOutputLogger {
   constructor(readonly id: string) {}
 
   log(level: string, message: any) {
-    const finalMessage = typeof message == "string" ? message : JSON.stringify(message, null, "\t");
-    channel.appendLine(`${new Date().toISOString()} [${level.toUpperCase()}] ${this.id}: ${finalMessage}`);
+    const finalMessage =
+      typeof message == "string"
+        ? message
+        : JSON.stringify(message, null, "\t");
+    channel.appendLine(
+      `${new Date().toISOString()} [${level.toUpperCase()}] ${
+        this.id
+      }: ${finalMessage}`
+    );
   }
   info(message: any) {
     this.log("INFO", message);

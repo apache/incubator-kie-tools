@@ -17,7 +17,9 @@
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 
 export class EnvelopeBusMessageBroadcaster {
-  private readonly subscriptions: Array<(msg: EnvelopeBusMessage<unknown, any>) => void> = [];
+  private readonly subscriptions: Array<
+    (msg: EnvelopeBusMessage<unknown, any>) => void
+  > = [];
 
   public broadcast(message: EnvelopeBusMessage<unknown, any>) {
     // Messages directly from the Channel to the Envelope do not have an envelopeServerId and should be ignored.
@@ -26,7 +28,7 @@ export class EnvelopeBusMessageBroadcaster {
       return;
     }
 
-    this.subscriptions.forEach(callback => callback(message));
+    this.subscriptions.forEach((callback) => callback(message));
   }
 
   public subscribe(callback: (msg: EnvelopeBusMessage<unknown, any>) => void) {
@@ -34,7 +36,9 @@ export class EnvelopeBusMessageBroadcaster {
     return callback;
   }
 
-  public unsubscribe(callback: (msg: EnvelopeBusMessage<unknown, any>) => void) {
+  public unsubscribe(
+    callback: (msg: EnvelopeBusMessage<unknown, any>) => void
+  ) {
     const subscriptionIndex = this.subscriptions.indexOf(callback);
     if (subscriptionIndex >= 0) {
       this.subscriptions.splice(subscriptionIndex, 1);
