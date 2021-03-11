@@ -6,6 +6,10 @@ on:
     paths:
       - "packages/**"
 
+concurrency:
+  group: monorepo-pr-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   monorepo-pr-ci:
     if: github.event.pull_request.draft == false
