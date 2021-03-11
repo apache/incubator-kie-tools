@@ -32,18 +32,23 @@ const KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP: Notific
 };
 
 export class ProblemsTabNotificationHandler implements NotificationsApi {
-  private readonly diagnosticCollection = vscode.languages.createDiagnosticCollection(DIAGNOSTIC_COLLECTION_NAME);
+  private readonly diagnosticCollection = vscode.languages.createDiagnosticCollection(
+    DIAGNOSTIC_COLLECTION_NAME
+  );
 
   public createNotification(notification: Notification): void {
     const uri = vscode.Uri.file(notification.path);
-    const diagnostics: vscode.Diagnostic[] = this.diagnosticCollection.get(uri)?.map(elem => elem) || [];
+    const diagnostics: vscode.Diagnostic[] =
+      this.diagnosticCollection.get(uri)?.map((elem) => elem) || [];
     diagnostics.push(this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
   public setNotifications(path: string, notifications: Notification[]): void {
     const uri = vscode.Uri.file(path);
-    const diagnostics = notifications.map(notification => this.buildDiagnostic(notification));
+    const diagnostics = notifications.map((notification) =>
+      this.buildDiagnostic(notification)
+    );
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
@@ -54,13 +59,21 @@ export class ProblemsTabNotificationHandler implements NotificationsApi {
   private buildDiagnostic(notification: Notification): vscode.Diagnostic {
     return {
       message: notification.message,
-      range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
+      range: new vscode.Range(
+        new vscode.Position(0, 0),
+        new vscode.Position(0, 0)
+      ),
       severity: this.getSeverity(notification.severity)
     };
   }
 
-  private getSeverity(severity: NotificationSeverity): vscode.DiagnosticSeverity {
-    const diagnostic = KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP[severity];
+  private getSeverity(
+    severity: NotificationSeverity
+  ): vscode.DiagnosticSeverity {
+    const diagnostic =
+      KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP[
+        severity
+      ];
     return diagnostic ? vscode.DiagnosticSeverity.Information : diagnostic;
   }
 }

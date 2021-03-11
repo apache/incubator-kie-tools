@@ -27,7 +27,10 @@ type NotificationsApiHandlersMap = {
 export class VsCodeNotificationsApi implements NotificationsApi {
   private readonly strategies: NotificationsApiHandlersMap;
 
-  constructor(private readonly workspaceApi: WorkspaceApi, private readonly i18n: I18n<CommonI18n>) {
+  constructor(
+    private readonly workspaceApi: WorkspaceApi,
+    private readonly i18n: I18n<CommonI18n>
+  ) {
     this.strategies = {
       PROBLEM: new ProblemsTabNotificationHandler(),
       ALERT: new PopupMessagesNotificationHandler(this.workspaceApi, this.i18n)
@@ -39,8 +42,8 @@ export class VsCodeNotificationsApi implements NotificationsApi {
   }
 
   public setNotifications(path: string, notifications: Notification[]): void {
-    const alerts = notifications.filter(n => n.type === "ALERT");
-    const problems = notifications.filter(n => n.type !== "ALERT");
+    const alerts = notifications.filter((n) => n.type === "ALERT");
+    const problems = notifications.filter((n) => n.type !== "ALERT");
 
     this.get("PROBLEM").setNotifications(path, problems);
     this.get("ALERT").setNotifications(path, alerts);

@@ -23,20 +23,26 @@ import { Notification, NotificationsApi, NotificationSeverity } from "../api";
 export class PopupMessagesNotificationHandler implements NotificationsApi {
   private readonly currentI18n: CommonI18n;
 
-  constructor(private readonly workspaceApi: WorkspaceApi, private readonly i18n: I18n<CommonI18n>) {
+  constructor(
+    private readonly workspaceApi: WorkspaceApi,
+    private readonly i18n: I18n<CommonI18n>
+  ) {
     this.currentI18n = this.i18n.getCurrent();
   }
 
   public createNotification(notification: Notification): void {
-    this.getHandleStrategyForSeverity(notification.severity)(notification.message, notification.path);
+    this.getHandleStrategyForSeverity(notification.severity)(
+      notification.message,
+      notification.path
+    );
   }
 
   public setNotifications(path: string, notifications: Notification[]): void {
     if (notifications.length === 0) {
       return;
     }
-    const errors = notifications.filter(n => n.severity === "ERROR");
-    const others = notifications.filter(n => n.severity !== "ERROR");
+    const errors = notifications.filter((n) => n.severity === "ERROR");
+    const others = notifications.filter((n) => n.severity !== "ERROR");
 
     const errorsMessage = this.consolidateMessages(errors);
     const othersMessage = this.consolidateMessages(others);
@@ -60,20 +66,27 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     }
   }
 
-  private handleStrategy(showFunction: (message: string, ...items: string[]) => Thenable<string | undefined>) {
+  private handleStrategy(
+    showFunction: (
+      message: string,
+      ...items: string[]
+    ) => Thenable<string | undefined>
+  ) {
     return (message: string, path: string) =>
       path.length === 0
         ? showFunction(message)
-        : showFunction(message, this.currentI18n.terms.open).then(selected => {
-            if (!selected) {
-              return;
+        : showFunction(message, this.currentI18n.terms.open).then(
+            (selected) => {
+              if (!selected) {
+                return;
+              }
+              this.workspaceApi.receive_openFile(path);
             }
-            this.workspaceApi.receive_openFile(path);
-          });
+          );
   }
 
   private consolidateMessages(notifications: Notification[]): string {
-    const messages = notifications.map(n => n.message);
+    const messages = notifications.map((n) => n.message);
     if (messages.length > 0) {
       return messages.reduce((accum, current) => `${accum}\n${current}`);
     } else {

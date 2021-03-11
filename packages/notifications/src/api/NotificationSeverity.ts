@@ -14,4 +14,9 @@
  * limitations under the License.
  */
 
-export type NotificationSeverity = "INFO" | "WARNING" | "ERROR" | "SUCCESS" | "HINT";
+export type NotificationSeverity =
+  | "INFO"
+  | "WARNING"
+  | "ERROR"
+  | "SUCCESS"
+  | "HINT";
