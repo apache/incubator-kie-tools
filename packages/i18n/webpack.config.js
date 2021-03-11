@@ -23,10 +23,10 @@ module.exports = merge(common, {
     api: "./src/api/index.ts",
     core: "./src/core/index.ts",
     envelope: "./src/envelope/index.ts",
-    "react-components": "./src/react-components/index.ts",
+    "react-components": "./src/react-components/index.ts"
   },
   output: {
-    libraryTarget: "commonjs2",
+    libraryTarget: "commonjs2"
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })]
 });

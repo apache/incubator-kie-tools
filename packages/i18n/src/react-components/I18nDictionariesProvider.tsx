@@ -16,11 +16,18 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { I18nDefaults, I18n, I18nDictionaries, ReferenceDictionary } from "../core";
+import {
+  I18nDefaults,
+  I18n,
+  I18nDictionaries,
+  ReferenceDictionary
+} from "../core";
 import { I18nContextType } from "./I18nContext";
 
 // tslint:disable-next-line:interface-name
-export interface I18nDictionariesProviderProps<D extends ReferenceDictionary<D>> {
+export interface I18nDictionariesProviderProps<
+  D extends ReferenceDictionary<D>
+> {
   defaults: I18nDefaults<D>;
   dictionaries: I18nDictionaries<D>;
   initialLocale?: string;
@@ -28,17 +35,26 @@ export interface I18nDictionariesProviderProps<D extends ReferenceDictionary<D>>
   children: React.ReactNode;
 }
 
-export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props: I18nDictionariesProviderProps<D>) => {
-  const [locale, setLocale] = useState(props.initialLocale ?? props.defaults.locale);
-  const i18n = useMemo(() => new I18n(props.defaults, props.dictionaries, locale), []);
+export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(
+  props: I18nDictionariesProviderProps<D>
+) => {
+  const [locale, setLocale] = useState(
+    props.initialLocale ?? props.defaults.locale
+  );
+  const i18n = useMemo(
+    () => new I18n(props.defaults, props.dictionaries, locale),
+    []
+  );
 
   const setNewLocale = useCallback((newLocale: string) => {
     i18n.setLocale(newLocale);
-    setLocale(newLocale)
+    setLocale(newLocale);
   }, []);
 
   return (
-    <props.ctx.Provider value={{ locale, setLocale: setNewLocale, i18n: i18n.getCurrent() }}>
+    <props.ctx.Provider
+      value={{ locale, setLocale: setNewLocale, i18n: i18n.getCurrent() }}
+    >
       {props.children}
     </props.ctx.Provider>
   );

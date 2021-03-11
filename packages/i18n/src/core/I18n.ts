@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import {I18nDefaults, I18nDictionaries, ReferenceDictionary, TranslatedDictionary} from "./Dictionary";
+import {
+  I18nDefaults,
+  I18nDictionaries,
+  ReferenceDictionary,
+  TranslatedDictionary
+} from "./Dictionary";
 import { immutableDeepMerge } from "./immutableDeepMerge";
 
 export class I18n<D extends ReferenceDictionary<D>> {
@@ -37,9 +42,14 @@ export class I18n<D extends ReferenceDictionary<D>> {
 
   private updateDictionary() {
     const selectedDictionary =
-      this.dictionaries.get(this.locale) ?? this.dictionaries.get(this.locale.split("-").shift()!) ?? {};
+      this.dictionaries.get(this.locale) ??
+      this.dictionaries.get(this.locale.split("-").shift()!) ??
+      {};
 
-    this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary) as D;
+    this.dictionary = immutableDeepMerge(
+      this.defaults.dictionary,
+      selectedDictionary
+    ) as D;
   }
 
   public getCurrent(): D {

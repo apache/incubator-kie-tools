@@ -22,9 +22,14 @@ interface Props {
 }
 
 export const I18nHtml: FunctionComponent<Props> = ({ children }) => {
-  let htmlText = children
+  let htmlText = children;
   if (Array.isArray(htmlText)) {
-    htmlText = htmlText.join("")
+    htmlText = htmlText.join("");
   }
-  return <p style={{ display: "inline" }} dangerouslySetInnerHTML={{ __html: htmlText }} />;
+  return (
+    <p
+      style={{ display: "inline" }}
+      dangerouslySetInnerHTML={{ __html: htmlText }}
+    />
+  );
 };

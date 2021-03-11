@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import { DictionaryInterpolation, ReferenceDictionary, TranslatedDictionary } from "./Dictionary";
+import {
+  DictionaryInterpolation,
+  ReferenceDictionary,
+  TranslatedDictionary
+} from "./Dictionary";
 
-function deepMerge<D>(target: ReferenceDictionary<D>, source: TranslatedDictionary<ReferenceDictionary<D>>) {
+function deepMerge<D>(
+  target: ReferenceDictionary<D>,
+  source: TranslatedDictionary<ReferenceDictionary<D>>
+) {
   Object.keys(source).forEach((key: Extract<keyof D, string>) => {
     const sourceValue = source[key];
 

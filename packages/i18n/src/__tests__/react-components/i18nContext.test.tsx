@@ -19,7 +19,13 @@ import { I18nDictionariesProvider } from "../../react-components";
 import { immutableDeepMerge } from "../../core/immutableDeepMerge";
 import { TranslatedDictionary } from "../../core";
 import { render } from "@testing-library/react";
-import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "../utils";
+import {
+  DummyContext,
+  DummyDictionary,
+  DummyComponent,
+  dummyDefault,
+  interpolationFunction
+} from "../utils";
 
 describe("I18nDictionariesProvider", () => {
   describe("I18nDictionariesProvider::component", () => {
@@ -36,7 +42,9 @@ describe("I18nDictionariesProvider", () => {
         </I18nDictionariesProvider>
       );
 
-      expect(getByTestId("dummy-component")).toHaveTextContent(JSON.stringify(dummyDefault));
+      expect(getByTestId("dummy-component")).toHaveTextContent(
+        JSON.stringify(dummyDefault)
+      );
     });
 
     it("should use the provided default dictionary due to `en` dictionary doesn't exist", () => {
@@ -52,7 +60,9 @@ describe("I18nDictionariesProvider", () => {
         </I18nDictionariesProvider>
       );
 
-      expect(getByTestId("dummy-component")).toHaveTextContent(JSON.stringify(dummyDefault));
+      expect(getByTestId("dummy-component")).toHaveTextContent(
+        JSON.stringify(dummyDefault)
+      );
     });
 
     it("should use the `en` dictionary due to the `en-US` doesn't exist and 'en' is the location prefix", () => {
@@ -139,7 +149,8 @@ describe("I18nDictionariesProvider", () => {
     });
 
     it("should override the interpolation function", () => {
-      const dummyInterpolationFunction = (name: string, lastLogin: number) => `Hi ${name}. Last login: ${lastLogin}`;
+      const dummyInterpolationFunction = (name: string, lastLogin: number) =>
+        `Hi ${name}. Last login: ${lastLogin}`;
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         greeting: dummyInterpolationFunction
       };

@@ -43,15 +43,15 @@ const en: MyDictionary = {
 
 - Create a dictionary that use the `TranslatedDictionary<MyDictionary>` type.
 
-*The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
-The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation.*
+_The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
+The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation._
 
 ```tsx
 "./i18n/locales/pt_BR.ts";
 
 const pt_BR: TranslatedDictionary<MyDictionary> = {
   myWord: "Minha palavra",
-  myCurrentLocale: (locale: string) => `O meu local atual é: ${locale}`,
+  myCurrentLocale: (locale: string) => `O meu local atual é: ${locale}`
 };
 ```
 
@@ -60,7 +60,10 @@ const pt_BR: TranslatedDictionary<MyDictionary> = {
 ```tsx
 "./i18n/setup.ts";
 
-export const myAppI18nDefaults: I18nDefaults<MyDictionary> = { locale: "en", dictionary: en };
+export const myAppI18nDefaults: I18nDefaults<MyDictionary> = {
+  locale: "en",
+  dictionary: en
+};
 
 // It's reccomended that the key follows the BCP-47 standard to be compatible with the browser locale
 export const myAppI18nDictionaries: I18nDictionaries<MyDictionary> = new Map([
@@ -68,7 +71,9 @@ export const myAppI18nDictionaries: I18nDictionaries<MyDictionary> = new Map([
   ["pt-BR", pt_BR]
 ]);
 
-export const MyAppI18nContext = React.createContext<I18nContextType<MyDictionary>>({} as any);
+export const MyAppI18nContext = React.createContext<
+  I18nContextType<MyDictionary>
+>({} as any);
 
 export function useMyAppI18n() {
   return useContext(MyAppI18nContext);
@@ -80,7 +85,11 @@ export function useMyAppI18n() {
 ```tsx
 function App() {
   return (
-    <I18nDictionariesProvider defaults={myAppI18nDefaults} dictionaries={myAppI18nDictionaries} ctx={MyAppI18nContext}>
+    <I18nDictionariesProvider
+      defaults={myAppI18nDefaults}
+      dictionaries={myAppI18nDictionaries}
+      ctx={MyAppI18nContext}
+    >
       <MyCustomComponent />
     </I18nDictionariesProvider>
   );

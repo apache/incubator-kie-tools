@@ -15,10 +15,14 @@
  */
 
 export class I18nService {
-  constructor(private readonly onLocaleChangeSubscriptions: Array<(locale: string) => void> = []) {}
+  constructor(
+    private readonly onLocaleChangeSubscriptions: Array<
+      (locale: string) => void
+    > = []
+  ) {}
 
   public executeOnLocaleChangeSubscriptions(locale: string) {
-    this.onLocaleChangeSubscriptions.forEach(onLocaleChange => {
+    this.onLocaleChangeSubscriptions.forEach((onLocaleChange) => {
       onLocaleChange?.(locale);
     });
   }
