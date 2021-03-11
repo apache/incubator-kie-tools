@@ -26,11 +26,7 @@ import (
 
 const (
 	// DataTable first column
-	kogitoInfraConfigKey   = "config"
-	kogitoInfraResourceKey = "resource"
-
-	// DataTable second column
-	kogitoInfraNameTypeKey = "name"
+	kogitoInfraConfigKey = "config"
 )
 
 // MapKogitoInfraTable maps Cucumber table to KogitoInfra information
@@ -58,25 +54,9 @@ func mapKogitoInfraTableRow(row *TableRow, kogitoInfra *v1beta1.KogitoInfra) (ma
 	case kogitoInfraConfigKey:
 		framework.GetLogger(kogitoInfra.Namespace).Debug("Got config", "config", getSecondColumn(row))
 		appendConfig(kogitoInfra, getSecondColumn(row), getThirdColumn(row))
-	case kogitoInfraResourceKey:
-		return mapKogitoInfraResourceTableRow(row, kogitoInfra)
 
 	default:
 		return false, fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
-	}
-
-	return true, nil
-}
-
-func mapKogitoInfraResourceTableRow(row *TableRow, kogitoInfra *v1beta1.KogitoInfra) (mappingFound bool, err error) {
-	secondColumn := getSecondColumn(row)
-
-	switch secondColumn {
-	case kogitoInfraNameTypeKey:
-		kogitoInfra.Spec.Resource.Name = getThirdColumn(row)
-
-	default:
-		return false, fmt.Errorf("Unrecognized config configuration option: %s", secondColumn)
 	}
 
 	return true, nil

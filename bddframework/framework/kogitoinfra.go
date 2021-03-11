@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -56,11 +57,12 @@ func cliInstallKogitoInfraComponent(namespace string, infraResource *v1beta1.Kog
 }
 
 // GetKogitoInfraResourceStub Get basic KogitoInfra stub with all needed fields initialized
-func GetKogitoInfraResourceStub(namespace, name, targetResourceType string) (*v1beta1.KogitoInfra, error) {
+func GetKogitoInfraResourceStub(namespace, name, targetResourceType, targetResourceName string) (*v1beta1.KogitoInfra, error) {
 	infraResource, err := parseKogitoInfraResource(targetResourceType)
 	if err != nil {
 		return nil, err
 	}
+	infraResource.SetName(targetResourceName)
 
 	return &v1beta1.KogitoInfra{
 		ObjectMeta: NewObjectMetadata(namespace, name),

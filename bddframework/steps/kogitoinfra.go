@@ -27,16 +27,16 @@ import (
 */
 
 func registerKogitoInfraSteps(ctx *godog.ScenarioContext, data *Data) {
-	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak|Broker) Kogito Infra "([^"]*)" within (\d+) (?:minute|minutes)$`, data.installKogitoInfraWithinMinutes)
-	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak|Broker) Kogito Infra "([^"]*)" within (\d+) (?:minute|minutes) with configuration:$`, data.installKogitoInfraWithinMinutesWithConfiguration)
+	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak|Broker) Kogito Infra "([^"]*)" targeting service "([^"]*)" within (\d+) (?:minute|minutes)$`, data.installKogitoInfraTargetingServiceWithinMinutes)
+	ctx.Step(`^Install (Infinispan|MongoDB|Kafka|Keycloak|Broker) Kogito Infra "([^"]*)" targeting service "([^"]*)" within (\d+) (?:minute|minutes) with configuration:$`, data.installKogitoInfraTargetingServiceWithinMinutesWithConfiguration)
 }
 
-func (data *Data) installKogitoInfraWithinMinutes(targetResourceType, name string, timeoutInMin int) error {
-	return data.installKogitoInfraWithinMinutesWithConfiguration(targetResourceType, name, timeoutInMin, &messages.PickleStepArgument_PickleTable{})
+func (data *Data) installKogitoInfraTargetingServiceWithinMinutes(targetResourceType, name, targetResourceName string, timeoutInMin int) error {
+	return data.installKogitoInfraTargetingServiceWithinMinutesWithConfiguration(targetResourceType, name, targetResourceName, timeoutInMin, &messages.PickleStepArgument_PickleTable{})
 }
 
-func (data *Data) installKogitoInfraWithinMinutesWithConfiguration(targetResourceType, name string, timeoutInMin int, table *godog.Table) error {
-	infraResource, err := framework.GetKogitoInfraResourceStub(data.Namespace, name, targetResourceType)
+func (data *Data) installKogitoInfraTargetingServiceWithinMinutesWithConfiguration(targetResourceType, name, targetResourceName string, timeoutInMin int, table *godog.Table) error {
+	infraResource, err := framework.GetKogitoInfraResourceStub(data.Namespace, name, targetResourceType, targetResourceName)
 	if err != nil {
 		return err
 	}

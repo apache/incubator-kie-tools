@@ -60,8 +60,7 @@ Feature: Kogito Service Performance
     And Infinispan instance "external-infinispan" is deployed for performance within 5 minute(s) with configuration:
       | username | developer |
       | password | mypass    |
-    And Install Infinispan Kogito Infra "external-infinispan" within 5 minutes with configuration:
-      | resource | name | external-infinispan |
+    And Install Infinispan Kogito Infra "external-infinispan" targeting service "external-infinispan" within 5 minutes
     And Clone Kogito examples into local directory
     And Local example service "process-quarkus-example" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Deploy quarkus example service "process-quarkus-example" from runtime registry with configuration:
@@ -146,8 +145,7 @@ Feature: Kogito Service Performance
     And Infinispan instance "external-infinispan" is deployed for performance within 5 minute(s) with configuration:
       | username | developer |
       | password | mypass    |
-    And Install Infinispan Kogito Infra "external-infinispan" within 5 minutes with configuration:
-      | resource | name | external-infinispan |
+    And Install Infinispan Kogito Infra "external-infinispan" targeting service "external-infinispan" within 5 minutes
     And Clone Kogito examples into local directory
     And Local example service "process-springboot-example" is built by Maven using profile "default" and deployed to runtime registry
     And Deploy springboot example service "process-springboot-example" from runtime registry with configuration:

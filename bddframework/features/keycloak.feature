@@ -15,10 +15,12 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Data Index with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-dataindex-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
-    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
-    And Install Kafka Kogito Infra "kafka" within 10 minutes
-    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
-    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Infinispan instance "kogito-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
 
     When Install Kogito Data Index with 1 replicas with configuration:
       | config       | infra                                          | infinispan                                     |
@@ -82,8 +84,8 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Explainability with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-explainability-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
-    And Install Kafka Kogito Infra "kafka" within 10 minutes
-    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
 
     When Install Kogito Explainability with 1 replicas with configuration:
       | config       | infra                                          | kafka                                          |
@@ -119,10 +121,12 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Trusty with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-trusty-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
-    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
-    And Install Kafka Kogito Infra "kafka" within 10 minutes
-    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
-    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Infinispan instance "kogito-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
 
     When Install Kogito Trusty with 1 replicas with configuration:
       | config       | infra                                          | infinispan                                     |
@@ -148,10 +152,12 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Management Console with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-mgmt-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
-    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
-    And Install Kafka Kogito Infra "kafka" within 10 minutes
-    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
-    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Infinispan instance "kogito-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
     And Install Kogito Data Index with 1 replicas with configuration:
       | config | infra | infinispan |
       | config | infra | kafka      |
@@ -181,10 +187,12 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Task Console with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-task-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
-    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
-    And Install Kafka Kogito Infra "kafka" within 10 minutes
-    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
-    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Infinispan instance "kogito-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
     And Install Kogito Data Index with 1 replicas with configuration:
       | config | infra | infinispan |
       | config | infra | kafka      |

@@ -8,19 +8,16 @@ Feature: Data Index Performance
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed
-    And Infinispan Operator is deployed
-    And Kafka Operator is deployed
-    And Infinispan instance "external-infinispan" is deployed for performance within 5 minute(s) with configuration:
+    And Kogito Operator is deployed with Infinispan and Kafka operators
+    And Infinispan instance "kogito-infinispan" is deployed for performance within 5 minute(s) with configuration:
       | username | developer |
       | password | mypass |
-    And Install Infinispan Kogito Infra "external-infinispan" within 5 minutes with configuration:
-      | resource | name | external-infinispan |
-    And Install Kafka Kogito Infra "kafka" within 10 minutes
-    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
     And Install Kogito Data Index with 1 replicas with configuration:
-      | config | infra | external-infinispan |
-      | config | infra | kafka               |
+      | config | infra | infinispan |
+      | config | infra | kafka      |
 
   @quarkus
   Scenario Outline: Quarkus Kogito Service Performance with Maven profile <profile>, without persistence and with requests <requests>

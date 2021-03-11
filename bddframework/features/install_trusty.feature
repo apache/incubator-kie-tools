@@ -10,10 +10,12 @@ Feature: Kogito Trusty
     And Kafka Operator is deployed
 
   Scenario: Install Kogito Trusty
-    Given Install Infinispan Kogito Infra "infinispan" within 5 minutes
-    And Install Kafka Kogito Infra "kafka" within 10 minutes
-    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
-    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    Given Infinispan instance "kogito-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
 
     When Install Kogito Trusty with 1 replicas with configuration:
       | config | infra | infinispan |
@@ -26,21 +28,19 @@ Feature: Kogito Trusty
   @events
   @kafka
   @infinispan
-  Scenario: Trusty retrieves tracing events using external Infinispan and Kafka
-    Given Infinispan instance "external-infinispan" is deployed with configuration:
+  Scenario: Trusty retrieves tracing events using Infinispan and Kafka
+    Given Infinispan instance "kogito-infinispan" is deployed with configuration:
       | username | developer |
-      | password | mypass |
-    And Kafka instance "external-kafka" is deployed
-    And Install Infinispan Kogito Infra "external-infinispan" within 5 minutes with configuration:
-      | resource | name | external-infinispan |
-    And Install Kafka Kogito Infra "external-kafka" within 5 minutes with configuration:
-      | resource | name | external-kafka |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
     And Install Kogito Trusty with 1 replicas with configuration:
-      | config | infra | external-infinispan |
-      | config | infra | external-kafka      |
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Local example service "dmn-tracing-quarkus" is built by Maven using profile "default" and deployed to runtime registry
     And Deploy quarkus example service "dmn-tracing-quarkus" from runtime registry with configuration:
-      | config | infra | external-kafka |
+      | config | infra | kafka |
     And Kogito Runtime "dmn-tracing-quarkus" has 1 pods running within 10 minutes
 
     When HTTP POST request on service "dmn-tracing-quarkus" is successful within 2 minutes with path "LoanEligibility" and body:
