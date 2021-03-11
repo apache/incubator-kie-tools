@@ -16,7 +16,9 @@
 
 import { ApiDefinition, MessageBusClientApi } from "../../api";
 
-export function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBusClientApi<T> {
+export function messageBusClientApiMock<
+  T extends ApiDefinition<T>
+>(): MessageBusClientApi<T> {
   const mocks = new Map<any, any>();
 
   const proxyMock = new Proxy({} as any, {

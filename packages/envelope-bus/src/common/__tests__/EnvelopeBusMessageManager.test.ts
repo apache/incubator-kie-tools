@@ -36,7 +36,10 @@ let apiImpl: ApiToProvide;
 
 beforeEach(() => {
   sentMessages = [];
-  manager = new EnvelopeBusMessageManager(msg => sentMessages.push(msg), "my-manager");
+  manager = new EnvelopeBusMessageManager(
+    (msg) => sentMessages.push(msg),
+    "my-manager"
+  );
   apiImpl = {
     setText: jest.fn((text: string) => {
       console.info(`Setting text: ${text}`);
@@ -204,7 +207,7 @@ describe("unsubscribe", () => {
 });
 
 const delay = (ms: number) => {
-  return new Promise(res => setTimeout(res, ms));
+  return new Promise((res) => setTimeout(res, ms));
 };
 
 describe("receive", () => {

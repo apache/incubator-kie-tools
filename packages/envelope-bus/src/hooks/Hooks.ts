@@ -15,7 +15,12 @@
  */
 
 import { useEffect } from "react";
-import { ApiDefinition, MessageBusClientApi, NotificationPropertyNames, SubscriptionCallback } from "../api";
+import {
+  ApiDefinition,
+  MessageBusClientApi,
+  NotificationPropertyNames,
+  SubscriptionCallback
+} from "../api";
 import { EnvelopeServer } from "../channel";
 
 export function useConnectedEnvelopeServer<Api extends ApiDefinition<Api>>(
@@ -23,7 +28,8 @@ export function useConnectedEnvelopeServer<Api extends ApiDefinition<Api>>(
   api: Api
 ) {
   useEffect(() => {
-    const listener = (msg: MessageEvent) => envelopeServer.receive(msg.data, api);
+    const listener = (msg: MessageEvent) =>
+      envelopeServer.receive(msg.data, api);
     window.addEventListener("message", listener, false);
     envelopeServer.startInitPolling();
 
@@ -34,7 +40,10 @@ export function useConnectedEnvelopeServer<Api extends ApiDefinition<Api>>(
   }, [envelopeServer, api]);
 }
 
-export function useSubscription<Api extends ApiDefinition<Api>, M extends NotificationPropertyNames<Api>>(
+export function useSubscription<
+  Api extends ApiDefinition<Api>,
+  M extends NotificationPropertyNames<Api>
+>(
   bus: MessageBusClientApi<Api>,
   method: M,
   callback: SubscriptionCallback<Api, M>
@@ -47,7 +56,10 @@ export function useSubscription<Api extends ApiDefinition<Api>, M extends Notifi
   }, [bus, method, callback]);
 }
 
-export function useSubscriptionOnce<Api extends ApiDefinition<Api>, M extends NotificationPropertyNames<Api>>(
+export function useSubscriptionOnce<
+  Api extends ApiDefinition<Api>,
+  M extends NotificationPropertyNames<Api>
+>(
   bus: MessageBusClientApi<Api>,
   method: M,
   callback: SubscriptionCallback<Api, M>

@@ -30,14 +30,20 @@ export class EnvelopeBusController<
   public targetOrigin?: string;
   public associatedEnvelopeServerId?: string;
   public eventListener?: any;
-  public readonly manager: EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>;
+  public readonly manager: EnvelopeBusMessageManager<
+    ApiToProvide,
+    ApiToConsume
+  >;
 
   public get channelApi() {
     return this.manager.clientApi;
   }
 
   constructor(private readonly bus: EnvelopeBus) {
-    this.manager = new EnvelopeBusMessageManager(message => this.send(message), "KogitoEnvelopeBus");
+    this.manager = new EnvelopeBusMessageManager(
+      (message) => this.send(message),
+      "KogitoEnvelopeBus"
+    );
   }
 
   public associate(origin: string, envelopeServerId: string) {
@@ -59,21 +65,35 @@ export class EnvelopeBusController<
   }
 
   public send<T>(
-    message: EnvelopeBusMessage<T, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>
+    message: EnvelopeBusMessage<
+      T,
+      FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>
+    >
   ) {
     if (!this.targetOrigin || !this.associatedEnvelopeServerId) {
-      throw new Error("Tried to send message without associated Envelope Server set");
+      throw new Error(
+        "Tried to send message without associated Envelope Server set"
+      );
     }
-    this.bus.postMessage({ ...message, envelopeServerId: this.associatedEnvelopeServerId }, this.targetOrigin);
+    this.bus.postMessage(
+      { ...message, envelopeServerId: this.associatedEnvelopeServerId },
+      this.targetOrigin
+    );
   }
 
   public receive(
-    message: EnvelopeBusMessage<any, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
+    message: EnvelopeBusMessage<
+      any,
+      FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>
+    >,
     apiImpl: ApiToProvide
   ) {
     if (!message.envelopeServerId) {
       this.manager.server.receive(message, apiImpl);
-    } else if (message.envelopeServerId && message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+    } else if (
+      message.envelopeServerId &&
+      message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION
+    ) {
       this.manager.server.receive(message, {} as any);
     }
   }

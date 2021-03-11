@@ -42,11 +42,13 @@ export class EnvelopeServer<
   constructor(
     bus: EnvelopeBus,
     public readonly origin: string,
-    public readonly pollInit: (self: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
-    public readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
-      message => bus.postMessage(message),
-      "EnvelopeServer"
-    )
+    public readonly pollInit: (
+      self: EnvelopeServer<ApiToProvide, ApiToConsume>
+    ) => Promise<any>,
+    public readonly manager = new EnvelopeBusMessageManager<
+      ApiToProvide,
+      ApiToConsume
+    >((message) => bus.postMessage(message), "EnvelopeServer")
   ) {
     this.id = this.generateRandomId();
   }
@@ -58,7 +60,9 @@ export class EnvelopeServer<
 
     this.initPollingTimeout = setTimeout(() => {
       this.stopInitPolling();
-      console.info("Init polling timed out. Looks like the Envelope is not responding accordingly.");
+      console.info(
+        "Init polling timed out. Looks like the Envelope is not responding accordingly."
+      );
     }, EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
   }
 
@@ -70,7 +74,10 @@ export class EnvelopeServer<
   }
 
   public receive(
-    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
+    message: EnvelopeBusMessage<
+      unknown,
+      FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>
+    >,
     api: ApiToProvide
   ) {
     if (message.envelopeServerId === this.id) {
@@ -81,9 +88,7 @@ export class EnvelopeServer<
   }
 
   public generateRandomId() {
-    const randomPart = Math.random()
-      .toString(36)
-      .substr(2, 9);
+    const randomPart = Math.random().toString(36).substr(2, 9);
 
     const milliseconds = new Date().getMilliseconds();
 

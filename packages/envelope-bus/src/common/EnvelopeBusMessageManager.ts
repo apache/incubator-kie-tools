@@ -33,12 +33,20 @@ export class EnvelopeBusMessageManager<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
-  private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
+  private readonly callbacks = new Map<
+    string,
+    { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }
+  >();
 
-  private readonly remoteSubscriptions: Array<NotificationPropertyNames<ApiToProvide>> = [];
+  private readonly remoteSubscriptions: Array<
+    NotificationPropertyNames<ApiToProvide>
+  > = [];
 
   // tslint:disable-next-line:ban-types
-  private readonly localSubscriptions = new Map<NotificationPropertyNames<ApiToConsume>, Function[]>();
+  private readonly localSubscriptions = new Map<
+    NotificationPropertyNames<ApiToConsume>,
+    Function[]
+  >();
 
   private requestIdCounter: number;
 
@@ -53,7 +61,9 @@ export class EnvelopeBusMessageManager<
       (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) => void
     >();
 
-    const requests: ApiRequests<ApiToConsume> = new Proxy<ApiRequests<ApiToConsume>>({} as ApiRequests<ApiToConsume>, {
+    const requests: ApiRequests<ApiToConsume> = new Proxy<
+      ApiRequests<ApiToConsume>
+    >({} as ApiRequests<ApiToConsume>, {
       set: (target, name, value) => {
         requestsCache.set(name as RequestPropertyNames<ApiToConsume>, value);
         return true;
@@ -62,24 +72,37 @@ export class EnvelopeBusMessageManager<
         const method = name as RequestPropertyNames<ApiToConsume>;
         return (
           requestsCache.get(method) ??
-          requestsCache.set(method, (...args) => this.request(method, ...args) as Promise<any>).get(method)
+          requestsCache
+            .set(
+              method,
+              (...args) => this.request(method, ...args) as Promise<any>
+            )
+            .get(method)
         );
       }
     });
 
-    const notifications = new Proxy<ApiNotifications<ApiToConsume>>({} as ApiNotifications<ApiToConsume>, {
-      set: (target, name, value) => {
-        notificationsCache.set(name as NotificationPropertyNames<ApiToConsume>, value);
-        return true;
-      },
-      get: (target, name) => {
-        const method = name as NotificationPropertyNames<ApiToConsume>;
-        return (
-          notificationsCache.get(method) ??
-          notificationsCache.set(method, (...args) => this.notify(method, ...args)).get(method)
-        );
+    const notifications = new Proxy<ApiNotifications<ApiToConsume>>(
+      {} as ApiNotifications<ApiToConsume>,
+      {
+        set: (target, name, value) => {
+          notificationsCache.set(
+            name as NotificationPropertyNames<ApiToConsume>,
+            value
+          );
+          return true;
+        },
+        get: (target, name) => {
+          const method = name as NotificationPropertyNames<ApiToConsume>;
+          return (
+            notificationsCache.get(method) ??
+            notificationsCache
+              .set(method, (...args) => this.notify(method, ...args))
+              .get(method)
+          );
+        }
       }
-    });
+    );
 
     const clientApi: MessageBusClientApi<ApiToConsume> = {
       requests,
@@ -100,7 +123,11 @@ export class EnvelopeBusMessageManager<
   constructor(
     private readonly send: (
       // We can send messages for both the APIs we provide and consume
-      message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>
+      message: EnvelopeBusMessage<
+        unknown,
+        | FunctionPropertyNames<ApiToConsume>
+        | FunctionPropertyNames<ApiToProvide>
+      >
     ) => void,
     private readonly name: string = `${new Date().getMilliseconds()}`
   ) {
@@ -143,7 +170,10 @@ export class EnvelopeBusMessageManager<
     });
   }
 
-  private request<M extends RequestPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
+  private request<M extends RequestPropertyNames<ApiToConsume>>(
+    method: M,
+    ...args: ArgsType<ApiToConsume[M]>
+  ) {
     const requestId = this.getNextRequestId();
 
     this.send({
@@ -160,7 +190,10 @@ export class EnvelopeBusMessageManager<
     //TODO: Setup timeout to avoid memory leaks
   }
 
-  private notify<M extends NotificationPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
+  private notify<M extends NotificationPropertyNames<ApiToConsume>>(
+    method: M,
+    ...args: ArgsType<ApiToConsume[M]>
+  ) {
     this.send({
       type: method,
       data: args,
@@ -190,9 +223,13 @@ export class EnvelopeBusMessageManager<
     });
   }
 
-  private callback(response: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume>>) {
+  private callback(
+    response: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume>>
+  ) {
     if (response.purpose !== EnvelopeBusMessagePurpose.RESPONSE) {
-      throw new Error("Cannot invoke callback with a message that is not a response");
+      throw new Error(
+        "Cannot invoke callback with a message that is not a response"
+      );
     }
     if (!response.requestId) {
       throw new Error("Cannot acknowledge a response without a requestId");
@@ -214,25 +251,40 @@ export class EnvelopeBusMessageManager<
   }
   private receive(
     // We can receive messages from both the APIs we provide and consume.
-    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>,
+    message: EnvelopeBusMessage<
+      unknown,
+      FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>
+    >,
     apiImpl: ApiToProvide
   ) {
     if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
       // We can only receive responses for the API we consume.
-      this.callback(message as EnvelopeBusMessage<unknown, RequestPropertyNames<ApiToConsume>>);
+      this.callback(
+        message as EnvelopeBusMessage<
+          unknown,
+          RequestPropertyNames<ApiToConsume>
+        >
+      );
       return;
     }
 
     if (message.purpose === EnvelopeBusMessagePurpose.REQUEST) {
       // We can only receive requests for the API we provide.
-      const request = message as EnvelopeBusMessage<unknown, RequestPropertyNames<ApiToProvide>>;
+      const request = message as EnvelopeBusMessage<
+        unknown,
+        RequestPropertyNames<ApiToProvide>
+      >;
 
       const response = apiImpl[request.type].apply(apiImpl, request.data);
       if (!(response instanceof Promise)) {
-        throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
+        throw new Error(
+          `Cannot make a request to '${request.type}' because it does not return a Promise`
+        );
       }
 
-      response.then(data => this.respond(request, data)).catch(err => this.respond(request, undefined, err));
+      response
+        .then((data) => this.respond(request, data))
+        .catch((err) => this.respond(request, undefined, err));
       return;
     }
 
@@ -251,9 +303,11 @@ export class EnvelopeBusMessageManager<
 
       // We can only receive notifications from subscriptions of the API we consume.
       const localSubscriptionMethod = message.type as NotificationPropertyNames<ApiToConsume>;
-      (this.localSubscriptions.get(localSubscriptionMethod) ?? []).forEach(callback => {
-        callback(...(message.data as any[]));
-      });
+      (this.localSubscriptions.get(localSubscriptionMethod) ?? []).forEach(
+        (callback) => {
+          callback(...(message.data as any[]));
+        }
+      );
 
       return;
     }

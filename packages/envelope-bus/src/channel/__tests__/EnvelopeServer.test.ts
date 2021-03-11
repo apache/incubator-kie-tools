@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage, EnvelopeBusMessagePurpose, FunctionPropertyNames } from "../../api";
+import {
+  EnvelopeBusMessage,
+  EnvelopeBusMessagePurpose,
+  FunctionPropertyNames
+} from "../../api";
 import { EnvelopeServer } from "../EnvelopeServer";
 
 interface ApiToProvide {
@@ -39,13 +43,17 @@ beforeEach(() => {
     someRequest: jest.fn(() => Promise.resolve("a string"))
   };
 
-  envelopeServer = new EnvelopeServer({ postMessage: (msg: any) => sentMessages.push(msg) }, "tests", self =>
-    self.envelopeApi.requests.init()
+  envelopeServer = new EnvelopeServer(
+    { postMessage: (msg: any) => sentMessages.push(msg) },
+    "tests",
+    (self) => self.envelopeApi.requests.init()
   );
 });
 
 const delay = (ms: number) => {
-  return new Promise(res => Promise.resolve().then(() => setTimeout(res, ms)));
+  return new Promise((res) =>
+    Promise.resolve().then(() => setTimeout(res, ms))
+  );
 };
 
 describe("new instance", () => {
@@ -162,7 +170,10 @@ describe("receive", () => {
 });
 
 async function incomingMessage(
-  message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>
+  message: EnvelopeBusMessage<
+    unknown,
+    FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>
+  >
 ) {
   envelopeServer.receive(message, api);
   await delay(0); // waits for next event loop iteration

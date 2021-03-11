@@ -35,11 +35,15 @@ beforeEach(() => {
   sentMessages = [];
   api = {
     init: async () => envelopeBus.associate("my-origin", "my-server-id"),
-    someNotification: jest.fn(),
+    someNotification: jest.fn()
   };
 
   envelopeBus = new EnvelopeBusController<ApiToProvide, ApiToConsume>({
-    postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any): void {
+    postMessage<D, T>(
+      message: EnvelopeBusMessage<D, T>,
+      targetOrigin?: string,
+      _?: any
+    ): void {
       sentMessages.push([message as any, targetOrigin!]);
     }
   });
@@ -50,7 +54,7 @@ afterEach(() => {
 });
 
 const delay = (ms: number) => {
-  return new Promise(res => setTimeout(res, ms));
+  return new Promise((res) => setTimeout(res, ms));
 };
 
 describe("new instance", () => {
@@ -123,7 +127,6 @@ describe("receive", () => {
   });
 
   test("direct notification", async () => {
-
     await incomingMessage({
       data: [],
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,

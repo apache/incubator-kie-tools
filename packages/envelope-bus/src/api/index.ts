@@ -27,18 +27,29 @@ export type RequestPropertyNames<T extends ApiDefinition<T>> = {
   [K in keyof T]: ReturnType<T[K]> extends Promise<any> ? K : never;
 }[keyof T];
 
-export type FunctionPropertyNames<T extends ApiDefinition<T>> = NotificationPropertyNames<T> | RequestPropertyNames<T>;
+export type FunctionPropertyNames<T extends ApiDefinition<T>> =
+  | NotificationPropertyNames<T>
+  | RequestPropertyNames<T>;
 
-export type ApiDefinition<T> = { [P in keyof T]: (...a: any) => Promise<any> | void };
+export type ApiDefinition<T> = {
+  [P in keyof T]: (...a: any) => Promise<any> | void;
+};
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 
-export type SubscriptionCallback<Api extends ApiDefinition<Api>, M extends NotificationPropertyNames<Api>> = (
-  ...args: ArgsType<Api[M]>
-) => void;
+export type SubscriptionCallback<
+  Api extends ApiDefinition<Api>,
+  M extends NotificationPropertyNames<Api>
+> = (...args: ArgsType<Api[M]>) => void;
 
-export type ApiRequests<T extends ApiDefinition<T>> = Pick<T, RequestPropertyNames<T>>;
+export type ApiRequests<T extends ApiDefinition<T>> = Pick<
+  T,
+  RequestPropertyNames<T>
+>;
 
-export type ApiNotifications<T extends ApiDefinition<T>> = Pick<T, NotificationPropertyNames<T>>;
+export type ApiNotifications<T extends ApiDefinition<T>> = Pick<
+  T,
+  NotificationPropertyNames<T>
+>;
 
 export interface MessageBusClientApi<Api extends ApiDefinition<Api>> {
   requests: ApiRequests<Api>;
@@ -60,7 +71,10 @@ export interface MessageBusServer<
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
   receive(
-    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
+    message: EnvelopeBusMessage<
+      unknown,
+      FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>
+    >,
     apiImpl: ApiToProvide
   ): void;
 }
@@ -83,5 +97,9 @@ export enum EnvelopeBusMessagePurpose {
 }
 
 export interface EnvelopeBus {
-  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any): void;
+  postMessage<D, T>(
+    message: EnvelopeBusMessage<D, T>,
+    targetOrigin?: string,
+    _?: any
+  ): void;
 }
