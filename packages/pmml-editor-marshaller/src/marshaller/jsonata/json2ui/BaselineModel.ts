@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BaselineModel, MiningSchema, TestDistributions } from "../../model/pmml4_4";
+import {
+  BaselineModel,
+  MiningSchema,
+  TestDistributions
+} from "../../model/pmml4_4";
 import { LOCAL_TRANSFORMATIONS } from "./LocalTransformations";
 import { MINING_SCHEMA } from "./MiningSchema";
 import { MODEL_EXPLANATION } from "./ModelExplanation";
@@ -49,7 +53,11 @@ elements.elements[(name = "BaselineModel")] ~> $map(function($v, $i) {
 export function baselineModelFactory(): BaselineModel {
   return new BaselineModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
-    TestDistributions: new TestDistributions({ Baseline: {}, field: {}, testStatistic: "CUSUM" }),
+    TestDistributions: new TestDistributions({
+      Baseline: {},
+      field: {},
+      testStatistic: "CUSUM"
+    }),
     functionName: "regression"
   });
 }

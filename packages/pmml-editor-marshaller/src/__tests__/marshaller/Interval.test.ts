@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { PMML2XML, XML2PMML } from "../../marshaller";
-import { DataDictionary, DataField, Interval, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  DataField,
+  Interval,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 
 describe("Interval tests", () => {
   test("Empty collection on DataField", () => {
@@ -35,7 +40,9 @@ describe("Interval tests", () => {
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
+    expect(xml).toContain(
+      `<DataField name="field1" optype="categorical" dataType="string"/>`
+    );
   });
 
   test("Add Interval", () => {
@@ -50,13 +57,19 @@ describe("Interval tests", () => {
     expect(pmml).not.toBeNull();
 
     const dataField: DataField = pmml.DataDictionary.DataField[0];
-    const interval: Interval = new Interval({ closure: "openOpen", leftMargin: 0, rightMargin: 100 });
+    const interval: Interval = new Interval({
+      closure: "openOpen",
+      leftMargin: 0,
+      rightMargin: 100
+    });
 
     dataField.Interval?.push(interval);
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<Interval closure="openOpen" leftMargin="0" rightMargin="100"/>`);
+    expect(xml).toContain(
+      `<Interval closure="openOpen" leftMargin="0" rightMargin="100"/>`
+    );
   });
 
   test("Add Interval::No leftMargin", () => {
@@ -71,7 +84,10 @@ describe("Interval tests", () => {
     expect(pmml).not.toBeNull();
 
     const dataField: DataField = pmml.DataDictionary.DataField[0];
-    const interval: Interval = new Interval({ closure: "openOpen", rightMargin: 100 });
+    const interval: Interval = new Interval({
+      closure: "openOpen",
+      rightMargin: 100
+    });
 
     dataField.Interval?.push(interval);
 
@@ -92,7 +108,10 @@ describe("Interval tests", () => {
     expect(pmml).not.toBeNull();
 
     const dataField: DataField = pmml.DataDictionary.DataField[0];
-    const interval: Interval = new Interval({ closure: "openOpen", leftMargin: 10 });
+    const interval: Interval = new Interval({
+      closure: "openOpen",
+      leftMargin: 10
+    });
 
     dataField.Interval?.push(interval);
 
@@ -114,7 +133,8 @@ describe("Interval tests", () => {
 
     expect(pmml).not.toBeNull();
 
-    const intervals: Interval[] | undefined = pmml.DataDictionary.DataField[0].Interval;
+    const intervals: Interval[] | undefined =
+      pmml.DataDictionary.DataField[0].Interval;
     if (!intervals) {
       fail("Intervals should not be undefined");
     }
@@ -130,7 +150,9 @@ describe("Interval tests", () => {
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<Interval closure="closedClosed" leftMargin="25" rightMargin="500"/>`);
+    expect(xml).toContain(
+      `<Interval closure="closedClosed" leftMargin="25" rightMargin="500"/>`
+    );
   });
 
   test("Delete Interval", () => {
@@ -146,7 +168,8 @@ describe("Interval tests", () => {
 
     expect(pmml).not.toBeNull();
 
-    const intervals: Interval[] | undefined = pmml.DataDictionary.DataField[0].Interval;
+    const intervals: Interval[] | undefined =
+      pmml.DataDictionary.DataField[0].Interval;
     if (!intervals) {
       fail("Intervals should not be undefined");
     }
@@ -158,6 +181,8 @@ describe("Interval tests", () => {
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
+    expect(xml).toContain(
+      `<DataField name="field1" optype="categorical" dataType="string"/>`
+    );
   });
 });

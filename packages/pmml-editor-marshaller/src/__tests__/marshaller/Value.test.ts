@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { PMML2XML, XML2PMML } from "../../marshaller";
-import { DataDictionary, DataField, PMML, Value } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  DataField,
+  PMML,
+  Value
+} from "../../marshaller/model/pmml4_4";
 
 describe("Value tests", () => {
   test("Empty", () => {
@@ -35,7 +40,9 @@ describe("Value tests", () => {
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
+    expect(xml).toContain(
+      `<DataField name="field1" optype="categorical" dataType="string"/>`
+    );
   });
 
   test("Add Value", () => {
@@ -50,13 +57,19 @@ describe("Value tests", () => {
     expect(pmml).not.toBeNull();
 
     const dataField: DataField = pmml.DataDictionary.DataField[0];
-    const value: Value = new Value({ value: "value", displayValue: "displayValue", property: "valid" });
+    const value: Value = new Value({
+      value: "value",
+      displayValue: "displayValue",
+      property: "valid"
+    });
 
     dataField.Value?.push(value);
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<Value value="value" displayValue="displayValue" property="valid"/>`);
+    expect(xml).toContain(
+      `<Value value="value" displayValue="displayValue" property="valid"/>`
+    );
   });
 
   test("Update Value", () => {
@@ -88,7 +101,9 @@ describe("Value tests", () => {
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<Value value="value-changed" displayValue="displayValue-changed" property="invalid"/>`);
+    expect(xml).toContain(
+      `<Value value="value-changed" displayValue="displayValue-changed" property="invalid"/>`
+    );
   });
 
   test("Delete Value", () => {
@@ -116,6 +131,8 @@ describe("Value tests", () => {
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
+    expect(xml).toContain(
+      `<DataField name="field1" optype="categorical" dataType="string"/>`
+    );
   });
 });

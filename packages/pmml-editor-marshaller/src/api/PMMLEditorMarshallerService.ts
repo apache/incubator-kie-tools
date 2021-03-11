@@ -16,64 +16,84 @@
 
 import { XML2PMML } from "../marshaller";
 import {
-    AnomalyDetectionModel,
-    AssociationModel,
-    BaselineModel,
-    BayesianNetworkModel,
-    ClusteringModel,
-    GaussianProcessModel,
-    GeneralRegressionModel,
-    MiningModel,
-    Model,
-    NaiveBayesModel,
-    NearestNeighborModel,
-    NeuralNetwork,
-    RegressionModel,
-    RuleSetModel,
-    Scorecard,
-    SequenceModel,
-    SupportVectorMachineModel,
-    TextModel,
-    TimeSeriesModel,
-    TreeModel
+  AnomalyDetectionModel,
+  AssociationModel,
+  BaselineModel,
+  BayesianNetworkModel,
+  ClusteringModel,
+  GaussianProcessModel,
+  GeneralRegressionModel,
+  MiningModel,
+  Model,
+  NaiveBayesModel,
+  NearestNeighborModel,
+  NeuralNetwork,
+  RegressionModel,
+  RuleSetModel,
+  Scorecard,
+  SequenceModel,
+  SupportVectorMachineModel,
+  TextModel,
+  TimeSeriesModel,
+  TreeModel
 } from "../marshaller/model/pmml4_4";
 import { PMMLDocumentData } from "./PMMLDocumentData";
 import { PMMLModelData } from "./PMMLModelData";
 import { PMMLFieldData } from "./PMMLFieldData";
 
 export class PMMLEditorMarshallerService {
+  public getPMMLDocumentData(xmlContent: string): PMMLDocumentData {
+    const pmml = XML2PMML(xmlContent);
+    const models: PMMLModelData[] = [];
+    const document = new PMMLDocumentData(models);
 
-    public getPMMLDocumentData(xmlContent: string) : PMMLDocumentData {
-        const pmml = XML2PMML(xmlContent);
-        const models : PMMLModelData[] = [];
-        const document = new PMMLDocumentData(models);
-
-        if (pmml.models) {
-            pmml.models.forEach(model => {
-                const modelData = this.retrieveModelData(model);
-                if (modelData) {
-                    models.push(modelData);
-                }
-            });
+    if (pmml.models) {
+      pmml.models.forEach((model) => {
+        const modelData = this.retrieveModelData(model);
+        if (modelData) {
+          models.push(modelData);
         }
-        return document;
+      });
+    }
+    return document;
+  }
+
+  public retrieveModelData(model: Model): PMMLModelData | undefined {
+    const modelsTypes = [
+      AnomalyDetectionModel,
+      AssociationModel,
+      BayesianNetworkModel,
+      BaselineModel,
+      ClusteringModel,
+      GaussianProcessModel,
+      GeneralRegressionModel,
+      MiningModel,
+      NaiveBayesModel,
+      NearestNeighborModel,
+      NeuralNetwork,
+      RegressionModel,
+      RuleSetModel,
+      SequenceModel,
+      Scorecard,
+      SupportVectorMachineModel,
+      TextModel,
+      TimeSeriesModel,
+      TreeModel
+    ];
+    let modelData;
+
+    for (const type of modelsTypes) {
+      if (model instanceof type) {
+        const modelFields = model.MiningSchema.MiningField.map(
+          (field) => new PMMLFieldData(field.name.toString(), field.usageType)
+        );
+        modelData = new PMMLModelData(
+          model.modelName == null ? "" : model.modelName,
+          modelFields
+        );
+      }
     }
 
-    public retrieveModelData(model : Model) : PMMLModelData | undefined {
-        const modelsTypes = [AnomalyDetectionModel, AssociationModel, BayesianNetworkModel, BaselineModel, ClusteringModel,
-            GaussianProcessModel, GeneralRegressionModel, MiningModel, NaiveBayesModel, NearestNeighborModel,
-            NeuralNetwork, RegressionModel, RuleSetModel, SequenceModel, Scorecard, SupportVectorMachineModel,
-            TextModel, TimeSeriesModel, TreeModel];
-        let modelData;
-
-        for (const type of modelsTypes) {
-            if (model instanceof type) {
-                const modelFields = model.MiningSchema.MiningField.map(field => new PMMLFieldData(field.name.toString(), field.usageType));
-                modelData = new PMMLModelData(model.modelName == null ? "" : model.modelName,
-                                              modelFields);
-            }
-        }
-
-        return modelData;
-    }
+    return modelData;
+  }
 }

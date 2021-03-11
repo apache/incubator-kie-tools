@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { AssociationModel, DataDictionary, Model, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  AssociationModel,
+  DataDictionary,
+  Model,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { ASSOCIATION_MODEL_1 } from "./TestData_AssociationModel";
 
 describe("AssociationModel tests", () => {

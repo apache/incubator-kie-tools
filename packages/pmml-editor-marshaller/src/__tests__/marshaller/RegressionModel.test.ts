@@ -82,7 +82,8 @@ describe("RegressionModel tests", () => {
     const regressionModel: RegressionModel = models[0] as RegressionModel;
 
     expect(regressionModel.MiningSchema.MiningField.length).toBe(4);
-    const miningFields: MiningField[] = regressionModel.MiningSchema.MiningField;
+    const miningFields: MiningField[] =
+      regressionModel.MiningSchema.MiningField;
     expect(miningFields[0].name).toBe("age");
     expect(miningFields[0].usageType).toBeUndefined();
     expect(miningFields[0].invalidValueTreatment).toBeUndefined();
@@ -149,17 +150,20 @@ describe("RegressionModel tests", () => {
     const categoricalPredicators: CategoricalPredictor[] = regressionTable.CategoricalPredictor as CategoricalPredictor[];
     expect(categoricalPredicators.length).toBe(3);
 
-    const categoricalPredicator0: CategoricalPredictor = categoricalPredicators[0];
+    const categoricalPredicator0: CategoricalPredictor =
+      categoricalPredicators[0];
     expect(categoricalPredicator0.name).toBe("car_location");
     expect(categoricalPredicator0.coefficient).toBe(41.1);
     expect(categoricalPredicator0.value).toBe("carpark");
 
-    const categoricalPredicator1: CategoricalPredictor = categoricalPredicators[1];
+    const categoricalPredicator1: CategoricalPredictor =
+      categoricalPredicators[1];
     expect(categoricalPredicator1.name).toBe("car_location");
     expect(categoricalPredicator1.coefficient).toBe(325.03);
     expect(categoricalPredicator1.value).toBe("street");
 
-    const categoricalPredicator2: CategoricalPredictor = categoricalPredicators[2];
+    const categoricalPredicator2: CategoricalPredictor =
+      categoricalPredicators[2];
     expect(categoricalPredicator2.name).toBe("car_location");
     expect(categoricalPredicator2.coefficient).toBe(-500.0);
     expect(categoricalPredicator2.value).toBe("garage");

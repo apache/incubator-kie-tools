@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { PMML2XML, XML2PMML } from "../../marshaller";
-import { Annotation, Header, PMML, Timestamp } from "../../marshaller/model/pmml4_4";
+import {
+  Annotation,
+  Header,
+  PMML,
+  Timestamp
+} from "../../marshaller/model/pmml4_4";
 
 describe("Header tests", () => {
   test("Attributes", () => {
@@ -74,7 +79,9 @@ describe("Header tests", () => {
 
     const xml: string = PMML2XML(pmml);
 
-    expect(xml).toContain(`<Application name="name-changed" version="version-changed"/>`);
+    expect(xml).toContain(
+      `<Application name="name-changed" version="version-changed"/>`
+    );
   });
 
   test("Annotation", () => {

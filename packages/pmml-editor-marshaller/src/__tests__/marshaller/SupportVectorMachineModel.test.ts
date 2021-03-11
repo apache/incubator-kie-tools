@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, Model, PMML, SupportVectorMachineModel } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  Model,
+  PMML,
+  SupportVectorMachineModel
+} from "../../marshaller/model/pmml4_4";
 import { SUPPORT_VECTOR_MACHINE_MODEL_1 } from "./TestData_SupportVectorMachineModel";
 
 describe("SupportVectorMachineModel tests", () => {

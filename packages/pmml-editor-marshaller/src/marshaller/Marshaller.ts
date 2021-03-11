@@ -38,7 +38,14 @@ import { textModelFactory } from "./jsonata/json2ui/TextModel";
 import { timeSeriesModelFactory } from "./jsonata/json2ui/TimeSeriesModel";
 import { treeModelFactory } from "./jsonata/json2ui/TreeModel";
 import { UI2JSON_TRANSFORMATION as ui2json } from "./jsonata/UI2JSON";
-import { CompoundPredicate, False, FieldName, PMML, SimplePredicate, True } from "./model/pmml4_4";
+import {
+  CompoundPredicate,
+  False,
+  FieldName,
+  PMML,
+  SimplePredicate,
+  True
+} from "./model/pmml4_4";
 
 export function XML2PMML(xml: string): PMML {
   const doc: XMLJS.Element = XMLJS.xml2js(xml) as XMLJS.Element;
@@ -46,30 +53,63 @@ export function XML2PMML(xml: string): PMML {
   expression.registerFunction("merge", merge);
   expression.registerFunction("singletonArray", singletonArray);
 
-  expression.registerFunction("anomalyDetectionModelFactory", anomalyDetectionModelFactory);
-  expression.registerFunction("associationModelFactory", associationModelFactory);
+  expression.registerFunction(
+    "anomalyDetectionModelFactory",
+    anomalyDetectionModelFactory
+  );
+  expression.registerFunction(
+    "associationModelFactory",
+    associationModelFactory
+  );
   expression.registerFunction("baselineModelFactory", baselineModelFactory);
-  expression.registerFunction("bayesianNetworkModelFactory", bayesianNetworkModelFactory);
+  expression.registerFunction(
+    "bayesianNetworkModelFactory",
+    bayesianNetworkModelFactory
+  );
   expression.registerFunction("clusteringModelFactory", clusteringModelFactory);
-  expression.registerFunction("gaussianProcessModelFactory", gaussianProcessModelFactory);
-  expression.registerFunction("generalRegressionModelFactory", generalRegressionModelFactory);
+  expression.registerFunction(
+    "gaussianProcessModelFactory",
+    gaussianProcessModelFactory
+  );
+  expression.registerFunction(
+    "generalRegressionModelFactory",
+    generalRegressionModelFactory
+  );
   expression.registerFunction("miningModelFactory", miningModelFactory);
   expression.registerFunction("naiveBayesModelFactory", naiveBayesModelFactory);
-  expression.registerFunction("nearestNeighborModelFactory", nearestNeighborModelFactory);
+  expression.registerFunction(
+    "nearestNeighborModelFactory",
+    nearestNeighborModelFactory
+  );
   expression.registerFunction("neuralNetworkFactory", neuralNetworkFactory);
   expression.registerFunction("regressionModelFactory", regressionModelFactory);
   expression.registerFunction("ruleSetModelFactory", ruleSetModelFactory);
   expression.registerFunction("scorecardFactory", scorecardFactory);
   expression.registerFunction("sequenceModelFactory", sequenceModelFactory);
-  expression.registerFunction("supportVectorMachineModelFactory", supportVectorMachineModelFactory);
+  expression.registerFunction(
+    "supportVectorMachineModelFactory",
+    supportVectorMachineModelFactory
+  );
   expression.registerFunction("textModelFactory", textModelFactory);
   expression.registerFunction("timeSeriesModelFactory", timeSeriesModelFactory);
   expression.registerFunction("treeModelFactory", treeModelFactory);
 
-  expression.registerFunction("json2uiSimplePredicateFactory", json2uiSimplePredicateFactory);
-  expression.registerFunction("json2uiCompoundPredicateFactory", json2uiCompoundPredicateFactory);
-  expression.registerFunction("json2uiTruePredicateFactory", json2uiTruePredicateFactory);
-  expression.registerFunction("json2uiFalsePredicateFactory", json2uiFalsePredicateFactory);
+  expression.registerFunction(
+    "json2uiSimplePredicateFactory",
+    json2uiSimplePredicateFactory
+  );
+  expression.registerFunction(
+    "json2uiCompoundPredicateFactory",
+    json2uiCompoundPredicateFactory
+  );
+  expression.registerFunction(
+    "json2uiTruePredicateFactory",
+    json2uiTruePredicateFactory
+  );
+  expression.registerFunction(
+    "json2uiFalsePredicateFactory",
+    json2uiFalsePredicateFactory
+  );
 
   const pmml: PMML = expression.evaluate(doc);
 

@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { ClusteringModel, DataDictionary, Model, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  ClusteringModel,
+  DataDictionary,
+  Model,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { CLUSTERING_MODEL_1 } from "./TestData_ClusteringModel";
 
 describe("ClusteringModel tests", () => {

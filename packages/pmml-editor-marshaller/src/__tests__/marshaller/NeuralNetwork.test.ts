@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, Model, NeuralNetwork, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  Model,
+  NeuralNetwork,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { NEURAL_NETWORK_MODEL_1 } from "./TestData_NeuralNetwork";
 
 describe("NeuralNetwork tests", () => {

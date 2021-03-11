@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, Model, PMML, RuleSetModel } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  Model,
+  PMML,
+  RuleSetModel
+} from "../../marshaller/model/pmml4_4";
 import { RULE_SET_MODEL_1 } from "./TestData_RuleSetModel";
 
 describe("RuleSetModel tests", () => {

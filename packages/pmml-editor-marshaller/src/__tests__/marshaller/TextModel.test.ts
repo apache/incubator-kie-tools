@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, Model, PMML, TextModel } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  Model,
+  PMML,
+  TextModel
+} from "../../marshaller/model/pmml4_4";
 import { TEXT_MODEL_1 } from "./TestData_TextModel";
 
 describe("TextModel tests", () => {

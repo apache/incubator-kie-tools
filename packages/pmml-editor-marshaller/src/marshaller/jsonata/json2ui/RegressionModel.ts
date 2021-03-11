@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MiningSchema, RegressionModel, RegressionTable } from "../../model/pmml4_4";
+import {
+  MiningSchema,
+  RegressionModel,
+  RegressionTable
+} from "../../model/pmml4_4";
 import { LOCAL_TRANSFORMATIONS } from "./LocalTransformations";
 import { MINING_SCHEMA } from "./MiningSchema";
 import { MODEL_EXPLANATION } from "./ModelExplanation";

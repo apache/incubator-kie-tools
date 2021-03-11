@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, Model, PMML, TreeModel } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  Model,
+  PMML,
+  TreeModel
+} from "../../marshaller/model/pmml4_4";
 import { TREE_MODEL_1 } from "./TestData_TreeModel";
 
 describe("TreeModel tests", () => {

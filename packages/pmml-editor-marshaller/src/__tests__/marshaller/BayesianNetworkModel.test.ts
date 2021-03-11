@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { BayesianNetworkModel, DataDictionary, Model, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  BayesianNetworkModel,
+  DataDictionary,
+  Model,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { BAYESIAN_NETWORK_MODEL_1 } from "./TestData_BayesianNetworkModel";
 
 describe("BayesianNetworkModel tests", () => {

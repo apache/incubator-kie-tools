@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, Model, NearestNeighborModel, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  Model,
+  NearestNeighborModel,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { NEAREST_NEIGHBOUR_MODEL_1 } from "./TestData_NearestNeighborModel";
 
 describe("NearestNeighborModel tests", () => {

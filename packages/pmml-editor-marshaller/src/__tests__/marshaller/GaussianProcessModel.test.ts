@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, GaussianProcessModel, Model, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  GaussianProcessModel,
+  Model,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { GAUSSIAN_PROCESS_MODEL_1 } from "./TestData_GaussianProcessModel";
 
 describe("GaussianProcessModel tests", () => {

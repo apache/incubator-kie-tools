@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { DataDictionary, Model, NaiveBayesModel, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  Model,
+  NaiveBayesModel,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { NAIVE_BAYES_MODEL_1 } from "./TestData_NaiveBayesModel";
 
 describe("NaiveBayesModel tests", () => {

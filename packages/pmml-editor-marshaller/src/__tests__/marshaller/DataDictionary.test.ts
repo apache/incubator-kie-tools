@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { PMML2XML, XML2PMML } from "../../marshaller";
-import { DataDictionary, DataField, FieldName, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  DataDictionary,
+  DataField,
+  FieldName,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 
 describe("DataDictionary tests", () => {
   test("Empty", () => {
@@ -57,7 +62,9 @@ describe("DataDictionary tests", () => {
     const xml: string = PMML2XML(pmml);
 
     expect(xml).toContain(`<DataDictionary numberOfFields="1">`);
-    expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
+    expect(xml).toContain(
+      `<DataField name="field1" optype="categorical" dataType="string"/>`
+    );
   });
 
   test("Update DataField", () => {
@@ -85,7 +92,9 @@ describe("DataDictionary tests", () => {
     const xml: string = PMML2XML(pmml);
 
     expect(xml).toContain(`<DataDictionary numberOfFields="1">`);
-    expect(xml).toContain(`<DataField name="field1-changed" optype="continuous" dataType="integer"/>`);
+    expect(xml).toContain(
+      `<DataField name="field1-changed" optype="continuous" dataType="integer"/>`
+    );
   });
 
   test("Delete DataField", () => {

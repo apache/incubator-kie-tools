@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { XML2PMML } from "../../marshaller";
-import { AnomalyDetectionModel, DataDictionary, Model, PMML } from "../../marshaller/model/pmml4_4";
+import {
+  AnomalyDetectionModel,
+  DataDictionary,
+  Model,
+  PMML
+} from "../../marshaller/model/pmml4_4";
 import { ANOMALY_DETECTION_MODEL_1 } from "./TestData_AnomalyDetectionModel";
 
 describe("AnomalyDetectionModel tests", () => {
