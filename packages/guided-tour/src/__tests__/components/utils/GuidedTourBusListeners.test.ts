@@ -16,20 +16,40 @@
 
 import { act } from "react-dom/test-utils";
 
-import { usePositionListener, useStartTutorialListener, useUserInteractionListener } from "../../../components/utils";
+import {
+  usePositionListener,
+  useStartTutorialListener,
+  useUserInteractionListener
+} from "../../../components/utils";
 import { EventLabel } from "../../../core";
 
-testGuidedTourListener("useStartTutorialListener", "GuidedTour.startTutorial", useStartTutorialListener);
-testGuidedTourListener("useUserInteractionListener", "GuidedTour.userInteraction", useUserInteractionListener);
-testGuidedTourListener("usePositionListener", "GuidedTour.newPosition", usePositionListener);
+testGuidedTourListener(
+  "useStartTutorialListener",
+  "GuidedTour.startTutorial",
+  useStartTutorialListener
+);
+testGuidedTourListener(
+  "useUserInteractionListener",
+  "GuidedTour.userInteraction",
+  useUserInteractionListener
+);
+testGuidedTourListener(
+  "usePositionListener",
+  "GuidedTour.newPosition",
+  usePositionListener
+);
 
 const addedListeners: any = {};
 const removedListeners: any = {};
 
 const realAddEventListener = document.addEventListener;
 const realRemoveEventListener = document.removeEventListener;
-const mockAddEventListener = jest.fn((event, fn) => (addedListeners[event] = fn));
-const mockRemoveEventListener = jest.fn((event, fn) => (removedListeners[event] = fn));
+const mockAddEventListener = jest.fn(
+  (event, fn) => (addedListeners[event] = fn)
+);
+const mockRemoveEventListener = jest.fn(
+  (event, fn) => (removedListeners[event] = fn)
+);
 
 const listener = (_: string) => undefined;
 

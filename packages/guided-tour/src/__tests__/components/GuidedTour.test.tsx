@@ -21,7 +21,9 @@ import { GuidedTour } from "../../components";
 
 describe("GuidedTour", () => {
   it("renders", () => {
-    const { container } = render(usingCurrentTutorialContext(<GuidedTour />).wrapper);
+    const { container } = render(
+      usingCurrentTutorialContext(<GuidedTour />).wrapper
+    );
     expect(container).toMatchSnapshot();
   });
 });

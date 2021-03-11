@@ -17,7 +17,8 @@
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface GuidedTourDictionary extends ReferenceDictionary<GuidedTourDictionary> {
+interface GuidedTourDictionary
+  extends ReferenceDictionary<GuidedTourDictionary> {
   great: string;
   stop: string;
   notFollowing: string;

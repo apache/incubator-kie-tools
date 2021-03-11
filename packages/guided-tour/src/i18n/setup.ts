@@ -21,9 +21,16 @@ import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
 import { GuidedTourI18n } from "./GuidedTourI18n";
 import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
 
-export const guidedTourI18nDefaults: I18nDefaults<GuidedTourI18n> = { locale: "en", dictionary: en };
-export const guidedTourI18nDictionaries: I18nDictionaries<GuidedTourI18n> = new Map([["en", en]]);
-export const GuidedTourI18nContext = React.createContext<I18nContextType<GuidedTourI18n>>({} as any);
+export const guidedTourI18nDefaults: I18nDefaults<GuidedTourI18n> = {
+  locale: "en",
+  dictionary: en
+};
+export const guidedTourI18nDictionaries: I18nDictionaries<GuidedTourI18n> = new Map(
+  [["en", en]]
+);
+export const GuidedTourI18nContext = React.createContext<
+  I18nContextType<GuidedTourI18n>
+>({} as any);
 
 export function useGuidedTourI18n() {
   return useContext(GuidedTourI18nContext);

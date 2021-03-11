@@ -80,7 +80,8 @@ const ctx: any = {
       }
     ]
   },
-  setCurrentRefElementPosition: (rect: Rect) => (ctx.currentRefElementPosition = rect)
+  setCurrentRefElementPosition: (rect: Rect) =>
+    (ctx.currentRefElementPosition = rect)
 };
 
 const elementPosition: Rect = {

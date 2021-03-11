@@ -24,11 +24,17 @@ export function useGuidedTourPositionProvider(
   iframeRef: React.RefObject<HTMLIFrameElement>
 ) {
   useEffect(() => {
-    KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      envelopeApi.requests.receive_guidedTourElementPositionRequest(selector).then(position => {
-        const parentRect = iframeRef.current?.getBoundingClientRect();
-        KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
-      })
+    KogitoGuidedTour.getInstance().registerPositionProvider(
+      (selector: string) =>
+        envelopeApi.requests
+          .receive_guidedTourElementPositionRequest(selector)
+          .then((position) => {
+            const parentRect = iframeRef.current?.getBoundingClientRect();
+            KogitoGuidedTour.getInstance().onPositionReceived(
+              position,
+              parentRect
+            );
+          })
     );
   }, [envelopeApi]);
 }

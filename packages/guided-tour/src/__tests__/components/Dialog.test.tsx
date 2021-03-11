@@ -16,7 +16,10 @@
 
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
-import { usingCurrentTutorialContext, usingTestingGuidedTourI18nContext } from "../test_context";
+import {
+  usingCurrentTutorialContext,
+  usingTestingGuidedTourI18nContext
+} from "../test_context";
 import { Dialog } from "../../components";
 import { KogitoGuidedTour } from "../..";
 import { AutoMode, DemoMode, Tutorial } from "../../api";
@@ -38,17 +41,20 @@ describe("Dialog", () => {
     it("renders react-based content", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            currentTutorial: registeredTutorial({
-              label: tutorialLabel,
-              steps: [
-                {
-                  mode: new DemoMode(),
-                  content: <div>Something as JSX</div>
-                }
-              ]
-            })
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              currentTutorial: registeredTutorial({
+                label: tutorialLabel,
+                steps: [
+                  {
+                    mode: new DemoMode(),
+                    content: <div>Something as JSX</div>
+                  }
+                ]
+              })
+            }
+          ).wrapper
         ).wrapper
       );
       expect(container).toMatchSnapshot();
@@ -57,17 +63,20 @@ describe("Dialog", () => {
     it("renders function-based content", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            currentTutorial: registeredTutorial({
-              label: tutorialLabel,
-              steps: [
-                {
-                  mode: new DemoMode(),
-                  content: () => <div>Something as JSX-function</div>
-                }
-              ]
-            })
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              currentTutorial: registeredTutorial({
+                label: tutorialLabel,
+                steps: [
+                  {
+                    mode: new DemoMode(),
+                    content: () => <div>Something as JSX-function</div>
+                  }
+                ]
+              })
+            }
+          ).wrapper
         ).wrapper
       );
       expect(container).toMatchSnapshot();
@@ -76,17 +85,20 @@ describe("Dialog", () => {
     it("renders string-based content", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            currentTutorial: registeredTutorial({
-              label: tutorialLabel,
-              steps: [
-                {
-                  mode: new DemoMode(),
-                  content: "<div>Something as string</div>"
-                }
-              ]
-            })
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              currentTutorial: registeredTutorial({
+                label: tutorialLabel,
+                steps: [
+                  {
+                    mode: new DemoMode(),
+                    content: "<div>Something as string</div>"
+                  }
+                ]
+              })
+            }
+          ).wrapper
         ).wrapper
       );
       expect(container).toMatchSnapshot();
@@ -95,17 +107,20 @@ describe("Dialog", () => {
     it("renders a step on auto mode", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            currentTutorial: registeredTutorial({
-              label: tutorialLabel,
-              steps: [
-                {
-                  mode: new AutoMode(1000),
-                  content: "<div>Something as string</div>"
-                }
-              ]
-            })
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              currentTutorial: registeredTutorial({
+                label: tutorialLabel,
+                steps: [
+                  {
+                    mode: new AutoMode(1000),
+                    content: "<div>Something as string</div>"
+                  }
+                ]
+              })
+            }
+          ).wrapper
         ).wrapper
       );
       expect(container).toMatchSnapshot();
@@ -115,21 +130,26 @@ describe("Dialog", () => {
     it("closes when users click on the close button", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            currentTutorial: registeredTutorial({
-              label: tutorialLabel,
-              steps: [
-                {
-                  mode: new DemoMode(),
-                  content: <div>Something</div>
-                }
-              ]
-            })
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              currentTutorial: registeredTutorial({
+                label: tutorialLabel,
+                steps: [
+                  {
+                    mode: new DemoMode(),
+                    content: <div>Something</div>
+                  }
+                ]
+              })
+            }
+          ).wrapper
         ).wrapper
       );
 
-      fireEvent.click(document.querySelector("[data-kgt-close]")!, { bubbles: true });
+      fireEvent.click(document.querySelector("[data-kgt-close]")!, {
+        bubbles: true
+      });
       expect(container).toMatchSnapshot();
     });
   });
@@ -138,13 +158,16 @@ describe("Dialog", () => {
     it("renders empty state", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            currentStep: 1,
-            currentTutorial: registeredTutorial({
-              label: tutorialLabel,
-              steps: []
-            })
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              currentStep: 1,
+              currentTutorial: registeredTutorial({
+                label: tutorialLabel,
+                steps: []
+              })
+            }
+          ).wrapper
         ).wrapper
       );
       expect(container).toMatchSnapshot();
@@ -168,10 +191,13 @@ describe("Dialog", () => {
     it("renders negative reinforcement message", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            ...negativeReinforcementCtx,
-            isHighlightLayerEnabled: true
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              ...negativeReinforcementCtx,
+              isHighlightLayerEnabled: true
+            }
+          ).wrapper
         ).wrapper
       );
       expect(container).toMatchSnapshot();
@@ -180,10 +206,13 @@ describe("Dialog", () => {
     it("renders negative reinforcement clue", () => {
       const { container } = render(
         usingTestingGuidedTourI18nContext(
-          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-            ...negativeReinforcementCtx,
-            isHighlightLayerEnabled: false
-          }).wrapper
+          usingCurrentTutorialContext(
+            <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />,
+            {
+              ...negativeReinforcementCtx,
+              isHighlightLayerEnabled: false
+            }
+          ).wrapper
         ).wrapper
       );
       expect(container).toMatchSnapshot();
@@ -191,7 +220,9 @@ describe("Dialog", () => {
 
     it("sets 'isHighlightLayerEnabled' as 'false' when users press the 'Continue' button", () => {
       const { ctx, wrapper } = usingCurrentTutorialContext(
-        usingTestingGuidedTourI18nContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />).wrapper,
+        usingTestingGuidedTourI18nContext(
+          <Dialog isEnabled={true} tutorialLabel={tutorialLabel} />
+        ).wrapper,
         {
           ...negativeReinforcementCtx,
           isHighlightLayerEnabled: true
@@ -199,7 +230,9 @@ describe("Dialog", () => {
       );
 
       render(wrapper);
-      fireEvent.click(document.querySelector("[data-kgt-continue]")!, { bubbles: true });
+      fireEvent.click(document.querySelector("[data-kgt-continue]")!, {
+        bubbles: true
+      });
       expect(ctx.isHighlightLayerEnabled).toBeFalsy();
     });
   });

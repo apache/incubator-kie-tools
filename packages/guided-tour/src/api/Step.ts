@@ -21,7 +21,11 @@ export class Step {
     public mode: Mode,
     public content?:
       | React.ReactNode
-      | ((props: { dismiss?: () => void; nextStep?: () => void; prevStep?: () => void }) => React.ReactNode)
+      | ((props: {
+          dismiss?: () => void;
+          nextStep?: () => void;
+          prevStep?: () => void;
+        }) => React.ReactNode)
       | string,
     public selector?: string,
     public highlightEnabled?: boolean,

@@ -1,11 +1,24 @@
 import * as React from "react";
-import { CurrentTutorialContext, CurrentTutorialContextType } from "../contexts";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
-import { GuidedTourI18nContext, guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n";
+import {
+  CurrentTutorialContext,
+  CurrentTutorialContextType
+} from "../contexts";
+import {
+  I18nDictionariesProvider,
+  I18nDictionariesProviderProps
+} from "@kogito-tooling/i18n/dist/react-components";
+import {
+  GuidedTourI18nContext,
+  guidedTourI18nDefaults,
+  guidedTourI18nDictionaries
+} from "../i18n";
 import { GuidedTourI18n } from "../i18n";
 import { DEFAULT_RECT, Rect, Tutorial } from "../api";
 
-export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: Partial<CurrentTutorialContextType>) {
+export function usingCurrentTutorialContext(
+  children: React.ReactElement,
+  ctx?: Partial<CurrentTutorialContextType>
+) {
   const currentTutorialContext: CurrentTutorialContextType = {
     currentStep: 0,
     completedStep: 0,
@@ -13,11 +26,16 @@ export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: 
     isHighlightLayerEnabled: false,
     isNegativeReinforcementStateEnabled: false,
     currentRefElementPosition: DEFAULT_RECT,
-    setCompletedStep: (index: number) => (currentTutorialContext.completedStep = index),
-    setCurrentStep: (index: number) => (currentTutorialContext.currentStep = index),
-    setCurrentTutorial: (tutorial: Tutorial) => (currentTutorialContext.currentTutorial = tutorial),
-    setCurrentRefElementPosition: (rect: Rect) => (currentTutorialContext.currentRefElementPosition = rect),
-    setIsHighlightLayerEnabled: (isEnabled: boolean) => (currentTutorialContext.isHighlightLayerEnabled = isEnabled),
+    setCompletedStep: (index: number) =>
+      (currentTutorialContext.completedStep = index),
+    setCurrentStep: (index: number) =>
+      (currentTutorialContext.currentStep = index),
+    setCurrentTutorial: (tutorial: Tutorial) =>
+      (currentTutorialContext.currentTutorial = tutorial),
+    setCurrentRefElementPosition: (rect: Rect) =>
+      (currentTutorialContext.currentRefElementPosition = rect),
+    setIsHighlightLayerEnabled: (isEnabled: boolean) =>
+      (currentTutorialContext.isHighlightLayerEnabled = isEnabled),
     setIsNegativeReinforcementStateEnabled: (isEnabled: boolean) =>
       (currentTutorialContext.isNegativeReinforcementStateEnabled = isEnabled),
     setLatestUserInteraction: () => null,
@@ -48,7 +66,11 @@ export function usingTestingGuidedTourI18nContext(
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
+      <I18nDictionariesProvider
+        defaults={usedCtx.defaults}
+        dictionaries={usedCtx.dictionaries}
+        ctx={usedCtx.ctx}
+      >
         {usedCtx.children}
       </I18nDictionariesProvider>
     )

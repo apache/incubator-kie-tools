@@ -35,4 +35,6 @@ export interface CurrentTutorialContextType {
   setLatestUserInteraction: (userInteraction: UserInteraction) => void;
 }
 
-export const CurrentTutorialContext = createContext<CurrentTutorialContextType>({} as any);
+export const CurrentTutorialContext = createContext<CurrentTutorialContextType>(
+  {} as any
+);

@@ -36,10 +36,15 @@ import { DEFAULT_RECT, AutoMode, DemoMode } from "../api";
 import "./Dialog.sass";
 import { useGuidedTourI18n } from "../i18n";
 
-export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => {
+export const Dialog = (props: {
+  isEnabled: boolean;
+  tutorialLabel: string;
+}) => {
   // Local state
   const [isEnabled, setIsEnabled] = useState(props.isEnabled);
-  const [currentTutorialLabel, setCurrentTutorialLabel] = useState(props.tutorialLabel);
+  const [currentTutorialLabel, setCurrentTutorialLabel] = useState(
+    props.tutorialLabel
+  );
 
   // Global state
   const {
@@ -61,12 +66,19 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
   const registeredTutorials = guidedTour.getRegisteredTutorials();
 
   // Aliases
-  const dialogClass = "pf-c-modal-box kgt-dialog kgt-dialog" + (isEnabled ? "--enabled" : "--disabled");
-  const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
+  const dialogClass =
+    "pf-c-modal-box kgt-dialog kgt-dialog" +
+    (isEnabled ? "--enabled" : "--disabled");
+  const dialogStep = useMemo(
+    () => getCurrentStep(currentStep, currentTutorial),
+    [currentStep, currentTutorial]
+  );
   const dialogContent = dialogStep?.content ?? "";
   const dialogPosition = dialogStep?.position ?? "center";
   const dialogMode = dialogStep?.mode ?? new DemoMode();
-  const dialogRefElement = isNegativeReinforcementStateEnabled ? DEFAULT_RECT : currentRefElementPosition;
+  const dialogRefElement = isNegativeReinforcementStateEnabled
+    ? DEFAULT_RECT
+    : currentRefElementPosition;
 
   // Post processing
   const dialogStyle = calculatePositionStyle(dialogPosition, dialogRefElement);
@@ -77,15 +89,18 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
     registeredTutorials,
     isNegativeReinforcementStateEnabled
   ]);
-  const negativeReinforcementTemplate = useMemo(NegativeReinforcementDialog(dialogStep, closeDialog), [
-    currentStep,
-    isHighlightLayerEnabled,
-    isNegativeReinforcementStateEnabled
-  ]);
+  const negativeReinforcementTemplate = useMemo(
+    NegativeReinforcementDialog(dialogStep, closeDialog),
+    [currentStep, isHighlightLayerEnabled, isNegativeReinforcementStateEnabled]
+  );
 
-  useStartTutorialListener(tutorialLabel => setCurrentTutorialLabel(tutorialLabel));
-  usePositionListener(rect => setCurrentRefElementPosition(rect));
-  useUserInteractionListener(userInteraction => setLatestUserInteraction(userInteraction));
+  useStartTutorialListener((tutorialLabel) =>
+    setCurrentTutorialLabel(tutorialLabel)
+  );
+  usePositionListener((rect) => setCurrentRefElementPosition(rect));
+  useUserInteractionListener((userInteraction) =>
+    setLatestUserInteraction(userInteraction)
+  );
   useUserInteractions();
   useSelectorHandler();
 
@@ -118,7 +133,9 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
   }, [currentStep]);
 
   useEffect(() => {
-    const newCurrentTutorial = registeredTutorials.find(tutorial => tutorial.label === currentTutorialLabel);
+    const newCurrentTutorial = registeredTutorials.find(
+      (tutorial) => tutorial.label === currentTutorialLabel
+    );
 
     if (newCurrentTutorial) {
       setCurrentTutorial(newCurrentTutorial);

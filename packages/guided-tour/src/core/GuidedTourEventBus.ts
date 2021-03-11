@@ -17,7 +17,10 @@
 import { Rect, UserInteraction } from "../api";
 import { GuidedTourCookie } from "../core";
 
-export type EventLabel = "GuidedTour.startTutorial" | "GuidedTour.userInteraction" | "GuidedTour.newPosition";
+export type EventLabel =
+  | "GuidedTour.startTutorial"
+  | "GuidedTour.userInteraction"
+  | "GuidedTour.newPosition";
 
 export class GuidedTourEventBus {
   private isEnabled = false;
@@ -30,7 +33,10 @@ export class GuidedTourEventBus {
   }
 
   public onUserInteraction(userInteraction: UserInteraction) {
-    const event = this.createEvent("GuidedTour.userInteraction", userInteraction);
+    const event = this.createEvent(
+      "GuidedTour.userInteraction",
+      userInteraction
+    );
     this.dispatchEvent(event);
   }
 

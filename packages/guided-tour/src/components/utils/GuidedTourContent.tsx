@@ -56,8 +56,12 @@ export const StepDialog = (
   onCloseAction: () => void
 ) => {
   const { currentStep, setCurrentStep } = useContext(CurrentTutorialContext);
-  const nextStep = useCallback(() => setCurrentStep(currentStep + 1), [currentStep]);
-  const prevStep = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);
+  const nextStep = useCallback(() => setCurrentStep(currentStep + 1), [
+    currentStep
+  ]);
+  const prevStep = useCallback(() => setCurrentStep(currentStep - 1), [
+    currentStep
+  ]);
   return () => (
     <>
       <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
@@ -67,10 +71,18 @@ export const StepDialog = (
   );
 };
 
-export const NegativeReinforcementDialog = (step: Step | undefined, onCloseAction: () => void) => {
-  const { isHighlightLayerEnabled, setIsHighlightLayerEnabled } = useContext(CurrentTutorialContext);
+export const NegativeReinforcementDialog = (
+  step: Step | undefined,
+  onCloseAction: () => void
+) => {
+  const { isHighlightLayerEnabled, setIsHighlightLayerEnabled } = useContext(
+    CurrentTutorialContext
+  );
   const negativeReinforcementMessage = step?.negativeReinforcementMessage ?? "";
-  const showSuggestion = useCallback(() => setIsHighlightLayerEnabled(false), []);
+  const showSuggestion = useCallback(
+    () => setIsHighlightLayerEnabled(false),
+    []
+  );
   const { i18n } = useGuidedTourI18n();
 
   if (!isHighlightLayerEnabled) {

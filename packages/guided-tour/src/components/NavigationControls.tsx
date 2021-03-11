@@ -26,21 +26,32 @@ import { CurrentTutorialContext } from "../contexts";
 import "./NavigationControls.sass";
 
 export const NavigationControls = () => {
-  const { currentTutorial, currentStep, setCurrentStep } = useContext(CurrentTutorialContext);
-  const isButtonsHidden = useMemo(() => getCurrentStep(currentStep, currentTutorial)?.navigatorEnabled !== true, [
-    currentStep,
+  const { currentTutorial, currentStep, setCurrentStep } = useContext(
+    CurrentTutorialContext
+  );
+  const isButtonsHidden = useMemo(
+    () =>
+      getCurrentStep(currentStep, currentTutorial)?.navigatorEnabled !== true,
+    [currentStep, currentTutorial]
+  );
+  const numberOfSteps = useMemo(() => getSteps(currentTutorial).length, [
     currentTutorial
   ]);
-  const numberOfSteps = useMemo(() => getSteps(currentTutorial).length, [currentTutorial]);
   const currentStepNumber = (currentStep ?? 0) + 1;
 
-  const prev = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);
-  const next = useCallback(() => setCurrentStep(currentStep + 1), [currentStep]);
+  const prev = useCallback(() => setCurrentStep(currentStep - 1), [
+    currentStep
+  ]);
+  const next = useCallback(() => setCurrentStep(currentStep + 1), [
+    currentStep
+  ]);
   const stepBullets = useCallback(() => {
-    const bullets = [...Array(numberOfSteps).keys()].map(stepNumber => {
+    const bullets = [...Array(numberOfSteps).keys()].map((stepNumber) => {
       const baseClassName = "kgt-nav-controls__bullet";
       const isCurrentStep = currentStepNumber === stepNumber + 1;
-      const className = `${baseClassName} ${isCurrentStep ? `${baseClassName}--current` : ""}`;
+      const className = `${baseClassName} ${
+        isCurrentStep ? `${baseClassName}--current` : ""
+      }`;
 
       return (
         <div className={className} key={stepNumber}>

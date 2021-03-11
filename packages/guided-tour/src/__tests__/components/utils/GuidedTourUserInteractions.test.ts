@@ -53,7 +53,10 @@ describe("GuidedTourUserInteractions", () => {
           steps: [
             {
               negativeReinforcementMessage: null,
-              mode: new BlockMode({ action: "CREATED", target: "Node" }, [".palette", "canvas"])
+              mode: new BlockMode({ action: "CREATED", target: "Node" }, [
+                ".palette",
+                "canvas"
+              ])
             }
           ]
         }
@@ -120,9 +123,12 @@ jest.mock("react", () => {
 });
 
 const ctx: any = {
-  setCurrentStep: (currentStepIndex: number) => (ctx.currentStep = currentStepIndex),
-  setIsNegativeReinforcementStateEnabled: (isEnabled: boolean) => (ctx.isNegativeReinforcementStateEnabled = isEnabled),
-  setIsHighlightLayerEnabled: (isEnabled: boolean) => (ctx.isHighlightLayerEnabled = isEnabled)
+  setCurrentStep: (currentStepIndex: number) =>
+    (ctx.currentStep = currentStepIndex),
+  setIsNegativeReinforcementStateEnabled: (isEnabled: boolean) =>
+    (ctx.isNegativeReinforcementStateEnabled = isEnabled),
+  setIsHighlightLayerEnabled: (isEnabled: boolean) =>
+    (ctx.isHighlightLayerEnabled = isEnabled)
 };
 
 function useContext(currentCtx: any) {
@@ -132,11 +138,16 @@ function useContext(currentCtx: any) {
     steps: [
       {
         negativeReinforcementMessage: "Click on 'Node' to continue...",
-        mode: new BlockMode({ action: "CREATED", target: "Node" }, [".palette", "canvas"])
+        mode: new BlockMode({ action: "CREATED", target: "Node" }, [
+          ".palette",
+          "canvas"
+        ])
       }
     ]
   };
   ctx.isHighlightLayerEnabled = currentCtx.isHighlightLayerEnabled ?? false;
-  ctx.isNegativeReinforcementStateEnabled = currentCtx.isNegativeReinforcementStateEnabled ?? false;
-  ctx.latestUserInteraction = currentCtx.latestUserInteraction ?? new UserInteraction("", "");
+  ctx.isNegativeReinforcementStateEnabled =
+    currentCtx.isNegativeReinforcementStateEnabled ?? false;
+  ctx.latestUserInteraction =
+    currentCtx.latestUserInteraction ?? new UserInteraction("", "");
 }

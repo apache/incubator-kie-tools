@@ -20,7 +20,11 @@ import { Tutorial, UserInteraction } from "../api";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { GuidedTour } from "../components";
-import { GuidedTourCookie, GuidedTourDomUtils, GuidedTourEventBus } from "../core";
+import {
+  GuidedTourCookie,
+  GuidedTourDomUtils,
+  GuidedTourEventBus
+} from "../core";
 
 describe("KogitoGuidedTour", () => {
   beforeEach(() => jest.clearAllMocks());
@@ -28,11 +32,17 @@ describe("KogitoGuidedTour", () => {
   describe("setup", () => {
     it("renders the dialog when guided tour is enabled", () => {
       mockInstance(GuidedTourCookie, { isDisabled: () => false });
-      mockInstance(GuidedTourDomUtils, { getGuidedTourHTMLElement: () => document.createElement("div") });
+      mockInstance(GuidedTourDomUtils, {
+        getGuidedTourHTMLElement: () => document.createElement("div")
+      });
 
       KogitoGuidedTour.getInstance().setup();
 
-      expect(ReactDOM.render).toBeCalledWith(<GuidedTour />, expect.any(HTMLElement), expect.any(Function));
+      expect(ReactDOM.render).toBeCalledWith(
+        <GuidedTour />,
+        expect.any(HTMLElement),
+        expect.any(Function)
+      );
     });
 
     it("does not render anything when it's not enabled", () => {
@@ -116,7 +126,10 @@ describe("KogitoGuidedTour", () => {
       guidedTour.registerTutorial(tutorial1);
       guidedTour.registerTutorial(tutorial2);
 
-      expect(guidedTour.getRegisteredTutorials()).toEqual([tutorial2, tutorial1]);
+      expect(guidedTour.getRegisteredTutorials()).toEqual([
+        tutorial2,
+        tutorial1
+      ]);
     });
   });
 
@@ -125,7 +138,9 @@ describe("KogitoGuidedTour", () => {
       const onUserInteraction = jest.fn();
       const userInteraction = new UserInteraction("CLICK", "Node");
 
-      mockInstance(GuidedTourEventBus, { onUserInteraction: onUserInteraction });
+      mockInstance(GuidedTourEventBus, {
+        onUserInteraction: onUserInteraction
+      });
 
       KogitoGuidedTour.getInstance().onUserInteraction(userInteraction);
 
@@ -136,10 +151,30 @@ describe("KogitoGuidedTour", () => {
   describe("onPositionReceived", () => {
     it("triggers the bus", () => {
       const onPositionReceived = jest.fn();
-      const rect = { bottom: 1, height: 1, left: 1, right: 1, top: 1, width: 1, x: 1, y: 1 };
-      const parent = { bottom: 2, height: 2, left: 2, right: 2, top: 2, width: 2, x: 2, y: 2 };
+      const rect = {
+        bottom: 1,
+        height: 1,
+        left: 1,
+        right: 1,
+        top: 1,
+        width: 1,
+        x: 1,
+        y: 1
+      };
+      const parent = {
+        bottom: 2,
+        height: 2,
+        left: 2,
+        right: 2,
+        top: 2,
+        width: 2,
+        x: 2,
+        y: 2
+      };
 
-      mockInstance(GuidedTourEventBus, { onPositionReceived: onPositionReceived });
+      mockInstance(GuidedTourEventBus, {
+        onPositionReceived: onPositionReceived
+      });
 
       KogitoGuidedTour.getInstance().onPositionReceived(rect, parent);
 
@@ -178,7 +213,7 @@ jest.mock("react-dom", () => ({
 
 function mockInstance(obj: any, methods: any) {
   const methodNames = Object.keys(methods);
-  methodNames.forEach(methodName => {
+  methodNames.forEach((methodName) => {
     const methodImpl = methods[methodName];
     obj.prototype[methodName].mockImplementation(methodImpl);
   });

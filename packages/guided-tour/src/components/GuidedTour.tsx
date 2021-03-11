@@ -20,13 +20,26 @@ import { Dialog, HighlightLayer } from ".";
 import { UserInteraction, Tutorial, Rect } from "../api";
 import { CurrentTutorialContext } from "../contexts";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
-import { GuidedTourI18nContext, guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n";
+import {
+  GuidedTourI18nContext,
+  guidedTourI18nDefaults,
+  guidedTourI18nDictionaries
+} from "../i18n";
 
 export const GuidedTour = () => {
   const [currentTutorial, setCurrentTutorial] = useState<Tutorial>();
-  const [currentRefElementPosition, setCurrentRefElementPosition] = useState<Rect>();
-  const [isNegativeReinforcementStateEnabled, setIsNegativeReinforcementStateEnabled] = useState(false);
-  const [latestUserInteraction, setLatestUserInteraction] = useState<UserInteraction>();
+  const [
+    currentRefElementPosition,
+    setCurrentRefElementPosition
+  ] = useState<Rect>();
+  const [
+    isNegativeReinforcementStateEnabled,
+    setIsNegativeReinforcementStateEnabled
+  ] = useState(false);
+  const [
+    latestUserInteraction,
+    setLatestUserInteraction
+  ] = useState<UserInteraction>();
   const [isHighlightLayerEnabled, setIsHighlightLayerEnabled] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedStep, setCompletedStep] = useState(0);

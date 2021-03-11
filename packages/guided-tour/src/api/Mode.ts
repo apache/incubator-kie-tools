@@ -18,7 +18,10 @@ import { UserInteraction } from ".";
 
 export class BlockMode {
   // Each step shows something, and waits for some user interaction
-  constructor(public userInteraction: UserInteraction, public allowedSelectors: string[]) {}
+  constructor(
+    public userInteraction: UserInteraction,
+    public allowedSelectors: string[]
+  ) {}
 }
 
 export class AutoMode {

@@ -19,7 +19,11 @@ import * as ReactDOM from "react-dom";
 
 import { Rect, Tutorial, UserInteraction } from "./api";
 import { GuidedTour } from "./components";
-import { GuidedTourCookie, GuidedTourDomUtils, GuidedTourEventBus } from "./core";
+import {
+  GuidedTourCookie,
+  GuidedTourDomUtils,
+  GuidedTourEventBus
+} from "./core";
 
 class KogitoGuidedTour {
   private static instance?: KogitoGuidedTour;
@@ -54,9 +58,13 @@ class KogitoGuidedTour {
     if (this.cookie.isDisabled()) {
       return;
     }
-    ReactDOM.render(<GuidedTour />, this.domUtils.getGuidedTourHTMLElement(), () => {
-      this.eventBus.enableBus();
-    });
+    ReactDOM.render(
+      <GuidedTour />,
+      this.domUtils.getGuidedTourHTMLElement(),
+      () => {
+        this.eventBus.enableBus();
+      }
+    );
   }
 
   /**
@@ -129,7 +137,9 @@ class KogitoGuidedTour {
    * Register a custom position provider, which is used when a custom selector
    * is passed to a step.
    */
-  public registerPositionProvider(positionProvider: (selector: string) => void): void {
+  public registerPositionProvider(
+    positionProvider: (selector: string) => void
+  ): void {
     this.positionProvider = positionProvider;
   }
   /**

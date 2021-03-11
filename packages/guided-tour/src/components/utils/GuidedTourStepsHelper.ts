@@ -18,9 +18,13 @@ import { KogitoGuidedTour } from "../..";
 import { DemoMode, Step, SubTutorialMode, Tutorial } from "../../api";
 
 const concat = <T>(array1: T[], array2: T[]) => array1.concat(array2);
-const flatMap = <T>(f: (array: T) => T[], array: T[]) => array.map(f).reduce(concat, []);
+const flatMap = <T>(f: (array: T) => T[], array: T[]) =>
+  array.map(f).reduce(concat, []);
 
-export const getCurrentStep = (currentStep: number, currentTutorial?: Tutorial): Step | undefined => {
+export const getCurrentStep = (
+  currentStep: number,
+  currentTutorial?: Tutorial
+): Step | undefined => {
   return getSteps(currentTutorial)[currentStep];
 };
 
@@ -29,7 +33,7 @@ export const getSteps = (currentTutorial?: Tutorial) => {
   const registeredTutorials = guidedTour.getRegisteredTutorials();
   const steps = currentTutorial?.steps ?? [];
 
-  return flatMap(step => {
+  return flatMap((step) => {
     const stepMode = step.mode ?? new DemoMode();
 
     if (!("label" in stepMode)) {
@@ -37,7 +41,7 @@ export const getSteps = (currentTutorial?: Tutorial) => {
     }
 
     const stepTutorialLabel = (stepMode as SubTutorialMode).label;
-    const stepTutorial = registeredTutorials.find(tutorial => {
+    const stepTutorial = registeredTutorials.find((tutorial) => {
       return tutorial.label === stepTutorialLabel;
     });
 

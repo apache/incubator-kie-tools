@@ -56,9 +56,36 @@ describe("GuidedTourEventBus", () => {
   });
 
   describe("onPositionReceived", () => {
-    const rect1: Rect = { bottom: 1, height: 1, left: 1, right: 1, top: 1, width: 1, x: 1, y: 1 };
-    const rect2: Rect = { bottom: 2, height: 2, left: 2, right: 2, top: 2, width: 2, x: 2, y: 2 };
-    const rect3: Rect = { bottom: 3, height: 3, left: 3, right: 3, top: 3, width: 3, x: 3, y: 3 };
+    const rect1: Rect = {
+      bottom: 1,
+      height: 1,
+      left: 1,
+      right: 1,
+      top: 1,
+      width: 1,
+      x: 1,
+      y: 1
+    };
+    const rect2: Rect = {
+      bottom: 2,
+      height: 2,
+      left: 2,
+      right: 2,
+      top: 2,
+      width: 2,
+      x: 2,
+      y: 2
+    };
+    const rect3: Rect = {
+      bottom: 3,
+      height: 3,
+      left: 3,
+      right: 3,
+      top: 3,
+      width: 3,
+      x: 3,
+      y: 3
+    };
 
     it("dispatches events when bus is enabled", () => {
       const eventBus = new GuidedTourEventBus();
@@ -90,10 +117,22 @@ describe("GuidedTourEventBus", () => {
   });
 
   describe("onUserInteraction", () => {
-    const userInteraction1: UserInteraction = { action: "CREATED", target: "Node1" };
-    const userInteraction2: UserInteraction = { action: "UPDATED", target: "Node2" };
-    const userInteraction3: UserInteraction = { action: "REMOVED", target: "Node3" };
-    const userInteraction4: UserInteraction = { action: "CLICKED", target: "Node4" };
+    const userInteraction1: UserInteraction = {
+      action: "CREATED",
+      target: "Node1"
+    };
+    const userInteraction2: UserInteraction = {
+      action: "UPDATED",
+      target: "Node2"
+    };
+    const userInteraction3: UserInteraction = {
+      action: "REMOVED",
+      target: "Node3"
+    };
+    const userInteraction4: UserInteraction = {
+      action: "CLICKED",
+      target: "Node4"
+    };
 
     it("dispatches events when bus is enabled", () => {
       const eventBus = new GuidedTourEventBus();
@@ -131,7 +170,7 @@ describe("GuidedTourEventBus", () => {
 let dispatchedEvents: CustomEvent[] = [];
 
 const realDispatchEvent = document.dispatchEvent;
-const mockedDispatchEvent = jest.fn(event => {
+const mockedDispatchEvent = jest.fn((event) => {
   dispatchedEvents = [...dispatchedEvents, event];
   return true;
 });

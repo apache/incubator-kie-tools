@@ -49,7 +49,9 @@ export const render = (component: React.SFCElement<any>) => {
   if (componentContainer) {
     reactRender(component, componentContainer);
   } else {
-    throw new Error("[Guided Tour] Test error: 'setupContainer' must be called on 'beforeEach'.");
+    throw new Error(
+      "[Guided Tour] Test error: 'setupContainer' must be called on 'beforeEach'."
+    );
   }
 };
 
@@ -62,6 +64,8 @@ export const triggerClick = (selector: string) => {
   if (element) {
     element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   } else {
-    throw new Error("[Guided Tour] Test error: clickable element could not be found.");
+    throw new Error(
+      "[Guided Tour] Test error: clickable element could not be found."
+    );
   }
 };

@@ -23,7 +23,10 @@ describe("GuidedTourStepsHelper", () => {
   const guidedTour = KogitoGuidedTour.getInstance();
   const step0: Step = makeStep("#selector-0");
   const step1: Step = makeStep("#selector-1");
-  const step2: Step = makeStep("#selector-2", new SubTutorialMode("tutorial 2"));
+  const step2: Step = makeStep(
+    "#selector-2",
+    new SubTutorialMode("tutorial 2")
+  );
   const step3: Step = makeStep("#selector-3");
   const tutorial1 = {
     label: "tutorial 1",
@@ -49,7 +52,15 @@ describe("GuidedTourStepsHelper", () => {
 
   describe("getSteps", () => {
     it("returns the steps for the current tutorial", () => {
-      expect(getSteps(tutorial1)).toEqual([step0, step1, step2_0, step2_1, step2_2, step2_3, step3]);
+      expect(getSteps(tutorial1)).toEqual([
+        step0,
+        step1,
+        step2_0,
+        step2_1,
+        step2_2,
+        step2_3,
+        step3
+      ]);
     });
   });
 });

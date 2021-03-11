@@ -34,7 +34,10 @@ export const useUserInteractions = () => {
   } = useContext(CurrentTutorialContext);
 
   // Aliases
-  const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
+  const dialogStep = useMemo(
+    () => getCurrentStep(currentStep, currentTutorial),
+    [currentStep, currentTutorial]
+  );
   const mode = dialogStep?.mode ?? new DemoMode();
 
   function handleBlockMode(blockMode: BlockMode) {
@@ -42,7 +45,11 @@ export const useUserInteractions = () => {
     const targetSelector = latestUserInteraction?.target ?? "";
 
     function isAllowedInteraction() {
-      return [...allowedSelectors, userInteraction.target].indexOf(targetSelector) !== -1;
+      return (
+        [...allowedSelectors, userInteraction.target].indexOf(
+          targetSelector
+        ) !== -1
+      );
     }
 
     function isNegativeReinforcementMessagePresent() {

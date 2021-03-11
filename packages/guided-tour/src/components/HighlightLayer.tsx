@@ -31,7 +31,10 @@ export const HighlightLayer = () => {
     isNegativeReinforcementStateEnabled
   } = useContext(CurrentTutorialContext);
 
-  const step = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
+  const step = useMemo(() => getCurrentStep(currentStep, currentTutorial), [
+    currentStep,
+    currentTutorial
+  ]);
   const highlightEnabled = step?.highlightEnabled || isHighlightLayerEnabled;
 
   const internalRectPath = useMemo(() => {
@@ -57,14 +60,24 @@ export const HighlightLayer = () => {
 
     if (highlightEnabled) {
       return `M0 0 H${width} V${height} H0Z 
-              M${rectX} ${rectY} V${rectY + reactHeight} H${rectX + rectWidth} V${rectY}Z`;
+              M${rectX} ${rectY} V${rectY + reactHeight} H${
+        rectX + rectWidth
+      } V${rectY}Z`;
     }
     return "";
-  }, [currentStep, currentRefElementPosition, isHighlightLayerEnabled, isNegativeReinforcementStateEnabled]);
+  }, [
+    currentStep,
+    currentRefElementPosition,
+    isHighlightLayerEnabled,
+    isNegativeReinforcementStateEnabled
+  ]);
 
   return useMemo(
     () => (
-      <svg style={{ opacity: highlightEnabled ? 1 : 0 }} className="kgt-svg-layer">
+      <svg
+        style={{ opacity: highlightEnabled ? 1 : 0 }}
+        className="kgt-svg-layer"
+      >
         <path d={internalRectPath} style={{ fill: "rgba(0, 0, 0, .5)" }} />
       </svg>
     ),
