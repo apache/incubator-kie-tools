@@ -16,7 +16,7 @@
 
 export class ModelConversionTool {
   public static convertDateToString = (model: any, schema: any): any => {
-    return ModelConversionTool.convertDates(model, schema, value =>
+    return ModelConversionTool.convertDates(model, schema, (value) =>
       value.toISOString()
     );
   };
@@ -25,7 +25,7 @@ export class ModelConversionTool {
     return ModelConversionTool.convertDates(
       model,
       schema,
-      value => new Date(value)
+      (value) => new Date(value)
     );
   };
 
@@ -40,7 +40,7 @@ export class ModelConversionTool {
       return obj;
     }
 
-    Object.keys(model).forEach(property => {
+    Object.keys(model).forEach((property) => {
       const properties = schema.properties[property];
 
       const value = model[property];

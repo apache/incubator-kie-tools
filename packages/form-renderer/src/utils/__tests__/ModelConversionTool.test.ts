@@ -100,7 +100,7 @@ function testModel(
 
   expect(convertedModel.children).not.toBeNull();
   expect(convertedModel.children).toHaveLength(3);
-  convertedModel.children.forEach((child: { date: any; }) => {
+  convertedModel.children.forEach((child: { date: any }) => {
     expect(child).not.toBeNull();
     expect(child.date).toStrictEqual(convertedDateValue);
   });

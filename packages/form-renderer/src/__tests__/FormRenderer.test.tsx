@@ -38,7 +38,6 @@ const person: any = {
 let props: Props;
 
 describe("FormRenderer test", () => {
-
   beforeEach(() => {
     props = {
       formSchema: schema,
@@ -49,7 +48,7 @@ describe("FormRenderer test", () => {
   });
 
   it("Snapshot", () => {
-    const { container } = render(<FormRenderer {...props}/>);
+    const { container } = render(<FormRenderer {...props} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
@@ -63,7 +62,7 @@ describe("FormRenderer test", () => {
   it("Form submit", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
+    const { container } = render(<FormRenderer {...props} ref={formApi} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
@@ -77,7 +76,7 @@ describe("FormRenderer test", () => {
   it("Form change & reset", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
+    const { container } = render(<FormRenderer {...props} ref={formApi} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
@@ -117,7 +116,7 @@ describe("FormRenderer test", () => {
   it("Form validation error", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
+    const { container } = render(<FormRenderer {...props} ref={formApi} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
@@ -140,7 +139,11 @@ describe("FormRenderer test", () => {
 
     expect(props.onSubmit).not.toHaveBeenCalled();
 
-    expect(screen.getAllByText("should have required property 'name'")).toHaveLength(2);
-    expect(screen.getAllByText("should have required property 'lastName'")).toHaveLength(2);
+    expect(
+      screen.getAllByText("should have required property 'name'")
+    ).toHaveLength(2);
+    expect(
+      screen.getAllByText("should have required property 'lastName'")
+    ).toHaveLength(2);
   });
 });
