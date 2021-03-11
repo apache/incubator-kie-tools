@@ -16,16 +16,21 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+
+	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 )
 
 const (
-	quarkusJVMApplicationBinarySuffix    = "-runner.jar"
-	quarkusNativeApplicationBinarySuffix = "-runner"
-	springBootApplicationBinarySuffix    = ".jar"
+	quarkusFastJarFolder = "quarkus-app"
+	quarkusFastJarName   = "quarkus-run.jar"
+
+	quarkusJVMLegacyApplicationBinarySuffix = "-runner.jar"
+	quarkusJVMFastApplicationBinarySuffix   = quarkusFastJarFolder
+	quarkusNativeApplicationBinarySuffix    = "-runner"
+	springBootApplicationBinarySuffix       = ".jar"
 )
 
 // KogitoApplicationDockerfileProvider is the API to provide Dockerfile content for image creation based on built project content
@@ -37,26 +42,34 @@ type KogitoApplicationDockerfileProvider interface {
 type kogitoApplicationDockerfileProviderStruct struct {
 	projectLocation         string
 	imageName               string
+	jarSubDirectory         string
+	executableFileName      string
 	applicationBinarySuffix string
-	libFolderNeeded         bool
+	folderDependencies      []string
 }
 
-var quarkusNonNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
+var quarkusNonNativeLegacyJarKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               infrastructure.KogitoRuntimeJVM,
-	applicationBinarySuffix: quarkusJVMApplicationBinarySuffix,
-	libFolderNeeded:         true,
+	applicationBinarySuffix: quarkusJVMLegacyApplicationBinarySuffix,
+	folderDependencies:      []string{"lib"},
+}
+
+var quarkusNonNativeFastJarKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
+	imageName:               infrastructure.KogitoRuntimeJVM,
+	jarSubDirectory:         quarkusFastJarFolder,
+	executableFileName:      quarkusFastJarName,
+	applicationBinarySuffix: quarkusJVMFastApplicationBinarySuffix,
+	folderDependencies:      []string{"lib", "quarkus", "app"},
 }
 
 var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               infrastructure.KogitoRuntimeNative,
 	applicationBinarySuffix: quarkusNativeApplicationBinarySuffix,
-	libFolderNeeded:         false,
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               infrastructure.KogitoRuntimeJVM,
 	applicationBinarySuffix: springBootApplicationBinarySuffix,
-	libFolderNeeded:         false,
 }
 
 // GetKogitoApplicationDockerfileProvider returns KogitoApplicationDockerfileProvider based on project location
@@ -66,8 +79,10 @@ func GetKogitoApplicationDockerfileProvider(projectLocation string) KogitoApplic
 
 	if fileWithSuffixExists(targetDir, quarkusNativeKogitoApplicationDockerfileProvider.applicationBinarySuffix) {
 		dockerfileProvider = &quarkusNativeKogitoApplicationDockerfileProvider
-	} else if fileWithSuffixExists(targetDir, quarkusNonNativeKogitoApplicationDockerfileProvider.applicationBinarySuffix) {
-		dockerfileProvider = &quarkusNonNativeKogitoApplicationDockerfileProvider
+	} else if fileWithSuffixExists(targetDir, quarkusNonNativeFastJarKogitoApplicationDockerfileProvider.applicationBinarySuffix) {
+		dockerfileProvider = &quarkusNonNativeFastJarKogitoApplicationDockerfileProvider
+	} else if fileWithSuffixExists(targetDir, quarkusNonNativeLegacyJarKogitoApplicationDockerfileProvider.applicationBinarySuffix) {
+		dockerfileProvider = &quarkusNonNativeLegacyJarKogitoApplicationDockerfileProvider
 	}
 
 	dockerfileProvider.projectLocation = projectLocation
@@ -78,13 +93,21 @@ func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) GetDockerfi
 	// Declare base image to build from
 	dockerfileContent := fmt.Sprintf("FROM %s\n", GetBuildImage(dockerfileProvider.imageName))
 
-	// Copy application binary into $KOGITO_HOME/bin
-	applicationName := filepath.Base(dockerfileProvider.projectLocation)
-	dockerfileContent += fmt.Sprintf("COPY target/%s%s $KOGITO_HOME/bin\n", applicationName, dockerfileProvider.applicationBinarySuffix)
+	subDir := ""
+	if len(dockerfileProvider.jarSubDirectory) > 0 {
+		subDir = dockerfileProvider.jarSubDirectory + "/"
+	}
+	executableFileName := fmt.Sprintf("%s%s", filepath.Base(dockerfileProvider.projectLocation), dockerfileProvider.applicationBinarySuffix)
+	if len(dockerfileProvider.executableFileName) > 0 {
+		executableFileName = dockerfileProvider.executableFileName
+	}
 
-	// Copy lib folder
-	if dockerfileProvider.libFolderNeeded {
-		dockerfileContent += "COPY target/lib $KOGITO_HOME/bin/lib\n"
+	// Copy application binary into $KOGITO_HOME/bin
+	dockerfileContent += fmt.Sprintf("COPY target/%s%s $KOGITO_HOME/bin\n", subDir, executableFileName)
+
+	// Copy dependencies folder
+	for _, depFolder := range dockerfileProvider.folderDependencies {
+		dockerfileContent += fmt.Sprintf("COPY target/%s%s $KOGITO_HOME/bin/%s\n", subDir, depFolder, depFolder)
 	}
 
 	return dockerfileContent, nil
