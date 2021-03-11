@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 export enum ContentType {
-    TEXT = "text",
-    BINARY = "binary"
+  TEXT = "text",
+  BINARY = "binary"
 }
