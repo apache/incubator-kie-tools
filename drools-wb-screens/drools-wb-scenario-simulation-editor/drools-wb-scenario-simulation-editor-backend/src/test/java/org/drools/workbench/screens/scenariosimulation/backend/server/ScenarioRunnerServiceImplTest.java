@@ -44,7 +44,7 @@ import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,7 +52,7 @@ import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Ty
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,7 +92,7 @@ public class ScenarioRunnerServiceImplTest {
     }
 
     @Test
-    public void runAllTests() throws Exception {
+    public void runAllTests() {
         Map<Path, ScenarioSimulationModel> scenarioSimulationMap = new HashMap<>();
 
         scenarioSimulationMap.put(mock(Path.class), makeScenarioSimulationModel(true));
@@ -106,7 +106,7 @@ public class ScenarioRunnerServiceImplTest {
     }
 
     @Test
-    public void runTest() throws Exception {
+    public void runTest() {
         SimulationRunResult test = scenarioRunnerService.runTest("test",
                                                                  mock(Path.class),
                                                                  simulationLocal.getScesimModelDescriptor(),
@@ -132,7 +132,7 @@ public class ScenarioRunnerServiceImplTest {
     }
 
     @Test
-    public void runTestWithScenarios() throws Exception {
+    public void runTestWithScenarios() {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
         ScesimModelDescriptor simulationDescriptor = new ScesimModelDescriptor();
@@ -151,7 +151,7 @@ public class ScenarioRunnerServiceImplTest {
     }
 
     @Test
-    public void runFailed() throws Exception {
+    public void runFailed() {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
         simulationLocal.addData();
@@ -179,7 +179,7 @@ public class ScenarioRunnerServiceImplTest {
         assertEquals(1, failures.size());
 
         String testDescription = String.format("#%d: %s", 1, scenario.getDescription());
-        String errorMessageFormatted = String.format("#%d: %s", 1, errorMessage);
+        String errorMessageFormatted = String.format("#%d %s: %s", 1, scenario.getDescription(), errorMessage);
         org.guvnor.common.services.shared.test.Failure failure = failures.get(0);
         assertEquals(errorMessageFormatted, failure.getMessage());
         assertEquals(1, value.getRunCount());
