@@ -44,7 +44,10 @@ export class CapabilityResponse<T> {
    * @returns A capability response with OK status.
    */
   public static ok<U>(body?: U): CapabilityResponse<U> {
-    return new CapabilityResponse({ status: CapabilityResponseStatus.OK, body: body });
+    return new CapabilityResponse({
+      status: CapabilityResponseStatus.OK,
+      body: body
+    });
   }
 
   /**
@@ -53,7 +56,10 @@ export class CapabilityResponse<T> {
    * @returns A capability response with NOT_AVAILABLE status.
    */
   public static notAvailable<U>(message: string): CapabilityResponse<U> {
-    return new CapabilityResponse({ status: CapabilityResponseStatus.NOT_AVAILABLE, message: message });
+    return new CapabilityResponse({
+      status: CapabilityResponseStatus.NOT_AVAILABLE,
+      message: message
+    });
   }
 
   /**
@@ -61,6 +67,8 @@ export class CapabilityResponse<T> {
    * @returns A capability response with MISSING_INFRA status.
    */
   public static missingInfra<U>(): CapabilityResponse<U> {
-    return new CapabilityResponse({ status: CapabilityResponseStatus.MISSING_INFRA });
+    return new CapabilityResponse({
+      status: CapabilityResponseStatus.MISSING_INFRA
+    });
   }
 }

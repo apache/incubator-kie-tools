@@ -47,7 +47,10 @@ describe("requests throught DefaultHttpBridge", () => {
   test("should return the response data on success of a POST", async () => {
     const responseData = { some: "data" };
     mockAxios.post.mockResolvedValueOnce({ data: responseData });
-    const response = await bridge.request({ endpoint: testEndpoint, body: { foo: "bar" } });
+    const response = await bridge.request({
+      endpoint: testEndpoint,
+      body: { foo: "bar" }
+    });
     expect(response.body).toBe(responseData);
   });
 
@@ -64,7 +67,10 @@ describe("requests throught DefaultHttpBridge", () => {
 
   test("should reject the promise when an error ocurrs on the endpoint", async () => {
     const errorMsg = "Some error";
-    mockAxios.get.mockRejectedValueOnce({ message: errorMsg, config: { url: testEndpoint } } as AxiosError);
+    mockAxios.get.mockRejectedValueOnce({
+      message: errorMsg,
+      config: { url: testEndpoint }
+    } as AxiosError);
     try {
       await bridge.request({ endpoint: testEndpoint });
       fail("should not have reached here");

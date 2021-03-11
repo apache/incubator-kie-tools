@@ -24,22 +24,30 @@ jest.mock("child_process");
 describe("utility to check whether maven is available or not", () => {
   test("should return FALSE when an error occurs", async () => {
     mockCpExecCallbackOnce({ name: "error", message: "error" }, "", "");
-    await expect(utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })).resolves.toBeFalsy();
+    await expect(
+      utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return FALSE when stdout is empty", async () => {
     mockCpExecCallbackOnce(null, "", "");
-    await expect(utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })).resolves.toBeFalsy();
+    await expect(
+      utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return FALSE when regex does not match", async () => {
     mockCpExecCallbackOnce(null, "some text that does not match the regex", "");
-    await expect(utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })).resolves.toBeFalsy();
+    await expect(
+      utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return FALSE when minimun required version > actual version", async () => {
     mockCpExecCallbackOnce(null, "Apache Maven 3.6.3", "");
-    await expect(utils.isMavenAvailable({ major: 4, minor: 0, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isMavenAvailable({ major: 4, minor: 0, patch: 0 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return TRUE when a match is found and version is not specified", async () => {
@@ -49,17 +57,23 @@ describe("utility to check whether maven is available or not", () => {
 
   test("should return TRUE when only the major value is found/given", async () => {
     mockCpExecCallbackOnce(null, "Apache Maven 3", "");
-    await expect(utils.isMavenAvailable({ major: 3, minor: 0, patch: 0 })).resolves.toBeTruthy();
+    await expect(
+      utils.isMavenAvailable({ major: 3, minor: 0, patch: 0 })
+    ).resolves.toBeTruthy();
   });
 
   test("should return TRUE when minimun required version == actual version", async () => {
     mockCpExecCallbackOnce(null, "Apache Maven 3.6.3", "");
-    await expect(utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })).resolves.toBeTruthy();
+    await expect(
+      utils.isMavenAvailable({ major: 3, minor: 6, patch: 3 })
+    ).resolves.toBeTruthy();
   });
 
   test("should return TRUE when minimun required version < actual version", async () => {
     mockCpExecCallbackOnce(null, "Apache Maven 3.6.3", "");
-    await expect(utils.isMavenAvailable({ major: 3, minor: 5, patch: 2 })).resolves.toBeTruthy();
+    await expect(
+      utils.isMavenAvailable({ major: 3, minor: 5, patch: 2 })
+    ).resolves.toBeTruthy();
   });
 
   test("should return TRUE when minimun required version < actual version (some combinations)", async () => {
@@ -82,31 +96,45 @@ describe("utility to check whether maven is available or not", () => {
 describe("utility to check whether java|openjdk is available or not", () => {
   test("should return FALSE when an error occurs", async () => {
     mockCpExecCallbackOnce({ name: "error", message: "error" }, "", "");
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return FALSE when stderr is empty", async () => {
     mockCpExecCallbackOnce(null, "", "");
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return FALSE when regex does not match", async () => {
     mockCpExecCallbackOnce(null, "", "some text that does not match the regex");
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return FALSE when minimun required version > actual version (up to java 8 format)", async () => {
     mockCpExecCallbackOnce(null, "", 'java version "1.7.0_55"');
-    await expect(utils.isJavaAvailable({ major: 1, minor: 8, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isJavaAvailable({ major: 1, minor: 8, patch: 0 })
+    ).resolves.toBeFalsy();
     mockCpExecCallbackOnce(null, "", 'openjdk version "1.7.0_55"');
-    await expect(utils.isJavaAvailable({ major: 1, minor: 8, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isJavaAvailable({ major: 1, minor: 8, patch: 0 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return FALSE when minimun required version > actual version (java 9+ format)", async () => {
     mockCpExecCallbackOnce(null, "", 'java version "11.0.0" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 12, minor: 0, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isJavaAvailable({ major: 12, minor: 0, patch: 0 })
+    ).resolves.toBeFalsy();
     mockCpExecCallbackOnce(null, "", 'openjdk version "11.0.0" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 12, minor: 0, patch: 0 })).resolves.toBeFalsy();
+    await expect(
+      utils.isJavaAvailable({ major: 12, minor: 0, patch: 0 })
+    ).resolves.toBeFalsy();
   });
 
   test("should return TRUE when a match is found and version is not specified", async () => {
@@ -118,23 +146,35 @@ describe("utility to check whether java|openjdk is available or not", () => {
 
   test("should return TRUE when only the major value is found/given", async () => {
     mockCpExecCallbackOnce(null, "", 'java version "11" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeTruthy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeTruthy();
     mockCpExecCallbackOnce(null, "", 'openjdk version "11" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeTruthy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeTruthy();
   });
 
   test("should return TRUE when minimun required version == actual version", async () => {
     mockCpExecCallbackOnce(null, "", 'java version "11.0.0" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeTruthy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeTruthy();
     mockCpExecCallbackOnce(null, "", 'openjdk version "11.0.0" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeTruthy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeTruthy();
   });
 
   test("should return TRUE when minimun required version < actual version", async () => {
     mockCpExecCallbackOnce(null, "", 'java version "12.0.0" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeTruthy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeTruthy();
     mockCpExecCallbackOnce(null, "", 'openjdk version "12.0.0" 2020-04-14 LTS');
-    await expect(utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })).resolves.toBeTruthy();
+    await expect(
+      utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 })
+    ).resolves.toBeTruthy();
   });
 
   test("should return TRUE when minimun required version < actual version (some combinations)", async () => {
@@ -148,17 +188,29 @@ describe("utility to check whether java|openjdk is available or not", () => {
     ];
 
     for (const v of versions) {
-      mockCpExecCallbackOnce(null, "", 'java version "10.10.10" 2020-04-14 LTS');
+      mockCpExecCallbackOnce(
+        null,
+        "",
+        'java version "10.10.10" 2020-04-14 LTS'
+      );
       await expect(utils.isJavaAvailable(v)).resolves.toBeTruthy();
     }
   });
 });
 
-function mockCpExecCallbackOnce(error: cp.ExecException | null, stdout: string, stderr: string) {
+function mockCpExecCallbackOnce(
+  error: cp.ExecException | null,
+  stdout: string,
+  stderr: string
+) {
   (cp as jest.Mocked<typeof cp>).exec.mockImplementationOnce(
     ((
       command: string,
-      callback?: (error: cp.ExecException | null, stdout: string, stderr: string) => void
+      callback?: (
+        error: cp.ExecException | null,
+        stdout: string,
+        stderr: string
+      ) => void
     ): cp.ChildProcess => {
       if (callback) {
         callback(error, stdout, stderr);
@@ -170,7 +222,10 @@ function mockCpExecCallbackOnce(error: cp.ExecException | null, stdout: string, 
 }
 
 describe("Utility to kill a process", () => {
-  const process = ({ kill: jest.fn(), pid: 9999 } as unknown) as cp.ChildProcess;
+  const process = ({
+    kill: jest.fn(),
+    pid: 9999
+  } as unknown) as cp.ChildProcess;
   const sandbox = sinon.createSandbox();
 
   afterEach(() => {

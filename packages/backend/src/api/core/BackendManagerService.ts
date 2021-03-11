@@ -47,7 +47,10 @@ export class BackendManagerService implements Service {
       await this.registerService(this.args.localHttpServer);
     }
 
-    if (!this.args.bootstrapServices || this.args.bootstrapServices.length === 0) {
+    if (
+      !this.args.bootstrapServices ||
+      this.args.bootstrapServices.length === 0
+    ) {
       return;
     }
 
@@ -57,7 +60,7 @@ export class BackendManagerService implements Service {
   }
 
   public stop(): void {
-    this.serviceRegistry.forEach(service => service.stop());
+    this.serviceRegistry.forEach((service) => service.stop());
     this.serviceRegistry.clear();
   }
 
@@ -76,7 +79,9 @@ export class BackendManagerService implements Service {
     }
 
     if (!(await service.satisfyRequirements())) {
-      console.warn(`Could not satisfy requirements for service ${service.identify()}. Skipping registration.`);
+      console.warn(
+        `Could not satisfy requirements for service ${service.identify()}. Skipping registration.`
+      );
       return false;
     }
 
@@ -85,14 +90,19 @@ export class BackendManagerService implements Service {
 
       if (service instanceof HttpService) {
         if (!this.args.bridge) {
-          console.warn(`Could not register an HTTP service (${service.identify()}) without having an HTTP bridge.`);
+          console.warn(
+            `Could not register an HTTP service (${service.identify()}) without having an HTTP bridge.`
+          );
           return false;
         }
         service.registerHttpBridge(this.args.bridge);
       }
 
       if (service instanceof LocalHttpService) {
-        if (!this.args.localHttpServer || !this.serviceRegistry.get(this.args.localHttpServer.identify())) {
+        if (
+          !this.args.localHttpServer ||
+          !this.serviceRegistry.get(this.args.localHttpServer.identify())
+        ) {
           console.warn(
             `Could not register a local HTTP service (${service.identify()}) without having a local server registered.`
           );
@@ -104,7 +114,9 @@ export class BackendManagerService implements Service {
       this.serviceRegistry.set(service.identify(), service);
       return true;
     } catch (e) {
-      console.error(`An error has occurred while starting ${service.identify()} up: ${e}`);
+      console.error(
+        `An error has occurred while starting ${service.identify()} up: ${e}`
+      );
       return false;
     }
   }
@@ -114,7 +126,9 @@ export class BackendManagerService implements Service {
    * @param id The identifier of the service.
    * @returns The required service if it is registered otherwise undefined.
    */
-  public async getService<T extends Service>(id: string): Promise<T | undefined> {
+  public async getService<T extends Service>(
+    id: string
+  ): Promise<T | undefined> {
     const registeredService = this.serviceRegistry.get(id);
 
     if (registeredService) {
@@ -125,7 +139,7 @@ export class BackendManagerService implements Service {
       return;
     }
 
-    const lazyService = this.args.lazyServices.find(s => s.identify() === id);
+    const lazyService = this.args.lazyServices.find((s) => s.identify() === id);
 
     if (!lazyService || !(await this.registerService(lazyService))) {
       return;

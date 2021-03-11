@@ -48,7 +48,9 @@ export class BackendProxy {
     const service = await this.backendManager.getService(serviceId);
 
     if (!service) {
-      return CapabilityResponse.notAvailable(`Service ${serviceId} not available.`);
+      return CapabilityResponse.notAvailable(
+        `Service ${serviceId} not available.`
+      );
     }
 
     return consumer((service as Capability) as T);

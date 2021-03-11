@@ -19,10 +19,15 @@ import * as xmlParser from "fast-xml-parser";
 import * as fs from "fs";
 import * as path from "path";
 import { CapabilityResponse, Service } from "../api";
-import { ServiceId, TestResult, TestScenarioRunnerCapability } from "../channel-api";
+import {
+  ServiceId,
+  TestResult,
+  TestScenarioRunnerCapability
+} from "../channel-api";
 import * as utils from "./utils";
 
-export class TestScenarioRunnerService implements Service, TestScenarioRunnerCapability {
+export class TestScenarioRunnerService
+  implements Service, TestScenarioRunnerCapability {
   private activeProcess: cp.ChildProcess | undefined;
 
   public identify(): string {
@@ -60,13 +65,28 @@ export class TestScenarioRunnerService implements Service, TestScenarioRunnerCap
     this.stop();
   }
 
-  public execute(baseDir: string, runnerClass: string): Promise<CapabilityResponse<TestResult>> {
+  public execute(
+    baseDir: string,
+    runnerClass: string
+  ): Promise<CapabilityResponse<TestResult>> {
     if (!fs.existsSync(path.join(baseDir, "pom.xml"))) {
       return Promise.reject(`Unable to find a pom.xml file inside ${baseDir}`);
     }
 
-    if (!fs.existsSync(path.join(baseDir, "src", "test", "java", runnerClass.replace(".", path.sep) + ".java"))) {
-      return Promise.reject(`Unable to find ${runnerClass} file in the src/test/java folder`);
+    if (
+      !fs.existsSync(
+        path.join(
+          baseDir,
+          "src",
+          "test",
+          "java",
+          runnerClass.replace(".", path.sep) + ".java"
+        )
+      )
+    ) {
+      return Promise.reject(
+        `Unable to find ${runnerClass} file in the src/test/java folder`
+      );
     }
 
     return new Promise((resolve, reject) => {
@@ -80,21 +100,34 @@ export class TestScenarioRunnerService implements Service, TestScenarioRunnerCap
           return;
         }
 
-        const resultFilePath = path.join(baseDir, "target", "surefire-reports", runnerClass + ".txt");
+        const resultFilePath = path.join(
+          baseDir,
+          "target",
+          "surefire-reports",
+          runnerClass + ".txt"
+        );
 
         if (!fs.existsSync(resultFilePath)) {
           reject("Test report file could not be found.");
           return;
         }
 
-        const resultXmlPath = path.join(baseDir, "target", "surefire-reports", "TEST-" + runnerClass + ".xml");
-        const attrsMap = xmlParser.getTraversalObj(fs.readFileSync(resultXmlPath).toString(), {
-          attributeNamePrefix: "",
-          ignoreNameSpace: true,
-          ignoreAttributes: false,
-          parseAttributeValue: true,
-          trimValues: true
-        }).child.testsuite[0].attrsMap;
+        const resultXmlPath = path.join(
+          baseDir,
+          "target",
+          "surefire-reports",
+          "TEST-" + runnerClass + ".xml"
+        );
+        const attrsMap = xmlParser.getTraversalObj(
+          fs.readFileSync(resultXmlPath).toString(),
+          {
+            attributeNamePrefix: "",
+            ignoreNameSpace: true,
+            ignoreAttributes: false,
+            parseAttributeValue: true,
+            trimValues: true
+          }
+        ).child.testsuite[0].attrsMap;
 
         resolve(
           CapabilityResponse.ok({

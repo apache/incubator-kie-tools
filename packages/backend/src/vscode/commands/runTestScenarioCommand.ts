@@ -19,7 +19,11 @@ import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as vscode from "vscode";
 import { CapabilityResponseStatus } from "../../api";
-import { ServiceId, TestResult, TestScenarioRunnerCapability } from "../../channel-api";
+import {
+  ServiceId,
+  TestResult,
+  TestScenarioRunnerCapability
+} from "../../channel-api";
 import { BackendI18n } from "../../i18n";
 import { VsCodeBackendProxy } from "../VsCodeBackendProxy";
 
@@ -40,7 +44,9 @@ export function registerTestScenarioRunnerCommand(args: {
   notificationsApi: NotificationsApi;
 }) {
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.command, () => run(args.backendProxy, args.backendI18n, args.notificationsApi))
+    vscode.commands.registerCommand(args.command, () =>
+      run(args.backendProxy, args.backendI18n, args.notificationsApi)
+    )
   );
 }
 
@@ -56,7 +62,11 @@ async function run(
       ServiceId.TEST_SCENARIO_RUNNER,
       async (capability: TestScenarioRunnerCapability) =>
         vscode.window.withProgress(
-          { location: vscode.ProgressLocation.Notification, title: i18n.runningTestScenarios, cancellable: true },
+          {
+            location: vscode.ProgressLocation.Notification,
+            title: i18n.runningTestScenarios,
+            cancellable: true
+          },
           (_, token) => {
             token.onCancellationRequested(() => {
               capability.stopActiveExecution();
@@ -87,7 +97,12 @@ async function run(
     const testResult: TestResult = response.body;
 
     notificationsApi.createNotification({
-      message: i18n.testScenarioSummary(testResult.tests, testResult.errors, testResult.skipped, testResult.failures),
+      message: i18n.testScenarioSummary(
+        testResult.tests,
+        testResult.errors,
+        testResult.skipped,
+        testResult.failures
+      ),
       severity: "INFO",
       type: "ALERT",
       path: testResult.filePath

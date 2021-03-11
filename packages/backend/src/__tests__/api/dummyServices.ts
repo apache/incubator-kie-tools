@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { HttpService, LocalHttpServer, LocalHttpService, Service } from "../../api";
+import {
+  HttpService,
+  LocalHttpServer,
+  LocalHttpService,
+  Service
+} from "../../api";
 
 export class DummyLocalHttpServer extends LocalHttpServer {
   public identify(): string {
@@ -43,7 +48,10 @@ export class DummyLocalHttpService extends LocalHttpService {
   }
 }
 
-export function createMockedService(id: string, reqSatisfied: boolean = true): jest.Mocked<Service> {
+export function createMockedService(
+  id: string,
+  reqSatisfied: boolean = true
+): jest.Mocked<Service> {
   return {
     identify: jest.fn(() => id),
     satisfyRequirements: jest.fn(async () => reqSatisfied),

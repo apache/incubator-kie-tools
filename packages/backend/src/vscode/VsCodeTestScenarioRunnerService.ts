@@ -22,7 +22,10 @@ import { TestScenarioRunnerService } from "../node";
  */
 export class VsCodeTestScenarioRunnerService extends TestScenarioRunnerService {
   public async satisfyRequirements(): Promise<boolean> {
-    if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) {
+    if (
+      !vscode.workspace.workspaceFolders ||
+      vscode.workspace.workspaceFolders.length === 0
+    ) {
       console.error("There isn't any workspace folder on VS Code.");
       return false;
     }

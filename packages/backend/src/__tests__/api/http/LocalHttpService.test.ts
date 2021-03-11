@@ -38,11 +38,18 @@ describe("execute local http requests", () => {
 
   test("should return response when port is registered", async () => {
     const requestBody = "some request content";
-    jest.spyOn(HttpService.prototype, "execute").mockResolvedValue(testResponse);
+    jest
+      .spyOn(HttpService.prototype, "execute")
+      .mockResolvedValue(testResponse);
 
     localHttpService.registerPort(testPort);
-    await expect(localHttpService.execute(testEndpoint, requestBody)).resolves.toMatchObject(testResponse);
-    expect(HttpService.prototype.execute).toBeCalledWith(`http://localhost:${testPort}${testEndpoint}`, requestBody);
+    await expect(
+      localHttpService.execute(testEndpoint, requestBody)
+    ).resolves.toMatchObject(testResponse);
+    expect(HttpService.prototype.execute).toBeCalledWith(
+      `http://localhost:${testPort}${testEndpoint}`,
+      requestBody
+    );
   });
 
   test("should reject the promise when an error occurs in the bridge", async () => {

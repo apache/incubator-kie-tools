@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { BackendManagerService, BackendProxy, CapabilityResponse, CapabilityResponseStatus } from "../../../api";
+import {
+  BackendManagerService,
+  BackendProxy,
+  CapabilityResponse,
+  CapabilityResponseStatus
+} from "../../../api";
 import { createMockedService } from "../dummyServices";
 
 const backendManager = new BackendManagerService({});
@@ -37,7 +42,10 @@ describe("access a capability", () => {
   const testServiceId = "Service A";
 
   test("should return a MISSING_INFRA response when no backend manager is registered", async () => {
-    const response = await backendProxy.withCapability(testServiceId, async () => CapabilityResponse.ok());
+    const response = await backendProxy.withCapability(
+      testServiceId,
+      async () => CapabilityResponse.ok()
+    );
     expect(response.status).toBe(CapabilityResponseStatus.MISSING_INFRA);
   });
 
@@ -45,18 +53,28 @@ describe("access a capability", () => {
     jest.spyOn(backendManager, "getService").mockResolvedValueOnce(undefined);
     backendProxy.registerBackendManager(backendManager);
 
-    const response = await backendProxy.withCapability(testServiceId, async () => CapabilityResponse.ok());
+    const response = await backendProxy.withCapability(
+      testServiceId,
+      async () => CapabilityResponse.ok()
+    );
     expect(response.status).toBe(CapabilityResponseStatus.NOT_AVAILABLE);
     expect(response.message).toBe(`Service ${testServiceId} not available.`);
   });
 
   test("should execute the callback when the service is found", async () => {
     const responseContent = { foo: "bar" };
-    jest.spyOn(backendManager, "getService").mockResolvedValueOnce(createMockedService("Service A"));
-    const testCallback = jest.fn().mockImplementation(async () => CapabilityResponse.ok(responseContent));
+    jest
+      .spyOn(backendManager, "getService")
+      .mockResolvedValueOnce(createMockedService("Service A"));
+    const testCallback = jest
+      .fn()
+      .mockImplementation(async () => CapabilityResponse.ok(responseContent));
     backendProxy.registerBackendManager(backendManager);
 
-    const response = await backendProxy.withCapability(testServiceId, testCallback);
+    const response = await backendProxy.withCapability(
+      testServiceId,
+      testCallback
+    );
     expect(testCallback).toBeCalled();
     expect(response.status).toBe(CapabilityResponseStatus.OK);
     expect(response.body).toBe(responseContent);

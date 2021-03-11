@@ -49,6 +49,9 @@ module.exports = [
     output: {
       libraryTarget: "commonjs2"
     },
-    externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })]
+    externals: [
+      { vscode: "commonjs vscode" },
+      nodeExternals({ modulesDir: "../../node_modules" })
+    ]
   })
 ];

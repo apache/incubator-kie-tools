@@ -27,7 +27,10 @@ export interface TestScenarioRunnerCapability extends Capability {
    * @param runnerClass Fully qualified class name of the runner, e.g. `testscenario.KogitoScenarioJunitActivatorTest`.
    * @returns Test result.
    */
-  execute(baseDir: string, runnerClass: string): Promise<CapabilityResponse<TestResult>>;
+  execute(
+    baseDir: string,
+    runnerClass: string
+  ): Promise<CapabilityResponse<TestResult>>;
 
   /**
    * Stop the current active execution, if any.

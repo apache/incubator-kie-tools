@@ -16,7 +16,12 @@
 
 import { I18n } from "@kogito-tooling/i18n/dist/core/I18n";
 import * as vscode from "vscode";
-import { BackendProxy, Capability, CapabilityResponse, CapabilityResponseStatus } from "../api";
+import {
+  BackendProxy,
+  Capability,
+  CapabilityResponse,
+  CapabilityResponseStatus
+} from "../api";
 import { BackendExtensionApi } from "../channel-api";
 import { BackendI18n } from "../i18n";
 
@@ -61,7 +66,9 @@ export class VsCodeBackendProxy extends BackendProxy {
       return; // Ignoring since no backend extension ID is provided
     }
 
-    const backendExtension = vscode.extensions.getExtension(this.backendExtensionId);
+    const backendExtension = vscode.extensions.getExtension(
+      this.backendExtensionId
+    );
 
     if (!backendExtension) {
       if (suggestInstall) {
@@ -87,7 +94,8 @@ export class VsCodeBackendProxy extends BackendProxy {
    * This notification also includes a `Don't show again` button to disable the `SUGGEST_BACKEND` config.
    */
   public trySuggestBackendExtension(): void {
-    const suggestBackend = this.context.globalState.get<boolean>(SUGGEST_BACKEND_KEY) ?? true;
+    const suggestBackend =
+      this.context.globalState.get<boolean>(SUGGEST_BACKEND_KEY) ?? true;
 
     if (!suggestBackend) {
       return;
@@ -96,15 +104,21 @@ export class VsCodeBackendProxy extends BackendProxy {
     const i18n = this.backendI18n.getCurrent();
 
     vscode.window
-      .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension, i18n.dontShowAgain)
-      .then(async selection => {
+      .showInformationMessage(
+        i18n.installBackendExtensionMessage,
+        i18n.installExtension,
+        i18n.dontShowAgain
+      )
+      .then(async (selection) => {
         if (!selection) {
           return;
         }
 
         if (selection === i18n.installExtension) {
           await vscode.env.openExternal(
-            vscode.Uri.parse(`${vscode.env.uriScheme}:extension/${this.backendExtensionId}`)
+            vscode.Uri.parse(
+              `${vscode.env.uriScheme}:extension/${this.backendExtensionId}`
+            )
           );
         }
 
@@ -121,15 +135,20 @@ export class VsCodeBackendProxy extends BackendProxy {
     const i18n = this.backendI18n.getCurrent();
 
     vscode.window
-      .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension)
-      .then(async selection => {
+      .showInformationMessage(
+        i18n.installBackendExtensionMessage,
+        i18n.installExtension
+      )
+      .then(async (selection) => {
         if (!selection) {
           return;
         }
 
         if (selection === i18n.installExtension) {
           await vscode.env.openExternal(
-            vscode.Uri.parse(`${vscode.env.uriScheme}:extension/${this.backendExtensionId}`)
+            vscode.Uri.parse(
+              `${vscode.env.uriScheme}:extension/${this.backendExtensionId}`
+            )
           );
         }
       });

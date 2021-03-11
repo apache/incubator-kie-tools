@@ -23,7 +23,12 @@ interface BackendDictionary extends ReferenceDictionary<BackendDictionary> {
   installBackendExtensionMessage: string;
   viewTestSummary: string;
   runningTestScenarios: string;
-  testScenarioSummary: (tests: number, errors: number, skipped: number, failures: number) => string;
+  testScenarioSummary: (
+    tests: number,
+    errors: number,
+    skipped: number,
+    failures: number
+  ) => string;
 }
 
 export interface BackendI18n extends BackendDictionary, CommonI18n {}

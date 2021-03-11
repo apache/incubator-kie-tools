@@ -21,8 +21,15 @@ export const en: BackendI18n = {
   ...en_common,
   dontShowAgain: "Don't Show Again",
   installExtension: "Install",
-  installBackendExtensionMessage: "Consider installing the backend extension to augment the capabilities of the editors.",
+  installBackendExtensionMessage:
+    "Consider installing the backend extension to augment the capabilities of the editors.",
   viewTestSummary: "View summary",
   runningTestScenarios: "Running test scenarios ...",
-  testScenarioSummary: (tests: number, errors: number, skipped: number, failures: number) => `Completed execution of ${tests} tests (errors: ${errors}, skipped: ${skipped}, failures: ${failures})`
+  testScenarioSummary: (
+    tests: number,
+    errors: number,
+    skipped: number,
+    failures: number
+  ) =>
+    `Completed execution of ${tests} tests (errors: ${errors}, skipped: ${skipped}, failures: ${failures})`
 };

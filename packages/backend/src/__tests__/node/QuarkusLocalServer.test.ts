@@ -93,7 +93,9 @@ describe("start the Quarkus local server", () => {
   });
 
   test("should reject the promise when there is no stdout", async () => {
-    sandbox.stub(cp, "spawn").returns(new events.EventEmitter() as cp.ChildProcess);
+    sandbox
+      .stub(cp, "spawn")
+      .returns(new events.EventEmitter() as cp.ChildProcess);
 
     try {
       await quarkusServer.start();
@@ -157,8 +159,13 @@ describe("stop the Quarkus local server", () => {
     expect(mockKillProcessFn).toBeCalled();
   });
 
-  async function startQuarkusServerTest(server: QuarkusLocalServer): Promise<void> {
-    const process = ({ kill: jest.fn(), pid: 9999 } as unknown) as cp.ChildProcess;
+  async function startQuarkusServerTest(
+    server: QuarkusLocalServer
+  ): Promise<void> {
+    const process = ({
+      kill: jest.fn(),
+      pid: 9999
+    } as unknown) as cp.ChildProcess;
     process.stdout = new events.EventEmitter() as stream.Readable;
     sandbox.stub(cp, "spawn").returns(process);
 

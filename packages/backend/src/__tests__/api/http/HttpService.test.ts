@@ -35,14 +35,18 @@ describe("execute http requests", () => {
 
   test("should return response when bridge is registered", async () => {
     const response: HttpResponse = { body: "some content" };
-    const bridge: jest.Mocked<HttpBridge> = { request: jest.fn().mockResolvedValue(response) };
+    const bridge: jest.Mocked<HttpBridge> = {
+      request: jest.fn().mockResolvedValue(response)
+    };
     httpService.registerHttpBridge(bridge);
     await expect(httpService.execute(testEndpoint)).resolves.toBe(response);
   });
 
   test("should reject the promise when an error occurs in the bridge", async () => {
     const errorMsg = "Some error";
-    const bridge: jest.Mocked<HttpBridge> = { request: jest.fn().mockRejectedValue(errorMsg) };
+    const bridge: jest.Mocked<HttpBridge> = {
+      request: jest.fn().mockRejectedValue(errorMsg)
+    };
     httpService.registerHttpBridge(bridge);
     try {
       await httpService.execute(testEndpoint);
