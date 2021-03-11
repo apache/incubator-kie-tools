@@ -17,5 +17,7 @@
 import { ChannelKeyboardEvent } from "./ChannelKeyboardEvent";
 
 export interface KeyboardShortcutsEnvelopeApi {
-  receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent): void;
+  receive_channelKeyboardEvent(
+    channelKeyboardEvent: ChannelKeyboardEvent
+  ): void;
 }

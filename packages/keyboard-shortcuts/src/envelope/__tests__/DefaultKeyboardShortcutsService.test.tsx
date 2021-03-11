@@ -39,14 +39,30 @@ describe("DefaultKeyboardShortcutsService", () => {
       os: OperatingSystem.LINUX
     });
 
-    const input = render(<input data-testid={"an-input"} />).getByTestId("an-input");
-    const [actionOnInput] = getActionForKeyPress("ctrl+a", keyboardShortcutsService, { element: input });
-    fireEvent(input, new KeyboardEvent("keydown", { ctrlKey: true, code: "KeyA" }));
+    const input = render(<input data-testid={"an-input"} />).getByTestId(
+      "an-input"
+    );
+    const [actionOnInput] = getActionForKeyPress(
+      "ctrl+a",
+      keyboardShortcutsService,
+      { element: input }
+    );
+    fireEvent(
+      input,
+      new KeyboardEvent("keydown", { ctrlKey: true, code: "KeyA" })
+    );
     expect(actionOnInput).not.toHaveBeenCalled();
 
     const div = render(<div data-testid={"a-div"} />).getByTestId("a-div");
-    const [actionOnDiv] = getActionForKeyPress("ctrl+a", keyboardShortcutsService, { element: div });
-    fireEvent(div, new KeyboardEvent("keydown", { ctrlKey: true, code: "KeyA" }));
+    const [actionOnDiv] = getActionForKeyPress(
+      "ctrl+a",
+      keyboardShortcutsService,
+      { element: div }
+    );
+    fireEvent(
+      div,
+      new KeyboardEvent("keydown", { ctrlKey: true, code: "KeyA" })
+    );
     expect(actionOnDiv).toHaveBeenCalled();
 
     expect(keyboardShortcutsService.registered().length).toStrictEqual(2);
@@ -71,7 +87,10 @@ describe("DefaultKeyboardShortcutsService", () => {
       os: OperatingSystem.LINUX
     });
 
-    const [actionDown, actionUp] = getActionsForKeyUpAndDown("ctrl+a", keyboardShortcutsService);
+    const [actionDown, actionUp] = getActionsForKeyUpAndDown(
+      "ctrl+a",
+      keyboardShortcutsService
+    );
     expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyA" });
@@ -84,7 +103,10 @@ describe("DefaultKeyboardShortcutsService", () => {
 
     //
 
-    const [actionDown2, actionUp2] = getActionsForKeyUpAndDown("ctrl+b", keyboardShortcutsService);
+    const [actionDown2, actionUp2] = getActionsForKeyUpAndDown(
+      "ctrl+b",
+      keyboardShortcutsService
+    );
     expect(keyboardShortcutsService.registered().length).toStrictEqual(2);
 
     fire("keydown", { ctrlKey: true, code: "KeyB" });
@@ -101,7 +123,10 @@ describe("DefaultKeyboardShortcutsService", () => {
       os: OperatingSystem.LINUX
     });
 
-    const [action] = getActionForKeyPressOnce("ctrl+c", keyboardShortcutsService);
+    const [action] = getActionForKeyPressOnce(
+      "ctrl+c",
+      keyboardShortcutsService
+    );
     expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyC" });
@@ -115,7 +140,10 @@ describe("DefaultKeyboardShortcutsService", () => {
       os: OperatingSystem.LINUX
     });
 
-    const [action, id] = getActionForKeyPress("ctrl+c", keyboardShortcutsService);
+    const [action, id] = getActionForKeyPress(
+      "ctrl+c",
+      keyboardShortcutsService
+    );
     expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyC" });
@@ -130,7 +158,11 @@ function fire(type: "keydown" | "keyup", opts: KeyboardEventInit) {
   fireEvent(window, new KeyboardEvent(type, opts));
 }
 
-function getActionForKeyPress(combination: string, api: DefaultKeyboardShortcutsService, opts: any = {}) {
+function getActionForKeyPress(
+  combination: string,
+  api: DefaultKeyboardShortcutsService,
+  opts: any = {}
+) {
   const fn = jest.fn();
   const id = api.registerKeyPress(
     combination,
@@ -145,7 +177,10 @@ function getActionForKeyPress(combination: string, api: DefaultKeyboardShortcuts
   return [fn, id];
 }
 
-function getActionForKeyPressOnce(combination: string, api: DefaultKeyboardShortcutsService) {
+function getActionForKeyPressOnce(
+  combination: string,
+  api: DefaultKeyboardShortcutsService
+) {
   const fn = jest.fn();
   const id = api.registerKeyPressOnce(
     combination,
@@ -159,7 +194,10 @@ function getActionForKeyPressOnce(combination: string, api: DefaultKeyboardShort
   return [fn, id];
 }
 
-function getActionsForKeyUpAndDown(combination: string, api: DefaultKeyboardShortcutsService) {
+function getActionsForKeyUpAndDown(
+  combination: string,
+  api: DefaultKeyboardShortcutsService
+) {
   const down = jest.fn();
   const up = jest.fn();
   const id = api.registerKeyDownThenUp(

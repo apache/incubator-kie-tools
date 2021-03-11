@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -16,7 +15,7 @@
  */
 
 export interface KeyboardShortcutRegisterOpts {
-    hidden?: boolean;
-    element?: EventTarget;
-    repeat?: boolean;
+  hidden?: boolean;
+  element?: EventTarget;
+  repeat?: boolean;
 }

@@ -96,26 +96,39 @@ export class DefaultKeyboardShortcutsService {
     onKeyUp: (target: EventTarget | null) => Thenable<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
-    console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
+    console.debug(
+      `Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`
+    );
 
     const keyBinding = {
       combination,
       label,
       listener: (event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>) => {
-        const keyboardEvent = getProcessableKeyboardEvent(combination, event, opts);
+        const keyboardEvent = getProcessableKeyboardEvent(
+          combination,
+          event,
+          opts
+        );
         if (!keyboardEvent) {
           return true;
         }
 
         if (keyboardEvent.type === "keydown") {
-          if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent))) {
+          if (
+            setsEqual(
+              this.combinationKeySet(combination),
+              this.pressedKeySet(keyboardEvent)
+            )
+          ) {
             console.debug(`Fired (down) [${combination}]!`);
             onKeyDown(keyboardEvent.target);
             return false;
           }
         } else if (keyboardEvent.type === "keyup") {
           if (
-            this.combinationKeySet(combination).has(MODIFIER_KEY_NAMES.get(keyboardEvent.code) ?? "") ||
+            this.combinationKeySet(combination).has(
+              MODIFIER_KEY_NAMES.get(keyboardEvent.code) ?? ""
+            ) ||
             this.combinationKeySet(combination).has(keyboardEvent.code)
           ) {
             console.debug(`Fired (up) [${combination}]!`);
@@ -131,8 +144,14 @@ export class DefaultKeyboardShortcutsService {
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
 
-    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
-    this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener);
+    this.keyBindingElement(keyBinding).addEventListener(
+      "keydown",
+      keyBinding.listener
+    );
+    this.keyBindingElement(keyBinding).addEventListener(
+      "keyup",
+      keyBinding.listener
+    );
 
     return this.eventIdentifiers++;
   }
@@ -143,18 +162,29 @@ export class DefaultKeyboardShortcutsService {
     onKeyPress: (target: EventTarget | null) => Thenable<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
-    console.debug(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
+    console.debug(
+      `Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`
+    );
 
     const keyBinding = {
       combination,
       label,
       listener: (event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>) => {
-        const keyboardEvent = getProcessableKeyboardEvent(combination, event, opts);
+        const keyboardEvent = getProcessableKeyboardEvent(
+          combination,
+          event,
+          opts
+        );
         if (!keyboardEvent) {
           return true;
         }
 
-        if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent))) {
+        if (
+          setsEqual(
+            this.combinationKeySet(combination),
+            this.pressedKeySet(keyboardEvent)
+          )
+        ) {
           console.debug(`Fired (press) [${combination}]!`);
           onKeyPress(keyboardEvent.target);
           return false;
@@ -167,7 +197,10 @@ export class DefaultKeyboardShortcutsService {
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
 
-    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
+    this.keyBindingElement(keyBinding).addEventListener(
+      "keydown",
+      keyBinding.listener
+    );
 
     return this.eventIdentifiers++;
   }
@@ -180,7 +213,7 @@ export class DefaultKeyboardShortcutsService {
     const id = this.registerKeyPress(
       combination,
       "",
-      async target => {
+      async (target) => {
         onKeyPress(target);
         this.deregister(id);
       },
@@ -192,9 +225,18 @@ export class DefaultKeyboardShortcutsService {
 
   public deregister(id: number): void {
     const keyBinding = this.keyBindings.get(id);
-    this.keyBindingElement(keyBinding).removeEventListener("keypress", keyBinding?.listener!);
-    this.keyBindingElement(keyBinding).removeEventListener("keydown", keyBinding?.listener!);
-    this.keyBindingElement(keyBinding).removeEventListener("keyup", keyBinding?.listener!);
+    this.keyBindingElement(keyBinding).removeEventListener(
+      "keypress",
+      keyBinding?.listener!
+    );
+    this.keyBindingElement(keyBinding).removeEventListener(
+      "keydown",
+      keyBinding?.listener!
+    );
+    this.keyBindingElement(keyBinding).removeEventListener(
+      "keyup",
+      keyBinding?.listener!
+    );
     this.keyBindings.delete(id);
   }
 
@@ -205,11 +247,11 @@ export class DefaultKeyboardShortcutsService {
   private combinationKeySet(combination: string) {
     const keys = combination
       .split("+")
-      .map(k => k.toLowerCase())
-      .map(k => KEY_CODES.get(k) ?? k);
+      .map((k) => k.toLowerCase())
+      .map((k) => KEY_CODES.get(k) ?? k);
 
     if (this.args.os === OperatingSystem.MACOS) {
-      return new Set(keys.map(k => (k === ModKeys.CTRL ? ModKeys.META : k)));
+      return new Set(keys.map((k) => (k === ModKeys.CTRL ? ModKeys.META : k)));
     } else {
       return new Set(keys);
     }
@@ -245,14 +287,27 @@ function getProcessableKeyboardEvent(
   event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>,
   opts?: KeyboardShortcutRegisterOpts
 ): KeyboardEvent | null {
-  if (event instanceof CustomEvent && IGNORED_TAGS.includes(event.detail.channelOriginalTargetTagName!)) {
-    console.debug(`Ignoring execution (${combination}) because target is ${event.detail.channelOriginalTargetTagName}`);
+  if (
+    event instanceof CustomEvent &&
+    IGNORED_TAGS.includes(event.detail.channelOriginalTargetTagName!)
+  ) {
+    console.debug(
+      `Ignoring execution (${combination}) because target is ${event.detail.channelOriginalTargetTagName}`
+    );
     return null;
   }
 
-  const keyboardEvent = event instanceof CustomEvent ? new KeyboardEvent(event.detail.type, event.detail) : event;
-  if (keyboardEvent.target instanceof Element && IGNORED_TAGS.includes(keyboardEvent.target.tagName)) {
-    console.debug(`Ignoring execution (${combination}) because target is ${keyboardEvent.target.tagName}`);
+  const keyboardEvent =
+    event instanceof CustomEvent
+      ? new KeyboardEvent(event.detail.type, event.detail)
+      : event;
+  if (
+    keyboardEvent.target instanceof Element &&
+    IGNORED_TAGS.includes(keyboardEvent.target.tagName)
+  ) {
+    console.debug(
+      `Ignoring execution (${combination}) because target is ${keyboardEvent.target.tagName}`
+    );
     return null;
   }
 
