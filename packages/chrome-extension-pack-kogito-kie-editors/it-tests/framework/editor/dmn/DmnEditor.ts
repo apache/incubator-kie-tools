@@ -22,23 +22,29 @@ import Element from "../../Element";
 import Locator from "../../Locator";
 
 export default class DmnEditor extends Editor {
+  private static readonly PALETTE_LOCATOR: By = By.className("kie-palette");
+  private static readonly SIDE_BAR_LOCATOR: By = By.className(
+    "collapsed-docks-bar-E"
+  );
 
-    private static readonly PALETTE_LOCATOR: By = By.className("kie-palette");
-    private static readonly SIDE_BAR_LOCATOR: By = By.className("collapsed-docks-bar-E");
+  public async getDmnPalette(): Promise<DmnPalette> {
+    const palette: Element = await this.tools
+      .by(DmnEditor.PALETTE_LOCATOR)
+      .getElement();
+    return await this.tools.createPageFragment(DmnPalette, palette);
+  }
 
-    public async getDmnPalette(): Promise<DmnPalette> {
-        const palette: Element = await this.tools.by(DmnEditor.PALETTE_LOCATOR).getElement();
-        return await this.tools.createPageFragment(DmnPalette, palette);
-    }
+  public async getSideBar(): Promise<DmnSideBar> {
+    const sideBar: Locator = this.tools.by(DmnEditor.SIDE_BAR_LOCATOR);
+    await sideBar.wait(1000).untilPresent();
+    return await this.tools.createPageFragment(
+      DmnSideBar,
+      await sideBar.getElement()
+    );
+  }
 
-    public async getSideBar(): Promise<DmnSideBar> {
-        const sideBar: Locator = this.tools.by(DmnEditor.SIDE_BAR_LOCATOR);
-        await sideBar.wait(1000).untilPresent();
-        return await this.tools.createPageFragment(DmnSideBar, await sideBar.getElement());
-    }
-
-    public async dragAndDropAnnotationToCanvas(): Promise<void> {
-        const dmnPalette: DmnPalette = await this.getDmnPalette();
-        return await dmnPalette.dragAndDropAnnotationToCanvas();
-    }
+  public async dragAndDropAnnotationToCanvas(): Promise<void> {
+    const dmnPalette: DmnPalette = await this.getDmnPalette();
+    return await dmnPalette.dragAndDropAnnotationToCanvas();
+  }
 }

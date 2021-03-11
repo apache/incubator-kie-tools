@@ -26,26 +26,26 @@ const TEST_NAME = "BpmnOpenOnlineEditorTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
+  tools = await Tools.init(TEST_NAME);
 });
 
 test(TEST_NAME, async () => {
-    const bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, "https://github.com/kiegroup/" +
-        "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn");
-    const onlineEditorPage: OnlineEditorPage = await bpmnPage.openOnlineEditor();
-    expect(await onlineEditorPage.getFileName()).toEqual("test");
-    const onlineEditor: BpmnEditor = await onlineEditorPage.getBpmnEditor();
-    await onlineEditor.enter();
-    const onlineEditorSideBar: SideBar = await onlineEditor.getSideBar();
-    const onlineEditorExplorer: Explorer = await onlineEditorSideBar.openExplorer();
-    expect((await onlineEditorExplorer.getNodeNames()).sort())
-        .toEqual([
-            "MyStart",
-            "MyTask",
-            "MyEnd"
-        ].sort());
+  const bpmnPage: GitHubEditorPage = await tools.openPage(
+    GitHubEditorPage,
+    "https://github.com/kiegroup/" +
+      "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn"
+  );
+  const onlineEditorPage: OnlineEditorPage = await bpmnPage.openOnlineEditor();
+  expect(await onlineEditorPage.getFileName()).toEqual("test");
+  const onlineEditor: BpmnEditor = await onlineEditorPage.getBpmnEditor();
+  await onlineEditor.enter();
+  const onlineEditorSideBar: SideBar = await onlineEditor.getSideBar();
+  const onlineEditorExplorer: Explorer = await onlineEditorSideBar.openExplorer();
+  expect((await onlineEditorExplorer.getNodeNames()).sort()).toEqual(
+    ["MyStart", "MyTask", "MyEnd"].sort()
+  );
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
 });

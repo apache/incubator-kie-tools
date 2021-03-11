@@ -24,7 +24,7 @@ export class OnlineEditorManager implements ExternalEditorManager {
     chrome.runtime.sendMessage(
       chrome.runtime.id,
       { messageId: "OPEN_ONLINE_EDITOR", filePath, fileContent, readonly },
-      response => {
+      (response) => {
         if (!response?.success) {
           console.debug("Error during online editor opening.");
         }
@@ -33,11 +33,20 @@ export class OnlineEditorManager implements ExternalEditorManager {
   }
 
   public getLink(filePath: string) {
-    return `$_{WEBPACK_REPLACE__onlineEditor_url}/?file=https://raw.githubusercontent.com/${filePath}#/editor/${extractFileExtension(filePath)}`;
+    return `$_{WEBPACK_REPLACE__onlineEditor_url}/?file=https://raw.githubusercontent.com/${filePath}#/editor/${extractFileExtension(
+      filePath
+    )}`;
   }
 
-  public listenToComeBack(setFileName: (fileName: string) => void, setFileContent: (fileContent: string) => void) {
-    const listener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
+  public listenToComeBack(
+    setFileName: (fileName: string) => void,
+    setFileContent: (fileContent: string) => void
+  ) {
+    const listener = (
+      request: any,
+      sender: chrome.runtime.MessageSender,
+      sendResponse: (response: any) => void
+    ) => {
       if (request.messageId === "RETURN_FROM_EXTERNAL_EDITOR") {
         setFileName(request.fileName);
         setFileContent(request.fileContent);
@@ -47,6 +56,8 @@ export class OnlineEditorManager implements ExternalEditorManager {
 
     chrome.runtime.onMessage.addListener(listener);
 
-    return { stopListening: () => chrome.runtime.onMessage.removeListener(listener) };
+    return {
+      stopListening: () => chrome.runtime.onMessage.removeListener(listener)
+    };
   }
 }

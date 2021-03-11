@@ -31,7 +31,7 @@ function removeHeader(headers: HttpHeader[], name: string) {
 }
 
 chrome.webRequest.onHeadersReceived.addListener(
-  details => {
+  (details) => {
     removeHeader(details.responseHeaders!, "content-security-policy");
     removeHeader(details.responseHeaders!, "x-frame-options");
     return { responseHeaders: details.responseHeaders };
@@ -44,18 +44,18 @@ chrome.webRequest.onHeadersReceived.addListener(
 
 let activeTabId: number;
 
-chrome.tabs.onActivated.addListener(activeInfo => {
+chrome.tabs.onActivated.addListener((activeInfo) => {
   activeTabId = activeInfo.tabId;
 });
 
 function getActiveTab(callback: (tab: any) => void) {
-  chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     const activeTab = tabs[0];
 
     if (activeTab) {
       callback(activeTab);
     } else {
-      chrome.tabs.get(activeTabId, tab => {
+      chrome.tabs.get(activeTabId, (tab) => {
         if (tab) {
           callback(tab);
         } else {
@@ -75,10 +75,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   sendResponse({ success: true });
 });
 
-function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) {
+function openOnlineEditor(
+  request: any,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response: any) => void
+) {
   chrome.tabs.create(
-    { url: "$_{WEBPACK_REPLACE__onlineEditor_url}/?ext#/editor/" + extractFileExtension(request.filePath) },
-    tab => {
+    {
+      url:
+        "$_{WEBPACK_REPLACE__onlineEditor_url}/?ext#/editor/" +
+        extractFileExtension(request.filePath)
+    },
+    (tab) => {
       let newTabReady = () => {
         newTabReady = () => {
           /**/
@@ -93,7 +101,7 @@ function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, se
         });
       };
 
-      chrome.tabs.get(tab.id!, newTab => {
+      chrome.tabs.get(tab.id!, (newTab) => {
         if (newTab.status === "complete") {
           newTabReady();
         }
@@ -119,10 +127,13 @@ function updateGitHub(request: any, sender: chrome.runtime.MessageSender) {
       fileName: request.fileName,
       fileContent: request.fileContent
     },
-    response => {
+    (response) => {
       if (response?.success) {
         chrome.tabs.remove(sender.tab!.id!, () => {
-          chrome.tabs.update(request.senderTabId, { active: true, selected: true });
+          chrome.tabs.update(request.senderTabId, {
+            active: true,
+            selected: true
+          });
         });
       }
     }

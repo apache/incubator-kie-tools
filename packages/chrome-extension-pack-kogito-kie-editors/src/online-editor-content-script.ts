@@ -38,7 +38,7 @@ window.addEventListener("saveOnlineEditor", (e: CustomEvent) => {
       fileContent: e.detail.fileContent,
       senderTabId: e.detail.senderTabId
     },
-    response => {
+    (response) => {
       if (!response?.success) {
         console.debug("Error during online editor saving.");
       }

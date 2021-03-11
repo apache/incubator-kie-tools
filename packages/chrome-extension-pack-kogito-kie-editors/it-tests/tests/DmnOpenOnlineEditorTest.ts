@@ -26,21 +26,24 @@ const TEST_NAME = "DmnOpenOnlineEditorTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
+  tools = await Tools.init(TEST_NAME);
 });
 
 test(TEST_NAME, async () => {
-    const dmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, "https://github.com/kiegroup/" +
-        "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn");
-    const onlineEditorPage: OnlineEditorPage = await dmnPage.openOnlineEditor();
-    expect(await onlineEditorPage.getFileName()).toEqual("test");
-    const onlineEditor: DmnEditor = await onlineEditorPage.getDmnEditor();
-    await onlineEditor.enter();
-    const onlineEditorSideBar: DmnSideBar = await onlineEditor.getSideBar();
-    const onlineProperties: Properties = await onlineEditorSideBar.openProperties();
-    expect((await onlineProperties.getDmnNameFromInput())).toEqual("myDmn");
+  const dmnPage: GitHubEditorPage = await tools.openPage(
+    GitHubEditorPage,
+    "https://github.com/kiegroup/" +
+      "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
+  );
+  const onlineEditorPage: OnlineEditorPage = await dmnPage.openOnlineEditor();
+  expect(await onlineEditorPage.getFileName()).toEqual("test");
+  const onlineEditor: DmnEditor = await onlineEditorPage.getDmnEditor();
+  await onlineEditor.enter();
+  const onlineEditorSideBar: DmnSideBar = await onlineEditor.getSideBar();
+  const onlineProperties: Properties = await onlineEditorSideBar.openProperties();
+  expect(await onlineProperties.getDmnNameFromInput()).toEqual("myDmn");
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
 });

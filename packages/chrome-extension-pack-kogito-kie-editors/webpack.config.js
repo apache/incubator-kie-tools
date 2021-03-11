@@ -36,12 +36,15 @@ function getLatestGitTag() {
 }
 
 function getRouterArgs(argv) {
-  let targetOrigin = argv["ROUTER_targetOrigin"] || process.env["ROUTER_targetOrigin"];
-  let relativePath = argv["ROUTER_relativePath"] || process.env["ROUTER_relativePath"];
+  let targetOrigin =
+    argv["ROUTER_targetOrigin"] || process.env["ROUTER_targetOrigin"];
+  let relativePath =
+    argv["ROUTER_relativePath"] || process.env["ROUTER_relativePath"];
 
   if (argv.mode === "production") {
     targetOrigin = targetOrigin || "https://kiegroup.github.io";
-    relativePath = relativePath || `kogito-online/editors/${getLatestGitTag()}/`;
+    relativePath =
+      relativePath || `kogito-online/editors/${getLatestGitTag()}/`;
   } else {
     targetOrigin = targetOrigin || "https://localhost:9000";
     relativePath = relativePath || "";
@@ -54,11 +57,13 @@ function getRouterArgs(argv) {
 }
 
 function getOnlineEditorArgs(argv) {
-  let onlineEditorUrl = argv["ONLINEEDITOR_url"] || process.env["ONLINEEDITOR_url"];
+  let onlineEditorUrl =
+    argv["ONLINEEDITOR_url"] || process.env["ONLINEEDITOR_url"];
   let manifestFile;
 
   if (argv.mode === "production") {
-    onlineEditorUrl = onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
+    onlineEditorUrl =
+      onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
     manifestFile = "manifest.prod.json";
   } else {
     onlineEditorUrl = onlineEditorUrl || "http://localhost:9001";
@@ -94,12 +99,25 @@ module.exports = async (env, argv) => {
         { from: `./${manifestFile}`, to: "./manifest.json" },
 
         // These are used for development only.
-        { from: externalAssets.dmnEditorPath(argv), to: "dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "scesim", ignore: ["WEB-INF/**/*"] }
+        {
+          from: externalAssets.dmnEditorPath(argv),
+          to: "dmn",
+          ignore: ["WEB-INF/**/*"]
+        },
+        {
+          from: externalAssets.bpmnEditorPath(argv),
+          to: "bpmn",
+          ignore: ["WEB-INF/**/*"]
+        },
+        {
+          from: externalAssets.scesimEditorPath(argv),
+          to: "scesim",
+          ignore: ["WEB-INF/**/*"]
+        }
       ]),
       new ZipPlugin({
-        filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
+        filename:
+          "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
         pathPrefix: "dist",
 
         // These are used for development only,

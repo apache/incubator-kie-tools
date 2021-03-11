@@ -18,14 +18,20 @@ import Element from "./Element";
 import Tools from "../utils/Tools";
 
 export default abstract class PageFragment {
+  public constructor(
+    protected readonly tools: Tools,
+    protected readonly root: Element
+  ) {}
 
-    public constructor(protected readonly tools: Tools, protected readonly root: Element) { }
+  public abstract async waitUntilLoaded(): Promise<void>;
 
-    public abstract async waitUntilLoaded(): Promise<void>;
-
-    public static async create<T extends PageFragment>(type: new (tools: Tools, root: Element) => T, tools: Tools, root: Element): Promise<T> {
-        const pageFragment: T = new type(tools, root);
-        await pageFragment.waitUntilLoaded();
-        return pageFragment;
-    }
+  public static async create<T extends PageFragment>(
+    type: new (tools: Tools, root: Element) => T,
+    tools: Tools,
+    root: Element
+  ): Promise<T> {
+    const pageFragment: T = new type(tools, root);
+    await pageFragment.waitUntilLoaded();
+    return pageFragment;
+  }
 }

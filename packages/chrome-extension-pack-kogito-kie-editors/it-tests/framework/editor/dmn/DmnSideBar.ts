@@ -21,14 +21,20 @@ import SideBar from "../SideBar";
 import Locator from "../../Locator";
 
 export default class DmnSideBar extends SideBar {
+  private static readonly NAVIGATOR_BUTTON_LOCATOR: By = By.xpath(
+    "//div[./button[@data-title='Decision Navigator']]"
+  );
 
-    private static readonly NAVIGATOR_BUTTON_LOCATOR: By = By.xpath("//div[./button[@data-title='Decision Navigator']]");
-
-    public async openDecisionNavigator(): Promise<DecisionNavigator> {
-        const navigatorButtonLocator: Locator = this.tools.by(DmnSideBar.NAVIGATOR_BUTTON_LOCATOR);
-        await navigatorButtonLocator.wait(2000).untilPresent();
-        const navigatorButton: Element = await navigatorButtonLocator.getElement();
-        const sideBar: Element = await this.openSideBar(navigatorButton, "Decision Navigator");
-        return await this.tools.createPageFragment(DecisionNavigator, sideBar);
-    }
+  public async openDecisionNavigator(): Promise<DecisionNavigator> {
+    const navigatorButtonLocator: Locator = this.tools.by(
+      DmnSideBar.NAVIGATOR_BUTTON_LOCATOR
+    );
+    await navigatorButtonLocator.wait(2000).untilPresent();
+    const navigatorButton: Element = await navigatorButtonLocator.getElement();
+    const sideBar: Element = await this.openSideBar(
+      navigatorButton,
+      "Decision Navigator"
+    );
+    return await this.tools.createPageFragment(DecisionNavigator, sideBar);
+  }
 }
