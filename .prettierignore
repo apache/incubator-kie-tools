@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+**/target/
+out/
+.idea
+**/.DS_Store
+*.log
+.vscode/
+.classpath
+.project
+.settings/
+VSCode-linux-x64
+.scannerwork
+package-lock.json

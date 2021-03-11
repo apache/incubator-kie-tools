@@ -278,6 +278,11 @@ jobs:
           [ "0" == "$(git diff yarn.lock | wc -l)" ]
         shell: bash
 
+      - name: Check kogito-tooling formatting
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          yarn formatting:check
+
       - name: Build kogito-tooling
         env:
           EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
