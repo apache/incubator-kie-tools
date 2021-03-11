@@ -16,65 +16,10 @@
 
 @import "../../../../node_modules/@patternfly/patternfly/sass-utilities/all";
 @import "../../../../node_modules/@patternfly/patternfly/base/variables";
-@import "../../../../node_modules/@patternfly/patternfly/base/themes";
 
-// Toggle dark theme
-:not(.vscode-dark) {
-  @extend .pf-t-light;
-
-  .kogito-tooling--keyboard-shortcuts {
-    --pf-c-modal-box--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
-    --pf-global--Color--100: var(--pf-global--Color--dark-100);
-    color: var(--pf-global--Color--dark-100);
-
-    .pf-c-content {
-      --pf-c-content--Color: var(--pf-global--Color--dark-100);
-    }
-
-    .pf-c-page {
-      --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
-    }
-  }
-
-  .kogito-tooling--loading-screen {
-    .pf-c-page {
-      color: var(--pf-global--Color--dark-100);
-      --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
-    }
-  }
-}
-
-.vscode-dark {
-  @extend .pf-t-dark;
-
-  .kogito-tooling--keyboard-shortcuts {
-    --pf-c-modal-box--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
-    --pf-global--Color--100: var(--pf-global--Color--light-100);
-    color: var(--pf-global--Color--light-100);
-
-    .pf-c-content {
-      --pf-c-content--Color: var(--pf-global--Color--light-100);
-    }
-
-    .pf-c-page {
-      --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
-    }
-
-    .pf-c-title {
-      color: var(--pf-global--Color--light-100);
-    }
-
-    .pf-c-button {
-      color: var(--pf-global--Color-light--100);
-    }
-  }
-
-  .kogito-tooling--loading-screen {
-    .pf-c-page {
-      color: var(--pf-global--Color--light-100);
-      --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
-    }
-  }
+.vscode-dark .kogito-tooling--loading-screen .pf-c-page {
+  color: var(--pf-global--Color--light-100);
+  background-color: var(--pf-global--BackgroundColor--dark-100);
 }
 
 .kogito-tooling--loading-screen {
@@ -126,6 +71,7 @@
 
 .kogito-tooling--keyboard-shortcuts {
   font-family: var(--pf-global--FontFamily--sans-serif);
+  color: var(--pf-global--Color--dark-100);
 }
 
 body {
@@ -136,6 +82,7 @@ dl {
   margin-bottom: 0px !important;
 }
 
-dt, dd {
+dt,
+dd {
   line-height: var(--pf-global--LineHeight--md) !important;
 }
