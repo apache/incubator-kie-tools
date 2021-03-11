@@ -50,9 +50,21 @@ module.exports = async (argv, env) => [
         { from: "./static/resources", to: "./resources" },
         { from: "./static/images", to: "./images" },
         { from: "./static/index.html", to: "./index.html" },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
-        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
+        {
+          from:
+            "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist",
+          to: "./envelope"
+        },
+        {
+          from: externalAssets.dmnEditorPath(argv),
+          to: "./gwt-editors/dmn",
+          ignore: ["WEB-INF/**/*"]
+        },
+        {
+          from: externalAssets.bpmnEditorPath(argv),
+          to: "./gwt-editors/bpmn",
+          ignore: ["WEB-INF/**/*"]
+        }
       ])
     ]
   })

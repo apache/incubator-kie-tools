@@ -15,21 +15,42 @@
  */
 
 import * as React from "react";
-import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
+import {
+  GlobalContext,
+  GlobalContextType
+} from "../webview/common/GlobalContext";
 import { EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
-import { desktopI18nDefaults, desktopI18nDictionaries, DesktopI18nContext } from "../webview/common/i18n";
+import {
+  I18nDictionariesProvider,
+  I18nDictionariesProviderProps
+} from "@kogito-tooling/i18n/dist/react-components";
+import {
+  desktopI18nDefaults,
+  desktopI18nDictionaries,
+  DesktopI18nContext
+} from "../webview/common/i18n";
 import { DesktopI18n } from "../webview/common/i18n";
 
-export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
+export function usingTestingGlobalContext(
+  children: React.ReactElement,
+  ctx?: Partial<GlobalContextType>
+) {
   const dmnEnvelopeMapping: EnvelopeMapping = {
     envelopePath: "envelope/envelope.html",
     resourcesPathPrefix: ""
   };
 
   const usedCtx = {
-    editorEnvelopeLocator: { targetOrigin: window.location.origin, mapping: new Map([["dmn", dmnEnvelopeMapping]]) },
-    file: { fileName: "test.dmn", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
+    editorEnvelopeLocator: {
+      targetOrigin: window.location.origin,
+      mapping: new Map([["dmn", dmnEnvelopeMapping]])
+    },
+    file: {
+      fileName: "test.dmn",
+      fileExtension: "dmn",
+      getFileContents: () => Promise.resolve(""),
+      isReadOnly: false
+    },
     ...ctx
   };
   return {
@@ -56,7 +77,11 @@ export function usingTestingDesktopI18nContext(
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
+      <I18nDictionariesProvider
+        defaults={usedCtx.defaults}
+        dictionaries={usedCtx.dictionaries}
+        ctx={usedCtx.ctx}
+      >
         {usedCtx.children}
       </I18nDictionariesProvider>
     )

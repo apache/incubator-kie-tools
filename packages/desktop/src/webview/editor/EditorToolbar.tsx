@@ -27,7 +27,10 @@ import {
   Title
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
-import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
+import {
+  Tooltip,
+  TooltipPosition
+} from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
 import { useDesktopI18n } from "../common/i18n";
 
@@ -54,14 +57,24 @@ export function EditorToolbar(props: Props) {
   }, [fileName]);
 
   const fileNameTitle = (
-    <div data-testid="toolbar-title" className={"kogito--editor__toolbar-title"}>
-      <Tooltip content={<div>{fileName}</div>} position={TooltipPosition.bottom} maxWidth={"50em"}>
+    <div
+      data-testid="toolbar-title"
+      className={"kogito--editor__toolbar-title"}
+    >
+      <Tooltip
+        content={<div>{fileName}</div>}
+        position={TooltipPosition.bottom}
+        maxWidth={"50em"}
+      >
         <Title headingLevel={"h3"} size={"xl"}>
           {title}
         </Title>
       </Tooltip>
       {props.isEdited && (
-        <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
+        <span
+          className={"kogito--editor__toolbar-edited"}
+          data-testid="is-dirty-indicator"
+        >
           {` - ${i18n.terms.edited}`}
         </span>
       )}

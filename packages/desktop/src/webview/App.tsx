@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertVariant
+} from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -29,7 +33,11 @@ import { HomePage } from "./home/HomePage";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
-import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
+import {
+  DesktopI18nContext,
+  desktopI18nDefaults,
+  desktopI18nDictionaries
+} from "./common/i18n";
 import { File } from "@kogito-tooling/editor/dist/channel";
 
 enum Pages {
@@ -47,7 +55,10 @@ export function App() {
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false
   });
-  const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
+  const [
+    invalidFileTypeErrorVisible,
+    setInvalidFileTypeErrorVisible
+  ] = useState(false);
 
   const onFilenameChange = useCallback(
     (filePath: string) => {
@@ -65,9 +76,27 @@ export function App() {
     () => ({
       targetOrigin: window.location.origin,
       mapping: new Map([
-        ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-        ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }]
+        [
+          "bpmn",
+          {
+            resourcesPathPrefix: "../gwt-editors/bpmn",
+            envelopePath: "envelope/envelope.html"
+          }
+        ],
+        [
+          "bpmn2",
+          {
+            resourcesPathPrefix: "../gwt-editors/bpmn",
+            envelopePath: "envelope/envelope.html"
+          }
+        ],
+        [
+          "dmn",
+          {
+            resourcesPathPrefix: "../gwt-editors/dmn",
+            envelopePath: "envelope/envelope.html"
+          }
+        ]
       ])
     }),
     []
@@ -103,7 +132,7 @@ export function App() {
   }, []);
 
   const dragAndDropFileEvent = useCallback(
-    ev => {
+    (ev) => {
       ev.preventDefault();
       if (ev.dataTransfer) {
         openFileByPath(ev.dataTransfer.files[0].path);
@@ -114,7 +143,10 @@ export function App() {
 
   useEffect(() => {
     if (invalidFileTypeErrorVisible) {
-      const autoCloseInvalidFileTypeErrorAlert = setTimeout(closeInvalidFileTypeErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      const autoCloseInvalidFileTypeErrorAlert = setTimeout(
+        closeInvalidFileTypeErrorAlert,
+        ALERT_AUTO_CLOSE_TIMEOUT
+      );
       return () => clearInterval(autoCloseInvalidFileTypeErrorAlert);
     }
 
@@ -124,16 +156,19 @@ export function App() {
   }, [invalidFileTypeErrorVisible, closeInvalidFileTypeErrorAlert]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: ElectronFile }) => {
-      if (editorEnvelopeLocator.mapping.has(data.file.fileType)) {
-        if (page === Pages.EDITOR) {
-          setPage(Pages.HOME);
+    electron.ipcRenderer.on(
+      "openFile",
+      (event: IpcRendererEvent, data: { file: ElectronFile }) => {
+        if (editorEnvelopeLocator.mapping.has(data.file.fileType)) {
+          if (page === Pages.EDITOR) {
+            setPage(Pages.HOME);
+          }
+          openFile(data.file);
+        } else {
+          setInvalidFileTypeErrorVisible(true);
         }
-        openFile(data.file);
-      } else {
-        setInvalidFileTypeErrorVisible(true);
       }
-    });
+    );
 
     return () => {
       electron.ipcRenderer.removeAllListeners("openFile");
@@ -141,13 +176,13 @@ export function App() {
   }, [page, editorEnvelopeLocator, openFile]);
 
   useEffect(() => {
-    document.addEventListener("dragover", e => e.preventDefault());
-    document.addEventListener("drop", e => e.preventDefault());
+    document.addEventListener("dragover", (e) => e.preventDefault());
+    document.addEventListener("drop", (e) => e.preventDefault());
     document.body.addEventListener("drop", dragAndDropFileEvent);
 
     return () => {
-      document.removeEventListener("dragover", e => e.preventDefault());
-      document.removeEventListener("drop", e => e.preventDefault());
+      document.removeEventListener("dragover", (e) => e.preventDefault());
+      document.removeEventListener("drop", (e) => e.preventDefault());
       document.body.removeEventListener("drop", dragAndDropFileEvent);
     };
   }, [dragAndDropFileEvent]);
@@ -157,7 +192,12 @@ export function App() {
       case Pages.HOME:
         return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
       case Pages.EDITOR:
-        return <EditorPage onFilenameChange={onFilenameChange} onClose={goToHomePage} />;
+        return (
+          <EditorPage
+            onFilenameChange={onFilenameChange}
+            onClose={goToHomePage}
+          />
+        );
       default:
         return <></>;
     }
@@ -183,7 +223,11 @@ export function App() {
                 <Alert
                   variant={AlertVariant.danger}
                   title={i18n.app.title}
-                  actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
+                  actionClose={
+                    <AlertActionCloseButton
+                      onClose={closeInvalidFileTypeErrorAlert}
+                    />
+                  }
                 />
               </div>
             )}

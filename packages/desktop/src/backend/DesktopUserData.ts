@@ -17,7 +17,10 @@
 import { UserData } from "../storage/core/UserData";
 import { Files } from "../storage/core/Files";
 import { FS } from "../storage/core/FS";
-import { PromisedRecentOpenedFile, RecentOpenedFile } from "../common/RecentOpenedFile";
+import {
+  PromisedRecentOpenedFile,
+  RecentOpenedFile
+} from "../common/RecentOpenedFile";
 import * as path from "path";
 import { createHash } from "crypto";
 
@@ -47,14 +50,25 @@ export class DesktopUserData {
     this.userData.set(
       LAST_OPENED_FILES_FIELD_NAME,
       lastOpenedFiles
-        .filter((item: string, i: number, ar: string[]) => ar.indexOf(item) === i) // keeps only the first occurrence
+        .filter(
+          (item: string, i: number, ar: string[]) => ar.indexOf(item) === i
+        ) // keeps only the first occurrence
         .slice(0, NUMBER_OF_RECENT_FILES_TO_KEEP)
     );
   }
 
-  public saveFileThumbnail(filePath: string, fileType: string, fileContent: string) {
-    const thumbnailFileName = this.buildThumbnailFileName(filePath) + "." + fileType;
-    this.userData.saveResource(THUMBNAILS_RESOURCE_TYPE, thumbnailFileName, fileContent);
+  public saveFileThumbnail(
+    filePath: string,
+    fileType: string,
+    fileContent: string
+  ) {
+    const thumbnailFileName =
+      this.buildThumbnailFileName(filePath) + "." + fileType;
+    this.userData.saveResource(
+      THUMBNAILS_RESOURCE_TYPE,
+      thumbnailFileName,
+      fileContent
+    );
   }
 
   public getLastOpenedFiles(): Promise<RecentOpenedFile[]> {
@@ -63,43 +77,55 @@ export class DesktopUserData {
       .filter((file: string) => Files.exists(FS.newFile(file)));
     this.userData.set(LAST_OPENED_FILES_FIELD_NAME, updatedData);
 
-    const validThumbnails = updatedData.map(file =>
-      path.join(this.userData.getBasePath(), THUMBNAILS_RESOURCE_TYPE, this.buildThumbnailFileName(file) + ".svg")
+    const validThumbnails = updatedData.map((file) =>
+      path.join(
+        this.userData.getBasePath(),
+        THUMBNAILS_RESOURCE_TYPE,
+        this.buildThumbnailFileName(file) + ".svg"
+      )
     );
     const thumbnailsToRemove: string[] = this.userData
       .listResources(THUMBNAILS_RESOURCE_TYPE)
-      .filter(thumbnailPath => !validThumbnails.includes(thumbnailPath));
+      .filter((thumbnailPath) => !validThumbnails.includes(thumbnailPath));
     this.userData.deleteResources(thumbnailsToRemove);
 
     return this.getPromisedRecentOpenedFiles(
-      updatedData.map(filePath => {
-        const thumbnailFilePath = this.buildThumbnailFileName(filePath) + ".svg";
+      updatedData.map((filePath) => {
+        const thumbnailFilePath =
+          this.buildThumbnailFileName(filePath) + ".svg";
         return {
           filePath: filePath,
-          previewPromise: this.userData.readResource(THUMBNAILS_RESOURCE_TYPE, thumbnailFilePath).catch(e => {
-            console.log("No thumbnail for file " + filePath);
-            return Promise.resolve("");
-          })
+          previewPromise: this.userData
+            .readResource(THUMBNAILS_RESOURCE_TYPE, thumbnailFilePath)
+            .catch((e) => {
+              console.log("No thumbnail for file " + filePath);
+              return Promise.resolve("");
+            })
         };
       })
     );
   }
 
-  private getPromisedRecentOpenedFiles(promisedFiles: PromisedRecentOpenedFile[]): Promise<RecentOpenedFile[]> {
-    const filesPath = promisedFiles.map(file => file.filePath);
-    const previewPromises = promisedFiles.map(file => file.previewPromise);
+  private getPromisedRecentOpenedFiles(
+    promisedFiles: PromisedRecentOpenedFile[]
+  ): Promise<RecentOpenedFile[]> {
+    const filesPath = promisedFiles.map((file) => file.filePath);
+    const previewPromises = promisedFiles.map((file) => file.previewPromise);
 
     return Promise.all(previewPromises)
-      .then(resolvedPreviews => {
+      .then((resolvedPreviews) => {
         const recentOpenedFiles: RecentOpenedFile[] = [];
         for (let i = 0; i < resolvedPreviews.length; i++) {
           if (resolvedPreviews[i] !== "") {
-            recentOpenedFiles.push({ filePath: filesPath[i], preview: resolvedPreviews[i] });
+            recentOpenedFiles.push({
+              filePath: filesPath[i],
+              preview: resolvedPreviews[i]
+            });
           }
         }
         return recentOpenedFiles;
       })
-      .catch(e => {
+      .catch((e) => {
         console.info("Error while listing last opened files: " + e);
         this.clear();
         return Promise.resolve([]);
@@ -112,8 +138,6 @@ export class DesktopUserData {
   }
 
   private buildThumbnailFileName(filePath: string) {
-    return createHash("md5")
-      .update(filePath)
-      .digest("hex");
+    return createHash("md5").update(filePath).digest("hex");
   }
 }

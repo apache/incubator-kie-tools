@@ -86,7 +86,9 @@ const typeFilterOptions = [
 
 export function FilesPage(props: Props) {
   const context = useContext(GlobalContext);
-  const [lastOpenedFiles, setLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
+  const [lastOpenedFiles, setLastOpenedFiles] = useState<RecentOpenedFile[]>(
+    []
+  );
   const { i18n } = useDesktopI18n();
 
   const [url, setURL] = useState("");
@@ -96,14 +98,21 @@ export function FilesPage(props: Props) {
     description?: string;
   }>({ type: ImportFileErrorType.NONE });
 
-  const [typeFilterSelect, setTypeFilterSelect] = useState({ isExpanded: false, value: FileTypeFilter.ALL });
+  const [typeFilterSelect, setTypeFilterSelect] = useState({
+    isExpanded: false,
+    value: FileTypeFilter.ALL
+  });
   const [searchFilter, setSearchFilter] = useState("");
   const [sortAlphaFilter, setSortAlphaFilter] = useState(false);
 
-  const [inputFileUrlState, setInputFileUrlState] = useState(InputFileUrlState.INITIAL);
+  const [inputFileUrlState, setInputFileUrlState] = useState(
+    InputFileUrlState.INITIAL
+  );
 
   const isInputUrlValid = useMemo(
-    () => inputFileUrlState === InputFileUrlState.VALID || inputFileUrlState === InputFileUrlState.INITIAL,
+    () =>
+      inputFileUrlState === InputFileUrlState.VALID ||
+      inputFileUrlState === InputFileUrlState.INITIAL,
     [inputFileUrlState]
   );
 
@@ -134,16 +143,18 @@ export function FilesPage(props: Props) {
     }
 
     const filteredFiles = lastOpenedFiles
-      .filter(file =>
+      .filter((file) =>
         removeDirectories(file.filePath)
           ?.toUpperCase()
           .includes(searchFilter.toUpperCase())
       )
-      .filter(file => {
+      .filter((file) => {
         const fileExtension = extractFileExtension(file.filePath)!;
         return (
           typeFilterSelect.value === FileTypeFilter.ALL ||
-          fileExtension?.toLowerCase().includes(typeFilterSelect.value.toLowerCase())
+          fileExtension
+            ?.toLowerCase()
+            .includes(typeFilterSelect.value.toLowerCase())
         );
       });
 
@@ -173,7 +184,7 @@ export function FilesPage(props: Props) {
   }, []);
 
   const onToggleTypeFilter = useCallback(
-    isExpanded => {
+    (isExpanded) => {
       setTypeFilterSelect({
         isExpanded: isExpanded,
         value: typeFilterSelect.value
@@ -182,7 +193,7 @@ export function FilesPage(props: Props) {
     [typeFilterSelect]
   );
 
-  const onChangeSearchFilter = useCallback(newValue => {
+  const onChangeSearchFilter = useCallback((newValue) => {
     setSearchFilter(newValue);
   }, []);
 
@@ -212,16 +223,18 @@ export function FilesPage(props: Props) {
   const importFileByUrl = useCallback(() => {
     if (isInputUrlValid && inputFileUrlState !== InputFileUrlState.INITIAL) {
       fetch(url)
-        .then(response => {
+        .then((response) => {
           if (response.ok) {
-            response.text().then(content => {
+            response.text().then((content) => {
               const file = {
                 filePath: UNSAVED_FILE_NAME,
                 fileType: extractFileExtension(url)!,
                 fileContent: content
               };
 
-              electron.ipcRenderer.send("setFileMenusEnabled", { enabled: true });
+              electron.ipcRenderer.send("setFileMenusEnabled", {
+                enabled: true
+              });
               props.openFile(file);
             });
           } else {
@@ -232,14 +245,17 @@ export function FilesPage(props: Props) {
             });
           }
         })
-        .catch(error => {
-          setImportFileErrorDetails({ type: ImportFileErrorType.FETCH, description: error.toString() });
+        .catch((error) => {
+          setImportFileErrorDetails({
+            type: ImportFileErrorType.FETCH,
+            description: error.toString()
+          });
         });
     }
   }, [isInputUrlValid, inputFileUrlState, url, props.openFile]);
 
   const importFileByUrlFormSubmit = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
       importFileByUrl();
@@ -256,7 +272,10 @@ export function FilesPage(props: Props) {
   useEffect(() => {
     electron.ipcRenderer.on(
       "returnLastOpenedFiles",
-      (event: electron.IpcRendererEvent, data: { lastOpenedFiles: RecentOpenedFile[] }) => {
+      (
+        event: electron.IpcRendererEvent,
+        data: { lastOpenedFiles: RecentOpenedFile[] }
+      ) => {
         setLastOpenedFiles(data.lastOpenedFiles);
       }
     );
@@ -270,7 +289,10 @@ export function FilesPage(props: Props) {
 
   useEffect(() => {
     if (importFileErrorDetails.type !== ImportFileErrorType.NONE) {
-      const autoCloseImportFileErrorAlert = setTimeout(closeImportFileErrorAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      const autoCloseImportFileErrorAlert = setTimeout(
+        closeImportFileErrorAlert,
+        ALERT_AUTO_CLOSE_TIMEOUT
+      );
       return () => clearInterval(autoCloseImportFileErrorAlert);
     }
 
@@ -286,12 +308,16 @@ export function FilesPage(props: Props) {
           <Alert
             variant={AlertVariant.danger}
             title={i18n.filesPage.alerts.errorFetchingFile}
-            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+            actionClose={
+              <AlertActionCloseButton onClose={closeImportFileErrorAlert} />
+            }
           >
             <br />
             <b>{`${i18n.filesPage.errorDetails}: `}</b>
             {importFileErrorDetails.statusCode}
-            {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
+            {importFileErrorDetails.statusCode &&
+              importFileErrorDetails.description &&
+              " - "}
             {importFileErrorDetails.description}
           </Alert>
         </div>
@@ -301,7 +327,9 @@ export function FilesPage(props: Props) {
           <Alert
             variant={AlertVariant.danger}
             title={i18n.filesPage.alerts.unexpectedErrorFetchingFile}
-            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+            actionClose={
+              <AlertActionCloseButton onClose={closeImportFileErrorAlert} />
+            }
           >
             <br />
             <b>{`${i18n.filesPage.errorDetails}: `}</b>
@@ -321,7 +349,9 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}
+            onClick={() =>
+              electron.ipcRenderer.send("createNewFile", { type: "bpmn" })
+            }
           >
             <CardHeader>
               {
@@ -330,8 +360,18 @@ export function FilesPage(props: Props) {
                 </Title>
               }
             </CardHeader>
-            <CardBody component={"div"} isFilled={true} className="kogito--desktop__actions-card-body">
-              {<img src={"images/file_icon_regular.svg"} alt="file icon" className="kogito--desktop__actions-img" />}
+            <CardBody
+              component={"div"}
+              isFilled={true}
+              className="kogito--desktop__actions-card-body"
+            >
+              {
+                <img
+                  src={"images/file_icon_regular.svg"}
+                  alt="file icon"
+                  className="kogito--desktop__actions-img"
+                />
+              }
             </CardBody>
           </Card>
           <Card
@@ -339,7 +379,9 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}
+            onClick={() =>
+              electron.ipcRenderer.send("createNewFile", { type: "dmn" })
+            }
           >
             <CardHeader>
               {
@@ -348,8 +390,18 @@ export function FilesPage(props: Props) {
                 </Title>
               }
             </CardHeader>
-            <CardBody component={"div"} isFilled={true} className="kogito--desktop__actions-card-body">
-              {<img src={"images/file_icon_regular.svg"} alt="file icon" className="kogito--desktop__actions-img" />}
+            <CardBody
+              component={"div"}
+              isFilled={true}
+              className="kogito--desktop__actions-card-body"
+            >
+              {
+                <img
+                  src={"images/file_icon_regular.svg"}
+                  alt="file icon"
+                  className="kogito--desktop__actions-img"
+                />
+              }
             </CardBody>
           </Card>
           <Card
@@ -357,7 +409,9 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("openSample", { type: "bpmn" })}
+            onClick={() =>
+              electron.ipcRenderer.send("openSample", { type: "bpmn" })
+            }
           >
             <CardHeader>
               {
@@ -366,7 +420,11 @@ export function FilesPage(props: Props) {
                 </Title>
               }
             </CardHeader>
-            <CardBody component={"div"} isFilled={true} className="kogito--desktop__actions-card-body">
+            <CardBody
+              component={"div"}
+              isFilled={true}
+              className="kogito--desktop__actions-card-body"
+            >
               {
                 <img
                   src={"images/sample_file_icon_regular.svg"}
@@ -381,7 +439,9 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("openSample", { type: "dmn" })}
+            onClick={() =>
+              electron.ipcRenderer.send("openSample", { type: "dmn" })
+            }
           >
             <CardHeader>
               {
@@ -390,7 +450,11 @@ export function FilesPage(props: Props) {
                 </Title>
               }
             </CardHeader>
-            <CardBody component={"div"} isFilled={true} className="kogito--desktop__actions-card-body">
+            <CardBody
+              component={"div"}
+              isFilled={true}
+              className="kogito--desktop__actions-card-body"
+            >
               {
                 <img
                   src={"images/sample_file_icon_regular.svg"}
@@ -408,8 +472,13 @@ export function FilesPage(props: Props) {
             </CardHeader>
             <CardBody>
               <TextContent>
-                <Text component={TextVariants.p}>{i18n.filesPage.openUrl.description}</Text>
-                <Form onSubmit={importFileByUrlFormSubmit} disabled={!isInputUrlValid}>
+                <Text component={TextVariants.p}>
+                  {i18n.filesPage.openUrl.description}
+                </Text>
+                <Form
+                  onSubmit={importFileByUrlFormSubmit}
+                  disabled={!isInputUrlValid}
+                >
                   <FormGroup
                     label="URL"
                     fieldId="url-text-input"
@@ -479,7 +548,11 @@ export function FilesPage(props: Props) {
                 data-testid="orderAlphabeticallyButton"
                 variant="plain"
                 aria-label="sort file view"
-                className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
+                className={
+                  sortAlphaFilter
+                    ? "kogito--filter-btn-pressed"
+                    : "kogito--filter-btn"
+                }
                 onClick={() => setSortAlphaFilter(!sortAlphaFilter)}
               >
                 <SortAlphaDownIcon />
@@ -502,11 +575,13 @@ export function FilesPage(props: Props) {
         </Toolbar>
       </PageSection>
       <PageSection isFilled={true}>
-        {filteredLastOpenedFiles.length === 0 && <Bullseye>{i18n.filesPage.recent.noFilesYet}</Bullseye>}
+        {filteredLastOpenedFiles.length === 0 && (
+          <Bullseye>{i18n.filesPage.recent.noFilesYet}</Bullseye>
+        )}
 
         {filteredLastOpenedFiles.length > 0 && (
           <Gallery hasGutter={true} className="kogito-desktop__file-gallery">
-            {filteredLastOpenedFiles.map(file => (
+            {filteredLastOpenedFiles.map((file) => (
               <Tooltip content={<div>{file.filePath}</div>} key={file.filePath}>
                 <Card
                   isCompact={true}
@@ -518,13 +593,19 @@ export function FilesPage(props: Props) {
                       <div
                         className={"kogito--desktop__file-img"}
                         style={{
-                          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(file.preview)}")`
+                          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(
+                            file.preview
+                          )}")`
                         }}
                       />
                     </Bullseye>
                   </CardBody>
                   <CardFooter>
-                    <Title headingLevel="h3" size="md" className="kogito--desktop__filename">
+                    <Title
+                      headingLevel="h3"
+                      size="md"
+                      className="kogito--desktop__filename"
+                    >
                       {removeDirectories(file.filePath)}
                     </Title>
                   </CardFooter>

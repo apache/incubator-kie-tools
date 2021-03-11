@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { Menu as ElectronMenu, BrowserWindow, dialog, app, ipcMain } from "electron";
+import {
+  Menu as ElectronMenu,
+  BrowserWindow,
+  dialog,
+  app,
+  ipcMain
+} from "electron";
 import * as path from "path";
 import { FileOperations } from "./FileOperations";
 import { DesktopUserData } from "./DesktopUserData";
@@ -43,16 +49,28 @@ export class Menu {
   private editMenu: MenuItemConstructorOptions;
   private devMenu: MenuItemConstructorOptions;
 
-  constructor(window: BrowserWindow, userData: DesktopUserData, desktopI18n: I18n<DesktopI18n>) {
+  constructor(
+    window: BrowserWindow,
+    userData: DesktopUserData,
+    desktopI18n: I18n<DesktopI18n>
+  ) {
     this.window = window;
     this.userData = userData;
-    this.fileOperations = new FileOperations(window, this, userData, desktopI18n);
+    this.fileOperations = new FileOperations(
+      window,
+      this,
+      userData,
+      desktopI18n
+    );
     this.i18n = desktopI18n.getCurrent();
     this.initializeMenuProperties();
 
-    ipcMain.on("setFileMenusEnabled", (event: IpcMainEvent, data: { enabled: boolean }) => {
-      this.setFileMenusEnabled(data.enabled);
-    });
+    ipcMain.on(
+      "setFileMenusEnabled",
+      (event: IpcMainEvent, data: { enabled: boolean }) => {
+        this.setFileMenusEnabled(data.enabled);
+      }
+    );
   }
 
   private initializeMenuProperties() {
@@ -91,7 +109,7 @@ export class Menu {
                   }
                 ]
               })
-              .then(result => {
+              .then((result) => {
                 if (!result.canceled) {
                   this.fileOperations.openFile(result.filePaths[0]);
                 }
@@ -104,13 +122,17 @@ export class Menu {
             {
               label: this.i18n.names.bpmn,
               click: () => {
-                this.fileOperations.openSample(path.join(__dirname, "samples/sample.bpmn"));
+                this.fileOperations.openSample(
+                  path.join(__dirname, "samples/sample.bpmn")
+                );
               }
             },
             {
               label: this.i18n.names.dmn,
               click: () => {
-                this.fileOperations.openSample(path.join(__dirname, "samples/sample.dmn"));
+                this.fileOperations.openSample(
+                  path.join(__dirname, "samples/sample.dmn")
+                );
               }
             }
           ]
@@ -242,12 +264,36 @@ export class Menu {
             this.window.webContents.send("copyContentToClipboard");
           }
         },
-        { label: this.i18n.terms.undo, accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-        { label: this.i18n.terms.redo, accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-        { label: this.i18n.terms.cut, accelerator: "CmdOrCtrl+X", selector: "cut:" },
-        { label: this.i18n.terms.copy, accelerator: "CmdOrCtrl+C", selector: "copy:" },
-        { label: this.i18n.terms.paste, accelerator: "CmdOrCtrl+V", selector: "paste:" },
-        { label: this.i18n.menu.edit.submenu.selectAll, accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+        {
+          label: this.i18n.terms.undo,
+          accelerator: "CmdOrCtrl+Z",
+          selector: "undo:"
+        },
+        {
+          label: this.i18n.terms.redo,
+          accelerator: "Shift+CmdOrCtrl+Z",
+          selector: "redo:"
+        },
+        {
+          label: this.i18n.terms.cut,
+          accelerator: "CmdOrCtrl+X",
+          selector: "cut:"
+        },
+        {
+          label: this.i18n.terms.copy,
+          accelerator: "CmdOrCtrl+C",
+          selector: "copy:"
+        },
+        {
+          label: this.i18n.terms.paste,
+          accelerator: "CmdOrCtrl+V",
+          selector: "paste:"
+        },
+        {
+          label: this.i18n.menu.edit.submenu.selectAll,
+          accelerator: "CmdOrCtrl+A",
+          selector: "selectAll:"
+        }
       ] as MenuItemConstructorOptions[]
     };
 
@@ -273,11 +319,20 @@ export class Menu {
   public setFileMenusEnabled(enabled: boolean) {
     this.getMenuItem(this.i18n.terms.save, this.menu)!.enabled = enabled;
     this.getMenuItem(this.i18n.menu.saveAs, this.menu)!.enabled = enabled;
-    this.getMenuItem(this.i18n.menu.savePreviewAs, this.menu)!.enabled = enabled;
-    this.getMenuItem(this.i18n.menu.edit.submenu.label, this.menu)!.enabled = enabled;
+    this.getMenuItem(
+      this.i18n.menu.savePreviewAs,
+      this.menu
+    )!.enabled = enabled;
+    this.getMenuItem(
+      this.i18n.menu.edit.submenu.label,
+      this.menu
+    )!.enabled = enabled;
   }
 
-  private getMenuItem(label: string, menuToSearch: ElectronMenu): MenuItem | undefined {
+  private getMenuItem(
+    label: string,
+    menuToSearch: ElectronMenu
+  ): MenuItem | undefined {
     for (const menuItem of menuToSearch.items) {
       if (menuItem.label === label) {
         return menuItem;
@@ -316,7 +371,10 @@ export class Menu {
       this.getMenuItem(this.i18n.terms.cut, this.menu)!.visible = false;
       this.getMenuItem(this.i18n.terms.copy, this.menu)!.visible = false;
       this.getMenuItem(this.i18n.terms.paste, this.menu)!.visible = false;
-      this.getMenuItem(this.i18n.menu.edit.submenu.selectAll, this.menu)!.visible = false;
+      this.getMenuItem(
+        this.i18n.menu.edit.submenu.selectAll,
+        this.menu
+      )!.visible = false;
     }
   }
 }

@@ -26,6 +26,6 @@ module.exports = {
   },
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
-    "electron": "<rootDir>/__mocks__/electron.ts"
+    electron: "<rootDir>/__mocks__/electron.ts"
   }
 };

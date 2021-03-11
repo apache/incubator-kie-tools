@@ -18,7 +18,10 @@ import * as React from "react";
 import { render } from "@testing-library/react";
 import { EditorToolbar } from "../../../webview/editor/EditorToolbar";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
-import { usingTestingDesktopI18nContext, usingTestingGlobalContext } from "../../testing_utils";
+import {
+  usingTestingDesktopI18nContext,
+  usingTestingGlobalContext
+} from "../../testing_utils";
 
 const onClose = jest.fn(() => null);
 
@@ -38,7 +41,13 @@ describe("EditorToolbar", () => {
       const isEdited = true;
       const { queryByTestId, getByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorToolbar onClose={onClose} onSave={onSave} isEdited={isEdited} />).wrapper
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onClose={onClose}
+              onSave={onSave}
+              isEdited={isEdited}
+            />
+          ).wrapper
         ).wrapper
       );
 
@@ -50,7 +59,13 @@ describe("EditorToolbar", () => {
       const isEdited = false;
       const { queryByTestId, getByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorToolbar onClose={onClose} onSave={onSave} isEdited={isEdited} />).wrapper
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onClose={onClose}
+              onSave={onSave}
+              isEdited={isEdited}
+            />
+          ).wrapper
         ).wrapper
       );
 

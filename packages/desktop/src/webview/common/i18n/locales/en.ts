@@ -37,7 +37,8 @@ export const en: DesktopI18n = {
   filesPage: {
     alerts: {
       errorFetchingFile: "An error happened while fetching your file",
-      unexpectedErrorFetchingFile: "An unexpected error happened while trying to fetch your file"
+      unexpectedErrorFetchingFile:
+        "An unexpected error happened while trying to fetch your file"
     },
     errorDetails: "Error details",
     files: {

@@ -40,12 +40,15 @@ import { useDesktopI18n } from "../common/i18n";
 export function LearnMorePage() {
   const { i18n } = useDesktopI18n();
 
-  const externalLink = useCallback((event: React.MouseEvent<HTMLElement>, link: string) => {
-    event.preventDefault();
-    electron.shell.openExternal(link).catch(e => {
-      console.error("Error while opening link: " + e);
-    });
-  }, []);
+  const externalLink = useCallback(
+    (event: React.MouseEvent<HTMLElement>, link: string) => {
+      event.preventDefault();
+      electron.shell.openExternal(link).catch((e) => {
+        console.error("Error while opening link: " + e);
+      });
+    },
+    []
+  );
 
   return (
     <PageSection>
@@ -58,21 +61,31 @@ export function LearnMorePage() {
           </CardHeader>
           <CardBody>
             <TextContent>
-              <Text component={TextVariants.p}>{i18n.learnMorePage.bpmn.explanation}</Text>
+              <Text component={TextVariants.p}>
+                {i18n.learnMorePage.bpmn.explanation}
+              </Text>
               <Text component={TextVariants.p}>
                 <Button
                   isInline={true}
                   type={"button"}
                   variant={"link"}
-                  onClick={event => externalLink(event, "https://www.omg.org/bpmn/")}
+                  onClick={(event) =>
+                    externalLink(event, "https://www.omg.org/bpmn/")
+                  }
                 >
-                  {i18n.learnMorePage.readMore} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  {i18n.learnMorePage.readMore}{" "}
+                  <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
             </TextContent>
           </CardBody>
           <CardFooter component={"div"}>
-            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                electron.ipcRenderer.send("createNewFile", { type: "bpmn" })
+              }
+            >
               {i18n.learnMorePage.bpmn.create}
             </Button>
           </CardFooter>
@@ -85,13 +98,17 @@ export function LearnMorePage() {
           </CardHeader>
           <CardBody>
             <TextContent>
-              <Text component={TextVariants.p}>{i18n.learnMorePage.dmn.explanation}</Text>
+              <Text component={TextVariants.p}>
+                {i18n.learnMorePage.dmn.explanation}
+              </Text>
               <Text component={TextVariants.p}>
                 <Button
                   isInline={true}
                   type={"button"}
                   variant={"link"}
-                  onClick={event => externalLink(event, "https://www.omg.org/dmn/")}
+                  onClick={(event) =>
+                    externalLink(event, "https://www.omg.org/dmn/")
+                  }
                 >
                   {i18n.learnMorePage.readMore}
                   <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -102,15 +119,23 @@ export function LearnMorePage() {
                   isInline={true}
                   type={"button"}
                   variant={"link"}
-                  onClick={event => externalLink(event, "http://learn-dmn-in-15-minutes.com/")}
+                  onClick={(event) =>
+                    externalLink(event, "http://learn-dmn-in-15-minutes.com/")
+                  }
                 >
-                  {i18n.learnMorePage.dmn.learn} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  {i18n.learnMorePage.dmn.learn}{" "}
+                  <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
             </TextContent>
           </CardBody>
           <CardFooter component={"div"}>
-            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                electron.ipcRenderer.send("createNewFile", { type: "dmn" })
+              }
+            >
               {i18n.learnMorePage.dmn.create}
             </Button>
           </CardFooter>
@@ -129,7 +154,12 @@ export function LearnMorePage() {
                   type={"button"}
                   variant={"link"}
                   isInline={true}
-                  onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
+                  onClick={(event) =>
+                    externalLink(
+                      event,
+                      "https://groups.google.com/forum/#!forum/kogito-development"
+                    )
+                  }
                 >
                   {i18n.terms.forum.toLowerCase()}
                 </Button>
@@ -141,7 +171,12 @@ export function LearnMorePage() {
                     <Button
                       type={"button"}
                       variant={"link"}
-                      onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
+                      onClick={(event) =>
+                        externalLink(
+                          event,
+                          "https://github.com/kiegroup/kogito-tooling/releases"
+                        )
+                      }
                     >
                       {i18n.learnMorePage.getChromeExtension}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -151,7 +186,12 @@ export function LearnMorePage() {
                     <Button
                       type={"button"}
                       variant={"link"}
-                      onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
+                      onClick={(event) =>
+                        externalLink(
+                          event,
+                          "https://github.com/kiegroup/kogito-tooling/releases"
+                        )
+                      }
                     >
                       {i18n.learnMorePage.getVsCodeExtension}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -161,7 +201,12 @@ export function LearnMorePage() {
                     <Button
                       type={"button"}
                       variant={"link"}
-                      onClick={event => externalLink(event, "https://www.redhat.com/en/about/open-source")}
+                      onClick={(event) =>
+                        externalLink(
+                          event,
+                          "https://www.redhat.com/en/about/open-source"
+                        )
+                      }
                     >
                       {i18n.learnMorePage.redHatOpenSource}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -171,7 +216,9 @@ export function LearnMorePage() {
                     <Button
                       type={"button"}
                       variant={"link"}
-                      onClick={event => externalLink(event, "http://kogito.kie.org")}
+                      onClick={(event) =>
+                        externalLink(event, "http://kogito.kie.org")
+                      }
                     >
                       {i18n.learnMorePage.kogitoWebsite}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />

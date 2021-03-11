@@ -63,7 +63,7 @@ export class FS implements Provider {
     const result: FileMetadata[] = [];
 
     if (directory.storage.valueOf() === StorageTypes.FS.valueOf()) {
-      fs.readdirSync(directory.fullName).forEach(currentFile => {
+      fs.readdirSync(directory.fullName).forEach((currentFile) => {
         const currentFileFullPath = path.join(directory.fullName, currentFile);
         const currentFileObj: FileMetadata = FS.newFile(currentFileFullPath);
 
@@ -85,7 +85,12 @@ export class FS implements Provider {
   }
 
   public static newFile(fullPath: string) {
-    return FS._newFile(fullPath, fs.existsSync(fullPath) && fs.statSync(fullPath) ? FileType.FOLDER : FileType.FILE);
+    return FS._newFile(
+      fullPath,
+      fs.existsSync(fullPath) && fs.statSync(fullPath)
+        ? FileType.FOLDER
+        : FileType.FILE
+    );
   }
 
   public static _newFile(fullPath: string, fileType: FileType) {

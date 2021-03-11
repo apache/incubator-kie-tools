@@ -15,7 +15,11 @@
  */
 
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import {
+  EmbeddedEditor,
+  useDirtyState,
+  useEditorRef
+} from "@kogito-tooling/editor/dist/embedded";
 import {
   Alert,
   AlertActionCloseButton,
@@ -46,8 +50,14 @@ export function EditorPage(props: Props) {
   const { editor, editorRef } = useEditorRef();
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
-  const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
-  const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
+  const [
+    saveFileSuccessAlertVisible,
+    setSaveFileSuccessAlertVisible
+  ] = useState(false);
+  const [
+    savePreviewSuccessAlertVisible,
+    setSavePreviewSuccessAlertVisible
+  ] = useState(false);
   const isDirty = useDirtyState(editor);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const { locale, i18n } = useDesktopI18n();
@@ -68,7 +78,7 @@ export function EditorPage(props: Props) {
   const requestSaveFile = useCallback(
     (action: FileSaveActions) => {
       setShowUnsavedAlert(false);
-      editor?.getContent().then(content => {
+      editor?.getContent().then((content) => {
         electron.ipcRenderer.send("saveFile", {
           file: {
             filePath: context.file.fileName,
@@ -83,7 +93,7 @@ export function EditorPage(props: Props) {
   );
 
   const requestCopyContentToClipboard = useCallback(() => {
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -95,7 +105,7 @@ export function EditorPage(props: Props) {
   }, [editor]);
 
   const requestSavePreview = useCallback(() => {
-    editor?.getPreview().then(previewSvg => {
+    editor?.getPreview().then((previewSvg) => {
       electron.ipcRenderer.send("savePreview", {
         filePath: context.file!.fileName,
         fileType: "svg",
@@ -104,9 +114,18 @@ export function EditorPage(props: Props) {
     });
   }, [editor, context.file]);
 
-  const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
-  const closeSaveFileSuccessAlert = useCallback(() => setSaveFileSuccessAlertVisible(false), []);
-  const closeSavePreviewSuccessAlert = useCallback(() => setSavePreviewSuccessAlertVisible(false), []);
+  const closeCopySuccessAlert = useCallback(
+    () => setCopySuccessAlertVisible(false),
+    []
+  );
+  const closeSaveFileSuccessAlert = useCallback(
+    () => setSaveFileSuccessAlertVisible(false),
+    []
+  );
+  const closeSavePreviewSuccessAlert = useCallback(
+    () => setSavePreviewSuccessAlertVisible(false),
+    []
+  );
 
   const onSave = useCallback(() => {
     requestSaveFile(FileSaveActions.SAVE);
@@ -114,7 +133,10 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     if (copySuccessAlertVisible) {
-      const autoCloseCopySuccessAlert = setTimeout(closeCopySuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      const autoCloseCopySuccessAlert = setTimeout(
+        closeCopySuccessAlert,
+        ALERT_AUTO_CLOSE_TIMEOUT
+      );
       return () => clearInterval(autoCloseCopySuccessAlert);
     }
 
@@ -125,7 +147,10 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     if (saveFileSuccessAlertVisible) {
-      const autoCloseSaveFileSuccessAlert = setTimeout(closeSaveFileSuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      const autoCloseSaveFileSuccessAlert = setTimeout(
+        closeSaveFileSuccessAlert,
+        ALERT_AUTO_CLOSE_TIMEOUT
+      );
       return () => clearInterval(autoCloseSaveFileSuccessAlert);
     }
 
@@ -136,7 +161,10 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     if (savePreviewSuccessAlertVisible) {
-      const autoCloseSavePreviewSuccessAlert = setTimeout(closeSavePreviewSuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      const autoCloseSavePreviewSuccessAlert = setTimeout(
+        closeSavePreviewSuccessAlert,
+        ALERT_AUTO_CLOSE_TIMEOUT
+      );
       return () => clearInterval(autoCloseSavePreviewSuccessAlert);
     }
 
@@ -146,9 +174,12 @@ export function EditorPage(props: Props) {
   }, [savePreviewSuccessAlertVisible, closeSavePreviewSuccessAlert]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("requestOpenedFile", (event: IpcRendererEvent, data: { action: FileSaveActions }) => {
-      requestSaveFile(data.action);
-    });
+    electron.ipcRenderer.on(
+      "requestOpenedFile",
+      (event: IpcRendererEvent, data: { action: FileSaveActions }) => {
+        requestSaveFile(data.action);
+      }
+    );
 
     return () => {
       electron.ipcRenderer.removeAllListeners("requestOpenedFile");
@@ -176,21 +207,24 @@ export function EditorPage(props: Props) {
   }, [requestSavePreview]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("saveFileSuccess", (event: IpcRendererEvent, data: { filePath: string }): void => {
-      editor
-        ?.getPreview()
-        .then(previewSvg => {
-          electron.ipcRenderer.send("saveThumbnail", {
-            filePath: data.filePath,
-            fileType: "svg",
-            fileContent: previewSvg
-          });
-          editor?.getStateControl().setSavedCommand();
-          setSaveFileSuccessAlertVisible(true);
-          props.onFilenameChange(data.filePath);
-        })
-        .catch(err => console.log(err));
-    });
+    electron.ipcRenderer.on(
+      "saveFileSuccess",
+      (event: IpcRendererEvent, data: { filePath: string }): void => {
+        editor
+          ?.getPreview()
+          .then((previewSvg) => {
+            electron.ipcRenderer.send("saveThumbnail", {
+              filePath: data.filePath,
+              fileType: "svg",
+              fileContent: previewSvg
+            });
+            editor?.getStateControl().setSavedCommand();
+            setSaveFileSuccessAlertVisible(true);
+            props.onFilenameChange(data.filePath);
+          })
+          .catch((err) => console.log(err));
+      }
+    );
 
     return () => {
       electron.ipcRenderer.removeAllListeners("saveFileSuccess");
@@ -218,14 +252,25 @@ export function EditorPage(props: Props) {
 
   return (
     <Page className={"kogito--editor-page"}>
-      <PageSection variant="dark" padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
+      <PageSection
+        variant="dark"
+        padding={{ default: "noPadding" }}
+        style={{ flexBasis: "100%" }}
+      >
         <Stack>
           <StackItem>
-            <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty} />
+            <EditorToolbar
+              onClose={onClose}
+              onSave={onSave}
+              isEdited={isDirty}
+            />
           </StackItem>
           <StackItem className="pf-m-fill">
             {showUnsavedAlert && (
-              <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
+              <div
+                className={"kogito--alert-container-unsaved"}
+                data-testid="unsaved-alert"
+              >
                 <Alert
                   variant="warning"
                   title={i18n.editorPage.alerts.unsaved.title}
@@ -237,7 +282,10 @@ export function EditorPage(props: Props) {
                   }
                   actionLinks={
                     <React.Fragment>
-                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={onSave}>
+                      <AlertActionLink
+                        data-testid="unsaved-alert-save-button"
+                        onClick={onSave}
+                      >
                         {i18n.terms.save}
                       </AlertActionLink>
                       <AlertActionLink
@@ -258,7 +306,9 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={i18n.editorPage.alerts.copy}
-                  actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+                  actionClose={
+                    <AlertActionCloseButton onClose={closeCopySuccessAlert} />
+                  }
                 />
               </div>
             )}
@@ -267,7 +317,11 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={i18n.editorPage.alerts.saved}
-                  actionClose={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
+                  actionClose={
+                    <AlertActionCloseButton
+                      onClose={closeSaveFileSuccessAlert}
+                    />
+                  }
                 />
               </div>
             )}
@@ -276,7 +330,11 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={i18n.editorPage.alerts.previewSaved}
-                  actionClose={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
+                  actionClose={
+                    <AlertActionCloseButton
+                      onClose={closeSavePreviewSuccessAlert}
+                    />
+                  }
                 />
               </div>
             )}
@@ -290,7 +348,10 @@ export function EditorPage(props: Props) {
             />
           </StackItem>
         </Stack>
-        <textarea ref={copyContentTextArea} style={{ opacity: 0, width: 0, height: 0 }} />
+        <textarea
+          ref={copyContentTextArea}
+          style={{ opacity: 0, width: 0, height: 0 }}
+        />
       </PageSection>
     </Page>
   );

@@ -18,7 +18,10 @@ import * as React from "react";
 import * as electron from "electron";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { FilesPage } from "../../../webview/home/FilesPage";
-import { usingTestingDesktopI18nContext, usingTestingGlobalContext } from "../../testing_utils";
+import {
+  usingTestingDesktopI18nContext,
+  usingTestingGlobalContext
+} from "../../testing_utils";
 import { act } from "react-dom/test-utils";
 
 beforeEach(() => {
@@ -32,7 +35,9 @@ describe("FilesPage", () => {
 
     const component = render(
       usingTestingDesktopI18nContext(
-        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+        usingTestingGlobalContext(
+          <FilesPage openFile={openFile} openFileByPath={openFileByPath} />
+        ).wrapper
       ).wrapper
     );
 
@@ -45,7 +50,9 @@ describe("FilesPage", () => {
 
     const component = render(
       usingTestingDesktopI18nContext(
-        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+        usingTestingGlobalContext(
+          <FilesPage openFile={openFile} openFileByPath={openFileByPath} />
+        ).wrapper
       ).wrapper
     );
 
@@ -67,7 +74,9 @@ describe("FilesPage", () => {
 
     const component = render(
       usingTestingDesktopI18nContext(
-        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+        usingTestingGlobalContext(
+          <FilesPage openFile={openFile} openFileByPath={openFileByPath} />
+        ).wrapper
       ).wrapper
     );
 
@@ -92,7 +101,9 @@ describe("FilesPage", () => {
 
     const component = render(
       usingTestingDesktopI18nContext(
-        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+        usingTestingGlobalContext(
+          <FilesPage openFile={openFile} openFileByPath={openFileByPath} />
+        ).wrapper
       ).wrapper
     );
 
@@ -118,7 +129,9 @@ describe("FilesPage", () => {
 
     const component = render(
       usingTestingDesktopI18nContext(
-        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+        usingTestingGlobalContext(
+          <FilesPage openFile={openFile} openFileByPath={openFileByPath} />
+        ).wrapper
       ).wrapper
     );
 

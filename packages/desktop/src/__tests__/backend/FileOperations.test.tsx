@@ -21,7 +21,10 @@ import { DesktopUserData } from "../../backend/DesktopUserData";
 import { Menu } from "../../backend/Menu";
 import { FileOperations } from "../../backend/FileOperations";
 import { showSaveDialogMock } from "../../../__mocks__/electron";
-import { desktopI18nDefaults, desktopI18nDictionaries } from "../../backend/i18n";
+import {
+  desktopI18nDefaults,
+  desktopI18nDictionaries
+} from "../../backend/i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 beforeEach(() => {
@@ -46,7 +49,12 @@ describe("saveFile ipc event", () => {
     const userData = new DesktopUserData();
     const desktopI18n = new I18n(desktopI18nDefaults, desktopI18nDictionaries);
     const menu = new Menu(window, userData, desktopI18n);
-    const fileOperations = new FileOperations(window, menu, userData, desktopI18n);
+    const fileOperations = new FileOperations(
+      window,
+      menu,
+      userData,
+      desktopI18n
+    );
 
     act(() =>
       electron.ipcRenderer.send("saveFile", {
@@ -60,11 +68,17 @@ describe("saveFile ipc event", () => {
 
     expect(showSaveDialogMock).toHaveBeenCalledTimes(1);
     expect(showSaveDialogMock.mock.calls[0][0]).toEqual(window);
-    expect(showSaveDialogMock.mock.calls[0][1].defaultPath).toEqual("model.dmn");
+    expect(showSaveDialogMock.mock.calls[0][1].defaultPath).toEqual(
+      "model.dmn"
+    );
     expect(showSaveDialogMock.mock.calls[0][1].title).toEqual("Save file");
     expect(showSaveDialogMock.mock.calls[0][1].filters!).toHaveLength(1);
     expect(showSaveDialogMock.mock.calls[0][1].filters![0].name).toEqual("DMN");
-    expect(showSaveDialogMock.mock.calls[0][1].filters![0].extensions).toHaveLength(1);
-    expect(showSaveDialogMock.mock.calls[0][1].filters![0].extensions[0]).toEqual("dmn");
+    expect(
+      showSaveDialogMock.mock.calls[0][1].filters![0].extensions
+    ).toHaveLength(1);
+    expect(
+      showSaveDialogMock.mock.calls[0][1].filters![0].extensions[0]
+    ).toEqual("dmn");
   });
 });

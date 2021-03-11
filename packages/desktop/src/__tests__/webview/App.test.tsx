@@ -16,7 +16,12 @@
 
 import * as React from "react";
 import * as electron from "electron";
-import { render, screen, act, waitForElementToBeRemoved } from "@testing-library/react";
+import {
+  render,
+  screen,
+  act,
+  waitForElementToBeRemoved
+} from "@testing-library/react";
 import { App } from "../../webview/App";
 import { usingTestingGlobalContext } from "../testing_utils";
 
@@ -31,7 +36,10 @@ describe("invalid file type alert", () => {
     });
 
     expect(component.asFragment()).toMatchSnapshot();
-    await waitForElementToBeRemoved(screen.getByText("This file extension is not supported."), { timeout: 4000 });
+    await waitForElementToBeRemoved(
+      screen.getByText("This file extension is not supported."),
+      { timeout: 4000 }
+    );
   });
 
   test("alert is closed immediately after leaving the home page", async () => {

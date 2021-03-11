@@ -15,7 +15,15 @@
  */
 
 import * as React from "react";
-import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSidebar } from "@patternfly/react-core";
+import {
+  Brand,
+  Nav,
+  NavItem,
+  NavList,
+  Page,
+  PageHeader,
+  PageSidebar
+} from "@patternfly/react-core";
 import { useCallback, useMemo, useState } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
@@ -44,7 +52,7 @@ export function HomePage(props: Props) {
   const [navState, setNavState] = useState(NavState.RESIZED_OPEN);
   const { i18n } = useDesktopI18n();
 
-  const onNavSelect = useCallback(selectedItem => {
+  const onNavSelect = useCallback((selectedItem) => {
     setActiveNavItem(selectedItem.itemId);
   }, []);
 
@@ -52,12 +60,14 @@ export function HomePage(props: Props) {
     ({ mobileView }) => {
       if (
         mobileView &&
-        ((navState !== NavState.MANUAL_OPEN && navState !== NavState.MANUAL_CLOSE))
+        navState !== NavState.MANUAL_OPEN &&
+        navState !== NavState.MANUAL_CLOSE
       ) {
         setNavState(NavState.RESIZED_CLOSE);
       } else if (
         !mobileView &&
-        ((navState !== NavState.MANUAL_CLOSE && navState !== NavState.MANUAL_OPEN))
+        navState !== NavState.MANUAL_CLOSE &&
+        navState !== NavState.MANUAL_OPEN
       ) {
         setNavState(NavState.RESIZED_OPEN);
       }
@@ -83,36 +93,59 @@ export function HomePage(props: Props) {
   }, [navState]);
 
   const isNavOpen = useMemo(() => {
-    return navState === NavState.RESIZED_OPEN || navState === NavState.MANUAL_OPEN;
+    return (
+      navState === NavState.RESIZED_OPEN || navState === NavState.MANUAL_OPEN
+    );
   }, [navState]);
 
   const header = (
     <PageHeader
       showNavToggle={true}
       onNavToggle={onNavToggle}
-      logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />}
+      logo={
+        <Brand
+          src={"images/BusinessModeler_Logo.svg"}
+          alt="Business Modeler Logo"
+        />
+      }
     />
   );
 
   const navigation = (
     <Nav onSelect={onNavSelect} theme={"dark"}>
       <NavList>
-        <NavItem itemId={NavItems.FILES} isActive={activeNavItem === NavItems.FILES}>
+        <NavItem
+          itemId={NavItems.FILES}
+          isActive={activeNavItem === NavItems.FILES}
+        >
           {i18n.terms.files}
         </NavItem>
-        <NavItem itemId={NavItems.LEARN_MORE} isActive={activeNavItem === NavItems.LEARN_MORE}>
+        <NavItem
+          itemId={NavItems.LEARN_MORE}
+          isActive={activeNavItem === NavItems.LEARN_MORE}
+        >
           {i18n.homePage.learnMore}
         </NavItem>
       </NavList>
     </Nav>
   );
 
-  const sidebar = <PageSidebar nav={navigation} isNavOpen={isNavOpen} theme={"dark"} />;
+  const sidebar = (
+    <PageSidebar nav={navigation} isNavOpen={isNavOpen} theme={"dark"} />
+  );
 
   return (
-    <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"} onPageResize={onPageResize}>
+    <Page
+      header={header}
+      sidebar={sidebar}
+      className={"kogito--editor-landing"}
+      onPageResize={onPageResize}
+    >
       {activeNavItem === NavItems.FILES && (
-        <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
+        <FilesPage
+          openFile={props.openFile}
+          openFileByPath={props.openFileByPath}
+        />
       )}
       {activeNavItem === NavItems.LEARN_MORE && <LearnMorePage />}
     </Page>

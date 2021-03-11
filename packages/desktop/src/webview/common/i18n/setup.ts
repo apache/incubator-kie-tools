@@ -21,9 +21,16 @@ import { en } from "./locales";
 import { DesktopI18n } from "./DesktopI18n";
 import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
 
-export const desktopI18nDefaults: I18nDefaults<DesktopI18n> = { locale: "en", dictionary: en };
-export const desktopI18nDictionaries: I18nDictionaries<DesktopI18n> = new Map([["en", en]]);
-export const DesktopI18nContext = React.createContext<I18nContextType<DesktopI18n>>({} as any);
+export const desktopI18nDefaults: I18nDefaults<DesktopI18n> = {
+  locale: "en",
+  dictionary: en
+};
+export const desktopI18nDictionaries: I18nDictionaries<DesktopI18n> = new Map([
+  ["en", en]
+]);
+export const DesktopI18nContext = React.createContext<
+  I18nContextType<DesktopI18n>
+>({} as any);
 
 export function useDesktopI18n() {
   return useContext(DesktopI18nContext);
