@@ -39,7 +39,8 @@ module.exports = [
         { from: "./static/images", to: "./images" },
         { from: "./static/index.html", to: "./index.html" },
         {
-          from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
+          from:
+            "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
           to: "./lib/Business Modeler Preview-" + os.platform() + "-x64"
         },
         { from: "./build", to: "./build" }

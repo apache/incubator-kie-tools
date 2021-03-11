@@ -63,14 +63,19 @@ function createWindow() {
   const menu = new Menu(mainWindow);
   menu.setup();
 
-  function checkIfVsCodeIsOpen(): Promise<CommandExecutionResult & { isOpen: boolean }> {
+  function checkIfVsCodeIsOpen(): Promise<
+    CommandExecutionResult & { isOpen: boolean }
+  > {
     const vsCodeLocation = getVsCodeLocation()!;
-    const vscodeLocationForGrep = vsCodeLocation.replace(vsCodeLocation[0], `[${vsCodeLocation[0]}]`);
+    const vscodeLocationForGrep = vsCodeLocation.replace(
+      vsCodeLocation[0],
+      `[${vsCodeLocation[0]}]`
+    );
     return executeCommand({
       macOS: `ps aux | grep '${vscodeLocationForGrep}' | xargs echo`,
       linux: `ps aux | grep '${vscodeLocationForGrep}' | xargs echo`,
       windows: `WMIC path win32_process get Caption,Processid,Commandline | FINDSTR /V "FINDSTR" | FINDSTR "Code.exe"`
-    }).then(result => {
+    }).then((result) => {
       return { ...result, isOpen: result.output.trim().length !== 0 };
     });
   }
@@ -90,7 +95,10 @@ function createWindow() {
   // VSCODE
   ipcMain.on("vscode__launch", async (e: IpcMainEvent) => {
     if (!(await checkIfVsCodeIsOpen()).isOpen) {
-      mainWindow.webContents.send("vscode__launch_complete", await launchVsCode());
+      mainWindow.webContents.send(
+        "vscode__launch_complete",
+        await launchVsCode()
+      );
     }
   });
 
@@ -99,16 +107,24 @@ function createWindow() {
       macOS: `'${getVsCodeLocation()}/Contents/Resources/app/bin/code' --uninstall-extension ${
         Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`,
-      linux: `'${getVsCodeLocation()}/bin/code' --uninstall-extension ${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`,
-      windows: `"${getVsCodeLocation()}\\bin\\code" --uninstall-extension ${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`
-    }).then(result => {
-      mainWindow.webContents.send("vscode__uninstall_extension_complete", { ...result });
+      linux: `'${getVsCodeLocation()}/bin/code' --uninstall-extension ${
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
+      }`,
+      windows: `"${getVsCodeLocation()}\\bin\\code" --uninstall-extension ${
+        Constants.VSCODE_EXTENSION_PACKAGE_NAME
+      }`
+    }).then((result) => {
+      mainWindow.webContents.send("vscode__uninstall_extension_complete", {
+        ...result
+      });
     });
   });
 
   ipcMain.on("vscode__list_extensions", (e: IpcMainEvent) => {
     if (!getVsCodeLocation()) {
-      mainWindow.webContents.send("vscode__list_extensions_complete", { extensions: [] });
+      mainWindow.webContents.send("vscode__list_extensions_complete", {
+        extensions: []
+      });
       return;
     }
 
@@ -117,14 +133,18 @@ function createWindow() {
       linux: `'${getVsCodeLocation()}/bin/code' --list-extensions`,
       windows: `"${getVsCodeLocation()}\\bin\\code" --list-extensions`
     })
-      .then(result => {
+      .then((result) => {
         if (!result.success) {
           return [];
         } else {
           return result.output.split("\n");
         }
       })
-      .then(extensions => mainWindow.webContents.send("vscode__list_extensions_complete", { extensions }));
+      .then((extensions) =>
+        mainWindow.webContents.send("vscode__list_extensions_complete", {
+          extensions
+        })
+      );
   });
 
   //
@@ -137,9 +157,13 @@ function createWindow() {
       linux: `chmod -R u+x "${getApplicationPath("")}" && "${getApplicationPath(
         "lib/Business Modeler Preview-linux-x64/Business Modeler Preview"
       )}"`,
-      macOS: `open "${getApplicationPath("lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app")}"`,
-      windows: `"${getApplicationPath("lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe")}"`
-    }).then(result => {
+      macOS: `open "${getApplicationPath(
+        "lib/Business Modeler Preview-darwin-x64/Business Modeler Preview.app"
+      )}"`,
+      windows: `"${getApplicationPath(
+        "lib/Business Modeler Preview-win32-x64/Business Modeler Preview.exe"
+      )}"`
+    }).then((result) => {
       mainWindow.webContents.send("desktop__launch_complete", result);
     });
   });
@@ -151,7 +175,9 @@ function getVsCodeLocation() {
       return "/Applications/Visual Studio Code.app/";
       break;
     case "win32":
-      return `C:\\Users\\${os.userInfo().username}\\AppData\\Local\\Programs\\Microsoft VS Code`;
+      return `C:\\Users\\${
+        os.userInfo().username
+      }\\AppData\\Local\\Programs\\Microsoft VS Code`;
       break;
     default:
       return "/usr/share/code";
@@ -163,7 +189,11 @@ function getApplicationPath(relativePath: string) {
   return path.join(__dirname, `${relativePath}`);
 }
 
-function executeCommand(args: { macOS: string; linux: string; windows: string }): Promise<CommandExecutionResult> {
+function executeCommand(args: {
+  macOS: string;
+  linux: string;
+  windows: string;
+}): Promise<CommandExecutionResult> {
   let command: string;
   let platform: OperatingSystem;
 
@@ -185,7 +215,7 @@ function executeCommand(args: { macOS: string; linux: string; windows: string })
   }
 
   console.info(`Executing command ' ${command} ' on ${platform}`);
-  return new Promise(res => {
+  return new Promise((res) => {
     child.exec(command, (error, stdout, stderr) => {
       const result = error
         ? { success: false, output: stderr, os: platform }

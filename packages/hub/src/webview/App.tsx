@@ -61,7 +61,11 @@ enum ExtensionStatus {
   UNINSTALLING
 }
 
-function useElectronIpcResponse<T>(msgKey: string, callback: (data: T) => void, dependencies: any[]) {
+function useElectronIpcResponse<T>(
+  msgKey: string,
+  callback: (data: T) => void,
+  dependencies: any[]
+) {
   useEffect(() => {
     const ipcCallback = (e: IpcRendererEvent, data: T) => {
       callback(data);
@@ -78,12 +82,14 @@ export function App() {
   //
   //
   // ALERTS
-  const [alerts, setAlerts] = useState(new Array<AlertProps & { time: number }>());
+  const [alerts, setAlerts] = useState(
+    new Array<AlertProps & { time: number }>()
+  );
   const { i18n } = useHubI18n();
 
   const removeAlert = useCallback(
     (time: number) => {
-      setAlerts(alerts.filter(a => a.time !== time));
+      setAlerts(alerts.filter((a) => a.time !== time));
     },
     [alerts]
   );
@@ -116,7 +122,9 @@ export function App() {
 
   const vscode_install = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    electron.shell.openExternal(`vscode:extension/${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`);
+    electron.shell.openExternal(
+      `vscode:extension/${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`
+    );
   }, []);
 
   const vscode_requestUninstall = useCallback(() => {
@@ -127,7 +135,9 @@ export function App() {
   useElectronIpcResponse(
     "vscode__list_extensions_complete",
     (data: CommandExecutionResult & { extensions: string[] }) => {
-      if (data.extensions.indexOf(Constants.VSCODE_EXTENSION_PACKAGE_NAME) !== -1) {
+      if (
+        data.extensions.indexOf(Constants.VSCODE_EXTENSION_PACKAGE_NAME) !== -1
+      ) {
         setVscode_status(ExtensionStatus.INSTALLED);
       } else {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
@@ -140,9 +150,15 @@ export function App() {
     "vscode__uninstall_extension_complete",
     (data: CommandExecutionResult) => {
       if (data.success) {
-        pushNewAlert({ variant: "info", title: "VS Code extension successfully uninstalled." });
+        pushNewAlert({
+          variant: "info",
+          title: "VS Code extension successfully uninstalled."
+        });
       } else {
-        pushNewAlert({ variant: "danger", title: "Error while uninstalling VS Code extension." });
+        pushNewAlert({
+          variant: "danger",
+          title: "Error while uninstalling VS Code extension."
+        });
         console.info(data.output);
       }
 
@@ -205,10 +221,13 @@ export function App() {
     electron.shell.openExternal(Constants.DOWNLOAD_GOOGLE_CHROME_URL);
   }, []);
 
-  const chrome_openKogitoToolingReleasesPage = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    electron.shell.openExternal(Constants.GITHUB_EXTENSION_CHROME_STORE_URL);
-  }, []);
+  const chrome_openKogitoToolingReleasesPage = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      electron.shell.openExternal(Constants.GITHUB_EXTENSION_CHROME_STORE_URL);
+    },
+    []
+  );
 
   const chrome_openGitHub = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -236,7 +255,9 @@ export function App() {
               <br />
               <p>{i18n.alert.launching.try}</p>
               <p>{i18n.alert.launching.directory}</p>
-              <ClipboardCopy isReadOnly={true}>{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
+              <ClipboardCopy
+                isReadOnly={true}
+              >{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
             </>
           )
         });
@@ -248,26 +269,43 @@ export function App() {
   return (
     <Page
       header={
-        <PageHeader logo={<Brand src={"images/BusinessModelerHub_Logo.svg"} alt="Business Modeler Hub Preview" />} />
+        <PageHeader
+          logo={
+            <Brand
+              src={"images/BusinessModelerHub_Logo.svg"}
+              alt="Business Modeler Hub Preview"
+            />
+          }
+        />
       }
       className={"kogito--editor-landing"}
     >
       <PageSection isFilled={true}>
         <div className={"kogito--alert-container"}>
-          {alerts.map(alert => (
+          {alerts.map((alert) => (
             <React.Fragment key={alert.time}>
               <Alert
                 style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
                 variant={alert.variant}
                 title={alert.title}
-                actionClose={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
+                actionClose={
+                  <AlertActionCloseButton
+                    onClose={() => removeAlert(alert.time)}
+                  />
+                }
               />
             </React.Fragment>
           ))}
         </div>
         <Gallery hasGutter={true} className={"kogito-desktop__file-gallery"}>
           <Card>
-            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+            <CardHeader
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "start"
+              }}
+            >
               <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
               <Dropdown
                 position="right"
@@ -276,7 +314,11 @@ export function App() {
                 isOpen={vscode_kebabOpen}
                 isPlain={true}
                 dropdownItems={[
-                  <DropdownItem key="update" component="button" isDisabled={true}>
+                  <DropdownItem
+                    key="update"
+                    component="button"
+                    isDisabled={true}
+                  >
                     {i18n.noUpdates}
                   </DropdownItem>,
                   <DropdownItem
@@ -299,7 +341,9 @@ export function App() {
                 <Text>{i18n.vscode.description}</Text>
               </TextContent>
             </CardBody>
-            <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
+            <CardFooter
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
               {vscode_status === ExtensionStatus.NOT_INSTALLED && (
                 <Button variant={"secondary"} onClick={vscode_install}>
                   {i18n.terms.install}
@@ -310,13 +354,24 @@ export function App() {
                   {i18n.terms.launch}
                 </Button>
               )}
-              <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
+              <Text style={{ display: "flex", alignItems: "center" }}>
+                {vscode_message}
+              </Text>
             </CardFooter>
           </Card>
           {/*CHROME*/}
           <Card>
-            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
+            <CardHeader
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "start"
+              }}
+            >
+              <img
+                style={{ height: "52px" }}
+                src={"images/chrome-github-logo.svg"}
+              />
             </CardHeader>
             <CardBody>
               <Title headingLevel={"h1"} size={"xl"}>
@@ -327,7 +382,9 @@ export function App() {
                 <Text>{i18n.chromeExtension.description}</Text>
               </TextContent>
             </CardBody>
-            <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
+            <CardFooter
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
               <Button variant={"secondary"} onClick={chrome_toggleModal}>
                 {i18n.terms.install}
               </Button>
@@ -346,28 +403,48 @@ export function App() {
             ]}
           >
             <TextContent>
-              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
+              <Text component={TextVariants.p}>
+                {i18n.chromeExtension.modal.chromeRequirement}
+              </Text>
               <Text component={TextVariants.p}>
                 {`${i18n.chromeExtension.modal.chromeDownload} `}
-                <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
+                <Button
+                  variant={"link"}
+                  isInline={true}
+                  onClick={chrome_openDownloadGoogleChrome}
+                >
                   {i18n.chromeExtension.modal.here}
                 </Button>
                 .
               </Text>
-              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
+              <Text component={TextVariants.p}>
+                {i18n.chromeExtension.modal.alreadyHaveChrome}:
+              </Text>
               <TextList component={TextListVariants.ol}>
                 <TextListItem>
                   {`${i18n.chromeExtension.modal.firstStep.firstPart} `}
-                  <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
+                  <Button
+                    variant={"link"}
+                    isInline={true}
+                    onClick={chrome_openKogitoToolingReleasesPage}
+                  >
                     {i18n.names.chromeStore}
                   </Button>{" "}
                   {i18n.chromeExtension.modal.firstStep.secondPart}
                 </TextListItem>
-                <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
-                <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
+                <TextListItem>
+                  {i18n.chromeExtension.modal.secondStep}
+                </TextListItem>
+                <TextListItem>
+                  {i18n.chromeExtension.modal.thirdStep}
+                </TextListItem>
                 <TextListItem>
                   {`${i18n.chromeExtension.modal.done.firstPart} `}
-                  <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
+                  <Button
+                    variant={"link"}
+                    isInline={true}
+                    onClick={chrome_openGitHub}
+                  >
                     {i18n.names.github}
                   </Button>{" "}
                   {`${i18n.chromeExtension.modal.done.secondPart} `}
@@ -377,7 +454,13 @@ export function App() {
           </Modal>
           {/*DESKTOP*/}
           <Card>
-            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+            <CardHeader
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "start"
+              }}
+            >
               <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
               <Dropdown
                 position="right"
@@ -386,7 +469,11 @@ export function App() {
                 isOpen={desktop_kebabOpen}
                 isPlain={true}
                 dropdownItems={[
-                  <DropdownItem key="action" component="button" isDisabled={true}>
+                  <DropdownItem
+                    key="action"
+                    component="button"
+                    isDisabled={true}
+                  >
                     {i18n.noUpdates}
                   </DropdownItem>
                 ]}
@@ -409,7 +496,13 @@ export function App() {
           </Card>
           {/**/}
           <Card>
-            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+            <CardHeader
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "start"
+              }}
+            >
               <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
             </CardHeader>
             <CardBody>

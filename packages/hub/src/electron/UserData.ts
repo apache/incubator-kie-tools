@@ -23,7 +23,9 @@ export class UserData {
   private readonly defaults: any;
 
   constructor(options: { configName: string; defaults: any }) {
-    const userDataPath = (electron.app || electron.remote.app).getPath("userData");
+    const userDataPath = (electron.app || electron.remote.app).getPath(
+      "userData"
+    );
 
     this.path = path.join(userDataPath, options.configName + ".json");
     this.defaults = options.defaults;

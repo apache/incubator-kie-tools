@@ -46,7 +46,8 @@ export const en: HubI18n = {
         secondPart: `using your ${en_common.names.chrome} browser`
       },
       secondStep: `Click on "Add to ${en_common.names.chrome}".`,
-      thirdStep: "Read the permissions and in case you agree, click on “Add Extension”",
+      thirdStep:
+        "Read the permissions and in case you agree, click on “Add Extension”",
       done: {
         firstPart: "Done! You can go to",
         secondPart: "now and start using it."
