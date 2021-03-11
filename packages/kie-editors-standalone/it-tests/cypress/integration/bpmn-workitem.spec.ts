@@ -26,7 +26,7 @@ describe("Bpmn Workitem.", () => {
       .should("be.visible")
       .find("[data-field='listGroupItem'] [data-field='categoryIcon']")
       .should("have.length", 9)
-      .then($items => {
+      .then(($items) => {
         expect($items.eq(0)).to.have.attr("title", "Start Events");
         expect($items.eq(1)).to.have.attr("title", "Intermediate Events");
         expect($items.eq(2)).to.have.attr("title", "End Events");

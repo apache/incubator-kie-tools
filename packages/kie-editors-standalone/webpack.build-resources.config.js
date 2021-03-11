@@ -28,7 +28,7 @@ module.exports = [
     target: "node",
     node: {
       __dirname: true, //Uses current working dir
-      __filename: true, //Uses current working dir
+      __filename: true //Uses current working dir
     }
   }),
   merge(common, {

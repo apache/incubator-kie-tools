@@ -16,7 +16,10 @@
 
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
+import {
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi
+} from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { ContentType } from "@kogito-tooling/channel-common-api/dist";
@@ -28,13 +31,20 @@ declare global {
   }
 }
 
-const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, origin?: string) => {
-  const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
+const createEnvelopeServer = (
+  iframe: HTMLIFrameElement,
+  readOnly?: boolean,
+  origin?: string
+) => {
+  const defaultOrigin =
+    window.location.protocol === "file:" ? "*" : window.location.origin;
 
   return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
-    { postMessage: message => iframe.contentWindow?.postMessage(message, "*") },
+    {
+      postMessage: (message) => iframe.contentWindow?.postMessage(message, "*")
+    },
     origin ?? defaultOrigin,
-    self => {
+    (self) => {
       return self.envelopeApi.requests.receive_initRequest(
         {
           origin: self.origin,
@@ -56,7 +66,10 @@ export function open(args: {
   initialContent: Promise<string>;
   readOnly?: boolean;
   origin?: string;
-  resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
+  resources?: Map<
+    string,
+    { contentType: ContentType; content: Promise<string> }
+  >;
 }): StandaloneEditorApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = bpmnEnvelopeIndex;
@@ -64,7 +77,11 @@ export function open(args: {
   iframe.style.height = "100%";
   iframe.style.border = "none";
 
-  const envelopeServer = createEnvelopeServer(iframe, args.readOnly, args.origin);
+  const envelopeServer = createEnvelopeServer(
+    iframe,
+    args.readOnly,
+    args.origin
+  );
 
   const stateControl = new StateControl();
 

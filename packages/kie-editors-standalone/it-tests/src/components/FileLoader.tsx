@@ -41,7 +41,7 @@ export const FileLoader: React.FC<Props> = ({
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (fileInput!.current!.files!.length > 0) {
-      Array.from(fileInput!.current!.files!).forEach(f => {
+      Array.from(fileInput!.current!.files!).forEach((f) => {
         resourcesHolder.loadFile(f, onResourceChange);
       });
       fileInput.current!.value = "";
@@ -61,7 +61,10 @@ export const FileLoader: React.FC<Props> = ({
   const renderForm = () => {
     return (
       allowUpload && (
-        <form onSubmit={handleSubmit} data-ouia-component-type="file-upload-form">
+        <form
+          onSubmit={handleSubmit}
+          data-ouia-component-type="file-upload-form"
+        >
           <label>
             File to upload:&nbsp;
             <input type="file" ref={fileInput} />
@@ -77,12 +80,16 @@ export const FileLoader: React.FC<Props> = ({
         {Array.from(resourcesHolder.resources).map(([key, value]) => {
           const item: ResourcesHolderItem = { name: key, value: value };
           return (
-            <li data-ouia-component-type="file-list-item" data-ouia-component-id={item.name} key={item.name}>
+            <li
+              data-ouia-component-type="file-list-item"
+              data-ouia-component-id={item.name}
+              key={item.name}
+            >
               <span>{item.name}</span>
               <button
                 data-ouia-component-type="file-list-item-button"
                 data-ouia-component-id="view"
-                onClick={it => view(item)}
+                onClick={(it) => view(item)}
               >
                 view
               </button>
@@ -90,7 +97,7 @@ export const FileLoader: React.FC<Props> = ({
                 <button
                   data-ouia-component-type="file-list-item-button"
                   data-ouia-component-id="download"
-                  onClick={it => download(item)}
+                  onClick={(it) => download(item)}
                 >
                   download
                 </button>
@@ -98,7 +105,7 @@ export const FileLoader: React.FC<Props> = ({
               <button
                 data-ouia-component-type="file-list-item-button"
                 data-ouia-component-id="remove"
-                onClick={it => remove(item)}
+                onClick={(it) => remove(item)}
               >
                 remove
               </button>

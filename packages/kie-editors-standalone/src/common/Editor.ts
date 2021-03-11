@@ -15,7 +15,11 @@
  */
 
 import { ContentType } from "@kogito-tooling/channel-common-api/dist";
-import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
+import {
+  EditorApi,
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi
+} from "@kogito-tooling/editor/dist/api";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
@@ -35,33 +39,53 @@ export interface Editor {
     initialContent: Promise<string>;
     readOnly: boolean;
     origin?: string;
-    resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
+    resources?: Map<
+      string,
+      { contentType: ContentType; content: Promise<string> }
+    >;
   }) => StandaloneEditorApi;
 }
 
 export const createEditor = (
-  envelopeServer: EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>,
+  envelopeServer: EnvelopeServer<
+    KogitoEditorChannelApi,
+    KogitoEditorEnvelopeApi
+  >,
   stateControl: StateControl,
   listener: (message: MessageEvent) => void,
   iframe: HTMLIFrameElement
 ) => {
   return {
     getElementPosition: (selector: string): Promise<Rect> =>
-      envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
+      envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(
+        selector
+      ),
     undo: () => {
       stateControl.undo();
-      return Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo());
+      return Promise.resolve(
+        envelopeServer.envelopeApi.notifications.receive_editorUndo()
+      );
     },
     redo: () => {
       stateControl.redo();
-      return Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo());
+      return Promise.resolve(
+        envelopeServer.envelopeApi.notifications.receive_editorRedo()
+      );
     },
-    getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
-    getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
+    getContent: () =>
+      envelopeServer.envelopeApi.requests
+        .receive_contentRequest()
+        .then((c) => c.content),
+    getPreview: () =>
+      envelopeServer.envelopeApi.requests.receive_previewRequest(),
     setContent: async (content: string) =>
-      envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content }),
-    subscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.subscribe(callback),
-    unsubscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.unsubscribe(callback),
+      envelopeServer.envelopeApi.notifications.receive_contentChanged({
+        content: content
+      }),
+    subscribeToContentChanges: (callback: (isDirty: boolean) => void) =>
+      stateControl.subscribe(callback),
+    unsubscribeToContentChanges: (callback: (isDirty: boolean) => void) =>
+      stateControl.unsubscribe(callback),
     markAsSaved: () => stateControl.setSavedCommand(),
     envelopeApi: envelopeServer.envelopeApi,
     close: () => {

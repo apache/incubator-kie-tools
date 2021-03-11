@@ -39,9 +39,9 @@ export interface FontResource {
 }
 
 export interface ReferencedResource {
-  path: string,
-  prefix?: string,
-  suffix?: string
+  path: string;
+  prefix?: string;
+  suffix?: string;
 }
 
 export interface EditorResources {
@@ -62,28 +62,49 @@ export const FONT_ATTRIBUTES = new Map<string, FontSourceTypeAttributes>([
   ["ttf", { mimeType: "font/ttf", format: "truetype" }],
   ["woff", { mimeType: "font/woff", format: "woff" }],
   ["woff2", { mimeType: "font/woff2", format: "woff2" }],
-  ["eot", { mimeType: "application/vnd.ms-fontobject", format: "embedded-opentype" }],
+  [
+    "eot",
+    { mimeType: "application/vnd.ms-fontobject", format: "embedded-opentype" }
+  ],
   ["svg", { mimeType: "image/svg+xml", format: "svg" }]
 ]);
 
 export abstract class BaseEditorResources {
   public abstract get(args: { resourcesPathPrefix: string }): EditorResources;
-  public abstract getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string): ReferencedResource[];
-  public abstract getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string): ReferencedResource[];
-  public abstract getFontResources(resourcesPathPrefix: string, gwtModuleName: string): FontResource[];
+  public abstract getReferencedJSPaths(
+    resourcesPathPrefix: string,
+    gwtModuleName: string
+  ): ReferencedResource[];
+  public abstract getReferencedCSSPaths(
+    resourcesPathPrefix: string,
+    gwtModuleName: string
+  ): ReferencedResource[];
+  public abstract getFontResources(
+    resourcesPathPrefix: string,
+    gwtModuleName: string
+  ): FontResource[];
   public abstract getEditorResourcesPath(): string;
   public abstract getTemplatePath(): string;
   public abstract getHtmlOutputPath(): string;
 
-  public createResource(resource: ReferencedResource, escapeCharacters?: string[]) {
+  public createResource(
+    resource: ReferencedResource,
+    escapeCharacters?: string[]
+  ) {
     let content = fs.readFileSync(resource.path).toString();
     if (escapeCharacters) {
-      escapeCharacters.forEach(character => {
-        content = content.replace(new RegExp("[" + character.replace(/[\\]/g, "\\\\") + "]", "gi"), "\\" + character);
-      })
+      escapeCharacters.forEach((character) => {
+        content = content.replace(
+          new RegExp("[" + character.replace(/[\\]/g, "\\\\") + "]", "gi"),
+          "\\" + character
+        );
+      });
     }
 
-    return { path: resource.path, content: (resource.prefix ?? "") + content + (resource.suffix ?? "") };
+    return {
+      path: resource.path,
+      content: (resource.prefix ?? "") + content + (resource.suffix ?? "")
+    };
   }
 
   public createFontSource(path: string) {

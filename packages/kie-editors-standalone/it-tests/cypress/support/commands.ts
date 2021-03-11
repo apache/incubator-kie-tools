@@ -17,31 +17,42 @@
 import "cypress-file-upload";
 import "cypress-iframe";
 
-Cypress.Commands.add("ouiaId", { prevSubject: "optional" }, (subject, type: string, id: string, options = {}) => {
-  var typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
-  var idSelector = id ? `[data-ouia-component-id='${id}']` : "";
-  var el;
-  if (subject) {
-    el = cy.wrap(subject, options).find(typeSelector + idSelector, options);
-  } else {
-    el = cy.get(typeSelector + idSelector, options);
+Cypress.Commands.add(
+  "ouiaId",
+  { prevSubject: "optional" },
+  (subject, type: string, id: string, options = {}) => {
+    var typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
+    var idSelector = id ? `[data-ouia-component-id='${id}']` : "";
+    var el;
+    if (subject) {
+      el = cy.wrap(subject, options).find(typeSelector + idSelector, options);
+    } else {
+      el = cy.get(typeSelector + idSelector, options);
+    }
   }
-});
+);
 
-Cypress.Commands.add("ouiaType", { prevSubject: "optional" }, (subject, type: string, options = {}) => {
-  var typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
-  if (subject) {
-    cy.wrap(subject, options).find(typeSelector, options);
-  } else {
-    cy.get(typeSelector, options);
+Cypress.Commands.add(
+  "ouiaType",
+  { prevSubject: "optional" },
+  (subject, type: string, options = {}) => {
+    var typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
+    if (subject) {
+      cy.wrap(subject, options).find(typeSelector, options);
+    } else {
+      cy.get(typeSelector, options);
+    }
   }
-});
+);
 
-const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) => {
+const loadEditorInternal = (
+  options: Record<string, any>,
+  editorIds: string[]
+) => {
   const opts: Record<string, any> = { log: false, ...options };
   cy.get("div#root", opts)
     .should("exist")
-    .within(opts, $root => {
+    .within(opts, ($root) => {
       cy.ouiaType("editor", opts).should("have.length", editorIds.length);
       for (var i in editorIds) {
         cy.ouiaId("editor", editorIds[i], opts).should("exist");
@@ -64,37 +75,64 @@ const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) =
           .should("not.exist");
       }
     });
-  const log = Cypress.log({ name: "loadEditor", message: `Wait for editor ${editorIds} to load.` });
+  const log = Cypress.log({
+    name: "loadEditor",
+    message: `Wait for editor ${editorIds} to load.`
+  });
 };
 
-Cypress.Commands.add("loadEditor", (editorId: string | string[], options?: Record<string, any>) => {
-  loadEditorInternal(options, Array.isArray(editorId) ? editorId : [editorId]);
-});
+Cypress.Commands.add(
+  "loadEditor",
+  (editorId: string | string[], options?: Record<string, any>) => {
+    loadEditorInternal(
+      options,
+      Array.isArray(editorId) ? editorId : [editorId]
+    );
+  }
+);
 
-Cypress.Commands.add("editor", (editorId: string, options?: Record<string, any>) => {
-  cy.iframe("div#" + editorId + " iframe", { log: false });
-  const log = Cypress.log({ name: "editor", message: `Using editor ${editorId}` });
-});
+Cypress.Commands.add(
+  "editor",
+  (editorId: string, options?: Record<string, any>) => {
+    cy.iframe("div#" + editorId + " iframe", { log: false });
+    const log = Cypress.log({
+      name: "editor",
+      message: `Using editor ${editorId}`
+    });
+  }
+);
 
 Cypress.Commands.add("uploadFile", (fileName: string, componentId: string) => {
   const noLogOpts = { log: false };
-  cy.ouiaId("file-loader", componentId, noLogOpts).within(noLogOpts, $loader => {
-    cy.ouiaType("file-upload-form", noLogOpts).within(noLogOpts, $form => {
-      cy.get("input[type='file']", noLogOpts).attachFile(fileName);
-      cy.get("button", noLogOpts).click();
-    });
-  }); // upload file from fixtures
-  const log = Cypress.log({ name: "upload file", message: `Uploading file ${fileName} for editor ${componentId}.` });
+  cy.ouiaId("file-loader", componentId, noLogOpts).within(
+    noLogOpts,
+    ($loader) => {
+      cy.ouiaType("file-upload-form", noLogOpts).within(noLogOpts, ($form) => {
+        cy.get("input[type='file']", noLogOpts).attachFile(fileName);
+        cy.get("button", noLogOpts).click();
+      });
+    }
+  ); // upload file from fixtures
+  const log = Cypress.log({
+    name: "upload file",
+    message: `Uploading file ${fileName} for editor ${componentId}.`
+  });
 });
 
-Cypress.Commands.add("viewFile", (fileName: string, componentId: string, options?: Record<string, any>) => {
-  const opts = { ...{ log: false }, options };
-  cy.ouiaId("file-loader", componentId, opts)
-    .ouiaType("file-list", opts)
-    .ouiaId("file-list-item", fileName, opts)
-    .should("be.visible")
-    .ouiaId("file-list-item-button", "view", opts)
-    .should("be.visible")
-    .click(); // choose file to view
-  const log = Cypress.log({ name: "view file", message: `Viewing file ${fileName} in editor ${componentId}.` });
-});
+Cypress.Commands.add(
+  "viewFile",
+  (fileName: string, componentId: string, options?: Record<string, any>) => {
+    const opts = { ...{ log: false }, options };
+    cy.ouiaId("file-loader", componentId, opts)
+      .ouiaType("file-list", opts)
+      .ouiaId("file-list-item", fileName, opts)
+      .should("be.visible")
+      .ouiaId("file-list-item-button", "view", opts)
+      .should("be.visible")
+      .click(); // choose file to view
+    const log = Cypress.log({
+      name: "view file",
+      message: `Viewing file ${fileName} in editor ${componentId}.`
+    });
+  }
+);

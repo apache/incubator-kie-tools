@@ -24,7 +24,11 @@ declare namespace Cypress {
      * @param id string
      * @param opts optional - config object
      */
-    ouiaId(type: string, id: string, opts?: Record<string, any>): Chainable<Element>;
+    ouiaId(
+      type: string,
+      id: string,
+      opts?: Record<string, any>
+    ): Chainable<Element>;
 
     /**
      *
@@ -38,7 +42,10 @@ declare namespace Cypress {
      * @param editorIds string ids of the editor elements
      * @param options config object
      */
-    loadEditor(editorIds: string[] | string, options?: Record<string, unknown>): void;
+    loadEditor(
+      editorIds: string[] | string,
+      options?: Record<string, unknown>
+    ): void;
 
     /**
      * Locate the editor component for interaction.

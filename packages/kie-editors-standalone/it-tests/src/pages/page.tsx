@@ -107,8 +107,16 @@ export const EditorPage: React.FC<{}> = () => {
             path="/both-bpmn-dmn"
             render={() => (
               <>
-                <BpmnEditorComponent id="both-bpmn" readOnly={false} initialContent={Promise.resolve("")} />
-                <DmnEditorComponent id="both-dmn" readOnly={false} initialContent={Promise.resolve("")} />
+                <BpmnEditorComponent
+                  id="both-bpmn"
+                  readOnly={false}
+                  initialContent={Promise.resolve("")}
+                />
+                <DmnEditorComponent
+                  id="both-dmn"
+                  readOnly={false}
+                  initialContent={Promise.resolve("")}
+                />
               </>
             )}
           />

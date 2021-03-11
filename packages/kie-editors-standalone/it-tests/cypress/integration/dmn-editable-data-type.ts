@@ -29,7 +29,7 @@ describe("Dmn Editable Data Type.", () => {
     cy.editor("dmn-editable")
       .ouiaId("editor-nav-tab", "Data Types", { timeout: 10000 })
       .should("be.visible")
-      .click()
+      .click();
 
     cy.editor("dmn-editable")
       .ouiaId("add-data-type-button", "first")
@@ -42,7 +42,6 @@ describe("Dmn Editable Data Type.", () => {
       .find("[data-type-field='save-button']")
       .click();
 
-    cy.ouiaType("content-dirty")
-      .should("be.visible");
-  })
+    cy.ouiaType("content-dirty").should("be.visible");
+  });
 });

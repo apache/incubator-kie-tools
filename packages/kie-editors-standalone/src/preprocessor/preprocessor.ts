@@ -21,10 +21,15 @@ import { BpmnEditorResources } from "../bpmn/BpmnEditorResources";
 import { BaseEditorResources } from "../common/EditorResources";
 
 function main() {
-  const editorsResources: BaseEditorResources[] = [new DmnEditorResources(), new BpmnEditorResources()];
+  const editorsResources: BaseEditorResources[] = [
+    new DmnEditorResources(),
+    new BpmnEditorResources()
+  ];
 
-  editorsResources.forEach(editorResources => {
-    const template = _.template(fs.readFileSync(editorResources.getTemplatePath()).toString());
+  editorsResources.forEach((editorResources) => {
+    const template = _.template(
+      fs.readFileSync(editorResources.getTemplatePath()).toString()
+    );
     const result = template({
       editorResources: editorResources.get({
         resourcesPathPrefix: editorResources.getEditorResourcesPath()

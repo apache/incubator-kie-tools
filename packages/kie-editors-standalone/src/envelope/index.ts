@@ -17,7 +17,10 @@
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import {
+  ChannelType,
+  getOperatingSystem
+} from "@kogito-tooling/channel-common-api";
 
 const initEnvelope = () => {
   const container = document.getElementById("envelope-app")!;
@@ -30,13 +33,15 @@ const initEnvelope = () => {
 
   // The MutationObserver below replaces every <a href="#" /> with <a href="javascript:void(0);" />,
   // because the former will cause the iframe to reload.
-  const mutationObserver = new MutationObserver(mutations => {
-    mutations.forEach(mutation => {
-      mutation.addedNodes.forEach(node => {
+  const mutationObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
         if (node instanceof HTMLAnchorElement) {
           removeHrefIfNecessary(node);
         } else if (node instanceof Element) {
-          Array.from(node.getElementsByTagName("a")).forEach(removeHrefIfNecessary);
+          Array.from(node.getElementsByTagName("a")).forEach(
+            removeHrefIfNecessary
+          );
         }
       });
     });
@@ -46,14 +51,23 @@ const initEnvelope = () => {
   EditorEnvelope.init({
     container: container,
     bus: {
-      postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
+      postMessage<D, Type>(
+        message: EnvelopeBusMessage<D, Type>,
+        targetOrigin?: string,
+        _?: any
+      ) {
         window.parent.postMessage(message, targetOrigin!, _);
       }
     },
     // The Editor's scripts are proactively loaded in this distribution, thus
     // it should not be loaded again by the Editor wrapper.
-    editorFactory: new GwtEditorWrapperFactory({ shouldLoadResourcesDynamically: false }),
-    editorContext: { channel: ChannelType.EMBEDDED, operatingSystem: getOperatingSystem() }
+    editorFactory: new GwtEditorWrapperFactory({
+      shouldLoadResourcesDynamically: false
+    }),
+    editorContext: {
+      channel: ChannelType.EMBEDDED,
+      operatingSystem: getOperatingSystem()
+    }
   });
 };
 

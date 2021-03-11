@@ -52,12 +52,21 @@ export class ResourcesHolder {
   public loadFile(file: File, onResourceChanged?: () => void): ResourcesHolder {
     const name: string = file.name;
     this.addFile(
-      { name, value: { contentType: ContentType.TEXT, content: this.readUploadedFileAsText(file) } },
+      {
+        name,
+        value: {
+          contentType: ContentType.TEXT,
+          content: this.readUploadedFileAsText(file)
+        }
+      },
       onResourceChanged
     );
     return this;
   }
-  public addFile(resource: ResourcesHolderItem, onResourceChanged?: () => void): ResourcesHolder {
+  public addFile(
+    resource: ResourcesHolderItem,
+    onResourceChanged?: () => void
+  ): ResourcesHolder {
     this.resources.set(resource.name, resource.value);
     onResourceChanged && onResourceChanged();
     return this;

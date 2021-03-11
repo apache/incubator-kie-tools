@@ -36,7 +36,11 @@ module.exports = {
   ],
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    modules: [
+      path.resolve("../../node_modules"),
+      path.resolve("./node_modules"),
+      path.resolve("./src")
+    ]
   },
   module: {
     rules: [
@@ -61,7 +65,10 @@ module.exports = {
     }
   },
   devServer: {
-    contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "../dist/")],
+    contentBase: [
+      path.join(__dirname, "dist"),
+      path.join(__dirname, "../dist/")
+    ],
     compress: true,
     inline: true,
     historyApiFallback: true,

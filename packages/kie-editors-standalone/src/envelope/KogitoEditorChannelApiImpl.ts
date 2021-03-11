@@ -22,8 +22,14 @@ import {
   ResourceListRequest,
   ResourcesList
 } from "@kogito-tooling/channel-common-api";
-import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import {
+  KogitoEditorChannelApi,
+  StateControlCommand
+} from "@kogito-tooling/editor/dist/api";
+import {
+  Tutorial,
+  UserInteraction
+} from "@kogito-tooling/guided-tour/dist/api";
 import { File, StateControl } from "@kogito-tooling/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
@@ -34,7 +40,10 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     private readonly file: File,
     private readonly locale: string,
     private readonly overrides: Partial<KogitoEditorChannelApi>,
-    private readonly resources?: Map<string, { contentType: ContentType; content: Promise<string> }>
+    private readonly resources?: Map<
+      string,
+      { contentType: ContentType; content: Promise<string> }
+    >
   ) {}
 
   public receive_newEdit(edit: KogitoEdit) {
@@ -74,7 +83,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     const resource = this.resources?.get(request.path);
 
     if (!resource) {
-      console.warn("The editor requested an unspecified resource: " + request.path);
+      console.warn(
+        "The editor requested an unspecified resource: " + request.path
+      );
       return new ResourceContent(request.path, undefined);
     }
 
@@ -89,7 +100,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
       return new ResourceContent(request.path, undefined);
     }
 
-    return new ResourceContent(request.path, await resource.content, resource.contentType);
+    return new ResourceContent(
+      request.path,
+      await resource.content,
+      resource.contentType
+    );
   }
 
   public async receive_resourceListRequest(request: ResourceListRequest) {
@@ -98,7 +113,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     }
 
     const matcher = new Minimatch(request.pattern);
-    const matches = Array.from(this.resources.keys()).filter(path => matcher.match(path));
+    const matches = Array.from(this.resources.keys()).filter((path) =>
+      matcher.match(path)
+    );
     return new ResourcesList(request.pattern, matches);
   }
 

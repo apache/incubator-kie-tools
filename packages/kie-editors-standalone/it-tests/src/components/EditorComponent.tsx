@@ -21,7 +21,11 @@ import { ContentType } from "@kogito-tooling/channel-common-api/dist";
 import { StandaloneEditorApi } from "@kogito-tooling/kie-editors-standalone/dist/common/Editor";
 
 import { FileLoader } from "./FileLoader";
-import { ResourcesHolder, ResourcesHolderItem, Resource } from "../util/ResourcesHolder";
+import {
+  ResourcesHolder,
+  ResourcesHolderItem,
+  Resource
+} from "../util/ResourcesHolder";
 
 interface EditorOpenProps {
   container: Element;
@@ -54,7 +58,7 @@ const divstyle = {
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
-  return () => setValue(val => ++val); // update the state to force render
+  return () => setValue((val) => ++val); // update the state to force render
 };
 
 export const EditorComponent: React.FC<InternalProps> = ({
@@ -71,8 +75,12 @@ export const EditorComponent: React.FC<InternalProps> = ({
   const [dirty, setDirty] = useState<boolean>(false);
   const [editor, setEditor] = useState<StandaloneEditorApi>();
   const forceUpdate = useForceUpdate();
-  const [filesHolder, setFilesHolder] = useState<ResourcesHolder>(new ResourcesHolder(resources));
-  const [modelName, setModelName] = useState<string>(defaultModelName || "new-file");
+  const [filesHolder, setFilesHolder] = useState<ResourcesHolder>(
+    new ResourcesHolder(resources)
+  );
+  const [modelName, setModelName] = useState<string>(
+    defaultModelName || "new-file"
+  );
 
   useEffect(() => {
     const ed = openEditor({
@@ -82,7 +90,7 @@ export const EditorComponent: React.FC<InternalProps> = ({
       origin,
       resources: filesHolder.resources
     });
-    ed.subscribeToContentChanges(isDirty => {
+    ed.subscribeToContentChanges((isDirty) => {
       setDirty(isDirty);
     });
     setEditor(ed);
@@ -110,15 +118,19 @@ export const EditorComponent: React.FC<InternalProps> = ({
   };
   const editorSave = () => {
     filesHolder.addFile(
-      { name: modelName, value: { contentType: ContentType.TEXT, content: editor!.getContent() } },
+      {
+        name: modelName,
+        value: { contentType: ContentType.TEXT, content: editor!.getContent() }
+      },
       forceUpdate
     );
     editor?.markAsSaved();
   };
   const editorSvg = () => {
-    editor!.getPreview().then(content => {
+    editor!.getPreview().then((content) => {
       const elem = window.document.createElement("a");
-      elem.href = "data:text/svg+xml;charset=utf-8," + encodeURIComponent(content!);
+      elem.href =
+        "data:text/svg+xml;charset=utf-8," + encodeURIComponent(content!);
       elem.download = modelName + ".svg";
       document.body.appendChild(elem);
       elem.click();
@@ -126,9 +138,10 @@ export const EditorComponent: React.FC<InternalProps> = ({
     });
   };
   const editorXml = () => {
-    editor!.getContent().then(content => {
+    editor!.getContent().then((content) => {
       const elem = window.document.createElement("a");
-      elem.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
+      elem.href =
+        "data:text/plain;charset=utf-8," + encodeURIComponent(content);
       elem.download = modelName;
       document.body.appendChild(elem);
       elem.click();
@@ -174,7 +187,13 @@ export const EditorComponent: React.FC<InternalProps> = ({
         </div>
       )}
       {renderButtons()}
-      <div id={id} data-ouia-component-type="editor" data-ouia-component-id={id} ref={container} style={divstyle} />
+      <div
+        id={id}
+        data-ouia-component-type="editor"
+        data-ouia-component-id={id}
+        ref={container}
+        style={divstyle}
+      />
     </>
   );
 };
