@@ -26,8 +26,12 @@ export const chromeExtensionI18nDefaults: I18nDefaults<ChromeExtensionI18n> = {
   dictionary: en
 };
 
-export const chromeExtensionI18nDictionaries: I18nDictionaries<ChromeExtensionI18n> = new Map([["en", en]]);
-export const ChromeExtensionI18nContext = React.createContext<I18nContextType<ChromeExtensionI18n>>({} as any);
+export const chromeExtensionI18nDictionaries: I18nDictionaries<ChromeExtensionI18n> = new Map(
+  [["en", en]]
+);
+export const ChromeExtensionI18nContext = React.createContext<
+  I18nContextType<ChromeExtensionI18n>
+>({} as any);
 
 export function useChromeExtensionI18n() {
   return useContext(ChromeExtensionI18nContext);

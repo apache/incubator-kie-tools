@@ -17,7 +17,8 @@
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface ChromeExtensionDictionary extends ReferenceDictionary<ChromeExtensionDictionary> {
+interface ChromeExtensionDictionary
+  extends ReferenceDictionary<ChromeExtensionDictionary> {
   openIn: (text: string) => string;
   seeAsDiagram: string;
   tree: {
@@ -57,4 +58,6 @@ interface ChromeExtensionDictionary extends ReferenceDictionary<ChromeExtensionD
   };
 }
 
-export interface ChromeExtensionI18n extends ChromeExtensionDictionary, CommonI18n {}
+export interface ChromeExtensionI18n
+  extends ChromeExtensionDictionary,
+    CommonI18n {}

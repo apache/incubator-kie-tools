@@ -26,7 +26,10 @@ import {
 import { SingleEditorApp } from "./SingleEditorApp";
 import { Globals, Main } from "../common/Main";
 import { Dependencies } from "../../Dependencies";
-import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
+import {
+  KOGITO_IFRAME_CONTAINER_CLASS,
+  KOGITO_TOOLBAR_CONTAINER_CLASS
+} from "../../constants";
 import { useGlobals } from "../common/GlobalContext";
 import { FileInfo } from "./singleEditorView";
 
@@ -45,7 +48,9 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
   }
 
   if (!args.editorEnvelopeLocator.mapping.has(openFileExtension)) {
-    args.logger.log(`No enhanced editor available for "${openFileExtension}" format.`);
+    args.logger.log(
+      `No enhanced editor available for "${openFileExtension}" format.`
+    );
     return;
   }
 
@@ -64,21 +69,29 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <SingleEditorEditApp openFileExtension={openFileExtension} fileInfo={args.fileInfo} />
+      <SingleEditorEditApp
+        openFileExtension={openFileExtension}
+        fileInfo={args.fileInfo}
+      />
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
 
-function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileInfo }) {
+function SingleEditorEditApp(props: {
+  openFileExtension: string;
+  fileInfo: FileInfo;
+}) {
   const globals = useGlobals();
   const getFileName = useCallback(() => {
     return globals.dependencies.all.edit__githubFileNameInput()!.value;
   }, [globals.dependencies]);
 
   const getFileContents = useCallback(() => {
-    return Promise.resolve(globals.dependencies.all.edit__githubTextAreaWithFileContents()!.value);
+    return Promise.resolve(
+      globals.dependencies.all.edit__githubTextAreaWithFileContents()!.value
+    );
   }, [globals.dependencies]);
 
   return (
@@ -89,7 +102,9 @@ function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileI
       getFileContents={getFileContents}
       iframeContainer={iframeContainer(globals.id, globals.dependencies)}
       toolbarContainer={toolbarContainer(globals.id, globals.dependencies)}
-      githubTextEditorToReplace={globals.dependencies.singleEdit.githubTextEditorToReplaceElement()!}
+      githubTextEditorToReplace={
+        globals.dependencies.singleEdit.githubTextEditorToReplaceElement()!
+      }
       fileInfo={props.fileInfo}
     />
   );
@@ -103,7 +118,8 @@ function cleanup(id: string, dependencies: Dependencies) {
 }
 
 function toolbarContainer(id: string, dependencies: Dependencies) {
-  const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
+  const element = () =>
+    document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
     dependencies.singleEdit
@@ -118,12 +134,16 @@ function toolbarContainer(id: string, dependencies: Dependencies) {
 }
 
 function iframeContainer(id: string, dependencies: Dependencies) {
-  const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
+  const element = () =>
+    document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
     dependencies.singleEdit
       .iframeContainerTarget()!
-      .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} edit"></div>`);
+      .insertAdjacentHTML(
+        "afterend",
+        `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} edit"></div>`
+      );
   }
 
   return element() as HTMLElement;

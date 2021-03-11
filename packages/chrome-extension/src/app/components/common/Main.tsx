@@ -52,13 +52,16 @@ function KogitoMenuPortal(props: { id: string }) {
       {githubApi.userIsLoggedIn() &&
         ReactDOM.createPortal(
           <KogitoMenu />,
-          kogitoMenuContainer(props.id, globals.dependencies.all.notificationIndicator()!.parentElement!)
+          kogitoMenuContainer(
+            props.id,
+            globals.dependencies.all.notificationIndicator()!.parentElement!
+          )
         )}
     </>
   );
 }
 
-export const Main: React.FunctionComponent<Globals> = props => {
+export const Main: React.FunctionComponent<Globals> = (props) => {
   return (
     <I18nDictionariesProvider
       defaults={chromeExtensionI18nDefaults}

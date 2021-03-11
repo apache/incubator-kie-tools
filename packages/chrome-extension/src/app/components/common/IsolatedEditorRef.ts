@@ -21,7 +21,9 @@ export type IsolatedEditorRef = {
 } | null;
 
 export function useIsolatedEditorRef() {
-  const [isolatedEditor, setIsolatedEditor] = useState<IsolatedEditorRef | undefined>(null);
+  const [isolatedEditor, setIsolatedEditor] = useState<
+    IsolatedEditorRef | undefined
+  >(null);
 
   const isolatedEditorRef = useCallback((node: IsolatedEditorRef) => {
     if (node !== null) {

@@ -19,7 +19,11 @@ import { useEffect, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { Dependencies } from "../../Dependencies";
-import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
+import {
+  getOriginalFilePath,
+  IsolatedPrEditor,
+  PrInfo
+} from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
 
 export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
@@ -28,17 +32,30 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
   const [prFileContainers, setPrFileContainers] = useState<HTMLElement[]>([]);
 
   useEffect(() => {
-    setPrFileContainers(supportedPrFileElements(globals.logger, globals.envelopeLocator, globals.dependencies));
+    setPrFileContainers(
+      supportedPrFileElements(
+        globals.logger,
+        globals.envelopeLocator,
+        globals.dependencies
+      )
+    );
   }, []);
 
   useEffect(() => {
-    const observer = new MutationObserver(mutations => {
-      const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
+    const observer = new MutationObserver((mutations) => {
+      const addedNodes = mutations.reduce(
+        (l, r) => [...l, ...Array.from(r.addedNodes)],
+        []
+      );
       if (addedNodes.length <= 0) {
         return;
       }
 
-      const newContainers = supportedPrFileElements(globals.logger, globals.envelopeLocator, globals.dependencies);
+      const newContainers = supportedPrFileElements(
+        globals.logger,
+        globals.envelopeLocator,
+        globals.dependencies
+      );
       if (newContainers.length === prFileContainers.length) {
         globals.logger.log("Found new unsupported containers");
         return;
@@ -60,16 +77,21 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
 
   return (
     <>
-      {prFileContainers.map(container => (
+      {prFileContainers.map((container) => (
         <IsolatedPrEditor
           key={getUnprocessedFilePath(container, globals.dependencies)}
           prInfo={props.prInfo}
           contentPath={props.contentPath}
           prFileContainer={container}
           fileExtension={getFileExtension(container, globals.dependencies)}
-          unprocessedFilePath={getUnprocessedFilePath(container, globals.dependencies)}
+          unprocessedFilePath={getUnprocessedFilePath(
+            container,
+            globals.dependencies
+          )}
           githubTextEditorToReplace={
-            globals.dependencies.prView.githubTextEditorToReplaceElement(container) as HTMLElement
+            globals.dependencies.prView.githubTextEditorToReplaceElement(
+              container
+            ) as HTMLElement
           }
         />
       ))}
@@ -77,8 +99,12 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
   );
 }
 
-function supportedPrFileElements(logger: Logger, envelopeLocator: EditorEnvelopeLocator, dependencies: Dependencies) {
-  return prFileElements(logger, dependencies).filter(container =>
+function supportedPrFileElements(
+  logger: Logger,
+  envelopeLocator: EditorEnvelopeLocator,
+  dependencies: Dependencies
+) {
+  return prFileElements(logger, dependencies).filter((container) =>
     envelopeLocator.mapping.has(getFileExtension(container, dependencies))
   );
 }
@@ -93,13 +119,21 @@ function prFileElements(logger: Logger, dependencies: Dependencies) {
   return elements;
 }
 
-function getFileExtension(prFileContainer: HTMLElement, dependencies: Dependencies) {
-  const unprocessedFilePath = getUnprocessedFilePath(prFileContainer, dependencies);
-  return getOriginalFilePath(unprocessedFilePath)
-    .split(".")
-    .pop()!;
+function getFileExtension(
+  prFileContainer: HTMLElement,
+  dependencies: Dependencies
+) {
+  const unprocessedFilePath = getUnprocessedFilePath(
+    prFileContainer,
+    dependencies
+  );
+  return getOriginalFilePath(unprocessedFilePath).split(".").pop()!;
 }
 
-export function getUnprocessedFilePath(prFileContainer: HTMLElement, dependencies: Dependencies) {
-  return dependencies.all.pr__unprocessedFilePathContainer(prFileContainer)!.title;
+export function getUnprocessedFilePath(
+  prFileContainer: HTMLElement,
+  dependencies: Dependencies
+) {
+  return dependencies.all.pr__unprocessedFilePathContainer(prFileContainer)!
+    .title;
 }

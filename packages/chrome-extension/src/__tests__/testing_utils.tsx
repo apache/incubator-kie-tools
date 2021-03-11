@@ -15,13 +15,25 @@
  */
 
 import * as React from "react";
-import { GlobalContext, GlobalContextType } from "../app/components/common/GlobalContext";
+import {
+  GlobalContext,
+  GlobalContextType
+} from "../app/components/common/GlobalContext";
 import { ResourceContentServiceFactory } from "../app/components/common/ChromeResourceContentService";
-import { GitHubContext, GitHubContextType } from "../app/components/common/GitHubContext";
+import {
+  GitHubContext,
+  GitHubContextType
+} from "../app/components/common/GitHubContext";
 import { Logger } from "../Logger";
 import { Dependencies } from "../app/Dependencies";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
+import {
+  EditorEnvelopeLocator,
+  EnvelopeMapping
+} from "@kogito-tooling/editor/dist/api";
+import {
+  I18nDictionariesProvider,
+  I18nDictionariesProviderProps
+} from "@kogito-tooling/i18n/dist/react-components";
 import {
   ChromeExtensionI18nContext,
   chromeExtensionI18nDictionaries,
@@ -29,7 +41,10 @@ import {
 } from "../app/i18n";
 import { ChromeExtensionI18n } from "../app/i18n";
 
-export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
+export function usingTestingGlobalContext(
+  children: React.ReactElement,
+  ctx?: Partial<GlobalContextType>
+) {
   const txtEnvelopeMapping: EnvelopeMapping = {
     envelopePath: "chrome-testing://https://my-url.com/",
     resourcesPathPrefix: "envelope"
@@ -50,7 +65,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     resourceContentServiceFactory: new ResourceContentServiceFactory(),
     externalEditorManager: {
       name: "Test Online Editor",
-      getLink: jest.fn(path => `https://external-editor-link/${path}`),
+      getLink: jest.fn((path) => `https://external-editor-link/${path}`),
       listenToComeBack: jest.fn(),
       open: jest.fn()
     },
@@ -79,7 +94,11 @@ export function usingTestingGitHubContext(
   };
   return {
     ctx: usedCtx,
-    wrapper: <GitHubContext.Provider value={usedCtx}>{children}</GitHubContext.Provider>
+    wrapper: (
+      <GitHubContext.Provider value={usedCtx}>
+        {children}
+      </GitHubContext.Provider>
+    )
   };
 }
 
@@ -97,7 +116,11 @@ export function usingTestingChromeExtensionI18nContext(
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
+      <I18nDictionariesProvider
+        defaults={usedCtx.defaults}
+        dictionaries={usedCtx.dictionaries}
+        ctx={usedCtx.ctx}
+      >
         {usedCtx.children}
       </I18nDictionariesProvider>
     )

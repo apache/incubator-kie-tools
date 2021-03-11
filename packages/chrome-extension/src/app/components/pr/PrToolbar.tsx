@@ -47,7 +47,11 @@ export function PrToolbar(props: {
   return (
     <>
       {!props.textMode && (
-        <button disabled={props.textMode} className={"btn btn-sm kogito-button"} onClick={closeDiagram}>
+        <button
+          disabled={props.textMode}
+          className={"btn btn-sm kogito-button"}
+          onClick={closeDiagram}
+        >
           {i18n.pr.toolbar.closeDiagram}
         </button>
       )}
@@ -58,26 +62,34 @@ export function PrToolbar(props: {
         </button>
       )}
 
-      {!props.textMode && props.fileStatusOnPr === FileStatusOnPr.CHANGED && props.showOriginalChangesToggle && (
-        <div className="BtnGroup mr-1">
-          <button
-            disabled={props.originalDiagram}
-            className={"btn btn-sm BtnGroup-item " + (props.originalDiagram ? "disabled" : "")}
-            type={"button"}
-            onClick={toggleOriginal}
-          >
-            {i18n.pr.toolbar.original}
-          </button>
-          <button
-            disabled={!props.originalDiagram}
-            className={"btn btn-sm BtnGroup-item " + (!props.originalDiagram ? "disabled" : "")}
-            type={"button"}
-            onClick={toggleOriginal}
-          >
-            {i18n.pr.toolbar.changes}
-          </button>
-        </div>
-      )}
+      {!props.textMode &&
+        props.fileStatusOnPr === FileStatusOnPr.CHANGED &&
+        props.showOriginalChangesToggle && (
+          <div className="BtnGroup mr-1">
+            <button
+              disabled={props.originalDiagram}
+              className={
+                "btn btn-sm BtnGroup-item " +
+                (props.originalDiagram ? "disabled" : "")
+              }
+              type={"button"}
+              onClick={toggleOriginal}
+            >
+              {i18n.pr.toolbar.original}
+            </button>
+            <button
+              disabled={!props.originalDiagram}
+              className={
+                "btn btn-sm BtnGroup-item " +
+                (!props.originalDiagram ? "disabled" : "")
+              }
+              type={"button"}
+              onClick={toggleOriginal}
+            >
+              {i18n.pr.toolbar.changes}
+            </button>
+          </div>
+        )}
     </>
   );
 }

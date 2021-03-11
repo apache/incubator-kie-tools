@@ -28,8 +28,12 @@ interface Props {
   keepRenderedEditorInTextMode: boolean;
 }
 
-const RefForwardingIsolatedEditor: React.RefForwardingComponent<IsolatedEditorRef, Props> = (props, forwardedRef) => {
-  const shouldRenderIframe = (props.keepRenderedEditorInTextMode && props.textMode) || !props.textMode;
+const RefForwardingIsolatedEditor: React.RefForwardingComponent<
+  IsolatedEditorRef,
+  Props
+> = (props, forwardedRef) => {
+  const shouldRenderIframe =
+    (props.keepRenderedEditorInTextMode && props.textMode) || !props.textMode;
   const githubApi = useGitHubApi();
 
   return (

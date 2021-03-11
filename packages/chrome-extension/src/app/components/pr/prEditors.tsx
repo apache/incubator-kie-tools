@@ -43,7 +43,10 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} contentPath={args.contentPath} />
+      <PrEditorsApp
+        prInfo={parsePrInfo(args.dependencies)}
+        contentPath={args.contentPath}
+      />
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),
     () => args.logger.log("Mounted.")
@@ -51,7 +54,9 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
 }
 
 export function parsePrInfo(dependencies: Dependencies): PrInfo {
-  const prInfos = dependencies.all.array.pr__prInfoContainer()!.map(e => e.textContent!);
+  const prInfos = dependencies.all.array
+    .pr__prInfoContainer()!
+    .map((e) => e.textContent!);
 
   const targetOrganization = window.location.pathname.split("/")[1];
   const repository = window.location.pathname.split("/")[2];
@@ -78,15 +83,23 @@ export function parsePrInfo(dependencies: Dependencies): PrInfo {
 }
 
 function cleanup(id: string) {
-  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
+  Array.from(
+    document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`)
+  ).forEach((e) => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
+  Array.from(
+    document.querySelectorAll(
+      `.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`
+    )
+  ).forEach((e) => {
     removeAllChildren(e);
   });
 
-  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach(e => {
+  Array.from(
+    document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)
+  ).forEach((e) => {
     removeAllChildren(e);
   });
 }

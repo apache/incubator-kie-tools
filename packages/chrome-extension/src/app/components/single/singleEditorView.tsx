@@ -26,7 +26,10 @@ import { Globals, Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
 import { useCallback } from "react";
-import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
+import {
+  KOGITO_IFRAME_CONTAINER_CLASS,
+  KOGITO_TOOLBAR_CONTAINER_CLASS
+} from "../../constants";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "../common/GlobalContext";
@@ -38,7 +41,9 @@ export interface FileInfo {
   gitRef: string;
 }
 
-export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
+export function renderSingleEditorReadonlyApp(
+  args: Globals & { fileInfo: FileInfo }
+) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!args.dependencies.singleView.githubTextEditorToReplaceElement()) {
@@ -53,7 +58,9 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
   }
 
   if (!args.editorEnvelopeLocator.mapping.has(openFileExtension)) {
-    args.logger.log(`No enhanced editor available for "${openFileExtension}" format.`);
+    args.logger.log(
+      `No enhanced editor available for "${openFileExtension}" format.`
+    );
     return;
   }
 
@@ -72,14 +79,20 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
+      <SingleEditorViewApp
+        fileInfo={args.fileInfo}
+        openFileExtension={openFileExtension}
+      />
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()!),
     () => args.logger.log("Mounted.")
   );
 }
 
-function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {
+function SingleEditorViewApp(props: {
+  fileInfo: FileInfo;
+  openFileExtension: string;
+}) {
   const githubApi = useGitHubApi();
   const globals = useGlobals();
   const getFileContents = useCallback(
@@ -105,7 +118,9 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
       getFileContents={getFileContents}
       iframeContainer={iframeContainer(globals.id, globals.dependencies)}
       toolbarContainer={toolbarContainer(globals.id, globals.dependencies)}
-      githubTextEditorToReplace={globals.dependencies.singleView.githubTextEditorToReplaceElement()!}
+      githubTextEditorToReplace={
+        globals.dependencies.singleView.githubTextEditorToReplaceElement()!
+      }
       fileInfo={props.fileInfo}
     />
   );
@@ -120,7 +135,8 @@ function cleanup(id: string, dependencies: Dependencies) {
 }
 
 function toolbarContainer(id: string, dependencies: Dependencies) {
-  const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
+  const element = () =>
+    document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
     dependencies.singleView
@@ -135,12 +151,16 @@ function toolbarContainer(id: string, dependencies: Dependencies) {
 }
 
 function iframeContainer(id: string, dependencies: Dependencies) {
-  const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
+  const element = () =>
+    document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
     dependencies.singleView
       .iframeContainerTarget()!
-      .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} view"></div>`);
+      .insertAdjacentHTML(
+        "afterend",
+        `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} view"></div>`
+      );
   }
 
   return element() as HTMLElement;

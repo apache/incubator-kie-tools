@@ -39,6 +39,8 @@ describe("FileTreeWithExternalLink", () => {
   test("createTargetUrl", () => {
     const pathname = "/org/repo/blob/ref/file.bpmn";
     const externalEditorUrl = createTargetUrl(pathname, externalEditorManager);
-    expect(externalEditorUrl).toEqual("http://mock.com/?file=org/repo/ref/file.bpmn");
+    expect(externalEditorUrl).toEqual(
+      "http://mock.com/?file=org/repo/ref/file.bpmn"
+    );
   });
 });

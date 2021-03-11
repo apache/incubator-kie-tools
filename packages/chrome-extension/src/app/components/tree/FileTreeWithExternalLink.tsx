@@ -24,12 +24,20 @@ import { useGlobals } from "../common/GlobalContext";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 export function FileTreeWithExternalLink() {
-  const { externalEditorManager, envelopeLocator, dependencies, logger } = useGlobals();
+  const {
+    externalEditorManager,
+    envelopeLocator,
+    dependencies,
+    logger
+  } = useGlobals();
 
   const [links, setLinksToFiles] = useState<HTMLAnchorElement[]>([]);
 
   useEffect(() => {
-    const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), envelopeLocator);
+    const newLinks = filterLinksForSupportedFileExtensions(
+      dependencies.treeView.linksToFiles(),
+      envelopeLocator
+    );
     if (newLinks.length === 0) {
       return;
     }
@@ -37,13 +45,19 @@ export function FileTreeWithExternalLink() {
   }, []);
 
   useEffect(() => {
-    const observer = new MutationObserver(mutations => {
-      const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
+    const observer = new MutationObserver((mutations) => {
+      const addedNodes = mutations.reduce(
+        (l, r) => [...l, ...Array.from(r.addedNodes)],
+        []
+      );
       if (addedNodes.length <= 0) {
         return;
       }
 
-      const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), envelopeLocator);
+      const newLinks = filterLinksForSupportedFileExtensions(
+        dependencies.treeView.linksToFiles(),
+        envelopeLocator
+      );
       if (newLinks.length === 0) {
         return;
       }
@@ -64,7 +78,7 @@ export function FileTreeWithExternalLink() {
 
   return (
     <>
-      {links.map(link =>
+      {links.map((link) =>
         ReactDOM.createPortal(
           <OpenExternalEditorButton
             id={externalLinkId(link)}
@@ -78,11 +92,17 @@ export function FileTreeWithExternalLink() {
   );
 }
 
-function filterLinksForSupportedFileExtensions(links: HTMLAnchorElement[], envelopeLocator: EditorEnvelopeLocator) {
-  return links.filter(fileLink => {
+function filterLinksForSupportedFileExtensions(
+  links: HTMLAnchorElement[],
+  envelopeLocator: EditorEnvelopeLocator
+) {
+  return links.filter((fileLink) => {
     const fileExtension = extractOpenFileExtension(fileLink.href);
-    const isSupportedLanguage = fileExtension && envelopeLocator.mapping.has(fileExtension);
-    return isSupportedLanguage && !document.getElementById(externalLinkId(fileLink));
+    const isSupportedLanguage =
+      fileExtension && envelopeLocator.mapping.has(fileExtension);
+    return (
+      isSupportedLanguage && !document.getElementById(externalLinkId(fileLink))
+    );
   });
 }
 
@@ -90,7 +110,10 @@ function externalLinkId(fileLink: HTMLAnchorElement): string {
   return "external_editor_" + fileLink.id;
 }
 
-export function createTargetUrl(pathname: string, externalEditorManager?: ExternalEditorManager): string {
+export function createTargetUrl(
+  pathname: string,
+  externalEditorManager?: ExternalEditorManager
+): string {
   const split = pathname.split("/");
   split.splice(0, 1);
   split.splice(2, 1);

@@ -168,7 +168,9 @@ describe("SingleEditorApp", () => {
     );
 
     fireEvent.click(screen.getByTestId("open-ext-editor-button"));
-    await waitFor(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled()
+    );
     expect(document.body).toMatchSnapshot();
   });
 
@@ -183,7 +185,9 @@ describe("SingleEditorApp", () => {
               openFileExtension={"txt"}
               readonly={false}
               getFileName={jest.fn(() => "file.txt")}
-              getFileContents={jest.fn(() => Promise.resolve("file contents 1"))}
+              getFileContents={jest.fn(() =>
+                Promise.resolve("file contents 1")
+              )}
               toolbarContainer={newDivOnBody()}
               iframeContainer={newDivOnBody()}
               githubTextEditorToReplace={newDivOnBody()}
@@ -195,7 +199,9 @@ describe("SingleEditorApp", () => {
     );
 
     fireEvent.click(screen.getByTestId("open-ext-editor-button"));
-    await waitFor(() => expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(globalContext.ctx.externalEditorManager?.open).toHaveBeenCalled()
+    );
     //TODO: Simulate comeback
     //TODO: Match snapshot with new file name and content
     expect(document.body).toMatchSnapshot();

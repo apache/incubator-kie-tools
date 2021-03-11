@@ -32,7 +32,10 @@ export function SingleEditorToolbar(props: {
   linkToExternalEditor: string | undefined;
 }) {
   const globals = useGlobals();
-  const [copyLinkSuccessAlertVisible, setCopyLinkSuccessAlertVisible] = useState(false);
+  const [
+    copyLinkSuccessAlertVisible,
+    setCopyLinkSuccessAlertVisible
+  ] = useState(false);
   const linkToExternalEditorTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const copyLinkSuccessAlertRef = useRef<HTMLDivElement>(null);
   const { i18n } = useChromeExtensionI18n();
@@ -72,7 +75,10 @@ export function SingleEditorToolbar(props: {
 
   useEffect(() => {
     if (closeCopyLinkSuccessAlert) {
-      const autoCloseCopyLinkSuccessAlert = setTimeout(closeCopyLinkSuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
+      const autoCloseCopyLinkSuccessAlert = setTimeout(
+        closeCopyLinkSuccessAlert,
+        ALERT_AUTO_CLOSE_TIMEOUT
+      );
       return () => clearInterval(autoCloseCopyLinkSuccessAlert);
     }
 
@@ -95,7 +101,11 @@ export function SingleEditorToolbar(props: {
           </button>
         )}
         {props.textMode && (
-          <button data-testid={"see-as-diagram-button"} className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
+          <button
+            data-testid={"see-as-diagram-button"}
+            className={"btn btn-sm kogito-button"}
+            onClick={seeAsDiagram}
+          >
             {i18n.seeAsDiagram}
           </button>
         )}
@@ -115,7 +125,9 @@ export function SingleEditorToolbar(props: {
               className={"btn btn-sm kogito-button"}
               onClick={copyLinkToExternalEditor}
             >
-              {i18n.single.editorToolbar.copyLinkTo(globals.externalEditorManager.name)}
+              {i18n.single.editorToolbar.copyLinkTo(
+                globals.externalEditorManager.name
+              )}
             </button>
             {copyLinkSuccessAlertVisible && (
               <div
@@ -124,7 +136,11 @@ export function SingleEditorToolbar(props: {
                 className={"position-absolute"}
                 style={{ marginTop: "34px", right: "0" }}
               >
-                <div className={"dropdown-menu dropdown-menu-sw kogito-github-action-alert"}>
+                <div
+                  className={
+                    "dropdown-menu dropdown-menu-sw kogito-github-action-alert"
+                  }
+                >
                   <span>{i18n.single.editorToolbar.linkCopied}</span>
                 </div>
               </div>
@@ -132,7 +148,11 @@ export function SingleEditorToolbar(props: {
           </div>
         )}
         {!props.textMode && (
-          <button data-testid={"go-fullscreen-button"} className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
+          <button
+            data-testid={"go-fullscreen-button"}
+            className={"btn btn-sm kogito-button"}
+            onClick={goFullScreen}
+          >
             {i18n.terms.fullScreen}
           </button>
         )}

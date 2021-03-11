@@ -15,7 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from "react";
 import * as ReactDOM from "react-dom";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
@@ -31,9 +37,15 @@ function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
   const globals = useGlobals();
   useLayoutEffect(() => {
     if (!fullscreen) {
-      iframeFullscreenContainer(globals.id, globals.dependencies.all.body()).classList.add("hidden");
+      iframeFullscreenContainer(
+        globals.id,
+        globals.dependencies.all.body()
+      ).classList.add("hidden");
     } else {
-      iframeFullscreenContainer(globals.id, globals.dependencies.all.body()).classList.remove("hidden");
+      iframeFullscreenContainer(
+        globals.id,
+        globals.dependencies.all.body()
+      ).classList.remove("hidden");
     }
   }, [fullscreen]);
 }
@@ -55,7 +67,11 @@ export function SingleEditorApp(props: {
   const { isolatedEditor, isolatedEditorRef } = useIsolatedEditorRef();
 
   useFullScreenEditorTogglingEffect(fullscreen);
-  useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace);
+  useIsolatedEditorTogglingEffect(
+    textMode,
+    props.iframeContainer,
+    props.githubTextEditorToReplace
+  );
 
   const IsolatedEditorComponent = useMemo(
     () => (
@@ -82,8 +98,12 @@ export function SingleEditorApp(props: {
   const goFullScreen = useCallback(() => setFullscreen(true), []);
 
   const openExternalEditor = useCallback(() => {
-    props.getFileContents().then(fileContent => {
-      globals.externalEditorManager?.open(props.getFileName(), fileContent!, props.readonly);
+    props.getFileContents().then((fileContent) => {
+      globals.externalEditorManager?.open(
+        props.getFileName(),
+        fileContent!,
+        props.readonly
+      );
     });
   }, [globals.externalEditorManager]);
 
@@ -94,9 +114,12 @@ export function SingleEditorApp(props: {
   }, [globals.externalEditorManager]);
 
   useEffect(() => {
-    const listener = globals.externalEditorManager?.listenToComeBack(fileName => {
-      globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
-    }, isolatedEditor?.setContent!);
+    const listener = globals.externalEditorManager?.listenToComeBack(
+      (fileName) => {
+        globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
+      },
+      isolatedEditor?.setContent!
+    );
 
     return () => {
       listener?.stopListening();
@@ -127,7 +150,10 @@ export function SingleEditorApp(props: {
       >
         {!fullscreen && (
           <>
-            {ReactDOM.createPortal(IsolatedEditorComponent, props.iframeContainer)}
+            {ReactDOM.createPortal(
+              IsolatedEditorComponent,
+              props.iframeContainer
+            )}
             {ReactDOM.createPortal(
               <SingleEditorToolbar
                 textMode={textMode}
@@ -148,11 +174,17 @@ export function SingleEditorApp(props: {
           <>
             {ReactDOM.createPortal(
               <FullScreenToolbar onExitFullScreen={exitFullScreen} />,
-              iframeFullscreenContainer(globals.id, globals.dependencies.all.body())
+              iframeFullscreenContainer(
+                globals.id,
+                globals.dependencies.all.body()
+              )
             )}
             {ReactDOM.createPortal(
               IsolatedEditorComponent,
-              iframeFullscreenContainer(globals.id, globals.dependencies.all.body())
+              iframeFullscreenContainer(
+                globals.id,
+                globals.dependencies.all.body()
+              )
             )}
           </>
         )}

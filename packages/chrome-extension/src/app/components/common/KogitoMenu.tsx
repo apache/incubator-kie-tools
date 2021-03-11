@@ -54,8 +54,10 @@ export function KogitoMenu() {
     });
   }, []);
 
-  const onPaste = useCallback(e => {
-    const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
+  const onPaste = useCallback((e) => {
+    const token = e.clipboardData
+      .getData("text/plain")
+      .slice(0, GITHUB_OAUTH_TOKEN_SIZE);
     setPotentialToken(token);
     setTimeout(async () => {
       const wasValid = await updateToken(token);
@@ -117,7 +119,9 @@ export function KogitoMenu() {
                       <b>
                         <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
                       </b>
-                      <I18nHtml>{i18n.common.menu.tokenInfo.permission}</I18nHtml>
+                      <I18nHtml>
+                        {i18n.common.menu.tokenInfo.permission}
+                      </I18nHtml>
                     </p>
                   </div>
                 )}
@@ -126,7 +130,10 @@ export function KogitoMenu() {
           )}
           <label style={{ position: "relative" }}>
             <input
-              className={"kogito-github-token-input form-control input-sm " + (isAuthenticated ? "authenticated" : "")}
+              className={
+                "kogito-github-token-input form-control input-sm " +
+                (isAuthenticated ? "authenticated" : "")
+              }
               placeholder={i18n.common.menu.placeYourToken}
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               autoFocus={true}

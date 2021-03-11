@@ -17,7 +17,10 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
-import { useInitialAsyncCallEffect, useIsolatedEditorTogglingEffect } from "../common/customEffects";
+import {
+  useInitialAsyncCallEffect,
+  useIsolatedEditorTogglingEffect
+} from "../common/customEffects";
 import { useIsolatedEditorRef } from "../common/IsolatedEditorRef";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import * as ReactDOM from "react-dom";
@@ -62,8 +65,14 @@ export function IsolatedPrEditor(props: {
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
   const { isolatedEditorRef } = useIsolatedEditorRef();
-  const originalFilePath = useMemo(() => getOriginalFilePath(props.unprocessedFilePath), []);
-  const modifiedFilePath = useMemo(() => getModifiedFilePath(props.unprocessedFilePath), []);
+  const originalFilePath = useMemo(
+    () => getOriginalFilePath(props.unprocessedFilePath),
+    []
+  );
+  const modifiedFilePath = useMemo(
+    () => getModifiedFilePath(props.unprocessedFilePath),
+    []
+  );
 
   useIsolatedEditorTogglingEffect(
     textMode,
@@ -72,7 +81,12 @@ export function IsolatedPrEditor(props: {
   );
 
   useInitialAsyncCallEffect(() => {
-    return discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath);
+    return discoverFileStatusOnPr(
+      githubApi.octokit(),
+      props.prInfo,
+      originalFilePath,
+      modifiedFilePath
+    );
   }, setFileStatusOnPr);
 
   const closeDiagram = useCallback(() => {
@@ -81,22 +95,46 @@ export function IsolatedPrEditor(props: {
   }, []);
 
   const filePath = useMemo(
-    () => (showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED ? originalFilePath : modifiedFilePath),
+    () =>
+      showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
+        ? originalFilePath
+        : modifiedFilePath,
     [showOriginal, fileStatusOnPr, originalFilePath, modifiedFilePath]
   );
 
   const getFileContents = useMemo(() => {
     return showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
-      ? () => getOriginalFileContents(githubApi.octokit(), props.prInfo, originalFilePath)
-      : () => getModifiedFileContents(githubApi.octokit(), props.prInfo, modifiedFilePath);
-  }, [showOriginal, fileStatusOnPr, originalFilePath, modifiedFilePath, githubApi.octokit]);
+      ? () =>
+          getOriginalFileContents(
+            githubApi.octokit(),
+            props.prInfo,
+            originalFilePath
+          )
+      : () =>
+          getModifiedFileContents(
+            githubApi.octokit(),
+            props.prInfo,
+            modifiedFilePath
+          );
+  }, [
+    showOriginal,
+    fileStatusOnPr,
+    originalFilePath,
+    modifiedFilePath,
+    githubApi.octokit
+  ]);
 
   const shouldAddLinkToOriginalFile = useMemo(() => {
-    return fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
+    return (
+      fileStatusOnPr === FileStatusOnPr.CHANGED ||
+      fileStatusOnPr === FileStatusOnPr.DELETED
+    );
   }, [fileStatusOnPr]);
 
   const openExternalEditor = useCallback(() => {
-    getFileContents().then(fileContent => globals.externalEditorManager?.open(filePath, fileContent!, true));
+    getFileContents().then((fileContent) =>
+      globals.externalEditorManager?.open(filePath, fileContent!, true)
+    );
   }, [globals.externalEditorManager, filePath, getFileContents]);
 
   const repoInfo = useMemo(() => {
@@ -136,24 +174,34 @@ export function IsolatedPrEditor(props: {
     >
       {shouldAddLinkToOriginalFile &&
         ReactDOM.createPortal(
-          <a className={"pl-5 dropdown-item btn-link"} href={viewOriginalFileHref(props.prInfo, originalFilePath)}>
+          <a
+            className={"pl-5 dropdown-item btn-link"}
+            href={viewOriginalFileHref(props.prInfo, originalFilePath)}
+          >
             {i18n.pr.isolated.viewOriginal}
           </a>,
           viewOriginalFileLinkContainer(
             globals.id,
             props.prFileContainer,
-            globals.dependencies.all.pr__viewOriginalFileLinkContainer(props.prFileContainer)!
+            globals.dependencies.all.pr__viewOriginalFileLinkContainer(
+              props.prFileContainer
+            )!
           )
         )}
 
       {globals.externalEditorManager &&
         ReactDOM.createPortal(
-          <a className={"pl-5 dropdown-item btn-link"} onClick={openExternalEditor}>
+          <a
+            className={"pl-5 dropdown-item btn-link"}
+            onClick={openExternalEditor}
+          >
             {i18n.openIn(globals.externalEditorManager.name)}
           </a>,
           openWithExternalEditorLinkContainer(
             props.prFileContainer,
-            globals.dependencies.all.pr__openWithExternalEditorLinkContainer(props.prFileContainer)!
+            globals.dependencies.all.pr__openWithExternalEditorLinkContainer(
+              props.prFileContainer
+            )!
           )
         )}
 
@@ -170,7 +218,9 @@ export function IsolatedPrEditor(props: {
         toolbarContainer(
           globals.id,
           props.prFileContainer,
-          globals.dependencies.prView.toolbarContainerTarget(props.prFileContainer) as HTMLElement
+          globals.dependencies.prView.toolbarContainerTarget(
+            props.prFileContainer
+          ) as HTMLElement
         )
       )}
 
@@ -186,7 +236,9 @@ export function IsolatedPrEditor(props: {
         />,
         iframeContainer(
           globals.id,
-          globals.dependencies.prView.iframeContainerTarget(props.prFileContainer) as HTMLElement
+          globals.dependencies.prView.iframeContainerTarget(
+            props.prFileContainer
+          ) as HTMLElement
         )
       )}
     </IsolatedEditorContext.Provider>
@@ -199,8 +251,16 @@ async function discoverFileStatusOnPr(
   originalFilePath: string,
   modifiedFilePath: string
 ) {
-  const hasOriginal = await getOriginalFileContents(octokit, prInfo, originalFilePath);
-  const hasModified = await getModifiedFileContents(octokit, prInfo, modifiedFilePath);
+  const hasOriginal = await getOriginalFileContents(
+    octokit,
+    prInfo,
+    originalFilePath
+  );
+  const hasModified = await getModifiedFileContents(
+    octokit,
+    prInfo,
+    modifiedFilePath
+  );
 
   if (hasOriginal && hasModified) {
     return FileStatusOnPr.CHANGED;
@@ -233,8 +293,15 @@ export function getModifiedFilePath(path: string) {
   }
 }
 
-function viewOriginalFileLinkContainer(id: string, prFileContainer: HTMLElement, container: HTMLElement) {
-  const element = () => prFileContainer.querySelector(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`);
+function viewOriginalFileLinkContainer(
+  id: string,
+  prFileContainer: HTMLElement,
+  container: HTMLElement
+) {
+  const element = () =>
+    prFileContainer.querySelector(
+      `.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`
+    );
 
   if (!element()) {
     container.insertAdjacentHTML(
@@ -246,9 +313,15 @@ function viewOriginalFileLinkContainer(id: string, prFileContainer: HTMLElement,
   return element()!;
 }
 
-function openWithExternalEditorLinkContainer(prFileContainer: HTMLElement, container: HTMLElement) {
+function openWithExternalEditorLinkContainer(
+  prFileContainer: HTMLElement,
+  container: HTMLElement
+) {
   const div = `<div class="${KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS}"></div>`;
-  const element = () => prFileContainer.querySelector(`.${KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS}`);
+  const element = () =>
+    prFileContainer.querySelector(
+      `.${KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS}`
+    );
 
   if (!element()) {
     container.insertAdjacentHTML("beforebegin", div);
@@ -257,32 +330,66 @@ function openWithExternalEditorLinkContainer(prFileContainer: HTMLElement, conta
   return element()!;
 }
 
-function toolbarContainer(id: string, prFileContainer: HTMLElement, container: HTMLElement) {
-  const element = () => prFileContainer.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`);
+function toolbarContainer(
+  id: string,
+  prFileContainer: HTMLElement,
+  container: HTMLElement
+) {
+  const element = () =>
+    prFileContainer.querySelector(
+      `.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`
+    );
 
   if (!element()) {
-    container.insertAdjacentHTML("afterend", `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS} ${id}"></div>`);
+    container.insertAdjacentHTML(
+      "afterend",
+      `<div class="${KOGITO_TOOLBAR_CONTAINER_PR_CLASS} ${id}"></div>`
+    );
   }
 
   return element()!;
 }
 
 function iframeContainer(id: string, container: HTMLElement) {
-  const element = () => container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`);
+  const element = () =>
+    container.querySelector(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`);
 
   if (!element()!) {
-    container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS} ${id}"></div>`);
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<div class="${KOGITO_IFRAME_CONTAINER_PR_CLASS} ${id}"></div>`
+    );
   }
 
   return element() as HTMLElement;
 }
 
-function getModifiedFileContents(octokit: Octokit, prInfo: PrInfo, modifiedFilePath: string) {
-  return fetchFile(octokit, prInfo.org, prInfo.repo, prInfo.gitRef, modifiedFilePath);
+function getModifiedFileContents(
+  octokit: Octokit,
+  prInfo: PrInfo,
+  modifiedFilePath: string
+) {
+  return fetchFile(
+    octokit,
+    prInfo.org,
+    prInfo.repo,
+    prInfo.gitRef,
+    modifiedFilePath
+  );
 }
 
-function getOriginalFileContents(octokit: Octokit, prInfo: PrInfo, originalFilePath: string) {
-  return fetchFile(octokit, prInfo.targetOrg, prInfo.repo, prInfo.targetGitRef, originalFilePath);
+function getOriginalFileContents(
+  octokit: Octokit,
+  prInfo: PrInfo,
+  originalFilePath: string
+) {
+  return fetchFile(
+    octokit,
+    prInfo.targetOrg,
+    prInfo.repo,
+    prInfo.targetGitRef,
+    originalFilePath
+  );
 }
 
 function viewOriginalFileHref(prInfo: PrInfo, originalFilePath: string) {

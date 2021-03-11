@@ -15,7 +15,11 @@
  */
 
 import * as React from "react";
-import { fireEvent, render, waitForElementToBeRemoved } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  waitForElementToBeRemoved
+} from "@testing-library/react";
 import { SingleEditorToolbar } from "../../../../app/components/single/SingleEditorToolbar";
 import {
   usingTestingChromeExtensionI18nContext,
@@ -276,7 +280,10 @@ describe("SingleEditorToolbar", () => {
     );
 
     fireEvent.click(component.getByTestId("copy-link-button"));
-    await waitForElementToBeRemoved(() => component.queryByTestId("link-copied-alert"), { timeout: 10000 });
+    await waitForElementToBeRemoved(
+      () => component.queryByTestId("link-copied-alert"),
+      { timeout: 10000 }
+    );
     expect(component.asFragment()).toMatchSnapshot();
   });
 });

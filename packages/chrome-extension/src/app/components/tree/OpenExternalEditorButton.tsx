@@ -22,7 +22,13 @@ export function OpenExternalEditorButton(props: { id: string; href: string }) {
   const { i18n } = useChromeExtensionI18n();
 
   return (
-    <a id={props.id} className="float-right" href={props.href} target="blank" title={i18n.tree.openInOnlineEditor}>
+    <a
+      id={props.id}
+      className="float-right"
+      href={props.href}
+      target="blank"
+      title={i18n.tree.openInOnlineEditor}
+    >
       <ArrowIcon />
     </a>
   );

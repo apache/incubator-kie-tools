@@ -16,7 +16,13 @@
 
 import * as Octokit from "@octokit/rest";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState
+} from "react";
 import { useGlobals } from "./GlobalContext";
 
 export interface GitHubContextType {
@@ -38,7 +44,8 @@ export function setCookie(name: string, value: string) {
   date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60);
 
   // Set it
-  document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+  document.cookie =
+    name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
 
 export function getCookie(name: string) {
@@ -46,19 +53,18 @@ export function getCookie(name: string) {
   const parts = value.split("; " + name + "=");
 
   if (parts.length === 2) {
-    return parts
-      .pop()!
-      .split(";")
-      .shift();
+    return parts.pop()!.split(";").shift();
   }
 }
 
 let octokitInstance: Octokit;
 
-export const GitHubContextProvider: React.FC<{}> = props => {
+export const GitHubContextProvider: React.FC<{}> = (props) => {
   const globals = useGlobals();
   const [ready, setReady] = useState(false);
-  const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));
+  const [token, setToken] = useState(
+    getCookie(globals.githubAuthTokenCookieName)
+  );
 
   const userIsLoggedIn = useCallback(() => {
     return !!globals.dependencies.all.notificationIndicator();
@@ -90,7 +96,9 @@ export const GitHubContextProvider: React.FC<{}> = props => {
   }, [token]);
 
   return (
-    <GitHubContext.Provider value={{ token, setToken, octokit, userIsLoggedIn }}>
+    <GitHubContext.Provider
+      value={{ token, setToken, octokit, userIsLoggedIn }}
+    >
       {ready && props.children}
     </GitHubContext.Provider>
   );

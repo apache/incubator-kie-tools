@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useLayoutEffect, useRef } from "react";
+import {
+  DependencyList,
+  EffectCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef
+} from "react";
 
-export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
+export function useEffectAfterFirstRender(
+  func: () => ReturnType<EffectCallback>,
+  deps: DependencyList
+) {
   const firstRender = useRef(true);
   useEffect(() => {
     if (!firstRender.current) {
@@ -43,10 +52,13 @@ export function useIsolatedEditorTogglingEffect(
   }, [textMode]);
 }
 
-export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {
+export function useInitialAsyncCallEffect<T>(
+  promise: () => Promise<T>,
+  callback: (a: T) => void
+) {
   useEffect(() => {
     let canceled = false;
-    promise().then(arg => {
+    promise().then((arg) => {
       if (canceled) {
         return;
       }

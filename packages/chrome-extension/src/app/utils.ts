@@ -39,7 +39,9 @@ export function runAfterUriChange(logger: Logger, callback: () => void) {
       return;
     }
 
-    logger.log(`URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
+    logger.log(
+      `URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`
+    );
     lastUri = currentUri;
     callback();
   };
@@ -79,13 +81,19 @@ export function mainContainer(id: string, container: HTMLElement) {
 
 export function createAndGetMainContainer(id: string, container: HTMLElement) {
   if (!mainContainer(id, container)) {
-    container.insertAdjacentHTML("beforeend", `<div class="${KOGITO_MAIN_CONTAINER_CLASS} ${id}"></div>`);
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<div class="${KOGITO_MAIN_CONTAINER_CLASS} ${id}"></div>`
+    );
   }
   return mainContainer(id, container)!;
 }
 
 export function iframeFullscreenContainer(id: string, container: HTMLElement) {
-  const element = () => document.querySelector(`.${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS}.${id}`)!;
+  const element = () =>
+    document.querySelector(
+      `.${KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS}.${id}`
+    )!;
   if (!element()) {
     container.insertAdjacentHTML(
       "afterbegin",
@@ -96,10 +104,14 @@ export function iframeFullscreenContainer(id: string, container: HTMLElement) {
 }
 
 export function kogitoMenuContainer(id: string, container: HTMLElement) {
-  const element = () => document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
+  const element = () =>
+    document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    container.insertAdjacentHTML("beforebegin", `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`);
+    container.insertAdjacentHTML(
+      "beforebegin",
+      `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`
+    );
   }
 
   return element();

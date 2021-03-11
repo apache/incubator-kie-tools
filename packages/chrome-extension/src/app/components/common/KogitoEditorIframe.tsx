@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import {
+  ChannelType,
+  ResourceContentRequest,
+  ResourceListRequest
+} from "@kogito-tooling/channel-common-api";
+import {
+  EmbeddedEditor,
+  useEditorRef
+} from "@kogito-tooling/editor/dist/embedded";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useImperativeHandle, useMemo } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useMemo
+} from "react";
 import { runScriptOnPage } from "../../utils";
 import { useGitHubApi } from "./GitHubContext";
 import { useGlobals } from "./GlobalContext";
@@ -35,28 +48,35 @@ interface Props {
   readonly: boolean;
 }
 
-const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
-  props,
-  forwardedRef
-) => {
+const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<
+  IsolatedEditorRef,
+  Props
+> = (props, forwardedRef) => {
   const githubApi = useGitHubApi();
   const { editor, editorRef } = useEditorRef();
   const { envelopeLocator, resourceContentServiceFactory } = useGlobals();
-  const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+  const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(
+    IsolatedEditorContext
+  );
   const { locale } = useChromeExtensionI18n();
 
   //Lookup ResourceContentService
   const resourceContentService = useMemo(() => {
-    return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
+    return resourceContentServiceFactory.createNew(
+      githubApi.octokit(),
+      repoInfo
+    );
   }, [repoInfo]);
 
   const onResourceContentRequest = useCallback(
-    (request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts),
+    (request: ResourceContentRequest) =>
+      resourceContentService.get(request.path, request.opts),
     [resourceContentService]
   );
 
   const onResourceContentList = useCallback(
-    (request: ResourceListRequest) => resourceContentService.list(request.pattern, request.opts),
+    (request: ResourceListRequest) =>
+      resourceContentService.list(request.pattern, request.opts),
     [resourceContentService]
   );
 
@@ -68,7 +88,12 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       getFileContents: props.getFileContents,
       isReadOnly: props.readonly
     };
-  }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
+  }, [
+    props.contentPath,
+    props.openFileExtension,
+    props.getFileContents,
+    props.readonly
+  ]);
 
   useEffect(() => {
     if (textMode) {
@@ -83,11 +108,11 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     let task: number;
     Promise.resolve()
       .then(() => props.getFileContents())
-      .then(c => editor?.setContent(c ?? "", props.contentPath))
+      .then((c) => editor?.setContent(c ?? "", props.contentPath))
       .then(() => {
         task = window.setInterval(
           () =>
-            editor?.getContent().then(c => {
+            editor?.getContent().then((c) => {
               if (props.readonly) {
                 return;
               }
@@ -126,7 +151,11 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 
   return (
     <>
-      <div className={`kogito-iframe ${fullscreen ? "fullscreen" : "not-fullscreen"}`}>
+      <div
+        className={`kogito-iframe ${
+          fullscreen ? "fullscreen" : "not-fullscreen"
+        }`}
+      >
         <EmbeddedEditor
           ref={editorRef}
           file={file}
@@ -142,4 +171,6 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   );
 };
 
-export const KogitoEditorIframe = React.forwardRef(RefForwardingKogitoEditorIframe);
+export const KogitoEditorIframe = React.forwardRef(
+  RefForwardingKogitoEditorIframe
+);

@@ -20,7 +20,9 @@ export class Dependencies {
       return document.querySelector(".file") as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
-      return document.querySelector(".breadcrumb.d-flex.flex-items-center") as HTMLElement | null;
+      return document.querySelector(
+        ".breadcrumb.d-flex.flex-items-center"
+      ) as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
       return document.querySelector(".js-code-editor") as HTMLElement | null;
@@ -29,13 +31,19 @@ export class Dependencies {
 
   public readonly singleView = {
     iframeContainerTarget: () => {
-      return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+      return document.querySelector(
+        ".Box.mt-3.position-relative"
+      ) as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
-      return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+      return document.querySelector(
+        ".Box.mt-3.position-relative"
+      ) as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
-      return document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement | null;
+      return document.querySelector(
+        ".Box-body.p-0.blob-wrapper.data"
+      ) as HTMLElement | null;
     }
   };
 
@@ -53,52 +61,70 @@ export class Dependencies {
 
   public readonly treeView = {
     repositoryContainer: () => {
-      return document.querySelector("div.repository-content") as HTMLElement | null;
+      return document.querySelector(
+        "div.repository-content"
+      ) as HTMLElement | null;
     },
 
     linksToFiles: () => {
       return Array.from(
-        document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span > a[href*=blob]')
+        document.querySelectorAll(
+          'div[role="grid"] > div[role="row"] > div[role="rowheader"] > span > a[href*=blob]'
+        )
       ) as HTMLAnchorElement[];
     }
   };
 
   public readonly all = {
     notificationIndicator: () => {
-      return document.querySelector(".notification-indicator") as HTMLElement | null;
+      return document.querySelector(
+        ".notification-indicator"
+      ) as HTMLElement | null;
     },
     body: () => {
       return document.body;
     },
     edit__githubFileNameInput: () => {
-      return document.querySelector(".js-blob-filename") as HTMLInputElement | null;
+      return document.querySelector(
+        ".js-blob-filename"
+      ) as HTMLInputElement | null;
     },
     edit__githubTextAreaWithFileContents: () => {
-      return document.querySelector(".file-editor-textarea") as HTMLTextAreaElement | null;
+      return document.querySelector(
+        ".file-editor-textarea"
+      ) as HTMLTextAreaElement | null;
     },
     pr__mutationObserverTarget: () => {
       return document.getElementById("files") as HTMLElement | null;
     },
     pr__openWithExternalEditorLinkContainer: (container: HTMLElement) => {
-      return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
+      return container.querySelectorAll(
+        "details-menu a"
+      )[0] as HTMLAnchorElement | null;
     },
     pr__viewOriginalFileLinkContainer: (container: HTMLElement) => {
-      return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
+      return container.querySelectorAll(
+        "details-menu a"
+      )[0] as HTMLAnchorElement | null;
     },
     pr__unprocessedFilePathContainer: (container: HTMLElement) => {
-      return container.querySelector(".file-info > a.Link--primary") as HTMLAnchorElement | null;
+      return container.querySelector(
+        ".file-info > a.Link--primary"
+      ) as HTMLAnchorElement | null;
     },
 
     array: {
       pr__supportedPrFileContainers: () => {
-        const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(
-          e => e as HTMLElement
-        );
+        const elements = Array.from(
+          document.querySelectorAll(".file.js-file.js-details-container")
+        ).map((e) => e as HTMLElement);
         return elements.length > 0 ? (elements as HTMLElement[]) : null;
       },
 
       pr__prInfoContainer: () => {
-        const elements = Array.from(document.querySelectorAll(".gh-header-meta .css-truncate-target"));
+        const elements = Array.from(
+          document.querySelectorAll(".gh-header-meta .css-truncate-target")
+        );
         return elements.length > 0 ? (elements as HTMLElement[]) : null;
       }
     }

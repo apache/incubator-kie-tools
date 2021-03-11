@@ -142,10 +142,16 @@ export function extractFileInfoFromUrl() {
   };
 }
 
-function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependencies: Dependencies) {
+function unmountPreviouslyRenderedFeatures(
+  id: string,
+  logger: Logger,
+  dependencies: Dependencies
+) {
   try {
     if (mainContainer(id, dependencies.all.body())) {
-      ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies.all.body())!);
+      ReactDOM.unmountComponentAtNode(
+        mainContainer(id, dependencies.all.body())!
+      );
       logger.log("Unmounted previous features.");
     }
   } catch (e) {

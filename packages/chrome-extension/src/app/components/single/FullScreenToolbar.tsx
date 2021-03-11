@@ -21,7 +21,11 @@ export function FullScreenToolbar(props: { onExitFullScreen: () => void }) {
   const { i18n } = useChromeExtensionI18n();
   return (
     <div className={"kogito-iframe-fullscreen-toolbar"}>
-      <a data-testid={"exit-fullscreen-button"} href={"#"} onClick={props.onExitFullScreen}>
+      <a
+        data-testid={"exit-fullscreen-button"}
+        href={"#"}
+        onClick={props.onExitFullScreen}
+      >
         {i18n.single.exitFullScreen}
       </a>
     </div>
