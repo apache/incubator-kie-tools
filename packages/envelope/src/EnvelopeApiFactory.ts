@@ -34,5 +34,12 @@ export interface EnvelopeApiFactory<
   ViewType,
   ContextType
 > {
-  create(args: EnvelopeApiFactoryArgs<ApiToProvide, ApiToConsume, ViewType, ContextType>): ApiToProvide;
+  create(
+    args: EnvelopeApiFactoryArgs<
+      ApiToProvide,
+      ApiToConsume,
+      ViewType,
+      ContextType
+    >
+  ): ApiToProvide;
 }

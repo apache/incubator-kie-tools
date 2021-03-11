@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
+import {
+  ApiDefinition,
+  EnvelopeBusMessage
+} from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
@@ -38,11 +41,15 @@ export interface Props<
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   Ref
 > {
-  refDelegate: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Ref;
+  refDelegate: (
+    envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>
+  ) => Ref;
   api: ApiToProvide;
   envelopePath: string;
   origin: string;
-  pollInit: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>;
+  pollInit: (
+    envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>
+  ) => Promise<any>;
 }
 
 export function EmbeddedEnvelopeFactory<
@@ -63,7 +70,12 @@ export function EmbeddedEnvelopeFactory<
     );
 
     const envelopeServer = useMemo(
-      () => new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self => props.pollInit(self)),
+      () =>
+        new EnvelopeServer<ApiToProvide, ApiToConsume>(
+          bus,
+          props.origin,
+          (self) => props.pollInit(self)
+        ),
       [bus, props.origin, props.pollInit]
     );
 
@@ -77,6 +89,13 @@ export function EmbeddedEnvelopeFactory<
 
     useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
 
-    return <iframe ref={iframeRef} src={props.envelopePath} style={containerStyles} title="X" />;
+    return (
+      <iframe
+        ref={iframeRef}
+        src={props.envelopePath}
+        style={containerStyles}
+        title="X"
+      />
+    );
   });
 }

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
+import {
+  ApiDefinition,
+  EnvelopeBus
+} from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeBusController } from "@kogito-tooling/envelope-bus/dist/envelope";
 import { EnvelopeApiFactory } from "./EnvelopeApiFactory";
 
@@ -26,7 +29,10 @@ export class Envelope<
 > {
   constructor(
     bus: EnvelopeBus,
-    private readonly envelopeBusController = new EnvelopeBusController<ApiToProvide, ApiToConsume>(bus)
+    private readonly envelopeBusController = new EnvelopeBusController<
+      ApiToProvide,
+      ApiToConsume
+    >(bus)
   ) {}
 
   public get channelApi() {
@@ -36,7 +42,12 @@ export class Envelope<
   public async start(
     viewDelegate: () => Promise<() => ViewType>,
     context: ContextType,
-    apiFactory: EnvelopeApiFactory<ApiToProvide, ApiToConsume, ViewType, ContextType>
+    apiFactory: EnvelopeApiFactory<
+      ApiToProvide,
+      ApiToConsume,
+      ViewType,
+      ContextType
+    >
   ) {
     const view = await viewDelegate();
 
