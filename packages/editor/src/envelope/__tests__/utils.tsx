@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import { KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } from "../../api";
+import {
+  KogitoEditorEnvelopeContext,
+  KogitoEditorEnvelopeContextType
+} from "../../api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import * as React from "react";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
+import {
+  I18nDictionariesProvider,
+  I18nDictionariesProviderProps
+} from "@kogito-tooling/i18n/dist/react-components";
 import {
   EditorEnvelopeI18n,
   EditorEnvelopeI18nContext,
@@ -38,7 +44,10 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType =
   }
 };
 
-export function usingEnvelopeContext(children: React.ReactElement, ctx?: Partial<KogitoEditorEnvelopeContextType>) {
+export function usingEnvelopeContext(
+  children: React.ReactElement,
+  ctx?: Partial<KogitoEditorEnvelopeContextType>
+) {
   const usedCtx = { ...DEFAULT_TESTING_ENVELOPE_CONTEXT, ...ctx };
   return {
     ctx: usedCtx,
@@ -64,7 +73,11 @@ export function usingEditorEnvelopeI18nContext(
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
+      <I18nDictionariesProvider
+        defaults={usedCtx.defaults}
+        dictionaries={usedCtx.dictionaries}
+        ctx={usedCtx.ctx}
+      >
         {usedCtx.children}
       </I18nDictionariesProvider>
     )

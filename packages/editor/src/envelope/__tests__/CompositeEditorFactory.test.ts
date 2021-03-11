@@ -25,7 +25,10 @@ import {
 } from "../../api";
 import { DummyEditor } from "./DummyEditor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import {
+  ChannelType,
+  OperatingSystem
+} from "@kogito-tooling/channel-common-api";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
@@ -43,7 +46,9 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({
+      os: editorContext.operatingSystem
+    }),
     i18n: new I18nService()
   }
 };
@@ -54,7 +59,9 @@ describe("CompositeEditorFactory", () => {
     factories.push(makeEditorFactory(false));
     factories.push(makeEditorFactory(false));
 
-    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
+    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(
+      factories
+    );
     expect(() => compositeFactory.supports("any")).toThrowError(Error);
   });
 
@@ -63,7 +70,9 @@ describe("CompositeEditorFactory", () => {
     factories.push(makeEditorFactory(false));
     factories.push(makeEditorFactory(true));
 
-    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
+    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(
+      factories
+    );
     expect(compositeFactory.supports("one")).toBeTruthy();
   });
 
@@ -72,7 +81,9 @@ describe("CompositeEditorFactory", () => {
     factories.push(makeEditorFactory(true));
     factories.push(makeEditorFactory(true));
 
-    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
+    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(
+      factories
+    );
     expect(() => compositeFactory.supports("mutliple")).toThrowError(Error);
   });
 
@@ -85,9 +96,18 @@ describe("CompositeEditorFactory", () => {
 
     jest.spyOn(factory2, "createEditor");
 
-    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en", isReadOnly: false };
-    expect(compositeFactory.createEditor(envelopeContext, initArgs)).resolves.toBe(dummyEditor);
+    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(
+      factories
+    );
+    const initArgs = {
+      fileExtension: "txt",
+      resourcesPathPrefix: "",
+      initialLocale: "en",
+      isReadOnly: false
+    };
+    expect(
+      compositeFactory.createEditor(envelopeContext, initArgs)
+    ).resolves.toBe(dummyEditor);
     expect(factory2.createEditor).toBeCalledTimes(1);
   });
 
@@ -97,15 +117,25 @@ describe("CompositeEditorFactory", () => {
     const factory2: EditorFactory = makeEditorFactory(true);
     factories.push(factory1);
     factories.push(factory2);
-    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en", isReadOnly: false };
-    expect(() => compositeFactory.createEditor(envelopeContext, initArgs)).toThrowError(Error);
+    const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(
+      factories
+    );
+    const initArgs = {
+      fileExtension: "txt",
+      resourcesPathPrefix: "",
+      initialLocale: "en",
+      isReadOnly: false
+    };
+    expect(() =>
+      compositeFactory.createEditor(envelopeContext, initArgs)
+    ).toThrowError(Error);
   });
 
   function makeEditorFactory(supported: boolean): EditorFactory {
     return {
       supports: () => supported,
-      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor)
+      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) =>
+        Promise.resolve(dummyEditor)
     };
   }
 });

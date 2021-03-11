@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { EditorApi, EditorEnvelopeLocator, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "../../api";
+import {
+  EditorApi,
+  EditorEnvelopeLocator,
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi
+} from "../../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
 import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/channel";
@@ -35,7 +40,10 @@ type ChannelApiMethodsAlreadyImplementedByEmbeddedEditor =
   | "receive_contentRequest";
 
 type EmbeddedEditorChannelApiOverrides = Partial<
-  Omit<KogitoEditorChannelApi, ChannelApiMethodsAlreadyImplementedByEmbeddedEditor>
+  Omit<
+    KogitoEditorChannelApi,
+    ChannelApiMethodsAlreadyImplementedByEmbeddedEditor
+  >
 >;
 
 export type Props = EmbeddedEditorChannelApiOverrides & {
@@ -51,7 +59,10 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
 export type EmbeddedEditorRef =
   | (EditorApi & {
       getStateControl(): StateControl;
-      getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
+      getEnvelopeServer(): EnvelopeServer<
+        KogitoEditorChannelApi,
+        KogitoEditorEnvelopeApi
+      >;
     })
   | null;
 
@@ -67,28 +78,38 @@ const containerStyles: CSS.Properties = {
   overflow: "hidden"
 };
 
-const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (
-  props: Props,
-  forwardedRef
-) => {
+const RefForwardingEmbeddedEditor: React.RefForwardingComponent<
+  EmbeddedEditorRef,
+  Props
+> = (props: Props, forwardedRef) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
-
-  const envelopeMapping = useMemo(() => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension), [
-    props.editorEnvelopeLocator,
-    props.file
+  const stateControl = useMemo(() => new StateControl(), [
+    props.file.getFileContents
   ]);
+
+  const envelopeMapping = useMemo(
+    () => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension),
+    [props.editorEnvelopeLocator, props.file]
+  );
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, props);
+    return new KogitoEditorChannelApiImpl(
+      stateControl,
+      props.file,
+      props.locale,
+      props
+    );
   }, [stateControl, props.file, props]);
 
   const envelopeServer = useMemo(() => {
     return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
-      { postMessage: message => iframeRef.current?.contentWindow?.postMessage(message, "*") },
+      {
+        postMessage: (message) =>
+          iframeRef.current?.contentWindow?.postMessage(message, "*")
+      },
       props.editorEnvelopeLocator.targetOrigin,
-      self =>
+      (self) =>
         self.envelopeApi.requests.receive_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
@@ -108,8 +129,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   }, [props.locale]);
 
   useEffectAfterFirstRender(() => {
-    props.file.getFileContents().then(content => {
-      envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content! });
+    props.file.getFileContents().then((content) => {
+      envelopeServer.envelopeApi.notifications.receive_contentChanged({
+        content: content!
+      });
     });
   }, [props.file.getFileContents]);
 
@@ -130,14 +153,28 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       return {
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: selector =>
-          envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
-        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
-        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
-        getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
-        getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
-        setContent: async content =>
-          envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content }),
+        getElementPosition: (selector) =>
+          envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(
+            selector
+          ),
+        undo: () =>
+          Promise.resolve(
+            envelopeServer.envelopeApi.notifications.receive_editorUndo()
+          ),
+        redo: () =>
+          Promise.resolve(
+            envelopeServer.envelopeApi.notifications.receive_editorRedo()
+          ),
+        getContent: () =>
+          envelopeServer.envelopeApi.requests
+            .receive_contentRequest()
+            .then((c) => c.content),
+        getPreview: () =>
+          envelopeServer.envelopeApi.requests.receive_previewRequest(),
+        setContent: async (content) =>
+          envelopeServer.envelopeApi.notifications.receive_contentChanged({
+            content: content
+          }),
         validate: () => envelopeServer.envelopeApi.requests.validate()
       };
     },

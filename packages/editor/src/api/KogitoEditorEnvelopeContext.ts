@@ -32,7 +32,9 @@ export interface KogitoEditorEnvelopeContextType {
   };
 }
 
-export const KogitoEditorEnvelopeContext = React.createContext<KogitoEditorEnvelopeContextType>({} as any);
+export const KogitoEditorEnvelopeContext = React.createContext<KogitoEditorEnvelopeContextType>(
+  {} as any
+);
 
 export function useKogitoEditorEnvelopeContext() {
   return useContext(KogitoEditorEnvelopeContext);

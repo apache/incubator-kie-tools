@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import {
   EditorFactory,
   EditorContext,
@@ -29,9 +28,13 @@ import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortc
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 import { Envelope } from "@kogito-tooling/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
-import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
+import {
+  EditorEnvelopeI18n,
+  editorEnvelopeI18nDefaults,
+  editorEnvelopeI18nDictionaries
+} from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import "./styles.scss"
+import "./styles.scss";
 
 /**
  * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.
@@ -46,9 +49,17 @@ export function init(args: {
   editorFactory: EditorFactory;
   editorContext: EditorContext;
 }) {
-  const i18n = new I18n<EditorEnvelopeI18n>(editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries);
-  const kogitoEditorFactory = new KogitoEditorEnvelopeApiFactory(args.editorFactory, i18n);
-  const defaultKeyboardShortcuts = new DefaultKeyboardShortcutsService({ os: args.editorContext.operatingSystem });
+  const i18n = new I18n<EditorEnvelopeI18n>(
+    editorEnvelopeI18nDefaults,
+    editorEnvelopeI18nDictionaries
+  );
+  const kogitoEditorFactory = new KogitoEditorEnvelopeApiFactory(
+    args.editorFactory,
+    i18n
+  );
+  const defaultKeyboardShortcuts = new DefaultKeyboardShortcutsService({
+    os: args.editorContext.operatingSystem
+  });
   const i18nService = new I18nService();
   const envelope = new Envelope<
     KogitoEditorEnvelopeApi,

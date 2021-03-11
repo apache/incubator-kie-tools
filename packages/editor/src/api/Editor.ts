@@ -25,7 +25,11 @@ export interface Editor extends EditorApi {
   af_componentId: string;
   af_componentTitle: string;
 
-  af_componentRoot(): React.ReactPortal | React.ReactElement | HTMLElement | string;
+  af_componentRoot():
+    | React.ReactPortal
+    | React.ReactElement
+    | HTMLElement
+    | string;
   af_onStartup?(): void;
   af_onOpen?(): void;
 }

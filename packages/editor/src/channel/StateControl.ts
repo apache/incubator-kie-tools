@@ -45,7 +45,9 @@ export class StateControl {
 
   public setSavedCommand() {
     this.savedCommand = this.currentCommand;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
+    this.registeredCallbacks.forEach((setIsDirty) =>
+      setIsDirty(this.isDirty())
+    );
   }
 
   public getCurrentCommand() {
@@ -54,7 +56,9 @@ export class StateControl {
 
   public setCurrentCommand(command: Command) {
     this.currentCommand = command;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
+    this.registeredCallbacks.forEach((setIsDirty) =>
+      setIsDirty(this.isDirty())
+    );
   }
 
   public getCommandStack() {
@@ -74,7 +78,9 @@ export class StateControl {
   }
 
   public undo() {
-    const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
+    const indexOfCurrentCommand = this.commandStack.indexOf(
+      this.currentCommand!
+    );
 
     let commandUndone: Command;
     if (this.commandStack[indexOfCurrentCommand - 1]) {
@@ -84,7 +90,9 @@ export class StateControl {
   }
 
   public redo() {
-    const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
+    const indexOfCurrentCommand = this.commandStack.indexOf(
+      this.currentCommand!
+    );
     if (this.commandStack[indexOfCurrentCommand + 1]) {
       const commandRedone = this.commandStack[indexOfCurrentCommand + 1];
       this.setCurrentCommand(commandRedone);
@@ -92,7 +100,10 @@ export class StateControl {
   }
 
   private eraseRedoCommands() {
-    return this.commandStack.slice(0, this.commandStack.indexOf(this.currentCommand!) + 1);
+    return this.commandStack.slice(
+      0,
+      this.commandStack.indexOf(this.currentCommand!) + 1
+    );
   }
 
   public updateCommandStack(command: string) {

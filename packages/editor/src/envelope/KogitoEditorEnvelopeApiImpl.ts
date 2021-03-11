@@ -26,8 +26,14 @@ import {
   StateControlCommand
 } from "../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
-import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
+import {
+  EnvelopeApiFactory,
+  EnvelopeApiFactoryArgs
+} from "@kogito-tooling/envelope";
+import {
+  EditorEnvelopeView,
+  EditorEnvelopeViewApi
+} from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
@@ -41,7 +47,10 @@ export class KogitoEditorEnvelopeApiFactory
       EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     > {
-  constructor(private readonly editorFactory: EditorFactory, private readonly i18n: I18n<EditorEnvelopeI18n>) {}
+  constructor(
+    private readonly editorFactory: EditorFactory,
+    private readonly i18n: I18n<EditorEnvelopeI18n>
+  ) {}
 
   public create(
     args: EnvelopeApiFactoryArgs<
@@ -78,8 +87,14 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.capturedInitRequestYet = true;
   }
 
-  public receive_initRequest = async (association: Association, initArgs: EditorInitArgs) => {
-    this.args.envelopeBusController.associate(association.origin, association.envelopeServerId);
+  public receive_initRequest = async (
+    association: Association,
+    initArgs: EditorInitArgs
+  ) => {
+    this.args.envelopeBusController.associate(
+      association.origin,
+      association.envelopeServerId
+    );
 
     if (this.hasCapturedInitRequestYet()) {
       return;
@@ -89,7 +104,10 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
     this.setupI18n(initArgs);
 
-    this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
+    this.editor = await this.editorFactory.createEditor(
+      this.args.envelopeContext,
+      initArgs
+    );
 
     await this.args.view().setEditor(this.editor);
 
@@ -125,23 +143,35 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   }
 
   public receive_contentRequest() {
-    return this.editor.getContent().then(content => ({ content: content }));
+    return this.editor.getContent().then((content) => ({ content: content }));
   }
 
   public receive_previewRequest() {
-    return this.editor.getPreview().then(previewSvg => previewSvg ?? "");
+    return this.editor.getPreview().then((previewSvg) => previewSvg ?? "");
   }
 
-  public receive_guidedTourElementPositionRequest = async (selector: string) => {
-    return this.editor.getElementPosition(selector).then(rect => rect ?? DEFAULT_RECT);
+  public receive_guidedTourElementPositionRequest = async (
+    selector: string
+  ) => {
+    return this.editor
+      .getElementPosition(selector)
+      .then((rect) => rect ?? DEFAULT_RECT);
   };
 
-  public receive_channelKeyboardEvent = (channelKeyboardEvent: ChannelKeyboardEvent) => {
-    window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
+  public receive_channelKeyboardEvent = (
+    channelKeyboardEvent: ChannelKeyboardEvent
+  ) => {
+    window.dispatchEvent(
+      new CustomEvent(channelKeyboardEvent.type, {
+        detail: channelKeyboardEvent
+      })
+    );
   };
 
   public receive_localeChange(locale: string) {
-    return this.args.envelopeContext.services.i18n.executeOnLocaleChangeSubscriptions(locale);
+    return this.args.envelopeContext.services.i18n.executeOnLocaleChangeSubscriptions(
+      locale
+    );
   }
 
   public validate() {
@@ -150,14 +180,19 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
   private setupI18n(initArgs: EditorInitArgs) {
     this.i18n.setLocale(initArgs.initialLocale);
-    this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
-      this.i18n.setLocale(locale);
-      this.args.view().setLocale(locale);
-    });
+    this.args.envelopeContext.services.i18n.subscribeToLocaleChange(
+      (locale) => {
+        this.i18n.setLocale(locale);
+        this.args.view().setLocale(locale);
+      }
+    );
   }
 
   private registerDefaultShortcuts(initArgs: EditorInitArgs) {
-    if (this.args.envelopeContext.context.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
+    if (
+      this.args.envelopeContext.context.channel === ChannelType.VSCODE ||
+      initArgs.isReadOnly
+    ) {
       return;
     }
 
@@ -167,7 +202,9 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
         this.editor.redo();
-        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.REDO);
+        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(
+          StateControlCommand.REDO
+        );
       }
     );
     const undoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
@@ -175,15 +212,21 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
         this.editor.undo();
-        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.UNDO);
+        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(
+          StateControlCommand.UNDO
+        );
       }
     );
 
-    const subscription = this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
-      this.args.envelopeContext.services.keyboardShortcuts.deregister(redoId);
-      this.args.envelopeContext.services.keyboardShortcuts.deregister(undoId);
-      this.args.envelopeContext.services.i18n.unsubscribeToLocaleChange(subscription);
-      this.registerDefaultShortcuts(initArgs);
-    });
+    const subscription = this.args.envelopeContext.services.i18n.subscribeToLocaleChange(
+      (locale) => {
+        this.args.envelopeContext.services.keyboardShortcuts.deregister(redoId);
+        this.args.envelopeContext.services.keyboardShortcuts.deregister(undoId);
+        this.args.envelopeContext.services.i18n.unsubscribeToLocaleChange(
+          subscription
+        );
+        this.registerDefaultShortcuts(initArgs);
+      }
+    );
   }
 }

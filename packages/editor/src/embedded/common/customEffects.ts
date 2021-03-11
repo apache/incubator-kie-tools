@@ -16,7 +16,10 @@
 
 import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
-export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
+export function useEffectAfterFirstRender(
+  func: () => ReturnType<EffectCallback>,
+  deps: DependencyList
+) {
   const firstRender = useRef(true);
   useEffect(() => {
     if (!firstRender.current) {

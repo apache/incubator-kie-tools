@@ -32,11 +32,17 @@ export interface EditorInitArgs {
   isReadOnly: boolean;
 }
 
-export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {
+export interface KogitoEditorEnvelopeApi
+  extends KeyboardShortcutsEnvelopeApi,
+    GuidedTourEnvelopeApi,
+    I18nEnvelopeApi {
   receive_contentChanged(content: EditorContent): void;
   receive_editorUndo(): void;
   receive_editorRedo(): void;
-  receive_initRequest(association: Association, editorInit: EditorInitArgs): Promise<void>;
+  receive_initRequest(
+    association: Association,
+    editorInit: EditorInitArgs
+  ): Promise<void>;
   receive_contentRequest(): Promise<EditorContent>;
   receive_previewRequest(): Promise<string>;
   validate(): Promise<Notification[]>;

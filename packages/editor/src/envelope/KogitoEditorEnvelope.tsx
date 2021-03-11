@@ -23,13 +23,20 @@ import {
 } from "../api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/envelope";
-import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
+import {
+  EditorEnvelopeView,
+  EditorEnvelopeViewApi
+} from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { Envelope } from "@kogito-tooling/envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
-import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
+import {
+  EditorEnvelopeI18nContext,
+  editorEnvelopeI18nDefaults,
+  editorEnvelopeI18nDictionaries
+} from "./i18n";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 
 export class KogitoEditorEnvelope {
@@ -49,14 +56,20 @@ export class KogitoEditorEnvelope {
       context: editorContext,
       services: {
         keyboardShortcuts: keyboardShortcutsService,
-        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
+        guidedTour: {
+          isEnabled: () => KogitoGuidedTour.getInstance().isEnabled()
+        },
         i18n: i18nService
       }
     }
   ) {}
 
   public start(container: HTMLElement) {
-    return this.envelope.start(() => this.renderView(container), this.context, this.kogitoEditorEnvelopeApiFactory);
+    return this.envelope.start(
+      () => this.renderView(container),
+      this.context,
+      this.kogitoEditorEnvelopeApiFactory
+    );
   }
 
   private renderView(container: HTMLElement) {
@@ -71,13 +84,18 @@ export class KogitoEditorEnvelope {
           initialLocale={navigator.language}
         >
           <EditorEnvelopeI18nContext.Consumer>
-            {({ setLocale }) => <EditorEnvelopeView ref={editorEnvelopeViewRef} setLocale={setLocale} />}
+            {({ setLocale }) => (
+              <EditorEnvelopeView
+                ref={editorEnvelopeViewRef}
+                setLocale={setLocale}
+              />
+            )}
           </EditorEnvelopeI18nContext.Consumer>
         </I18nDictionariesProvider>
       </KogitoEditorEnvelopeContext.Provider>
     );
 
-    return new Promise<() => EditorEnvelopeViewApi>(res => {
+    return new Promise<() => EditorEnvelopeViewApi>((res) => {
       setTimeout(() => {
         ReactDOM.render(app, container, () => {
           res(() => editorEnvelopeViewRef.current!);

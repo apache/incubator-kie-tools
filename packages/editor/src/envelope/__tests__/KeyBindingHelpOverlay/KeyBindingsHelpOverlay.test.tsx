@@ -17,15 +17,32 @@
 import * as React from "react";
 import { KeyBindingsHelpOverlay } from "../../../envelope/KeyBindingsHelpOverlay";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import {
+  ChannelType,
+  OperatingSystem
+} from "@kogito-tooling/channel-common-api";
 import { fireEvent, render } from "@testing-library/react";
-import { DEFAULT_TESTING_ENVELOPE_CONTEXT, usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "../utils";
+import {
+  DEFAULT_TESTING_ENVELOPE_CONTEXT,
+  usingEditorEnvelopeI18nContext,
+  usingEnvelopeContext
+} from "../utils";
 
 describe("KeyBindingsHelpOverlay", () => {
   test("minimal setup", async () => {
-    const context = { operatingSystem: OperatingSystem.WINDOWS, channel: ChannelType.DESKTOP };
-    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ os: context.operatingSystem });
-    keyboardShortcutsService.registerKeyPress("ctrl+c", "Copy", () => Promise.resolve(), {});
+    const context = {
+      operatingSystem: OperatingSystem.WINDOWS,
+      channel: ChannelType.DESKTOP
+    };
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+      os: context.operatingSystem
+    });
+    keyboardShortcutsService.registerKeyPress(
+      "ctrl+c",
+      "Copy",
+      () => Promise.resolve(),
+      {}
+    );
 
     const component = render(
       usingEditorEnvelopeI18nContext(
@@ -39,7 +56,9 @@ describe("KeyBindingsHelpOverlay", () => {
       ).wrapper
     );
 
-    fireEvent.click(component.getByTestId("keyboard-shortcuts-help-overlay-icon"));
+    fireEvent.click(
+      component.getByTestId("keyboard-shortcuts-help-overlay-icon")
+    );
 
     await component.findByTestId("keyboard-shortcuts-help-overlay");
     await component.findByText("Copy");

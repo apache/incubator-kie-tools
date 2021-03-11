@@ -33,7 +33,15 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = {
     targetOrigin: "localhost:8888",
-    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]])
+    mapping: new Map([
+      [
+        "dmn",
+        {
+          envelopePath: "envelope/envelope.html",
+          resourcesPathPrefix: "envelope"
+        }
+      ]
+    ])
   };
 
   const channelType = ChannelType.ONLINE;
@@ -55,8 +63,14 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
-    expect(getByTestId("kogito-iframe")).toHaveAttribute("data-envelope-channel", ChannelType.ONLINE);
-    expect(getByTestId("kogito-iframe")).toHaveAttribute("src", "envelope/envelope.html");
+    expect(getByTestId("kogito-iframe")).toHaveAttribute(
+      "data-envelope-channel",
+      ChannelType.ONLINE
+    );
+    expect(getByTestId("kogito-iframe")).toHaveAttribute(
+      "src",
+      "envelope/envelope.html"
+    );
 
     expect(container.firstChild).toMatchSnapshot();
   });
@@ -79,7 +93,9 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     editorRef.current?.setContent("content", "");
 
-    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content" });
+    expect(spyOnContentChangedNotification).toBeCalledWith({
+      content: "content"
+    });
   });
 
   test("EmbeddedEditor::requestContent", () => {
@@ -245,7 +261,9 @@ describe("EmbeddedEditor::ONLINE", () => {
       data: [new KogitoEdit("1")]
     });
 
-    expect(editorRef.current?.getStateControl().getCommandStack()).toEqual(["1"]);
+    expect(editorRef.current?.getStateControl().getCommandStack()).toEqual([
+      "1"
+    ]);
     expect(onNewEdit).toBeCalled();
     expect(container.firstChild).toMatchSnapshot();
   });

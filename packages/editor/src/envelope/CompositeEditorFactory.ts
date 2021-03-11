@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { Editor, EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "../api";
+import {
+  Editor,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType
+} from "../api";
 
 /**
  * Composite Factory of Editors to be created inside the envelope. This implementation delegates potential construction
@@ -24,22 +29,34 @@ export class CompositeEditorFactory implements EditorFactory {
   constructor(private readonly factories: EditorFactory[]) {}
 
   public supports(fileExtension: string) {
-    const candidates = this.factories.filter(f => f.supports(fileExtension));
+    const candidates = this.factories.filter((f) => f.supports(fileExtension));
     this.assertSingleEditorFactory(candidates, fileExtension);
     return true;
   }
 
-  public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor> {
-    const candidates = this.factories.filter(f => f.supports(initArgs.fileExtension));
+  public createEditor(
+    envelopeContext: KogitoEditorEnvelopeContextType,
+    initArgs: EditorInitArgs
+  ): Promise<Editor> {
+    const candidates = this.factories.filter((f) =>
+      f.supports(initArgs.fileExtension)
+    );
     this.assertSingleEditorFactory(candidates, initArgs.fileExtension);
     return candidates[0].createEditor(envelopeContext, initArgs);
   }
 
-  private assertSingleEditorFactory(candidates: EditorFactory[], fileExtension: string): void {
+  private assertSingleEditorFactory(
+    candidates: EditorFactory[],
+    fileExtension: string
+  ): void {
     if (candidates.length === 0) {
-      throw new Error(`An EditorFactory for '${fileExtension}' could not be found.`);
+      throw new Error(
+        `An EditorFactory for '${fileExtension}' could not be found.`
+      );
     } else if (candidates.length > 1) {
-      throw new Error(`Multiple EditorFactories matched '${fileExtension}' when only one should be found.`);
+      throw new Error(
+        `Multiple EditorFactories matched '${fileExtension}' when only one should be found.`
+      );
     }
   }
 }

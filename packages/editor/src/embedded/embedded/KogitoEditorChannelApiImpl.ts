@@ -16,7 +16,10 @@
 
 import { StateControl } from "../../channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import {
+  Tutorial,
+  UserInteraction
+} from "@kogito-tooling/guided-tour/dist/api";
 import { KogitoEditorChannelApi, StateControlCommand } from "../../api";
 import {
   KogitoEdit,
@@ -70,11 +73,17 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async receive_resourceContentRequest(request: ResourceContentRequest) {
-    return this.overrides.receive_resourceContentRequest?.(request) ?? new ResourceContent(request.path, undefined);
+    return (
+      this.overrides.receive_resourceContentRequest?.(request) ??
+      new ResourceContent(request.path, undefined)
+    );
   }
 
   public async receive_resourceListRequest(request: ResourceListRequest) {
-    return this.overrides.receive_resourceListRequest?.(request) ?? new ResourcesList(request.pattern, []);
+    return (
+      this.overrides.receive_resourceListRequest?.(request) ??
+      new ResourcesList(request.pattern, [])
+    );
   }
 
   public receive_openFile(path: string): void {

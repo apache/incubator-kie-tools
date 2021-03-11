@@ -35,10 +35,10 @@ export interface EditorEnvelopeViewApi {
   setLocale: (locale: string) => void;
 }
 
-export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeViewApi, Props> = (
-  props: Props,
-  forwardingRef
-) => {
+export const EditorEnvelopeViewRef: React.RefForwardingComponent<
+  EditorEnvelopeViewApi,
+  Props
+> = (props: Props, forwardingRef) => {
   const [editor, setEditor] = useState<Editor | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
@@ -67,10 +67,10 @@ export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeV
     () => {
       return {
         getEditor: () => getEditor(),
-        setEditor: newEditor => setNewEditor(newEditor),
+        setEditor: (newEditor) => setNewEditor(newEditor),
         setLoading: () => setLoadingInit(),
         setLoadingFinished: () => setLoadingFinished(),
-        setLocale: locale => setLocale(locale)
+        setLocale: (locale) => setLocale(locale)
       };
     },
     []
@@ -80,7 +80,15 @@ export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeV
     <>
       {!loading && <KeyBindingsHelpOverlay />}
       <LoadingScreen loading={loading} />
-      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0", left: "0" }}>
+      <div
+        style={{
+          position: "absolute",
+          width: "100vw",
+          height: "100vh",
+          top: "0",
+          left: "0"
+        }}
+      >
         {editor && editor.af_isReact && editor.af_componentRoot()}
       </div>
     </>

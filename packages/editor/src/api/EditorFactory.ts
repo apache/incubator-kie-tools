@@ -33,5 +33,8 @@ export interface EditorFactory {
    * @param envelopeContext The context to be used by Editor implementation.
    * @param initArgs Initial arguments required for the Editor to initialize itself properly.
    */
-  createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor>;
+  createEditor(
+    envelopeContext: KogitoEditorEnvelopeContextType,
+    initArgs: EditorInitArgs
+  ): Promise<Editor>;
 }

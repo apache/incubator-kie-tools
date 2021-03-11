@@ -23,11 +23,14 @@ export function LoadingScreen(props: { loading: boolean }) {
   const [mustRender, setMustRender] = useState(true);
   const { i18n } = useEditorEnvelopeI18nContext();
 
-  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMustRender(false);
-  }, []);
+  const onAnimationEnd = useCallback(
+    (e: React.AnimationEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setMustRender(false);
+    },
+    []
+  );
 
   const loadingScreenClassName = useMemo(() => {
     if (props.loading) {

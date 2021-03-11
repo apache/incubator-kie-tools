@@ -15,8 +15,17 @@
  */
 
 import * as React from "react";
-import { cleanup, fireEvent, getByTestId, render, act } from "@testing-library/react";
-import { EditorEnvelopeView, EditorEnvelopeViewApi } from "../EditorEnvelopeView";
+import {
+  cleanup,
+  fireEvent,
+  getByTestId,
+  render,
+  act
+} from "@testing-library/react";
+import {
+  EditorEnvelopeView,
+  EditorEnvelopeViewApi
+} from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "./utils";
 
@@ -25,7 +34,9 @@ function renderEditorEnvelopeView(): EditorEnvelopeViewApi {
   const setLocale = jest.fn();
   render(
     usingEditorEnvelopeI18nContext(
-      usingEnvelopeContext(<EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} />).wrapper
+      usingEnvelopeContext(
+        <EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} />
+      ).wrapper
     ).wrapper
   );
   return editorEnvelopeRef.current!;
@@ -81,7 +92,10 @@ describe("EditorEnvelopeView", () => {
     act(() => {
       view.setEditor(new DummyEditor());
     });
-    setTimeout(() => view.getEditor()!.setContent("/some/path.txt", "some-test-content"), 100);
+    setTimeout(
+      () => view.getEditor()!.setContent("/some/path.txt", "some-test-content"),
+      100
+    );
 
     expect(document.body).toMatchSnapshot();
   });

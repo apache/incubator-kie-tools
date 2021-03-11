@@ -26,7 +26,7 @@ export class DummyEditor implements Editor {
   public readonly af_isReact = true;
 
   public af_componentRoot() {
-    return <DummyEditorComponent exposing={self => (this.ref = self)} />;
+    return <DummyEditorComponent exposing={(self) => (this.ref = self)} />;
   }
 
   public getContent() {
@@ -78,10 +78,14 @@ class DummyEditorComponent extends React.Component<Props, State> {
   }
 
   public setContent(content: string) {
-    return new Promise<void>(res => this.setState({ content: content }, res));
+    return new Promise<void>((res) => this.setState({ content: content }, res));
   }
 
   public render() {
-    return <div data-testid={"dummy-editor"}>Here's the dummy content: {this.state.content}</div>;
+    return (
+      <div data-testid={"dummy-editor"}>
+        Here's the dummy content: {this.state.content}
+      </div>
+    );
   }
 }

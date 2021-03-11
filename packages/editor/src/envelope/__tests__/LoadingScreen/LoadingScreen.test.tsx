@@ -21,12 +21,16 @@ import { usingEditorEnvelopeI18nContext } from "../utils";
 
 describe("LoadingScreen", () => {
   test("when visible", () => {
-    const { container } = render(usingEditorEnvelopeI18nContext(<LoadingScreen loading={true} />).wrapper);
+    const { container } = render(
+      usingEditorEnvelopeI18nContext(<LoadingScreen loading={true} />).wrapper
+    );
     expect(container).toMatchSnapshot();
   });
 
   test("when just made not visible", () => {
-    const { container } = render(usingEditorEnvelopeI18nContext(<LoadingScreen loading={false} />).wrapper);
+    const { container } = render(
+      usingEditorEnvelopeI18nContext(<LoadingScreen loading={false} />).wrapper
+    );
     expect(container).toMatchSnapshot();
   });
 

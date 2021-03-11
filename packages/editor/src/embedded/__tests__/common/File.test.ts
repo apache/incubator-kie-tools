@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EMPTY_FILE_DMN, EMPTY_FILE_BPMN, EMPTY_FILE_SCESIM, File, newFile } from "../../../channel/File";
+import {
+  EMPTY_FILE_DMN,
+  EMPTY_FILE_BPMN,
+  EMPTY_FILE_SCESIM,
+  File,
+  newFile
+} from "../../../channel/File";
 
 describe("File::Empty defaults", () => {
   test("dmn", async () => {
@@ -21,7 +27,9 @@ describe("File::Empty defaults", () => {
     expect(EMPTY_FILE_DMN.fileExtension).toEqual("dmn");
     expect(EMPTY_FILE_DMN.isReadOnly).toBeFalsy();
 
-    await EMPTY_FILE_DMN.getFileContents().then(data => expect(data).toBe(""));
+    await EMPTY_FILE_DMN.getFileContents().then((data) =>
+      expect(data).toBe("")
+    );
   });
 
   test("bpmn", async () => {
@@ -29,7 +37,9 @@ describe("File::Empty defaults", () => {
     expect(EMPTY_FILE_BPMN.fileExtension).toEqual("bpmn");
     expect(EMPTY_FILE_BPMN.isReadOnly).toBeFalsy();
 
-    await EMPTY_FILE_BPMN.getFileContents().then(data => expect(data).toBe(""));
+    await EMPTY_FILE_BPMN.getFileContents().then((data) =>
+      expect(data).toBe("")
+    );
   });
 
   test("scesim", async () => {
@@ -37,7 +47,9 @@ describe("File::Empty defaults", () => {
     expect(EMPTY_FILE_SCESIM.fileExtension).toEqual("scesim");
     expect(EMPTY_FILE_SCESIM.isReadOnly).toBeFalsy();
 
-    await EMPTY_FILE_SCESIM.getFileContents().then(data => expect(data).toBe(""));
+    await EMPTY_FILE_SCESIM.getFileContents().then((data) =>
+      expect(data).toBe("")
+    );
   });
 });
 
@@ -48,7 +60,7 @@ describe("File::newFile", () => {
     expect(file.fileExtension).toEqual("dmn");
     expect(file.isReadOnly).toBeFalsy();
 
-    await file.getFileContents().then(data => expect(data).toBe(""));
+    await file.getFileContents().then((data) => expect(data).toBe(""));
   });
 });
 
@@ -65,6 +77,6 @@ describe("File", () => {
     expect(file.fileExtension).toEqual("dmn");
     expect(file.isReadOnly).toBeTruthy();
 
-    await file.getFileContents().then(data => expect(data).toBe("content"));
+    await file.getFileContents().then((data) => expect(data).toBe("content"));
   });
 });
