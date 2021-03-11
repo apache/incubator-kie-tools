@@ -24,12 +24,16 @@ import * as vscode from "vscode";
 
 let backendManager: BackendManagerService;
 
-export async function activate(context: vscode.ExtensionContext): Promise<BackendExtensionApi> {
+export async function activate(
+  context: vscode.ExtensionContext
+): Promise<BackendExtensionApi> {
   console.info("Backend extension is alive.");
 
   backendManager = new BackendManagerService({
     bridge: new DefaultHttpBridge(),
-    localHttpServer: new QuarkusLocalServer(context.asAbsolutePath(path.join("dist", "server", "quarkus-runner.jar"))),
+    localHttpServer: new QuarkusLocalServer(
+      context.asAbsolutePath(path.join("dist", "server", "quarkus-runner.jar"))
+    ),
     bootstrapServices: [],
     lazyServices: [new VsCodeTestScenarioRunnerService()]
   });
