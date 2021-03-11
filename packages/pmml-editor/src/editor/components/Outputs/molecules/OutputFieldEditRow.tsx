@@ -179,6 +179,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   name="output-name"
                   aria-describedby="output-name-helper"
                   value={name?.value?.toString() ?? ""}
+                  placeholder="Name"
                   validated={name?.valid ? "default" : "error"}
                   autoFocus={true}
                   onChange={e => {

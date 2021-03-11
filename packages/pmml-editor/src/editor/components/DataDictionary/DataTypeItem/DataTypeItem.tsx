@@ -18,7 +18,7 @@ import {
   StackItem,
   TextInput
 } from "@patternfly/react-core";
-import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
+import { ArrowAltCircleRightIcon, ExclamationCircleIcon, TrashIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
@@ -193,7 +193,12 @@ const DataTypeItem = (props: DataTypeItemProps) => {
             }
           }}
         >
-          <Form onSubmit={handleSave}>
+          <Form
+            onSubmit={e => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+          >
             <Split hasGutter={true}>
               <SplitItem>
                 <Stack hasGutter={true}>
@@ -204,6 +209,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           fieldId="name"
                           label="Name"
                           helperTextInvalid="Name is mandatory and must be unique"
+                          helperTextInvalidIcon={<ExclamationCircleIcon />}
                           validated={validation}
                           style={{ width: 280 }}
                           isRequired={true}

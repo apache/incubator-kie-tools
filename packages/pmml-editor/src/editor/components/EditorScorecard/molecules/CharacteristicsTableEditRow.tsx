@@ -171,6 +171,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   name="characteristic-name"
                   aria-describedby="characteristic-name-helper"
                   value={name.value ?? ""}
+                  placeholder="Name"
                   validated={name.valid ? "default" : "error"}
                   autoFocus={true}
                   onChange={e =>
