@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import '@patternfly/react-core/dist/styles/base.css';
+import "./styles.css";
 import {
   EditorFactory,
   KogitoEditorChannelApi,
@@ -29,7 +31,6 @@ import { Envelope } from "@kogito-tooling/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import "./styles.scss";
 import { getOperatingSystem } from "@kogito-tooling/channel-common-api";
 
 /**

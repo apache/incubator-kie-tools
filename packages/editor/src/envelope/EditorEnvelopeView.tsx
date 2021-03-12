@@ -17,9 +17,6 @@
 import * as React from "react";
 import { Editor } from "../api";
 import { LoadingScreen } from "./LoadingScreen";
-import "@patternfly/patternfly/base/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.scss";
-import "@patternfly/patternfly/patternfly.scss";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
 import { useCallback, useImperativeHandle, useState } from "react";
 

@@ -1,0 +1,43 @@
+.kogito-tooling--loading-screen {
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  position: relative;
+}
+
+.loading-finished {
+  animation-name: fade-out;
+  animation-duration: 400ms;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.kogito-tooling--loading-screen-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.kogito-tooling--keyboard-shortcuts-icon {
+  user-select: none;
+  z-index: 999;
+  left: 0;
+  bottom: 5px;
+  position: fixed;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  font-size: 1.2em;
+  cursor: pointer;
+}

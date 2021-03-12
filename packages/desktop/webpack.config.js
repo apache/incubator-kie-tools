@@ -38,7 +38,8 @@ module.exports = async (argv, env) => [
   merge(common, {
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.tsx"
+      "webview/index": "./src/webview/index.tsx",
+      envelope: "./src/envelope/GwtEditorsEnvelopeApp.ts"
     },
     externals: {
       electron: "commonjs electron"
@@ -50,7 +51,7 @@ module.exports = async (argv, env) => [
         { from: "./static/resources", to: "./resources" },
         { from: "./static/images", to: "./images" },
         { from: "./static/index.html", to: "./index.html" },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
+        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
       ])

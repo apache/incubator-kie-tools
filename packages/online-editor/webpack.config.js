@@ -60,7 +60,8 @@ module.exports = async (env, argv) => {
 
   return merge(common, {
     entry: {
-      index: "./src/index.tsx"
+      index: "./src/index.tsx",
+      envelope: "./src/envelope/GwtEditorsEnvelopeApp.ts"
     },
     plugins: [
       new CopyPlugin([
@@ -69,7 +70,7 @@ module.exports = async (env, argv) => {
         { from: "./static/samples", to: "./samples" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
+        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
       ])

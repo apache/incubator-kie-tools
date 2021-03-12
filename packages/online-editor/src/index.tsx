@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
+import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import "@patternfly/react-core/dist/styles/base.css";
-import "@patternfly/patternfly/patternfly-addons.scss";
 import { App } from "./App";
 import { newFile } from "@kogito-tooling/editor/dist/channel";
 import {
@@ -35,9 +34,9 @@ import {
 } from "@patternfly/react-core/dist/js/components/Alert";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import "../static/resources/style.css";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import "../static/resources/style.css";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
@@ -46,9 +45,9 @@ const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionari
 const editorEnvelopeLocator: EditorEnvelopeLocator = {
   targetOrigin: window.location.origin,
   mapping: new Map([
-    ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-    ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-    ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }]
+    ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "envelope.html" }],
+    ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "envelope.html" }],
+    ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "envelope.html" }]
   ])
 };
 
