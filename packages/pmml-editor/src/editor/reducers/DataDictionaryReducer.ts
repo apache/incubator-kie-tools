@@ -22,14 +22,17 @@ import { Builder } from "../paths";
 
 interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
+    readonly modelIndex?: number;
     readonly name?: string;
     readonly type: DataType;
     readonly optype: OpType;
   };
   [Actions.DeleteDataDictionaryField]: {
+    readonly modelIndex?: number;
     readonly index: number;
   };
   [Actions.AddBatchDataDictionaryFields]: {
+    readonly modelIndex?: number;
     readonly dataDictionaryFields: FieldName[];
   };
   [Actions.ReorderDataDictionaryFields]: {
@@ -73,12 +76,14 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
             if (index >= 0 && index < draft.DataField.length) {
               draft.DataField.splice(index, 1);
             }
+          },
+          pmml => {
             validationRegistry.clear(
               Builder()
                 .forDataDictionary()
                 .build()
             );
-            validateDataFields(draft.DataField, validationRegistry);
+            validateDataFields(pmml.DataDictionary.DataField, validationRegistry);
           }
         );
         break;
@@ -92,12 +97,14 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
           draft => {
             const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
             draft.DataField.splice(action.payload.newIndex, 0, removed);
+          },
+          pmml => {
             validationRegistry.clear(
               Builder()
                 .forDataDictionary()
                 .build()
             );
-            validateDataFields(draft.DataField, validationRegistry);
+            validateDataFields(pmml.DataDictionary.DataField, validationRegistry);
           }
         );
         break;

@@ -94,6 +94,8 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
 
               draft[dataDictionaryIndex] = dataField;
             }
+          },
+          () => {
             validationRegistry.clear(
               Builder()
                 .forDataDictionary()
