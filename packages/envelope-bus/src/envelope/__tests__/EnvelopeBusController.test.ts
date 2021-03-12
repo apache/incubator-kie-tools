@@ -34,16 +34,18 @@ let sentMessages: Array<[EnvelopeBusMessage<any, any>, string]>;
 beforeEach(() => {
   sentMessages = [];
   api = {
-    init: async () => envelopeBus.associate("my-origin", "my-server-id"),
+    init: async () => envelopeBus.associate("my-origin", "my-envelope-id"),
     someNotification: jest.fn(),
   };
+});
 
-  envelopeBus = new EnvelopeBusController<ApiToProvide, ApiToConsume>({
+const createEnvelopeBus = (envelopeId?: string) => {
+  return new EnvelopeBusController<ApiToProvide, ApiToConsume>({
     postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any): void {
       sentMessages.push([message as any, targetOrigin!]);
     }
-  });
-});
+  }, envelopeId);
+}
 
 afterEach(() => {
   envelopeBus.stopListening();
@@ -54,6 +56,10 @@ const delay = (ms: number) => {
 };
 
 describe("new instance", () => {
+  beforeEach(async () => {
+    envelopeBus = createEnvelopeBus();
+  });
+
   test("does nothing", () => {
     expect(sentMessages.length).toEqual(0);
     expect(envelopeBus.targetOrigin).toBe(undefined);
@@ -61,6 +67,10 @@ describe("new instance", () => {
 });
 
 describe("event listening", () => {
+  beforeEach(async () => {
+    envelopeBus = createEnvelopeBus();
+  });
+
   test("activates when requested", async () => {
     spyOn(envelopeBus, "receive");
     envelopeBus.startListening(api);
@@ -106,14 +116,19 @@ describe("event listening", () => {
   });
 });
 
-describe("receive", () => {
+describe("receive without envelopeId", () => {
+  beforeEach(async () => {
+    envelopeBus = createEnvelopeBus();
+  });
+
   beforeEach(async () => {
     envelopeBus.startListening(api);
     await incomingMessage({
       requestId: "any",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "init",
-      data: []
+      data: [],
+      targetEnvelopeId: "any-envelope-id"
     });
     sentMessages = [];
   });
@@ -127,7 +142,8 @@ describe("receive", () => {
     await incomingMessage({
       data: [],
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: "someNotification"
+      type: "someNotification",
+      targetEnvelopeId: "any-envelope-id"
     });
 
     expect(api.someNotification).toHaveBeenCalled();
@@ -136,9 +152,67 @@ describe("receive", () => {
   test("subscription notification", async () => {
     await incomingMessage({
       data: [],
-      envelopeServerId: "not-my-associated-envelope-server-id",
+      targetEnvelopeServerId: "not-my-associated-envelope-server-id",
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: "someNotification"
+      type: "someNotification",
+      targetEnvelopeId: "any-envelope-id"
+    });
+
+    expect(api.someNotification).not.toHaveBeenCalled();
+  });
+});
+
+describe("receive with envelopeId", () => {
+  beforeEach(async () => {
+    envelopeBus = createEnvelopeBus("my-envelope-id");
+  });
+
+  beforeEach(async () => {
+    envelopeBus.startListening(api);
+    await incomingMessage({
+      requestId: "any",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "init",
+      data: [],
+      targetEnvelopeId: "my-envelope-id"
+    });
+    sentMessages = [];
+  });
+
+  afterEach(() => {
+    envelopeBus.stopListening();
+  });
+
+  test("direct notification", async () => {
+
+    await incomingMessage({
+      data: [],
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "someNotification",
+      targetEnvelopeId: "my-envelope-id"
+    });
+
+    expect(api.someNotification).toHaveBeenCalled();
+  });
+
+  test("subscription notification", async () => {
+    await incomingMessage({
+      data: [],
+      targetEnvelopeServerId: "not-my-associated-envelope-server-id",
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "someNotification",
+      targetEnvelopeId: "my-envelope-id"
+    });
+
+    expect(api.someNotification).not.toHaveBeenCalled();
+  });
+
+  test("notification to another envelope", async () => {
+    await incomingMessage({
+      data: [],
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "someNotification",
+      targetEnvelopeId: "not-my-envelope-id"
     });
 
     expect(api.someNotification).not.toHaveBeenCalled();
@@ -146,6 +220,10 @@ describe("receive", () => {
 });
 
 describe("send without being associated", () => {
+  beforeEach(async () => {
+    envelopeBus = createEnvelopeBus();
+  });
+
   test("throws error", () => {
     expect(() =>
       envelopeBus.send({

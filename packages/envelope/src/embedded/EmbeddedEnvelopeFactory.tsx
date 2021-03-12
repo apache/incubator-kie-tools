@@ -20,6 +20,7 @@ import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
 import * as CSS from "csstype";
+import { ContainerType } from "../api";
 
 const containerStyles: CSS.Properties = {
   display: "flex",
@@ -33,6 +34,15 @@ const containerStyles: CSS.Properties = {
   overflow: "hidden"
 };
 
+export interface EnvelopeDivConfig {
+  containerType: ContainerType.DIV;
+}
+
+export interface EnvelopeIFrameConfig {
+  containerType: ContainerType.IFRAME;
+  envelopePath: string;
+}
+
 export interface Props<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
@@ -40,9 +50,12 @@ export interface Props<
 > {
   refDelegate: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Ref;
   api: ApiToProvide;
-  envelopePath: string;
   origin: string;
-  pollInit: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>;
+  pollInit: (
+    envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>,
+    container: () => HTMLDivElement | HTMLIFrameElement
+  ) => Promise<any>;
+  config: EnvelopeDivConfig | EnvelopeIFrameConfig;
 }
 
 export function EmbeddedEnvelopeFactory<
@@ -52,18 +65,28 @@ export function EmbeddedEnvelopeFactory<
 >(props: Props<ApiToProvide, ApiToConsume, Ref>) {
   return React.forwardRef((_, forwardRef) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const divRef = useRef<HTMLDivElement>(null);
 
     const bus = useMemo(
       () => ({
         postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
-          iframeRef.current?.contentWindow?.postMessage(message, "*");
+          if (props.config.containerType === ContainerType.DIV) {
+            window.postMessage(message, "*");
+          } else {
+            iframeRef.current?.contentWindow?.postMessage(message, "*");
+          }
         }
       }),
       []
     );
 
     const envelopeServer = useMemo(
-      () => new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self => props.pollInit(self)),
+      () =>
+        new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self =>
+          props.pollInit(self, () =>
+            props.config.containerType === ContainerType.DIV ? divRef.current! : iframeRef.current!
+          )
+        ),
       [bus, props.origin, props.pollInit]
     );
 
@@ -77,6 +100,10 @@ export function EmbeddedEnvelopeFactory<
 
     useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
 
-    return <iframe ref={iframeRef} src={props.envelopePath} style={containerStyles} title="X" />;
+    if (props.config.containerType === ContainerType.DIV) {
+      return <div ref={divRef} id={envelopeServer.id} />;
+    }
+
+    return <iframe ref={iframeRef} src={props.config.envelopePath} style={containerStyles} title="X" />;
   });
 }

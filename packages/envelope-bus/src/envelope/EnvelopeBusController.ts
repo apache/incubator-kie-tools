@@ -36,7 +36,10 @@ export class EnvelopeBusController<
     return this.manager.clientApi;
   }
 
-  constructor(private readonly bus: EnvelopeBus) {
+  constructor(
+    private readonly bus: EnvelopeBus,
+    private readonly envelopeId?: string
+  ) {
     this.manager = new EnvelopeBusMessageManager(message => this.send(message), "KogitoEnvelopeBus");
   }
 
@@ -64,16 +67,23 @@ export class EnvelopeBusController<
     if (!this.targetOrigin || !this.associatedEnvelopeServerId) {
       throw new Error("Tried to send message without associated Envelope Server set");
     }
-    this.bus.postMessage({ ...message, envelopeServerId: this.associatedEnvelopeServerId }, this.targetOrigin);
+    this.bus.postMessage({ ...message, targetEnvelopeServerId: this.associatedEnvelopeServerId }, this.targetOrigin);
   }
 
   public receive(
     message: EnvelopeBusMessage<any, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     apiImpl: ApiToProvide
   ) {
-    if (!message.envelopeServerId) {
+    if (this.envelopeId && this.envelopeId !== message.targetEnvelopeId) {
+      // When an envelopeId is defined, the message should be ignored if it contains a different targetEnvelopeId
+      return;
+    }
+
+    if (!message.targetEnvelopeServerId) {
+      // Message was sent directly from the Channel to this Envelope
       this.manager.server.receive(message, apiImpl);
-    } else if (message.envelopeServerId && message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+    } else if (message.targetEnvelopeServerId && message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+      // Message was redirected by the Channel from another Envelope
       this.manager.server.receive(message, {} as any);
     }
   }

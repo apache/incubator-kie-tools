@@ -17,17 +17,29 @@
 import { ApiDefinition, EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeBusController } from "@kogito-tooling/envelope-bus/dist/envelope";
 import { EnvelopeApiFactory } from "./EnvelopeApiFactory";
+import { ContainerType } from "./api";
 
-export class Envelope<
-  ApiToProvide extends ApiDefinition<ApiToProvide>,
+export interface EnvelopeDivConfig {
+  containerType: ContainerType.DIV;
+  envelopeId: string;
+}
+
+export interface EnvelopeIFrameConfig {
+  containerType: ContainerType.IFRAME;
+}
+
+export class Envelope<ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   ViewType,
-  ContextType
-> {
+  ContextType> {
   constructor(
     bus: EnvelopeBus,
-    private readonly envelopeBusController = new EnvelopeBusController<ApiToProvide, ApiToConsume>(bus)
-  ) {}
+    config: EnvelopeDivConfig | EnvelopeIFrameConfig = { containerType: ContainerType.IFRAME },
+    private readonly envelopeBusController = new EnvelopeBusController<ApiToProvide, ApiToConsume>(
+      bus,
+      config.containerType === ContainerType.DIV ? config.envelopeId : undefined)
+  ) {
+  }
 
   public get channelApi() {
     return this.envelopeBusController.channelApi;

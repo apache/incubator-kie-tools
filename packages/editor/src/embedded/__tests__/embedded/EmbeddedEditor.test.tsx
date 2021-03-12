@@ -137,7 +137,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
+      targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_setContentError",
       data: []
@@ -162,7 +162,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
+      targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_ready",
       data: []
@@ -187,7 +187,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
+      targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
@@ -213,7 +213,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
+      targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
@@ -239,7 +239,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
+      targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_newEdit",
       data: [new KogitoEdit("1")]
