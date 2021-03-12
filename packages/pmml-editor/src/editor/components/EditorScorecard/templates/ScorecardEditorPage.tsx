@@ -19,6 +19,7 @@ import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
 import {
   Characteristics,
+  FieldName,
   MiningSchema,
   Model,
   Output,
@@ -60,8 +61,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
 
   const validateOutputName = useCallback(
-    (index: number | undefined, name: string): boolean => {
-      if (name === undefined || name.trim() === "") {
+    (index: number | undefined, name: FieldName): boolean => {
+      if (name.toString().trim().length === 0) {
         return false;
       }
       const existing: OutputField[] = output?.OutputField ?? [];

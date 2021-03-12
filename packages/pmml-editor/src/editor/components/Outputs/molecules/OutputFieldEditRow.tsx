@@ -45,9 +45,9 @@ import { Builder } from "../../../paths";
 
 interface OutputFieldEditRowProps {
   modelIndex: number;
-  outputField: OutputField | undefined;
+  outputField: OutputField;
   outputFieldIndex: number;
-  validateOutputName: (name: string | undefined) => boolean;
+  validateOutputName: (name: FieldName) => boolean;
   viewExtendedProperties: () => void;
   onCommitAndClose: () => void;
   onCommit: (partial: Partial<OutputField>) => void;
@@ -88,10 +88,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
 
   const { activeOperation } = useOperation();
 
-  const [name, setName] = useState<ValidatedType<FieldName | undefined>>({
-    value: undefined,
-    valid: true
-  });
+  const [name, setName] = useState<ValidatedType<FieldName>>({ value: "" as FieldName, valid: false });
   const [dataType, setDataType] = useState<DataType>("boolean");
   const [optype, setOptype] = useState<OpType | undefined>();
   const [targetField, setTargetField] = useState<FieldName | undefined>();
@@ -108,7 +105,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
     }
     setName({
       value: outputField.name,
-      valid: validateOutputName(outputField.name.toString())
+      valid: validateOutputName(outputField.name)
     });
     setDataType(outputField.dataType);
     setOptype(outputField.optype);
@@ -139,6 +136,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
       eventTypes: ["click"]
     }
   );
+
   const { validationRegistry } = useValidationRegistry();
   const targetFieldValidation = useMemo(
     () =>
@@ -171,7 +169,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                 label="Name"
                 fieldId="output-name-helper"
                 isRequired={true}
-                helperTextInvalid="Name must be unique and present."
+                helperTextInvalid="Name is mandatory and must be unique"
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={name?.valid ? "default" : "error"}
               >
@@ -181,18 +179,24 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   name="output-name"
                   aria-describedby="output-name-helper"
                   value={name?.value?.toString() ?? ""}
+                  placeholder="Name"
                   validated={name?.valid ? "default" : "error"}
                   autoFocus={true}
                   onChange={e => {
                     setName({
                       value: e as FieldName,
-                      valid: validateOutputName(e)
+                      valid: validateOutputName(e as FieldName)
                     });
                   }}
                   onBlur={e => {
                     if (name?.valid) {
                       onCommit({
                         name: name.value as FieldName
+                      });
+                    } else {
+                      setName({
+                        value: outputField?.name,
+                        valid: validateOutputName(outputField.name)
                       });
                     }
                   }}
