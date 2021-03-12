@@ -6,7 +6,9 @@ Feature: Deploy Travel agency service and verify its functionality
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with Infinispan and Kafka operators
+    And Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |

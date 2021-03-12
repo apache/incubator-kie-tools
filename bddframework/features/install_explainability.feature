@@ -6,7 +6,8 @@ Feature: Kogito Explainability service
     Given Namespace is created
 
   Scenario Outline: Install Kogito Explainability with communication <communication>
-    Given Kogito Operator is deployed with Kafka operator
+    Given Kogito Operator is deployed
+    And Kafka Operator is deployed
     And Kafka instance "kogito-kafka" is deployed
     And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
     And Kafka topic "trusty-explainability-result" is deployed
@@ -27,7 +28,9 @@ Feature: Kogito Explainability service
   @infinispan
   @kafka
   Scenario: Explainability retrieves explainability requests events
-    Given Kogito Operator is deployed with Infinispan and Kafka operators
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |

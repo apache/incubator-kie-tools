@@ -4,13 +4,14 @@ Feature: Kogito Data Index
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with Kafka operator
+    And Kogito Operator is deployed
+    And Kafka Operator is deployed
     And Kafka instance "kogito-kafka" is deployed
     And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
 
   @smoke
   Scenario: Install Kogito Data Index with Infinispan
-    Given Infinispan operator is deployed
+    Given Infinispan Operator is deployed
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |
