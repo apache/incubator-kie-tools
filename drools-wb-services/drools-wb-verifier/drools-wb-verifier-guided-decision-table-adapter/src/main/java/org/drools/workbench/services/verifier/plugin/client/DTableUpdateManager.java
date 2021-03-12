@@ -204,4 +204,13 @@ public class DTableUpdateManager {
         analyzer.newRule(rule);
         analyzer.analyze();
     }
+
+    public void sort(final List<Integer> rowOrder) {
+        for (final Rule rule : index.getRules().where(Rule.index().any()).select().all()) {
+            if (rowOrder.contains(rule.getIndex())) {
+                rule.setIndex(rowOrder.indexOf(rule.getIndex()));
+            }
+        }
+        analyzer.analyze();
+    }
 }

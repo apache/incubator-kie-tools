@@ -24,6 +24,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -480,5 +481,35 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
         assertFalse((Boolean) uiModel.getRow(0).getCells().get(3).getValue().getValue());
 
         assertFalse(model.getData().get(0).get(3).getBooleanValue());
+    }
+
+    @Test(expected = VetoException.class)
+    public void testHandlesSortRowCountDoesNotMatchListSize() throws ModelSynchronizer.VetoException {
+        modelSynchronizer.appendRow();
+
+        modelSynchronizer.sort(new ArrayList<>());
+    }
+
+    @Test
+    public void testHandlesSort() throws ModelSynchronizer.VetoException {
+        modelSynchronizer.appendRow();
+        modelSynchronizer.appendRow();
+        modelSynchronizer.appendRow();
+
+        // Original order
+        assertEquals(1,model.getData().get(0).get(0).getNumericValue().intValue());
+        assertEquals(2,model.getData().get(1).get(0).getNumericValue().intValue());
+        assertEquals(3,model.getData().get(2).get(0).getNumericValue().intValue());
+
+        final ArrayList<Integer> sort = new ArrayList<>();
+        sort.add(2);
+        sort.add(1);
+        sort.add(0);
+        modelSynchronizer.sort(sort);
+
+        // reversed
+        assertEquals(3,model.getData().get(0).get(0).getNumericValue().intValue());
+        assertEquals(2,model.getData().get(1).get(0).getNumericValue().intValue());
+        assertEquals(1,model.getData().get(2).get(0).getNumericValue().intValue());
     }
 }

@@ -20,12 +20,17 @@ import org.drools.workbench.services.verifier.plugin.client.api.DrlInitialize;
 import org.drools.workbench.services.verifier.plugin.client.api.MakeRule;
 import org.drools.workbench.services.verifier.plugin.client.api.NewColumn;
 import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
+import org.drools.workbench.services.verifier.plugin.client.api.SortTable;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.kie.workbench.common.services.verifier.api.client.api.RequestStatus;
 
 public class Poster
         extends org.kie.workbench.common.services.verifier.reporting.client.analysis.Poster {
 
+
+    public void post(final SortTable sortTable) {
+        postObject(sortTable);
+    }
 
     public void post(final MakeRule makeRule) {
         postObject(makeRule);

@@ -16,9 +16,11 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.table.TableSortComparator;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -34,6 +36,7 @@ public class GuidedDecisionTableUiModel extends BaseGridData {
     private static final int HEADER_ROW_COUNT = 2;
 
     private final ModelSynchronizer synchronizer;
+    private TableSortComparator tableSortComparator = new TableSortComparator();
 
     public GuidedDecisionTableUiModel(final ModelSynchronizer synchronizer) {
         this.synchronizer = PortablePreconditions.checkNotNull("synchronizer",
@@ -92,6 +95,23 @@ public class GuidedDecisionTableUiModel extends BaseGridData {
         } catch (VetoException ignore) {
             //Do nothing. The move has been vetoed.
         }
+    }
+
+    public List<Integer> sort(final GridColumn gridColumn) throws VetoException {
+        try {
+
+            final List<Integer> sortOrder = tableSortComparator.sort(super.rows,
+                                                                     gridColumn);
+            synchronizer.sort(sortOrder);
+
+            synchronizer.updateSystemControlledColumnValues();
+
+            return sortOrder;
+
+        } catch (VetoException ignore) {
+            //Do nothing. The move has been vetoed.
+        }
+        return Collections.emptyList();
     }
 
     @Override

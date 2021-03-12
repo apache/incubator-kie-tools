@@ -104,6 +104,8 @@ public interface ModelSynchronizer {
     void moveRowsTo(final int targetRowIndex,
                     final List<GridRow> rows) throws VetoException;
 
+    void sort(final List<Integer> sortOrder)  throws VetoException;
+
     void appendRow() throws VetoException;
 
     void insertRow(final int rowIndex) throws VetoException;

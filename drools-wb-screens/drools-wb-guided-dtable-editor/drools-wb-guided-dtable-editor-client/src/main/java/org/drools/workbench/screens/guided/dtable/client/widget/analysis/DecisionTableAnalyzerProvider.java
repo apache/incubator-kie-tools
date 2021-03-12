@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.event.shared.EventBus;
@@ -61,12 +63,17 @@ public class DecisionTableAnalyzerProvider {
         return new AnalyzerController() {
             @Override
             public void initialiseAnalysis() {
-
+                // Place holder without functionality.
             }
 
             @Override
             public void terminateAnalysis() {
+                // Place holder without functionality.
+            }
 
+            @Override
+            public void sort(final List<Integer> rowOrder){
+                // Place holder without functionality.
             }
         };
     }

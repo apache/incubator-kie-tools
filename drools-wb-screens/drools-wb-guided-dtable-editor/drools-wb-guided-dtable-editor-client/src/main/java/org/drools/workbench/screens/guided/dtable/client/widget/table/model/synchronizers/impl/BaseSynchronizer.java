@@ -214,6 +214,16 @@ public abstract class BaseSynchronizer<A extends Synchronizer.MetaData, U extend
         }
     }
 
+    @Override
+    public boolean handlesSort() throws VetoException {
+        return false;
+    }
+
+    @Override
+    public void sort(final List<Integer> sortOrder) throws VetoException {
+
+    }
+
     protected DTCellValue52 makeModelCellValue(final BaseColumn modelColumn) {
         DTCellValue52 dcv;
         final DTCellValue52 defaultValue = modelColumn.getDefaultValue();

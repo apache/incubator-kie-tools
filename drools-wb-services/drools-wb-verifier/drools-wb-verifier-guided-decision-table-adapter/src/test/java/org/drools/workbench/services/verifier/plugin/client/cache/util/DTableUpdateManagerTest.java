@@ -253,4 +253,15 @@ public class DTableUpdateManagerTest {
         verify(analyzer,
                never()).update(anySet());
     }
+
+    @Test
+    public void testSort() throws
+            Exception {
+        final ArrayList<Integer> rowOrder = new ArrayList<>();
+        rowOrder.add(2);
+        rowOrder.add(1);
+        updateManager.sort(rowOrder);
+
+        verify(analyzer).analyze();
+    }
 }

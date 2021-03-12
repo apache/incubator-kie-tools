@@ -76,4 +76,8 @@ public interface Synchronizer<A extends MetaData, U extends MetaData, D extends 
     boolean handlesMoveRowsTo(final List<? extends MetaData> metaData) throws VetoException;
 
     void moveRowsTo(final List<MR> metaData) throws VetoException;
+
+    boolean handlesSort() throws VetoException;
+
+    void sort(final List<Integer> sortOrder) throws VetoException;
 }

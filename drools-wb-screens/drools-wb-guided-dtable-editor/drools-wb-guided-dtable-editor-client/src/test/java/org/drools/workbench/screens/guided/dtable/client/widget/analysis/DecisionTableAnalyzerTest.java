@@ -198,4 +198,11 @@ public class DecisionTableAnalyzerTest {
 
         decisionTableAnalyzer.insertColumn(b);
     }
+
+    @Test
+    public void testSort() throws Exception {
+        final ArrayList<Integer> rowOrder = new ArrayList<>();
+        decisionTableAnalyzer.sort(rowOrder);
+        verify(updateManager).sort(rowOrder);
+    }
 }

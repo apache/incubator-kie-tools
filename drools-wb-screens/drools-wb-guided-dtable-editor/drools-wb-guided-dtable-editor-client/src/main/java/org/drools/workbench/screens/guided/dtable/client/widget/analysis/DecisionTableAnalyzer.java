@@ -136,6 +136,11 @@ public class DecisionTableAnalyzer
     }
 
     @Override
+    public void sort(final List<Integer> rowOrder) {
+        updateManager.sort(rowOrder);
+    }
+
+    @Override
     public void deleteRow(final int index) {
         eventManager.rowDeleted = index;
     }

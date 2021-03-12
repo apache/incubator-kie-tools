@@ -333,6 +333,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                            final PlaceRequest placeRequest,
                            final GuidedDecisionTableEditorContent content,
                            final boolean isReadOnly) {
+
         final GuidedDecisionTable52 model = content.getModel();
         final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
 
@@ -1003,6 +1004,18 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         model.getAuditLog().add(new DeleteColumnAuditLogEntry(identity.getIdentifier(),
                                                               column));
         callback.execute();
+    }
+
+
+    @Override
+    public void onSort(final GridColumn gridColumn) {
+        try {
+           final List<Integer> sort = uiModel.sort(gridColumn);
+            refreshView();
+            analyzerController.sort(sort);
+        } catch (VetoException veto) {
+            getModellerPresenter().getView().showGenericVetoMessage();
+        }
     }
 
     @Override

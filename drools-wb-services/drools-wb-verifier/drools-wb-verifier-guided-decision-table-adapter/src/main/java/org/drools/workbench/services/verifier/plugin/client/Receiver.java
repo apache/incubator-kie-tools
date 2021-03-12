@@ -31,6 +31,7 @@ import org.drools.workbench.services.verifier.plugin.client.api.DrlInitialize;
 import org.drools.workbench.services.verifier.plugin.client.api.MakeRule;
 import org.drools.workbench.services.verifier.plugin.client.api.NewColumn;
 import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
+import org.drools.workbench.services.verifier.plugin.client.api.SortTable;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.drools.workbench.services.verifier.plugin.client.builders.BuildException;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -69,6 +70,17 @@ public class Receiver {
             makeRule((MakeRule) o);
         } else if (o instanceof NewColumn) {
             newColumn((NewColumn) o);
+        } else if (o instanceof SortTable) {
+            sortTable((SortTable) o);
+        }
+    }
+
+    private void sortTable(final SortTable sortTable) {
+        try {
+            getUpdateManager().sort(sortTable.getRowOrder());
+        } catch (final Exception e) {
+            poster.post(new WebWorkerException("Failed to sort the table: " +
+                                                       e.getMessage()));
         }
     }
 

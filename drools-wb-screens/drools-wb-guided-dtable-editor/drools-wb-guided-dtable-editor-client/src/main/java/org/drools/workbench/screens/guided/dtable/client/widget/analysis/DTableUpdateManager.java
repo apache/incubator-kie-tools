@@ -23,6 +23,7 @@ import org.drools.workbench.services.verifier.plugin.client.api.DeleteColumns;
 import org.drools.workbench.services.verifier.plugin.client.api.MakeRule;
 import org.drools.workbench.services.verifier.plugin.client.api.NewColumn;
 import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
+import org.drools.workbench.services.verifier.plugin.client.api.SortTable;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -70,5 +71,9 @@ public class DTableUpdateManager {
                                  new ModelMetaDataEnhancer(model).getHeaderMetaData(),
                                  fieldTypeProducer.getFactTypes(),
                                  index));
+    }
+
+    public void sort(final List<Integer> rowOrder) {
+        poster.post(new SortTable(rowOrder));
     }
 }

@@ -18,7 +18,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 
@@ -117,9 +119,9 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
                 uiModel.setCellValueInternal(rowIndex,
                                              columnIndex,
                                              gridWidgetCellFactory.convertCell(modelCell,
-                                                                          modelColumn,
-                                                                          cellUtilities,
-                                                                          columnUtilities));
+                                                                               modelColumn,
+                                                                               cellUtilities,
+                                                                               columnUtilities));
             }
             uiModel.indexColumn(columnIndex);
 
@@ -207,5 +209,36 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
                                     row);
             }
         }
+    }
+
+    @Override
+    public boolean handlesSort() throws VetoException {
+        return true;
+    }
+
+    @Override
+    public void sort(final List<Integer> sortOrder) throws VetoException {
+        //Check operation is supported
+        if (!handlesSort()) {
+            return;
+        }
+        if (sortOrder.size() != model.getData().size()) {
+            throw new VetoException();
+        }
+
+        final Map<Integer, Integer> sourceToTarget = new HashMap<>();
+
+        int targetRowIndex = 0;
+        for (Integer sourceRowIndex : sortOrder) {
+            sourceToTarget.put(sourceRowIndex, targetRowIndex++);
+        }
+
+        Collections.sort(model.getData(), (o1, o2) -> {
+            final int rowIndex1 = o1.get(0).getNumericValue().intValue() - 1;
+            final int rowIndex2 = o2.get(0).getNumericValue().intValue() - 1;
+
+            return sourceToTarget.get(rowIndex1) - sourceToTarget.get(rowIndex2);
+        });
+
     }
 }

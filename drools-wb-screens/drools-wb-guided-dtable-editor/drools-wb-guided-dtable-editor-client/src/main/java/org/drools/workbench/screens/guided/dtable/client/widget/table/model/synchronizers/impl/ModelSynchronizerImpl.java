@@ -404,6 +404,26 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     }
 
     @Override
+    public void sort(final List<Integer> sortOrder) throws VetoException {
+
+        final List<Synchronizer> handlers = new ArrayList<>();
+        for (Synchronizer synchronizer : synchronizers) {
+            if (synchronizer.handlesSort()) {
+                handlers.add(synchronizer);
+            }
+        }
+
+        if (handlers.isEmpty()) {
+            throw new MoveVetoException();
+        }
+
+        for (Synchronizer synchronizer : handlers) {
+            synchronizer.sort(sortOrder);
+        }
+
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public void moveRowsTo(final int targetRowIndex,
                            final List<GridRow> rows) throws VetoException {

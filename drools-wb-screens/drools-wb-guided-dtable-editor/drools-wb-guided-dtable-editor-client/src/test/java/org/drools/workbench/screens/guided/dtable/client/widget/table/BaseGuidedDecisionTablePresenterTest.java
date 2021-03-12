@@ -42,6 +42,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager.GuidedDecisionTableLockManager;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.impl.GridWidgetCellFactoryImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
@@ -275,10 +276,11 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     protected GuidedDecisionTablePresenter dtPresenter;
     protected GuidedDecisionTableEditorContent dtContent;
     @Mock
-    private DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
+    protected DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
 
     @Mock
-    private PluginHandler pluginHandler;
+    protected PluginHandler pluginHandler;
+    protected GuidedDecisionTableUiModel uiModel;
 
     @Before
     public void setup() {
@@ -312,93 +314,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     }
 
     protected GuidedDecisionTablePresenter setupPresenter() {
-        final GuidedDecisionTablePresenter wrapped = new GuidedDecisionTablePresenter(identity,
-                                                                                      resourceType,
-                                                                                      ruleNameServiceCaller,
-                                                                                      decisionTableSelectedEvent,
-                                                                                      decisionTableColumnSelectedEvent,
-                                                                                      decisionTableSelectionsChangedEvent,
-                                                                                      refreshAttributesPanelEvent,
-                                                                                      refreshMetaDataPanelEvent,
-                                                                                      refreshConditionsPanelEvent,
-                                                                                      refreshActionsPanelEvent,
-                                                                                      refreshMenusEvent,
-                                                                                      notificationEvent,
-                                                                                      gridWidgetCellFactory,
-                                                                                      gridWidgetColumnFactory,
-                                                                                      oracleFactory,
-                                                                                      synchronizer,
-                                                                                      beanManager,
-                                                                                      lockManager,
-                                                                                      linkManager,
-                                                                                      clipboard,
-                                                                                      decisionTableAnalyzerProvider,
-                                                                                      enumLoaderUtilities,
-                                                                                      pluginHandler,
-                                                                                      authorizationManager,
-                                                                                      sessionInfo) {
-            @Override
-            void initialiseLockManager() {
-                //Do nothing for tests
-            }
-
-            @Override
-            GuidedDecisionTableRenderer makeViewRenderer() {
-                return renderer;
-            }
-
-            @Override
-            GuidedDecisionTableView makeView(final Set<PortableWorkDefinition> workItemDefinitions) {
-                return view;
-            }
-
-            @Override
-            void initialiseAuditLog() {
-                //Do nothing for tests
-            }
-
-            @Override
-            List<BaseColumnConverter> getConverters() {
-                final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-                converters.add(new ActionInsertFactColumnConverter());
-                converters.add(new ActionRetractFactColumnConverter());
-                converters.add(new ActionSetFieldColumnConverter());
-                converters.add(new ActionWorkItemExecuteColumnConverter());
-                converters.add(new ActionWorkItemInsertFactColumnConverter());
-                converters.add(new ActionWorkItemSetFieldColumnConverter());
-                converters.add(new AttributeColumnConverter());
-                converters.add(new BRLActionVariableColumnConverter());
-                converters.add(new BRLConditionVariableColumnConverter());
-                converters.add(new ConditionColumnConverter());
-                converters.add(new DescriptionColumnConverter());
-                converters.add(new LimitedEntryColumnConverter());
-                converters.add(new MetaDataColumnConverter());
-                converters.add(new RuleNameColumnConverter());
-                converters.add(new RowNumberColumnConverter());
-                return converters;
-            }
-
-            @Override
-            List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> getSynchronizers() {
-                final List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> synchronizers = new ArrayList<>();
-                synchronizers.add(new ActionColumnSynchronizer());
-                synchronizers.add(new ActionInsertFactColumnSynchronizer());
-                synchronizers.add(new ActionRetractFactColumnSynchronizer());
-                synchronizers.add(new ActionSetFieldColumnSynchronizer());
-                synchronizers.add(new ActionWorkItemExecuteColumnSynchronizer());
-                synchronizers.add(new ActionWorkItemInsertFactColumnSynchronizer());
-                synchronizers.add(new ActionWorkItemSetFieldColumnSynchronizer());
-                synchronizers.add(new AttributeColumnSynchronizer());
-                synchronizers.add(new BRLActionColumnSynchronizer());
-                synchronizers.add(new BRLConditionColumnSynchronizer());
-                synchronizers.add(new ConditionColumnSynchronizer());
-                synchronizers.add(new LimitedEntryBRLActionColumnSynchronizer());
-                synchronizers.add(new LimitedEntryBRLConditionColumnSynchronizer());
-                synchronizers.add(new MetaDataColumnSynchronizer());
-                synchronizers.add(new RowSynchronizer());
-                return synchronizers;
-            }
-        };
+        final GuidedDecisionTablePresenter wrapped = makeGuidedDecisionTablePresenterMock();
         GuidedDecisionTablePresenter presenter = spy(wrapped);
 
         model = new GuidedDecisionTable52();
@@ -428,5 +344,156 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                              false);
 
         return presenter;
+    }
+
+    protected GuidedDecisionTablePresenter makeGuidedDecisionTablePresenterMock() {
+        return new GuidedDecisionTablePresenterBaseMock(identity,
+                                                        resourceType,
+                                                        ruleNameServiceCaller,
+                                                        decisionTableSelectedEvent,
+                                                        decisionTableColumnSelectedEvent,
+                                                        decisionTableSelectionsChangedEvent,
+                                                        refreshAttributesPanelEvent,
+                                                        refreshMetaDataPanelEvent,
+                                                        refreshConditionsPanelEvent,
+                                                        refreshActionsPanelEvent,
+                                                        refreshMenusEvent,
+                                                        notificationEvent,
+                                                        gridWidgetCellFactory,
+                                                        gridWidgetColumnFactory,
+                                                        oracleFactory,
+                                                        synchronizer,
+                                                        beanManager,
+                                                        lockManager,
+                                                        linkManager,
+                                                        clipboard,
+                                                        decisionTableAnalyzerProvider,
+                                                        enumLoaderUtilities,
+                                                        pluginHandler,
+                                                        authorizationManager,
+                                                        sessionInfo);
+    }
+
+    class GuidedDecisionTablePresenterBaseMock extends GuidedDecisionTablePresenter {
+
+        public GuidedDecisionTablePresenterBaseMock(final User identity,
+                                                    final GuidedDTableResourceType resourceType,
+                                                    final Caller<RuleNamesService> ruleNameService,
+                                                    final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                                    final Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent,
+                                                    final Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent,
+                                                    final Event<RefreshAttributesPanelEvent> refreshAttributesPanelEvent,
+                                                    final Event<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent,
+                                                    final Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent,
+                                                    final Event<RefreshActionsPanelEvent> refreshActionsPanelEvent,
+                                                    final Event<RefreshMenusEvent> refreshMenusEvent,
+                                                    final Event<NotificationEvent> notificationEvent,
+                                                    final GridWidgetCellFactory gridWidgetCellFactory,
+                                                    final GridWidgetColumnFactory gridWidgetColumnFactory,
+                                                    final AsyncPackageDataModelOracleFactory oracleFactory,
+                                                    final ModelSynchronizer synchronizer,
+                                                    final SyncBeanManager beanManager,
+                                                    final GuidedDecisionTableLockManager lockManager,
+                                                    final GuidedDecisionTableLinkManager linkManager,
+                                                    final Clipboard clipboard,
+                                                    final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider,
+                                                    final EnumLoaderUtilities enumLoaderUtilities,
+                                                    final PluginHandler pluginHandler,
+                                                    final AuthorizationManager authorizationManager,
+                                                    final SessionInfo sessionInfo) {
+            super(identity,
+                  resourceType,
+                  ruleNameService,
+                  decisionTableSelectedEvent,
+                  decisionTableColumnSelectedEvent,
+                  decisionTableSelectionsChangedEvent,
+                  refreshAttributesPanelEvent,
+                  refreshMetaDataPanelEvent,
+                  refreshConditionsPanelEvent,
+                  refreshActionsPanelEvent,
+                  refreshMenusEvent,
+                  notificationEvent,
+                  gridWidgetCellFactory,
+                  gridWidgetColumnFactory,
+                  oracleFactory,
+                  synchronizer,
+                  beanManager,
+                  lockManager,
+                  linkManager,
+                  clipboard,
+                  decisionTableAnalyzerProvider,
+                  enumLoaderUtilities,
+                  pluginHandler,
+                  authorizationManager,
+                  sessionInfo);
+        }
+
+        @Override
+        void initialiseLockManager() {
+            //Do nothing for tests
+        }
+
+        @Override
+        GuidedDecisionTableRenderer makeViewRenderer() {
+            return renderer;
+        }
+
+        @Override
+        GuidedDecisionTableView makeView(final Set<PortableWorkDefinition> workItemDefinitions) {
+            return view;
+        }
+
+        @Override
+        void initialiseAuditLog() {
+            //Do nothing for tests 
+        }
+
+        @Override
+        List<BaseColumnConverter> getConverters() {
+            final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
+            converters.add(new ActionInsertFactColumnConverter());
+            converters.add(new ActionRetractFactColumnConverter());
+            converters.add(new ActionSetFieldColumnConverter());
+            converters.add(new ActionWorkItemExecuteColumnConverter());
+            converters.add(new ActionWorkItemInsertFactColumnConverter());
+            converters.add(new ActionWorkItemSetFieldColumnConverter());
+            converters.add(new AttributeColumnConverter());
+            converters.add(new BRLActionVariableColumnConverter());
+            converters.add(new BRLConditionVariableColumnConverter());
+            converters.add(new ConditionColumnConverter());
+            converters.add(new DescriptionColumnConverter());
+            converters.add(new LimitedEntryColumnConverter());
+            converters.add(new MetaDataColumnConverter());
+            converters.add(new RuleNameColumnConverter());
+            converters.add(new RowNumberColumnConverter());
+            return converters;
+        }
+
+        @Override
+        List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> getSynchronizers() {
+            final List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> synchronizers = new ArrayList<>();
+            synchronizers.add(new ActionColumnSynchronizer());
+            synchronizers.add(new ActionInsertFactColumnSynchronizer());
+            synchronizers.add(new ActionRetractFactColumnSynchronizer());
+            synchronizers.add(new ActionSetFieldColumnSynchronizer());
+            synchronizers.add(new ActionWorkItemExecuteColumnSynchronizer());
+            synchronizers.add(new ActionWorkItemInsertFactColumnSynchronizer());
+            synchronizers.add(new ActionWorkItemSetFieldColumnSynchronizer());
+            synchronizers.add(new AttributeColumnSynchronizer());
+            synchronizers.add(new BRLActionColumnSynchronizer());
+            synchronizers.add(new BRLConditionColumnSynchronizer());
+            synchronizers.add(new ConditionColumnSynchronizer());
+            synchronizers.add(new LimitedEntryBRLActionColumnSynchronizer());
+            synchronizers.add(new LimitedEntryBRLConditionColumnSynchronizer());
+            synchronizers.add(new MetaDataColumnSynchronizer());
+            synchronizers.add(new RowSynchronizer());
+            return synchronizers;
+        }
+
+        @Override
+        GuidedDecisionTableUiModel makeUiModel() {
+            uiModel = super.makeUiModel();
+            return uiModel;
+        }
     }
 }

@@ -47,6 +47,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieDocument;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
@@ -186,6 +187,8 @@ public interface GuidedDecisionTableView extends GridWidget,
 
         boolean hasEditableColumns();
 
-        void setShowRuleName(boolean show);
+        void setShowRuleName(final boolean show);
+
+        void onSort(final GridColumn gridColumn) ;
     }
 }
