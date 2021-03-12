@@ -17,9 +17,11 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/installers"
 )
 
 func registerKeycloakSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Keycloak Operator is deployed$`, data.keycloakOperatorIsDeployed)
 	ctx.Step(`^Keycloak instance is deployed$`, data.keycloakInstanceIsDeployed)
 	ctx.Step(`^Keycloak instance with realm "([^"]*)" and client "([^"]*)" is deployed$`, data.keycloakInstanceWithRealmAndClientIsDeployed)
 	ctx.Step(`^Keycloak realm "([^"]*)" is deployed$`, data.keycloakRealmIsDeployed)
@@ -27,6 +29,10 @@ func registerKeycloakSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Keycloak user "([^"]*)" with password "([^"]*)" is deployed$`, data.keycloakUserWithPasswordIsDeployed)
 
 	ctx.Step(`^Stores access token for user "([^"]*)" and password "([^"]*)" on realm "([^"]*)" and client "([^"]*)" into variable "([^"]*)"$`, data.storesAccessTokenForUserAndPasswordOnRealmAndClientIntoVariable)
+}
+
+func (data *Data) keycloakOperatorIsDeployed() error {
+	return installers.GetKeycloakInstaller().Install(data.Namespace)
 }
 
 func (data *Data) keycloakInstanceIsDeployed() error {

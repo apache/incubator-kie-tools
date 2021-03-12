@@ -16,17 +16,12 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/core/logger"
 	"github.com/kiegroup/kogito-cloud-operator/meta"
-	"strings"
 
-	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
-
-	coreapps "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
-	rbac "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
@@ -34,7 +29,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/core/framework"
 	"github.com/kiegroup/kogito-cloud-operator/core/operator"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	"github.com/kiegroup/kogito-cloud-operator/version"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
@@ -52,24 +46,15 @@ const (
 	kogitoOperatorDeploymentName = "kogito-operator-controller-manager"
 
 	// kogitoCatalogSourceName name of the CatalogSource containing Kogito bundle for BDD tests
-	kogitoCatalogSourceName           = "bdd-tests-kogito-catalog"
-	kogitoOperatorSubscriptionName    = "kogito-operator"
-	kogitoOperatorSubscriptionChannel = "alpha"
+	kogitoCatalogSourceName = "bdd-tests-kogito-catalog"
 
 	openShiftMarketplaceNamespace = "openshift-marketplace"
 )
 
-type dependentOperator struct {
-	operatorPackageName string
-	timeoutInMin        int
-	channel             string
-	clusterWide         bool
-}
-
-type operatorCatalog struct {
-	source       string
-	namespace    string
-	dependencies map[string]dependentOperator
+// OperatorCatalog OLM operator catalog
+type OperatorCatalog struct {
+	source    string
+	namespace string
 }
 
 var (
@@ -84,81 +69,22 @@ var (
 
 	kogitoOperatorCatalogSourceTimeoutInMin = 3
 
-	commonKogitoOperatorDependencies = map[string]dependentOperator{
-		kogitoInfinispanDependencyName: {
-			operatorPackageName: "infinispan",
-			timeoutInMin:        10,
-			channel:             "2.0.x",
-			clusterWide:         false,
-		},
-		kogitoKafkaDependencyName: {
-			operatorPackageName: "strimzi-kafka-operator",
-			timeoutInMin:        10,
-			channel:             "stable",
-			clusterWide:         true,
-		},
-		kogitoKeycloakDependencyName: {
-			operatorPackageName: "keycloak-operator",
-			timeoutInMin:        10,
-			channel:             "alpha",
-			clusterWide:         false,
-		},
-	}
-
 	// CommunityCatalog operator catalog for community
-	CommunityCatalog = operatorCatalog{
-		source:       "community-operators",
-		namespace:    "openshift-marketplace",
-		dependencies: commonKogitoOperatorDependencies,
+	CommunityCatalog = OperatorCatalog{
+		source:    "community-operators",
+		namespace: openShiftMarketplaceNamespace,
 	}
 	// OperatorHubCatalog operator catalog of Operator Hub
-	OperatorHubCatalog = operatorCatalog{
-		source:       "operatorhubio-catalog",
-		namespace:    "olm",
-		dependencies: commonKogitoOperatorDependencies,
+	OperatorHubCatalog = OperatorCatalog{
+		source:    "operatorhubio-catalog",
+		namespace: "olm",
 	}
-	// customKogitoOperatorCatalog operator catalog of custom Kogito operator used for BDD tests
-	customKogitoOperatorCatalog = operatorCatalog{
+	// CustomKogitoOperatorCatalog operator catalog of custom Kogito operator used for BDD tests
+	CustomKogitoOperatorCatalog = OperatorCatalog{
 		source:    kogitoCatalogSourceName,
 		namespace: openShiftMarketplaceNamespace,
 	}
 )
-
-// DeployNamespacedKogitoOperatorUsingOlm Deploy Kogito Operator watching for specified namespace using OLM, return all objects created for deployment
-// Will be deployed in the same namespace as it will watch for
-func DeployNamespacedKogitoOperatorUsingOlm(deploymentNamespace string) error {
-	return InstallOperator(deploymentNamespace, kogitoOperatorSubscriptionName, kogitoOperatorSubscriptionChannel, customKogitoOperatorCatalog)
-}
-
-// DeployClusterWideKogitoOperatorFromYaml Deploy Kogito Operator watching for all namespaces from yaml files, return all objects created for deployment
-func DeployClusterWideKogitoOperatorFromYaml(deploymentNamespace string) error {
-	yamlContent, err := ReadFromURI(config.GetOperatorYamlURI())
-	if err != nil {
-		GetLogger(deploymentNamespace).Error(err, "Error while reading kogito-operator.yaml file")
-		return err
-	}
-
-	yamlContent = strings.ReplaceAll(yamlContent, "quay.io/kiegroup/kogito-cloud-operator:"+version.Version, getOperatorImageNameAndTag())
-
-	tempFilePath, err := CreateTemporaryFile("kogito-operator*.yaml", yamlContent)
-	if err != nil {
-		GetLogger(deploymentNamespace).Error(err, "Error while storing adjusted YAML content to temporary file")
-		return err
-	}
-
-	_, err = CreateCommand("oc", "apply", "-f", tempFilePath, "-n", deploymentNamespace).WithLoggerContext(deploymentNamespace).Execute()
-	if err != nil {
-		GetLogger(deploymentNamespace).Error(err, "Error while installing Kogito operator from YAML file")
-		return err
-	}
-
-	return nil
-}
-
-// DeployClusterWideKogitoOperatorUsingOlm Deploy Kogito Operator watching for all namespaces using OLM, return all objects created for deployment
-func DeployClusterWideKogitoOperatorUsingOlm() error {
-	return InstallClusterWideOperator(kogitoOperatorSubscriptionName, kogitoOperatorSubscriptionChannel, customKogitoOperatorCatalog)
-}
 
 // IsKogitoOperatorRunning returns whether Kogito operator is running
 func IsKogitoOperatorRunning(namespace string) (bool, error) {
@@ -230,67 +156,8 @@ func WaitForKogitoOperatorRunning(namespace string) error {
 		})
 }
 
-// WaitForKogitoOperatorRunningWithDependencies waits for Kogito operator running as well as other dependent operators
-func WaitForKogitoOperatorRunningWithDependencies(namespace string) error {
-	if err := WaitForKogitoOperatorRunning(namespace); err != nil {
-		return err
-	}
-
-	for dependentOperator := range CommunityCatalog.dependencies {
-		if err := WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator, CommunityCatalog); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// WaitForClusterWideKogitoOperatorRunningUsingOlm waits for a cluster wide Kogito operator to be running in OLM
-func WaitForClusterWideKogitoOperatorRunningUsingOlm() error {
-	olmNamespace := config.GetOlmNamespace()
-	return WaitForOnOpenshift(olmNamespace, fmt.Sprintf("%s operator in namespace %s running", kogitoOperatorSubscriptionName, olmNamespace), kogitoOperatorTimeoutInMin,
-		func() (bool, error) {
-			return IsOperatorRunning(olmNamespace, kogitoOperatorSubscriptionName, customKogitoOperatorCatalog)
-		})
-}
-
-// InstallKogitoOperatorDependency installs dependent operator from parameter
-func InstallKogitoOperatorDependency(namespace, dependentOperator string, catalog operatorCatalog) error {
-	if operatorInfo, exists := catalog.dependencies[dependentOperator]; exists {
-		if operatorInfo.clusterWide {
-			if err := InstallClusterWideOperator(operatorInfo.operatorPackageName, operatorInfo.channel, catalog); err != nil {
-				return err
-			}
-		} else {
-			if err := InstallOperator(namespace, operatorInfo.operatorPackageName, operatorInfo.channel, catalog); err != nil {
-				return err
-			}
-		}
-	} else {
-		return fmt.Errorf("Operator %s not found", dependentOperator)
-	}
-	return nil
-}
-
-// WaitForKogitoOperatorDependencyRunning waits for dependent operator to be running
-func WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator string, catalog operatorCatalog) error {
-	if operatorInfo, exists := catalog.dependencies[dependentOperator]; exists {
-		if operatorInfo.clusterWide {
-			if err := WaitForClusterWideOperatorRunning(operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
-				return err
-			}
-		} else {
-			if err := WaitForOperatorRunning(namespace, operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
-				return err
-			}
-		}
-	} else {
-		return fmt.Errorf("Operator %s not found", dependentOperator)
-	}
-	return nil
-}
-
 // InstallOperator installs an operator via subscrition
-func InstallOperator(namespace, subscriptionName, channel string, catalog operatorCatalog) error {
+func InstallOperator(namespace, subscriptionName, channel string, catalog OperatorCatalog) error {
 	GetLogger(namespace).Info("Subscribing to operator", "subscriptionName", subscriptionName, "catalogSource", catalog.source, "channel", channel)
 	if _, err := CreateOperatorGroupIfNotExists(namespace, namespace); err != nil {
 		return err
@@ -304,7 +171,7 @@ func InstallOperator(namespace, subscriptionName, channel string, catalog operat
 }
 
 // InstallClusterWideOperator installs an operator for all namespaces via subscrition
-func InstallClusterWideOperator(subscriptionName, channel string, catalog operatorCatalog) error {
+func InstallClusterWideOperator(subscriptionName, channel string, catalog OperatorCatalog) error {
 	olmNamespace := config.GetOlmNamespace()
 	GetLogger(olmNamespace).Info("Subscribing to operator", "subscriptionName", subscriptionName, "catalogSource", catalog.source, "channel", channel, "namespace", olmNamespace)
 	if _, err := CreateNamespacedSubscriptionIfNotExist(olmNamespace, subscriptionName, subscriptionName, catalog, channel); err != nil {
@@ -315,7 +182,7 @@ func InstallClusterWideOperator(subscriptionName, channel string, catalog operat
 }
 
 // WaitForOperatorRunning waits for an operator to be running
-func WaitForOperatorRunning(namespace, operatorPackageName string, catalog operatorCatalog, timeoutInMin int) error {
+func WaitForOperatorRunning(namespace, operatorPackageName string, catalog OperatorCatalog, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator running", operatorPackageName), timeoutInMin,
 		func() (bool, error) {
 			return IsOperatorRunning(namespace, operatorPackageName, catalog)
@@ -323,16 +190,13 @@ func WaitForOperatorRunning(namespace, operatorPackageName string, catalog opera
 }
 
 // WaitForClusterWideOperatorRunning waits for a cluster wide operator to be running
-func WaitForClusterWideOperatorRunning(operatorPackageName string, catalog operatorCatalog, timeoutInMin int) error {
+func WaitForClusterWideOperatorRunning(operatorPackageName string, catalog OperatorCatalog, timeoutInMin int) error {
 	olmNamespace := config.GetOlmNamespace()
-	return WaitForOnOpenshift(olmNamespace, fmt.Sprintf("%s operator in namespace %s running", operatorPackageName, olmNamespace), timeoutInMin,
-		func() (bool, error) {
-			return IsOperatorRunning(olmNamespace, operatorPackageName, catalog)
-		})
+	return WaitForOperatorRunning(olmNamespace, operatorPackageName, catalog, timeoutInMin)
 }
 
 // IsOperatorRunning checks whether an operator is running
-func IsOperatorRunning(namespace, operatorPackageName string, catalog operatorCatalog) (bool, error) {
+func IsOperatorRunning(namespace, operatorPackageName string, catalog OperatorCatalog) (bool, error) {
 	exists, err := OperatorExistsUsingSubscription(namespace, operatorPackageName, catalog.source)
 	if err != nil {
 		if exists {
@@ -395,7 +259,7 @@ func CreateOperatorGroupIfNotExists(namespace, operatorGroupName string) (*olmap
 }
 
 // CreateNamespacedSubscriptionIfNotExist create a namespaced subscription if not exists
-func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, catalog operatorCatalog, channel string) (*olmapiv1alpha1.Subscription, error) {
+func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, catalog OperatorCatalog, channel string) (*olmapiv1alpha1.Subscription, error) {
 	subscription := &olmapiv1alpha1.Subscription{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      subscriptionName,
@@ -429,6 +293,23 @@ func GetClusterWideTestSubscriptions() (*olmapiv1alpha1.SubscriptionList, error)
 	return subscriptions, nil
 }
 
+// GetSubscription returns subscription
+func GetSubscription(namespace, operatorPackageName string, catalog OperatorCatalog) (*olmapiv1alpha1.Subscription, error) {
+	subscription, err := framework.GetSubscription(kubeClient, namespace, operatorPackageName, catalog.source)
+	if err != nil {
+		return nil, err
+	} else if subscription == nil {
+		return nil, fmt.Errorf("Subscription with name %s and operator source %s not found in namespace %s", operatorPackageName, catalog.source, namespace)
+	}
+
+	return subscription, nil
+}
+
+// GetClusterWideSubscription returns cluster wide subscription
+func GetClusterWideSubscription(operatorPackageName string, catalog OperatorCatalog) (*olmapiv1alpha1.Subscription, error) {
+	return GetSubscription(config.GetOlmNamespace(), operatorPackageName, catalog)
+}
+
 // DeleteSubscription deletes Subscription and related objects
 func DeleteSubscription(subscription *olmapiv1alpha1.Subscription) error {
 	installedCsv := subscription.Status.InstalledCSV
@@ -454,64 +335,9 @@ func DeleteSubscription(subscription *olmapiv1alpha1.Subscription) error {
 	return nil
 }
 
-func getOperatorImageNameAndTag() string {
+// GetOperatorImageNameAndTag ...
+func GetOperatorImageNameAndTag() string {
 	return fmt.Sprintf("%s:%s", config.GetOperatorImageName(), config.GetOperatorImageTag())
-}
-
-// DeployMongoDBOperatorFromYaml Deploy Kogito Operator from yaml files
-func DeployMongoDBOperatorFromYaml(namespace string) error {
-	GetLogger(namespace).Info("Deploy MongoDB from yaml files", "file uri", mongoDBOperatorDeployFilesURI)
-
-	context := &operator.Context{
-		Client: kubeClient,
-		Log:    logger.GetLogger(namespace),
-		Scheme: meta.GetRegisteredSchema(),
-	}
-	mongoHandler := infrastructure.NewMongoDBHandler(context)
-	if !mongoHandler.IsMongoDBAvailable() {
-		if err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"crds/mongodb.com_mongodb_crd.yaml", &apiextensionsv1beta1.CustomResourceDefinition{}, nil); err != nil {
-			return err
-		}
-	}
-
-	if err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"service_account.yaml", &corev1.ServiceAccount{}, nil); err != nil {
-		return err
-	}
-	if err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"role.yaml", &rbac.Role{}, nil); err != nil {
-		return err
-	}
-	if err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"role_binding.yaml", &rbac.RoleBinding{}, nil); err != nil {
-		return err
-	}
-
-	// Then deploy operator
-	err := loadResource(namespace, mongoDBOperatorDeployFilesURI+"operator.yaml", &coreapps.Deployment{}, func(object interface{}) {
-		if IsOpenshift() {
-			GetLogger(namespace).Debug("Setup MANAGED_SECURITY_CONTEXT env in MongoDB operator for Openshift")
-			object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0].Env = append(object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0].Env,
-				corev1.EnvVar{
-					Name:  "MANAGED_SECURITY_CONTEXT",
-					Value: "true",
-				})
-		}
-	})
-	if err != nil {
-		return err
-	}
-
-	// Set correct file to be deployed
-	if IsOpenshift() {
-		// Used to give correct access to pvc/secret
-		// https://github.com/mongodb/mongodb-kubernetes-operator/issues/212#issuecomment-704744307
-		output, err := CreateCommand("oc", "adm", "policy", "add-scc-to-user", "anyuid", "system:serviceaccount:"+namespace+":mongodb-kubernetes-operator").WithLoggerContext(namespace).Sync("add-scc-to-user").Execute()
-		if err != nil {
-			GetLogger(namespace).Error(err, "Error while trying to set specific rights for MongoDB deployments")
-			return err
-		}
-		GetLogger(namespace).Info(output)
-	}
-
-	return nil
 }
 
 // WaitForMongoDBOperatorRunning waits for MongoDB operator to be running

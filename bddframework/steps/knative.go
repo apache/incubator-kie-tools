@@ -17,6 +17,7 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/installers"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -24,9 +25,14 @@ import (
 )
 
 func registerKnativeSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Install Knative eventing$`, data.installKnativeEventing)
 	ctx.Step(`^Deploy Knative Broker "([^"]*)"$`, data.deployKnativeBroker)
 	ctx.Step(`^Create Knative Trigger "([^"]*)" receiving events from Broker "([^"]*)" delivering to Service "([^"]*)"$`, data.createKnativeTrigger)
 	ctx.Step(`^Deploy Event display "([^"]*)"$`, data.deployEventDisplay)
+}
+
+func (data *Data) installKnativeEventing() error {
+	return installers.GetKnativeEventingInstaller().Install(data.Namespace)
 }
 
 func (data *Data) deployKnativeBroker(name string) error {

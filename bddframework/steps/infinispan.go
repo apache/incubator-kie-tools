@@ -19,6 +19,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/installers"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 )
 
@@ -39,10 +40,15 @@ var performanceInfinispanContainerSpec = infinispan.InfinispanContainerSpec{
 }
 
 func registerInfinispanSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Infinispan Operator is deployed$`, data.infinispanOperatorIsDeployed)
 	ctx.Step(`^Infinispan instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.infinispanInstanceHasPodsRunningWithinMinutes)
 	ctx.Step(`^Infinispan instance "([^"]*)" is deployed with configuration:$`, data.infinispanInstanceIsDeployedWithConfiguration)
 	ctx.Step(`^Infinispan instance "([^"]*)" is deployed for performance within (\d+) minute\(s\) with configuration:$`, data.infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration)
 	ctx.Step(`^Scale Infinispan instance "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleInfinispanInstanceToPodsWithinMinutes)
+}
+
+func (data *Data) infinispanOperatorIsDeployed() error {
+	return installers.GetInfinispanInstaller().Install(data.Namespace)
 }
 
 func (data *Data) infinispanInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {

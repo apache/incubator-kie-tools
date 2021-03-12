@@ -7,13 +7,6 @@ Feature: CLI: Project
   Background:
     Given Namespace is created
 
-  Scenario: CLI use project
-    When CLI use namespace
-
-    Then Kogito operator should be installed with dependencies
-
-#####
-
   Scenario: CLI use project and set Kogito Data Index
     When CLI use namespace with Kogito Data Index
 

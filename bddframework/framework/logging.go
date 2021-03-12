@@ -19,12 +19,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/core/logger"
 	"io"
 	"os"
 	"reflect"
 	"sync"
 	"time"
+
+	"github.com/kiegroup/kogito-cloud-operator/core/logger"
 
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/core/framework/util"

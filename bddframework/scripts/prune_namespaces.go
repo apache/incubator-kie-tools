@@ -19,6 +19,11 @@ import (
 )
 
 func main() {
+	// Create kube client
+	if err := framework.InitKubeClient(); err != nil {
+		panic(err)
+	}
+
 	namespaces := framework.GetNamespacesInHistory()
 	for _, namespace := range namespaces {
 		if len(namespace) > 0 {

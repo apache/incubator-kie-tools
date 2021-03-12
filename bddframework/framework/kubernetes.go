@@ -16,11 +16,12 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/meta"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-cloud-operator/meta"
 
 	"github.com/kiegroup/kogito-cloud-operator/core/client"
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
@@ -31,6 +32,7 @@ import (
 	k8sv1beta1 "k8s.io/api/extensions/v1beta1"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -68,6 +70,19 @@ func WaitForPodsWithLabel(namespace, labelName, labelValue string, numberOfPods,
 
 			return CheckPodsAreReady(pods), nil
 		}, CheckPodsWithLabelInError(namespace, labelName, labelValue))
+}
+
+// WaitForPodsInNamespace waits for pods in specific namespace to be available and running
+func WaitForPodsInNamespace(namespace string, numberOfPods, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, "Pods in namespace available and running", timeoutInMin,
+		func() (bool, error) {
+			pods, err := GetPods(namespace)
+			if err != nil || (len(pods.Items) != numberOfPods) {
+				return false, err
+			}
+
+			return CheckPodsAreReady(pods), nil
+		}, CheckPodsInNamespaceInError(namespace))
 }
 
 // GetPods retrieves all pods in namespace
@@ -191,7 +206,8 @@ func GetDeployment(namespace, deploymentName string) (*apps.Deployment, error) {
 	return deployment, nil
 }
 
-func loadResource(namespace, uri string, resourceRef kubernetes.ResourceObject, beforeCreate func(object interface{})) error {
+// LoadResource loads the resource from provided URI and creates it in the cluster
+func LoadResource(namespace, uri string, resourceRef kubernetes.ResourceObject, beforeCreate func(object interface{})) error {
 	GetLogger(namespace).Debug("loadResource", "uri", uri)
 
 	data, err := ReadFromURI(uri)
@@ -285,6 +301,11 @@ func CreateObject(o kubernetes.ResourceObject) error {
 	return kubernetes.ResourceC(kubeClient).Create(o)
 }
 
+// GetObjectsInNamespace returns list of objects in specific namespace based on type
+func GetObjectsInNamespace(namespace string, list runtime.Object) error {
+	return kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, list)
+}
+
 // DeleteObject deletes object
 func DeleteObject(o kubernetes.ResourceObject) error {
 	return kubernetes.ResourceC(kubeClient).Delete(o)
@@ -344,6 +365,18 @@ func CheckPodsByDeploymentInError(namespace string, dName string) func() (bool, 
 func CheckPodsWithLabelInError(namespace, labelName, labelValue string) func() (bool, error) {
 	return func() (bool, error) {
 		pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
+		if err != nil {
+			return true, err
+
+		}
+		return checkPodsInError(pods.Items)
+	}
+}
+
+// CheckPodsInNamespaceInError returns a function that checks the pods error state.
+func CheckPodsInNamespaceInError(namespace string) func() (bool, error) {
+	return func() (bool, error) {
+		pods, err := GetPods(namespace)
 		if err != nil {
 			return true, err
 

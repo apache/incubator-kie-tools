@@ -22,6 +22,7 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -40,6 +41,20 @@ func CreateNamespace(namespace string) error {
 	}
 	onNamespacePostCreated(namespace)
 	return nil
+}
+
+// CreateNamespaceIfNotExists creates a new namespace if not exists, returns true if namespaces already existed
+func CreateNamespaceIfNotExists(namespace string) (exists bool, err error) {
+	GetLogger(namespace).Info("Creating namespace", "namespace", namespace)
+	_, err = kubernetes.NamespaceC(kubeClient).Create(namespace)
+	if err != nil {
+		if errors.IsAlreadyExists(err) {
+			return true, nil
+		}
+		return false, fmt.Errorf("Cannot create namespace %s: %v", namespace, err)
+	}
+	onNamespacePostCreated(namespace)
+	return false, nil
 }
 
 // DeleteNamespace deletes a namespace

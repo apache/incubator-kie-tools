@@ -16,7 +16,11 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/core/logger"
+	"github.com/kiegroup/kogito-cloud-operator/core/operator"
+	"github.com/kiegroup/kogito-cloud-operator/meta"
 
 	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	mongodb "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
@@ -29,12 +33,7 @@ import (
 const (
 	membersSize = 1
 
-	mongoDBOperatorVersion = "v0.2.2"
-	mongoDBVersion         = "4.4.1"
-)
-
-var (
-	mongoDBOperatorDeployFilesURI = "https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/" + mongoDBOperatorVersion + "/deploy/"
+	mongoDBVersion = "4.4.1"
 )
 
 // DeployMongoDBInstance deploys an instance of Mongo DB
@@ -173,4 +172,14 @@ func GetMongoDBStub(openshift bool, namespace, name string, users []MongoDBUserC
 	}
 
 	return stub
+}
+
+// IsMongoDBAvailable checks if MongoDB CRD is available in the cluster
+func IsMongoDBAvailable(namespace string) bool {
+	context := &operator.Context{
+		Client: kubeClient,
+		Log:    logger.GetLogger(namespace),
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	return infrastructure.NewMongoDBHandler(context).IsMongoDBAvailable()
 }

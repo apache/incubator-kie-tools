@@ -17,6 +17,7 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/installers"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 )
 
@@ -28,8 +29,13 @@ import (
 */
 
 func registerMongoDBSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^MongoDB Operator is deployed$`, data.mongoDbOperatorIsDeployed)
 	ctx.Step(`^MongoDB instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.mongodbInstanceHasPodsRunningWithinMinutes)
 	ctx.Step(`^MongoDB instance "([^"]*)" is deployed with configuration:$`, data.mongodbInstanceIsDeployedWithConfiguration)
+}
+
+func (data *Data) mongoDbOperatorIsDeployed() error {
+	return installers.GetMongoDbInstaller().Install(data.Namespace)
 }
 
 func (data *Data) mongodbInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {

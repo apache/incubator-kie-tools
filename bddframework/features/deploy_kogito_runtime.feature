@@ -36,7 +36,8 @@ Feature: Deploy Kogito Runtime
   @persistence
   @infinispan
   Scenario Outline: Deploy <example-service> with Maven profile <profile> with persistence using Kogito Runtime
-    Given Kogito Operator is deployed with Infinispan operator
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
@@ -126,7 +127,9 @@ Feature: Deploy Kogito Runtime
   @infinispan
   @kafka
   Scenario Outline: Deploy <example-service> with Maven profile <profile> with events using Kogito Runtime
-    Given Kogito Operator is deployed with Infinispan and Kafka operators
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
     And Install Kafka Kogito Infra "kafka" within 10 minutes
     And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
@@ -258,7 +261,8 @@ Feature: Deploy Kogito Runtime
   @externalcomponent
   @infinispan
   Scenario: Deploy <example-service> service with Maven profile <profile> using external Infinispan
-    Given Kogito Operator is deployed with Infinispan operator
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
     And Infinispan instance "external-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |
@@ -308,7 +312,8 @@ Feature: Deploy Kogito Runtime
   @externalcomponent
   @mongodb
   Scenario: Deploy <example-service> service with Maven profile <profile> using external MongoDB
-    Given Kogito Operator is deployed with MongoDB operator
+    Given Kogito Operator is deployed
+    And MongoDB Operator is deployed
     And MongoDB instance "external-mongodb" is deployed with configuration:
       | username | developer            |
       | password | mypass               |
@@ -373,7 +378,9 @@ Feature: Deploy Kogito Runtime
   @kafka
   @infinispan
   Scenario: Deploy <example-service> with Maven profile <profile> with events using external Kafka
-    Given Kogito Operator is deployed with Infinispan and Kafka operators
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
     And Kafka instance "external-kafka" is deployed
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
     And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
@@ -424,7 +431,8 @@ Feature: Deploy Kogito Runtime
   @persistence
   @infinispan
   Scenario Outline: Test Kogito Runtime <example-service> failover with Infinispan
-    Given Kogito Operator is deployed with Infinispan operator
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
@@ -477,11 +485,10 @@ Feature: Deploy Kogito Runtime
 
 #####
 
-  # Disabled until automated Knative provisioning is implemented
-  @disabled
   @knative
   Scenario: Deploy process-knative-quickstart-quarkus with Maven profile default using Kogito Runtime
     Given Kogito Operator is deployed
+    And Install Knative eventing
     And Deploy Knative Broker "default"
     And Deploy Event display "event-display"
     And Create Knative Trigger "event-display" receiving events from Broker "default" delivering to Service "event-display"
@@ -504,4 +511,3 @@ Feature: Deploy Kogito Runtime
       """
 
       Then Deployment "event-display" pods log contains text "Kowalski" within 3 minutes
-      And Deployment "event-display" pods log contains text "\"processed\":true" within 3 minutes

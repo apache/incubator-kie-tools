@@ -17,6 +17,7 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/installers"
 )
 
 func registerGrafanaSteps(ctx *godog.ScenarioContext, data *Data) {
@@ -25,12 +26,7 @@ func registerGrafanaSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 func (data *Data) grafanaOperatorIsDeployed() error {
-	err := framework.InstallOperator(data.Namespace, "grafana-operator", "alpha", framework.CommunityCatalog)
-	if err != nil {
-		return err
-	}
-	// Wait until the operator is up and running
-	return framework.WaitForPodsWithLabel(data.Namespace, "name", "grafana-operator", 1, 3)
+	return installers.GetGrafanaInstaller().Install(data.Namespace)
 }
 
 func (data *Data) grafanaInstanceIsDeployed(labelName, labelValue string) error {

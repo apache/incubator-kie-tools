@@ -5,7 +5,9 @@ Feature: Install Kogito Management Console
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with Infinispan and Kafka operators
+    And Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
 
   Scenario: Install Kogito Management Console
     Given Install Infinispan Kogito Infra "infinispan" within 5 minutes

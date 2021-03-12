@@ -6,7 +6,10 @@ Feature: Kogito integration with Keycloak
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with Infinispan, Kafka and Keycloak operators
+    And Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
+    And Keycloak Operator is deployed
 
   @dataindex
   Scenario: Install Kogito Data Index with Keycloak security

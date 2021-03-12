@@ -18,12 +18,18 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/installers"
 )
 
 func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Kafka Operator is deployed$`, data.kafkaOperatorIsDeployed)
 	ctx.Step(`^Kafka instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.kafkaInstanceHasPodsRunningWithinMinutes)
 	ctx.Step(`^Kafka instance "([^"]*)" is deployed$`, data.kafkaInstanceIsDeployed)
 	ctx.Step(`^Kafka topic "([^"]*)" is deployed$`, data.kafkaTopicIsDeployed)
+}
+
+func (data *Data) kafkaOperatorIsDeployed() error {
+	return installers.GetKafkaInstaller().Install(data.Namespace)
 }
 
 func (data *Data) kafkaInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {

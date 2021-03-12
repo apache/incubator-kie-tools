@@ -16,7 +16,6 @@ package steps
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
 	"strings"
 	"sync"
 	"time"
@@ -30,7 +29,7 @@ import (
 )
 
 var (
-	// Map of created namespaces, contains slices of objects created in those namespaces
+	// Map of created namespaces
 	namespacesCreated sync.Map
 )
 
@@ -107,7 +106,7 @@ func generateNamespaceName() string {
 	for isNamespaceAlreadyCreated(ns) {
 		ns = framework.GenerateNamespaceName("cucumber")
 	}
-	namespacesCreated.Store(ns, []kubernetes.ResourceObject{})
+	namespacesCreated.Store(ns, true)
 	return ns
 }
 
@@ -189,13 +188,4 @@ func deleteTemporaryExamplesFolder(data *Data) {
 	if err != nil {
 		framework.GetMainLogger().Error(err, "Error while deleting temporary examples folder", "folderName", data.KogitoExamplesLocation)
 	}
-}
-
-// GetCreatedOperatorObjects returns all operator objects created for this namespace
-func (data *Data) GetCreatedOperatorObjects() []kubernetes.ResourceObject {
-	result := []kubernetes.ResourceObject{}
-	if value, ok := namespacesCreated.Load(data.Namespace); ok {
-		result = value.([]kubernetes.ResourceObject)
-	}
-	return result
 }

@@ -6,7 +6,9 @@ Feature: Deploy Travel agency service and verify its functionality
 
   Background:
     Given Namespace is created
-    And Kogito Operator is deployed with Infinispan and Kafka operators
+    And Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
     And Install Kafka Kogito Infra "kafka" within 10 minutes
     And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes

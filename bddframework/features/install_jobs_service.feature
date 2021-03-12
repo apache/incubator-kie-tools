@@ -27,7 +27,8 @@ Feature: Install Kogito Jobs Service
   @persistence
   @infinispan
   Scenario: Install Kogito Jobs Service with persistence
-    Given Kogito Operator is deployed with Infinispan operator
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
     And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
     
@@ -55,7 +56,9 @@ Feature: Install Kogito Jobs Service
   @kafka
   @infinispan
   Scenario: Jobs service events are stored in Data Index
-    Given Kogito Operator is deployed with Infinispan and Kafka operators
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
     And Install Infinispan Kogito Infra "infinispan" within 5 minutes
     And Install Kafka Kogito Infra "kafka" within 10 minutes
     And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
@@ -88,7 +91,9 @@ Feature: Install Kogito Jobs Service
   @kafka
   @infinispan
   Scenario: Jobs service events are stored in Data Index using external Infinispan and Kafka components
-    Given Kogito Operator is deployed with Infinispan and Kafka operators
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
     And Infinispan instance "external-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |

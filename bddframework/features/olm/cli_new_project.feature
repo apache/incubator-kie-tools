@@ -4,13 +4,6 @@
 @cli
 Feature: CLI: Project
 
-  Scenario: CLI create project    
-    When CLI create namespace
-
-    Then Kogito operator should be installed with dependencies
-
-#####
-
   Scenario: CLI create project with Kogito Data Index   
     When CLI create namespace with Kogito Data Index
 
