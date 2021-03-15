@@ -15,7 +15,7 @@
  */
 
 import '@patternfly/react-core/dist/styles/base.css';
-import "./styles.css";
+import "./styles.scss";
 import {
   EditorFactory,
   KogitoEditorChannelApi,

@@ -12,7 +12,6 @@ jobs:
   build:
     if: github.repository == 'kiegroup/kogito-tooling' || github.event_name != 'schedule'
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
     strategy:
       fail-fast: true
       matrix:

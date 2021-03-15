@@ -82,11 +82,6 @@ test(TEST_NAME, async () => {
     await editorPage.seeAsDiagram();
     expect(await editorPage.isSourceVisible()).toBe(false);
     expect(await editorPage.isEditorVisible()).toBe(true);
-
-    // check link to online editor from clipboard
-    await editorPage.copyLinkToOnlineEditor();
-    const clipboadText: string = await tools.clipboard().getContent();
-    expect(clipboadText).toContain(EXPECTED_LINK);
 });
 
 afterEach(async () => {

@@ -11,9 +11,14 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@patternfly/patternfly": "4.70.2",
-    "@patternfly/react-charts": "6.12.12",
-    "@patternfly/react-core": "4.84.4",
-    "@patternfly/react-icons": "4.7.22"
+    "@patternfly/patternfly": "^4.90.5",
+    "@patternfly/react-charts": "^6.14.6",
+    "@patternfly/react-core": "^4.101.3",
+    "@patternfly/react-icons": "^4.9.5"
+  },
+  "scripts": {
+    "update": "node update_patternfly.js",
+    "update:deps": "node update_patternfly.js -d",
+    "update:snaps": "node update_patternfly.js -s"
   }
 }

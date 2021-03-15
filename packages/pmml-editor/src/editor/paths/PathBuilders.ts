@@ -77,6 +77,10 @@ class ModelBuilder extends BaseBuilder {
     return new BaselineScoreBuilder(this.builders);
   };
 
+  public forUseReasonCodes = () => {
+    return new UseReasonCodesBuilder(this.builders);
+  };
+
   public forCharacteristics = () => {
     return new CharacteristicsBuilder(this.builders);
   };
@@ -218,6 +222,17 @@ class BaselineScoreBuilder extends BaseBuilder {
 
   protected segment(): string {
     return `baselineScore`;
+  }
+}
+
+class UseReasonCodesBuilder extends BaseBuilder {
+  constructor(protected builders: Builders) {
+    super(builders);
+    this.builders.add(this);
+  }
+
+  protected segment(): string {
+    return `useReasonCodes`;
   }
 }
 

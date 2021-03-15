@@ -13,5 +13,6 @@
     "suiteTitleSeparatedBy": ".",
     "useFullSuiteTitle":true,
     "rootSuiteTitle": "@kogito-tooling/kie-editors-standalone"
-  }
+  },
+  "video": false
 }

@@ -67,7 +67,7 @@ describe("startInitPolling", () => {
     await delay(100); //waits for setInterval to kick in
 
     await incomingMessage({
-      envelopeServerId: envelopeServer.id,
+      targetEnvelopeServerId: envelopeServer.id,
       requestId: "EnvelopeServer_0",
       type: "init",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -97,12 +97,12 @@ describe("startInitPolling", () => {
 });
 
 describe("receive", () => {
-  test("any request with different envelopeServerId", () => {
+  test("any request with different targetEnvelopeServerId", () => {
     const receive = jest.spyOn(envelopeServer.manager.server, "receive");
 
     envelopeServer.receive(
       {
-        envelopeServerId: "unknown-id",
+        targetEnvelopeServerId: "unknown-id",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "any",
         type: "someRequest",
@@ -114,10 +114,27 @@ describe("receive", () => {
     expect(receive).not.toBeCalled();
   });
 
-  test("any request with the same envelopeServerId", async () => {
+  test("any request with targetEnvelopeId", () => {
+    const receive = jest.spyOn(envelopeServer.manager.server, "receive");
+
     envelopeServer.receive(
       {
-        envelopeServerId: envelopeServer.id,
+        targetEnvelopeId: "unknown-id",
+        purpose: EnvelopeBusMessagePurpose.REQUEST,
+        requestId: "any",
+        type: "someRequest",
+        data: []
+      },
+      api
+    );
+
+    expect(receive).not.toBeCalled();
+  });
+
+  test("any request with the same targetEnvelopeServerId", async () => {
+    envelopeServer.receive(
+      {
+        targetEnvelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "any",
         type: "someRequest",
@@ -132,10 +149,10 @@ describe("receive", () => {
     expect(api.someRequest).toBeCalledWith("param1");
   });
 
-  test("any notification with different envelopeServerId", () => {
+  test("any notification with different targetEnvelopeServerId", () => {
     envelopeServer.receive(
       {
-        envelopeServerId: "not-mine",
+        targetEnvelopeServerId: "not-mine",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
         data: ["some text"]
@@ -146,10 +163,10 @@ describe("receive", () => {
     expect(api.setText).not.toBeCalled();
   });
 
-  test("any notification with the same envelopeServerId", () => {
+  test("any notification with the same targetEnvelopeServerId", () => {
     envelopeServer.receive(
       {
-        envelopeServerId: envelopeServer.id,
+        targetEnvelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
         data: ["some text"]

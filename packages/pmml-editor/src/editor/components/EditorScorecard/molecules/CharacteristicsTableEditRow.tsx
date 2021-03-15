@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
 import { ExclamationCircleIcon, HelpIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTableRow.scss";
@@ -28,8 +28,11 @@ import { useSelector } from "react-redux";
 import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
-import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { useValidationRegistry } from "../../../validation";
+import { isEqual } from "lodash";
+import get = Reflect.get;
+import set = Reflect.set;
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
@@ -147,6 +150,44 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     return n;
   };
 
+  const onDeleteAttribute = useCallback(
+    attributeIndex => {
+      if (window.confirm(`Delete Attribute?`)) {
+        dispatch({
+          type: Actions.Scorecard_DeleteAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: characteristicIndex,
+            attributeIndex: attributeIndex
+          }
+        });
+      }
+    },
+    [modelIndex, characteristicIndex]
+  );
+
+  const onUpdateAttribute = useCallback(
+    (attributeIndex, partial) => {
+      const attribute = attributes[attributeIndex];
+      const existingPartial: Partial<Attribute> = {};
+      Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+
+      if (!isEqual(partial, existingPartial)) {
+        dispatch({
+          type: Actions.Scorecard_UpdateAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: characteristicIndex,
+            attributeIndex: attributeIndex,
+            ...attribute,
+            ...partial
+          }
+        });
+      }
+    },
+    [modelIndex, characteristicIndex, attributes]
+  );
+
   return (
     <article ref={ref} className={"editable-item__inner"} tabIndex={0}>
       <Stack hasGutter={true}>
@@ -157,10 +198,10 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 label="Name"
                 isRequired={true}
                 fieldId="characteristic-form-name-helper"
-                helperTextInvalid="Name must be unique and present"
+                helperTextInvalid="Name is mandatory and must be unique"
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={name.valid ? "default" : "error"}
-                style={{ width: "16em" }}
+                style={{ width: "18em" }}
               >
                 <TextInput
                   type="text"
@@ -168,6 +209,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   name="characteristic-name"
                   aria-describedby="characteristic-name-helper"
                   value={name.value ?? ""}
+                  placeholder="Name"
                   validated={name.valid ? "default" : "error"}
                   autoFocus={true}
                   onChange={e =>
@@ -180,6 +222,11 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     if (name?.valid) {
                       onCommit({
                         name: name.value
+                      });
+                    } else {
+                      setName({
+                        value: characteristic.characteristic.name,
+                        valid: validateCharacteristicName(characteristic.characteristic.name)
                       });
                     }
                   }}
@@ -293,18 +340,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 characteristic={characteristic.characteristic}
                 areReasonCodesUsed={areReasonCodesUsed}
                 viewAttribute={viewAttribute}
-                deleteAttribute={attributeIndex => {
-                  if (window.confirm(`Delete Attribute?`)) {
-                    dispatch({
-                      type: Actions.Scorecard_DeleteAttribute,
-                      payload: {
-                        modelIndex: modelIndex,
-                        characteristicIndex: characteristicIndex,
-                        attributeIndex: attributeIndex
-                      }
-                    });
-                  }
-                }}
+                deleteAttribute={onDeleteAttribute}
+                onCommit={onUpdateAttribute}
               />
             </FormGroup>
           </StackItem>

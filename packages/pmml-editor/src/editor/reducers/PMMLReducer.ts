@@ -15,12 +15,12 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 import { validateMiningFieldsDataFieldReference } from "../validation/MiningSchema";
-import get = Reflect.get;
+import { getMiningSchema } from "../PMMLModelHelper";
 
 interface PMMLPayload {
   [Actions.Refresh]: {
@@ -68,7 +68,7 @@ export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
         const dataFields = state.DataDictionary.DataField;
         const models = state.models ?? [];
         models.forEach((model, modelIndex) => {
-          const miningSchema = get(model, "MiningSchema");
+          const miningSchema = getMiningSchema(state, modelIndex);
           if (miningSchema !== undefined) {
             validationRegistry.clear(
               Builder()
@@ -79,7 +79,7 @@ export const PMMLReducer: HistoryAwareValidatingReducer<PMML, AllActions> = (
             validateMiningFieldsDataFieldReference(
               modelIndex,
               dataFields,
-              (miningSchema as MiningSchema).MiningField,
+              miningSchema.MiningField,
               validationRegistry
             );
           }

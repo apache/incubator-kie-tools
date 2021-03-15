@@ -18,7 +18,7 @@ import {
   StackItem,
   TextInput
 } from "@patternfly/react-core";
-import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
+import { ArrowAltCircleRightIcon, ExclamationCircleIcon, TrashIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
@@ -115,7 +115,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleNameSave = () => {
-    if (name.trim().length === 0 || validation === "error") {
+    if (validation === "error") {
       setName(dataType.name);
       setValidation("default");
     } else if (name !== dataType.name) {
@@ -193,7 +193,12 @@ const DataTypeItem = (props: DataTypeItemProps) => {
             }
           }}
         >
-          <Form onSubmit={handleSave}>
+          <Form
+            onSubmit={e => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+          >
             <Split hasGutter={true}>
               <SplitItem>
                 <Stack hasGutter={true}>
@@ -203,9 +208,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         <FormGroup
                           fieldId="name"
                           label="Name"
-                          helperTextInvalid="Name already used by another Data Type"
+                          helperTextInvalid="Name is mandatory and must be unique"
+                          helperTextInvalidIcon={<ExclamationCircleIcon />}
                           validated={validation}
                           style={{ width: 280 }}
+                          isRequired={true}
                         >
                           <TextInput
                             type="text"
@@ -221,7 +228,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="type" label="Type">
+                        <FormGroup fieldId="type" label="Type" isRequired={true}>
                           <Select
                             id="type"
                             variant={SelectVariant.single}
@@ -245,7 +252,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="optype" label="Op Type">
+                        <FormGroup fieldId="optype" label="Op Type" isRequired={true}>
                           <Select
                             id="optype"
                             variant={SelectVariant.single}

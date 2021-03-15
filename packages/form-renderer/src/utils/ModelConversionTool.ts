@@ -40,6 +40,10 @@ export class ModelConversionTool {
       return obj;
     }
 
+    if (!schema.properties) {
+      return obj;
+    }
+
     Object.keys(model).forEach(property => {
       const properties = schema.properties[property];
 

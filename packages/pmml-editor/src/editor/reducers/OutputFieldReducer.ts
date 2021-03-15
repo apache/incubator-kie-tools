@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { Builder } from "../paths";
+import { getMiningSchema } from "../PMMLModelHelper";
+import { validateOutput } from "../validation/Outputs";
+import { ValidationRegistry } from "../validation";
 
 interface OutputFieldPayload {
   [Actions.UpdateOutput]: {
@@ -29,8 +32,9 @@ interface OutputFieldPayload {
 
 export type OutputFieldActions = ActionMap<OutputFieldPayload>[keyof ActionMap<OutputFieldPayload>];
 
-export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> = (
-  historyService: HistoryService
+export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<OutputField[], AllActions> => {
   return (state: OutputField[], action: AllActions) => {
     switch (action.type) {
@@ -58,6 +62,23 @@ export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> 
                 segmentId: action.payload.outputField.segmentId,
                 isFinalResult: action.payload.outputField.isFinalResult
               };
+            }
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const outputField = action.payload.outputField;
+            const outputFieldIndex = action.payload.outputIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            if (miningSchema !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forOutput()
+                  .forOutputField(outputFieldIndex)
+                  .forTargetField()
+                  .build()
+              );
+              validateOutput(modelIndex, outputField, outputFieldIndex, miningSchema.MiningField, validationRegistry);
             }
           }
         );

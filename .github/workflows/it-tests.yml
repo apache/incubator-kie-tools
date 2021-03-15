@@ -89,10 +89,6 @@ jobs:
           npm install -g yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
-      - name: Start Xvfb (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-
       - name: Download dependencies
         run: yarn run init
 
@@ -100,10 +96,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-      - name: Build repository and run integration tests
-        env:
-          DISPLAY: ":99.0"
+      - name: Build repository
         run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
+
+      - name: Run integration tests
+        run: npx lerna run test:it --scope '@kogito-tooling/online-editor' --stream
 
       - name: Archive it test screenshots	
         if: failure()

@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import OutputFieldRow from "../molecules/OutputFieldRow";
@@ -28,7 +28,7 @@ interface OutputFieldsTableProps {
   outputs: OutputField[];
   selectedOutputIndex: number | undefined;
   setSelectedOutputIndex: (index: number | undefined) => void;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
   viewExtendedProperties: () => void;
   onAddOutputField: () => void;
   onDeleteOutputField: (index: number) => void;
@@ -81,7 +81,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   };
 
-  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: string | undefined): boolean => {
+  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: FieldName): boolean => {
     return validateOutputFieldName(index, nameToValidate);
   };
 

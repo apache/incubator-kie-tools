@@ -92,7 +92,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
           .forMiningSchema()
           .build()
       ),
-    [miningSchema]
+    [dataDictionary, miningSchema]
   );
 
   return (
@@ -142,6 +142,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                             <>
                               <MiningSchemaFields
                                 modelIndex={modelIndex}
+                                dataDictionary={dataDictionary}
                                 fields={miningSchema?.MiningField}
                                 onAddProperties={goToProperties}
                                 onDelete={handleDeleteField}

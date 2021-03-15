@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { cloneDeep } from 'lodash';
 import { ModelConversionTool } from "../ModelConversionTool";
 
 const schema = {
@@ -107,15 +108,25 @@ function testModel(
 }
 
 describe("Model Conversion  tests", () => {
-  test("String to dates conversion", () => {
+  it("String to dates conversion", () => {
     testModel(currentStrDate, currentDate, (model, formSchema) =>
       ModelConversionTool.convertStringToDate(model, formSchema)
     );
   });
 
-  test("Dates to strings conversion", () => {
+  it("Dates to strings conversion", () => {
     testModel(currentDate, currentStrDate, (model, formSchema) =>
       ModelConversionTool.convertDateToString(model, formSchema)
     );
+  });
+
+  it('Empty schema conversion', () => {
+    const model = getModel(currentDate);
+    const formSchema = cloneDeep(schema);
+    delete formSchema.properties;
+
+    const result = ModelConversionTool.convertDateToString(model, formSchema);
+
+    expect(result).not.toBeNull();
   });
 });

@@ -19,6 +19,7 @@ import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
 import {
   Characteristics,
+  FieldName,
   MiningSchema,
   Model,
   Output,
@@ -53,13 +54,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return undefined;
   });
 
+  const modelName = useMemo(() => getModelName(model as Model), [model]);
+
   const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
   const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
 
   const validateOutputName = useCallback(
-    (index: number | undefined, name: string): boolean => {
-      if (name === undefined || name.trim() === "") {
+    (index: number | undefined, name: FieldName): boolean => {
+      if (name.toString().trim().length === 0) {
         return false;
       }
       const existing: OutputField[] = output?.OutputField ?? [];
@@ -77,6 +80,80 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     );
   }, [characteristics]);
 
+  const onDeleteOutputField = useCallback(
+    _index => {
+      if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
+        dispatch({
+          type: Actions.DeleteOutput,
+          payload: {
+            modelIndex: modelIndex,
+            outputIndex: _index
+          }
+        });
+      }
+    },
+    [modelIndex, output]
+  );
+
+  const onUpdateOutputField = useCallback(
+    (_index, _outputField) => {
+      if (_index === undefined) {
+        dispatch({
+          type: Actions.AddOutput,
+          payload: {
+            modelIndex: modelIndex,
+            outputField: _outputField
+          }
+        });
+      } else {
+        dispatch({
+          type: Actions.UpdateOutput,
+          payload: {
+            modelIndex: modelIndex,
+            outputIndex: _index,
+            outputField: _outputField
+          }
+        });
+      }
+    },
+    [modelIndex]
+  );
+
+  const onUpdateModelName = useCallback(
+    (_modelName: string) => {
+      if (_modelName !== modelName) {
+        dispatch({
+          type: Actions.Scorecard_SetModelName,
+          payload: {
+            modelIndex: modelIndex,
+            modelName: _modelName === "" ? undefined : _modelName
+          }
+        });
+      }
+    },
+    [modelIndex]
+  );
+
+  const onUpdateCoreProperty = useCallback(
+    _props => {
+      dispatch({
+        type: Actions.Scorecard_SetCoreProperties,
+        payload: {
+          modelIndex: modelIndex,
+          isScorable: _props.isScorable,
+          functionName: _props.functionName,
+          algorithmName: _props.algorithmName,
+          baselineScore: _props.baselineScore,
+          baselineMethod: _props.baselineMethod,
+          initialScore: _props.initialScore,
+          useReasonCodes: _props.areReasonCodesUsed,
+          reasonCodeAlgorithm: _props.reasonCodeAlgorithm
+        }
+      });
+    },
+    [modelIndex]
+  );
+
   return (
     <div data-testid="editor-page" className={"editor"}>
       {!model && <EmptyStateModelNotFound />}
@@ -86,51 +163,14 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
             <div className={"editor__header__content"}>
               <PageSection variant={PageSectionVariants.light} isFilled={false}>
                 <EditorHeader
-                  modelName={getModelName(model)}
+                  modelName={modelName}
                   modelIndex={modelIndex}
                   miningSchema={miningSchema}
                   output={output}
                   validateOutputFieldName={validateOutputName}
-                  deleteOutputField={_index => {
-                    if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
-                      dispatch({
-                        type: Actions.DeleteOutput,
-                        payload: {
-                          modelIndex: modelIndex,
-                          outputIndex: _index
-                        }
-                      });
-                    }
-                  }}
-                  commitOutputField={(_index, _outputField: OutputField) => {
-                    if (_index === undefined) {
-                      dispatch({
-                        type: Actions.AddOutput,
-                        payload: {
-                          modelIndex: modelIndex,
-                          outputField: _outputField
-                        }
-                      });
-                    } else {
-                      dispatch({
-                        type: Actions.UpdateOutput,
-                        payload: {
-                          modelIndex: modelIndex,
-                          outputIndex: _index,
-                          outputField: _outputField
-                        }
-                      });
-                    }
-                  }}
-                  commitModelName={(_modelName: string) => {
-                    dispatch({
-                      type: Actions.Scorecard_SetModelName,
-                      payload: {
-                        modelIndex: modelIndex,
-                        modelName: _modelName
-                      }
-                    });
-                  }}
+                  deleteOutputField={onDeleteOutputField}
+                  commitOutputField={onUpdateOutputField}
+                  commitModelName={onUpdateModelName}
                 />
               </PageSection>
             </div>
@@ -150,22 +190,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   initialScore={model.initialScore}
                   areReasonCodesUsed={model.useReasonCodes ?? true}
                   reasonCodeAlgorithm={model.reasonCodeAlgorithm ?? "pointsBelow"}
-                  commit={_props => {
-                    dispatch({
-                      type: Actions.Scorecard_SetCoreProperties,
-                      payload: {
-                        modelIndex: modelIndex,
-                        isScorable: _props.isScorable,
-                        functionName: _props.functionName,
-                        algorithmName: _props.algorithmName,
-                        baselineScore: _props.baselineScore,
-                        baselineMethod: _props.baselineMethod,
-                        initialScore: _props.initialScore,
-                        useReasonCodes: _props.areReasonCodesUsed,
-                        reasonCodeAlgorithm: _props.reasonCodeAlgorithm
-                      }
-                    });
-                  }}
+                  commit={onUpdateCoreProperty}
                 />
               </PageSection>
 

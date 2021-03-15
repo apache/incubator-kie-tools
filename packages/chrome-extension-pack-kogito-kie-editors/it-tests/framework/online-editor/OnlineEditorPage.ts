@@ -19,9 +19,10 @@ import EditorPage from "../editor/EditorPage";
 import Element from "../Element";
 
 export default class OnlineEditorPage extends EditorPage {
-    
+
     private static readonly TOOLBAR_LOCATOR: By = By.className("kogito--editor__toolbar");
     private static readonly FILE_NAME_LOCATOR: By = By.xpath("//input[@aria-label='Edit file name']")
+    private static readonly CLOSE_TOUR_BUTTON_LOCATOR: By = By.xpath("//button[@data-kgt-close]");
 
     public async waitUntilLoaded(): Promise<void> {
         return await this.tools.by(OnlineEditorPage.TOOLBAR_LOCATOR).wait(2000).untilPresent();
@@ -30,5 +31,10 @@ export default class OnlineEditorPage extends EditorPage {
     public async getFileName(): Promise<string> {
         const filename: Element = await this.tools.by(OnlineEditorPage.FILE_NAME_LOCATOR).getElement();
         return await filename.getAttribute("value");
+    }
+
+    public async closeTour(): Promise<void> {
+        const closeTourButton: Element = await this.tools.by(OnlineEditorPage.CLOSE_TOUR_BUTTON_LOCATOR).getElement();
+        await closeTourButton.click();
     }
 }

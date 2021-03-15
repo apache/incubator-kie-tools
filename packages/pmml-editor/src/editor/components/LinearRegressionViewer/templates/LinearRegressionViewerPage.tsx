@@ -29,8 +29,10 @@ interface LinearRegressionViewerPageProps {
 }
 
 export const LinearRegressionViewerPage = (props: LinearRegressionViewerPageProps) => {
+  const { modelIndex } = props;
+
   const model: RegressionModel | undefined = useSelector<PMML, RegressionModel | undefined>((state: PMML) => {
-    const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
+    const _model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
     if (_model && _model instanceof RegressionModel) {
       const _regressionModel = _model as RegressionModel;
       if (_regressionModel.functionName === "regression" && _regressionModel.algorithmName === "linearRegression") {
@@ -46,7 +48,7 @@ export const LinearRegressionViewerPage = (props: LinearRegressionViewerPageProp
       {model && (
         <>
           <PageSection variant={PageSectionVariants.light} isFilled={false}>
-            <EditorHeader modelName={getModelName(model)} />
+            <EditorHeader modelName={getModelName(model)} modelIndex={modelIndex} />
           </PageSection>
 
           <PageSection isFilled={true} style={{ paddingTop: "0px" }}>

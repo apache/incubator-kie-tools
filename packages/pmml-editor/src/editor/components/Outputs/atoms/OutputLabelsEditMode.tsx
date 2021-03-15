@@ -138,7 +138,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
         })}
       {isDisabled && (
         <Label style={PADDING} variant="outline" icon={<ArrowAltCircleRightIcon />}>
-          Edit properties...
+          Edit properties
         </Label>
       )}
       {!isDisabled && (

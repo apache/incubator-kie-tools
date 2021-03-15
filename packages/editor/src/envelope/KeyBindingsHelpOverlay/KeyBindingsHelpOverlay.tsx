@@ -83,7 +83,7 @@ export function KeyBindingsHelpOverlay() {
     <>
       <div
         onClick={() => setShowing(!showing)}
-        className={"kogito-tooling--keyboard-shortcuts-icon"}
+        className={"kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"}
         data-testid={"keyboard-shortcuts-help-overlay-icon"}
       >
         <KeyboardIcon />
@@ -96,6 +96,7 @@ export function KeyBindingsHelpOverlay() {
         width={"60%"}
         onClose={toggle}
         data-testid={"keyboard-shortcuts-help-overlay"}
+        className={"kogito-tooling--keyboard-shortcuts"}
       >
         <TextContent>
           <TextList component={TextListVariants.dl}>

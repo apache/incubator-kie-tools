@@ -21,7 +21,8 @@ const common = require("../../webpack.common.config");
 module.exports = merge(common, {
   entry: {
     index: "./src/index.ts",
-    "embedded/index": "./src/embedded/index.ts"
+    "embedded/index": "./src/embedded/index.ts",
+    "api/index": "./src/api/index.ts"
   },
   output: {
     libraryTarget: "commonjs2"

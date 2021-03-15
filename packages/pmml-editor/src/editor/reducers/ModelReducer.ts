@@ -45,7 +45,9 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
     MiningSchema: mergeReducers(MiningSchemaReducer(historyService, validationRegistry), {
       MiningField: MiningSchemaFieldReducer(historyService, validationRegistry)
     }),
-    Output: mergeReducers(OutputReducer(historyService), { OutputField: OutputFieldReducer(historyService) }),
+    Output: mergeReducers(OutputReducer(historyService, validationRegistry), {
+      OutputField: OutputFieldReducer(historyService, validationRegistry)
+    }),
     Characteristics: mergeReducers(CharacteristicsReducer(historyService), {
       Characteristic: CharacteristicReducer(historyService)
     })

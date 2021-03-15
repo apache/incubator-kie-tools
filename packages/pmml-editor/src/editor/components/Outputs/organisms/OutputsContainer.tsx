@@ -37,7 +37,7 @@ interface OutputsContainerProps {
   modelIndex: number;
   output?: Output;
   miningSchema?: MiningSchema;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
   deleteOutputField: (index: number) => void;
   commitOutputField: (index: number | undefined, outputField: OutputField) => void;
 }
@@ -141,6 +141,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     setSelectedOutputIndex(undefined);
     setActiveOperation(Operation.NONE);
   };
+
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () =>

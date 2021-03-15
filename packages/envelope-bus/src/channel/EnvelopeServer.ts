@@ -44,7 +44,7 @@ export class EnvelopeServer<
     public readonly origin: string,
     public readonly pollInit: (self: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
     public readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
-      message => bus.postMessage(message),
+      message => bus.postMessage({ ...message, targetEnvelopeId: this.id }),
       "EnvelopeServer"
     )
   ) {
@@ -73,9 +73,17 @@ export class EnvelopeServer<
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     api: ApiToProvide
   ) {
-    if (message.envelopeServerId === this.id) {
+    if (message.targetEnvelopeId) {
+      // When the message has a targetEnvelopeId, it was directed to a specific envelope,
+      // thus the channel should ignore it.
+      return;
+    }
+
+    if (message.targetEnvelopeServerId === this.id) {
+      // Message was sent directly from the Envelope to this EnvelopeServer
       this.manager.server.receive(message, api);
     } else if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+      // Message was sent from any Envelope to some EnvelopeServer, so it should be forwarded to this Envelope
       this.manager.server.receive(message, {} as any);
     }
   }

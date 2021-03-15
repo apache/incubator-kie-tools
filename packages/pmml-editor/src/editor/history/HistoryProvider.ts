@@ -34,6 +34,7 @@ interface BatchEntry<M> {
   state: M;
   path: Path | null;
   recipe: (draft: WritableDraft<M>) => void;
+  validate?: (pmml: PMML) => void;
 }
 
 export class HistoryService {
@@ -44,8 +45,13 @@ export class HistoryService {
     index: 0
   };
 
-  public batch = <M>(state: M, path: Path | null, recipe: (draft: WritableDraft<M>) => void): void => {
-    this.pending.push({ state: state, path: path, recipe: recipe });
+  public batch = <M>(
+    state: M,
+    path: Path | null,
+    recipe: (draft: WritableDraft<M>) => void,
+    validate?: (pmml: PMML) => void
+  ): void => {
+    this.pending.push({ state: state, path: path, recipe: recipe, validate: validate });
   };
 
   public commit = (state: PMML | undefined): PMML | undefined => {
@@ -53,11 +59,19 @@ export class HistoryService {
       return;
     }
 
+    //Commit changes
     const newState = this.mutate(state, null, draft => {
       this.pending.forEach(be => {
         const segment = be.path === null ? draft : get(draft, be.path.path);
         be.recipe(segment as WritableDraft<any>);
       });
+    });
+
+    //Validate changes
+    this.pending.forEach(be => {
+      if (be.validate !== undefined) {
+        be.validate(newState);
+      }
     });
 
     this.pending = new Array<BatchEntry<any>>();
