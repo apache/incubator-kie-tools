@@ -67,15 +67,6 @@
                             <arguments>run init</arguments>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>yarn run build</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -90,11 +81,11 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}/
+                                ${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}/monaco-editor
                             </outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>dist/</directory>
+                                    <directory>node_modules/@kiegroup/monaco-editor/dist/standalone</directory>
                                     <filtering>false</filtering>
                                 </resource>
                                 <resource>
