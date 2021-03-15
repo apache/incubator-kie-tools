@@ -20,6 +20,7 @@ import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
 import OnlineEditorPage from "../framework/online-editor/OnlineEditorPage";
 import Properties from "../framework/editor/Properties";
 import Tools from "../utils/Tools";
+import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
 
 const TEST_NAME = "DmnOpenOnlineEditorTest";
 
@@ -35,10 +36,21 @@ test(TEST_NAME, async () => {
     const onlineEditorPage: OnlineEditorPage = await dmnPage.openOnlineEditor();
     expect(await onlineEditorPage.getFileName()).toEqual("test");
     const onlineEditor: DmnEditor = await onlineEditorPage.getDmnEditor();
+    await onlineEditorPage.closeTour();
     await onlineEditor.enter();
     const onlineEditorSideBar: DmnSideBar = await onlineEditor.getSideBar();
     const onlineProperties: Properties = await onlineEditorSideBar.openProperties();
     expect((await onlineProperties.getDmnNameFromInput())).toEqual("myDmn");
+
+    const decisionNavigator: DecisionNavigator = await onlineEditor.openLeftSideBar();
+    expect((await decisionNavigator.getNodeNames()).sort())
+        .toEqual([
+            "MyDecision",
+            "MyInputData",
+            "MyModel",
+            "Function"
+        ].sort());
+    expect(await decisionNavigator.getDmnName()).toEqual("myDmn");
 });
 
 afterEach(async () => {
