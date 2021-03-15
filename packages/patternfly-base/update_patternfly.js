@@ -35,8 +35,8 @@ function updateSnapshots() {
 function usageExample() {
   console.log("Usage yarn update [options]");
   console.log("Options:");
-  console.log("-d, --dependencies           Update Patternfly dependencies");
-  console.log("-s, --snapshots              Update project test snapshots");
+  console.log("-d, --dependencies-only    Update Patternfly dependencies");
+  console.log("-s, --test-snapshots-only  Update project test snapshots");
 }
 
 function start() {
@@ -51,14 +51,14 @@ function start() {
   console.log("Updating...");
   switch (argument) {
     case "-d":
-    case "--dependencies": {
+    case "--dependencies-only": {
       updateDependencies()
         .then(() => console.log("Success"))
         .catch(err => console.error("Error", err));
       break;
     }
     case "-s":
-    case "--snapshots": {
+    case "--test-snapshots-only": {
       updateSnapshots()
         .then(() => console.log("Success"))
         .catch(err => console.error("Error", err));
