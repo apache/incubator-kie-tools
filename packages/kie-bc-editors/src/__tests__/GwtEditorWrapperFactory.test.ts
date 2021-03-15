@@ -20,6 +20,7 @@ import { GwtStateControlService } from "../gwtStateControl";
 import { GwtEditorMapping } from "../GwtEditorMapping";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 
 const cssResource: Resource = {
   type: "css",
@@ -89,14 +90,19 @@ describe("GwtEditorWrapperFactory", () => {
     const editorCreation = gwtEditorWrapperFactory.createEditor(
       {
         channelApi: messageBusClientApiMock(),
-        context: { initialLocale: "en" } as any,
         services: {
           keyboardShortcuts: {} as any,
           guidedTour: {} as any,
           i18n: new I18nService()
         }
       },
-      { resourcesPathPrefix: "", fileExtension: "txt", initialLocale: "en", isReadOnly: false }
+      {
+        resourcesPathPrefix: "",
+        fileExtension: "txt",
+        initialLocale: "en",
+        isReadOnly: false,
+        channel: ChannelType.ONLINE
+      }
     );
 
     await waitForNScriptsToLoad(jsResource.paths.length);

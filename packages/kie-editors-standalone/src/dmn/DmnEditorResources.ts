@@ -56,11 +56,8 @@ export class DmnEditorResources extends BaseEditorResources {
 
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
-    const gwtJSFile = editorDir.filter(file => file.indexOf(".cache.js") >= 0).pop();
-    return [
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/appformer-js-monaco/monaco.min.js` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/${gwtJSFile?.split("/").pop()}` }
-    ];
+    const gwtJsFiles = editorDir.filter(file => file.indexOf(".cache.js") >= 0);
+    return gwtJsFiles.map(file => ({ path: `${resourcesPathPrefix}/${gwtModuleName}/${file?.split("/").pop()}` }));
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {

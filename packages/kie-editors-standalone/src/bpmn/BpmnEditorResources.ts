@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {GwtEditorMapping} from "@kogito-tooling/kie-bc-editors";
+import { GwtEditorMapping } from "@kogito-tooling/kie-bc-editors";
 import * as fs from "fs";
-import {BaseEditorResources, EditorResources} from "../common/EditorResources";
+import { BaseEditorResources, EditorResources } from "../common/EditorResources";
 import * as externalAssets from "@kogito-tooling/external-assets-base";
-import {ChannelType} from "@kogito-tooling/editor/dist/api";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 
 export class BpmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
@@ -56,11 +56,8 @@ export class BpmnEditorResources extends BaseEditorResources {
 
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
-    const gwtJSFile = editorDir.filter(file => file.indexOf(".cache.js") >= 0).pop();
-    return [
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/appformer-js-monaco/monaco.min.js` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/${gwtJSFile?.split("/").pop()}` }
-    ];
+    const gwtJsFiles = editorDir.filter(file => file.indexOf(".cache.js") >= 0);
+    return gwtJsFiles.map(file => ({ path: `${resourcesPathPrefix}/${gwtModuleName}/${file?.split("/").pop()}` }));
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
