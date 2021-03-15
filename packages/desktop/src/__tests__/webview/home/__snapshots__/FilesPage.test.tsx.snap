@@ -703,7 +703,6 @@ exports[`FilesPage three recent files in different directories listed ordered al
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
-        aria-describedby="pf-tooltip-7"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-20"
         data-ouia-component-type="PF4/Card"
@@ -733,7 +732,6 @@ exports[`FilesPage three recent files in different directories listed ordered al
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-8"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-19"
         data-ouia-component-type="PF4/Card"
@@ -763,7 +761,6 @@ exports[`FilesPage three recent files in different directories listed ordered al
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-9"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-21"
         data-ouia-component-type="PF4/Card"
@@ -1146,7 +1143,6 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
-        aria-describedby="pf-tooltip-14"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-27"
         data-ouia-component-type="PF4/Card"
@@ -1176,7 +1172,6 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-15"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-29"
         data-ouia-component-type="PF4/Card"
@@ -1206,7 +1201,6 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-16"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-28"
         data-ouia-component-type="PF4/Card"
@@ -1236,7 +1230,6 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-17"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-30"
         data-ouia-component-type="PF4/Card"
@@ -1619,7 +1612,6 @@ exports[`FilesPage three recent files listed 1`] = `
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
-        aria-describedby="pf-tooltip-1"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-11"
         data-ouia-component-type="PF4/Card"
@@ -1649,7 +1641,6 @@ exports[`FilesPage three recent files listed 1`] = `
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-2"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-12"
         data-ouia-component-type="PF4/Card"
@@ -1679,7 +1670,6 @@ exports[`FilesPage three recent files listed 1`] = `
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-3"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-13"
         data-ouia-component-type="PF4/Card"
@@ -2062,7 +2052,6 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       class="pf-l-gallery pf-m-gutter kogito-desktop__file-gallery"
     >
       <article
-        aria-describedby="pf-tooltip-24"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-36"
         data-ouia-component-type="PF4/Card"
@@ -2092,7 +2081,6 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-25"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-37"
         data-ouia-component-type="PF4/Card"
@@ -2122,7 +2110,6 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         </div>
       </article>
       <article
-        aria-describedby="pf-tooltip-26"
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
         data-ouia-component-id="OUIA-Generated-Card-38"
         data-ouia-component-type="PF4/Card"
