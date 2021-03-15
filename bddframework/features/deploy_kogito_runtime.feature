@@ -3,10 +3,11 @@ Feature: Deploy Kogito Runtime
   Background:
     Given Namespace is created
 
-  Scenario Outline: Deploy <example-service> with Maven profile <profile> using Kogito Runtime
+  Scenario Outline: Deploy <example-service> with native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry
 
@@ -16,30 +17,32 @@ Feature: Deploy Kogito Runtime
     @smoke
     @springboot
     Examples:
-      | runtime    | example-service            | profile |
-      | springboot | process-springboot-example | default |
+      | runtime    | example-service            | native   |
+      | springboot | process-springboot-example | disabled |
 
     @smoke
     @quarkus
     Examples:
-      | runtime    | example-service         | profile |
-      | quarkus    | process-quarkus-example | default |
+      | runtime    | example-service         | native   |
+      | quarkus    | process-quarkus-example | disabled |
 
     @quarkus
     @native
     Examples:
-      | runtime    | example-service         | profile |
-      | quarkus    | process-quarkus-example | native  |
+      | runtime    | example-service         | native   |
+      | quarkus    | process-quarkus-example | enabled  |
 
 #####
 
   @persistence
   @infinispan
-  Scenario Outline: Deploy <example-service> with Maven profile <profile> with persistence using Kogito Runtime
+  Scenario Outline: Deploy <example-service> with persistence and native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Infinispan Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | persistence |
+      | native  | <native>  |
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |
@@ -68,29 +71,30 @@ Feature: Deploy Kogito Runtime
 
     @springboot
     Examples:
-      | runtime    | example-service            | profile     |
-      | springboot | process-springboot-example | persistence |
+      | runtime    | example-service            | native   |
+      | springboot | process-springboot-example | disabled |
 
     @quarkus
     Examples:
-      | runtime    | example-service         | profile     |
-      | quarkus    | process-quarkus-example | persistence |
+      | runtime    | example-service         | native   |
+      | quarkus    | process-quarkus-example | disabled |
 
     @quarkus
     @native
     Examples:
-      | runtime    | example-service         | profile            |
-      | quarkus    | process-quarkus-example | native,persistence |
+      | runtime    | example-service         | native  |
+      | quarkus    | process-quarkus-example | enabled |
 
 #####
 
   @jobsservice
-  Scenario Outline: Deploy <example-service> service with Jobs service and Maven profile <profile>
+  Scenario Outline: Deploy <example-service> service with Jobs service and native <native>
     Given Kogito Operator is deployed
     And Install Kogito Jobs Service with 1 replicas
     And Kogito Jobs Service has 1 pods running within 10 minutes
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
     And Deploy <runtime> example service "<example-service>" from runtime registry
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
 
@@ -107,28 +111,28 @@ Feature: Deploy Kogito Runtime
 
     @springboot
     Examples:
-      | runtime    | example-service          | profile |
-      | springboot | process-timer-springboot | default |
+      | runtime    | example-service          | native   |
+      | springboot | process-timer-springboot | disabled |
 
     @quarkus
     Examples:
-      | runtime | example-service       | profile |
-      | quarkus | process-timer-quarkus | default |
+      | runtime | example-service       | native   |
+      | quarkus | process-timer-quarkus | disabled |
 
     # Disabled as long as https://issues.redhat.com/browse/KOGITO-1179 is not solved
     @disabled
     @quarkus
     @native
     Examples:
-      | runtime | example-service       | profile |
-      | quarkus | process-timer-quarkus | native  |
+      | runtime | example-service       | native   |
+      | quarkus | process-timer-quarkus | enabled  |
 
 #####
 
   @events
   @infinispan
   @kafka
-  Scenario Outline: Deploy <example-service> with Maven profile <profile> with events using Kogito Runtime
+  Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Infinispan Operator is deployed
     And Kafka Operator is deployed
@@ -142,7 +146,9 @@ Feature: Deploy Kogito Runtime
       | config | infra | infinispan |
       | config | infra | kafka      |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | persistence,events |
+      | native  | <native>           |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
       | config | infra | infinispan |
@@ -163,26 +169,27 @@ Feature: Deploy Kogito Runtime
 
     @springboot
     Examples:
-      | runtime    | example-service            | profile            |
-      | springboot | process-springboot-example | persistence,events |
+      | runtime    | example-service            | native   |
+      | springboot | process-springboot-example | disabled |
 
     @quarkus
     Examples:
-      | runtime    | example-service         | profile            |
-      | quarkus    | process-quarkus-example | persistence,events |
+      | runtime    | example-service         | native   |
+      | quarkus    | process-quarkus-example | disabled |
 
     @quarkus
     @native
     Examples:
-      | runtime    | example-service         | profile                   |
-      | quarkus    | process-quarkus-example | native,persistence,events |
+      | runtime    | example-service         | native  |
+      | quarkus    | process-quarkus-example | enabled |
 
 #####
 
-  Scenario Outline: Deploy process-optaplanner-quarkus service with Maven profile <profile> without persistence
+  Scenario Outline: Deploy process-optaplanner-quarkus service with native <native> and without persistence
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry
 
@@ -202,24 +209,25 @@ Feature: Deploy Kogito Runtime
 
     @quarkus
     Examples:
-      | runtime    | example-service             | profile |
-      | quarkus    | process-optaplanner-quarkus | default |
+      | runtime    | example-service             | native   |
+      | quarkus    | process-optaplanner-quarkus | disabled |
 
     # Disabled due to https://issues.redhat.com/browse/PLANNER-2084
     @disabled
     @quarkus
     @native
     Examples:
-      | runtime    | example-service             | profile |
-      | quarkus    | process-optaplanner-quarkus | native  |
+      | runtime    | example-service             | native   |
+      | quarkus    | process-optaplanner-quarkus | enabled  |
 
 #####
 
   @usertasks
-  Scenario Outline: Deploy <example-service> service to complete user tasks with Maven profile <profile>
+  Scenario Outline: Deploy <example-service> service to complete user tasks with native <native>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
     And Deploy <runtime> example service "<example-service>" from runtime registry
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
 
@@ -245,19 +253,19 @@ Feature: Deploy Kogito Runtime
 
     @springboot
     Examples:
-      | runtime    | example-service            | profile |
-      | springboot | process-springboot-example | default |
+      | runtime    | example-service            | native   |
+      | springboot | process-springboot-example | disabled |
 
     @quarkus
     Examples:
-      | runtime | example-service         | profile |
-      | quarkus | process-quarkus-example | default |
+      | runtime | example-service         | native   |
+      | quarkus | process-quarkus-example | disabled |
 
     @quarkus
     @native
     Examples:
-      | runtime | example-service         | profile |
-      | quarkus | process-quarkus-example | native  |
+      | runtime | example-service         | native   |
+      | quarkus | process-quarkus-example | enabled  |
 
 #####
 
@@ -274,7 +282,8 @@ Feature: Deploy Kogito Runtime
       | config   | username | developer            |
       | config   | database | kogito_dataindex     |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
       | config | infra | external-mongodb         |
@@ -309,19 +318,19 @@ Feature: Deploy Kogito Runtime
 
     @springboot
     Examples:
-      | runtime    | example-service                        | profile |
-      | springboot | process-mongodb-persistence-springboot | default |
+      | runtime    | example-service                        | native   |
+      | springboot | process-mongodb-persistence-springboot | disabled |
 
     @quarkus
     Examples:
-      | runtime    | example-service                     | profile |
-      | quarkus    | process-mongodb-persistence-quarkus | default |
+      | runtime    | example-service                     | native   |
+      | quarkus    | process-mongodb-persistence-quarkus | disabled |
 
     @quarkus
     @native
     Examples:
-      | runtime    | example-service                     | profile |
-      | quarkus    | process-mongodb-persistence-quarkus | native  |
+      | runtime    | example-service                     | native   |
+      | quarkus    | process-mongodb-persistence-quarkus | enabled  |
 
 #####
 
@@ -332,7 +341,8 @@ Feature: Deploy Kogito Runtime
     Given Kogito Operator is deployed
     And Infinispan Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | persistence |
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |
@@ -375,18 +385,18 @@ Feature: Deploy Kogito Runtime
 
     @springboot
     Examples:
-      | runtime    | example-service            | profile     |
-      | springboot | process-springboot-example | persistence |
+      | runtime    | example-service            |
+      | springboot | process-springboot-example |
 
     @quarkus
     Examples:
-      | runtime    | example-service         | profile     |
-      | quarkus    | process-quarkus-example | persistence |
+      | runtime    | example-service         |
+      | quarkus    | process-quarkus-example |
 
 #####
 
   @knative
-  Scenario: Deploy process-knative-quickstart-quarkus with Maven profile default using Kogito Runtime
+  Scenario: Deploy process-knative-quickstart-quarkus using Kogito Runtime
     Given Kogito Operator is deployed
     And Install Knative eventing
     And Deploy Knative Broker "default"
@@ -394,7 +404,7 @@ Feature: Deploy Kogito Runtime
     And Create Knative Trigger "event-display" receiving events from Broker "default" delivering to Service "event-display"
     And Install Broker Kogito Infra "broker" targeting service "default" within 5 minutes
     And Clone Kogito examples into local directory
-    And Local example service "process-knative-quickstart-quarkus" is built by Maven using profile "default" and deployed to runtime registry
+    And Local example service "process-knative-quickstart-quarkus" is built by Maven and deployed to runtime registry
 
     When Deploy quarkus example service "process-knative-quickstart-quarkus" from runtime registry with configuration:
       | config | infra | broker |

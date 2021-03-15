@@ -8,7 +8,7 @@ Feature: Deploy the service by configuring the resource requests and limits
 
   Scenario Outline: Setting runtime resource requests cpu <runtime-cpu-request>, mem <runtime-memory-request> and limits cpu <runtime-cpu-limit>, mem <runtime-memory-limit>
     Given Clone Kogito examples into local directory
-    And Local example service "ruleunit-quarkus-example" is built by Maven using profile "default" and deployed to runtime registry
+    And Local example service "ruleunit-quarkus-example" is built by Maven and deployed to runtime registry
 
     When Deploy quarkus example service "ruleunit-quarkus-example" from runtime registry with configuration:
       | runtime-request | cpu    | <runtime-cpu-request>    |

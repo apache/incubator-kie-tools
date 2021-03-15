@@ -16,17 +16,50 @@ package mappers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cucumber/godog"
 )
 
-// MapMavenOptionsTable maps Cucumber table with Maven options to a slice
-func MapMavenOptionsTable(table *godog.Table, options *[]string) error {
+const (
+	// Maven config first column
+	mavenProfileKey = "profile"
+	mavenOptionKey  = "option"
+	mavenNativeKey  = "native"
+
+	nativeProfile = "native"
+)
+
+// MavenCommandConfig contains configuration for Maven Command execution
+type MavenCommandConfig struct {
+	Profiles []string
+	Options  []string
+}
+
+// MapMavenCommandConfigTable maps Cucumber table with Maven options to a slice
+func MapMavenCommandConfigTable(table *godog.Table, config *MavenCommandConfig) error {
+	if len(table.Rows) == 0 { // Using default configuration
+		return nil
+	}
+
+	if len(table.Rows[0].Cells) != 2 {
+		return fmt.Errorf("expected table to have exactly two columns")
+	}
+
 	for _, row := range table.Rows {
-		if len(row.Cells) != 1 {
-			return fmt.Errorf("expected table to have exactly one column")
+		firstColumn := getFirstColumn(row)
+		switch firstColumn {
+		case mavenProfileKey:
+			config.Profiles = append(config.Profiles, strings.Split(getSecondColumn(row), ",")...)
+		case mavenOptionKey:
+			config.Options = append(config.Options, getSecondColumn(row))
+		case mavenNativeKey:
+			if MustParseEnabledDisabled(getSecondColumn(row)) {
+				config.Profiles = append(config.Profiles, nativeProfile)
+			}
+		default:
+			return fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
 		}
-		*options = append(*options, getFirstColumn(row))
 	}
 	return nil
 }

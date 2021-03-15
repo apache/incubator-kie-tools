@@ -29,25 +29,34 @@ import (
 
 /*
 	DataTable for Maven:
-	| -Dproperty=value |
+	| profile | profile        |
+	| profile | profile2       |
+	| option  | -Doption=true  |
+	| option  | -Doption2=true |
+	| native  | enabled        |
 */
+
+const (
+	builtTagsLogFile              = "logs/built_images.log"
+	builtProjectImageNamesLogFile = "logs/built_project_image_names.log"
+)
 
 // registerImageRegistrySteps register all existing image registry steps
 func registerImageRegistrySteps(ctx *godog.ScenarioContext, data *Data) {
-	ctx.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)" and deployed to runtime registry$`, data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistry)
-	ctx.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)" and deployed to runtime registry with Maven options:$`, data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenOptions)
+	ctx.Step(`^Local example service "([^"]*)" is built by Maven and deployed to runtime registry$`, data.localServiceBuiltByMavenAndDeployedToRuntimeRegistry)
+	ctx.Step(`^Local example service "([^"]*)" is built by Maven and deployed to runtime registry with Maven configuration:$`, data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenConfiguration)
 }
 
 // Build local service and deploy it to registry if the registry doesn't contain such image already
-func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistry(contextDir, profile string) error {
-	return data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenOptions(contextDir, profile, nil)
+func (data *Data) localServiceBuiltByMavenAndDeployedToRuntimeRegistry(contextDir string) error {
+	return data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenConfiguration(contextDir, nil)
 }
 
 // Build local service and deploy it to registry if the registry doesn't contain such image already
-func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenOptions(contextDir, profile string, table *godog.Table) error {
-	var options []string
+func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenConfiguration(contextDir string, table *godog.Table) error {
+	config := &mappers.MavenCommandConfig{}
 	if table != nil && len(table.Rows) > 0 {
-		err := mappers.MapMavenOptionsTable(table, &options)
+		err := mappers.MapMavenCommandConfigTable(table, config)
 		if err != nil {
 			return err
 		}
@@ -55,15 +64,16 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 
 	projectLocation := data.KogitoExamplesLocation + "/" + contextDir
 
-	imageTag, err := getKogitoImageTag(projectLocation, profile, options)
+	projectImageName := getProjectImageName(projectLocation, config.Profiles, config.Options)
+	runtimeApplicationImageTag, err := getRuntimeApplicationImageTag(projectImageName)
 	if err != nil {
 		return err
 	}
 
-	if needToBuildImage(data.Namespace, imageTag) {
+	if needToBuildImage(data.Namespace, runtimeApplicationImageTag) {
 		// Not found in registry, so we need to build and push the application
 		// Build the application
-		err = data.localServiceBuiltByMavenWithProfileWithOptions(contextDir, profile, options)
+		err = data.localServiceBuiltByMavenWithProfileAndOptions(contextDir, config.Profiles, config.Options)
 		if err != nil {
 			return err
 		}
@@ -79,7 +89,7 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 		}
 
 		// Build and push image
-		err = framework.GetContainerEngine(data.Namespace).BuildImage(projectLocation, imageTag).PushImage(imageTag).GetError()
+		err = framework.GetContainerEngine(data.Namespace).BuildImage(projectLocation, runtimeApplicationImageTag).PushImage(runtimeApplicationImageTag).GetError()
 		if err != nil {
 			return err
 		}
@@ -89,13 +99,15 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 		if err != nil {
 			return err
 		}
+
+		onImageBuiltPostCreated(data.Namespace, projectImageName, runtimeApplicationImageTag)
 	} else {
-		framework.GetLogger(data.Namespace).Info("Using cached Kogito image", "imageTag", imageTag)
+		framework.GetLogger(data.Namespace).Info("Using cached Kogito image", "imageTag", runtimeApplicationImageTag)
 	}
 
 	// Store image tag into scenario context
 	kogitoApplicationName := filepath.Base(projectLocation)
-	data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)] = imageTag
+	data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)] = runtimeApplicationImageTag
 
 	return nil
 }
@@ -118,7 +130,7 @@ func needToBuildImage(namespace, imageTag string) bool {
 }
 
 // Returns complete Kogito image tag, registry and namespace is retrieved from test configuration
-func getKogitoImageTag(projectLocation, mavenProfiles string, mavenOptions []string) (string, error) {
+func getRuntimeApplicationImageTag(projectImageName string) (string, error) {
 	runtimeApplicationImageRegistry := config.GetRuntimeApplicationImageRegistry()
 	if len(runtimeApplicationImageRegistry) == 0 {
 		return "", errors.New("Runtime application image registry must be set to build the image")
@@ -129,28 +141,45 @@ func getKogitoImageTag(projectLocation, mavenProfiles string, mavenOptions []str
 		return "", errors.New("Runtime application image namespace must be set to build the image")
 	}
 
+	runtimeApplicationImageName := getRuntimeApplicationImageName(projectImageName)
+
 	runtimeApplicationImageVersion := config.GetRuntimeApplicationImageVersion()
 	if len(runtimeApplicationImageVersion) == 0 {
 		runtimeApplicationImageVersion = "latest"
 	}
 
-	kogitoImageName := getKogitoImageName(projectLocation, mavenProfiles, mavenOptions)
-	buildImageTag := fmt.Sprintf("%s/%s/%s:%s", runtimeApplicationImageRegistry, runtimeApplicationImageNamespace, kogitoImageName, runtimeApplicationImageVersion)
+	buildImageTag := fmt.Sprintf("%s/%s/%s:%s", runtimeApplicationImageRegistry, runtimeApplicationImageNamespace, runtimeApplicationImageName, runtimeApplicationImageVersion)
 	return buildImageTag, nil
 }
 
-// Returns Kogito image name in the form of "<project location base>(-<maven profile>)*(-<maven option>)*"
-func getKogitoImageName(projectLocation, mavenProfiles string, mavenOptions []string) string {
-	kogitoApplicationBaseName := filepath.Base(projectLocation)
-	kogitoApplicationNameParts := []string{kogitoApplicationBaseName}
+// Retrieve the image name from project, based from test configuration
+func getRuntimeApplicationImageName(projectImageName string) string {
+	var runtimeApplicationImageNameParts []string
+
+	if runtimeApplicationImageNamePrefix := config.GetRuntimeApplicationImageNamePrefix(); len(runtimeApplicationImageNamePrefix) > 0 {
+		runtimeApplicationImageNameParts = append(runtimeApplicationImageNameParts, runtimeApplicationImageNamePrefix)
+	}
+
+	runtimeApplicationImageNameParts = append(runtimeApplicationImageNameParts, projectImageName)
+
+	if runtimeApplicationImageNameSuffix := config.GetRuntimeApplicationImageNameSuffix(); len(runtimeApplicationImageNameSuffix) > 0 {
+		runtimeApplicationImageNameParts = append(runtimeApplicationImageNameParts, runtimeApplicationImageNameSuffix)
+	}
+
+	return strings.Join(runtimeApplicationImageNameParts, "-")
+}
+
+// Returns project image name in the form of "<project location base>(-<maven profile>)*(-<maven option>)*"
+func getProjectImageName(projectLocation string, mavenProfiles, mavenOptions []string) string {
+	var projectImageNameParts []string
+
+	projectImageBaseName := filepath.Base(projectLocation)
+	projectImageNameParts = append(projectImageNameParts, projectImageBaseName)
 
 	if len(mavenProfiles) > 0 {
-		mavenProfilesSlice := strings.Split(mavenProfiles, ",")
-
 		// Sort profiles to generate consistent image name
-		sort.Strings(mavenProfilesSlice)
-
-		kogitoApplicationNameParts = append(kogitoApplicationNameParts, mavenProfilesSlice...)
+		sort.Strings(mavenProfiles)
+		projectImageNameParts = append(projectImageNameParts, mavenProfiles...)
 	}
 
 	if len(mavenOptions) > 0 {
@@ -164,17 +193,22 @@ func getKogitoImageName(projectLocation, mavenProfiles string, mavenOptions []st
 		// Sort mavenOptions to generate consistent image name
 		sort.Strings(sanitizedMavenOptions)
 
-		kogitoApplicationNameParts = append(kogitoApplicationNameParts, sanitizedMavenOptions...)
+		projectImageNameParts = append(projectImageNameParts, sanitizedMavenOptions...)
 	}
 
-	if runtimeApplicationImageNameSuffix := config.GetRuntimeApplicationImageNameSuffix(); len(runtimeApplicationImageNameSuffix) > 0 {
-		kogitoApplicationNameParts = append(kogitoApplicationNameParts, runtimeApplicationImageNameSuffix)
-	}
-
-	return strings.Join(kogitoApplicationNameParts, "-")
+	return strings.Join(projectImageNameParts, "-")
 }
 
 // Returns context tag used to store built runtime image tag
 func getBuiltRuntimeImageTagContextKey(kogitoApplicationName string) string {
 	return fmt.Sprintf("built-image-%s", kogitoApplicationName)
+}
+
+func onImageBuiltPostCreated(namespace, projectImageName, runtimeApplicationImageTag string) {
+	if err := framework.AddLineToFile(projectImageName, builtProjectImageNamesLogFile); err != nil {
+		framework.GetLogger(namespace).Warn("Error updating built project image names", "error", err)
+	}
+	if err := framework.AddLineToFile(runtimeApplicationImageTag, builtTagsLogFile); err != nil {
+		framework.GetLogger(namespace).Warn("Error updating built image tags", "error", err)
+	}
 }

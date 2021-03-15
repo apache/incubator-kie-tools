@@ -28,8 +28,6 @@ import (
 
 const (
 	namespaceLogFile = "logs/namespace_history.log"
-	fileFlags        = os.O_CREATE | os.O_WRONLY | os.O_APPEND
-	permissionMode   = 0666
 )
 
 // CreateNamespace creates a new namespace
@@ -118,16 +116,7 @@ func onNamespacePostDeleted(namespace string) {
 }
 
 func addNamespaceToHistory(namespace string) error {
-	file, err := os.OpenFile(namespaceLogFile, fileFlags, permissionMode)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	if _, err = file.WriteString(fmt.Sprintf("%s\n", namespace)); err != nil {
-		return err
-	}
-
-	return nil
+	return AddLineToFile(namespace, namespaceLogFile)
 }
 
 func removeNamespaceFromHistory(namespace string) error {

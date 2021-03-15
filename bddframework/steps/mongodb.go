@@ -44,8 +44,8 @@ func (data *Data) mongodbInstanceHasPodsRunningWithinMinutes(name string, number
 
 func (data *Data) mongodbInstanceIsDeployedWithConfiguration(name string, table *godog.Table) error {
 	mongoDBSecretName := name + "-secret"
-	creds, err := mappers.MapMongoDBCredentialsFromTable(table)
-	if err != nil {
+	creds := &mappers.MongoDBCredentialsConfig{}
+	if err := mappers.MapMongoDBCredentialsFromTable(table, creds); err != nil {
 		return err
 	}
 

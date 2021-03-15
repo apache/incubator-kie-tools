@@ -17,41 +17,53 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 )
+
+/*
+	DataTable for Maven:
+	| profile | profile        |
+	| profile | profile2       |
+	| option  | -Doption=true  |
+	| option  | -Doption2=true |
+	| native  | enabled        |
+*/
 
 // registerMavenSteps register all existing Maven steps
 func registerMavenSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Local example service "([^"]*)" is built by Maven$`, data.localServiceBuiltByMaven)
-	ctx.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)"$`, data.localServiceBuiltByMavenWithProfile)
+	ctx.Step(`^Local example service "([^"]*)" is built by Maven with configuration:$`, data.localServiceBuiltByMavenWithConfiguration)
 }
 
 // Build local service
 func (data *Data) localServiceBuiltByMaven(serviceName string) error {
-	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
-	output, err := framework.CreateMavenCommand(serviceRepositoryPath).
-		SkipTests().
-		UpdateArtifacts().
-		WithLoggerContext(data.Namespace).
-		Execute("clean", "package")
-	framework.GetLogger(data.Namespace).Debug(output)
-	return err
+	return data.localServiceBuiltByMavenWithConfiguration(serviceName, nil)
 }
 
-// Build local service
-func (data *Data) localServiceBuiltByMavenWithProfile(serviceName, profile string) error {
-	return data.localServiceBuiltByMavenWithProfileWithOptions(serviceName, profile, nil)
+// Build local service with configuration
+func (data *Data) localServiceBuiltByMavenWithConfiguration(serviceName string, table *godog.Table) error {
+	config := &mappers.MavenCommandConfig{}
+	if table != nil && len(table.Rows) > 0 {
+		err := mappers.MapMavenCommandConfigTable(table, config)
+		if err != nil {
+			return err
+		}
+	}
+	return data.localServiceBuiltByMavenWithProfileAndOptions(serviceName, config.Profiles, config.Options)
 }
 
-// Build local service with additional options
-func (data *Data) localServiceBuiltByMavenWithProfileWithOptions(serviceName, profile string, options []string) error {
+// Build local service with profile and additional options
+func (data *Data) localServiceBuiltByMavenWithProfileAndOptions(serviceName string, profiles, options []string) error {
 	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
-	output, err := framework.CreateMavenCommand(serviceRepositoryPath).
+	mvnCmd := framework.CreateMavenCommand(serviceRepositoryPath).
 		SkipTests().
 		UpdateArtifacts().
-		Profiles(profile).
 		Options(options...).
-		WithLoggerContext(data.Namespace).
-		Execute("clean", "package")
+		WithLoggerContext(data.Namespace)
+	if len(profiles) > 0 {
+		mvnCmd = mvnCmd.Profiles(profiles...)
+	}
+	output, err := mvnCmd.Execute("clean", "package")
 	framework.GetLogger(data.Namespace).Debug(output)
 	return err
 }

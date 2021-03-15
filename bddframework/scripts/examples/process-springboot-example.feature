@@ -1,9 +1,17 @@
-@springboot
+@quarkus
 Feature: Build process-springboot-example images
 
-  Scenario: Build process-springboot-example images
+  Background:
     Given Clone Kogito examples into local directory
 
-    Then Local example service "process-springboot-example" is built by Maven using profile "default" and deployed to runtime registry
-    And Local example service "process-springboot-example" is built by Maven using profile "persistence" and deployed to runtime registry
-    And Local example service "process-springboot-example" is built by Maven using profile "persistence,events" and deployed to runtime registry
+  Scenario Outline: Build process-springboot-example image
+    Then Local example service "process-springboot-example" is built by Maven and deployed to runtime registry
+
+  Scenario Outline: Build native process-quarkus-example image with profile <profile>
+    Then Local example service "process-springboot-example" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | <profile> |
+
+    Examples:
+      | profile            |
+      | persistence        |
+      | persistence,events |

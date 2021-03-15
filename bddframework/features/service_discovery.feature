@@ -5,12 +5,15 @@ Feature: Discovery with onboarding
     Given Namespace is created
 
   @quarkus
-  Scenario Outline: Deploy Quarkus onboarding example with Maven profile <profile>
+  Scenario Outline: Deploy Quarkus onboarding example with native <native>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "onboarding-example/hr" is built by Maven using profile "<profile>" and deployed to runtime registry
-    And Local example service "onboarding-example/payroll" is built by Maven using profile "<profile>" and deployed to runtime registry
-    And Local example service "onboarding-example/onboarding-quarkus" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "onboarding-example/hr" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
+    And Local example service "onboarding-example/payroll" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
+    And Local example service "onboarding-example/onboarding-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
 
     When Deploy quarkus example service "hr" from runtime registry with configuration:
       | service-label  | department/first          | process  |
@@ -46,13 +49,13 @@ Feature: Discovery with onboarding
       """
 
     Examples:
-      | profile |
-      | default |
+      | native   |
+      | disabled |
 
     @native
     Examples:
-      | profile |
-      | native  |
+      | native   |
+      | enabled |
 
 #####
 
@@ -60,9 +63,9 @@ Feature: Discovery with onboarding
   Scenario: Deploy Spring Boot onboarding example
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "onboarding-example/hr" is built by Maven using profile "default" and deployed to runtime registry
-    And Local example service "onboarding-example/payroll" is built by Maven using profile "default" and deployed to runtime registry
-    And Local example service "onboarding-example/onboarding-springboot" is built by Maven using profile "default" and deployed to runtime registry
+    And Local example service "onboarding-example/hr" is built by Maven and deployed to runtime registry
+    And Local example service "onboarding-example/payroll" is built by Maven and deployed to runtime registry
+    And Local example service "onboarding-example/onboarding-springboot" is built by Maven and deployed to runtime registry
     
     When Deploy quarkus example service "hr" from runtime registry with configuration:
       | service-label  | department/first          | process  |

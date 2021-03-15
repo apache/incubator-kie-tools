@@ -39,15 +39,13 @@ type MongoDBCredentialsConfig struct {
 }
 
 // MapMongoDBCredentialsFromTable maps Cucumber table to MongoDB credentials
-func MapMongoDBCredentialsFromTable(table *godog.Table) (*MongoDBCredentialsConfig, error) {
-	creds := &MongoDBCredentialsConfig{}
-
+func MapMongoDBCredentialsFromTable(table *godog.Table, creds *MongoDBCredentialsConfig) error {
 	if len(table.Rows) == 0 { // Using default configuration
-		return creds, nil
+		return nil
 	}
 
 	if len(table.Rows[0].Cells) != 2 {
-		return nil, fmt.Errorf("expected table to have exactly two columns")
+		return fmt.Errorf("expected table to have exactly two columns")
 	}
 
 	for _, row := range table.Rows {
@@ -60,11 +58,11 @@ func MapMongoDBCredentialsFromTable(table *godog.Table) (*MongoDBCredentialsConf
 		case mongodbDatabaseKey:
 			creds.Database = getSecondColumn(row)
 		case mongodbAuthDatabaseKey:
-			creds.Database = getSecondColumn(row)
+			creds.AuthDatabase = getSecondColumn(row)
 
 		default:
-			return nil, fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
+			return fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
 		}
 	}
-	return creds, nil
+	return nil
 }

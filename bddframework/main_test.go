@@ -122,11 +122,6 @@ func appendTag(tag string) {
 }
 
 func configureTestOutput() {
-	if config.IsSmokeTests() {
-		framework.SetLogSubFolder("smoke")
-	} else {
-		framework.SetLogSubFolder("full")
-	}
 	logFolder := framework.GetLogFolder()
 	if err := framework.CreateFolder(logFolder); err != nil {
 		panic(fmt.Errorf("Error while creating log folder %s: %v", logFolder, err))

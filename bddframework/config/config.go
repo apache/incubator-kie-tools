@@ -62,6 +62,7 @@ type TestConfig struct {
 	trustyUIImageTag                  string
 	runtimeApplicationImageRegistry   string
 	runtimeApplicationImageNamespace  string
+	runtimeApplicationImageNamePrefix string
 	runtimeApplicationImageNameSuffix string
 	runtimeApplicationImageVersion    string
 
@@ -157,6 +158,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.trustyUIImageTag, prefix+"trusty-ui-image-tag", "", "Set the Kogito Trusty UI image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.runtimeApplicationImageRegistry, prefix+"runtime-application-image-registry", "", "Set the runtime application (built Kogito application image) image registry")
 	set.StringVar(&env.runtimeApplicationImageNamespace, prefix+"runtime-application-image-namespace", "", "Set the runtime application (built Kogito application image) image namespace")
+	set.StringVar(&env.runtimeApplicationImageNamePrefix, prefix+"runtime-application-image-name-prefix", "", "Set the runtime application (built Kogito application image) image name prefix")
 	set.StringVar(&env.runtimeApplicationImageNameSuffix, prefix+"runtime-application-image-name-suffix", "", "Set the runtime application (built Kogito application image) image name suffix")
 	set.StringVar(&env.runtimeApplicationImageVersion, prefix+"runtime-application-image-version", "", "Set the runtime application (built Kogito application image) image version")
 
@@ -352,6 +354,11 @@ func GetRuntimeApplicationImageRegistry() string {
 // GetRuntimeApplicationImageNamespace return the namespace for runtime application images
 func GetRuntimeApplicationImageNamespace() string {
 	return env.runtimeApplicationImageNamespace
+}
+
+// GetRuntimeApplicationImageNamePrefix return the name prefix for runtime application images
+func GetRuntimeApplicationImageNamePrefix() string {
+	return env.runtimeApplicationImageNamePrefix
 }
 
 // GetRuntimeApplicationImageNameSuffix return the name suffix for runtime application images

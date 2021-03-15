@@ -16,6 +16,10 @@ package framework
 
 import "github.com/kiegroup/kogito-cloud-operator/test/config"
 
+const (
+	defaultRetryNb = 3
+)
+
 // ContainerEngine is the engine providing container and registry functionality
 type ContainerEngine interface {
 	// PullImage pull image from external registry to internal registry
@@ -27,6 +31,9 @@ type ContainerEngine interface {
 	// BuildImage builds the container image from specified directory
 	BuildImage(projectLocation, imageTag string) ContainerEngine
 
+	// Setup the retry for the different commands
+	WithRetry(retryNb int) ContainerEngine
+
 	// GetError returns error in case any execution failed
 	GetError() error
 }
@@ -37,6 +44,7 @@ type containerEngineStruct struct {
 	namespace        string
 	supportTLSVerify bool
 	err              error
+	retryNb          int
 }
 
 var dockerContainerEngine = containerEngineStruct{
@@ -68,6 +76,7 @@ func GetContainerEngine(namespace string) ContainerEngine {
 	containerEngine := containerEngines[config.GetContainerEngine()]
 
 	containerEngine.namespace = namespace
+	containerEngine.retryNb = defaultRetryNb
 	return &containerEngine
 }
 
@@ -81,7 +90,10 @@ func (containerEngine *containerEngineStruct) PullImage(imageTag string) Contain
 	pullImageArgs = append(pullImageArgs, imageTag)
 
 	if containerEngine.err == nil {
-		_, containerEngine.err = CreateCommand(containerEngine.engine, pullImageArgs...).WithLoggerContext(containerEngine.namespace).Execute()
+		_, containerEngine.err = CreateCommand(containerEngine.engine, pullImageArgs...).
+			WithRetry(NumberOfRetries(containerEngine.retryNb)).
+			WithLoggerContext(containerEngine.namespace).
+			Execute()
 	}
 	return containerEngine
 }
@@ -96,15 +108,27 @@ func (containerEngine *containerEngineStruct) PushImage(imageTag string) Contain
 	pushImageArgs = append(pushImageArgs, imageTag)
 
 	if containerEngine.err == nil {
-		_, containerEngine.err = CreateCommand(containerEngine.engine, pushImageArgs...).WithLoggerContext(containerEngine.namespace).Execute()
+		_, containerEngine.err = CreateCommand(containerEngine.engine, pushImageArgs...).
+			WithRetry(NumberOfRetries(containerEngine.retryNb)).
+			WithLoggerContext(containerEngine.namespace).
+			Execute()
 	}
 	return containerEngine
 }
 
 func (containerEngine *containerEngineStruct) BuildImage(projectLocation, imageTag string) ContainerEngine {
 	if containerEngine.err == nil {
-		_, containerEngine.err = CreateCommand(containerEngine.engine, containerEngine.buildCommand, "--tag", imageTag, ".").InDirectory(projectLocation).WithLoggerContext(containerEngine.namespace).WithRetry(NumberOfRetries(3)).Execute()
+		_, containerEngine.err = CreateCommand(containerEngine.engine, containerEngine.buildCommand, "--tag", imageTag, ".").
+			WithRetry(NumberOfRetries(containerEngine.retryNb)).
+			InDirectory(projectLocation).
+			WithLoggerContext(containerEngine.namespace).
+			Execute()
 	}
+	return containerEngine
+}
+
+func (containerEngine *containerEngineStruct) WithRetry(retryNb int) ContainerEngine {
+	containerEngine.retryNb = retryNb
 	return containerEngine
 }
 

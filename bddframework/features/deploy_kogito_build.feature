@@ -34,7 +34,8 @@ Feature: Deploy Kogito Build
 
   Scenario Outline: Build <runtime> binary build with native <native> using KogitoBuild
     Given Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>"
+    And Local example service "<example-service>" is built by Maven with configuration:
+      | native | <native> |
 
     When Build binary <runtime> service "<example-service>" with configuration:
       | config | native | <native> |
@@ -47,28 +48,29 @@ Feature: Deploy Kogito Build
 
     @springboot
     Examples:
-      | runtime    | example-service            | native   | profile |
-      | springboot | process-springboot-example | disabled | default |
+      | runtime    | example-service            | native   |
+      | springboot | process-springboot-example | disabled |
 
     @quarkus
     Examples:
-      | runtime    | example-service         | native   | profile |
-      | quarkus    | process-quarkus-example | disabled | default |
+      | runtime    | example-service         | native   |
+      | quarkus    | process-quarkus-example | disabled |
 
     # Disabled due to https://github.com/kiegroup/kogito-cloud-operator/pull/485
     @disabled
     @quarkus
     @native
     Examples:
-      | runtime    | example-service         | native  | profile |
-      | quarkus    | process-quarkus-example | enabled | native  |
+      | runtime    | example-service         | native  |
+      | quarkus    | process-quarkus-example | enabled |
 
 #####
 
   @cli
   Scenario Outline: Build <runtime> binary build from local example service target folder with native <native> using KogitoBuild
     Given Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>"
+    And Local example service "<example-service>" is built by Maven with configuration:
+      | native | <native> |
 
     When Build binary <runtime> local example service "<example-service>" from target folder with configuration:
       | config | native | <native> |
@@ -78,20 +80,20 @@ Feature: Deploy Kogito Build
 
     @springboot
     Examples:
-      | runtime    | example-service            | native   | profile |
-      | springboot | process-springboot-example | disabled | default |
+      | runtime    | example-service            | native   |
+      | springboot | process-springboot-example | disabled |
 
     @smoke
     @quarkus
     Examples:
-      | runtime    | example-service         | native   | profile |
-      | quarkus    | process-quarkus-example | disabled | default |
+      | runtime    | example-service         | native   |
+      | quarkus    | process-quarkus-example | disabled |
 
     @quarkus
     @native
     Examples:
-      | runtime    | example-service         | native  | profile |
-      | quarkus    | process-quarkus-example | enabled | native  |
+      | runtime    | example-service         | native  |
+      | quarkus    | process-quarkus-example | enabled |
 
 #####
 

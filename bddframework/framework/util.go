@@ -32,6 +32,11 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
+const (
+	fileFlags      = os.O_CREATE | os.O_WRONLY | os.O_APPEND
+	permissionMode = 0666
+)
+
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
 func GenerateNamespaceName(prefix string) string {
 	rand.Seed(time.Now().UnixNano())
@@ -247,4 +252,18 @@ func GetBuildImage(imageName string) string {
 	}
 
 	return framework.ConvertImageToImageTag(image)
+}
+
+// AddLineToFile adds the given line to the given file
+func AddLineToFile(line, filename string) error {
+	file, err := os.OpenFile(filename, fileFlags, permissionMode)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	if _, err = file.WriteString(fmt.Sprintf("%s\n", line)); err != nil {
+		return err
+	}
+
+	return nil
 }

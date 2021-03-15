@@ -19,10 +19,12 @@ Feature: Deploy Travel agency service and verify its functionality
       | config | infra | infinispan |
       | config | infra | kafka      |
 
-  Scenario Outline: Travel application without required Visa and build profile <profile>
+  Scenario Outline: Travel application without required Visa and native <native>
     Given Clone Kogito examples into local directory
-    And Local example service "kogito-travel-agency/extended/travels" is built by Maven using profile "<profile>" and deployed to runtime registry
-    And Local example service "kogito-travel-agency/extended/visas" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "kogito-travel-agency/extended/travels" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
+    And Local example service "kogito-travel-agency/extended/visas" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
     And Deploy quarkus example service "travels" from runtime registry with configuration:
       | config | infra | infinispan |
       | config | infra | kafka      |
@@ -66,20 +68,22 @@ Feature: Deploy Travel agency service and verify its functionality
     Then Service "travels" with process name "travels" is available
 
     Examples:
-      | profile |
-      | default |
+      | native   |
+      | disabled |
 
     @native
     Examples:
-      | profile |
-      | native  |
+      | native   |
+      | enabled  |
 
 #####
 
   Scenario Outline: Travel application with required Visa and build profile <profile>
     Given Clone Kogito examples into local directory
-    And Local example service "kogito-travel-agency/extended/travels" is built by Maven using profile "<profile>" and deployed to runtime registry
-    And Local example service "kogito-travel-agency/extended/visas" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "kogito-travel-agency/extended/travels" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
+    And Local example service "kogito-travel-agency/extended/visas" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
     And Deploy quarkus example service "travels" from runtime registry with configuration:
       | config | infra | infinispan |
       | config | infra | kafka      |
@@ -155,10 +159,10 @@ Feature: Deploy Travel agency service and verify its functionality
     Then Service "travels" with process name "travels" is available
 
     Examples:
-      | profile |
-      | default |
+      | native   |
+      | disabled |
 
     @native
     Examples:
-      | profile |
-      | native  |
+      | native   |
+      | enabled  |

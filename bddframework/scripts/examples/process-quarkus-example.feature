@@ -4,13 +4,31 @@ Feature: Build process-quarkus-example images
   Background:
     Given Clone Kogito examples into local directory
 
-  Scenario: Build process-quarkus-example images
-    Then Local example service "process-quarkus-example" is built by Maven using profile "default" and deployed to runtime registry
-    And Local example service "process-quarkus-example" is built by Maven using profile "persistence" and deployed to runtime registry
-    And Local example service "process-quarkus-example" is built by Maven using profile "persistence,events" and deployed to runtime registry
+  Scenario Outline: Build process-quarkus-example image with native <native>
+    Then Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
 
-  @native
-  Scenario: Build native process-quarkus-example images
-    Then Local example service "process-quarkus-example" is built by Maven using profile "native" and deployed to runtime registry
-    And Local example service "process-quarkus-example" is built by Maven using profile "native,persistence" and deployed to runtime registry
-    And Local example service "process-quarkus-example" is built by Maven using profile "native,persistence,events" and deployed to runtime registry
+    Examples:
+      | native  |
+      | disabled |
+
+    @native
+    Examples:
+      | native  |
+      | enabled |
+
+  Scenario Outline: Build native process-quarkus-example image with profile <profile> and native <native>
+    Then Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | <profile> |
+      | native  | <native>  |
+
+    Examples:
+      | profile            | native  |
+      | persistence        | disabled |
+      | persistence,events | disabled |
+
+    @native
+    Examples:
+      | profile            | native  |
+      | persistence        | enabled |
+      | persistence,events | enabled |
