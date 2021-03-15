@@ -78,9 +78,83 @@ func Test_serviceDeployer_createRequiredResources_OnOCPNoImageStreamCreated(t *t
 	resources, err := deployer.createRequiredResources()
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resources)
-	// we have the Image Stream, so other resources should have been created
-	assert.True(t, len(resources) == 1)
+	// we don't have the Image Stream, so other resources should not have been created other than ConfigMap
+	assert.True(t, len(resources) == 2)
 	assert.Equal(t, resources[reflect.TypeOf(imgv1.ImageStream{})][0].GetName(), "kogito-jobs-service")
+	assert.Equal(t, resources[reflect.TypeOf(corev1.ConfigMap{})][0].GetName(), "jobs-service"+appPropConfigMapSuffix)
+}
+
+func Test_serviceDeployer_createRequiredResources_NoImageStreamCreated_CreateWithPropertiesConfigMap(t *testing.T) {
+	propertiesConfigMapName := "jobs-service-cm"
+	instance := test.CreateFakeJobsServiceWithPropertiesConfigMap(t.Name(), propertiesConfigMapName)
+	propertiesConfigMap := &corev1.ConfigMap{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ConfigMap",
+			APIVersion: "v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      propertiesConfigMapName,
+			Namespace: instance.GetNamespace(),
+		},
+		Data: map[string]string{
+			ConfigMapApplicationPropertyKey: "\ntestKey=testValue",
+		},
+	}
+	cli := test.NewFakeClientBuilder().AddK8sObjects(propertiesConfigMap).Build()
+	context := &operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	deployer := serviceDeployer{
+		Context:  context,
+		instance: instance,
+		definition: ServiceDefinition{
+			DefaultImageName: "kogito-jobs-service",
+			Request: reconcile.Request{
+				NamespacedName: types.NamespacedName{Name: "jobs-service", Namespace: t.Name()},
+			},
+		},
+	}
+	resources, err := deployer.createRequiredResources()
+	assert.NoError(t, err)
+	assert.NotEmpty(t, resources)
+
+	configmaps, exist := resources[reflect.TypeOf(corev1.ConfigMap{})]
+	assert.True(t, exist)
+	assert.Equal(t, 1, len(configmaps))
+	configmaps[0].SetOwnerReferences(nil)
+	assert.Equal(t, propertiesConfigMap, configmaps[0])
+
+	assert.Equal(t, 1, len(resources[reflect.TypeOf(appsv1.Deployment{})]))
+	deployment, ok := resources[reflect.TypeOf(appsv1.Deployment{})][0].(*appsv1.Deployment)
+	assert.True(t, ok)
+	_, ok = deployment.Spec.Template.Annotations[AppPropContentHashKey]
+	assert.True(t, ok)
+}
+
+func Test_serviceDeployer_createRequiredResources_NoImageStreamCreated_CreateWithPropertiesConfigMapNotExist(t *testing.T) {
+	propertiesConfigMapName := "jobs-service-cm"
+	instance := test.CreateFakeJobsServiceWithPropertiesConfigMap(t.Name(), propertiesConfigMapName)
+	cli := test.NewFakeClientBuilder().Build()
+	context := &operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	deployer := serviceDeployer{
+		Context:  context,
+		instance: instance,
+		definition: ServiceDefinition{
+			DefaultImageName: "kogito-jobs-service",
+			Request: reconcile.Request{
+				NamespacedName: types.NamespacedName{Name: "jobs-service", Namespace: t.Name()},
+			},
+		},
+	}
+	resources, err := deployer.createRequiredResources()
+	assert.Errorf(t, err, "propertiesConfigMap %s not found", propertiesConfigMapName)
+	assert.Empty(t, resources)
 }
 
 func Test_serviceDeployer_createRequiredResources_CreateNewAppPropConfigMap(t *testing.T) {

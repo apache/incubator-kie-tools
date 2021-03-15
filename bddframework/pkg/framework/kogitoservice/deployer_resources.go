@@ -15,6 +15,7 @@
 package kogitoservice
 
 import (
+	"fmt"
 	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-cloud-operator/api"
@@ -27,6 +28,7 @@ import (
 	routev1 "github.com/openshift/api/route/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
@@ -44,6 +46,30 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 		resources[reflect.TypeOf(imgv1.ImageStream{})] = []resource.KubernetesResource{imageStream}
 	}
 
+	appProps := map[string]string{}
+	appPropsConfigMapHandler := NewAppPropsConfigMapHandler(s.Context)
+	if len(s.instance.GetSpec().GetPropertiesConfigMap()) > 0 {
+		s.Log.Debug("custom app properties are provided in custom properties ConfigMap", "PropertiesConfigMap", s.instance.GetSpec().GetPropertiesConfigMap())
+		propertiesConfigMap := &corev1.ConfigMap{
+			ObjectMeta: metav1.ObjectMeta{
+				Namespace: s.instance.GetNamespace(),
+				Name:      s.instance.GetSpec().GetPropertiesConfigMap(),
+			},
+		}
+		if exists, err := kubernetes.ResourceC(s.Client).Fetch(propertiesConfigMap); err != nil {
+			return resources, err
+		} else if !exists {
+			return resources, fmt.Errorf("propertiesConfigMap %s not found", s.instance.GetSpec().GetPropertiesConfigMap())
+		} else {
+			util.AppendToStringMap(getAppPropsFromConfigMap(propertiesConfigMap, exists), appProps)
+		}
+	}
+
+	_, configMap, err := appPropsConfigMapHandler.GetAppPropConfigMapContentHash(s.instance, appProps)
+	if err != nil {
+		return resources, err
+	}
+
 	// we only create the rest of the resources once we have a resolvable image
 	// or if the deployment is already there, we don't want to delete it :)
 	if image, err := s.getKogitoServiceImage(imageHandler, s.instance); err != nil {
@@ -58,7 +84,6 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 		serviceHandler := infrastructure.NewServiceHandler(s.Context)
 		service := serviceHandler.CreateService(s.instance, deployment)
 
-		appProps := map[string]string{}
 		var infraVolumes []api.KogitoInfraVolumeInterface
 
 		if len(s.instance.GetSpec().GetInfra()) > 0 {
@@ -76,12 +101,12 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 		deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, framework.CreateEnvVar(infrastructure.RuntimeTypeKey, string(s.instance.GetSpec().GetRuntime())))
 
 		if len(s.instance.GetSpec().GetConfig()) > 0 {
-			s.Log.Debug("custom app properties are provided")
+			s.Log.Debug("custom app properties are provided in custom Config")
 			util.AppendToStringMap(s.instance.GetSpec().GetConfig(), appProps)
 		}
 
-		appPropsConfigMapHandler := NewAppPropsConfigMapHandler(s.Context)
-		contentHash, configMap, err := appPropsConfigMapHandler.GetAppPropConfigMapContentHash(s.instance, appProps)
+		var contentHash string
+		contentHash, configMap, err = appPropsConfigMapHandler.GetAppPropConfigMapContentHash(s.instance, appProps)
 		if err != nil {
 			return resources, err
 		}
@@ -90,20 +115,20 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 
 		s.mountVolumes(infraVolumes, deployment)
 
-		if configMap != nil {
-			resources[reflect.TypeOf(corev1.ConfigMap{})] = []resource.KubernetesResource{configMap}
-		}
 		resources[reflect.TypeOf(appsv1.Deployment{})] = []resource.KubernetesResource{deployment}
 		resources[reflect.TypeOf(corev1.Service{})] = []resource.KubernetesResource{service}
 		if s.Client.IsOpenshift() {
 			routeHandler := infrastructure.NewRouteHandler(s.Context)
 			resources[reflect.TypeOf(routev1.Route{})] = []resource.KubernetesResource{routeHandler.CreateRoute(service)}
 		}
-		if err := s.onObjectsCreate(resources); err != nil {
-			return resources, err
-		}
 	}
 
+	if configMap != nil {
+		resources[reflect.TypeOf(corev1.ConfigMap{})] = []resource.KubernetesResource{configMap}
+	}
+	if err := s.onObjectsCreate(resources); err != nil {
+		return resources, err
+	}
 	if err := s.setOwner(resources); err != nil {
 		return resources, err
 	}
