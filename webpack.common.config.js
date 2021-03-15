@@ -21,7 +21,8 @@ module.exports = {
   devtool: "inline-source-map",
   output: {
     path: path.resolve("./dist"),
-    filename: "[name].js"
+    filename: "[name].js",
+    chunkFilename: "[name].bundle.js"
   },
   stats: {
     excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],

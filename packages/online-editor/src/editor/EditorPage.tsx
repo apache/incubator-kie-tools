@@ -32,7 +32,6 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
-import * as monaco from "@kiegroup/monaco-editor";
 
 export enum AlertTypes {
   NONE,
@@ -293,13 +292,21 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    const monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
-      value: textEditorContent!,
-      language: "xml", //FIXME: Not all editors will be XML when converted to text
-      scrollBeyondLastLine: false
+    let monacoInstance: any;
+
+    import(/* webpackChunkName: "monaco-editor" */ "@kiegroup/monaco-editor").then(monaco => {
+      monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
+        value: textEditorContent!,
+        language: "xml", //FIXME: Not all editors will be XML when converted to text
+        scrollBeyondLastLine: false
+      });
     });
 
     return () => {
+      if (!monacoInstance) {
+        return;
+      }
+
       const contentAfterFix = monacoInstance.getValue();
       monacoInstance.dispose();
 
