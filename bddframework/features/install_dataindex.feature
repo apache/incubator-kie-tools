@@ -38,7 +38,7 @@ Feature: Kogito Data Index
 
   @mongodb
   Scenario: Install Kogito Data Index with persistence using external MongoDB
-    Given MongoDB operator is deployed
+    Given MongoDB Operator is deployed
     And MongoDB instance "kogito-mongodb" is deployed with configuration:
       | username | developer            |
       | password | mypass               |
