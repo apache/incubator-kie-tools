@@ -4,8 +4,8 @@ version: "2.0.0-snapshot"
 
 artifacts:
   - name: kogito-trusty-ui-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/trusty-ui/2.0.0-SNAPSHOT/trusty-ui-2.0.0-20210312.044613-104-runner.jar
-    md5: bcf92dbddeb1a76c90b0010ee03bcc14
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/trusty-ui/2.0.0-SNAPSHOT/trusty-ui-2.0.0-20210315.051837-109-runner.jar
+    md5: 23919df6fba3ee1185b9f3c810985498
 
 execute:
   - script: configure
