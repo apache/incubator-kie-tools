@@ -657,6 +657,24 @@ setup() {
     [[ "${output}" != *"--tests.runtime-application-image-namespace"* ]]
 }
 
+@test "invoke run-tests with runtime_application_image_name_prefix" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_name_prefix prefix --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.runtime-application-image-name-prefix=prefix" ]]
+}
+
+@test "invoke run-tests with runtime_application_image_name_prefix missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_name_prefix --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.runtime-application-image-name-prefix"* ]]
+}
+
+@test "invoke run-tests with runtime_application_image_name_prefix empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_name_prefix "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.runtime-application-image-name-prefix"* ]]
+}
+
 @test "invoke run-tests with runtime_application_image_name_suffix" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_name_suffix suffix --dry_run
     [ "$status" -eq 0 ]

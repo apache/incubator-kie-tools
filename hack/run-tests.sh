@@ -79,6 +79,7 @@ function usage(){
   printf "\n--trusty_ui_image_tag {IMAGE_TAG}\n\tSet the Kogito Trusty UI image tag ('services_image_version' is ignored)"
   printf "\n--runtime_application_image_registry {REGISTRY}\n\tSet the registry for built runtime applications."
   printf "\n--runtime_application_image_namespace {NAMESPACE}\n\tSet the namespace for built runtime applications."
+  printf "\n--runtime_application_image_name_prefix {NAME_PREFIX}\n\tSet the image name suffix to prepend to usual image names for built runtime applications."
   printf "\n--runtime_application_image_name_suffix {NAME_SUFFIX}\n\tSet the image name suffix to append to usual image names for built runtime applications."
   printf "\n--runtime_application_image_version {VERSION}\n\tSet the version for built runtime applications."
 
@@ -321,6 +322,10 @@ case $1 in
   --runtime_application_image_namespace)
     shift
     if addParamKeyValueIfAccepted "--tests.runtime-application-image-namespace" ${1}; then shift; fi
+  ;;
+  --runtime_application_image_name_prefix)
+    shift
+    if addParamKeyValueIfAccepted "--tests.runtime-application-image-name-prefix" ${1}; then shift; fi
   ;;
   --runtime_application_image_name_suffix)
     shift
