@@ -20,9 +20,9 @@ export class EnvelopeBusMessageBroadcaster {
   private readonly subscriptions: Array<(msg: EnvelopeBusMessage<unknown, any>) => void> = [];
 
   public broadcast(message: EnvelopeBusMessage<unknown, any>) {
-    // Messages directly from the Channel to the Envelope do not have an envelopeServerId and should be ignored.
-    // That means that messages that are broadcast-able come from other Envelopes to other Channels, so they have an envelopeServerId.
-    if (!message.envelopeServerId) {
+    // Messages directly from the Channel to the Envelope do not have a targetEnvelopeServerId and should be ignored.
+    // That means that messages that are broadcast-able come from other Envelopes to other Channels, so they have an targetEnvelopeServerId.
+    if (!message.targetEnvelopeServerId) {
       return;
     }
 
