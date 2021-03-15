@@ -21,7 +21,9 @@
     "ajv": "6.12.2",
     "uniforms": "3.0.0",
     "uniforms-bridge-json-schema": "3.0.0",
-    "uniforms-patternfly": "4.1.2",
+    "uniforms-patternfly": "4.1.2"
+  },
+  "devDependencies": {
     "lodash": "^4.14.2"
   },
   "files": [
