@@ -101,7 +101,7 @@ export function EmbeddedEnvelopeFactory<
     useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
 
     if (props.config.containerType === ContainerType.DIV) {
-      return <div ref={divRef} id={envelopeServer.id} />;
+      return <div ref={divRef} />;
     }
 
     return <iframe ref={iframeRef} src={props.config.envelopePath} style={containerStyles} title="X" />;
