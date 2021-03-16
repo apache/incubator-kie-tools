@@ -88,21 +88,21 @@ export function SingleEditorToolbar(props: {
           <button
             data-testid={"see-as-source-button"}
             disabled={!props.textModeEnabled}
-            className={"btn btn-sm kogito-button"}
+            className={"btn d-md-inline-block kogito-button"}
             onClick={seeAsSource}
           >
             {i18n.single.editorToolbar.seeAsSource}
           </button>
         )}
         {props.textMode && (
-          <button data-testid={"see-as-diagram-button"} className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
+          <button data-testid={"see-as-diagram-button"} className={"btn d-md-inline-block kogito-button"} onClick={seeAsDiagram}>
             {i18n.seeAsDiagram}
           </button>
         )}
         {globals.externalEditorManager && (
           <button
             data-testid={"open-ext-editor-button"}
-            className={"btn btn-sm kogito-button"}
+            className={"btn d-md-inline-block kogito-button"}
             onClick={openInExternalEditor}
           >
             {i18n.openIn(globals.externalEditorManager.name)}
@@ -112,7 +112,7 @@ export function SingleEditorToolbar(props: {
           <div className={"position-relative"}>
             <button
               data-testid={"copy-link-button"}
-              className={"btn btn-sm kogito-button"}
+              className={"btn d-md-inline-block kogito-button"}
               onClick={copyLinkToExternalEditor}
             >
               {i18n.single.editorToolbar.copyLinkTo(globals.externalEditorManager.name)}
@@ -132,7 +132,7 @@ export function SingleEditorToolbar(props: {
           </div>
         )}
         {!props.textMode && (
-          <button data-testid={"go-fullscreen-button"} className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
+          <button data-testid={"go-fullscreen-button"} className={"btn d-md-inline-block kogito-button"} onClick={goFullScreen}>
             {i18n.terms.fullScreen}
           </button>
         )}
