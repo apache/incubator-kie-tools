@@ -28,7 +28,7 @@
     <uberjar.name>dmn-json-schema-generator</uberjar.name>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <version.org.kie.kogito>1.7.0.Final</version.org.kie.kogito>
+    <version.org.kie.kogito>${KOGITO_RUNTIME_VERSION}</version.org.kie.kogito>
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.jar.plugin>3.1.0</version.jar.plugin>
     <version.shade.plugin>3.2.4</version.shade.plugin>
@@ -39,7 +39,7 @@
     <dependencies>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-build-parent</artifactId>
+        <artifactId>kogito-kie7-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>

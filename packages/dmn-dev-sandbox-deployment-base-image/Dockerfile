@@ -14,7 +14,7 @@
 
 FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.1
 
-ARG KOGITO_RUNTIME_VERSION=1.7.0.Final
+ARG KOGITO_RUNTIME_VERSION
 
 RUN mkdir /tmp/kogito/
 
