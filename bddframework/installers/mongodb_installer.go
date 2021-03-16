@@ -17,8 +17,8 @@ package installers
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/test/framework"
 	mongodbv1 "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
 	coreapps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"

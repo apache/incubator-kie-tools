@@ -16,10 +16,10 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure/kafka/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/kiegroup/kogito-cloud-operator/test/installers"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/installers"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

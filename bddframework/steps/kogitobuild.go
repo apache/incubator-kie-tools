@@ -16,15 +16,15 @@ package steps
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-operator/api"
 	"path/filepath"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
-	"github.com/kiegroup/kogito-cloud-operator/test/types"
-	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
+	"github.com/kiegroup/kogito-operator/test/config"
+	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/steps/mappers"
+	"github.com/kiegroup/kogito-operator/test/types"
+	bddtypes "github.com/kiegroup/kogito-operator/test/types"
 )
 
 /*

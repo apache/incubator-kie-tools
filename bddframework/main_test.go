@@ -25,10 +25,10 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
 
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/kiegroup/kogito-cloud-operator/test/installers"
-	"github.com/kiegroup/kogito-cloud-operator/test/steps"
+	"github.com/kiegroup/kogito-operator/test/config"
+	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/installers"
+	"github.com/kiegroup/kogito-operator/test/steps"
 
 	flag "github.com/spf13/pflag"
 )

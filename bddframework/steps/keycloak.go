@@ -16,8 +16,8 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/kiegroup/kogito-cloud-operator/test/installers"
+	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/installers"
 )
 
 func registerKeycloakSteps(ctx *godog.ScenarioContext, data *Data) {

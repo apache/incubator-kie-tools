@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	bddtypes "github.com/kiegroup/kogito-operator/test/types"
 )
 
 //GetServiceCLIFlags returns CLI flags based on Kogito service passed in parameter

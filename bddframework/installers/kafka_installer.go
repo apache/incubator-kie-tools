@@ -15,9 +15,9 @@
 package installers
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	kafkabetav1 "github.com/kiegroup/kogito-cloud-operator/core/infrastructure/kafka/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	kafkabetav1 "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/test/framework"
 )
 
 var (

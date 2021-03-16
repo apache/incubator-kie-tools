@@ -21,9 +21,9 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/test/config"
+	"github.com/kiegroup/kogito-operator/test/framework"
 	imgv1 "github.com/openshift/api/image/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 )

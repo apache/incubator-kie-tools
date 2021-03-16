@@ -16,16 +16,16 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-operator/api"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	bddtypes "github.com/kiegroup/kogito-operator/test/types"
 )
 
 // DeployRuntimeService deploy a Kogito service

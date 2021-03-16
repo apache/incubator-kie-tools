@@ -19,7 +19,7 @@ Example:
 
 ### Run using your own Kogito Operator repository
 
-`../hack/run-tests.sh --operator_image quay.io/<namespace>/kogito-cloud-operator --operator_tag <version>`
+`../hack/run-tests.sh --operator_image quay.io/<namespace>/kogito-operator --operator_tag <version>`
 
 Useful if you built your own image into your repository.
 

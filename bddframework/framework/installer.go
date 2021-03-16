@@ -15,7 +15,7 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	"github.com/kiegroup/kogito-operator/test/config"
 )
 
 // InstallerType defines the type of installer for services

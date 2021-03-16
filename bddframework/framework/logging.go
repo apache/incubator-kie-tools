@@ -26,10 +26,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/logger"
+	"github.com/kiegroup/kogito-operator/core/logger"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/core/framework/util"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"k8s.io/api/events/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 

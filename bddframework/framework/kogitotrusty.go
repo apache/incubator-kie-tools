@@ -16,11 +16,11 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
+	"github.com/kiegroup/kogito-operator/test/config"
+	bddtypes "github.com/kiegroup/kogito-operator/test/types"
 )
 
 // DecisionsResponse represents the decision response

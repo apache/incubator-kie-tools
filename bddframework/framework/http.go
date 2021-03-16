@@ -26,7 +26,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	"github.com/kiegroup/kogito-operator/test/config"
 )
 
 type (

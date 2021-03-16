@@ -16,13 +16,13 @@ package steps
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/core/kogitosupportingservice"
+	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/framework"
 )
 
 func registerGraphQLSteps(ctx *godog.ScenarioContext, data *Data) {

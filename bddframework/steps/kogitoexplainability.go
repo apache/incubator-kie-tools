@@ -18,9 +18,9 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
-	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
+	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/steps/mappers"
+	bddtypes "github.com/kiegroup/kogito-operator/test/types"
 )
 
 /*

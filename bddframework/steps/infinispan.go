@@ -18,9 +18,9 @@ import (
 	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/kiegroup/kogito-cloud-operator/test/installers"
-	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
+	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/installers"
+	"github.com/kiegroup/kogito-operator/test/steps/mappers"
 )
 
 /*

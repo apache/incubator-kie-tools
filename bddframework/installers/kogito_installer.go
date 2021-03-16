@@ -19,11 +19,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
-	"github.com/kiegroup/kogito-cloud-operator/version"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/test/config"
+	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/version"
 )
 
 var (
@@ -93,7 +93,7 @@ func installKogitoUsingYaml() error {
 		return err
 	}
 
-	yamlContent = strings.ReplaceAll(yamlContent, "quay.io/kiegroup/kogito-cloud-operator:"+version.Version, framework.GetOperatorImageNameAndTag())
+	yamlContent = strings.ReplaceAll(yamlContent, "quay.io/kiegroup/kogito-operator:"+version.Version, framework.GetOperatorImageNameAndTag())
 
 	tempFilePath, err := framework.CreateTemporaryFile("kogito-operator*.yaml", yamlContent)
 	if err != nil {

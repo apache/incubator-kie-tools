@@ -17,7 +17,7 @@ package config
 import (
 	"path/filepath"
 
-	"github.com/kiegroup/kogito-cloud-operator/version"
+	"github.com/kiegroup/kogito-operator/version"
 
 	flag "github.com/spf13/pflag"
 )
@@ -93,7 +93,7 @@ type TestConfig struct {
 }
 
 const (
-	defaultOperatorImageName = "quay.io/kiegroup/kogito-cloud-operator"
+	defaultOperatorImageName = "quay.io/kiegroup/kogito-operator"
 
 	defaultOperatorYamlURI = "../kogito-operator.yaml"
 	defaultCliPath         = "../build/_output/bin/kogito"

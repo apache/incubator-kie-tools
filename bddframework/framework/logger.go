@@ -17,7 +17,7 @@ package framework
 import (
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
-	"github.com/kiegroup/kogito-cloud-operator/core/framework/util"
+	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"

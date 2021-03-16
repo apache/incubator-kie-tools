@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/framework"
 )
 
 func registerTaskSteps(ctx *godog.ScenarioContext, data *Data) {

@@ -14,7 +14,7 @@
 
 package framework
 
-import "github.com/kiegroup/kogito-cloud-operator/test/config"
+import "github.com/kiegroup/kogito-operator/test/config"
 
 const (
 	defaultRetryNb = 3
