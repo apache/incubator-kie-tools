@@ -151,10 +151,19 @@ public class DecisionServiceParametersListWidget extends Composite implements Ha
                     final Node<View<?>, ?> targetNode = e.getTargetNode();
                     loadDecisionsFromNode(node, targetNode);
                     loadInputsFromNode(inputs, targetNode);
+                    loadInputsFromOthersDiagrams(inputs, targetNode);
                 }));
 
         loadInputsParameters(getSortedInputs(inputs));
         loadGroupsElements();
+    }
+
+    void loadInputsFromOthersDiagrams(final List<InputData> inputs,
+                                      final Node<View<?>, ?> targetNode) {
+        final List<Node> allNodes = dmnDiagramsSession.getNodesFromAllDiagramsWithContentId(getDRGElementFromContentDefinition(targetNode).getContentDefinitionId());
+        for (final Node n : allNodes) {
+            loadInputsFromNode(inputs, n);
+        }
     }
 
     /**

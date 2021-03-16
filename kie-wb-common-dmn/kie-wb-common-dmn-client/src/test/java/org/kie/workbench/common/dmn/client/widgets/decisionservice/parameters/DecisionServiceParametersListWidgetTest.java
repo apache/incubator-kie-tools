@@ -58,8 +58,8 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionServiceParameters_EncapsulatedDecisions;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionServiceParameters_Inputs;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionServiceParameters_Outputs;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -178,8 +178,9 @@ public class DecisionServiceParametersListWidgetTest {
         doNothing().when(widget).clear();
         doNothing().when(widget).loadGroupsElements();
         doNothing().when(widget).loadInputsParameters(anyList());
-        doNothing().when(widget).loadDecisionsFromNode(anyObject(), anyObject());
-        doNothing().when(widget).loadInputsFromNode(anyObject(), anyObject());
+        doNothing().when(widget).loadDecisionsFromNode(any(), any());
+        doNothing().when(widget).loadInputsFromNode(any(), any());
+        doNothing().when(widget).loadInputsFromOthersDiagrams(anyList(), any(Node.class));
         doReturn(value).when(widget).getValue();
         doReturn(node).when(widget).getNode(contentDefinitionId);
         doReturn(targetDrg1).when(widget).getTargetDRGElement(edge1);
@@ -196,6 +197,9 @@ public class DecisionServiceParametersListWidgetTest {
         verify(widget).loadInputsFromNode(anyList(), eq(targetNode1));
         verify(widget).loadInputsFromNode(anyList(), eq(targetNode2));
         verify(widget).loadInputsFromNode(anyList(), eq(targetNode3));
+        verify(widget).loadInputsFromOthersDiagrams(anyList(), eq(targetNode1));
+        verify(widget).loadInputsFromOthersDiagrams(anyList(), eq(targetNode2));
+        verify(widget).loadInputsFromOthersDiagrams(anyList(), eq(targetNode3));
         verify(widget).getSortedInputs(anyList());
         verify(widget).loadInputsParameters(sortedList);
         verify(widget).loadGroupsElements();
@@ -588,6 +592,28 @@ public class DecisionServiceParametersListWidgetTest {
         final Node actual = widget.getElementWithContentId(id1, stream);
 
         assertEquals(node1, actual);
+    }
+
+    @Test
+    public void testLoadInputsFromOtherDiagrams() {
+
+        final String id = "theId";
+        final Node node1 = createNodeWithContentDefinitionId(id);
+        final Node node2 = createNodeWithContentDefinitionId(id);
+        final Node node3 = createNodeWithContentDefinitionId(id);
+        final List<Node> list = Arrays.asList(node1, node2, node3);
+        final List<InputData> inputs = new ArrayList<>();
+        final Node targetNode = createNodeWithContentDefinitionId(id);
+
+        doNothing().when(widget).loadInputsFromNode(eq(inputs), any(Node.class));
+
+        when(dmnDiagramsSession.getNodesFromAllDiagramsWithContentId(id)).thenReturn(list);
+
+        widget.loadInputsFromOthersDiagrams(inputs, targetNode);
+
+        verify(widget).loadInputsFromNode(inputs, node1);
+        verify(widget).loadInputsFromNode(inputs, node2);
+        verify(widget).loadInputsFromNode(inputs, node3);
     }
 
     private Node createNodeWithContentDefinitionId(final String contentDefinitionId) {

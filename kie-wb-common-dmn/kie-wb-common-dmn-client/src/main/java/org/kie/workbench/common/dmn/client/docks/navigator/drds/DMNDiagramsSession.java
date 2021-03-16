@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.LockRequiredEvent;
 
@@ -210,6 +211,24 @@ public class DMNDiagramsSession {
                 .stream()
                 .map(tuple -> tuple.getStunnerDiagram().getGraph())
                 .collect(Collectors.toList());
+    }
+
+    public List<Node> getNodesFromAllDiagramsWithContentId(final String contentDefinitionId) {
+        final List<Node> allNodes = getAllNodes();
+        return allNodes
+                .stream()
+                .filter(node -> definitionContainsDRGElement(node)
+                        && Objects.equals(getDRGElementFromContentDefinition(node).getContentDefinitionId(), contentDefinitionId))
+                .collect(Collectors.toList());
+    }
+
+    boolean definitionContainsDRGElement(final Node node) {
+        return node.getContent() instanceof Definition
+                && ((Definition) node.getContent()).getDefinition() instanceof DRGElement;
+    }
+
+    DRGElement getDRGElementFromContentDefinition(final Node node) {
+        return ((DRGElement) ((Definition) node.getContent()).getDefinition());
     }
 
     public List<Node> getAllNodes() {

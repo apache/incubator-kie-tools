@@ -37,6 +37,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
@@ -304,5 +306,92 @@ public class DMNDiagramsSessionTest {
     public void testsSessionStatePresentWhenItReturnsFalse() {
         doReturn(null).when(dmnDiagramsSession).getSessionState();
         assertFalse(dmnDiagramsSession.isSessionStatePresent());
+    }
+
+    @Test
+    public void testGetNodesFromAllDiagramsWithContentId() {
+
+        final String contentId = "contentId";
+        final String anotherId1 = "anotherId1";
+        final String anotherId2 = "anotherId1";
+
+        final Node expected1 = createNodeWithContentDefinitionId(contentId);
+        final Node notExpected1 = createNodeWithContentDefinitionId(anotherId1);
+        final Node notExpected2 = createNodeWithContentDefinitionId(anotherId2);
+        final Node expected2 = createNodeWithContentDefinitionId(contentId);
+        final Node expected3 = createNodeWithContentDefinitionId(contentId);
+
+        final List<Node> nodes = asList(expected1, notExpected1, notExpected2, expected2, expected3);
+
+        doReturn(nodes).when(dmnDiagramsSession).getAllNodes();
+
+        final List<Node> foundNodes = dmnDiagramsSession.getNodesFromAllDiagramsWithContentId(contentId);
+
+        assertEquals(3, foundNodes.size());
+        assertTrue(foundNodes.contains(expected1));
+        assertTrue(foundNodes.contains(expected2));
+        assertTrue(foundNodes.contains(expected3));
+    }
+
+    @Test
+    public void testDefinitionContainsDRGElement() {
+
+        final Node nodeWithContentDefinition = mock(Node.class);
+        final Definition definition = mock(Definition.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+
+        when(nodeWithContentDefinition.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(drgElement);
+
+        assertTrue(dmnDiagramsSession.definitionContainsDRGElement(nodeWithContentDefinition));
+    }
+
+    @Test
+    public void testDefinitionContainsDRGElement_WhenDefinitionIsNotDRGElement() {
+
+        final Node nodeWithContentDefinition = mock(Node.class);
+        final Definition definition = mock(Definition.class);
+        final Object obj = mock(Object.class);
+
+        when(nodeWithContentDefinition.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(obj);
+
+        assertFalse(dmnDiagramsSession.definitionContainsDRGElement(nodeWithContentDefinition));
+    }
+
+    @Test
+    public void testDefinitionContainsDRGElement_WhenContentIsNotDefinition() {
+
+        final Node nodeWithContentDefinition = mock(Node.class);
+        final Object obj = mock(Object.class);
+
+        when(nodeWithContentDefinition.getContent()).thenReturn(obj);
+
+        assertFalse(dmnDiagramsSession.definitionContainsDRGElement(nodeWithContentDefinition));
+    }
+
+    @Test
+    public void testGetDRGElementFromContentDefinition() {
+        final Node nodeWithContentDefinition = mock(Node.class);
+        final Definition definition = mock(Definition.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+
+        when(nodeWithContentDefinition.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(drgElement);
+
+        final DRGElement actual = dmnDiagramsSession.getDRGElementFromContentDefinition(nodeWithContentDefinition);
+
+        assertEquals(drgElement, actual);
+    }
+
+    private Node createNodeWithContentDefinitionId(final String contentDefinitionId) {
+
+        final Node node = mock(Node.class);
+        final Definition definition = mock(Definition.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+        when(drgElement.getContentDefinitionId()).thenReturn(contentDefinitionId);
+        when(definition.getDefinition()).thenReturn(drgElement);
+        when(node.getContent()).thenReturn(definition);
+        return node;
     }
 }
