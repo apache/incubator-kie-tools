@@ -15,8 +15,8 @@
  */
 import * as React from "react";
 import { ReactElement, useMemo } from "react";
-import { Tooltip } from "@patternfly/react-core";
-import { ExclamationCircleIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import { Label, Tooltip } from "@patternfly/react-core";
+import { ExclamationCircleIcon, ExclamationTriangleIcon } from "@patternfly/react-icons";
 import "./ModelTitle.scss";
 import { ValidationEntry, ValidationLevel } from "../../../validation";
 
@@ -24,9 +24,93 @@ interface ValidationIndicatorProps {
   validations: ValidationEntry[];
 }
 
+export const ValidationIndicator = (props: ValidationIndicatorProps) => {
+  const { validations } = props;
+
+  const maxLevel = useMemo(() => getMaxLevel(validations), [validations]);
+
+  return (
+    <>
+      {maxLevel !== undefined && (
+        <ValidationIndicatorTooltip validations={validations}>
+          <>
+            {maxLevel === ValidationLevel.ERROR && <ExclamationCircleIcon size={"sm"} color={"red"} />}
+            {maxLevel === ValidationLevel.WARNING && <ExclamationTriangleIcon size={"sm"} color={"orange"} />}
+          </>
+        </ValidationIndicatorTooltip>
+      )}
+    </>
+  );
+};
+
 interface ValidationIndicatorTooltipProps extends ValidationIndicatorProps {
   children: ReactElement<any>;
+  customTooltipContent?: string;
 }
+
+export const ValidationIndicatorTooltip = (props: ValidationIndicatorTooltipProps) => {
+  const { validations, children, customTooltipContent } = props;
+
+  return (
+    <>
+      {validations.length > 0 && (
+        <Tooltip
+          maxWidth={"100%"}
+          isContentLeftAligned={true}
+          content={customTooltipContent ? customTooltipContent : list(validations)}
+        >
+          {children}
+        </Tooltip>
+      )}
+    </>
+  );
+};
+
+interface ValidationIndicatorLabelProps extends ValidationIndicatorProps {
+  children: React.ReactNode;
+  customTooltipContent?: string;
+  onClose?: (event: React.MouseEvent) => void;
+  cssClass?: string;
+}
+
+export const ValidationIndicatorLabel = (props: ValidationIndicatorLabelProps) => {
+  const { validations, children, customTooltipContent, onClose, cssClass } = props;
+
+  const maxLevel = useMemo(() => getMaxLevel(validations), [validations]);
+  const labelColor = useMemo(() => {
+    switch (maxLevel) {
+      case ValidationLevel.ERROR:
+        return "red";
+      case ValidationLevel.WARNING:
+        return "orange";
+      default:
+        return "orange";
+    }
+  }, [maxLevel]);
+
+  const labelIcon = useMemo(() => {
+    switch (maxLevel) {
+      case ValidationLevel.ERROR:
+        return <ExclamationCircleIcon size={"sm"} color={"red"} />;
+      case ValidationLevel.WARNING:
+        return <ExclamationTriangleIcon size={"sm"} color={"orange"} />;
+      default:
+        return undefined;
+    }
+  }, [maxLevel]);
+
+  return (
+    <>
+      {maxLevel !== undefined && (
+        <ValidationIndicatorTooltip validations={validations} customTooltipContent={customTooltipContent}>
+          <Label onClose={onClose} className={cssClass} color={labelColor} icon={labelIcon}>
+            {children}
+          </Label>
+        </ValidationIndicatorTooltip>
+      )}
+    </>
+  );
+};
 
 const getMaxLevel = (validations: ValidationEntry[]): ValidationLevel | undefined => {
   if (validations.length === 0) {
@@ -50,38 +134,5 @@ const list = (validations: ValidationEntry[]) => {
         <li key={index}>{validation.message}</li>
       ))}
     </ol>
-  );
-};
-
-export const ValidationIndicator = (props: ValidationIndicatorProps) => {
-  const { validations } = props;
-
-  const maxLevel = useMemo(() => getMaxLevel(validations), [validations]);
-
-  return (
-    <>
-      {maxLevel !== undefined && (
-        <ValidationIndicatorTooltip validations={validations}>
-          <>
-            {maxLevel === ValidationLevel.ERROR && <ExclamationCircleIcon size={"sm"} color={"red"} />}
-            {maxLevel === ValidationLevel.WARNING && <WarningTriangleIcon size={"sm"} color={"orange"} />}
-          </>
-        </ValidationIndicatorTooltip>
-      )}
-    </>
-  );
-};
-
-export const ValidationIndicatorTooltip = (props: ValidationIndicatorTooltipProps) => {
-  const { validations, children } = props;
-
-  return (
-    <>
-      {validations.length > 0 && (
-        <Tooltip maxWidth={"100%"} isContentLeftAligned={true} content={list(validations)}>
-          {children}
-        </Tooltip>
-      )}
-    </>
   );
 };

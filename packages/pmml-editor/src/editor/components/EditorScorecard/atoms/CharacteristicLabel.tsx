@@ -15,50 +15,84 @@
  */
 import * as React from "react";
 import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
-
 import "./CharacteristicLabel.scss";
+import { ValidationEntry } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { toText } from "../organisms";
+import { DataField, Predicate } from "@kogito-tooling/pmml-editor-marshaller";
 
-export const CharacteristicLabel = (name: string, value: any, tooltip?: string) => {
+interface CharacteristicLabelProps {
+  name: string;
+  value: string;
+}
+
+export const CharacteristicLabel = (props: CharacteristicLabelProps) => {
+  const { name, value } = props;
+
+  return (
+    <Label color="cyan" className="characteristic-list__item__label">
+      <strong>{name}:</strong>
+      &nbsp;
+      <span>{value}</span>
+    </Label>
+  );
+};
+
+export const CharacteristicPredicateLabel = (
+  predicate: Predicate | undefined,
+  dataFields: DataField[],
+  validations: ValidationEntry[]
+) => {
+  const value = toText(predicate, dataFields);
+  const truncatedText = value.length > 32 ? value.slice(0, 29) + "..." : value;
+
   return (
     <>
-      {!tooltip && (
-        <Label color="orange" className="characteristic-list__item__label">
-          <strong>{name}:</strong>
-          &nbsp;
-          <span>{value}</span>
-        </Label>
-      )}
-      {tooltip && (
+      {value.length > truncatedText.length && (
         <Tooltip
           position={TooltipPosition.top}
           isContentLeftAligned={true}
           maxWidth={"100em"}
-          content={<pre>{tooltip}</pre>}
+          content={<pre>{value}</pre>}
         >
-          <Label tabIndex={0} color="orange" className="characteristic-list__item__label">
-            <strong>{name}:</strong>
-            &nbsp;
-            <span>{value}</span>
-          </Label>
+          <>
+            {validations.length > 0 && (
+              <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
+                <pre>{truncatedText}</pre>
+              </ValidationIndicatorLabel>
+            )}
+            {validations.length === 0 && (
+              <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+                <pre>{truncatedText}</pre>
+              </Label>
+            )}
+          </>
         </Tooltip>
       )}
+      {value.length === truncatedText.length && (
+        <>
+          {validations.length > 0 && (
+            <span className="characteristic-list__item__label">
+              <ValidationIndicatorLabel validations={validations}>
+                <>
+                  {predicate && <pre>{value}</pre>}
+                  {!predicate && (
+                    <>
+                      <strong>Predicate:</strong>&nbsp;
+                      <em>Missing</em>
+                    </>
+                  )}
+                </>
+              </ValidationIndicatorLabel>
+            </span>
+          )}
+          {validations.length === 0 && (
+            <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
+              <pre>{value}</pre>
+            </Label>
+          )}
+        </>
+      )}
     </>
-  );
-};
-
-export const CharacteristicLabelAttribute = (name: string, value: any, tooltip: string) => {
-  return (
-    <Tooltip
-      position={TooltipPosition.top}
-      isContentLeftAligned={true}
-      maxWidth={"100em"}
-      content={<pre>{tooltip}</pre>}
-    >
-      <Label tabIndex={0} color="blue" className="characteristic-list__item__label">
-        <strong>{name}:</strong>
-        &nbsp;
-        <pre>{value}</pre>
-      </Label>
-    </Tooltip>
   );
 };

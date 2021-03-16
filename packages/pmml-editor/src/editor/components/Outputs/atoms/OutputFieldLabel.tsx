@@ -22,7 +22,7 @@ export const OutputFieldLabel = (name: string, value: any, onClose?: () => void)
   return (
     <>
       {!onClose && (
-        <Label color="orange" className="output-fields-list__item__label">
+        <Label color="cyan" className="output-fields-list__item__label">
           <strong>{name}:</strong>
           &nbsp;
           <span>{value}</span>
@@ -30,7 +30,7 @@ export const OutputFieldLabel = (name: string, value: any, onClose?: () => void)
       )}
       {onClose && (
         <Label
-          color="orange"
+          color="cyan"
           className="output-fields-list__item__label"
           onClose={e => {
             e.nativeEvent.stopImmediatePropagation();

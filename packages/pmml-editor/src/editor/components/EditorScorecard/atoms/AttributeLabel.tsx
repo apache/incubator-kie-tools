@@ -18,12 +18,39 @@ import { Label } from "@patternfly/react-core";
 
 import "./AttributeLabel.scss";
 
-export const AttributeLabel = (name: string, value: any) => {
+interface AttributeLabelProps {
+  name: string;
+  value: any;
+  onClose?: () => void;
+}
+
+export const AttributeLabel = (props: AttributeLabelProps) => {
+  const { name, value, onClose } = props;
+
   return (
-    <Label color="orange" className="attribute-list__item__label">
-      <strong>{name}:</strong>
-      &nbsp;
-      <span>{value}</span>
-    </Label>
+    <>
+      {!onClose && (
+        <Label color="cyan" className="attribute-list__item__label">
+          <strong>{name}:</strong>
+          &nbsp;
+          <span>{value}</span>
+        </Label>
+      )}
+      {onClose && (
+        <Label
+          color="cyan"
+          className="attribute-list__item__label"
+          onClose={e => {
+            e.nativeEvent.stopImmediatePropagation();
+            e.stopPropagation();
+            onClose();
+          }}
+        >
+          <strong>{name}:</strong>
+          &nbsp;
+          <span>{value}</span>
+        </Label>
+      )}
+    </>
   );
 };

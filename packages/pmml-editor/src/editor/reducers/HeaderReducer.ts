@@ -17,6 +17,7 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { Header } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { HistoryAwareReducer, HistoryService } from "../history";
+import { Builder } from "../paths";
 
 interface HeaderPayload {
   [Actions.SetHeaderDescription]: {
@@ -27,14 +28,20 @@ interface HeaderPayload {
 export type HeaderActions = ActionMap<HeaderPayload>[keyof ActionMap<HeaderPayload>];
 
 export const HeaderReducer: HistoryAwareReducer<Header, AllActions> = (
-  service: HistoryService
+  historyService: HistoryService
 ): Reducer<Header, AllActions> => {
   return (state: Header, action: AllActions) => {
     switch (action.type) {
       case Actions.SetHeaderDescription:
-        service.batch(state, "Header", draft => {
-          draft.description = action.payload.description;
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forHeader()
+            .build(),
+          draft => {
+            draft.description = action.payload.description;
+          }
+        );
     }
 
     return state;

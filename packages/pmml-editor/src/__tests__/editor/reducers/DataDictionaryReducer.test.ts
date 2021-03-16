@@ -17,13 +17,13 @@ import { DataDictionary, FieldName } from "@kogito-tooling/pmml-editor-marshalle
 import { Actions, AllActions, DataDictionaryReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
-import { ValidationService } from "../../../editor/validation";
+import { ValidationRegistry } from "../../../editor/validation";
 
 const historyService = new HistoryService();
-const validationService = new ValidationService();
+const validationRegistry = new ValidationRegistry();
 const dataDictionary: DataDictionary = { DataField: [] };
 const pmml = { version: "1.0", DataDictionary: dataDictionary, Header: {} };
-const reducer: Reducer<DataDictionary, AllActions> = DataDictionaryReducer(historyService, validationService);
+const reducer: Reducer<DataDictionary, AllActions> = DataDictionaryReducer(historyService, validationRegistry);
 
 describe("DataDictionaryReducer::Valid actions", () => {
   test("Actions.AddDataDictionaryField", () => {

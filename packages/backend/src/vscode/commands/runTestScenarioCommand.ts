@@ -15,6 +15,7 @@
  */
 
 import { I18n } from "@kogito-tooling/i18n/dist/core/I18n";
+import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as vscode from "vscode";
 import { CapabilityResponseStatus } from "../../api";
@@ -36,13 +37,18 @@ export function registerTestScenarioRunnerCommand(args: {
   backendProxy: VsCodeBackendProxy;
   backendI18n: I18n<BackendI18n>;
   workspaceApi: WorkspaceApi;
+  notificationsApi: NotificationsApi;
 }) {
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.command, () => run(args.backendProxy, args.workspaceApi, args.backendI18n))
+    vscode.commands.registerCommand(args.command, () => run(args.backendProxy, args.backendI18n, args.notificationsApi))
   );
 }
 
-async function run(backendProxy: VsCodeBackendProxy, workspaceApi: WorkspaceApi, backendI18n: I18n<BackendI18n>) {
+async function run(
+  backendProxy: VsCodeBackendProxy,
+  backendI18n: I18n<BackendI18n>,
+  notificationsApi: NotificationsApi
+) {
   const i18n = backendI18n.getCurrent();
 
   try {
@@ -65,7 +71,12 @@ async function run(backendProxy: VsCodeBackendProxy, workspaceApi: WorkspaceApi,
     );
 
     if (response.status === CapabilityResponseStatus.NOT_AVAILABLE) {
-      vscode.window.showWarningMessage(response.message!);
+      notificationsApi.createNotification({
+        message: response.message!,
+        severity: "WARNING",
+        type: "ALERT",
+        path: ""
+      });
       return;
     }
 
@@ -75,19 +86,18 @@ async function run(backendProxy: VsCodeBackendProxy, workspaceApi: WorkspaceApi,
 
     const testResult: TestResult = response.body;
 
-    vscode.window
-      .showInformationMessage(
-        i18n.testScenarioSummary(testResult.tests, testResult.errors, testResult.skipped, testResult.failures),
-        i18n.viewTestSummary
-      )
-      .then(selection => {
-        if (!selection) {
-          return;
-        }
-
-        workspaceApi.receive_openFile(testResult.filePath);
-      });
+    notificationsApi.createNotification({
+      message: i18n.testScenarioSummary(testResult.tests, testResult.errors, testResult.skipped, testResult.failures),
+      severity: "INFO",
+      type: "ALERT",
+      path: testResult.filePath
+    });
   } catch (e) {
-    vscode.window.showErrorMessage(e);
+    notificationsApi.createNotification({
+      message: e,
+      severity: "ERROR",
+      type: "ALERT",
+      path: ""
+    });
   }
 }

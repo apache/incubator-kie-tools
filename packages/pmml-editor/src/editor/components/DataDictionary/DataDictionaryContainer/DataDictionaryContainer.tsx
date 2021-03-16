@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Alert, Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
@@ -11,7 +11,8 @@ import { findIncrementalName } from "../../../PMMLModelHelper";
 import "./DataDictionaryContainer.scss";
 import DataDictionaryPropertiesEdit from "../DataDictionaryPropertiesEdit/DataDictionaryPropertiesEdit";
 import { isEqual } from "lodash";
-import { useValidationService } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
@@ -67,7 +68,6 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const saveDataType = (dataType: DDDataField, index: number) => {
-    console.log("updating data type");
     onEdit(index, dataTypes[index].name, dataType);
   };
 
@@ -127,6 +127,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
 
   const dataTypeNameValidation = (dataTypeName: string) => {
     let isValid = true;
+    if (dataTypeName.trim().length === 0) {
+      return false;
+    }
     const match = dataTypes.find((item, index) => item.name === dataTypeName.trim() && index !== editing);
     if (match !== undefined) {
       isValid = false;
@@ -144,8 +147,23 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     }
   };
 
-  const validationService = useValidationService().service;
-  const validations = useMemo(() => validationService.get(`DataDictionary`), [dataDictionary]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useRef(
+    validationRegistry.get(
+      Builder()
+        .forDataDictionary()
+        .build()
+    )
+  );
+  useEffect(() => {
+    if (editing === undefined) {
+      validations.current = validationRegistry.get(
+        Builder()
+          .forDataDictionary()
+          .build()
+      );
+    }
+  }, [dataDictionary, editing]);
 
   return (
     <div className="data-dictionary">
@@ -160,8 +178,8 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
         >
           <>
             {viewSection === "main" && (
-              <section style={{ height: "100%" }}>
-                <Flex style={{ padding: "1em 0" }}>
+              <section className="data-dictionary__overview">
+                <Flex className="data-dictionary__toolbar">
                   <FlexItem>
                     <Button
                       variant="primary"
@@ -198,9 +216,9 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                 </Flex>
                 {!sorting && (
                   <>
-                    {validations.length > 0 && (
+                    {validations.current && validations.current.length > 0 && (
                       <section className="data-dictionary__validation-alert">
-                        <Alert variant="warning" title="Some items are invalid and need attention." />
+                        <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
                       </section>
                     )}
                     <section className="data-dictionary__types-list">
@@ -269,10 +287,10 @@ type dataDictionarySection = "main" | "batch-add" | "properties";
 
 export type Constraints =
   | {
-      type: "Range";
+      type: ConstraintType.RANGE;
       value: RangeConstraint[];
     }
-  | { type: "Enumeration"; value: string[] };
+  | { type: ConstraintType.ENUMERATION; value: string[] };
 
 export interface RangeConstraint {
   start: {
@@ -283,4 +301,10 @@ export interface RangeConstraint {
     value: string;
     included: boolean;
   };
+}
+
+export enum ConstraintType {
+  RANGE = "Range",
+  ENUMERATION = "Enumeration",
+  NONE = ""
 }

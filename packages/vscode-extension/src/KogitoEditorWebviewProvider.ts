@@ -31,6 +31,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/src/vscode";
 
 export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
   private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
@@ -41,7 +42,8 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
     private readonly viewType: string,
     private readonly editorStore: KogitoEditorStore,
     private readonly editorFactory: KogitoEditorFactory,
-    private readonly vsCodeI18n: I18n<VsCodeI18n>
+    private readonly vsCodeI18n: I18n<VsCodeI18n>,
+    private readonly vsCodeNotificationsApi: VsCodeNotificationsApi
   ) {}
 
   public register() {
@@ -66,7 +68,8 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
       uri,
       this.resolveBackup(openContext.backupId),
       this.editorStore,
-      this.vsCodeI18n
+      this.vsCodeI18n,
+      this.vsCodeNotificationsApi
     );
     this.setupListeners(document);
     return document;

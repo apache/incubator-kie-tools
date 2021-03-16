@@ -1,0 +1,64 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_D0472198-7243-40C6-820E-00C1C16A38DF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_F823E887-9A14-4142-9B54-5348A5FA72F5" name="reusable-model" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_D0472198-7243-40C6-820E-00C1C16A38DF">
+  <dmn:description>Additional model for included models feature testing.</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:businessKnowledgeModel id="_40F5B712-BD8E-461D-8327-9A006E215028" name="Increaser">
+    <dmn:extensionElements/>
+    <dmn:variable id="_652E1C43-763D-4029-B06F-BC78539527DE" name="Increaser" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_6785367A-6A7F-46A4-A3B3-B52ABA022DE6" kind="FEEL">
+      <dmn:formalParameter id="_958DA72F-D33D-4427-8641-3A06C76872B3" name="aNum" typeRef="number"/>
+      <dmn:literalExpression id="_E713D8D7-D9E9-4F9B-B25D-95DBDB9C8606">
+        <dmn:text>aNum + 1</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:businessKnowledgeModel id="_91BE6381-BD37-4EB7-A04D-79327108F1E3" name="Decreaser">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C7F15E54-9A11-4C44-B589-F0ADAC2D1A7E" name="Decreaser" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_0BFE9DFB-686C-4586-8939-34AD4C4BF9DB" kind="FEEL">
+      <dmn:formalParameter id="_FFD2A4E7-565F-4F85-86AF-DFC5CEB689E8" name="aNum" typeRef="number"/>
+      <dmn:literalExpression id="_5495B930-8F1B-4140-AF61-389DFDE101CF">
+        <dmn:text>aNum - 1</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_9C4BB97D-5F60-4EE1-BA9C-A47427EC67D5" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_E713D8D7-D9E9-4F9B-B25D-95DBDB9C8606">
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_6785367A-6A7F-46A4-A3B3-B52ABA022DE6">
+            <kie:width>50</kie:width>
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_5495B930-8F1B-4140-AF61-389DFDE101CF">
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_0BFE9DFB-686C-4586-8939-34AD4C4BF9DB">
+            <kie:width>50</kie:width>
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_40F5B712-BD8E-461D-8327-9A006E215028" dmnElementRef="_40F5B712-BD8E-461D-8327-9A006E215028" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="147" y="98" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_91BE6381-BD37-4EB7-A04D-79327108F1E3" dmnElementRef="_91BE6381-BD37-4EB7-A04D-79327108F1E3" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="363" y="98" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

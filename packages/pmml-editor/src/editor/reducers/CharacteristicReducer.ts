@@ -19,6 +19,7 @@ import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshalle
 import { Reducer } from "react";
 import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
+import { Builder } from "../paths";
 
 // @ts-ignore
 Characteristic[immerable] = true;
@@ -36,9 +37,9 @@ interface CharacteristicPayload {
 export type CharacteristicActions = ActionMap<CharacteristicPayload>[keyof ActionMap<CharacteristicPayload>];
 
 export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllActions> = (
-  service: HistoryService
+  historyService: HistoryService
 ): Reducer<Characteristic[], AllActions> => {
-  const attributesReducer = AttributesReducer(service);
+  const attributesReducer = AttributesReducer(historyService);
 
   const delegateToAttributes = (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
@@ -47,16 +48,7 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
       case Actions.Scorecard_DeleteAttribute:
         const characteristicIndex = action.payload.characteristicIndex;
         const attributes: Attribute[] = state[characteristicIndex].Attribute;
-        const newAttributes = attributesReducer(attributes, action);
-        if (newAttributes !== attributes) {
-          const newCharacteristics: Characteristic[] = [];
-          state.forEach(c => newCharacteristics.push(c));
-          newCharacteristics[characteristicIndex] = {
-            ...state[characteristicIndex],
-            Attribute: newAttributes
-          };
-          return newCharacteristics;
-        }
+        attributesReducer(attributes, action);
     }
 
     return state;
@@ -65,17 +57,28 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
   return (state: Characteristic[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_UpdateCharacteristic:
-        service.batch(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
-          const characteristicIndex: number = action.payload.characteristicIndex;
-          if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
-            draft[characteristicIndex] = {
-              ...draft[characteristicIndex],
-              name: action.payload.name,
-              reasonCode: action.payload.reasonCode,
-              baselineScore: action.payload.baselineScore
-            };
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic()
+            .build(),
+          draft => {
+            const characteristicIndex: number = action.payload.characteristicIndex;
+            if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
+              draft[characteristicIndex] = {
+                ...draft[characteristicIndex],
+                name: action.payload.name,
+                reasonCode: action.payload.reasonCode,
+                baselineScore: action.payload.baselineScore
+              };
+            }
+            if (action.payload.reasonCode !== undefined) {
+              draft[characteristicIndex].Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+            }
           }
-        });
+        );
         return state;
     }
 

@@ -14,24 +14,42 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useCallback } from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
-import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
+import {
+  AttributeLabels,
+  CharacteristicLabels,
+  CharacteristicPredicateLabel,
+  CharacteristicsTableAction
+} from "../atoms";
+import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
-import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
-import { DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface CharacteristicsTableRowProps {
+  modelIndex: number;
+  characteristicIndex: number;
   characteristic: IndexedCharacteristic;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
   dataFields: DataField[];
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
-  const { characteristic, areReasonCodesUsed, isBaselineScoreRequired, dataFields, onEdit, onDelete } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    characteristic,
+    areReasonCodesUsed,
+    scorecardBaselineScore,
+    dataFields,
+    onEdit,
+    onDelete
+  } = props;
 
   return (
     <article
@@ -52,9 +70,17 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
         </SplitItem>
         <SplitItem isFilled={true}>
           <CharacteristicLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
             activeCharacteristic={characteristic.characteristic}
             areReasonCodesUsed={areReasonCodesUsed}
-            isBaselineScoreRequired={isBaselineScoreRequired}
+            scorecardBaselineScore={scorecardBaselineScore}
+          />
+          <CharacteristicAttributesList
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            characteristic={characteristic.characteristic}
+            areReasonCodesUsed={areReasonCodesUsed}
             dataFields={dataFields}
           />
         </SplitItem>
@@ -63,5 +89,51 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
         </SplitItem>
       </Split>
     </article>
+  );
+};
+
+interface CharacteristicAttributesListProps {
+  modelIndex: number;
+  characteristicIndex: number;
+  characteristic: Characteristic;
+  areReasonCodesUsed: boolean;
+  dataFields: DataField[];
+}
+
+const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) => {
+  const { modelIndex, characteristicIndex, characteristic, areReasonCodesUsed, dataFields } = props;
+
+  const { validationRegistry } = useValidationRegistry();
+
+  const validations = useCallback(
+    attributeIndex =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, characteristic]
+  );
+
+  return (
+    <ul>
+      {characteristic.Attribute.map((item, index) => (
+        <li key={index}>
+          {CharacteristicPredicateLabel(item.predicate, dataFields, validations(index))}
+          <AttributeLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            activeAttributeIndex={index}
+            activeAttribute={item}
+            areReasonCodesUsed={areReasonCodesUsed}
+            characteristicReasonCode={characteristic.reasonCode}
+          />
+        </li>
+      ))}
+    </ul>
   );
 };

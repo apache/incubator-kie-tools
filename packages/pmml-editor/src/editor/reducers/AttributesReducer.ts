@@ -17,8 +17,8 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { fromText } from "./AttributePredicateConverter";
 import { immerable } from "immer";
+import { Builder } from "../paths";
 
 // @ts-ignore
 Attribute[immerable] = true;
@@ -33,7 +33,7 @@ interface AttributesPayload {
   [Actions.Scorecard_AddAttribute]: {
     readonly modelIndex: number;
     readonly characteristicIndex: number;
-    readonly text: string;
+    readonly predicate: Predicate;
     readonly partialScore: number;
     readonly reasonCode: string;
   };
@@ -46,7 +46,7 @@ interface AttributesPayload {
     readonly modelIndex: number;
     readonly characteristicIndex: number;
     readonly attributeIndex: number;
-    readonly text: string;
+    readonly predicate: Predicate;
     readonly partialScore: number;
     readonly reasonCode: string;
   };
@@ -55,17 +55,22 @@ interface AttributesPayload {
 export type AttributesActions = ActionMap<AttributesPayload>[keyof ActionMap<AttributesPayload>];
 
 export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
-  service: HistoryService
+  historyService: HistoryService
 ): Reducer<Attribute[], AllActions> => {
   return (state: Attribute[], action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_AddAttribute:
-        service.batch(
+        historyService.batch(
           state,
-          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .forAttribute()
+            .build(),
           draft => {
             draft.push({
-              predicate: fromText(action.payload.text),
+              predicate: action.payload.predicate,
               partialScore: action.payload.partialScore,
               reasonCode: action.payload.reasonCode
             });
@@ -74,9 +79,14 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
         break;
 
       case Actions.Scorecard_DeleteAttribute:
-        service.batch(
+        historyService.batch(
           state,
-          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .forAttribute()
+            .build(),
           draft => {
             const attributeIndex = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
@@ -87,27 +97,23 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
         break;
 
       case Actions.Scorecard_UpdateAttribute:
-        service.batch(
+        historyService.batch(
           state,
-          `models[${action.payload.modelIndex}].Characteristics.Characteristic[${action.payload.characteristicIndex}].Attribute`,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forCharacteristics()
+            .forCharacteristic(action.payload.characteristicIndex)
+            .forAttribute()
+            .build(),
           draft => {
             const attributeIndex: number = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft[attributeIndex] = {
                 ...draft[attributeIndex],
+                predicate: action.payload.predicate,
                 partialScore: action.payload.partialScore,
                 reasonCode: action.payload.reasonCode
               };
-              // TODO {mantis} For the time being only update the Predicate if applicable.
-              // Normally we could include it in the spread above. However until we have a Predicate parser the
-              // Predicate is mocked for the time being... consequentially they will ALWAYS be the same when editing.
-              const predicate = fromText(action.payload.text);
-              if (predicate != null) {
-                draft[attributeIndex] = {
-                  ...draft[attributeIndex],
-                  predicate: predicate
-                };
-              }
             }
           }
         );

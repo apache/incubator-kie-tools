@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { Rect } from "@kogito-tooling/guided-tour/dist/api";
 
 /**
@@ -39,4 +40,5 @@ export interface EditorApi {
   getElementPosition(selector: string): Promise<Rect | undefined>;
   undo(): Promise<void>;
   redo(): Promise<void>;
+  validate(): Promise<Notification[]>;
 }

@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  Attribute,
+  Characteristic,
+  DataField,
+  MiningField,
+  Model,
+  PMML,
+  Scorecard
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";
@@ -22,19 +30,37 @@ import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
 
 interface AttributesTableProps {
-  attributes: Attribute[];
+  modelIndex: number;
+  characteristicIndex: number;
+  characteristic: Characteristic;
   areReasonCodesUsed: boolean;
   viewAttribute: (index: number | undefined) => void;
   deleteAttribute: (index: number) => void;
+  onCommit: (index: number, partial: Partial<Attribute>) => void;
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { attributes, areReasonCodesUsed, viewAttribute, deleteAttribute } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    characteristic,
+    areReasonCodesUsed,
+    viewAttribute,
+    deleteAttribute,
+    onCommit
+  } = props;
 
   const { setActiveOperation } = useOperation();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
+  });
+  const miningFields: MiningField[] = useSelector<PMML, MiningField[]>((state: PMML) => {
+    const _model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
+    if (_model && _model instanceof Scorecard) {
+      return (_model as Scorecard).MiningSchema.MiningField;
+    }
+    return [];
   });
 
   const onEdit = (index: number | undefined) => {
@@ -50,16 +76,21 @@ export const AttributesTable = (props: AttributesTableProps) => {
 
   return (
     <section>
-      {attributes.map((attribute, index) => {
+      {characteristic.Attribute.map((attribute, index) => {
         return (
           <AttributesTableRow
             key={index}
-            index={index}
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            attributeIndex={index}
             attribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}
+            characteristicReasonCode={characteristic.reasonCode}
             dataFields={dataFields}
+            miningFields={miningFields}
             onEdit={() => onEdit(index)}
             onDelete={() => onDelete(index)}
+            onCommit={partial => onCommit(index, partial)}
           />
         );
       })}

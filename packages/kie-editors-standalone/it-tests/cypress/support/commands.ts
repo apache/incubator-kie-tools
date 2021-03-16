@@ -58,7 +58,7 @@ const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) =
       for (var i in editorIds) {
         cy.iframe("div#" + editorIds[i] + " iframe", opts)
           .find("[data-testid='loading-screen-div']", {
-            timeout: 60000,
+            timeout: 120000,
             ...opts
           })
           .should("not.exist");

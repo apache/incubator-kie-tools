@@ -14,55 +14,73 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Attribute, Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicLabel, CharacteristicLabelAttribute } from "./CharacteristicLabel";
-import { toText } from "../../../reducers";
+import { useMemo } from "react";
+import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { CharacteristicLabel } from "./CharacteristicLabel";
+import { useValidationRegistry } from "../../../validation";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { Builder } from "../../../paths";
 
 interface CharacteristicLabelsProps {
+  modelIndex: number;
+  characteristicIndex: number;
   activeCharacteristic: Characteristic;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
-  dataFields: DataField[];
+  scorecardBaselineScore: number | undefined;
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic, areReasonCodesUsed, isBaselineScoreRequired, dataFields } = props;
+  const { modelIndex, characteristicIndex, activeCharacteristic, areReasonCodesUsed, scorecardBaselineScore } = props;
 
+  const { validationRegistry } = useValidationRegistry();
+  const reasonCodeValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forReasonCode()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, areReasonCodesUsed, activeCharacteristic]
+  );
+  const baselineScoreValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forBaselineScore()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, areReasonCodesUsed, scorecardBaselineScore, activeCharacteristic]
+  );
   return (
     <>
-      {activeCharacteristic.Attribute.length > 0 &&
-        CharacteristicLabelAttribute(
-          "Attributes",
-          attributesToTruncatedText(activeCharacteristic.Attribute, dataFields),
-          attributesToFullText(activeCharacteristic.Attribute, dataFields)
-        )}
-      {activeCharacteristic.reasonCode !== undefined &&
-        areReasonCodesUsed &&
-        CharacteristicLabel("Reason code", activeCharacteristic.reasonCode)}
-      {activeCharacteristic.baselineScore !== undefined &&
-        isBaselineScoreRequired &&
-        CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
+      {areReasonCodesUsed && activeCharacteristic.reasonCode !== undefined && reasonCodeValidation.length === 0 && (
+        <CharacteristicLabel name={"Reason code"} value={activeCharacteristic.reasonCode} />
+      )}
+      {areReasonCodesUsed && reasonCodeValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={reasonCodeValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Reason code:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
+      {activeCharacteristic.baselineScore !== undefined && baselineScoreValidation.length === 0 && (
+        <CharacteristicLabel name={"Baseline score"} value={activeCharacteristic.baselineScore.toString()} />
+      )}
+      {areReasonCodesUsed && activeCharacteristic.baselineScore === undefined && baselineScoreValidation.length > 0 && (
+        <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="characteristic-list__item__label">
+          <>
+            <strong>Baseline score:</strong>&nbsp;
+            <em>Missing</em>
+          </>
+        </ValidationIndicatorLabel>
+      )}
     </>
   );
-};
-
-const attributesToTruncatedText = (attributes: Attribute[], fields: DataField[]): string => {
-  const text: string[] = [];
-  attributes.forEach(attribute => {
-    let line: string = toText(attribute.predicate, fields);
-    if (line.length > 32) {
-      line = line.slice(0, 29) + "...";
-    }
-    text.push(line);
-  });
-  return text.join(" ");
-};
-
-const attributesToFullText = (attributes: Attribute[], fields: DataField[]): string => {
-  const text: string[] = [];
-  attributes.forEach(attribute => {
-    const line: string = toText(attribute.predicate, fields);
-    text.push(line);
-  });
-  return text.join("\n");
 };

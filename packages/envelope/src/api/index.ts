@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,20 +14,4 @@
  * limitations under the License.
  */
 
-import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
-
-export class ValidationService {
-  private readonly registry: ValidationRegistry = new ValidationRegistry();
-
-  public set = (path: string, entry: ValidationEntry): void => {
-    this.registry.set(path, entry);
-  };
-
-  public get = (path: string): ValidationEntry[] => {
-    return this.registry.get(path);
-  };
-
-  public clear = (path: string): void => {
-    this.registry.clear(path);
-  };
-}
+export * from "./ContainerType"

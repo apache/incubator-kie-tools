@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -29,16 +28,17 @@ import {
   ToolbarItem
 } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
+import "./CharacteristicsToolbar.scss";
 
 interface CharacteristicsToolbarProps {
-  onFilter: (filter: string) => void;
+  filter: string;
+  setFilter: (filter: string) => void;
+  onFilter: () => void;
   onAddCharacteristic: () => void;
 }
 
 export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
-  const { onFilter, onAddCharacteristic } = props;
-
-  const [filter, setFilter] = useState("");
+  const { filter, setFilter, onFilter, onAddCharacteristic } = props;
 
   return (
     <Toolbar id="characteristics-toolbar" data-testid="characteristics-toolbar">
@@ -73,7 +73,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       data-testid="characteristics-toolbar__submit"
                       variant={ButtonVariant.control}
                       aria-label="filter button for filter input"
-                      onClick={e => onFilter(filter)}
+                      onClick={() => onFilter()}
                     >
                       <SearchIcon />
                     </Button>
@@ -88,7 +88,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                 id="add-characteristic-button"
                 data-testid="characteristics-toolbar__add-characteristic"
                 variant="primary"
-                onClick={e => onAddCharacteristic()}
+                onClick={() => onAddCharacteristic()}
               >
                 Add Characteristic
               </Button>

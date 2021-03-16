@@ -87,6 +87,8 @@ Develop
 > **Example:**
 >
 > $ export EXTERNAL_RESOURCE_PATH__bpmnEditor=/Users/tiago/redhat/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime
+> 
+> $ export EXTERNAL_RESOURCE_PATH__dmnEditor=/Users/tiago/redhat/kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime/
 >
 > $ yarn run init && yarn run build:prod
 >
@@ -132,6 +134,7 @@ merge `{branch-name}` into master, and build them.
 In a few seconds you should see a new comment on the same issue, saying that a new build was triggered for you. The 
 GitHub Actions bot will also provide a link so you can follow the build logs and download artifacts, and another link to 
 access an Online Editor instance (2) containing your changes, once it's finished running. 
+- Please use Prettier to format the code before submitting a PR.
 
 (1) This process considers the following repositories: `droolsjbpm-build-bootstrap`, `kie-soup`, `appformer`, `kie-wb-common`, `drools-wb` and `kogito-tooling`.
 

@@ -15,6 +15,7 @@
  */
 
 import { Rect } from "@kogito-tooling/guided-tour/dist/api";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 
 declare global {
   //Exposed API of AppFormerGwt
@@ -42,6 +43,7 @@ export interface GwtEditor {
   getContent(): Promise<string>;
   setContent(path: string, content: string): Promise<void>;
   getPreview(): Promise<string | undefined>;
+  validate(): Promise<Notification[]>
 }
 
 export class GwtAppFormerApi {

@@ -17,9 +17,9 @@ import * as React from "react";
 import { useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
+import { Alert, Button, Flex, FlexItem, Stack, StackItem, TextContent, Title } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, BoltIcon, PlusIcon } from "@patternfly/react-icons";
-import { FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
@@ -28,13 +28,16 @@ import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 import "./OutputsContainer.scss";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import get = Reflect.get;
 import set = Reflect.set;
 
 interface OutputsContainerProps {
   modelIndex: number;
   output?: Output;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  miningSchema?: MiningSchema;
+  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
   deleteOutputField: (index: number) => void;
   commitOutputField: (index: number | undefined, outputField: OutputField) => void;
 }
@@ -42,7 +45,7 @@ interface OutputsContainerProps {
 type OutputsViewSection = "overview" | "extended-properties" | "batch-add";
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { modelIndex, output, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
+  const { modelIndex, output, miningSchema, validateOutputFieldName, deleteOutputField, commitOutputField } = props;
 
   const [selectedOutputIndex, setSelectedOutputIndex] = useState<number | undefined>(undefined);
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
@@ -50,6 +53,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const { activeOperation, setActiveOperation } = useOperation();
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
+
+  const targetFields = useMemo(() => getMiningSchemaTargetFields(miningSchema), [miningSchema]);
 
   const editItem: OutputField | undefined = useMemo(() => {
     if (selectedOutputIndex === undefined) {
@@ -137,6 +142,18 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     setActiveOperation(Operation.NONE);
   };
 
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .build()
+      ),
+    [modelIndex, output?.OutputField]
+  );
+
   return (
     <div className="outputs-container">
       <SwitchTransition mode={"out-in"}>
@@ -150,7 +167,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         >
           <>
             {viewSection === "overview" && (
-              <Stack hasGutter={true}>
+              <Stack hasGutter={true} className="outputs-container__overview">
                 <StackItem>
                   <Flex>
                     <FlexItem>
@@ -177,7 +194,20 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     </FlexItem>
                   </Flex>
                 </StackItem>
-                <StackItem className="outputs-container__overview">
+                {validations && validations.length > 0 && (
+                  <StackItem>
+                    <Alert
+                      variant="warning"
+                      isInline={true}
+                      title={
+                        output?.OutputField.length
+                          ? "Some items are invalid and need attention."
+                          : "At least one Output Field is required."
+                      }
+                    />
+                  </StackItem>
+                )}
+                <StackItem className="outputs-container__fields-list">
                   <OutputFieldsTable
                     modelIndex={modelIndex}
                     outputs={output?.OutputField as OutputField[]}
@@ -204,7 +234,13 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                   </TextContent>
                 </StackItem>
                 <StackItem className="outputs-container__extended-properties">
-                  <OutputFieldExtendedProperties activeOutputField={editItem} commit={onCommit} />
+                  <OutputFieldExtendedProperties
+                    modelIndex={modelIndex}
+                    activeOutputFieldIndex={selectedOutputIndex}
+                    activeOutputField={editItem}
+                    targetFields={targetFields}
+                    commit={onCommit}
+                  />
                 </StackItem>
                 <StackItem>
                   <Button
@@ -213,7 +249,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     icon={<ArrowAltCircleLeftIcon />}
                     iconPosition="left"
                   >
-                    Done
+                    Back
                   </Button>
                 </StackItem>
               </Stack>
@@ -226,4 +262,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
       </SwitchTransition>
     </div>
   );
+};
+
+const getMiningSchemaTargetFields = (miningSchema?: MiningSchema) => {
+  return miningSchema?.MiningField.filter(field => field.usageType === "target").map(field => field.name) as string[];
 };

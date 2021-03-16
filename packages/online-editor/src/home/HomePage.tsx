@@ -448,7 +448,7 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>{i18n.homePage.bpmnCard.explanation}</CardBody>
             <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={tryBpmnSample}>
+              <Button variant="link" isInline={true} onClick={tryBpmnSample} ouiaId="try-bpmn-sample-button">
                 {i18n.homePage.trySample}
               </Button>
             </CardBody>
@@ -466,7 +466,7 @@ export function HomePage(props: Props) {
             </CardHeader>
             <CardBody isFilled={false}>{i18n.homePage.dmnCard.explanation}</CardBody>
             <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={tryDmnSample}>
+              <Button variant="link" isInline={true} onClick={tryDmnSample} ouiaId="try-dmn-sample-button">
                 {i18n.homePage.trySample}
               </Button>
             </CardBody>

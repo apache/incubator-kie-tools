@@ -12,7 +12,6 @@ jobs:
   build:
     if: github.repository == 'kiegroup/kogito-tooling' || github.event_name != 'schedule'
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
     strategy:
       fail-fast: true
       matrix:
@@ -37,7 +36,9 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Setup Yarn
-        run: npm install -g yarn@${{ matrix.yarn }}
+        run: |
+          npm install -g yarn@${{ matrix.yarn }}
+          yarn config set network-timeout 1000000
 
       - name: Start Xvfb (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'

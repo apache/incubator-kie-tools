@@ -14,29 +14,65 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Split, SplitItem } from "@patternfly/react-core";
-import { Attribute, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { useMemo } from "react";
+import { Label, Split, SplitItem } from "@patternfly/react-core";
+import { Attribute, Characteristic, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
-import { toText } from "../../../reducers";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
+import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
+import { toText } from "../organisms";
 
 interface AttributesTableRowProps {
-  index: number;
+  modelIndex: number;
+  characteristicIndex: number;
+  attributeIndex: number;
   attribute: Attribute;
   areReasonCodesUsed: boolean;
+  characteristicReasonCode: Characteristic["reasonCode"];
   dataFields: DataField[];
+  miningFields: MiningField[];
   onEdit: () => void;
   onDelete: () => void;
+  onCommit: (partial: Partial<Attribute>) => void;
 }
 
 export const AttributesTableRow = (props: AttributesTableRowProps) => {
-  const { index, attribute, areReasonCodesUsed, dataFields, onEdit, onDelete } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    attributeIndex,
+    attribute,
+    areReasonCodesUsed,
+    characteristicReasonCode,
+    dataFields,
+    miningFields,
+    onEdit,
+    onDelete,
+    onCommit
+  } = props;
+
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build()
+      ),
+    [modelIndex, characteristicIndex, attributeIndex, attribute, miningFields]
+  );
 
   return (
     <article
-      className={`attribute-item attribute-item-n${index} editable`}
+      className={`attribute-item attribute-item-n${attributeIndex} editable-item`}
       tabIndex={0}
-      onClick={e => onEdit()}
+      onClick={() => onEdit()}
       onKeyDown={e => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -47,10 +83,45 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
-          <pre>{toText(attribute.predicate, dataFields)}</pre>
+          <>
+            {validations.length > 0 && (
+              <ValidationIndicatorLabel validations={validations} cssClass="characteristic-list__item__label">
+                <>
+                  {attribute.predicate && <pre>{toText(attribute.predicate, dataFields)}</pre>}
+                  {!attribute.predicate && (
+                    <>
+                      <strong>Predicate:</strong>&nbsp;
+                      <em>Missing</em>
+                    </>
+                  )}
+                </>
+              </ValidationIndicatorLabel>
+            )}
+            {validations.length === 0 && (
+              <Label
+                tabIndex={0}
+                color="blue"
+                onClose={e => {
+                  e.nativeEvent.stopImmediatePropagation();
+                  e.stopPropagation();
+                  onCommit({ predicate: undefined });
+                }}
+              >
+                <pre>{toText(attribute.predicate, dataFields)}</pre>
+              </Label>
+            )}
+          </>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <AttributeLabels activeAttribute={attribute} areReasonCodesUsed={areReasonCodesUsed} />
+          <AttributeLabels
+            modelIndex={modelIndex}
+            characteristicIndex={characteristicIndex}
+            activeAttributeIndex={attributeIndex}
+            activeAttribute={attribute}
+            areReasonCodesUsed={areReasonCodesUsed}
+            characteristicReasonCode={characteristicReasonCode}
+            commit={onCommit}
+          />
         </SplitItem>
         <SplitItem>
           <AttributesTableAction onDelete={onDelete} />

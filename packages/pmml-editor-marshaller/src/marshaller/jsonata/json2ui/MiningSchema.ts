@@ -15,5 +15,14 @@
  */
 export const MINING_SCHEMA: string = `
 "MiningSchema": {
-  "MiningField": [$v.elements[(name = "MiningSchema")].elements[(name = "MiningField")].attributes]
+  "MiningField": [$v.elements[(name = "MiningSchema")].elements[(name = "MiningField")] ~> $map(function($v, $i) {  
+    $merge([
+      $v.attributes,
+      {
+        "importance": $number($v.attributes.importance),
+        "lowValue": $number($v.attributes.lowValue),
+        "highValue": $number($v.attributes.highValue)
+      }
+    ])
+  })]
 }`;

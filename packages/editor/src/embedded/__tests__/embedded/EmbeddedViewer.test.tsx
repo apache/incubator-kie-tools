@@ -70,7 +70,7 @@ describe("EmbeddedViewer::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: envelopeServerId,
+      targetEnvelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
@@ -95,7 +95,7 @@ describe("EmbeddedViewer::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: envelopeServerId,
+      targetEnvelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",

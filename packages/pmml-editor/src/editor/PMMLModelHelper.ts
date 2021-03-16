@@ -19,14 +19,20 @@ import {
   AssociationModel,
   BaselineModel,
   BayesianNetworkModel,
+  Characteristics,
   ClusteringModel,
+  DataDictionary,
   GaussianProcessModel,
   GeneralRegressionModel,
+  MiningField,
   MiningModel,
+  MiningSchema,
   Model,
   NaiveBayesModel,
   NearestNeighborModel,
   NeuralNetwork,
+  Output,
+  PMML,
   RegressionModel,
   RuleSetModel,
   Scorecard,
@@ -36,7 +42,8 @@ import {
   TimeSeriesModel,
   TreeModel
 } from "@kogito-tooling/pmml-editor-marshaller";
-import get = Reflect.get;
+import { Builder } from "./paths";
+import { get } from "lodash";
 
 const ICON_BASE: string = "images/";
 const ICON_DEFAULT: string = "card-icon-default.svg";
@@ -62,7 +69,7 @@ export type ModelType =
   | "Text Model"
   | "Time Series Model"
   | "Tree Model"
-  | "<Unknown>";
+  | undefined;
 
 export enum SupportedCapability {
   NONE,
@@ -184,6 +191,7 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
     capability: SupportedCapability.EDITOR,
     factory: () => {
       const model: Scorecard = new Scorecard({
+        modelName: "Untitled model",
         MiningSchema: { MiningField: [] },
         Characteristics: { Characteristic: [] },
         Output: { OutputField: [] },
@@ -231,16 +239,15 @@ export const isCollection = <T>(collection: T[] | undefined): boolean => {
 };
 
 export const getModelName = (model: Model): string => {
-  return get(model, "modelName") ?? "<Undefined>";
+  return get(model, "modelName") ?? "";
 };
 
-export const getModelType = (model: Model): ModelType => {
+export const getModelType = (model: Model): ModelType | undefined => {
   for (const _mapping of PMMLModels) {
     if (model instanceof _mapping.model) {
       return _mapping.type;
     }
   }
-  return "<Unknown>";
 };
 
 export const getModelIconUrlByType = (type: ModelType): string => {
@@ -274,4 +281,74 @@ export const findIncrementalName = (name: string, existingNames: string[], start
     counter++;
   } while (newName.length === 0);
   return newName;
+};
+
+export const getDataDictionary = (pmml: PMML): DataDictionary | undefined => {
+  return get(
+    pmml,
+    Builder()
+      .forDataDictionary()
+      .build().path
+  );
+};
+
+export const getMiningSchema = (pmml: PMML, modelIndex: number): MiningSchema | undefined => {
+  return get(
+    pmml,
+    Builder()
+      .forModel(modelIndex)
+      .forMiningSchema()
+      .build().path
+  );
+};
+
+export const getMiningField = (pmml: PMML, modelIndex: number, miningFieldIndex: number): MiningField | undefined => {
+  return get(
+    pmml,
+    Builder()
+      .forModel(modelIndex)
+      .forMiningSchema()
+      .forMiningField(miningFieldIndex)
+      .build().path
+  );
+};
+
+export const getOutputs = (pmml: PMML, modelIndex: number): Output | undefined => {
+  return get(
+    pmml,
+    Builder()
+      .forModel(modelIndex)
+      .forOutput()
+      .build().path
+  );
+};
+
+export const getCharacteristics = (pmml: PMML, modelIndex: number): Characteristics | undefined => {
+  return get(
+    pmml,
+    Builder()
+      .forModel(modelIndex)
+      .forCharacteristics()
+      .build().path
+  );
+};
+
+export const getBaselineScore = (pmml: PMML, modelIndex: number): number | undefined => {
+  return get(
+    pmml,
+    Builder()
+      .forModel(modelIndex)
+      .forBaselineScore()
+      .build().path
+  );
+};
+
+export const getUseReasonCodes = (pmml: PMML, modelIndex: number): boolean | undefined => {
+  return get(
+    pmml,
+    Builder()
+      .forModel(modelIndex)
+      .forUseReasonCodes()
+      .build().path
+  );
 };

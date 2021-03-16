@@ -1,32 +1,39 @@
 import * as React from "react";
-import { useContext } from "react";
-import { Button, Split, SplitItem } from "@patternfly/react-core";
+import { useContext, useMemo } from "react";
+import { Button, Flex, FlexItem, Split, SplitItem } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
-import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
 import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
 import "./MiningSchemaFields.scss";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
+import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface MiningSchemaFieldsProps {
+  modelIndex: number;
+  dataDictionary?: DataDictionary;
   fields: MiningField[] | undefined;
   onAddProperties: (index: number) => void;
-  onDelete: (index: number) => void;
+  onDelete: (index: number, name: string) => void;
   onPropertyDelete: (index: number, updatedField: MiningField) => void;
   onEdit: (index: number) => void;
   onCancel: () => void;
 }
 
 const MiningSchemaFields = (props: MiningSchemaFieldsProps) => {
-  const { fields, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
+  const { dataDictionary, fields, modelIndex, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
   return (
     <ul className="mining-schema-list">
       {fields?.map((field, index) => {
         return (
           <MiningSchemaItem
             key={field.name as string}
+            dataDictionary={dataDictionary}
             field={field}
             index={index}
+            modelIndex={modelIndex}
             onAddProperties={onAddProperties}
             onDelete={onDelete}
             onPropertyDelete={onPropertyDelete}
@@ -42,17 +49,29 @@ const MiningSchemaFields = (props: MiningSchemaFieldsProps) => {
 export default MiningSchemaFields;
 
 interface MiningSchemaFieldProps {
-  field: MiningField;
   index: number;
+  modelIndex: number;
+  dataDictionary?: DataDictionary;
+  field: MiningField;
   onAddProperties: (index: number) => void;
-  onDelete: (index: number) => void;
+  onDelete: (index: number, name: string) => void;
   onPropertyDelete: (index: number, field: MiningField) => void;
   onEdit: (index: number) => void;
   onCancel: () => void;
 }
 
 const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
-  const { field, index, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
+  const {
+    index,
+    modelIndex,
+    dataDictionary,
+    field,
+    onAddProperties,
+    onDelete,
+    onPropertyDelete,
+    onEdit,
+    onCancel
+  } = props;
   const editing = useContext(MiningSchemaContext);
 
   const ref = useOnclickOutside(
@@ -68,17 +87,34 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
   const addProperties = () => {
     onAddProperties(index);
   };
+
   const deleteField = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     event.stopPropagation();
-    onDelete(index);
+    onDelete(index, field.name as string);
   };
+
   const deleteProperty = (updatedField: MiningField) => {
     onPropertyDelete(index, updatedField);
   };
+
   const handleEdit = () => {
     onEdit(index);
   };
+
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forMiningSchema()
+          .forMiningField(index)
+          .build()
+      ),
+    [index, modelIndex, dataDictionary, field]
+  );
+
   return (
     <li
       className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
@@ -99,11 +135,26 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     >
       <section className={"editable-item__inner"}>
         <Split hasGutter={true}>
+          {index !== editing && validations.length > 0 && (
+            <SplitItem>
+              <Flex
+                alignItems={{ default: "alignItemsCenter" }}
+                justifyContent={{ default: "justifyContentCenter" }}
+                style={{ height: "100%" }}
+              >
+                <FlexItem>
+                  <ValidationIndicator validations={validations} />
+                </FlexItem>
+              </Flex>
+            </SplitItem>
+          )}
           <SplitItem>
             <span className="mining-schema-list__item__name">{field.name}</span>
           </SplitItem>
           <SplitItem isFilled={true}>
             <MiningSchemaFieldLabels
+              modelIndex={modelIndex}
+              index={index}
               field={field}
               onEdit={addProperties}
               onDelete={deleteProperty}

@@ -17,6 +17,40 @@
 .editor {
   position: relative;
   height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+
+  &__header {
+
+    &__container {
+      background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
+    }
+
+    &__content {
+      margin: 0 auto;
+      max-width: 1920px;
+    }
+
+  }
+
+  &__body {
+
+    &__container {
+      background-color: var(--pf-c-page__main-section--BackgroundColor);
+      flex-grow: 1;
+    }
+
+    &__content {
+      margin: 0 auto;
+      max-width: 1920px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+    }
+
+  }
 }
 
 .editable-item {
@@ -27,18 +61,22 @@
   transition: margin-bottom 0.15s var(--sizeEasing), border-left 0.12s ease-in;
   user-select: none;
   cursor: pointer;
+
   &__inner {
     padding: 1em;
     transition: padding 0.15s var(--sizeEasing);
   }
-  &:hover {
-    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+
+  &:not(.editable-item--editing):hover {
+    box-shadow: var(--pf-global--BoxShadow--lg);
+    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--BorderColor--light-100);
   }
 
   // from 5 items reduce spacing
   &:first-child:nth-last-child(n + 5),
   &:first-child:nth-last-child(n + 5) ~ & {
     margin-bottom: 10px;
+
     .editable-item__inner {
       padding: 10px 1em;
     }
@@ -48,6 +86,7 @@
   &:first-child:nth-last-child(n + 8),
   &:first-child:nth-last-child(n + 8) ~ & {
     margin-bottom: 6px;
+
     .editable-item__inner {
       padding: 6px 1em;
     }
@@ -57,26 +96,15 @@
     cursor: auto;
     box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
     border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
+
     .editable-item__inner {
       padding: 1em !important;
     }
   }
+
   &:last-child {
     margin-bottom: 0 !important;
   }
+
 }
 
-// editable class to get hover styles and border animation
-.editable {
-  cursor: pointer;
-  transition: border-left 0.12s ease-in;
-  &:hover {
-    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
-  }
-}
-
-.editing {
-  cursor: auto;
-  box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
-  border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
-}

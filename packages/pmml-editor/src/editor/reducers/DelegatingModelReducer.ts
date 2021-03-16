@@ -27,7 +27,7 @@ const reduce = (model: Model, action: AllActions, reducers: Map<ModelType, Model
 };
 
 export const DelegatingModelReducer: HistoryAwareModelReducer<AllActions> = (
-  service: HistoryService,
+  historyService: HistoryService,
   reducers: Map<ModelType, ModelReducerBinding<any, any>>
 ): Reducer<Model[], AllActions> => {
   return (state: Model[], action: AllActions) => {

@@ -25,7 +25,7 @@ export default class BpmnEditor extends Editor {
 
     private static readonly CANVAS_LOCATOR: By = By.className("canvas-panel");
     private static readonly PALETTE_LOCATOR: By = By.className("kie-palette");
-    private static readonly SIDE_BAR_LOCATOR: By = By.className("qe-docks-bar-E");
+    private static readonly SIDE_BAR_LOCATOR: By = By.className("collapsed-docks-bar-E");
 
     public async dragAndDropStartEventToCanvas(): Promise<void> {
         const bpmnPalette: BpmnPalette = await this.getBpmnPalette();

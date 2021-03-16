@@ -23,15 +23,16 @@ import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
 
 export interface IndexedCharacteristic {
-  index: number | undefined;
+  index: number;
   characteristic: Characteristic;
 }
 
 interface CharacteristicsTableProps {
   modelIndex: number;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
   characteristics: IndexedCharacteristic[];
+  characteristicsUnfilteredLength: number;
   selectedCharacteristicIndex: number | undefined;
   setSelectedCharacteristicIndex: (index: number | undefined) => void;
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
@@ -47,8 +48,9 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const {
     modelIndex,
     areReasonCodesUsed,
-    isBaselineScoreRequired,
+    scorecardBaselineScore,
     characteristics,
+    characteristicsUnfilteredLength,
     selectedCharacteristicIndex,
     setSelectedCharacteristicIndex,
     validateCharacteristicName,
@@ -76,7 +78,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   //Exit "edit mode" when the User adds a new entry and then immediately undoes it.
   useEffect(() => {
-    if (selectedCharacteristicIndex === characteristics.length) {
+    if (selectedCharacteristicIndex === characteristicsUnfilteredLength) {
       setSelectedCharacteristicIndex(undefined);
       setActiveOperation(Operation.NONE);
     }
@@ -104,21 +106,24 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
         e.stopPropagation();
         e.preventDefault();
       }}
+      className="characteristics-container__overview__form"
     >
-      <section>
-        {characteristics.map(ic => (
+      {characteristics.map(ic => {
+        const isRowInEditMode =
+          selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC;
+        return (
           <article
             key={ic.index}
             className={`editable-item output-item-n${selectedCharacteristicIndex} ${
-              selectedCharacteristicIndex === ic.index ? "editable-item--editing" : ""
+              isRowInEditMode ? "editable-item--editing" : ""
             }`}
           >
-            {selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC && (
+            {isRowInEditMode && (
               <div ref={addCharacteristicRowRef}>
                 <CharacteristicsTableEditRow
                   modelIndex={modelIndex}
                   areReasonCodesUsed={areReasonCodesUsed}
-                  isBaselineScoreRequired={isBaselineScoreRequired}
+                  scorecardBaselineScore={scorecardBaselineScore}
                   characteristic={ic}
                   validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
                   viewAttribute={viewAttribute}
@@ -129,10 +134,12 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 />
               </div>
             )}
-            {(selectedCharacteristicIndex !== ic.index || activeOperation !== Operation.UPDATE_CHARACTERISTIC) && (
+            {!isRowInEditMode && (
               <CharacteristicsTableRow
+                modelIndex={modelIndex}
+                characteristicIndex={ic.index}
                 areReasonCodesUsed={areReasonCodesUsed}
-                isBaselineScoreRequired={isBaselineScoreRequired}
+                scorecardBaselineScore={scorecardBaselineScore}
                 characteristic={ic}
                 dataFields={dataFields}
                 onEdit={() => onEdit(ic.index)}
@@ -140,8 +147,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               />
             )}
           </article>
-        ))}
-      </section>
+        );
+      })}
     </Form>
   );
 };

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { ValidationService } from "./ValidationService";
+import { ValidationRegistry } from "./ValidationRegistry";
 
 export interface Validation {
-  service: ValidationService;
+  validationRegistry: ValidationRegistry;
 }
 
 export const ValidationContext = React.createContext<Validation>({
-  service: new ValidationService()
+  validationRegistry: new ValidationRegistry()
 });
 
-export function useValidationService() {
+export function useValidationRegistry() {
   return React.useContext(ValidationContext);
 }

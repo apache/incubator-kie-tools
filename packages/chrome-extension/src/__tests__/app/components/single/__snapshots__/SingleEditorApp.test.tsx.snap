@@ -47,14 +47,14 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
       style="display: flex;"
     >
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="see-as-source-button"
         disabled=""
       >
         See as source
       </button>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="open-ext-editor-button"
       >
         Open in Test Online Editor
@@ -63,14 +63,14 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
         class="position-relative"
       >
         <button
-          class="btn btn-sm kogito-button"
+          class="btn d-md-inline-block kogito-button"
           data-testid="copy-link-button"
         >
           Copy link to Test Online Editor
         </button>
       </div>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="go-fullscreen-button"
       >
         Full Screen
@@ -113,14 +113,14 @@ exports[`SingleEditorApp not readonly 1`] = `
       style="display: flex;"
     >
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="see-as-source-button"
         disabled=""
       >
         See as source
       </button>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="open-ext-editor-button"
       >
         Open in Test Online Editor
@@ -129,14 +129,14 @@ exports[`SingleEditorApp not readonly 1`] = `
         class="position-relative"
       >
         <button
-          class="btn btn-sm kogito-button"
+          class="btn d-md-inline-block kogito-button"
           data-testid="copy-link-button"
         >
           Copy link to Test Online Editor
         </button>
       </div>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="go-fullscreen-button"
       >
         Full Screen
@@ -182,14 +182,14 @@ exports[`SingleEditorApp open external editor 1`] = `
       style="display: flex;"
     >
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="see-as-source-button"
         disabled=""
       >
         See as source
       </button>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="open-ext-editor-button"
       >
         Open in Test Online Editor
@@ -198,14 +198,14 @@ exports[`SingleEditorApp open external editor 1`] = `
         class="position-relative"
       >
         <button
-          class="btn btn-sm kogito-button"
+          class="btn d-md-inline-block kogito-button"
           data-testid="copy-link-button"
         >
           Copy link to Test Online Editor
         </button>
       </div>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="go-fullscreen-button"
       >
         Full Screen
@@ -248,14 +248,14 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
       style="display: flex;"
     >
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="see-as-source-button"
         disabled=""
       >
         See as source
       </button>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="open-ext-editor-button"
       >
         Open in Test Online Editor
@@ -264,14 +264,14 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
         class="position-relative"
       >
         <button
-          class="btn btn-sm kogito-button"
+          class="btn d-md-inline-block kogito-button"
           data-testid="copy-link-button"
         >
           Copy link to Test Online Editor
         </button>
       </div>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="go-fullscreen-button"
       >
         Full Screen
@@ -314,14 +314,14 @@ exports[`SingleEditorApp readonly 1`] = `
       style="display: flex;"
     >
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="see-as-source-button"
         disabled=""
       >
         See as source
       </button>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="open-ext-editor-button"
       >
         Open in Test Online Editor
@@ -330,14 +330,14 @@ exports[`SingleEditorApp readonly 1`] = `
         class="position-relative"
       >
         <button
-          class="btn btn-sm kogito-button"
+          class="btn d-md-inline-block kogito-button"
           data-testid="copy-link-button"
         >
           Copy link to Test Online Editor
         </button>
       </div>
       <button
-        class="btn btn-sm kogito-button"
+        class="btn d-md-inline-block kogito-button"
         data-testid="go-fullscreen-button"
       >
         Full Screen

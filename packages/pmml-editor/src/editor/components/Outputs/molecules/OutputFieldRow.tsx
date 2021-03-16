@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Label, Split, SplitItem } from "@patternfly/react-core";
+import { Flex, FlexItem, Label, Split, SplitItem } from "@patternfly/react-core";
 import {
   DataType,
   FieldName,
@@ -26,8 +26,13 @@ import {
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
+import { ValidationIndicator } from "../../EditorCore/atoms";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface OutputFieldRowProps {
+  modelIndex: number;
+  outputFieldIndex: number;
   outputField: OutputField | undefined;
   onEditOutputField: () => void;
   onDeleteOutputField: () => void;
@@ -47,7 +52,7 @@ interface Values {
 }
 
 const OutputFieldRow = (props: OutputFieldRowProps) => {
-  const { outputField, onEditOutputField, onDeleteOutputField } = props;
+  const { modelIndex, outputFieldIndex, outputField, onEditOutputField, onDeleteOutputField } = props;
 
   const { name, dataType, optype, targetField, feature, value, rank, rankOrder, segmentId, isFinalResult } = useMemo<
     Values
@@ -66,6 +71,31 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
     };
   }, [outputField]);
 
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .forOutputField(outputFieldIndex)
+          .build()
+      ),
+    [outputFieldIndex, modelIndex, outputField]
+  );
+  const targetFieldValidation = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forModel(modelIndex)
+          .forOutput()
+          .forOutputField(outputFieldIndex)
+          .forTargetField()
+          .build()
+      ),
+    [outputFieldIndex, modelIndex, outputField]
+  );
+
   return (
     <section
       className={"editable-item__inner"}
@@ -81,6 +111,17 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
+          <Flex
+            alignItems={{ default: "alignItemsCenter" }}
+            justifyContent={{ default: "justifyContentCenter" }}
+            style={{ height: "100%" }}
+          >
+            <FlexItem>
+              <ValidationIndicator validations={validations} />
+            </FlexItem>
+          </Flex>
+        </SplitItem>
+        <SplitItem>
           <strong>{name}</strong>
         </SplitItem>
         <SplitItem isFilled={true}>
@@ -90,6 +131,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
           <OutputLabels
             optype={optype}
             targetField={targetField}
+            targetFieldValidation={targetFieldValidation}
             feature={feature}
             value={value}
             rank={rank}

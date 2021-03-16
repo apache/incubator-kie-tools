@@ -19,7 +19,7 @@ import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patter
 
 interface GenericSelectorProps {
   id: string;
-  items: string[];
+  items: Array<string | GenericSelectorOption>;
   selection: string | undefined;
   onSelect: (_selection: string) => void;
   isDisabled?: boolean;
@@ -49,9 +49,18 @@ export const GenericSelector = (props: GenericSelectorProps) => {
       menuAppendTo={() => document.body}
       isDisabled={props.isDisabled ?? false}
     >
-      {props.items.map((item, index) => (
-        <SelectOption key={index} value={item} />
+      {props.items.map((item: string | GenericSelectorOption, index: number) => (
+        <SelectOption
+          key={index}
+          value={typeof item === "string" ? item : item.value}
+          isDisabled={typeof item === "string" ? false : item.isDisabled}
+        />
       ))}
     </Select>
   );
 };
+
+export interface GenericSelectorOption {
+  value: string;
+  isDisabled?: boolean;
+}

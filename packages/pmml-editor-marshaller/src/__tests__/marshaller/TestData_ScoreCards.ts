@@ -339,3 +339,24 @@ export const SCORE_CARD_NESTED_COMPLEX_PARTIAL_SCORE: string = `
   </Scorecard>
 </PMML>
 `;
+
+export const SCORE_CARD_PROTOTYPES: string = `
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+  <Header/>
+  <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineScore="6" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
+        <Attribute partialScore="-12">
+          <SimplePredicate field="input1" operator="lessOrEqual" value="10"/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>
+`;

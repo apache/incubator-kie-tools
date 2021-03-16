@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Alert,
   Button,
   Checkbox,
   Flex,
@@ -33,10 +32,10 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
-import { FormValidation } from "../ConstraintsEdit/ConstraintsEdit";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
-import { useValidationService } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 
 interface ConstraintsRangeEditProps {
   dataFieldIndex: number | undefined;
@@ -44,11 +43,11 @@ interface ConstraintsRangeEditProps {
   onAdd: () => void;
   onChange: (ranges: RangeConstraint[]) => void;
   onDelete: (index: number) => void;
-  validation: FormValidation;
+  countLimit?: number;
 }
 
 const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
-  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, validation } = props;
+  const { dataFieldIndex, ranges, onAdd, onChange, onDelete, countLimit } = props;
   const [addedRange, setAddedRange] = useState<number>();
 
   const updateRange = (index: number, range: RangeConstraint) => {
@@ -68,14 +67,11 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
 
   return (
     <Stack hasGutter={true}>
-      {validation.form === "error" && (
-        <StackItem>
-          <Alert variant="danger" isInline={true} title="Please enter both start and end value." />
-        </StackItem>
-      )}
       <StackItem>
         <TextContent>
-          <Text component={TextVariants.p}>At least one between Start Value and End Value is required.</Text>
+          <Text component={TextVariants.small}>
+            At least the Start Value or End Value is required for each interval
+          </Text>
         </TextContent>
       </StackItem>
       <StackItem>
@@ -94,8 +90,13 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
         ))}
       </StackItem>
       <StackItem>
-        <Button variant="secondary" onClick={addRange}>
-          Add another range
+        <Button
+          variant="secondary"
+          onClick={addRange}
+          isDisabled={countLimit !== undefined && ranges.length >= countLimit}
+          isSmall={true}
+        >
+          Add another interval
         </Button>
       </StackItem>
     </Stack>
@@ -162,37 +163,44 @@ const RangeEdit = (props: RangeEditProps) => {
 
   useEffect(() => {
     if (rangeRef.current && addedRange === index) {
-      const container = document.querySelector(".data-dictionary__properties-edit__form");
+      const container = document.querySelector(".data-dictionary__properties-edit__form .constraints__form");
       container?.scroll({ top: container?.scrollHeight, behavior: "smooth" });
       updateAddedRange(undefined);
     }
   }, [addedRange, index, rangeRef.current]);
 
-  const { service } = useValidationService();
-  const validations = useMemo(() => service.get(`DataDictionary.DataField[${dataFieldIndex}].Interval[${index}]`), [
-    range
-  ]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forDataDictionary()
+          .forDataField(dataFieldIndex)
+          .forInterval(index)
+          .build()
+      ),
+    [range]
+  );
 
   return (
     <section ref={rangeRef}>
       <Split hasGutter={true} className="constraints__range-item">
-        <SplitItem>
+        <SplitItem isFilled={true}>
           <FormGroup
             label="Start Value"
             fieldId={`start-value-${index}`}
-            style={{ width: 320 }}
-            validated={validations.length === 0 ? "default" : "error"}
-            helperTextInvalid={validations[0] ? validations[0].message : ""}
+            helperText={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
               id={`start-value-${index}`}
               name="start-value"
               value={rangeValues.start.value}
-              validated={validations.length === 0 ? "default" : "error"}
+              validated={validations.length === 0 ? "default" : "warning"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
+              autoComplete="off"
             />
           </FormGroup>
           <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
@@ -212,19 +220,18 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="End Value"
             fieldId={`end-value-${index}`}
-            style={{ width: 320 }}
-            validated={validations.length === 0 ? "default" : "error"}
-            helperTextInvalid={validations[0] ? validations[0].message : ""}
+            helperText={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
               id={`end-value-${index}`}
               name="end-value"
               value={rangeValues.end.value}
-              validated={validations.length === 0 ? "default" : "error"}
+              validated={validations.length === 0 ? "default" : "warning"}
               onChange={handleRangeChange}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}
+              autoComplete="off"
             />
           </FormGroup>
           <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">

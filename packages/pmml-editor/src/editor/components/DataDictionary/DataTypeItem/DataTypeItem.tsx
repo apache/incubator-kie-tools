@@ -18,13 +18,14 @@ import {
   StackItem,
   TextInput
 } from "@patternfly/react-core";
-import { ArrowAltCircleRightIcon, TrashIcon } from "@patternfly/react-icons";
+import { ArrowAltCircleRightIcon, ExclamationCircleIcon, TrashIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
 import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
-import { useValidationService } from "../../../validation";
+import { useValidationRegistry } from "../../../validation";
+import { Builder } from "../../../paths";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 
 interface DataTypeItemProps {
@@ -88,7 +89,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (value !== typeSelection) {
       setTypeSelection(value as DDDataField["type"]);
       setIsTypeSelectOpen(false);
-      onSave({ name: name.trim(), type: value as DDDataField["type"], optype: optypeSelection }, index);
+      onSave({ ...dataType, type: value as DDDataField["type"] }, index);
     }
   };
 
@@ -100,12 +101,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     if (value !== optypeSelection) {
       setOptypeSelection(value as DDDataField["optype"]);
       setIsOptypeSelectOpen(false);
-      onSave({ name: name.trim(), type: typeSelection, optype: value as DDDataField["optype"] }, index);
+      onSave({ ...dataType, optype: value as DDDataField["optype"] }, index);
     }
   };
 
   const handleEditStatus = () => {
-    console.log("set edit status");
     onEdit?.(index);
   };
 
@@ -115,8 +115,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleNameSave = () => {
-    if (name.trim().length === 0) {
+    if (validation === "error") {
       setName(dataType.name);
+      setValidation("default");
     } else if (name !== dataType.name) {
       handleSave();
     }
@@ -151,6 +152,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       if (name.startsWith("New Data Type")) {
         input?.select();
       }
+    } else {
+      if (validation !== "success") {
+        setName(dataType.name);
+        setValidation("default");
+      }
     }
   }, [editingIndex]);
 
@@ -160,8 +166,17 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     setOptypeSelection(dataType.optype);
   }, [dataType]);
 
-  const { service } = useValidationService();
-  const validations = useMemo(() => service.get(`DataDictionary.DataField[${index}]`), [index, dataType]);
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useMemo(
+    () =>
+      validationRegistry.get(
+        Builder()
+          .forDataDictionary()
+          .forDataField(index)
+          .build()
+      ),
+    [index, dataType]
+  );
 
   return (
     <article
@@ -178,7 +193,12 @@ const DataTypeItem = (props: DataTypeItemProps) => {
             }
           }}
         >
-          <Form onSubmit={handleSave}>
+          <Form
+            onSubmit={e => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+          >
             <Split hasGutter={true}>
               <SplitItem>
                 <Stack hasGutter={true}>
@@ -188,9 +208,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         <FormGroup
                           fieldId="name"
                           label="Name"
-                          helperTextInvalid="Name already used by another Data Type"
+                          helperTextInvalid="Name is mandatory and must be unique"
+                          helperTextInvalidIcon={<ExclamationCircleIcon />}
                           validated={validation}
                           style={{ width: 280 }}
+                          isRequired={true}
                         >
                           <TextInput
                             type="text"
@@ -206,7 +228,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="type" label="Type">
+                        <FormGroup fieldId="type" label="Type" isRequired={true}>
                           <Select
                             id="type"
                             variant={SelectVariant.single}
@@ -217,6 +239,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             isOpen={isTypeSelectOpen}
                             placeholder="Type"
                             className="data-type-item__type-select"
+                            menuAppendTo={"parent"}
                           >
                             {typeOptions.map((option, optionIndex) => (
                               <SelectOption
@@ -229,7 +252,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="optype" label="Op Type">
+                        <FormGroup fieldId="optype" label="Op Type" isRequired={true}>
                           <Select
                             id="optype"
                             variant={SelectVariant.single}
@@ -240,6 +263,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             isOpen={isOptypeSelectOpen}
                             placeholder="Op Type"
                             className="data-type-item__type-select"
+                            menuAppendTo={"parent"}
                           >
                             {optypeOptions.map((option, optionIndex) => (
                               <SelectOption
@@ -262,16 +286,15 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           editingIndex={editingIndex}
                           onPropertyDelete={handlePropertiesDelete}
                         />
-                        {dataType.constraints !== undefined && (
-                          <ConstraintsLabel
-                            editingIndex={editingIndex}
-                            constraints={dataType.constraints}
-                            onConstraintsDelete={handleConstraintsDelete}
-                          />
-                        )}
+                        <ConstraintsLabel
+                          dataType={dataType}
+                          dataTypeIndex={index}
+                          editMode={true}
+                          onConstraintsDelete={handleConstraintsDelete}
+                        />
                         <Label
                           variant="outline"
-                          color="orange"
+                          color="cyan"
                           href="#"
                           icon={<ArrowAltCircleRightIcon />}
                           onClick={event => {
@@ -328,7 +351,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                 {optypeSelection}
               </Label>{" "}
               <PropertiesLabels dataType={dataType} />
-              {dataType.constraints !== undefined && <ConstraintsLabel constraints={dataType.constraints} />}
+              <ConstraintsLabel dataType={dataType} dataTypeIndex={index} />
             </SplitItem>
             <SplitItem>
               <Button variant="plain" onClick={handleDelete}>

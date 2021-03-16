@@ -16,19 +16,19 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import "./OutputFieldsTable.scss";
+import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import OutputFieldRow from "../molecules/OutputFieldRow";
 import OutputFieldEditRow from "../molecules/OutputFieldEditRow";
+import "./OutputFieldsTable.scss";
 
 interface OutputFieldsTableProps {
   modelIndex: number;
   outputs: OutputField[];
   selectedOutputIndex: number | undefined;
   setSelectedOutputIndex: (index: number | undefined) => void;
-  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
   viewExtendedProperties: () => void;
   onAddOutputField: () => void;
   onDeleteOutputField: (index: number) => void;
@@ -39,6 +39,7 @@ interface OutputFieldsTableProps {
 
 const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   const {
+    modelIndex,
     outputs,
     selectedOutputIndex,
     setSelectedOutputIndex,
@@ -80,7 +81,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   };
 
-  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: string | undefined): boolean => {
+  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: FieldName): boolean => {
     return validateOutputFieldName(index, nameToValidate);
   };
 
@@ -92,34 +93,39 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
       }}
     >
       <section>
-        {outputs.map((o, index) => (
-          <article
-            key={index}
-            className={`editable-item output-item-n${selectedOutputIndex} ${
-              selectedOutputIndex === index ? "editable-item--editing" : ""
-            }`}
-          >
-            {selectedOutputIndex === index && (
-              <div ref={addOutputRowRef}>
-                <OutputFieldEditRow
+        {outputs.map((o, index) => {
+          const isRowInEditMode = selectedOutputIndex === index && activeOperation === Operation.UPDATE_OUTPUT;
+          return (
+            <article
+              key={index}
+              className={`editable-item output-item-n${index} ${isRowInEditMode ? "editable-item--editing" : ""}`}
+            >
+              {isRowInEditMode && (
+                <div ref={addOutputRowRef}>
+                  <OutputFieldEditRow
+                    modelIndex={modelIndex}
+                    outputField={o}
+                    outputFieldIndex={index}
+                    validateOutputName={_name => onValidateOutputFieldName(index, _name)}
+                    viewExtendedProperties={viewExtendedProperties}
+                    onCommitAndClose={onCommitAndClose}
+                    onCommit={onCommit}
+                    onCancel={onCancel}
+                  />
+                </div>
+              )}
+              {!isRowInEditMode && (
+                <OutputFieldRow
+                  modelIndex={modelIndex}
                   outputField={o}
-                  validateOutputName={_name => onValidateOutputFieldName(index, _name)}
-                  viewExtendedProperties={viewExtendedProperties}
-                  onCommitAndClose={onCommitAndClose}
-                  onCommit={onCommit}
-                  onCancel={onCancel}
+                  outputFieldIndex={index}
+                  onEditOutputField={() => onEdit(index)}
+                  onDeleteOutputField={() => onDelete(index)}
                 />
-              </div>
-            )}
-            {selectedOutputIndex !== index && (
-              <OutputFieldRow
-                outputField={o}
-                onEditOutputField={() => onEdit(index)}
-                onDeleteOutputField={() => onDelete(index)}
-              />
-            )}
-          </article>
-        ))}
+              )}
+            </article>
+          );
+        })}
       </section>
       {outputs.length === 0 && (
         <Bullseye>

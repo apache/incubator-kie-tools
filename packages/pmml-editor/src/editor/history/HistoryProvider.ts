@@ -17,9 +17,10 @@ import { applyPatches, produce } from "immer";
 import { WritableDraft } from "immer/dist/types/types-external";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller/dist/marshaller/model";
 import { cloneDeep, get, set } from "lodash";
+import { Path } from "../paths";
 
 interface Change {
-  path: string | null;
+  path: Path | null;
   change: any;
   reverse: any;
 }
@@ -31,8 +32,9 @@ interface HistoryStore {
 
 interface BatchEntry<M> {
   state: M;
-  path: string | null;
+  path: Path | null;
   recipe: (draft: WritableDraft<M>) => void;
+  validate?: (pmml: PMML) => void;
 }
 
 export class HistoryService {
@@ -43,8 +45,13 @@ export class HistoryService {
     index: 0
   };
 
-  public batch = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void): void => {
-    this.pending.push({ state: state, path: path, recipe: recipe });
+  public batch = <M>(
+    state: M,
+    path: Path | null,
+    recipe: (draft: WritableDraft<M>) => void,
+    validate?: (pmml: PMML) => void
+  ): void => {
+    this.pending.push({ state: state, path: path, recipe: recipe, validate: validate });
   };
 
   public commit = (state: PMML | undefined): PMML | undefined => {
@@ -52,11 +59,19 @@ export class HistoryService {
       return;
     }
 
+    //Commit changes
     const newState = this.mutate(state, null, draft => {
       this.pending.forEach(be => {
-        const segment = be.path === null ? draft : get(draft, be.path as string);
+        const segment = be.path === null ? draft : get(draft, be.path.path);
         be.recipe(segment as WritableDraft<any>);
       });
+    });
+
+    //Validate changes
+    this.pending.forEach(be => {
+      if (be.validate !== undefined) {
+        be.validate(newState);
+      }
     });
 
     this.pending = new Array<BatchEntry<any>>();
@@ -64,7 +79,7 @@ export class HistoryService {
     return newState;
   };
 
-  public mutate = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void) => {
+  public mutate = <M>(state: M, path: Path | null, recipe: (draft: WritableDraft<M>) => void) => {
     if (this.history.index < this.history.changes.length) {
       this.history.changes = this.history.changes.slice(0, this.history.index);
     }
@@ -102,13 +117,13 @@ export class HistoryService {
     return this.history.changes;
   };
 
-  private apply = (state: PMML, path: string | null, patch: any) => {
+  private apply = (state: PMML, path: Path | null, patch: any) => {
     if (path === null) {
       return applyPatches(state, patch);
     }
-    const branch: any = get(state, path);
+    const branch: any = get(state, path.path);
     const branchUndone: any = applyPatches(branch, patch);
     const newState: PMML = cloneDeep(state);
-    return set(newState, path, branchUndone);
+    return set(newState, path.path, branchUndone);
   };
 }

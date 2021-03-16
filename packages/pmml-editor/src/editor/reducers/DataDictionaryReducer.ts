@@ -17,18 +17,22 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { DataDictionary, DataType, FieldName, OpType } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { validateDataFieldsConstraintRanges, ValidationService } from "../validation";
+import { validateDataFields, ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 
 interface DataDictionaryPayload {
   [Actions.AddDataDictionaryField]: {
+    readonly modelIndex?: number;
     readonly name?: string;
     readonly type: DataType;
     readonly optype: OpType;
   };
   [Actions.DeleteDataDictionaryField]: {
+    readonly modelIndex?: number;
     readonly index: number;
   };
   [Actions.AddBatchDataDictionaryFields]: {
+    readonly modelIndex?: number;
     readonly dataDictionaryFields: FieldName[];
   };
   [Actions.ReorderDataDictionaryFields]: {
@@ -40,51 +44,87 @@ interface DataDictionaryPayload {
 export type DataDictionaryActions = ActionMap<DataDictionaryPayload>[keyof ActionMap<DataDictionaryPayload>];
 
 export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary, AllActions> = (
-  service: HistoryService,
-  validation: ValidationService
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<DataDictionary, AllActions> => {
   return (state: DataDictionary, action: AllActions) => {
     switch (action.type) {
       case Actions.AddDataDictionaryField:
-        service.batch(state, "DataDictionary", draft => {
-          draft.DataField.push({
-            name: action.payload.name as FieldName,
-            dataType: action.payload.type,
-            optype: action.payload.optype
-          });
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            draft.DataField.push({
+              name: action.payload.name as FieldName,
+              dataType: action.payload.type,
+              optype: action.payload.optype
+            });
+          }
+        );
         break;
 
       case Actions.DeleteDataDictionaryField:
-        service.batch(state, "DataDictionary", draft => {
-          const index = action.payload.index;
-          if (index >= 0 && index < draft.DataField.length) {
-            draft.DataField.splice(index, 1);
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            const index = action.payload.index;
+            if (index >= 0 && index < draft.DataField.length) {
+              draft.DataField.splice(index, 1);
+            }
+          },
+          pmml => {
+            validationRegistry.clear(
+              Builder()
+                .forDataDictionary()
+                .build()
+            );
+            validateDataFields(pmml.DataDictionary.DataField, validationRegistry);
           }
-          validation.clear("DataDictionary");
-          validateDataFieldsConstraintRanges(draft.DataField, validation);
-        });
+        );
         break;
 
       case Actions.ReorderDataDictionaryFields:
-        service.batch(state, "DataDictionary", draft => {
-          const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
-          draft.DataField.splice(action.payload.newIndex, 0, removed);
-          validation.clear("DataDictionary");
-          validateDataFieldsConstraintRanges(draft.DataField, validation);
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
+            draft.DataField.splice(action.payload.newIndex, 0, removed);
+          },
+          pmml => {
+            validationRegistry.clear(
+              Builder()
+                .forDataDictionary()
+                .build()
+            );
+            validateDataFields(pmml.DataDictionary.DataField, validationRegistry);
+          }
+        );
         break;
 
       case Actions.AddBatchDataDictionaryFields:
-        service.batch(state, "DataDictionary", draft => {
-          action.payload.dataDictionaryFields.forEach(name => {
-            draft.DataField.push({
-              name,
-              dataType: "string",
-              optype: "categorical"
+        historyService.batch(
+          state,
+          Builder()
+            .forDataDictionary()
+            .build(),
+          draft => {
+            action.payload.dataDictionaryFields.forEach(name => {
+              draft.DataField.push({
+                name,
+                dataType: "string",
+                optype: "categorical"
+              });
             });
-          });
-        });
+          }
+        );
     }
 
     return state;

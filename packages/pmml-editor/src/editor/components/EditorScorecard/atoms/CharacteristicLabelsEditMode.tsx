@@ -32,7 +32,7 @@ export const CharacteristicLabelsEditMode = (props: CharacteristicLabelsEditMode
       <Label
         style={PADDING}
         variant="outline"
-        color="orange"
+        color="cyan"
         href="#outline"
         icon={<ArrowAltCircleRightIcon />}
         onClick={e => {

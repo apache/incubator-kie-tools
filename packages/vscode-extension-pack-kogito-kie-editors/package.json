@@ -2,7 +2,7 @@
   "name": "vscode-extension-pack-kogito-kie-editors",
   "displayName": "BPMN, DMN and Test Scenario Editors",
   "description": "",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -110,7 +110,7 @@
     "compile": "webpack",
     "watch": "webpack",
     "test": "echo 'No tests to run.'",
-    "ui-test": "yarn run compile && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
+    "test:it": "yarn run compile && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run build:fast",
     "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
@@ -118,13 +118,13 @@
     "build:prod": "run-script-os"
   },
   "dependencies": {
-    "@kogito-tooling/backend": "0.8.3",
-    "@kogito-tooling/editor": "0.8.3",
-    "@kogito-tooling/external-assets-base": "0.8.3",
-    "@kogito-tooling/i18n": "0.8.3",
-    "@kogito-tooling/kie-bc-editors": "0.8.3",
-    "@kogito-tooling/patternfly-base": "0.8.3",
-    "@kogito-tooling/vscode-extension": "0.8.3",
-    "@kogito-tooling/workspace": "0.8.3"
+    "@kogito-tooling/backend": "0.8.4",
+    "@kogito-tooling/editor": "0.8.4",
+    "@kogito-tooling/external-assets-base": "0.8.4",
+    "@kogito-tooling/i18n": "0.8.4",
+    "@kogito-tooling/kie-bc-editors": "0.8.4",
+    "@kogito-tooling/patternfly-base": "0.8.4",
+    "@kogito-tooling/vscode-extension": "0.8.4",
+    "@kogito-tooling/workspace": "0.8.4"
   }
 }

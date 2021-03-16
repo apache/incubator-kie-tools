@@ -14,13 +14,31 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
-import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
+import {
+  BaselineMethod,
+  CompoundPredicate,
+  False,
+  FieldName,
+  MiningFunction,
+  Predicate,
+  ReasonCodeAlgorithm,
+  Scorecard,
+  SimplePredicate,
+  SimpleSetPredicate,
+  True
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
+import { validateOutputs } from "../validation/Outputs";
+import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
+import { validateCharacteristic, validateCharacteristics } from "../validation/Characteristics";
+import { validateBaselineScore } from "../validation/ModelCoreProperties";
+import { getBaselineScore, getCharacteristics, getMiningSchema, getUseReasonCodes } from "../PMMLModelHelper";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -48,30 +66,450 @@ export type ScorecardActions = ActionMap<ScorecardPayload>[keyof ActionMap<Score
 
 export type AllScorecardActions = ScorecardActions | CharacteristicsActions | CharacteristicActions | AttributesActions;
 
-export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> = (
-  service: HistoryService
-): Reducer<Scorecard, ScorecardActions> => {
+export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
+): Reducer<Scorecard, AllActions> => {
   return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_SetModelName:
-        service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
-          draft.modelName = action.payload.modelName;
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .build(),
+          draft => {
+            draft.modelName = action.payload.modelName;
+          }
+        );
         break;
 
       case Actions.Scorecard_SetCoreProperties:
-        service.batch(state, `models[${action.payload.modelIndex}]`, draft => {
-          draft.isScorable = action.payload.isScorable;
-          draft.functionName = action.payload.functionName;
-          draft.algorithmName = action.payload.algorithmName;
-          draft.baselineScore = action.payload.baselineScore;
-          draft.baselineMethod = action.payload.baselineMethod;
-          draft.initialScore = action.payload.initialScore;
-          draft.useReasonCodes = action.payload.useReasonCodes;
-          draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
-        });
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .build(),
+          draft => {
+            draft.isScorable = action.payload.isScorable;
+            draft.functionName = action.payload.functionName;
+            draft.algorithmName = action.payload.algorithmName;
+            draft.baselineScore = action.payload.baselineScore;
+            draft.baselineMethod = action.payload.baselineMethod;
+            draft.initialScore = action.payload.initialScore;
+            draft.useReasonCodes = action.payload.useReasonCodes;
+            draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
+            if (!(action.payload.useReasonCodes === undefined || action.payload.useReasonCodes)) {
+              draft.Characteristics.Characteristic.forEach(characteristic => {
+                characteristic.reasonCode = undefined;
+                characteristic.Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+              });
+            }
+            if (action.payload.baselineScore !== undefined) {
+              draft.Characteristics.Characteristic.forEach(characteristic => {
+                characteristic.baselineScore = undefined;
+              });
+            }
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const characteristics = getCharacteristics(pmml, modelIndex);
+            const baselineScore = getBaselineScore(pmml, modelIndex);
+            const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
+            if (miningSchema !== undefined && characteristics !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forBaselineScore()
+                  .build()
+              );
+              validateBaselineScore(
+                modelIndex,
+                useReasonCodes,
+                baselineScore,
+                characteristics.Characteristic,
+                validationRegistry
+              );
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forCharacteristics()
+                  .build()
+              );
+              validateCharacteristics(
+                modelIndex,
+                {
+                  baselineScore: baselineScore,
+                  useReasonCodes: useReasonCodes
+                },
+                characteristics.Characteristic,
+                miningSchema.MiningField,
+                validationRegistry
+              );
+            }
+          }
+        );
+        break;
+
+      case Actions.Scorecard_AddCharacteristic:
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .build(),
+          () => {
+            // No changes to model. Only validation is required.
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const characteristics = getCharacteristics(pmml, modelIndex);
+            const baselineScore = getBaselineScore(pmml, modelIndex);
+            const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
+            if (miningSchema !== undefined && characteristics !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(action.payload.modelIndex)
+                  .forBaselineScore()
+                  .build()
+              );
+              validateBaselineScore(
+                modelIndex,
+                useReasonCodes,
+                baselineScore,
+                characteristics.Characteristic,
+                validationRegistry
+              );
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forCharacteristics()
+                  .build()
+              );
+              validateCharacteristics(
+                modelIndex,
+                { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
+                characteristics.Characteristic,
+                miningSchema.MiningField,
+                validationRegistry
+              );
+            }
+          }
+        );
+        break;
+
+      case Actions.Scorecard_DeleteCharacteristic:
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .build(),
+          () => {
+            // No changes to model. Only validation is required.
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const characteristics = getCharacteristics(pmml, modelIndex);
+            const baselineScore = getBaselineScore(pmml, modelIndex);
+            const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
+            if (characteristics !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forBaselineScore()
+                  .build()
+              );
+              validateBaselineScore(
+                modelIndex,
+                useReasonCodes,
+                baselineScore,
+                characteristics.Characteristic,
+                validationRegistry
+              );
+            }
+          }
+        );
+        break;
+
+      case Actions.Scorecard_UpdateCharacteristic:
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .build(),
+          () => {
+            // No changes to model. Only validation is required.
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const characteristics = getCharacteristics(pmml, modelIndex);
+            const baselineScore = getBaselineScore(pmml, modelIndex);
+            const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
+            if (miningSchema !== undefined && characteristics !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forBaselineScore()
+                  .build()
+              );
+              validateBaselineScore(
+                modelIndex,
+                useReasonCodes,
+                baselineScore,
+                characteristics.Characteristic,
+                validationRegistry
+              );
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forCharacteristics()
+                  .build()
+              );
+              validateCharacteristics(
+                modelIndex,
+                { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
+                characteristics.Characteristic,
+                miningSchema.MiningField,
+                validationRegistry
+              );
+            }
+          }
+        );
+        break;
+
+      case Actions.Scorecard_AddAttribute:
+      case Actions.Scorecard_DeleteAttribute:
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .build(),
+          () => {
+            // No changes to model. Only validation is required.
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const characteristicIndex = action.payload.characteristicIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const characteristics = getCharacteristics(pmml, modelIndex);
+            const baselineScore = getBaselineScore(pmml, modelIndex);
+            const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
+            if (miningSchema !== undefined && characteristics !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forCharacteristics()
+                  .forCharacteristic(characteristicIndex)
+                  .build()
+              );
+              validateCharacteristic(
+                modelIndex,
+                { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
+                characteristicIndex,
+                characteristics.Characteristic[characteristicIndex],
+                miningSchema.MiningField,
+                validationRegistry
+              );
+            }
+          }
+        );
+        break;
+
+      case Actions.UpdateDataDictionaryField:
+        if (action.payload.modelIndex !== undefined) {
+          const modelIndex = action.payload.modelIndex;
+          const dataFieldName = action.payload.dataField.name;
+          const originalDataFieldName = action.payload.originalName;
+          state.Characteristics.Characteristic.forEach((characteristic, characteristicIndex) => {
+            characteristic.Attribute.forEach((attribute, attributeIndex) => {
+              updatePredicateFieldName(
+                modelIndex,
+                characteristicIndex,
+                attributeIndex,
+                attribute.predicate,
+                dataFieldName,
+                originalDataFieldName,
+                historyService
+              );
+            });
+          });
+        }
+        break;
+
+      case Actions.AddMiningSchemaFields:
+      case Actions.Scorecard_UpdateAttribute:
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .build(),
+          () => {
+            // No changes to model. Only validation is required.
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            const characteristics = getCharacteristics(pmml, modelIndex);
+            const baselineScore = getBaselineScore(pmml, modelIndex);
+            const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
+            if (miningSchema !== undefined && characteristics !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forCharacteristics()
+                  .build()
+              );
+              validateCharacteristics(
+                action.payload.modelIndex,
+                { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
+                characteristics.Characteristic,
+                miningSchema.MiningField,
+                validationRegistry
+              );
+            }
+          }
+        );
+        break;
+
+      case Actions.DeleteMiningSchemaField:
+        if (state.MiningSchema.MiningField.length > 0) {
+          const modelIndex = action.payload.modelIndex;
+          historyService.batch(
+            state,
+            Builder()
+              .forModel(modelIndex)
+              .build(),
+            draft => {
+              // No changes to model. Only validation is required.
+            },
+            pmml => {
+              const miningSchema = getMiningSchema(pmml, modelIndex);
+              const characteristics = getCharacteristics(pmml, modelIndex);
+              const baselineScore = getBaselineScore(pmml, modelIndex);
+              const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
+              if (miningSchema !== undefined && characteristics !== undefined) {
+                validationRegistry.clear(
+                  Builder()
+                    .forModel(modelIndex)
+                    .forCharacteristics()
+                    .build()
+                );
+                validateCharacteristics(
+                  modelIndex,
+                  { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
+                  characteristics.Characteristic,
+                  miningSchema.MiningField,
+                  validationRegistry
+                );
+              }
+            }
+          );
+        }
+        break;
+
+      case Actions.Validate:
+        if (action.payload.modelIndex !== undefined) {
+          const modelIndex = action.payload.modelIndex;
+          validationRegistry.clear(
+            Builder()
+              .forModel(modelIndex)
+              .forOutput()
+              .build()
+          );
+          validateOutputs(
+            modelIndex,
+            state.Output?.OutputField ?? [],
+            state.MiningSchema.MiningField,
+            validationRegistry
+          );
+
+          validationRegistry.clear(
+            Builder()
+              .forModel(modelIndex)
+              .forBaselineScore()
+              .build()
+          );
+          validateBaselineScore(
+            modelIndex,
+            state.useReasonCodes,
+            state.baselineScore,
+            state.Characteristics.Characteristic,
+            validationRegistry
+          );
+
+          validationRegistry.clear(
+            Builder()
+              .forModel(modelIndex)
+              .forCharacteristics()
+              .build()
+          );
+          validateCharacteristics(
+            modelIndex,
+            { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
+            state.Characteristics.Characteristic,
+            state.MiningSchema.MiningField,
+            validationRegistry
+          );
+        }
     }
 
     return state;
   };
+};
+
+const updatePredicateFieldName = (
+  modelIndex: number,
+  characteristicIndex: number,
+  attributeIndex: number,
+  predicate: Predicate | undefined,
+  name: FieldName,
+  originalName: FieldName | undefined,
+  service: HistoryService
+) => {
+  if (predicate === undefined) {
+    return;
+  } else if (predicate instanceof True) {
+    return;
+  } else if (predicate instanceof False) {
+    return;
+  } else if (predicate instanceof SimpleSetPredicate) {
+    if (originalName === predicate.field) {
+      service.batch(
+        predicate,
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build(),
+        draft => {
+          draft.field = name;
+        }
+      );
+    }
+  } else if (predicate instanceof SimplePredicate) {
+    if (originalName === predicate.field) {
+      service.batch(
+        predicate,
+        Builder()
+          .forModel(modelIndex)
+          .forCharacteristics()
+          .forCharacteristic(characteristicIndex)
+          .forAttribute(attributeIndex)
+          .forPredicate()
+          .build(),
+        draft => {
+          draft.field = name;
+        }
+      );
+    }
+  } else if (predicate instanceof CompoundPredicate) {
+    const cp: CompoundPredicate = predicate as CompoundPredicate;
+    cp.predicates?.forEach(p =>
+      updatePredicateFieldName(modelIndex, characteristicIndex, attributeIndex, p, name, originalName, service)
+    );
+  }
 };

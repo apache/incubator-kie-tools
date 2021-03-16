@@ -21,6 +21,10 @@ jobs:
       MERGE_WARNING_MESSAGE: "ATTENTION: A merge attempt is being made to get your changes. If a conflict happens, please do a rebase/merge manually in your branch to get the latest kiegroup/master commits."
 
     steps:
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+
       - name: Increase inotify watches
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
@@ -181,7 +185,7 @@ jobs:
               git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
             fi
           fi
-          mvn clean install -DskipTests -Denforcer.skip -T 2 -B -am -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime,kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
+          mvn clean install -DskipTests -Denforcer.skip -B -am -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime,kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
 
       - name: Build drools-wb
         run: |
@@ -254,7 +258,9 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Setup Yarn
-        run: npm install -g yarn@${{ matrix.yarn }}
+        run: |
+          npm install -g yarn@${{ matrix.yarn }}
+          yarn config set network-timeout 1000000
 
       - name: Start Xvfb
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &

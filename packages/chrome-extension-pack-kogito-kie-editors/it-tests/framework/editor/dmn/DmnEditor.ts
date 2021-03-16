@@ -20,11 +20,14 @@ import DmnSideBar from "./DmnSideBar";
 import Editor from "../Editor";
 import Element from "../../Element";
 import Locator from "../../Locator";
+import DecisionNavigator from "./DecisionNavigator";
 
 export default class DmnEditor extends Editor {
 
     private static readonly PALETTE_LOCATOR: By = By.className("kie-palette");
-    private static readonly SIDE_BAR_LOCATOR: By = By.className("qe-docks-bar-E");
+    private static readonly SIDE_BAR_LOCATOR: By = By.className("collapsed-docks-bar-E");
+    private static readonly LEFT_SIDE_BAR_LOCATOR: By = By.className("collapsed-docks-bar-W");
+    private static readonly DECISION_GRAPH_LOCATOR: By = By.id("decision-graphs-content");
 
     public async getDmnPalette(): Promise<DmnPalette> {
         const palette: Element = await this.tools.by(DmnEditor.PALETTE_LOCATOR).getElement();
@@ -35,6 +38,12 @@ export default class DmnEditor extends Editor {
         const sideBar: Locator = this.tools.by(DmnEditor.SIDE_BAR_LOCATOR);
         await sideBar.wait(1000).untilPresent();
         return await this.tools.createPageFragment(DmnSideBar, await sideBar.getElement());
+    }
+
+    public async openLeftSideBar(): Promise<DecisionNavigator> {
+        const leftSideBarButton = await this.tools.by(DmnEditor.LEFT_SIDE_BAR_LOCATOR).getElement();
+        await leftSideBarButton.click();
+        return await this.tools.createPageFragment(DecisionNavigator, await this.tools.by(DmnEditor.DECISION_GRAPH_LOCATOR).getElement());
     }
 
     public async dragAndDropAnnotationToCanvas(): Promise<void> {

@@ -15,8 +15,10 @@
  */
 
 .core-properties {
-
-  &__container {
-    width: 100%;
+  &__label {
+    margin-right: var(--pf-global--spacer--sm);
+    &:last-of-type {
+      margin-right: 0;
+    }
   }
 }

@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { Builder } from "../paths";
+import { getMiningSchema } from "../PMMLModelHelper";
+import { validateOutput } from "../validation/Outputs";
+import { ValidationRegistry } from "../validation";
 
 interface OutputFieldPayload {
   [Actions.UpdateOutput]: {
@@ -28,30 +32,78 @@ interface OutputFieldPayload {
 
 export type OutputFieldActions = ActionMap<OutputFieldPayload>[keyof ActionMap<OutputFieldPayload>];
 
-export const OutputFieldReducer: HistoryAwareReducer<OutputField[], AllActions> = (
-  service: HistoryService
+export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<OutputField[], AllActions> => {
   return (state: OutputField[], action: AllActions) => {
     switch (action.type) {
       case Actions.UpdateOutput:
-        service.batch(state, `models[${action.payload.modelIndex}].Output.OutputField`, draft => {
-          const outputIndex = action.payload.outputIndex;
-          if (outputIndex >= 0 && outputIndex < draft.length) {
-            draft[outputIndex] = {
-              ...draft[outputIndex],
-              name: action.payload.outputField.name,
-              dataType: action.payload.outputField.dataType,
-              optype: action.payload.outputField.optype,
-              targetField: action.payload.outputField.targetField,
-              feature: action.payload.outputField.feature,
-              value: action.payload.outputField.value,
-              rank: action.payload.outputField.rank,
-              rankOrder: action.payload.outputField.rankOrder,
-              segmentId: action.payload.outputField.segmentId,
-              isFinalResult: action.payload.outputField.isFinalResult
-            };
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forOutput()
+            .forOutputField()
+            .build(),
+          draft => {
+            const outputIndex = action.payload.outputIndex;
+            if (outputIndex >= 0 && outputIndex < draft.length) {
+              draft[outputIndex] = {
+                ...draft[outputIndex],
+                name: action.payload.outputField.name,
+                dataType: action.payload.outputField.dataType,
+                optype: action.payload.outputField.optype,
+                targetField: action.payload.outputField.targetField,
+                feature: action.payload.outputField.feature,
+                value: action.payload.outputField.value,
+                rank: action.payload.outputField.rank,
+                rankOrder: action.payload.outputField.rankOrder,
+                segmentId: action.payload.outputField.segmentId,
+                isFinalResult: action.payload.outputField.isFinalResult
+              };
+            }
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const outputField = action.payload.outputField;
+            const outputFieldIndex = action.payload.outputIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            if (miningSchema !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forOutput()
+                  .forOutputField(outputFieldIndex)
+                  .forTargetField()
+                  .build()
+              );
+              validateOutput(modelIndex, outputField, outputFieldIndex, miningSchema.MiningField, validationRegistry);
+            }
+          }
+        );
+        break;
+
+      case Actions.UpdateDataDictionaryField:
+        state.forEach((outputField, index) => {
+          if (outputField.targetField === action.payload.originalName) {
+            historyService.batch(
+              state,
+              Builder()
+                .forModel(action.payload.modelIndex)
+                .forOutput()
+                .forOutputField()
+                .build(),
+              draft => {
+                draft[index] = {
+                  ...draft[index],
+                  targetField: action.payload.dataField.name
+                };
+              }
+            );
           }
         });
+        break;
     }
 
     return state;

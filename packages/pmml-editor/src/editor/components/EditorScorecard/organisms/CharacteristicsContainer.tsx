@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Stack, StackItem } from "@patternfly/react-core";
 import { Operation } from "../Operation";
 import { CharacteristicsTable, IndexedCharacteristic } from "./CharacteristicsTable";
@@ -33,44 +33,50 @@ import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
+import { fromText } from "./PredicateConverter";
 import set = Reflect.set;
 import get = Reflect.get;
 
 interface CharacteristicsContainerProps {
   modelIndex: number;
   areReasonCodesUsed: boolean;
-  isBaselineScoreRequired: boolean;
+  scorecardBaselineScore: number | undefined;
   characteristics: Characteristic[];
-  filteredCharacteristics: IndexedCharacteristic[];
-  filter: string;
-  onFilter: (filter: string) => void;
-  deleteCharacteristic: (index: number) => void;
-  commit: (index: number | undefined, characteristic: Characteristic) => void;
 }
 
 type CharacteristicsViewSection = "overview" | "attribute";
 
 export const CharacteristicsContainer = (props: CharacteristicsContainerProps) => {
-  const {
-    modelIndex,
-    areReasonCodesUsed,
-    isBaselineScoreRequired,
-    characteristics,
-    filteredCharacteristics,
-    filter,
-    onFilter,
-    deleteCharacteristic,
-    commit
-  } = props;
+  const { modelIndex, areReasonCodesUsed, scorecardBaselineScore, characteristics } = props;
 
   const { setActiveOperation } = useOperation();
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
+  const [filter, setFilter] = useState("");
+  const [filteredCharacteristics, setFilteredCharacteristics] = useState<IndexedCharacteristic[]>([]);
   const [selectedCharacteristicIndex, setSelectedCharacteristicIndex] = useState<number | undefined>(undefined);
   const [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number | undefined>(undefined);
-
   const [viewSection, setViewSection] = useState<CharacteristicsViewSection>("overview");
+
+  useEffect(() => applyFilter(), [modelIndex, characteristics]);
+
+  const setLowercaseTrimmedFilter = (_filter: string) => {
+    setFilter(_filter.toLowerCase().trim());
+  };
+
+  const applyFilter = () => {
+    const _filteredCharacteristics = characteristics
+      ?.map<IndexedCharacteristic>(
+        (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
+      )
+      .filter(ic => {
+        const _characteristicName = ic.characteristic.name;
+        return _characteristicName?.toLowerCase().includes(filter);
+      });
+    setFilteredCharacteristics(_filteredCharacteristics ?? []);
+  };
+
   const getTransition = (_viewSection: CharacteristicsViewSection) => {
     if (_viewSection === "overview") {
       return "characteristics-container__overview";
@@ -112,15 +118,38 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       const existingNames: string[] = characteristics.map(c => c.name ?? "");
       const newCharacteristicName = findIncrementalName("New characteristic", existingNames, 1);
 
-      commit(undefined, {
-        name: newCharacteristicName,
-        baselineScore: 0,
-        reasonCode: undefined,
-        Attribute: []
+      dispatch({
+        type: Actions.Scorecard_AddCharacteristic,
+        payload: {
+          modelIndex: modelIndex,
+          name: newCharacteristicName,
+          baselineScore: undefined,
+          reasonCode: undefined,
+          Attribute: []
+        }
       });
+
       setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
+
+      //Clear filter to ensure new Characteristic is visible
+      setLowercaseTrimmedFilter("");
     }
   }, [characteristics]);
+
+  const deleteCharacteristic = useCallback(
+    (characteristicIndex: number) => {
+      if (window.confirm(`Delete Characteristic "${characteristics?.[characteristicIndex].name}"?`)) {
+        dispatch({
+          type: Actions.Scorecard_DeleteCharacteristic,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: characteristicIndex
+          }
+        });
+      }
+    },
+    [characteristics]
+  );
 
   const onAddAttribute = useCallback(() => {
     if (selectedCharacteristicIndex === undefined) {
@@ -134,7 +163,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       payload: {
         modelIndex: modelIndex,
         characteristicIndex: selectedCharacteristicIndex,
-        text: "True",
+        predicate: fromText("True"),
         partialScore: undefined,
         reasonCode: undefined
       }
@@ -148,38 +177,84 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
     onCancel();
   };
 
-  const onCommit = (partial: Partial<Characteristic>) => {
-    if (selectedCharacteristicIndex === undefined) {
-      return;
-    }
-    const characteristic = characteristics[selectedCharacteristicIndex];
-    const existingPartial: Partial<Characteristic> = {};
-    Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
+  const onCommit = useCallback(
+    (partial: Partial<Characteristic>) => {
+      if (selectedCharacteristicIndex === undefined) {
+        return;
+      }
+      const characteristic = characteristics[selectedCharacteristicIndex];
+      const existingPartial: Partial<Characteristic> = {};
+      Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
 
-    if (!isEqual(partial, existingPartial)) {
-      commit(selectedCharacteristicIndex, { ...characteristic, ...partial });
-    }
-  };
+      if (!isEqual(partial, existingPartial)) {
+        dispatch({
+          type: Actions.Scorecard_UpdateCharacteristic,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: selectedCharacteristicIndex,
+            ...characteristic,
+            ...partial
+          }
+        });
+      }
+    },
+    [characteristics, selectedCharacteristicIndex]
+  );
 
   const onCancel = () => {
     setSelectedCharacteristicIndex(undefined);
     setActiveOperation(Operation.NONE);
   };
 
+  const onUpdateAttribute = useCallback(
+    (_index, _content) => {
+      if (_index === undefined) {
+        dispatch({
+          type: Actions.Scorecard_AddAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: selectedCharacteristicIndex,
+            predicate: _content.predicate,
+            partialScore: _content.partialScore,
+            reasonCode: _content.reasonCode
+          }
+        });
+      } else {
+        dispatch({
+          type: Actions.Scorecard_UpdateAttribute,
+          payload: {
+            modelIndex: modelIndex,
+            characteristicIndex: selectedCharacteristicIndex,
+            attributeIndex: selectedAttributeIndex,
+            predicate: _content.predicate,
+            partialScore: _content.partialScore,
+            reasonCode: _content.reasonCode
+          }
+        });
+      }
+    },
+    [modelIndex, selectedCharacteristicIndex, selectedAttributeIndex]
+  );
+
   const emptyStateProvider = useMemo(() => {
-    if (filter === "") {
+    if (characteristics.length === 0) {
       return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
     } else {
       return (
         <Stack hasGutter={true}>
           <StackItem>
-            <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
+            <CharacteristicsToolbar
+              filter={filter}
+              setFilter={setLowercaseTrimmedFilter}
+              onFilter={applyFilter}
+              onAddCharacteristic={onAddCharacteristic}
+            />
             <EmptyStateNoMatchingCharacteristics />
           </StackItem>
         </Stack>
       );
     }
-  }, [filter]);
+  }, [filter, characteristics]);
 
   return (
     <div className="characteristics-container">
@@ -196,16 +271,22 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
           >
             <>
               {viewSection === "overview" && (
-                <Stack hasGutter={true}>
+                <Stack>
                   <StackItem>
-                    <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={onAddCharacteristic} />
+                    <CharacteristicsToolbar
+                      filter={filter}
+                      setFilter={setLowercaseTrimmedFilter}
+                      onFilter={applyFilter}
+                      onAddCharacteristic={onAddCharacteristic}
+                    />
                   </StackItem>
                   <StackItem className="characteristics-container__overview">
                     <CharacteristicsTable
                       modelIndex={modelIndex}
                       areReasonCodesUsed={areReasonCodesUsed}
-                      isBaselineScoreRequired={isBaselineScoreRequired}
+                      scorecardBaselineScore={scorecardBaselineScore}
                       characteristics={filteredCharacteristics}
+                      characteristicsUnfilteredLength={characteristics.length}
                       selectedCharacteristicIndex={selectedCharacteristicIndex}
                       setSelectedCharacteristicIndex={setSelectedCharacteristicIndex}
                       validateCharacteristicName={validateCharacteristicName}
@@ -231,32 +312,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
                       attributeIndex={selectedAttributeIndex}
                       areReasonCodesUsed={areReasonCodesUsed}
                       onCancel={onViewOverviewView}
-                      onCommit={(_index, _content) => {
-                        if (_index === undefined) {
-                          dispatch({
-                            type: Actions.Scorecard_AddAttribute,
-                            payload: {
-                              modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristicIndex,
-                              text: _content.text,
-                              partialScore: _content.partialScore,
-                              reasonCode: _content.reasonCode
-                            }
-                          });
-                        } else {
-                          dispatch({
-                            type: Actions.Scorecard_UpdateAttribute,
-                            payload: {
-                              modelIndex: modelIndex,
-                              characteristicIndex: selectedCharacteristicIndex,
-                              attributeIndex: selectedAttributeIndex,
-                              text: _content.text,
-                              partialScore: _content.partialScore,
-                              reasonCode: _content.reasonCode
-                            }
-                          });
-                        }
-                      }}
+                      onCommit={onUpdateAttribute}
                     />
                   </StackItem>
                 </Stack>

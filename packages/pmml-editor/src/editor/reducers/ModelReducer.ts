@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { ScorecardReducer } from "./ScorecardReducer";
@@ -26,6 +26,8 @@ import { OutputFieldReducer } from "./OutputFieldReducer";
 import { OutputReducer } from "./OutputReducer";
 import { MiningSchemaReducer } from "./MiningSchemaReducer";
 import { MiningSchemaFieldReducer } from "./MiningSchemaFieldReducer";
+import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -35,19 +37,24 @@ interface ModelPayload {
 
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
-export const ModelReducer: HistoryAwareReducer<Model[], AllActions> = (
-  history: HistoryService
+export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<Model[], AllActions> => {
-  const scorecardReducer = mergeReducers(ScorecardReducer(history), {
-    MiningSchema: mergeReducers(MiningSchemaReducer(history), { MiningField: MiningSchemaFieldReducer(history) }),
-    Output: mergeReducers(OutputReducer(history), { OutputField: OutputFieldReducer(history) }),
-    Characteristics: mergeReducers(CharacteristicsReducer(history), {
-      Characteristic: CharacteristicReducer(history)
+  const scorecardReducer = mergeReducers(ScorecardReducer(historyService, validationRegistry), {
+    MiningSchema: mergeReducers(MiningSchemaReducer(historyService, validationRegistry), {
+      MiningField: MiningSchemaFieldReducer(historyService, validationRegistry)
+    }),
+    Output: mergeReducers(OutputReducer(historyService, validationRegistry), {
+      OutputField: OutputFieldReducer(historyService, validationRegistry)
+    }),
+    Characteristics: mergeReducers(CharacteristicsReducer(historyService), {
+      Characteristic: CharacteristicReducer(historyService)
     })
   });
 
   const delegate = DelegatingModelReducer(
-    history,
+    historyService,
     new Map([
       [
         "Scorecard",
@@ -67,14 +74,20 @@ export const ModelReducer: HistoryAwareReducer<Model[], AllActions> = (
   return (state: Model[], action: AllActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
-        return history.mutate(state, "models", draft => {
-          if (draft !== undefined) {
-            const modelIndex: number = action.payload.modelIndex;
-            if (modelIndex >= 0 && modelIndex < draft.length) {
-              draft.splice(modelIndex, 1);
+        return historyService.mutate(
+          state,
+          Builder()
+            .forModel()
+            .build(),
+          draft => {
+            if (draft !== undefined) {
+              const modelIndex: number = action.payload.modelIndex;
+              if (modelIndex >= 0 && modelIndex < draft.length) {
+                draft.splice(modelIndex, 1);
+              }
             }
           }
-        });
+        );
     }
 
     return delegate(state, action);

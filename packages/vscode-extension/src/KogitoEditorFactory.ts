@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+import * as vscode from "vscode";
+import * as nodePath from "path";
+import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { BackendProxy } from "@kogito-tooling/backend/dist/api";
 import { ResourceContentService } from "@kogito-tooling/channel-common-api";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
-import * as nodePath from "path";
-import * as vscode from "vscode";
 import { Uri, Webview } from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
@@ -36,7 +37,8 @@ export class KogitoEditorFactory {
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly workspaceApi: WorkspaceApi,
-    private readonly backendProxy: BackendProxy
+    private readonly backendProxy: BackendProxy,
+    private readonly notificationsApi: NotificationsApi
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -68,7 +70,8 @@ export class KogitoEditorFactory {
       editor,
       resourceContentService,
       this.workspaceApi,
-      this.backendProxy
+      this.backendProxy,
+      this.notificationsApi
     );
 
     this.editorStore.addAsActive(editor);

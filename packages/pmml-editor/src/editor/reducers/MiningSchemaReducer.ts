@@ -15,8 +15,12 @@
  */
 import { Reducer } from "react";
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryAwareReducer, HistoryService } from "../history";
+import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import { FieldName, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
+import { ValidationRegistry } from "../validation";
+import { Builder } from "../paths";
+import { validateMiningFields } from "../validation/MiningSchema";
+import { getMiningSchema } from "../PMMLModelHelper";
 
 interface MiningSchemaPayload {
   [Actions.AddMiningSchemaFields]: {
@@ -26,33 +30,62 @@ interface MiningSchemaPayload {
   [Actions.DeleteMiningSchemaField]: {
     readonly modelIndex: number;
     readonly miningSchemaIndex: number;
+    readonly name?: FieldName;
   };
 }
 
 export type MiningSchemaActions = ActionMap<MiningSchemaPayload>[keyof ActionMap<MiningSchemaPayload>];
 
-export const MiningSchemaReducer: HistoryAwareReducer<MiningSchema, AllActions> = (
-  service: HistoryService
+export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, AllActions> = (
+  historyService: HistoryService,
+  validationRegistry: ValidationRegistry
 ): Reducer<MiningSchema, AllActions> => {
   return (state: MiningSchema, action: AllActions) => {
     switch (action.type) {
       case Actions.AddMiningSchemaFields:
-        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
-          action.payload.names.forEach(name => {
-            draft.MiningField.push({
-              name: name
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forMiningSchema()
+            .build(),
+          draft => {
+            action.payload.names.forEach(name => {
+              draft.MiningField.push({
+                name: name
+              });
             });
-          });
-        });
+          }
+        );
         break;
 
       case Actions.DeleteMiningSchemaField:
-        service.batch(state, `models[${action.payload.modelIndex}].MiningSchema`, draft => {
-          const miningSchemaIndex = action.payload.miningSchemaIndex;
-          if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
-            draft.MiningField.splice(miningSchemaIndex, 1);
+        historyService.batch(
+          state,
+          Builder()
+            .forModel(action.payload.modelIndex)
+            .forMiningSchema()
+            .build(),
+          draft => {
+            const miningSchemaIndex = action.payload.miningSchemaIndex;
+            if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
+              draft.MiningField.splice(miningSchemaIndex, 1);
+            }
+          },
+          pmml => {
+            const modelIndex = action.payload.modelIndex;
+            const miningSchema = getMiningSchema(pmml, modelIndex);
+            if (miningSchema !== undefined) {
+              validationRegistry.clear(
+                Builder()
+                  .forModel(modelIndex)
+                  .forMiningSchema()
+                  .build()
+              );
+              validateMiningFields(modelIndex, miningSchema.MiningField, validationRegistry);
+            }
           }
-        });
+        );
     }
 
     return state;

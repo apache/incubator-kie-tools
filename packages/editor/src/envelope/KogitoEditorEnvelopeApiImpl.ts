@@ -144,6 +144,10 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     return this.args.envelopeContext.services.i18n.executeOnLocaleChangeSubscriptions(locale);
   }
 
+  public validate() {
+    return this.editor.validate();
+  }
+
   private setupI18n(initArgs: EditorInitArgs) {
     this.i18n.setLocale(initArgs.initialLocale);
     this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
