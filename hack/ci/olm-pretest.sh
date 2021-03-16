@@ -15,4 +15,4 @@
 
 
 
-docker push kind-registry:5000/kiegroup/kogito-cloud-operator
+docker push kind-registry:5000/kiegroup/kogito-operator

@@ -17,7 +17,7 @@
 SCRIPT_NAME=`basename $0`
 SCRIPT_DIR=`dirname $0`
 
-MASTER_RAW_URL=https://raw.githubusercontent.com/kiegroup/kogito-cloud-operator/master/deploy
+MASTER_RAW_URL=https://raw.githubusercontent.com/kiegroup/kogito-operator/master/deploy
 
 function usage(){
   printf "Run BDD tests."
@@ -54,7 +54,7 @@ function usage(){
   printf "\n--olm_namespace \n\tSet the namespace which is used for cluster scope operators. Default is 'openshift-operators'."
 
   # operator information
-  printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-cloud-operator' one."
+  printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-operator' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
   printf "\n--operator_namespaced {TAG}\n\tSet to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false."
   printf "\n--operator_installation_source {TAG}\n\tDefines installation source for the Kogito operator. Options are 'olm' and 'yaml'. Default is yaml."

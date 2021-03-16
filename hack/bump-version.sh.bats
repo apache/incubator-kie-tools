@@ -46,5 +46,5 @@ teardown() {
     [[ "${csv_file}" =~ "replaces: kogito-operator.v${getLatestOlmReleaseVersion}" ]]
     [[ "${csv_file}" =~ "version: ${NEW_VERSION}" ]]
     [[ "${csv_file}" =~ "operated-by: kogito-operator.${NEW_VERSION}" ]]
-    [[ "${csv_file}" =~ "quay.io/kiegroup/kogito-cloud-operator:${NEW_VERSION}" ]]
+    [[ "${csv_file}" =~ "quay.io/kiegroup/kogito-operator:${NEW_VERSION}" ]]
 }

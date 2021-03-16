@@ -17,12 +17,12 @@
 VERSION=$1
 
 if [ -z "${VERSION}" ]; then
-    VERSION=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/kiegroup/kogito-cloud-operator/releases | python -c "import sys, json; print(json.load(sys.stdin)[0]['tag_name'])")
+    VERSION=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/kiegroup/kogito-operator/releases | python -c "import sys, json; print(json.load(sys.stdin)[0]['tag_name'])")
 fi
 
 echo "....... Installing Kogito Operator ${VERSION} ......."
 
-declare url="https://github.com/kiegroup/kogito-cloud-operator/releases/download/${VERSION}/kogito-operator.yaml"
+declare url="https://github.com/kiegroup/kogito-operator/releases/download/${VERSION}/kogito-operator.yaml"
 
 if [ -z "${NAMESPACE}" ]; then
   kubectl apply -f "${url}" -n "${NAMESPACE}"

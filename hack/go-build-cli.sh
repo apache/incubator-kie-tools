@@ -50,7 +50,7 @@ if [ "$release" = "true" ]; then
     rm -rf build/_output/bin/kogito
 
     packTemplateFiles
-    CGO_ENABLED=0 GOOS="${i}" GOARCH="${arch}" go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-cloud-operator/cmd/kogito
+    CGO_ENABLED=0 GOOS="${i}" GOARCH="${arch}" go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-operator/cmd/kogito
     if [ $? -ne 0 ]; then
       echo "Failed to build for OS ${i} and Architecture ${arch}"
       cleanTemplateFiles
@@ -74,6 +74,6 @@ if [ "$release" = "true" ]; then
   echo "--- Finishing building Kogito CLI ${version}"
 else
   packTemplateFiles
-  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-cloud-operator/cmd/kogito
+  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o build/_output/bin/kogito github.com/kiegroup/kogito-operator/cmd/kogito
   cleanTemplateFiles
 fi

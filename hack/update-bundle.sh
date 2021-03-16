@@ -26,7 +26,7 @@ fi
 echo "Will update the bundle CSV with ${1} image"
 
 ## update the image
-sed -i  "s|quay.io/kiegroup/kogito-cloud-operator.*|${1}|g" bundle/manifests/kogito-operator.clusterserviceversion.yaml
+sed -i  "s|quay.io/kiegroup/kogito-operator.*|${1}|g" bundle/manifests/kogito-operator.clusterserviceversion.yaml
 
 ## remove the replaces field
 sed -i "/replaces.*/d" bundle/manifests/kogito-operator.clusterserviceversion.yaml

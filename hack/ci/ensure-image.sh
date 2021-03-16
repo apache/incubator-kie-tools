@@ -22,10 +22,10 @@ version=$(getOperatorVersion)
 if [[ -n ${IMAGE} ]]; then
     OPERATOR_IMAGE=${IMAGE}
 else
-    OPERATOR_IMAGE=quay.io/kiegroup/kogito-cloud-operator:${version}
+    OPERATOR_IMAGE=quay.io/kiegroup/kogito-operator:${version}
 fi
 echo "======> Using ${OPERATOR_IMAGE} make sure it exists in docker-daemon"
-KIND_IMAGE=kind-registry:5000/kiegroup/kogito-cloud-operator
+KIND_IMAGE=kind-registry:5000/kiegroup/kogito-operator
 echo "=====> tagging image"
 docker tag ${OPERATOR_IMAGE} ${KIND_IMAGE}
 
