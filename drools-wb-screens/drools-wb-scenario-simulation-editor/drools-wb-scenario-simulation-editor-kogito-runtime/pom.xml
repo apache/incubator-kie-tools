@@ -649,7 +649,6 @@
           <disableCastChecking>true</disableCastChecking>
           <runTarget>index.html</runTarget>
           <strict>true</strict>
-          <style>PRETTY</style>
           <printJavaCommandOnError>false</printJavaCommandOnError>
           <productionMode>true</productionMode>
           <hostedWebapp>src/main/webapp</hostedWebapp>
@@ -659,7 +658,6 @@
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
