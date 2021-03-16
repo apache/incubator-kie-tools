@@ -639,6 +639,64 @@ describe("Scorecard tests", () => {
     expect(Object.getPrototypeOf(characteristicFields[1])).toBe(Object.prototype);
   });
 
+  test("Scorecard::Models::isScorable::true", () => {
+    const scorecard: Scorecard = makeScorecardWithIsScorable(true);
+    expect(scorecard.isScorable).toBeTruthy();
+  });
+
+  test("Scorecard::Models::isScorable::false", () => {
+    const scorecard: Scorecard = makeScorecardWithIsScorable(false);
+    expect(scorecard.isScorable).toBeFalsy();
+  });
+
+  function makeScorecardWithIsScorable(isScorable: boolean): Scorecard {
+    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <Header/>
+      <DataDictionary/>
+      <Scorecard isScorable="${isScorable}"/>
+    </PMML>`;
+    const pmml: PMML = XML2PMML(xml);
+
+    expect(pmml).not.toBeNull();
+
+    expect(pmml.models).not.toBeUndefined();
+    const models: Model[] = pmml.models ?? [];
+    expect(models.length).toBe(1);
+
+    const model: Model = models[0];
+    expect(model).toBeInstanceOf(Scorecard);
+    return model as Scorecard;
+  }
+
+  test("Scorecard::Models::useReasonCodes::true", () => {
+    const scorecard: Scorecard = makeScorecardWithUseReasonCodes(true);
+    expect(scorecard.useReasonCodes).toBeTruthy();
+  });
+
+  test("Scorecard::Models::useReasonCodes::false", () => {
+    const scorecard: Scorecard = makeScorecardWithUseReasonCodes(false);
+    expect(scorecard.useReasonCodes).toBeFalsy();
+  });
+
+  function makeScorecardWithUseReasonCodes(useReasonCodes: boolean): Scorecard {
+    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <Header/>
+      <DataDictionary/>
+      <Scorecard useReasonCodes="${useReasonCodes}"/>
+    </PMML>`;
+    const pmml: PMML = XML2PMML(xml);
+
+    expect(pmml).not.toBeNull();
+
+    expect(pmml.models).not.toBeUndefined();
+    const models: Model[] = pmml.models ?? [];
+    expect(models.length).toBe(1);
+
+    const model: Model = models[0];
+    expect(model).toBeInstanceOf(Scorecard);
+    return model as Scorecard;
+  }
+
   function assertSimplePredicate(actualPredicate: Predicate | undefined, expectedPredicate: SimplePredicate): void {
     expect(actualPredicate).toBeInstanceOf(SimplePredicate);
     const actualSimplePredicate: SimplePredicate = actualPredicate as SimplePredicate;

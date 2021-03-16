@@ -57,9 +57,7 @@ export default class PmmlEditorTestHelper {
     await assertWebElementIsDisplayedEnabled(button);
     await button.click();
 
-    const body = await this.webview.findWebElement(By.xpath("//div[@data-title='DataDictionaryModal']"));
-    const close = await this.webview.findWebElement(By.xpath("//button[@data-title='DataDictionaryModalClose']"));
-    return Promise.resolve(new Modal(body, close));
+    return this.resolveModal("DataDictionary");
   };
 
   /**
@@ -67,7 +65,7 @@ export default class PmmlEditorTestHelper {
    *
    * @returns Promise<WebElement> promise that resolves to PMML Data Dictionary button.
    */
-  public getDataDictionaryButton = async (): Promise<WebElement> => {
+  private getDataDictionaryButton = async (): Promise<WebElement> => {
     this.dataDictionaryButton = await this.webview.findWebElement(By.xpath("//button[@data-title='DataDictionary']"));
     return this.dataDictionaryButton;
   };
@@ -84,9 +82,7 @@ export default class PmmlEditorTestHelper {
     await assertWebElementIsDisplayedEnabled(button);
     await button.click();
 
-    const body = await this.webview.findWebElement(By.xpath("//div[@data-title='MiningSchemaModal']"));
-    const close = await this.webview.findWebElement(By.xpath("//button[@data-title='MiningSchemaModalClose']"));
-    return Promise.resolve(new Modal(body, close));
+    return this.resolveModal("MiningSchema");
   };
 
   /**
@@ -94,7 +90,7 @@ export default class PmmlEditorTestHelper {
    *
    * @returns Promise<WebElement> promise that resolves to PMML Mining Schema button.
    */
-  public getMiningSchemaButton = async (): Promise<WebElement> => {
+  private getMiningSchemaButton = async (): Promise<WebElement> => {
     this.miningSchemaButton = await this.webview.findWebElement(By.xpath("//button[@data-title='MiningSchema']"));
     return this.miningSchemaButton;
   };
@@ -111,9 +107,7 @@ export default class PmmlEditorTestHelper {
     await assertWebElementIsDisplayedEnabled(button);
     await button.click();
 
-    const body = await this.webview.findWebElement(By.xpath("//div[@data-title='OutputsModal']"));
-    const close = await this.webview.findWebElement(By.xpath("//button[@data-title='OutputsModalClose']"));
-    return Promise.resolve(new Modal(body, close));
+    return this.resolveModal("Outputs");
   };
 
   /**
@@ -121,8 +115,14 @@ export default class PmmlEditorTestHelper {
    *
    * @returns Promise<WebElement> promise that resolves to PMML Outputs button.
    */
-  public getOutputsButton = async (): Promise<WebElement> => {
+  private getOutputsButton = async (): Promise<WebElement> => {
     this.outputsButton = await this.webview.findWebElement(By.xpath("//button[@data-title='Outputs']"));
     return this.outputsButton;
+  };
+
+  private resolveModal = async (dataTitle: string): Promise<Modal> => {
+    const body = await this.webview.findWebElement(By.xpath(`//div[@data-title='${dataTitle}']`));
+    const close = await this.webview.findWebElement(By.xpath(`//button[@data-title='${dataTitle}Close']`));
+    return Promise.resolve(new Modal(body, close));
   };
 }

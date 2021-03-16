@@ -152,7 +152,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const onDeleteAttribute = useCallback(
     attributeIndex => {
-      //TODO {manstis} How are we to handle channel-agnostic confirmations?
+      //See https://issues.redhat.com/browse/FAI-443
       //if (window.confirm(`Delete Attribute?`)) {
       dispatch({
         type: Actions.Scorecard_DeleteAttribute,

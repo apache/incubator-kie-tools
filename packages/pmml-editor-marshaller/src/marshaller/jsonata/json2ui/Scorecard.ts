@@ -60,8 +60,8 @@ elements.elements[(name = "Scorecard")] ~> $map(function($v, $i) {
     $scorecardFactory(),
     $v.attributes,
     {
-      "isScorable": $boolean($v.attributes.isScorable),
-      "useReasonCodes": $boolean($v.attributes.useReasonCodes),
+      "isScorable": $eval($v.attributes.isScorable),
+      "useReasonCodes": $eval($v.attributes.useReasonCodes),
       "initialScore": $number($v.attributes.initialScore),
       "baselineScore": $number($v.attributes.baselineScore),
       "_type": $v.name

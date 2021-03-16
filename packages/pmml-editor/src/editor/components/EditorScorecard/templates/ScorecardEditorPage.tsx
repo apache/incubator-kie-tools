@@ -82,7 +82,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const onDeleteOutputField = useCallback(
     _index => {
-      //TODO {manstis} How are we to handle channel-agnostic confirmations?
+      //See https://issues.redhat.com/browse/FAI-443
       //if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
       dispatch({
         type: Actions.DeleteOutput,

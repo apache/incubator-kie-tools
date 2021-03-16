@@ -15,7 +15,6 @@
  */
 
 import "@patternfly/patternfly/patternfly.css";
-import "./styles.scss";
 
 export * from "./PMMLEditor";
 export * from "./PMMLEditorFactory";

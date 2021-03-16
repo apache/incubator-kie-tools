@@ -78,6 +78,9 @@ export class HistoryService {
       }
     });
 
+    //Signal commit to listeners
+    this.listeners.forEach(listener => listener(`Command${this.history.index}`));
+
     this.pending = new Array<BatchEntry<any>>();
 
     return newState;
@@ -91,7 +94,6 @@ export class HistoryService {
     const newState: M = produce(state, recipe, (patches, inversePatches) => {
       this.history.changes.push({ path: path, change: patches, reverse: inversePatches });
       this.history.index = this.history.changes.length;
-      this.listeners.forEach(listener => listener(`Command${this.history.index}`));
     });
 
     return newState;

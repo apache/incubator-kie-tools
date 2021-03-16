@@ -57,7 +57,7 @@ const DataDictionaryHandler = () => {
   };
 
   const deleteField = (index: number) => {
-    //TODO {manstis} How are we to handle channel-agnostic confirmations?
+    //See https://issues.redhat.com/browse/FAI-443
     //if (window.confirm(`Delete Output "${dictionary[index].name}"?`)) {
     dispatch({
       type: Actions.DeleteDataDictionaryField,

@@ -67,7 +67,7 @@ export const LandingPage = (props: LandingPageProps) => {
   );
 
   const onDelete = useCallback((index: number, modelName: string) => {
-    //TODO {manstis} How are we to handle channel-agnostic confirmations?
+    //See https://issues.redhat.com/browse/FAI-443
     //if (window.confirm(`Delete Model "${modelName}"?`)) {
     dispatch({
       type: Actions.DeleteModel,

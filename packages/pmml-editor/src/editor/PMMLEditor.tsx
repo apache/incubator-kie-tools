@@ -46,9 +46,33 @@ import { Builder } from "./paths";
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
 interface Props {
+  /**
+   * Callback to the container so that it may bind to the PMMLEditor.
+   *
+   * @returns Instance of the PMMLEditor.
+   */
   exposing: (s: PMMLEditor) => void;
+
+  /**
+   * Delegation for KogitoToolingChannelCommonApi.receive_ready() to signal to the Channel
+   * that the editor is ready. Increases the decoupling of the PMMLEditor from the Channel.
+   */
   ready: () => void;
+
+  /**
+   * Delegation for KogitoToolingChannelCommonApi.receive_newEdit(edit) to signal to the Channel
+   * that a change has taken place. Increases the decoupling of the PMMLEditor from the Channel.
+   * @param edit An object representing the unique change.
+   */
   newEdit: (edit: KogitoEdit) => void;
+
+  /**
+   * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
+   * notifications to the Channel that  will replace existing notification for the path. Increases the
+   * decoupling of the PMMLEditor from the Channel.
+   * @param path The path that references the Notification
+   * @param notifications List of Notifications
+   */
   setNotifications: (path: string, notifications: Notification[]) => void;
 }
 

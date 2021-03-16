@@ -15,16 +15,25 @@
  */
 
 import { ValidationLevel } from "./ValidationLevel";
-import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { Notification, NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 import { ValidationEntry } from "./ValidationRegistry";
 
 export const toNotifications = (path: string, validationEntries: ValidationEntry[]): Notification[] => {
+  const mapValidationLevel = (level: ValidationLevel): NotificationSeverity => {
+    switch (level) {
+      case ValidationLevel.ERROR:
+        return "ERROR";
+      case ValidationLevel.WARNING:
+        return "WARNING";
+    }
+  };
+
   return validationEntries.map<Notification>(validationEntry => {
     return {
       path: path,
       message: validationEntry.message ?? "",
       type: "PROBLEM",
-      severity: validationEntry.level === ValidationLevel.ERROR ? "ERROR" : "WARNING"
+      severity: mapValidationLevel(validationEntry.level)
     };
   });
 };

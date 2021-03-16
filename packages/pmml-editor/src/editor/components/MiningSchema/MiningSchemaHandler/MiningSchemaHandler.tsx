@@ -44,7 +44,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   };
 
   const deleteMiningField = (index: number) => {
-    //TODO {manstis} How are we to handle channel-agnostic confirmations?
+    //See https://issues.redhat.com/browse/FAI-443
     //if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
     dispatch({
       type: Actions.DeleteMiningSchemaField,
