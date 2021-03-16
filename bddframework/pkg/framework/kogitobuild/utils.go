@@ -15,7 +15,7 @@
 package kogitobuild
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/api"
+	"github.com/kiegroup/kogito-operator/api"
 	buildv1 "github.com/openshift/api/build/v1"
 	"strconv"
 	"strings"

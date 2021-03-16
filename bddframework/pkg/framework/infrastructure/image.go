@@ -16,10 +16,10 @@ package infrastructure
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/openshift"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
-	"github.com/kiegroup/kogito-cloud-operator/version"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/client/openshift"
+	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/version"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"strings"

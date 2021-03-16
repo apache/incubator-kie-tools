@@ -16,8 +16,8 @@ package kogitobuild
 
 import (
 	"github.com/RHsyseng/operator-utils/pkg/resource"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/core/framework"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	"reflect"

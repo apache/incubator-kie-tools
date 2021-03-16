@@ -18,7 +18,7 @@ import (
 	"context"
 	resource2 "github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/write"
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/client"
 )
 
 // ResourceWriter interface to write kubernetes object

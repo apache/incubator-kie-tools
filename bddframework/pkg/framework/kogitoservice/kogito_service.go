@@ -16,8 +16,8 @@ package kogitoservice
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	"os"
 )
 

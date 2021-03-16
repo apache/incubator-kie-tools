@@ -15,8 +15,8 @@
 package test
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

@@ -16,13 +16,13 @@ package kubernetes
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/client"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"strings"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/util/yaml"
 )
 

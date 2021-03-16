@@ -16,16 +16,16 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sort"
 	"strings"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/framework"
-	kafkabetav1 "github.com/kiegroup/kogito-cloud-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/framework"
+	kafkabetav1 "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 )

@@ -15,8 +15,8 @@
 package openshift
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
-	"github.com/kiegroup/kogito-cloud-operator/core/logger"
+	"github.com/kiegroup/kogito-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/logger"
 )
 
 var log = logger.GetLogger("openshift_client")

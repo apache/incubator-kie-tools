@@ -17,8 +17,8 @@ package test
 import (
 	"testing"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"

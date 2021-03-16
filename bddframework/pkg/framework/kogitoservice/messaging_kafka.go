@@ -16,9 +16,9 @@ package kogitoservice
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
-	infra2 "github.com/kiegroup/kogito-cloud-operator/core/kogitoinfra"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	infra2 "github.com/kiegroup/kogito-operator/core/kogitoinfra"
 	"k8s.io/apimachinery/pkg/types"
 )
 

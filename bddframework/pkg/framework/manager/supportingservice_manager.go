@@ -16,9 +16,9 @@ package manager
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/types"
 )

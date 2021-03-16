@@ -15,9 +15,9 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
-	"github.com/kiegroup/kogito-cloud-operator/core/test"
-	"github.com/kiegroup/kogito-cloud-operator/meta"
+	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/meta"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

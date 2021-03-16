@@ -19,7 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/client"
 
 	dockerv10 "github.com/openshift/api/image/docker10"
 	imgv1 "github.com/openshift/api/image/v1"

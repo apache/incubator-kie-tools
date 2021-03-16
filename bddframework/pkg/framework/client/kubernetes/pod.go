@@ -18,7 +18,7 @@ import (
 	"context"
 	"io/ioutil"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/client"
 	corev1 "k8s.io/api/core/v1"
 )
 

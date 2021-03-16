@@ -15,18 +15,18 @@
 package connector
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
-	"github.com/kiegroup/kogito-cloud-operator/core/manager"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
-	"github.com/kiegroup/kogito-cloud-operator/core/test"
-	"github.com/kiegroup/kogito-cloud-operator/internal"
-	"github.com/kiegroup/kogito-cloud-operator/meta"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/manager"
+	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/meta"
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"

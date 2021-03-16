@@ -16,11 +16,11 @@ package connector
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/core/framework"
-	"github.com/kiegroup/kogito-cloud-operator/core/manager"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework"
+	"github.com/kiegroup/kogito-operator/core/manager"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	appsv1 "k8s.io/api/apps/v1"
 	"net/url"
 )

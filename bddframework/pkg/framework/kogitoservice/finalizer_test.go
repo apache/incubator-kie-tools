@@ -15,11 +15,11 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
-	"github.com/kiegroup/kogito-cloud-operator/core/test"
-	"github.com/kiegroup/kogito-cloud-operator/internal"
-	"github.com/kiegroup/kogito-cloud-operator/meta"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

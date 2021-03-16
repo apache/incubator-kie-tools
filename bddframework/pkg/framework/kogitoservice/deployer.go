@@ -15,18 +15,18 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/api"
-	"github.com/kiegroup/kogito-cloud-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-cloud-operator/core/manager"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/manager"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
 	"time"
 
 	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/core/record"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/record"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"

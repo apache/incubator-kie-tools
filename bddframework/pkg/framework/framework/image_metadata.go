@@ -18,7 +18,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/client/openshift"
+	"github.com/kiegroup/kogito-operator/core/client/openshift"
 
 	appsv1 "github.com/openshift/api/apps/v1"
 	dockerv10 "github.com/openshift/api/image/docker10"

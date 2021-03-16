@@ -16,8 +16,8 @@ package kogitobuild
 
 import (
 	"context"
-	"github.com/kiegroup/kogito-cloud-operator/core/client/openshift"
-	"github.com/kiegroup/kogito-cloud-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/core/client/openshift"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	v1 "github.com/openshift/api/build/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

@@ -17,7 +17,7 @@ package openshift
 import (
 	"context"
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"io"
 	coreappsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -28,7 +28,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-cloud-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/client"
 	buildv1 "github.com/openshift/api/build/v1"
 
 	"k8s.io/apimachinery/pkg/api/errors"
