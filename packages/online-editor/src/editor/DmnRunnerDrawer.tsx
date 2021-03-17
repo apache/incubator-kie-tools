@@ -19,6 +19,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DmnRunner } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
+import Form from "@rjsf/bootstrap-4";
+import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
   DescriptionList,
@@ -52,8 +54,6 @@ interface Props {
   editorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
   onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  formContext: any;
-  setFormContext: React.Dispatch<any>;
   flexDirection: "column" | "row";
 }
 
@@ -70,14 +70,16 @@ export function DmnRunnerDrawer(props: Props) {
   const [dmnRunnerContentStyles, setDmnRunnerContentStyles] = useState<{ width: string; height: string }>(() =>
     props.flexDirection === "row" ? { width: "50%", height: "100%" } : { width: "100%", height: "50%" }
   );
+  const [formContext, setFormContext] = useState();
+  const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
   const onSubmit = useCallback(
-    async ({ context }) => {
-      props.setFormContext(context);
+    async data => {
+      setFormContext(data);
       if (props.editorContent) {
         try {
           const model = await props.editorContent();
-          const dmnRunnerRes = await DmnRunner.sendForm({ context, model });
+          const dmnRunnerRes = await DmnRunner.send({ context: data, model });
           const dmnRunnerJson = await dmnRunnerRes.json();
           if (
             Object.hasOwnProperty.call(dmnRunnerJson, "details") &&
@@ -120,13 +122,17 @@ export function DmnRunnerDrawer(props: Props) {
   }, [props.flexDirection]);
 
   useLayoutEffect(() => {
-    autoFormRef.current?.change("context", props.formContext);
+    autoFormRef.current?.change("context", formContext);
   }, []);
 
-  const tweakAutoSubmit = useCallback((value) => {
+  const tweakAutoSubmit = useCallback(value => {
     autoFormRef.current?.submit();
-    setIsAutoSubmit(value)
-  }, [])
+    setIsAutoSubmit(value);
+  }, []);
+
+  useEffect(() => {
+    errorBoundaryRef.current?.reset();
+  }, [props.jsonSchemaBridge]);
 
   return (
     <>
@@ -146,18 +152,20 @@ export function DmnRunnerDrawer(props: Props) {
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                 {props.jsonSchemaBridge ? (
-                  <AutoForm
-                    id={"form"}
-                    ref={autoFormRef}
-                    showInlineError={true}
-                    autosave={isAutoSubmit}
-                    autosaveDelay={500}
-                    schema={props.jsonSchemaBridge}
-                    onSubmit={onSubmit}
-                    errorsField={() => <></>}
-                    submitField={isAutoSubmit ? () => <></> : undefined}
-                    placeholder={true}
-                  />
+                  <ErrorBoundary ref={errorBoundaryRef}>
+                    <AutoForm
+                      id={"form"}
+                      ref={autoFormRef}
+                      showInlineError={true}
+                      autosave={false}
+                      autosaveDelay={500}
+                      schema={props.jsonSchemaBridge}
+                      onSubmit={onSubmit}
+                      errorsField={() => <></>}
+                      submitField={isAutoSubmit ? () => <></> : undefined}
+                      placeholder={true}
+                    />
+                  </ErrorBoundary>
                 ) : (
                   <div>
                     <EmptyState>
@@ -306,4 +314,34 @@ function ResultCardLeaf(props: ResultCardLeafProps) {
       </DescriptionList>
     </div>
   );
+}
+
+class ErrorBoundary extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  public reset() {
+    this.setState({ hasError: false });
+  }
+
+  public componentDidCatch(error: any, errorInfo: any) {
+    // You can also log the error to an error reporting service
+    console.error("Error", error, errorInfo);
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+
+  public static getDerivedStateFromError(error: any) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
 }

@@ -260,10 +260,10 @@ export function EditorPage(props: Props) {
 
   // TODO: extract to custom hook
   const [isDmnRunnerDrawerOpen, setDmnRunnerDrawerOpen] = useState(false);
-  const [dmnRunnerSchema, setDmnRunnerSchema] = useState<JSONSchemaBridge>();
+  const [dmnRunnerJsonSchemaBridge, setDmnRunnerJsonSchemaBridge] = useState<JSONSchemaBridge>();
+
   // This state saves the current status of the Dmn Runner server on the user machine.
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
-  const [formContext, setFormContext] = useState();
 
   const DMN_RUNNER_POLLING_TIME = 500;
 
@@ -293,16 +293,33 @@ export function EditorPage(props: Props) {
           });
         }, DMN_RUNNER_POLLING_TIME);
 
-        // TODO: do it on isDirty
+        // TODO: do it on changes
         editor
           ?.getContent()
-          .then(content => DmnRunner.getFormSchema(content ?? ""))
-          .then(schema => setDmnRunnerSchema(schema));
+          .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
+          .then(jsonSchemaBridge => setDmnRunnerJsonSchemaBridge(jsonSchemaBridge));
 
         return () => window.clearInterval(polling1);
       }
     }
   }, [editor, dmnRunnerStatus, isEditorReady]);
+
+  useEffect(() => {
+    if (!editor || context.file.fileExtension !== "dmn") {
+      return;
+    }
+
+    const subscription = editor.getStateControl().subscribe(() => {
+      editor
+        ?.getContent()
+        .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
+        .then(jsonSchemaBridge => setDmnRunnerJsonSchemaBridge(jsonSchemaBridge));
+    });
+
+    return () => {
+      editor.getStateControl().unsubscribe(subscription);
+    };
+  }, [editor, context.file.fileExtension]);
 
   const requestSetupDmnRunner = useCallback(() => {
     setModal(OpenedModal.DMN_RUNNER_HELPER);
@@ -414,11 +431,9 @@ export function EditorPage(props: Props) {
                 isResizable={true}
               >
                 <DmnRunnerDrawer
-                  jsonSchemaBridge={dmnRunnerSchema}
+                  jsonSchemaBridge={dmnRunnerJsonSchemaBridge}
                   editorContent={editor?.getContent}
                   onStopRunDmn={requestCloseDmnRunnerDrawer}
-                  formContext={formContext}
-                  setFormContext={setFormContext}
                   flexDirection={dmnRunnerFlexDirection}
                 />
               </DrawerPanelContent>
