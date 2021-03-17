@@ -57,7 +57,7 @@ export default class PmmlEditorTestHelper {
     await assertWebElementIsDisplayedEnabled(button);
     await button.click();
 
-    return this.resolveModal("DataDictionary");
+    return this.resolveModal("DataDictionaryModal");
   };
 
   /**
@@ -82,7 +82,7 @@ export default class PmmlEditorTestHelper {
     await assertWebElementIsDisplayedEnabled(button);
     await button.click();
 
-    return this.resolveModal("MiningSchema");
+    return this.resolveModal("MiningSchemaModal");
   };
 
   /**
@@ -107,7 +107,7 @@ export default class PmmlEditorTestHelper {
     await assertWebElementIsDisplayedEnabled(button);
     await button.click();
 
-    return this.resolveModal("Outputs");
+    return this.resolveModal("OutputsModal");
   };
 
   /**
