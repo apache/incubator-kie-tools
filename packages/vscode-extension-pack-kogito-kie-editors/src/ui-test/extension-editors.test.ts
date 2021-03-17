@@ -14,113 +14,135 @@
  * limitations under the License.
  */
 
-import { WebView, By, SideBarView } from 'vscode-extension-tester';
-import * as path from 'path';
-import { aComponentWithText } from './helpers/CommonLocators';
-import { EditorTabs } from './helpers/EditorTabs';
-import { assertWebElementIsDisplayedEnabled } from './helpers/CommonAsserts'
-import VSCodeTestHelper from './helpers/VSCodeTestHelper';
-import BpmnEditorTestHelper from './helpers/BpmnEditorTestHelper';
-import ScesimEditorTestHelper from './helpers/ScesimEditorTestHelper';
-import DmnEditorTestHelper from './helpers/DmnEditorTestHelper';
+import { By, SideBarView, WebView } from "vscode-extension-tester";
+import * as path from "path";
+import { aComponentWithText } from "./helpers/CommonLocators";
+import { EditorTabs } from "./helpers/EditorTabs";
+import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
+import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import BpmnEditorTestHelper from "./helpers/BpmnEditorTestHelper";
+import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
+import DmnEditorTestHelper from "./helpers/DmnEditorTestHelper";
+import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
 
 describe("Editors are loading properly", () => {
+  const RESOURCES: string = path.resolve("src", "ui-test", "resources");
+  const DEMO_BPMN: string = "demo.bpmn";
+  const DEMO_DMN: string = "demo.dmn";
+  const DEMO_SCESIM: string = "demo.scesim";
+  const DEMO_PMML: string = "demo.pmml";
 
-    const RESOURCES: string = path.resolve('src', 'ui-test', 'resources');
-    const DEMO_BPMN: string = 'demo.bpmn';
-    const DEMO_DMN: string = 'demo.dmn';
-    const DEMO_SCESIM: string = 'demo.scesim';
+  const REUSABLE_DMN: string = "reusable-model.dmn";
 
-    const REUSABLE_DMN: string = 'reusable-model.dmn';
+  let testHelper: VSCodeTestHelper;
+  let webview: WebView;
+  let folderView: SideBarView;
 
-    let testHelper: VSCodeTestHelper;
-    let webview: WebView;
-    let folderView: SideBarView;
+  before(async function() {
+    this.timeout(60000);
+    testHelper = new VSCodeTestHelper();
+    await testHelper.closeAllEditors();
+    folderView = await testHelper.openFolder(RESOURCES);
+  });
 
-    before(async function () {
-        this.timeout(60000);
-        testHelper = new VSCodeTestHelper();
-        await testHelper.closeAllEditors();
-        folderView = await testHelper.openFolder(RESOURCES);
-    });
+  afterEach(async function() {
+    this.timeout(15000);
+    await testHelper.closeAllEditors();
+  });
 
-    afterEach(async function () {
-        this.timeout(15000);
-        await testHelper.closeAllEditors();
-    })
+  it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function() {
+    this.timeout(20000);
+    webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
+    await webview.switchToFrame();
+    const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
-    it('Opens demo.bpmn file in BPMN Editor and loads correct diagram', async function () {
-        this.timeout(20000);
-        webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
-        await webview.switchToFrame();
-        const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
+    await assertWebElementIsDisplayedEnabled(envelopApp);
 
-        const envelopApp = await webview.findWebElement(By.id('envelope-app'));
-        await assertWebElementIsDisplayedEnabled(envelopApp);
+    const palette = await bpmnEditorTester.getPalette();
+    await assertWebElementIsDisplayedEnabled(palette);
 
-        const palette = await bpmnEditorTester.getPalette();
-        await assertWebElementIsDisplayedEnabled(palette);
+    await bpmnEditorTester.openDiagramProperties();
 
-        await bpmnEditorTester.openDiagramProperties();
+    const explorer = await bpmnEditorTester.openDiagramExplorer();
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText("demo"))));
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText("Start"))));
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText("End"))));
 
-        const explorer = await bpmnEditorTester.openDiagramExplorer();
-        await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText('demo'))));
-        await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText('Start'))));
-        await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText('End'))));
+    await webview.switchBack();
+  });
 
-        await webview.switchBack();
-    });
+  it("Opens demo.dmn file in DMN Editor", async function() {
+    this.timeout(20000);
+    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
+    await webview.switchToFrame();
+    const dmnEditorTester = new DmnEditorTestHelper(webview);
 
-    it('Opens demo.dmn file in DMN Editor', async function () {
-        this.timeout(20000);
-        webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-        await webview.switchToFrame();
-        const dmnEditorTester = new DmnEditorTestHelper(webview);
+    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
+    await assertWebElementIsDisplayedEnabled(envelopApp);
 
-        const envelopApp = await webview.findWebElement(By.id('envelope-app'));
-        await assertWebElementIsDisplayedEnabled(envelopApp);
+    await dmnEditorTester.openDiagramProperties();
+    await dmnEditorTester.openDiagramExplorer();
+    await dmnEditorTester.openDecisionNavigator();
 
-        await dmnEditorTester.openDiagramProperties();
-        await dmnEditorTester.openDiagramExplorer();
-        await dmnEditorTester.openDecisionNavigator();
+    await webview.switchBack();
+  });
 
-        await webview.switchBack();
-    });
+  it("Include reusable-model in DMN Editor", async function() {
+    this.timeout(20000);
+    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
+    await webview.switchToFrame();
+    const dmnEditorTester = new DmnEditorTestHelper(webview);
 
-    it('Include reusable-model in DMN Editor', async function () {
-        this.timeout(20000);
-        webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-        await webview.switchToFrame();
-        const dmnEditorTester = new DmnEditorTestHelper(webview);
+    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
+    await assertWebElementIsDisplayedEnabled(envelopApp);
 
-        const envelopApp = await webview.findWebElement(By.id('envelope-app'));
-        await assertWebElementIsDisplayedEnabled(envelopApp);
+    await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
+    await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
 
-        await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
-        await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
+    // Blocked by https://issues.redhat.com/browse/KOGITO-4261
+    // await dmnEditorTester.inspectIncludedModel("reusable-model", 2)
 
-        // Blocked by https://issues.redhat.com/browse/KOGITO-4261
-        // await dmnEditorTester.inspectIncludedModel("reusable-model", 2)
+    await dmnEditorTester.switchEditorTab(EditorTabs.Editor);
 
-        await dmnEditorTester.switchEditorTab(EditorTabs.Editor)
+    await webview.switchBack();
+  });
 
-        await webview.switchBack();
-    });
+  it("Opens demo.scesim file in SCESIM Editor", async function() {
+    this.timeout(20000);
 
-    it('Opens demo.scesim file in SCESIM Editor', async function () {
-        this.timeout(20000);
+    webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
+    await webview.switchToFrame();
+    const scesimEditorTester = new ScesimEditorTestHelper(webview);
 
-        webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
-        await webview.switchToFrame();
-        const scesimEditorTester = new ScesimEditorTestHelper(webview);
+    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
+    await assertWebElementIsDisplayedEnabled(envelopApp);
 
-        const envelopApp = await webview.findWebElement(By.id('envelope-app'));
-        await assertWebElementIsDisplayedEnabled(envelopApp);
+    await scesimEditorTester.openScenarioCheatsheet();
+    await scesimEditorTester.openSettings();
+    await scesimEditorTester.openTestTools();
 
-        await scesimEditorTester.openScenarioCheatsheet();
-        await scesimEditorTester.openSettings();
-        await scesimEditorTester.openTestTools();
+    await webview.switchBack();
+  });
 
-        await webview.switchBack();
-    });
-})
+  it("Opens demo.pmml file in PMML Editor", async function() {
+    this.timeout(20000);
+    webview = await testHelper.openFileFromSidebar(DEMO_PMML);
+    await webview.switchToFrame();
+    const pmmlEditorTester = new PmmlEditorTestHelper(webview);
+
+    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
+    await assertWebElementIsDisplayedEnabled(envelopApp);
+
+    const dataDictionaryModel = await pmmlEditorTester.openDataDictionary();
+    dataDictionaryModel.close();
+
+    const miningSchemaModel = await pmmlEditorTester.openMiningSchema();
+    miningSchemaModel.close();
+
+    const outputsModal = await pmmlEditorTester.openOutputs();
+    outputsModal.close();
+
+    await webview.switchBack();
+  });
+});

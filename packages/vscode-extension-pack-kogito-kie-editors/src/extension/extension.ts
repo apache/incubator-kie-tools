@@ -53,19 +53,38 @@ export async function activate(context: vscode.ExtensionContext) {
       mapping: new Map([
         [
           "bpmn",
-          { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/bpmn",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
         ],
         [
           "bpmn2",
-          { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/bpmn",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
         ],
         [
           "dmn",
-          { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/dmn",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
         ],
         [
           "scesim",
-          { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
+          {
+            resourcesPathPrefix: "dist/webview/editors/scesim",
+            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+          }
+        ],
+        [
+          "pmml",
+          {
+            resourcesPathPrefix: "dist/webview/editors/pmml",
+            envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js"
+          }
         ]
       ])
     },

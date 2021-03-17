@@ -1,0 +1,45 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header/>
+  <DataDictionary numberOfFields="4">
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+    <DataField name="cheese" displayName="dddd" optype="continuous" dataType="float" isCyclic="0">
+      <Interval closure="closedClosed" leftMargin="1" rightMargin="2"/>
+      <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
+      <Interval closure="closedOpen" leftMargin="5" rightMargin="6"/>
+      <Value value="a" property="missing"/>
+      <Value value="b" property="invalid"/>
+    </DataField>
+  </DataDictionary>
+  <Scorecard modelName="SimpleScorecard" functionName="regression" initialScore="5" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="score" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" optype="continuous" dataType="double" feature="predictedValue"/>
+      <OutputField name="Reason Code 1" optype="categorical" dataType="string" feature="reasonCode" rank="1"/>
+      <OutputField name="Reason Code 2" optype="categorical" dataType="string" feature="reasonCode" rank="2"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="input1Score" reasonCode="Input1ReasonCode" baselineScore="4">
+        <Attribute partialScore="-12">
+          <SimplePredicate field="input1" operator="lessOrEqual" value="10"/>
+        </Attribute>
+        <Attribute partialScore="50">
+          <SimplePredicate field="input1" operator="greaterThan" value="10"/>
+        </Attribute>
+      </Characteristic>
+      <Characteristic name="input2Score" reasonCode="Input2ReasonCode" baselineScore="8">
+        <Attribute partialScore="-8">
+          <SimplePredicate field="input2" operator="lessOrEqual" value="-5"/>
+        </Attribute>
+        <Attribute partialScore="32">
+          <SimplePredicate field="input2" operator="greaterThan" value="-5"/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>
