@@ -45,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.di;
@@ -66,9 +67,20 @@ public class ProcessPropertyWriterTest {
 
     @Test
     public void setIdWithWhitespace() {
+        p.setId(null);
+        Process process1 = p.getProcess();
+        assertNull(process1.getId());
+
         p.setId("some weird   id \t");
+        Process process2 = p.getProcess();
+        assertThat(process2.getId()).isEqualTo("someweirdid");
+    }
+
+    @Test
+    public void setIdWithDash() {
+        p.setId("some-weird-id \t");
         Process process = p.getProcess();
-        assertThat(process.getId()).isEqualTo("someweirdid");
+        assertThat(process.getId()).isEqualTo("some_weird_id");
     }
 
     @Test
