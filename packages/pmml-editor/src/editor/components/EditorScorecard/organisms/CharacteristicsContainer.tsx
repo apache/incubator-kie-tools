@@ -138,15 +138,16 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
 
   const deleteCharacteristic = useCallback(
     (characteristicIndex: number) => {
-      if (window.confirm(`Delete Characteristic "${characteristics?.[characteristicIndex].name}"?`)) {
-        dispatch({
-          type: Actions.Scorecard_DeleteCharacteristic,
-          payload: {
-            modelIndex: modelIndex,
-            characteristicIndex: characteristicIndex
-          }
-        });
-      }
+      //See https://issues.redhat.com/browse/FAI-443
+      //if (window.confirm(`Delete Characteristic "${characteristics?.[characteristicIndex].name}"?`)) {
+      dispatch({
+        type: Actions.Scorecard_DeleteCharacteristic,
+        payload: {
+          modelIndex: modelIndex,
+          characteristicIndex: characteristicIndex
+        }
+      });
+      // }
     },
     [characteristics]
   );

@@ -27,7 +27,7 @@ export class ValidationStore {
   };
 
   public get = (path: Path): ValidationEntry[] => {
-    const node = get(this.registry, path.path);
+    const node = path.path === "" ? this.registry : get(this.registry, path.path);
     if (node === undefined) {
       return [];
     }
@@ -42,13 +42,20 @@ export class ValidationStore {
     if (!(node instanceof Object)) {
       return [];
     }
-    const mapped = ownKeys(node).map(key => this.get({ path: `${path.path}.${String(key)}` }));
+    const mapped = ownKeys(node).map(key => this.get({ path: this.childPath(path.path, String(key)) }));
     if (mapped.length === 0) {
       return [];
     }
     return mapped.reduce((pv, cv) => {
       return pv.concat(cv);
     });
+  };
+
+  private childPath = (parentPath: string, key: string): string => {
+    if (parentPath === "") {
+      return key;
+    }
+    return `${parentPath}.${key}`;
   };
 
   public clear = (path: Path): void => {

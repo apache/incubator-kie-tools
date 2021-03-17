@@ -19,6 +19,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = async (argv, env) => [
   merge(common, {
@@ -60,5 +61,29 @@ module.exports = async (argv, env) => [
         { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] }
       ])
     ]
+  }),
+  merge(common, {
+    output: {
+      library: "AppFormer.VsCodePackWebview",
+      libraryTarget: "umd",
+      umdNamedDefine: true
+    },
+    externals: {
+      vscode: "commonjs vscode"
+    },
+    target: "web",
+    entry: {
+      "webview/PMMLEditorEnvelopeApp": "./src/webview/PMMLEditorEnvelopeApp.ts"
+    },
+    module: {
+      rules: [
+        {
+          test: /\.ttf$/,
+          use: ["file-loader"]
+        },
+        ...pfWebpackOptions.patternflyRules
+      ]
+    },
+    plugins: [new MonacoWebpackPlugin()]
   })
 ];

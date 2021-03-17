@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { PMMLEditor } from "../editor";
 import * as React from "react";
-import { useState } from "react";
-import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/common";
+import { useRef, useState } from "react";
 import { PMMLEmptyState } from "./EmptyState";
 import { DisplayProperty } from "csstype";
-import { HistoryButtons } from "./HistoryButtons";
+import { HistoryButtons, Theme } from "./HistoryButtons";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 import "./App.scss";
-
-const manager: EnvelopeBusMessageManager<
-  KogitoEditorChannelApi,
-  KogitoEditorChannelApi
-> = new EnvelopeBusMessageManager((msg: any) => console.log(msg));
 
 let editor: PMMLEditor;
 
@@ -48,6 +42,13 @@ export const App = () => {
     editor.redo().finally();
   };
 
+  const validate = () => {
+    const notifications: Notification[] = editor.validate();
+    window.alert(JSON.stringify(notifications, undefined, 2));
+  };
+
+  const container = useRef<HTMLDivElement | null>(null);
+
   return (
     <div>
       {content === undefined && (
@@ -63,9 +64,34 @@ export const App = () => {
         />
       )}
       <div style={{ display: displayPMMLEditor() }}>
-        <HistoryButtons undo={undo} redo={redo} get={() => editor.getContent()} />
-        <div className="editor-container">
-          <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
+        <HistoryButtons
+          undo={undo}
+          redo={redo}
+          get={() => editor.getContent()}
+          setTheme={theme => {
+            if (container.current) {
+              if (theme === Theme.DARK) {
+                container.current?.classList.add("vscode-dark");
+              } else {
+                container.current?.classList.remove("vscode-dark");
+              }
+            }
+          }}
+          validate={validate}
+        />
+        <div ref={container} className="editor-container">
+          <PMMLEditor
+            exposing={(self: PMMLEditor) => (editor = self)}
+            ready={() => {
+              /*NOP*/
+            }}
+            newEdit={() => {
+              /*NOP*/
+            }}
+            setNotifications={() => {
+              /*NOP*/
+            }}
+          />
         </div>
       </div>
     </div>

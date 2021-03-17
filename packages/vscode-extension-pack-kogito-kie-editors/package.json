@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-pack-kogito-kie-editors",
-  "displayName": "BPMN, DMN and Test Scenario Editors",
+  "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
   "description": "",
   "version": "0.8.4",
   "license": "Apache-2.0",
@@ -27,7 +27,7 @@
         "displayName": "KIE Kogito Editors",
         "selector": [
           {
-            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim}"
+            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim,pmml}"
           }
         ]
       }
@@ -102,6 +102,16 @@
           "scesim",
           "Test Scenario"
         ]
+      },
+      {
+        "id": "pmml",
+        "extensions": [
+          ".pmml"
+        ],
+        "aliases": [
+          "pmml",
+          "Predictive Model Markup Language"
+        ]
       }
     ]
   },
@@ -125,6 +135,7 @@
     "@kogito-tooling/kie-bc-editors": "0.8.4",
     "@kogito-tooling/patternfly-base": "0.8.4",
     "@kogito-tooling/vscode-extension": "0.8.4",
-    "@kogito-tooling/workspace": "0.8.4"
+    "@kogito-tooling/workspace": "0.8.4",
+    "@kogito-tooling/pmml-editor": "0.8.4"
   }
 }

@@ -152,16 +152,17 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const onDeleteAttribute = useCallback(
     attributeIndex => {
-      if (window.confirm(`Delete Attribute?`)) {
-        dispatch({
-          type: Actions.Scorecard_DeleteAttribute,
-          payload: {
-            modelIndex: modelIndex,
-            characteristicIndex: characteristicIndex,
-            attributeIndex: attributeIndex
-          }
-        });
-      }
+      //See https://issues.redhat.com/browse/FAI-443
+      //if (window.confirm(`Delete Attribute?`)) {
+      dispatch({
+        type: Actions.Scorecard_DeleteAttribute,
+        payload: {
+          modelIndex: modelIndex,
+          characteristicIndex: characteristicIndex,
+          attributeIndex: attributeIndex
+        }
+      });
+      //}
     },
     [modelIndex, characteristicIndex]
   );

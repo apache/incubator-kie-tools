@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./DataDictionary";
-export * from "./NotificationsFactory";
-export * from "./ValidationContext";
-export * from "./ValidationLevel";
-export * from "./ValidationStore";
-export * from "./ValidationRegistry";
+import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import { PMMLEditorFactory } from "@kogito-tooling/pmml-editor/src/editor";
+
+EditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  bus: acquireVsCodeApi(),
+  editorFactory: new PMMLEditorFactory(),
+  editorContext: {
+    channel: ChannelType.VSCODE,
+    operatingSystem: getOperatingSystem()
+  }
+});

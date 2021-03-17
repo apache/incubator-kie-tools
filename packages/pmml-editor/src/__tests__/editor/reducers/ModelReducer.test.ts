@@ -19,7 +19,7 @@ import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 import { ValidationRegistry } from "../../../editor/validation";
 
-const historyService = new HistoryService();
+const historyService = new HistoryService([]);
 const validationRegistry = new ValidationRegistry();
 const reducer: Reducer<Model[], AllActions> = ModelReducer(historyService, validationRegistry);
 
@@ -36,13 +36,17 @@ describe("ModelReducer::Valid actions", () => {
       Characteristics: { Characteristic: [] }
     });
     const models = [scorecard1, scorecard2];
+    const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
 
-    const updated: Model[] = reducer(models, {
+    reducer(models, {
       type: Actions.DeleteModel,
       payload: {
         modelIndex: 0
       }
     });
+
+    const updated: Model[] = historyService.commit(pmml)?.models as Model[];
+
     expect(updated).not.toEqual(models);
     expect(updated).not.toBeUndefined();
     expect(updated.length).toBe(1);
@@ -57,19 +61,18 @@ describe("ModelReducer::Valid actions", () => {
       functionName: "regression",
       Characteristics: { Characteristic: [] }
     });
-    const scorecard2: Scorecard = new Scorecard({
-      MiningSchema: { MiningField: [] },
-      functionName: "classification",
-      Characteristics: { Characteristic: [] }
-    });
     const models = [scorecard1];
+    const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
 
-    const updated: Model[] = reducer(models, {
+    reducer(models, {
       type: Actions.DeleteModel,
       payload: {
         modelIndex: 1
       }
     });
+
+    const updated: Model[] = historyService.commit(pmml)?.models as Model[];
+
     expect(updated).toEqual(models);
   });
 });
