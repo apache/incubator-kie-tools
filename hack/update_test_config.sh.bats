@@ -22,8 +22,12 @@ teardown() {
     function git() { echo '* anything'; }
     export -f git
 
+    function make() { echo "make $@"; }
+    export -f make
+
     dir="${BATS_TMPDIR}/${BATS_TEST_NAME}"
     cd ${dir}
+    hack/bump-version.sh "${VERSION_MAJOR_MINOR}.0-snapshot"
     run hack/update_test_config.sh
     [ "$status" -eq 0 ]
 
