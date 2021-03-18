@@ -61,7 +61,7 @@ jobs:
 
       - name: Build kogito-tooling
         env:
-          COMPATIBLE_VERSION: "0.12.0"
+          COMPATIBLE_VERSION: "0.12.1"
           WEBPACK__minimize: "true"
           WEBPACK__tsLoaderTranspileOnly: "false"
           CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
