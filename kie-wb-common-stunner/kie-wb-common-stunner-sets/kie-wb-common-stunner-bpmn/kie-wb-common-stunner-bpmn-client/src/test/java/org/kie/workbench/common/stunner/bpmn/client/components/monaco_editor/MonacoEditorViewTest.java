@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
+import org.jboss.errai.common.client.dom.DOMClientRect;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.common.client.dom.Event;
@@ -34,6 +35,7 @@ import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoStandaloneCodeEdito
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyObject;
@@ -75,6 +77,9 @@ public class MonacoEditorViewTest {
 
     @Mock
     private Div monacoEditor;
+
+    @Mock
+    private DOMClientRect resizeRect;
 
     @Mock
     private Div loadingEditor;
@@ -212,8 +217,36 @@ public class MonacoEditorViewTest {
     public void testAttachListenerToPanelTitle() {
         setElementChain();
         when(level1.getElementsByClassName(anyString())).thenReturn(getNodeList());
+        assertTrue(tested.resizeObserver == null);
+        tested.observeCommand = () -> System.out.println("Nothing");
         tested.attachListenerToPanelTitle();
         verify(node, times(1)).addEventListener(anyString(), anyObject(), anyBoolean());
+        assertTrue(tested.resizeObserver != null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testAttachListenerToPanelTitleError() {
+        setElementChain();
+        when(level1.getElementsByClassName(anyString())).thenReturn(getNodeList());
+        assertTrue(tested.resizeObserver == null);
+        tested.attachListenerToPanelTitle();
+        verify(node, times(1)).addEventListener(anyString(), anyObject(), anyBoolean());
+        assertTrue(tested.resizeObserver != null);
+    }
+
+    @Test
+    public void testOnResize() {
+        when(monacoEditor.getBoundingClientRect()).thenReturn(resizeRect);
+        when(resizeRect.getWidth()).thenReturn(100.0);
+        tested.onResize();
+        verify(presenter, times(1)).requestRefresh();
+        when(resizeRect.getWidth()).thenReturn(150.0);
+        tested.onResize();
+        verify(presenter, times(2)).requestRefresh();
+        // Should not call resize
+        when(resizeRect.getWidth()).thenReturn(148.0);
+        tested.onResize();
+        verify(presenter, times(2)).requestRefresh();
     }
 
     private void setElementChain() {
