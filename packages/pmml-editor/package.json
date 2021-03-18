@@ -3,11 +3,11 @@
   "version": "0.8.5",
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/editor/index.js",
+  "types": "./dist/editor/index.d.ts",
   "homepage": "https://manstis.github.io/kogito-tooling",
   "files": [
-    "dist"
+    "dist/editor"
   ],
   "repository": {
     "type": "git",
@@ -42,8 +42,7 @@
     "test:watch": "jest --watch",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production",
-    "build:showcase": "yarn run build:fast --mode development",
+    "build:prod": "yarn run build --mode production --devtool none",
     "start": "webpack-dev-server -d --host 0.0.0.0 --mode development",
     "deploy": "gh-pages -d dist"
   },
