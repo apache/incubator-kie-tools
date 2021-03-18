@@ -50,6 +50,12 @@ jobs:
           name: vscode-extension-dmn-editor
           path: packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ steps.version.outputs.version }}.vsix
 
+      - name: Upload PMML Editor
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-pmml-editor
+          path: packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ steps.version.outputs.version }}.vsix
+
       - name: Upload Kogito Bundle
         uses: actions/upload-artifact@v1
         with:

@@ -82,6 +82,17 @@ jobs:
           asset_path: ./packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ steps.version.outputs.version }}.vsix
           asset_content_type: application/zip
 
+      - name: Upload PMML Editor Extension
+        id: upload-pmml-extension
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_name: vscode_extension_pmml_editor_${{ steps.version.outputs.version }}.vsix
+          asset_path: ./packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ steps.version.outputs.version }}.vsix
+          asset_content_type: application/zip
+
       - name: Upload Kogito Bundle Extension
         id: upload-kogito-bundle-extension
         uses: actions/upload-release-asset@master

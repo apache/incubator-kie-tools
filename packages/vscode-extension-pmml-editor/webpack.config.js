@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,17 @@
 
 const path = require("path");
 
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const { merge } = require("webpack-merge");
+
 const commonConfig = {
   mode: "development",
   devtool: "inline-source-map",
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
-    library: "KogitoBundle",
+    library: "PmmlEditor",
     libraryTarget: "umd",
     umdNamedDefine: true
   },
@@ -44,13 +48,27 @@ const commonConfig = {
   }
 };
 
-module.exports = [
-  {
-    ...commonConfig,
+module.exports = async argv => [
+  merge(commonConfig, {
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts"
+    }
+  }),
+  merge(commonConfig, {
+    target: "web",
+    entry: {
+      "webview/index": "./src/webview/index.ts"
     },
-    plugins: []
-  }
+    module: {
+      rules: [
+        {
+          test: /\.ttf$/,
+          use: ["file-loader"]
+        },
+        ...pfWebpackOptions.patternflyRules
+      ]
+    },
+    plugins: [new MonacoWebpackPlugin()]
+  })
 ];
