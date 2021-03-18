@@ -7,7 +7,7 @@
   "types": "./dist/editor/index.d.ts",
   "homepage": "https://manstis.github.io/kogito-tooling",
   "files": [
-    "dist"
+    "dist/editor"
   ],
   "repository": {
     "type": "git",

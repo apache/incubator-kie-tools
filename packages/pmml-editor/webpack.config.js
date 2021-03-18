@@ -31,15 +31,9 @@ module.exports = [
       libraryTarget: "commonjs2"
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-    plugins: [new CopyPlugin([{ from: "./static/images", to: "./images" }]), new MonacoWebpackPlugin()],
+    plugins: [new MonacoWebpackPlugin()],
     module: {
-      rules: [
-        {
-          test: /\.ttf$/,
-          use: ["file-loader"]
-        },
-        ...pfWebpackOptions.patternflyRules
-      ]
+      rules: [...pfWebpackOptions.patternflyRules]
     }
   }),
   merge(common, {
