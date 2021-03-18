@@ -153,20 +153,13 @@ pipeline {
                     dir(getRepoName()) {
                         // Merge PR
                         String prLink = getDeployProperty("${getRepoName()}.pr.link")
-                        if (prLink != '') {
+                        if (prLink) {
                             githubscm.mergePR(prLink, getGitAuthorCredsID())
                             githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
                         }
 
-                        if (getGitTag() != '') {
-                            def releaseName = "Kogito Images Version ${getProjectVersion()}"
-                            def description = params.RELEASE_NOTES != '' ? params.RELEASE_NOTES : "We are glad to announce that the Kogito ${getProjectVersion()} release is now available!"
-                            withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
-                                sh """
-                                    export GITHUB_USER=${getGitAuthor()}
-                                    github-release release --tag ${getGitTag()} --target '${getBuildBranch()}' --name '${releaseName}' --description '${description}' --pre-release
-                                """
-                            }
+                        if (getGitTag()) {
+                            createRelease()
                         }
                     }
                 }
@@ -201,7 +194,7 @@ pipeline {
                         prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
                     }
                     dir(getRepoName()) {
-                        if (prLink != '') {
+                        if (prLink) {
                             githubscm.mergePR(prLink, getGitAuthorCredsID())
                             githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
                         }
@@ -297,6 +290,46 @@ void makeQuayNewImagesPublic() {
         } catch (err) {
             echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
         }
+    }
+}
+
+void createRelease() {
+    if (isReleaseExist()) {
+        deleteRelease()
+    }
+    
+    if (githubscm.isTagExist('origin', getGitTag())) {
+        githubscm.removeLocalTag(getGitTag())
+        githubscm.removeRemoteTag('origin', getGitTag(), getGitAuthorCredsID())
+    }
+    
+    def releaseName = "Kogito Images Version ${getProjectVersion()}"
+    def description = params.RELEASE_NOTES ?: "We are glad to announce that the Kogito ${getProjectVersion()} release is now available!"
+    withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
+        sh """
+            export GITHUB_USER=${getGitAuthor()}
+            github-release release --tag ${getGitTag()} --target '${getBuildBranch()}' --name '${releaseName}' --description '${description}' --pre-release
+        """
+    }
+}
+
+boolean isReleaseExist() {
+    releaseExistStatus = -1
+    withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
+        releaseExistStatus = sh(returnStatus: true, script: """
+            export GITHUB_USER=${getGitAuthor()}
+            github-release info --tag ${getGitTag()}
+        """)
+    }
+    return releaseExistStatus == 0
+}
+
+void deleteRelease() {
+    withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
+        sh """
+            export GITHUB_USER=${getGitAuthor()}
+            github-release delete --tag ${getGitTag()}
+        """
     }
 }
 
