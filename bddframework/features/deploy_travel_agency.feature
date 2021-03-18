@@ -78,7 +78,7 @@ Feature: Deploy Travel agency service and verify its functionality
 
 #####
 
-  Scenario Outline: Travel application with required Visa and build profile <profile>
+  Scenario Outline: Travel application with required Visa and native <native>
     Given Clone Kogito examples into local directory
     And Local example service "kogito-travel-agency/extended/travels" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |

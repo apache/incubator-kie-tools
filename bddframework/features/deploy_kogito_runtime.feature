@@ -87,6 +87,71 @@ Feature: Deploy Kogito Runtime
 
 #####
 
+  @persistence
+  @mongodb
+  Scenario: Deploy <example-service> service with native <native> using MongoDB
+    Given Kogito Operator is deployed
+    And MongoDB Operator is deployed
+    And MongoDB instance "kogito-mongodb" is deployed with configuration:
+      | username | developer            |
+      | password | mypass               |
+      | database | kogito_dataindex     |
+    And Install MongoDB Kogito Infra "kogito-mongodb" targeting service "kogito-mongodb" within 5 minutes with configuration:
+      | config   | username | developer            |
+      | config   | database | kogito_dataindex     |
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | kogito-mongodb   |
+      # Setup short name as it can create some problems with route name too long ...
+      | config | name  | process-mongodb  |
+    And Kogito Runtime "process-mongodb" has 1 pods running within 10 minutes
+    And Start "deals" process on service "process-mongodb" within 3 minutes with body:
+      """json
+      {
+        "name" : "my fancy deal",
+        "traveller" : {
+          "firstName" : "John",
+          "lastName" : "Doe",
+          "email" : "jon.doe@example.com",
+          "nationality" : "American",
+          "address" : {
+            "street" : "main street",
+            "city" : "Boston",
+            "zipCode" : "10005",
+            "country" : "US" 
+          }
+        }
+      }
+      """
+
+    Then Service "process-mongodb" contains 1 instances of process with name "dealreviews"
+
+    When Scale Kogito Runtime "process-mongodb" to 0 pods within 2 minutes
+    And Scale Kogito Runtime "process-mongodb" to 1 pods within 2 minutes
+
+    Then Service "process-mongodb" contains 1 instances of process with name "dealreviews" within 2 minutes
+
+    @springboot
+    Examples:
+      | runtime    | example-service                        | native   |
+      | springboot | process-mongodb-persistence-springboot | disabled |
+
+    @quarkus
+    Examples:
+      | runtime    | example-service                     | native   |
+      | quarkus    | process-mongodb-persistence-quarkus | disabled |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service                     | native   |
+      | quarkus    | process-mongodb-persistence-quarkus | enabled  |
+
+#####
+
   @jobsservice
   Scenario Outline: Deploy <example-service> service with Jobs service and native <native>
     Given Kogito Operator is deployed
@@ -132,7 +197,7 @@ Feature: Deploy Kogito Runtime
   @events
   @infinispan
   @kafka
-  Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime
+  Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime and Infinispan
     Given Kogito Operator is deployed
     And Infinispan Operator is deployed
     And Kafka Operator is deployed
@@ -182,6 +247,76 @@ Feature: Deploy Kogito Runtime
     Examples:
       | runtime    | example-service         | native  |
       | quarkus    | process-quarkus-example | enabled |
+
+#####
+
+  @events
+  @mongodb
+  @kafka
+  Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime and MongoDB
+    Given Kogito Operator is deployed
+    And MongoDB Operator is deployed
+    And Kafka Operator is deployed
+    And MongoDB instance "kogito-mongodb" is deployed with configuration:
+      | username | developer            |
+      | password | mypass               |
+      | database | kogito_dataindex     |
+    And Install MongoDB Kogito Infra "kogito-mongodb" targeting service "kogito-mongodb" within 5 minutes with configuration:
+      | config   | username | developer            |
+      | config   | database | kogito_dataindex     |
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
+    And Install Kogito Data Index with 1 replicas with configuration:
+      | config | database-type | MongoDB          |
+      | config | infra         | kogito-mongodb |
+      | config | infra         | kafka            |
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | events   |
+      | native  | <native> |
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | kogito-mongodb   |
+      | config | infra | kafka            |
+      # Setup short name as it can create some problems with route name too long ...
+      | config | name  | process-mongodb  |
+    And Kogito Runtime "process-mongodb" has 1 pods running within 10 minutes
+    And Start "deals" process on service "process-mongodb" within 3 minutes with body:
+      """json
+      {
+        "name" : "my fancy deal",
+        "traveller" : {
+          "firstName" : "John",
+          "lastName" : "Doe",
+          "email" : "jon.doe@example.com",
+          "nationality" : "American",
+          "address" : {
+            "street" : "main street",
+            "city" : "Boston",
+            "zipCode" : "10005",
+            "country" : "US" 
+          }
+        }
+      }
+      """
+
+    Then GraphQL request on Data Index service returns ProcessInstances processName "Deal Review" within 2 minutes
+
+    @springboot
+    Examples:
+      | runtime    | example-service                        | native   |
+      | springboot | process-mongodb-persistence-springboot | disabled |
+
+    @quarkus
+    Examples:
+      | runtime    | example-service                     | native   |
+      | quarkus    | process-mongodb-persistence-quarkus | disabled |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service                     | native  |
+      | quarkus    | process-mongodb-persistence-quarkus | enabled |
 
 #####
 
@@ -266,71 +401,6 @@ Feature: Deploy Kogito Runtime
     Examples:
       | runtime | example-service         | native   |
       | quarkus | process-quarkus-example | enabled  |
-
-#####
-
-  @persistence
-  @mongodb
-  Scenario: Deploy <example-service> service with Maven profile <profile> using external MongoDB
-    Given Kogito Operator is deployed
-    And MongoDB Operator is deployed
-    And MongoDB instance "external-mongodb" is deployed with configuration:
-      | username | developer            |
-      | password | mypass               |
-      | database | kogito_dataindex     |
-    And Install MongoDB Kogito Infra "external-mongodb" targeting service "external-mongodb" within 5 minutes with configuration:
-      | config   | username | developer            |
-      | config   | database | kogito_dataindex     |
-    And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
-      | native | <native> |
-
-    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | infra | external-mongodb         |
-      # Setup short name as it can create some problems with route name too long ...
-      | config | name  | process-mongodb |         
-    And Kogito Runtime "process-mongodb" has 1 pods running within 10 minutes
-    And Start "deals" process on service "process-mongodb" within 3 minutes with body:
-      """json
-      {
-        "name" : "my fancy deal",
-        "traveller" : {
-          "firstName" : "John",
-          "lastName" : "Doe",
-          "email" : "jon.doe@example.com",
-          "nationality" : "American",
-          "address" : {
-            "street" : "main street",
-            "city" : "Boston",
-            "zipCode" : "10005",
-            "country" : "US" 
-          }
-        }
-      }
-      """
-
-    Then Service "process-mongodb" contains 1 instances of process with name "dealreviews"
-
-    When Scale Kogito Runtime "process-mongodb" to 0 pods within 2 minutes
-    And Scale Kogito Runtime "process-mongodb" to 1 pods within 2 minutes
-
-    Then Service "process-mongodb" contains 1 instances of process with name "dealreviews" within 2 minutes
-
-    @springboot
-    Examples:
-      | runtime    | example-service                        | native   |
-      | springboot | process-mongodb-persistence-springboot | disabled |
-
-    @quarkus
-    Examples:
-      | runtime    | example-service                     | native   |
-      | quarkus    | process-mongodb-persistence-quarkus | disabled |
-
-    @quarkus
-    @native
-    Examples:
-      | runtime    | example-service                     | native   |
-      | quarkus    | process-mongodb-persistence-quarkus | enabled  |
 
 #####
 
