@@ -1,3 +1,33 @@
+# 0.8.5 (alpha)
+
+## New features:
+
+Infrastructure
+* [KOGITO-4666](https://issues.redhat.com/browse/KOGITO-4666) - Converge the CSS to avoid conflicts between PF3 and PF4
+
+
+Editors
+
+--
+
+## Fixed issues:
+
+Infrastructure
+
+-- 
+
+Editors
+* [KOGITO-4257](https://issues.redhat.com/browse/KOGITO-4257) - Importing and modeling decision models is too slow for productive modeling
+* [KOGITO-4265](https://issues.redhat.com/browse/KOGITO-4265) - [DMN Designer] Decision Services - The parameters order in the properties panel is not correct
+* [KOGITO-4368](https://issues.redhat.com/browse/KOGITO-4368) - DMN Editor wrong edge arrow tip connection on reopen
+* [KOGITO-4500](https://issues.redhat.com/browse/KOGITO-4500) - [DMN Designer] DMN schema/model validation errors when model has AUTO-SOURCE or AUTO-TARGET connections
+* [KOGITO-4533](https://issues.redhat.com/browse/KOGITO-4533) - Scesim assets are broken in VS Code extension
+* [KOGITO-4539](https://issues.redhat.com/browse/KOGITO-4539) - [DMN Designer] DMN takes too long to open models with too many nodes
+
+# 0.8.4 (alpha)
+
+--
+
 # 0.8.3 (alpha)
 
 ## New features:

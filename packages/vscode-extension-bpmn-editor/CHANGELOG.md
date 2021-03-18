@@ -1,3 +1,30 @@
+# 0.8.5 (alpha)
+
+## New features:
+
+Infrastructure
+* [KOGITO-4666](https://issues.redhat.com/browse/KOGITO-4666) - Converge the CSS to avoid conflicts between PF3 and PF4
+
+
+Editors
+
+--
+
+## Fixed issues:
+
+Infrastructure
+
+--
+
+Editors
+
+--
+
+# 0.8.4 (alpha)
+
+--
+
+
 # 0.8.3 (alpha)
 
 ### Fixed issues:
