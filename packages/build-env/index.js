@@ -160,7 +160,7 @@ const ENV_VARS = {
   },
   KOGITO_RUNTIME_version: {
     name: "KOGITO_RUNTIME_version",
-    default: "1.9.1.Final",
+    default: "1.10.0.Final",
     description: "",
   },
 };
