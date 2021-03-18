@@ -11,6 +11,7 @@ node('rhel8') {
     stage('Download VSIX files') {
         sh 'wget "https://github.com/kiegroup/kie-tooling-store/releases/download/$VERSION/vscode_extension_bpmn_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tooling-store/releases/download/$VERSION/vscode_extension_dmn_editor_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tooling-store/releases/download/$VERSION/vscode_extension_pmml_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tooling-store/releases/download/$VERSION/vscode_extension_red_hat_business_automation_bundle_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tooling-store/releases/download/$VERSION/vscode_extension_kogito_bundle_$VERSION.vsix"'
         sh 'md5sum *.vsix'
@@ -36,6 +37,7 @@ node('rhel8') {
                 withCredentials([[$class: 'StringBinding', credentialsId: 'vscode_java_marketplace', variable: 'TOKEN']]) {
                     sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_editors[0].path}"
                     sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_editors[1].path}"
+                    sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_editors[2].path}"
                     sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_redhat_bundle[0].path}"
                 }
                 withCredentials([[$class: 'StringBinding', credentialsId: 'kie-vscode-token', variable: 'KIE_TOKEN']]) {
@@ -50,6 +52,7 @@ node('rhel8') {
                 withCredentials([[$class: 'StringBinding', credentialsId: 'open-vsx-access-token', variable: 'OVSX_TOKEN']]) {
                     sh 'ovsx publish -p ${OVSX_TOKEN}' + " ${vsix_editors[0].path}"
                     sh 'ovsx publish -p ${OVSX_TOKEN}' + " ${vsix_editors[1].path}"
+                    sh 'ovsx publish -p ${OVSX_TOKEN}' + " ${vsix_editors[2].path}"
                     sh 'ovsx publish -p ${OVSX_TOKEN}' + " ${vsix_redhat_bundle[0].path}"
                 }
                 withCredentials([[$class: 'StringBinding', credentialsId: 'kie-openvsx-token', variable: 'KIE_OVSX_TOKEN']]) {
