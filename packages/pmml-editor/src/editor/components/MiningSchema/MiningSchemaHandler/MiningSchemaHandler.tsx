@@ -44,16 +44,17 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   };
 
   const deleteMiningField = (index: number) => {
-    if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
-      dispatch({
-        type: Actions.DeleteMiningSchemaField,
-        payload: {
-          modelIndex: modelIndex,
-          miningSchemaIndex: index,
-          name: miningSchema?.MiningField[index].name
-        }
-      });
-    }
+    //See https://issues.redhat.com/browse/FAI-443
+    //if (window.confirm(`Delete Mining Field "${miningSchema?.MiningField[index].name}"?`)) {
+    dispatch({
+      type: Actions.DeleteMiningSchemaField,
+      payload: {
+        modelIndex: modelIndex,
+        miningSchemaIndex: index,
+        name: miningSchema?.MiningField[index].name
+      }
+    });
+    // }
   };
 
   const updateField = (index: number, originalName: FieldName | undefined, field: MiningField) => {
@@ -92,7 +93,12 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button type="button" variant={ButtonVariant.plain} onClick={handleMiningSchemaToggle}>
+        <Button
+          type="button"
+          variant={ButtonVariant.plain}
+          onClick={handleMiningSchemaToggle}
+          data-title="MiningSchemaModalClose"
+        >
           <CloseIcon />
         </Button>
       </SplitItem>
@@ -102,7 +108,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   return (
     <>
       {validations.length === 0 && (
-        <Button variant="secondary" onClick={handleMiningSchemaToggle}>
+        <Button variant="secondary" onClick={handleMiningSchemaToggle} data-title="MiningSchema">
           Set Mining Schema
         </Button>
       )}
@@ -112,6 +118,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
             variant="secondary"
             icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
             onClick={handleMiningSchemaToggle}
+            data-title="MiningSchema"
           >
             Set Mining Schema
           </Button>
@@ -125,6 +132,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         showClose={false}
         variant={ModalVariant.large}
         onEscapePress={() => false}
+        data-title="MiningSchemaModal"
       >
         <MiningSchemaContainer
           modelIndex={modelIndex}

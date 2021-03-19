@@ -44,7 +44,16 @@ export class PMMLEditorInterface implements Editor {
   }
 
   public af_componentRoot() {
-    return <PMMLEditor exposing={s => (this.self = s)} channelApi={this.envelopeContext.channelApi} />;
+    return (
+      <PMMLEditor
+        exposing={s => (this.self = s)}
+        ready={() => this.envelopeContext.channelApi.notifications.receive_ready()}
+        newEdit={edit => this.envelopeContext.channelApi.notifications.receive_newEdit(edit)}
+        setNotifications={(path, notifications) =>
+          this.envelopeContext.channelApi.notifications.setNotifications(path, notifications)
+        }
+      />
+    );
   }
 
   public async undo(): Promise<void> {
@@ -56,6 +65,6 @@ export class PMMLEditorInterface implements Editor {
   }
 
   public async validate(): Promise<Notification[]> {
-    return [];
+    return Promise.resolve(this.self.validate());
   }
 }

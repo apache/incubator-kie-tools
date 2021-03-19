@@ -20,66 +20,55 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const nodeExternals = require("webpack-node-externals");
 
-let config = merge(common, {
-  entry: {
-    index: "./src/editor/index.ts"
-  },
-  plugins: [
-    new CopyPlugin([
-      {
-        from: "./static/images",
-        to: "./images"
-      }
-    ]),
-    new MonacoWebpackPlugin()
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.ttf$/,
-        use: ["file-loader"]
-      },
-      ...pfWebpackOptions.patternflyRules
-    ]
-  }
-});
-
-module.exports = (env, argv) => {
-  if (argv.mode === "production") {
-    config = merge(config, {
-      mode: "production",
-      devtool: "none"
-    });
-  }
-
-  if (argv.mode === "development") {
-    config = merge(config, {
-      entry: {
-        index: "./src/showcase/index.tsx"
-      },
-      plugins: [
-        new CopyPlugin([
-          { from: "./src/showcase/static/resources", to: "./resources" },
-          { from: "./src/showcase/static/index.html", to: "./index.html" },
-          { from: "./src/showcase/static/favicon.ico", to: "./favicon.ico" },
-          { from: "./static/images", to: "./images" }
-        ])
-      ],
-      devServer: {
-        historyApiFallback: true,
-        disableHostCheck: true,
-        watchContentBase: true,
-        contentBase: path.join(__dirname),
-        compress: true,
-        port: 9001,
-        open: true,
-        inline: true,
-        hot: true,
-        overlay: true
-      }
-    });
-  }
-
-  return config;
-};
+module.exports = [
+  merge(common, {
+    entry: {
+      "editor/index": "./src/editor/index.ts"
+    },
+    output: {
+      libraryTarget: "commonjs2"
+    },
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+    plugins: [new MonacoWebpackPlugin()],
+    module: {
+      rules: [...pfWebpackOptions.patternflyRules]
+    }
+  }),
+  merge(common, {
+    entry: {
+      index: "./src/showcase/index.tsx"
+    },
+    plugins: [
+      new MonacoWebpackPlugin(),
+      new CopyPlugin([
+        { from: "./src/showcase/static/resources", to: "./resources" },
+        { from: "./src/showcase/static/index.html", to: "./index.html" },
+        { from: "./src/showcase/static/favicon.ico", to: "./favicon.ico" },
+        { from: "./static/images", to: "./images" }
+      ])
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.ttf$/,
+          use: ["file-loader"]
+        },
+        ...pfWebpackOptions.patternflyRules
+      ]
+    },
+    devServer: {
+      historyApiFallback: true,
+      disableHostCheck: true,
+      watchContentBase: true,
+      contentBase: path.join(__dirname),
+      compress: true,
+      port: 9001,
+      open: true,
+      inline: true,
+      hot: true,
+      overlay: true
+    }
+  })
+];

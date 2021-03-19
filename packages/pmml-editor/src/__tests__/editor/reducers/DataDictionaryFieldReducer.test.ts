@@ -19,7 +19,7 @@ import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 import { ValidationRegistry } from "../../../editor/validation";
 
-const historyService = new HistoryService();
+const historyService = new HistoryService([]);
 const validationRegistry = new ValidationRegistry();
 const dataFields: DataField[] = [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }];
 const pmml = { version: "1.0", DataDictionary: { DataField: dataFields }, Header: {} };

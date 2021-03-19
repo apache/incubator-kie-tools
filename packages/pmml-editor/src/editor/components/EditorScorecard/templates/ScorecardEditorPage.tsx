@@ -82,15 +82,16 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const onDeleteOutputField = useCallback(
     _index => {
-      if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
-        dispatch({
-          type: Actions.DeleteOutput,
-          payload: {
-            modelIndex: modelIndex,
-            outputIndex: _index
-          }
-        });
-      }
+      //See https://issues.redhat.com/browse/FAI-443
+      //if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
+      dispatch({
+        type: Actions.DeleteOutput,
+        payload: {
+          modelIndex: modelIndex,
+          outputIndex: _index
+        }
+      });
+      //}
     },
     [modelIndex, output]
   );

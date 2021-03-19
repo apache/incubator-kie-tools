@@ -25,7 +25,7 @@ import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
-import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/src/vscode/VsCodeNotificationsApi";
+import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/dist/vscode";
 
 /**
  * Starts a Kogito extension.

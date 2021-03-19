@@ -74,7 +74,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button type="button" variant={ButtonVariant.plain} onClick={toggleModal}>
+        <Button type="button" variant={ButtonVariant.plain} onClick={toggleModal} data-title="OutputsModalClose">
           <CloseIcon />
         </Button>
       </SplitItem>
@@ -84,13 +84,18 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
   return (
     <>
       {validations.length === 0 && (
-        <Button variant="secondary" onClick={toggleModal}>
+        <Button variant="secondary" onClick={toggleModal} data-title="Outputs">
           Set Outputs
         </Button>
       )}
       {validations.length > 0 && (
         <ValidationIndicatorTooltip validations={validations}>
-          <Button variant="secondary" icon={<WarningTriangleIcon size={"sm"} color={"orange"} />} onClick={toggleModal}>
+          <Button
+            variant="secondary"
+            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            onClick={toggleModal}
+            data-title="Outputs"
+          >
             Set Outputs
           </Button>
         </ValidationIndicatorTooltip>
@@ -103,6 +108,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         showClose={false}
         variant={ModalVariant.large}
         onEscapePress={() => false}
+        data-title="OutputsModal"
       >
         <OutputsContainer
           modelIndex={modelIndex}

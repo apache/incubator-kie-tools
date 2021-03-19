@@ -10,6 +10,4 @@ Nothing should be considered concrete at this point.
 
 In order to run:
 
-`yarn run build:showcase`
-
 `yarn run start`

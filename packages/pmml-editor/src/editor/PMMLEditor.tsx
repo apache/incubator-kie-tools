@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
 import { Reducer } from "react";
 import { enableAllPlugins } from "immer";
@@ -40,13 +38,42 @@ import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
-import { ValidationContext, ValidationRegistry } from "./validation";
+import { toNotifications, ValidationContext, ValidationRegistry } from "./validation";
+import { KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { Builder } from "./paths";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
 interface Props {
+  /**
+   * Callback to the container so that it may bind to the PMMLEditor.
+   *
+   * @returns Instance of the PMMLEditor.
+   */
   exposing: (s: PMMLEditor) => void;
-  channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
+
+  /**
+   * Delegation for KogitoToolingChannelCommonApi.receive_ready() to signal to the Channel
+   * that the editor is ready. Increases the decoupling of the PMMLEditor from the Channel.
+   */
+  ready: () => void;
+
+  /**
+   * Delegation for KogitoToolingChannelCommonApi.receive_newEdit(edit) to signal to the Channel
+   * that a change has taken place. Increases the decoupling of the PMMLEditor from the Channel.
+   * @param edit An object representing the unique change.
+   */
+  newEdit: (edit: KogitoEdit) => void;
+
+  /**
+   * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
+   * notifications to the Channel that  will replace existing notification for the path. Increases the
+   * decoupling of the PMMLEditor from the Channel.
+   * @param path The path that references the Notification
+   * @param notifications List of Notifications
+   */
+  setNotifications: (path: string, notifications: Notification[]) => void;
 }
 
 export interface State {
@@ -58,7 +85,14 @@ export interface State {
 
 export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
-  private readonly history: HistoryService = new HistoryService();
+  private readonly history: HistoryService = new HistoryService([
+    (id: string) => {
+      this.props.newEdit(new KogitoEdit(id));
+    },
+    () => {
+      this.props.setNotifications(this.state.path, this.validate());
+    }
+  ]);
   private readonly validationRegistry: ValidationRegistry = new ValidationRegistry();
   private readonly reducer: Reducer<PMML, AllActions>;
 
@@ -84,11 +118,13 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public componentDidMount(): void {
-    this.props.channelApi.notifications.receive_ready();
+    this.props.ready();
   }
 
   public setContent(path: string, content: string): Promise<void> {
-    return Promise.resolve(this.doSetContent(path, content));
+    return Promise.resolve(this.doSetContent(path, content)).then(() =>
+      this.props.setNotifications(this.state.path, this.validate())
+    );
   }
 
   private doSetContent(path: string, content: string): void {
@@ -147,6 +183,7 @@ export class PMMLEditor extends React.Component<Props, State> {
         type: Actions.Validate,
         payload: {}
       });
+      this.props.setNotifications(this.state.path, this.validate());
     }
   }
 
@@ -165,7 +202,12 @@ export class PMMLEditor extends React.Component<Props, State> {
         type: Actions.Validate,
         payload: {}
       });
+      this.props.setNotifications(this.state.path, this.validate());
     }
+  }
+
+  public validate(): Notification[] {
+    return toNotifications(this.state.path, this.validationRegistry.get(Builder().build()));
   }
 
   private isSingleModel(): boolean {

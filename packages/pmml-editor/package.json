@@ -1,22 +1,23 @@
 {
   "name": "@kogito-tooling/pmml-editor",
-  "version": "0.8.4",
+  "version": "0.8.6",
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/editor/index.js",
+  "types": "./dist/editor/index.d.ts",
   "homepage": "https://manstis.github.io/kogito-tooling",
   "files": [
-    "dist"
+    "dist/editor"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.8.4",
-    "@kogito-tooling/patternfly-base": "0.8.4",
-    "@kogito-tooling/pmml-editor-marshaller": "0.8.4",
+    "@kogito-tooling/editor": "0.8.6",
+    "@kogito-tooling/notifications": "0.8.6",
+    "@kogito-tooling/patternfly-base": "0.8.6",
+    "@kogito-tooling/pmml-editor-marshaller": "0.8.6",
     "@types/lodash": "^4.14.161",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "5.1.1",
@@ -41,8 +42,7 @@
     "test:watch": "jest --watch",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production",
-    "build:showcase": "yarn run build:fast --mode development",
+    "build:prod": "yarn run build --mode production --devtool none",
     "start": "webpack-dev-server -d --host 0.0.0.0 --mode development",
     "deploy": "gh-pages -d dist"
   },
