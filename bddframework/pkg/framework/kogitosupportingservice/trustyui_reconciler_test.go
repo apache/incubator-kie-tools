@@ -53,7 +53,7 @@ func TestReconcileKogitoSupportingServiceTrustyUI_Reconcile(t *testing.T) {
 	_, err = kubernetes.ResourceC(cli).Fetch(instance)
 	assert.NoError(t, err)
 	assert.NotNil(t, instance.GetStatus())
-	assert.Len(t, instance.GetStatus().GetConditions(), 1)
+	assert.Len(t, *instance.GetStatus().GetConditions(), 2)
 }
 
 // see: https://issues.redhat.com/browse/KOGITO-2535

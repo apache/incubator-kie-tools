@@ -21,6 +21,8 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
+	"k8s.io/apimachinery/pkg/api/meta"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
@@ -30,7 +32,7 @@ type KogitoInfraManager interface {
 	TakeKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) error
 	RemoveKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) error
 	IsKogitoInfraReady(key types.NamespacedName) (bool, error)
-	GetKogitoInfraConditionReason(key types.NamespacedName) (api.KogitoInfraConditionReason, error)
+	GetKogitoInfraFailureConditionReason(key types.NamespacedName) (string, error)
 }
 
 // KogitoInfraHandler ...
@@ -102,17 +104,23 @@ func (k *kogitoInfraManager) IsKogitoInfraReady(key types.NamespacedName) (bool,
 	if err != nil {
 		return false, err
 	}
-	if infra.GetStatus().GetCondition().GetType() == api.FailureInfraConditionType {
+	conditions := *infra.GetStatus().GetConditions()
+	successCondition := meta.FindStatusCondition(conditions, string(api.KogitoInfraSuccess))
+	if successCondition == nil {
 		return false, nil
 	}
-	return true, nil
+	return successCondition.Status == v1.ConditionTrue, nil
 }
 
-func (k *kogitoInfraManager) GetKogitoInfraConditionReason(key types.NamespacedName) (api.KogitoInfraConditionReason, error) {
+func (k *kogitoInfraManager) GetKogitoInfraFailureConditionReason(key types.NamespacedName) (string, error) {
 	infra, err := k.MustFetchKogitoInfraInstance(key)
 	if err != nil {
 		return "", err
 	}
-
-	return infra.GetStatus().GetCondition().GetReason(), nil
+	conditions := *infra.GetStatus().GetConditions()
+	failureCondition := meta.FindStatusCondition(conditions, string(api.KogitoInfraFailure))
+	if failureCondition != nil {
+		return failureCondition.Reason, nil
+	}
+	return "", nil
 }

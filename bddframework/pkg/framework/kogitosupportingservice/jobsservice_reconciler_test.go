@@ -55,5 +55,5 @@ func TestReconcileKogitoJobsService_Reconcile(t *testing.T) {
 	_, err = kubernetes.ResourceC(cli).Fetch(jobsService)
 	assert.NoError(t, err)
 	assert.NotNil(t, jobsService.GetStatus())
-	assert.Len(t, jobsService.GetStatus().GetConditions(), 1)
+	assert.Len(t, *jobsService.GetStatus().GetConditions(), 2)
 }

@@ -28,6 +28,7 @@ type DeploymentHandler interface {
 	FetchDeploymentList(namespace string) (*appsv1.DeploymentList, error)
 	MustFetchDeployment(key types.NamespacedName) (*appsv1.Deployment, error)
 	IsDeploymentAvailable(key types.NamespacedName) (bool, error)
+	FetchReadyReplicas(key types.NamespacedName) (int32, error)
 }
 
 type deploymentHandler struct {
@@ -77,4 +78,12 @@ func (d *deploymentHandler) IsDeploymentAvailable(key types.NamespacedName) (boo
 		return false, nil
 	}
 	return true, nil
+}
+
+func (d *deploymentHandler) FetchReadyReplicas(key types.NamespacedName) (int32, error) {
+	deployment, err := d.MustFetchDeployment(key)
+	if err != nil {
+		return 0, err
+	}
+	return deployment.Status.AvailableReplicas, nil
 }

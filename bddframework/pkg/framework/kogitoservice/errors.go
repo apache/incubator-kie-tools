@@ -44,7 +44,7 @@ func (e reconciliationError) Error() string {
 	return e.innerError.Error()
 }
 
-func errorForInfraNotReady(service api.KogitoService, infraName string, conditionReason api.KogitoInfraConditionReason) reconciliationError {
+func errorForInfraNotReady(service api.KogitoService, infraName string, conditionReason string) reconciliationError {
 	return reconciliationError{
 		reconciliationInterval: reconciliationIntervalAfterInfraError,
 		reason:                 api.KogitoInfraNotReadyReason,
@@ -94,6 +94,14 @@ func reasonForError(err error) api.KogitoServiceConditionReason {
 		return t.reason
 	}
 	return api.ServiceReconciliationFailure
+}
+
+func isReconciliationError(err error) bool {
+	switch err.(type) {
+	case reconciliationError:
+		return true
+	}
+	return false
 }
 
 func reconciliationIntervalForError(err error) time.Duration {

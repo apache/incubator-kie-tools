@@ -220,7 +220,7 @@ func (s *serviceDeployer) checkInfraDependencies() error {
 		if isReady, err := infraManager.IsKogitoInfraReady(types.NamespacedName{Name: infraName, Namespace: s.getNamespace()}); err != nil {
 			return err
 		} else if !isReady {
-			conditionReason, err := infraManager.GetKogitoInfraConditionReason(types.NamespacedName{Name: infraName, Namespace: s.getNamespace()})
+			conditionReason, err := infraManager.GetKogitoInfraFailureConditionReason(types.NamespacedName{Name: infraName, Namespace: s.getNamespace()})
 			if err != nil {
 				return err
 			}
