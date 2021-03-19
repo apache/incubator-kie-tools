@@ -152,6 +152,9 @@ public class DataSetPanel implements IsWidget {
         if (PROMETHEUS.equals(dataSetDef.getProvider())) {
             return DataSetClientResources.INSTANCE.images().prometheusIcon32().getSafeUri();
         }
+        if (KAFKA.equals(dataSetDef.getProvider())) {
+            return DataSetClientResources.INSTANCE.images().kafkaIcon32().getSafeUri();
+        }
         
         if (!dataSetEditorPlugin.isUnsatisfied()) {
             for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
@@ -178,6 +181,9 @@ public class DataSetPanel implements IsWidget {
         }
         if (PROMETHEUS.equals(dataSetDef.getProvider())) {
             return DataSetExplorerConstants.INSTANCE.prometheus();
+        }
+        if (KAFKA.equals(dataSetDef.getProvider())) {
+            return DataSetExplorerConstants.INSTANCE.kafka();
         }
         if (!dataSetEditorPlugin.isUnsatisfied()) {
             for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {

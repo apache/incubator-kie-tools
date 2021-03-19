@@ -127,6 +127,12 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
     public void setWidth(int width) {
         table.setWidth(width + "px");
     }
+    
+    @Override
+    public void fullWidth() {
+        table.setWidth("100%");
+        rootPanel.setWidth("100%");
+    }
 
     @Override
     public void setSortEnabled(boolean enabled) {

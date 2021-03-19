@@ -75,4 +75,12 @@ public interface TableDisplayerSettingsBuilder<T extends TableDisplayerSettingsB
      * @return The DisplayerSettingsBuilder instance that is being used to configure a Table data displayer.
      */
     T tableColumnPickerEnabled(boolean enabled);
+    
+    
+    /**
+     * If true, makes the table with full width and responsible
+     * @param enabled True to enable, false to disable.
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a Table data displayer.
+     */
+    T resizable(boolean enabled);
 }

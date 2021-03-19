@@ -17,6 +17,9 @@ package org.dashbuilder.client.widgets.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.uibinder.client.UiField;
+import org.dashbuilder.common.client.editor.ValueBoxEditor;
+import org.dashbuilder.common.client.editor.list.DropDownEditor;
 
 /**
  * <p>Data set editor constants.</p>
@@ -147,6 +150,7 @@ public interface DataSetEditorConstants extends Messages {
     String showColumnsAndFilter();
     String hideColumnsAndFilter();
     String defNotFound();
+    
     String prometheus_query();
     String prometheus_query_description();
     String prometheus_server_url();
@@ -155,4 +159,25 @@ public interface DataSetEditorConstants extends Messages {
     String prometheus_description();
     String prometheus_query_placeholder();
     String prometheus_server_url_placeholder();
+    
+    String kafka();
+    String kafka_description();
+    String kafka_host();
+    String kafka_host_description();
+    String kafka_host_placeholder();
+    String kafka_port();
+    String kafka_port_description();
+    String kafka_port_placeholder();
+    String kafka_target();
+    String kafka_target_description();
+    String kafka_filter();
+    String kafka_filter_description();
+    String kafka_clientId();
+    String kafka_clientId_description();
+    String kafka_nodeId();
+    String kafka_nodeId_description();
+    String kafka_topic();
+    String kafka_topic_description();
+    String kafka_partition();
+    String kafka_partition_description();
 }

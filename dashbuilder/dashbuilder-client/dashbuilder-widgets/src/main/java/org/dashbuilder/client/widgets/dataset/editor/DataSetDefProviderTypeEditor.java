@@ -20,6 +20,7 @@ import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
 import static org.dashbuilder.dataprovider.DataSetProviderType.ELASTICSEARCH;
 import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
 import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
+import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -123,7 +124,7 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
     /**
      * The provider types supported by this editor
      */
-    DataSetProviderType[] CORE_TYPES = new DataSetProviderType[]{BEAN, CSV, SQL, ELASTICSEARCH, PROMETHEUS};
+    DataSetProviderType[] CORE_TYPES = new DataSetProviderType[]{BEAN, CSV, SQL, ELASTICSEARCH, PROMETHEUS, KAFKA};
 
     protected Collection<ImageListEditor<DataSetProviderType>.Entry> getDefaultEntries() {
         final DataSetProviderType[] providerTypes = CORE_TYPES;
@@ -172,6 +173,9 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         if (PROMETHEUS.equals(type)) {
             return DataSetEditorConstants.INSTANCE.prometheus();
         }
+        if (KAFKA.equals(type)) {
+            return DataSetEditorConstants.INSTANCE.kafka();
+        }
         return null;
     }
 
@@ -191,6 +195,9 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         if (PROMETHEUS.equals(type)) {
             return DataSetEditorConstants.INSTANCE.prometheus_description();
         }
+        if (KAFKA.equals(type)) {
+            return DataSetEditorConstants.INSTANCE.kafka_description();
+        }
         return null;
     }
 
@@ -209,7 +216,10 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         }
         if (PROMETHEUS.equals(type)) {
             return DataSetClientResources.INSTANCE.images().prometheusIcon160().getSafeUri();
-        }        
+        }
+        if (KAFKA.equals(type)) {
+            return DataSetClientResources.INSTANCE.images().kafkaIcon160().getSafeUri();
+        }    
         return null;
     }
 }

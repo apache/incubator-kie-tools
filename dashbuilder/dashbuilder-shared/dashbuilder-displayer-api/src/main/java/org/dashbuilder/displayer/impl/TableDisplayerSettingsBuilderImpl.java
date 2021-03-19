@@ -25,36 +25,42 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class TableDisplayerSettingsBuilderImpl extends AbstractDisplayerSettingsBuilder<TableDisplayerSettingsBuilderImpl> implements TableDisplayerSettingsBuilder<TableDisplayerSettingsBuilderImpl> {
 
     public DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings( DisplayerType.TABLE );
+        return new DisplayerSettings(DisplayerType.TABLE);
     }
 
-    public TableDisplayerSettingsBuilderImpl tablePageSize( int pageSize ) {
-        displayerSettings.setTablePageSize( pageSize );
+    public TableDisplayerSettingsBuilderImpl tablePageSize(int pageSize) {
+        displayerSettings.setTablePageSize(pageSize);
         return this;
     }
 
-    public TableDisplayerSettingsBuilderImpl tableOrderEnabled( boolean enabled ) {
-        displayerSettings.setTableSortEnabled( enabled );
+    public TableDisplayerSettingsBuilderImpl tableOrderEnabled(boolean enabled) {
+        displayerSettings.setTableSortEnabled(enabled);
         return this;
     }
 
-    public TableDisplayerSettingsBuilderImpl tableOrderDefault( String columnId, SortOrder order ) {
-        displayerSettings.setTableDefaultSortColumnId( columnId );
-        displayerSettings.setTableDefaultSortOrder( order );
+    public TableDisplayerSettingsBuilderImpl tableOrderDefault(String columnId, SortOrder order) {
+        displayerSettings.setTableDefaultSortColumnId(columnId);
+        displayerSettings.setTableDefaultSortOrder(order);
         return this;
     }
 
-    public TableDisplayerSettingsBuilderImpl tableOrderDefault( String columnId, String order ) {
+    public TableDisplayerSettingsBuilderImpl tableOrderDefault(String columnId, String order) {
         return tableOrderDefault(columnId, SortOrder.getByName(order));
     }
 
-    public TableDisplayerSettingsBuilderImpl tableWidth( int tableWidth ) {
-        displayerSettings.setTableWidth( tableWidth );
+    public TableDisplayerSettingsBuilderImpl tableWidth(int tableWidth) {
+        displayerSettings.setTableWidth(tableWidth);
         return this;
     }
 
     public TableDisplayerSettingsBuilderImpl tableColumnPickerEnabled(boolean enabled) {
         displayerSettings.setTableColumnPickerEnabled(enabled);
+        return this;
+    }
+
+    @Override
+    public TableDisplayerSettingsBuilderImpl resizable(boolean resizable) {
+        displayerSettings.setResizable(resizable);
         return this;
     }
 }

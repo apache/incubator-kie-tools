@@ -62,6 +62,8 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
         void redrawTable();
 
         void setWidth(int width);
+        
+        void fullWidth();
 
         void setSortEnabled(boolean enabled);
 
@@ -166,6 +168,7 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
                 .supportsAttribute( DisplayerAttributeGroupDef.FILTER_GROUP )
                 .supportsAttribute( DisplayerAttributeGroupDef.REFRESH_GROUP )
                 .supportsAttribute( DisplayerAttributeGroupDef.GENERAL_GROUP)
+                .supportsAttribute( DisplayerAttributeGroupDef.CHART_RESIZABLE )
                 .supportsAttribute( DisplayerAttributeGroupDef.EXPORT_GROUP)
                 .supportsAttribute( DisplayerAttributeGroupDef.TABLE_GROUP );
     }
@@ -215,6 +218,10 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
         view.setColumnPickerEnabled(displayerSettings.isTableColumnPickerEnabled());
         view.setExportToCsvEnabled(displayerSettings.isCSVExportAllowed());
         view.setExportToXlsEnabled(displayerSettings.isExcelExportAllowed());
+        
+        if(displayerSettings.isResizable()) {
+            view.fullWidth();
+        }
 
         for ( int i = 0; i < dataColumns.size(); i++ ) {
             DataColumn dataColumn = dataColumns.get(i);

@@ -92,6 +92,7 @@ public class DataSetDefPreviewTable implements IsWidget {
                     .renderer(DefaultRenderer.UUID)
                     .titleVisible(false)
                     .tablePageSize(10)
+                    .resizable(true)
                     .tableOrderEnabled(true)
                     .tableColumnPickerEnabled(false)
                     .filterOn(true, false, false);

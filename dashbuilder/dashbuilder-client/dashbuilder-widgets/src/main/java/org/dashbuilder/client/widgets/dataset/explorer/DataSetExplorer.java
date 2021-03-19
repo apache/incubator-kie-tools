@@ -61,7 +61,8 @@ public class DataSetExplorer implements IsWidget {
                                                               CSV,
                                                               ELASTICSEARCH,
                                                               SQL,
-                                                              PROMETHEUS);
+                                                              PROMETHEUS,
+                                                              KAFKA);
 
     Instance<DataSetPanel> panelInstances;
     DataSetClientServices clientServices;

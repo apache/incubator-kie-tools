@@ -53,4 +53,5 @@ public interface DataSetExplorerConstants extends ConstantsWithLookup {
     String cause();
     String ok();
     String prometheus();
+    String kafka();
 }
