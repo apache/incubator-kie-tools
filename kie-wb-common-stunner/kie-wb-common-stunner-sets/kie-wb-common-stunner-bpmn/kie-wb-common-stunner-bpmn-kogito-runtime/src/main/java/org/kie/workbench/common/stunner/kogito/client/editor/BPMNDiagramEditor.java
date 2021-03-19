@@ -64,7 +64,6 @@ import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClie
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -97,7 +96,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
 
     @Inject
     public BPMNDiagramEditor(final View view,
-                             final PlaceManager placeManager,
                              final MultiPageEditorContainerView multiPageEditorContainerView,
                              final Event<NotificationEvent> notificationEvent,
                              final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
@@ -117,7 +115,6 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
                              final CanvasDiagramValidator<AbstractCanvasHandler> validator,
                              final EditorSessionCommands editorSessionCommands) {
         super(view,
-              placeManager,
               multiPageEditorContainerView,
               notificationEvent,
               onDiagramFocusEvent,

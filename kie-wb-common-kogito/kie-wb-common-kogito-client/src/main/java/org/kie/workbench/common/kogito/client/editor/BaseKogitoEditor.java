@@ -16,7 +16,6 @@
 package org.kie.workbench.common.kogito.client.editor;
 
 import elemental2.promise.Promise;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -29,17 +28,14 @@ public abstract class BaseKogitoEditor<CONTENT> {
     private boolean isReadOnly;
 
     private BaseEditorView baseEditorView;
-    private PlaceManager placeManager;
     private PlaceRequest place;
 
     protected BaseKogitoEditor() {
         //CDI proxy
     }
 
-    protected BaseKogitoEditor(final BaseEditorView baseView,
-                               final PlaceManager placeManager) {
+    protected BaseKogitoEditor(final BaseEditorView baseView) {
         this.baseEditorView = baseView;
-        this.placeManager = placeManager;
     }
 
     protected void init(final PlaceRequest place) {
@@ -49,10 +45,6 @@ public abstract class BaseKogitoEditor<CONTENT> {
 
     protected PlaceRequest getPlaceRequest() {
         return place;
-    }
-
-    protected PlaceManager getPlaceManager() {
-        return placeManager;
     }
 
     protected BaseEditorView getBaseEditorView() {

@@ -16,7 +16,6 @@
 package org.kie.workbench.common.kogito.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.mvp.PlaceRequest;
@@ -36,10 +35,8 @@ public abstract class MultiPageEditorContainerPresenter<CONTENT>
     }
 
     protected MultiPageEditorContainerPresenter(final BaseEditorView baseEditorView,
-                                                final PlaceManager placeManager,
                                                 final MultiPageEditorContainerView multiPageEditorContainerView) {
-        super(baseEditorView,
-              placeManager);
+        super(baseEditorView);
         this.multiPageEditorContainerView = multiPageEditorContainerView;
     }
 

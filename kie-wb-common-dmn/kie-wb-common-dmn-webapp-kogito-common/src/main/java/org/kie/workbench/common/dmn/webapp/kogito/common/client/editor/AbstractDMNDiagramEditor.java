@@ -67,7 +67,6 @@ import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocu
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.mvp.PlaceRequest;
@@ -101,7 +100,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final DRDNameChanger drdNameChanger;
 
     public AbstractDMNDiagramEditor(final View view,
-                                    final PlaceManager placeManager,
                                     final MultiPageEditorContainerView multiPageEditorContainerView,
                                     final Event<NotificationEvent> notificationEvent,
                                     final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
@@ -131,7 +129,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final DRDNameChanger drdNameChanger,
                                     final EditorSessionCommands editorSessionCommands) {
         super(view,
-              placeManager,
               multiPageEditorContainerView,
               notificationEvent,
               onDiagramFocusEvent,

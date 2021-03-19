@@ -51,7 +51,6 @@ import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramReso
 import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.resources.i18n.KogitoClientConstants;
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -137,9 +136,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
             } else {
                 setEditorProxy(new DiagramEditorProxy<>());
                 showError(error);
-
-                //close editor in case of error when opening the editor
-                getPlaceManager().closePlace(getPlaceRequest(), null);
             }
         }
     }
@@ -147,7 +143,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
     private final AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> editor;
 
     public AbstractDiagramEditor(final View view,
-                                 final PlaceManager placeManager,
                                  final MultiPageEditorContainerView multiPageEditorContainerView,
                                  final Event<NotificationEvent> notificationEvent,
                                  final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
@@ -158,7 +153,6 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                  final DocumentationView documentationView,
                                  final EditorSessionCommands editorSessionCommands) {
         super(view,
-              placeManager,
               multiPageEditorContainerView);
         this.onDiagramFocusEvent = onDiagramFocusEvent;
         this.translationService = translationService;
