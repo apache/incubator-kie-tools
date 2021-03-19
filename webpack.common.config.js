@@ -29,6 +29,7 @@ module.exports = {
       name => !name.endsWith(".js"),
       /.*DMNKogitoRuntimeWebapp.*/,
       /.*KogitoBPMNEditor.*/,
+      /.*DroolsWorkbenchScenarioSimulationKogitoRuntime.*/,
       /gwt-editors\/.*/,
       /editors\/.*/
     ],
