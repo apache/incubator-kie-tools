@@ -73,9 +73,6 @@ func GetKogitoTrustyResourceStub(namespace string, replicas int) *v1beta1.Kogito
 			ServiceType:       api.TrustyAI,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetTrustyImageTag(), kogitosupportingservice.DefaultTrustyImageName),
 		},
-		Status: v1beta1.KogitoSupportingServiceStatus{
-			KogitoServiceStatus: NewKogitoServiceStatus(),
-		},
 	}
 }
 

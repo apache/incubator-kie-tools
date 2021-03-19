@@ -79,9 +79,6 @@ func GetKogitoBuildStub(namespace, runtimeType, name string) *v1beta1.KogitoBuil
 			Name:      name,
 			Namespace: namespace,
 		},
-		Status: v1beta1.KogitoBuildStatus{
-			Conditions: []v1beta1.KogitoBuildConditions{},
-		},
 		Spec: v1beta1.KogitoBuildSpec{
 			Runtime:        api.RuntimeType(runtimeType),
 			MavenMirrorURL: config.GetMavenMirrorURL(),

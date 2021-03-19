@@ -107,15 +107,6 @@ func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName str
 	}
 }
 
-// NewKogitoServiceStatus creates a new Kogito Service Status object.
-func NewKogitoServiceStatus() v1beta1.KogitoServiceStatus {
-	return v1beta1.KogitoServiceStatus{
-		ConditionsMeta: v1beta1.ConditionsMeta{
-			Conditions: []v1beta1.Condition{},
-		},
-	}
-}
-
 // NewImageOrDefault Returns Image parsed from provided image tag or created from configuration options
 func NewImageOrDefault(fullImage string, defaultImageName string) string {
 	if len(fullImage) > 0 {

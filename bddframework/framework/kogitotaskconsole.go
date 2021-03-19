@@ -44,8 +44,5 @@ func GetKogitoTaskConsoleResourceStub(namespace string, replicas int) *v1beta1.K
 			ServiceType:       api.TaskConsole,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetTaskConsoleImageTag(), kogitosupportingservice.DefaultTaskConsoleImageName),
 		},
-		Status: v1beta1.KogitoSupportingServiceStatus{
-			KogitoServiceStatus: NewKogitoServiceStatus(),
-		},
 	}
 }

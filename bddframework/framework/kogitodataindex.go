@@ -52,8 +52,5 @@ func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1beta1.Kog
 			ServiceType:       api.DataIndex,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetDataIndexImageTag(), kogitosupportingservice.DefaultDataIndexImageName),
 		},
-		Status: v1beta1.KogitoSupportingServiceStatus{
-			KogitoServiceStatus: NewKogitoServiceStatus(),
-		},
 	}
 }

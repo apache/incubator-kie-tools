@@ -16,6 +16,8 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/api"
+	"k8s.io/apimachinery/pkg/api/meta"
 
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -70,8 +72,10 @@ func GetKogitoInfraResourceStub(namespace, name, targetResourceType, targetResou
 			Resource: *infraResource,
 		},
 		Status: v1beta1.KogitoInfraStatus{
-			Condition: v1beta1.KogitoInfraCondition{
-				LastTransitionTime: v1.Now(),
+			Conditions: &[]v1.Condition{
+				{
+					LastTransitionTime: v1.Now(),
+				},
 			},
 		},
 	}, nil
@@ -106,8 +110,12 @@ func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int) error 
 			if infraResource == nil {
 				return false, nil
 			}
-
-			return infraResource.Status.Condition.Type == "Success" && infraResource.Status.Condition.Status == "True", nil
+			conditions := *infraResource.GetStatus().GetConditions()
+			successCondition := meta.FindStatusCondition(conditions, string(api.KogitoInfraSuccess))
+			if successCondition == nil {
+				return false, nil
+			}
+			return successCondition.Status == v1.ConditionTrue, nil
 		})
 }
 

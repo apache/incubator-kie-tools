@@ -77,8 +77,5 @@ func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1beta1.K
 			ServiceType:       api.JobsService,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), kogitosupportingservice.DefaultJobsServiceImageName),
 		},
-		Status: v1beta1.KogitoSupportingServiceStatus{
-			KogitoServiceStatus: NewKogitoServiceStatus(),
-		},
 	}
 }

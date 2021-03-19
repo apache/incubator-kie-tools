@@ -44,8 +44,5 @@ func GetKogitoManagementConsoleResourceStub(namespace string, replicas int) *v1b
 			ServiceType:       api.MgmtConsole,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), kogitosupportingservice.DefaultMgmtConsoleImageName),
 		},
-		Status: v1beta1.KogitoSupportingServiceStatus{
-			KogitoServiceStatus: NewKogitoServiceStatus(),
-		},
 	}
 }

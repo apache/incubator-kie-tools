@@ -45,8 +45,5 @@ func GetKogitoExplainabilityResourceStub(namespace string, replicas int) *v1beta
 			ServiceType:       api.Explainability,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetExplainabilityImageTag(), kogitosupportingservice.DefaultExplainabilityImageName),
 		},
-		Status: v1beta1.KogitoSupportingServiceStatus{
-			KogitoServiceStatus: NewKogitoServiceStatus(),
-		},
 	}
 }

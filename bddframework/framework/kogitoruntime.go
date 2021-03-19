@@ -55,11 +55,6 @@ func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1beta
 			Name:      name,
 			Namespace: namespace,
 		},
-		Status: v1beta1.KogitoRuntimeStatus{
-			KogitoServiceStatus: v1beta1.KogitoServiceStatus{
-				ConditionsMeta: v1beta1.ConditionsMeta{Conditions: []v1beta1.Condition{}},
-			},
-		},
 		Spec: v1beta1.KogitoRuntimeSpec{
 			Runtime: api.RuntimeType(runtimeType),
 			KogitoServiceSpec: v1beta1.KogitoServiceSpec{
