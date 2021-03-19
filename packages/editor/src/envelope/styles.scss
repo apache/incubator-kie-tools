@@ -65,3 +65,23 @@
   font-size: 1.2em;
   cursor: pointer;
 }
+
+/* PF3 -> PF4 overrides */
+
+.kogito-tooling--keyboard-shortcuts {
+  font-family: var(--pf-global--FontFamily--sans-serif);
+  color: var(--pf-global--Color--dark-100);
+}
+
+body {
+  color: var(--pf-global--Color-dark--100);
+}
+
+dl {
+  margin-bottom: 0px !important;
+}
+
+dt,
+dd {
+  line-height: var(--pf-global--LineHeight--md) !important;
+}
