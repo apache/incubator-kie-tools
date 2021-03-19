@@ -25,7 +25,13 @@ module.exports = {
     chunkFilename: "[name].bundle.js"
   },
   stats: {
-    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeAssets: [
+      name => !name.endsWith(".js"),
+      /.*DMNKogitoRuntimeWebapp.*/,
+      /.*KogitoBPMNEditor.*/,
+      /gwt-editors\/.*/,
+      /editors\/.*/
+    ],
     excludeModules: true
   },
   performance: {
