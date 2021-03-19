@@ -12,7 +12,7 @@ endif
 
 .PHONY: list
 list:
-	@python3 scripts/list-images.py
+	@python3 scripts/list-images.py $(arg)
 
 # Build all images
 .PHONY: build
@@ -21,6 +21,7 @@ build: clone-repos _build
 
 _build:
 	@for f in $(shell make list); do make build-image image_name=$${f}; done
+
 
 .PHONY: build-image
 image_name=
@@ -35,6 +36,26 @@ endif
 ifneq ($(findstring rc,$(IMAGE_VERSION)),rc)
 	${BUILD_ENGINE} tag quay.io/kiegroup/${image_name}:${IMAGE_VERSION} quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
 endif
+
+
+# Build all images
+.PHONY: build-prod
+# start to build the images
+build-prod: clone-repos
+	@for iname in $(shell make list arg=--prod); do make build-prod-image image_name=$${iname} ; done
+
+
+.PHONY: build-prod-image
+image_name=
+build-prod-image:
+ifneq ($(ignore_build),true)
+	scripts/build-product-image.sh "build" $(image_name) ${BUILD_ENGINE}
+endif
+# if ignore_test is set to true, ignore the tests
+ifneq ($(ignore_test),true)
+	scripts/build-product-image.sh "test" $(image_name)
+endif
+
 
 # push images to quay.io, this requires permissions under kiegroup organization
 .PHONY: push

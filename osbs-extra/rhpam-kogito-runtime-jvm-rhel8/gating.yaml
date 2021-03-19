@@ -1,0 +1,7 @@
+--- !Policy
+id: "cvp-rhpam-kogito-runtime-jvm"
+product_versions:
+  - cvp
+decision_context: cvp_default
+rules:
+  - !PassingTestCaseRule {test_case_name: rhpam-kieserver-kogito-runtime-jvm.openshift.external}

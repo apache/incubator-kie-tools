@@ -1,7 +1,7 @@
 @quay.io/kiegroup/kogito-runtime-native
 Feature: Kogito-runtime-native feature.
 
-  Scenario: verify if all labels are correctly set.
+  Scenario: verify if all labels are correctly set on kogito-runtime-native image
     Given image is built
     Then the image should contain label maintainer with value kogito <kogito@kiegroup.com>
      And the image should contain label io.openshift.s2i.scripts-url with value image:///usr/local/s2i
@@ -12,12 +12,12 @@ Feature: Kogito-runtime-native feature.
      And the image should contain label io.openshift.tags with value builder,runtime,kogito,quarkus,native
      And the image should contain label io.openshift.s2i.assemble-input-files with value /home/kogito/bin
 
-  Scenario: verify java cacerts and libsunec are available in the given container.
+  Scenario: verify java cacerts and libsunec are available in the given kogito runtime container.
     When container is started with command bash
     Then  file /home/kogito/ssl-libs/libsunec.so should exist
     And file /home/kogito/cacerts should exist
 
-  Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port
+  Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port with quarkus native
     Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld-native/ from target
       | variable            | value                     |
       | NATIVE              | false                     |

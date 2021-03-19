@@ -29,3 +29,6 @@ bats/*
 *.db
 *.tlog
 
+# python
+scripts/__pycache__
+

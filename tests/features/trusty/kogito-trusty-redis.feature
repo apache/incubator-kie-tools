@@ -1,7 +1,7 @@
 @quay.io/kiegroup/kogito-trusty-redis
 Feature: Kogito-trusty redis feature.
 
-  Scenario: verify if all labels are correctly set.
+  Scenario: verify if all labels are correctly set on kogito-trusty-redis image
     Given image is built
      Then the image should contain label maintainer with value kogito <kogito@kiegroup.com>
       And the image should contain label io.openshift.s2i.scripts-url with value image:///usr/local/s2i

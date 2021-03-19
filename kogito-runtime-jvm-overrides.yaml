@@ -9,7 +9,7 @@ labels:
 - name: "io.k8s.display-name"
   value: "Kogito based on Quarkus or Spring Boot JVM image"
 - name: "io.openshift.tags"
-  value: "builder,runtime,kogito,quarkus,springboot,jvm"
+  value: "runtime,kogito,quarkus,springboot,jvm"
 - name: "io.openshift.s2i.assemble-input-files"
   value: "/home/kogito/bin"
 
@@ -37,7 +37,6 @@ modules:
     version: "11-headless"
   - name: org.kie.kogito.s2i.core
   - name: org.kie.kogito.runtime.jvm
-
 
 ## s2i build . quay.io/kiegroup/kogito-builder:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
 ## where "." is the sources dir, ie: /data/dev/sources/kogito-examples/rules-quarkus-helloworld

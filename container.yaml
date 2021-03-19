@@ -1,0 +1,6 @@
+---
+platforms:
+  only:
+    - x86_64
+compose:
+  pulp_repos: true

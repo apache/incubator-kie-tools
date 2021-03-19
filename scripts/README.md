@@ -4,14 +4,68 @@ On this directory you can find some python scripts used to help with some repeti
 
 Today we have these scripts:
 
+- [build-product-image.sh](build-product-image.sh)
+- [common.py](common.py)
+- [list-images.py](list-images.py)
 - [manage-kogito-version.py](manage-kogito-version.py)
 - [push-local-registry.sh](push-local-registry.sh)
 - [push-staging.py](push-staging.py)
+- [run-bats.sh](run-bats.sh)
 - [update-maven-artifacts.py](update-maven-artifacts.py)
 - [update-tests.py](update-tests.py)
-- [common.py](common.py)
 
-### Managing Kogito images version
+
+
+### Build Product Image Script
+
+Script should not be used to build community images. Handled by `make build-prod` command.
+
+To switch the `build_engine` do the following:
+
+```bash
+make BUILD_ENGINE=osbs build-prod
+```
+
+
+It receives the Product image name to build the images.
+
+The build works in the follow CEKit build hierarchy:
+
+ - image.yaml -> kogito-community-image-name-overrides.yaml -> kogito-product-image-name-overrides.yaml
+
+Example: 
+
+```bash 
+cekit --verbose --redhat build --overrides-file kogito-runtime-jvm-overrides.yaml --overrides-file rhpam-kogito-runtime-jvm-rhel8-overrides.yaml docker
+```
+
+The product image name must respect the community image name:
+
+ - rhpam-$(kogito_image_name)-rhel8
+
+
+### Common script
+
+The `common.py` script defines some common functions for the scripts.
+
+
+### List Images Script
+
+Utilitary script used to retrieve all images that can be built on this repo, there is possible to retrieve
+the community image list:
+
+```bash
+$ python3 list-images.py
+```
+
+And the product image list by using the `--prod` flag:
+
+```bash
+$ python3 list-images.py --prod
+```
+
+
+### Managing Kogito images version script
 
 The manage-kogito-version script will help when we need to update the current version due a new release.
 
@@ -189,6 +243,4 @@ $ python update-tests.py --examples-uri https://github.com/<yournamespace>/kogit
 
 This will update the examples uri and/or the ref for the tests.
 
-### Common script
 
-The `common.py` script defines some common functions for the scripts.

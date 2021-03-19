@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#This script defines some common function that are used by manage-kogito-version.py and push-staging.py script
+# This script defines some common function that are used by manage-kogito-version.py and push-staging.py script
 
 
 import os
@@ -10,7 +10,7 @@ from ruamel.yaml import YAML
 # All kogito-image modules that have the kogito version.
 MODULES = {"kogito-data-index-common", "kogito-data-index-mongodb",
            "kogito-data-index-infinispan", "kogito-trusty-common",
-           "kogito-trusty-infinispan","kogito-trusty-redis",
+           "kogito-trusty-infinispan", "kogito-trusty-redis",
            "kogito-explainability", "kogito-image-dependencies",
            "kogito-jobs-service", "kogito-trusty-ui",
            "kogito-jq", "kogito-kubernetes-client",
@@ -27,13 +27,15 @@ MODULES_DIR = "modules"
 IMAGE_STREAM_FILENAME = "kogito-imagestream.yaml"
 # image.yaml file definition that needs to be updated
 IMAGE_FILENAME = "image.yaml"
-ARTIFACTS_VERSION_ENV_KEY="KOGITO_VERSION"
+ARTIFACTS_VERSION_ENV_KEY = "KOGITO_VERSION"
 
-# behave tests that needs to be update
+# behave tests that needs to be updated
 BEHAVE_BASE_DIR = 'tests/features'
-BEHAVE_TESTS = {"kogito-builder.feature", "kogito-runtime-jvm.feature", "kogito-runtime-native.feature"}
+BEHAVE_TESTS = {"kogito-builder-native.feature", "kogito-common-builder-jvm.feature",
+                "kogito-common-runtime-jvm.feature", "kogito-runtime-native.feature"}
 
-CLONE_REPO_SCRIPT='tests/test-apps/clone-repo.sh'
+CLONE_REPO_SCRIPT = 'tests/test-apps/clone-repo.sh'
+
 
 def yaml_loader():
     """
@@ -45,6 +47,7 @@ def yaml_loader():
     yaml.width = 1024
     yaml.indent(mapping=2, sequence=4, offset=2)
     return yaml
+
 
 def update_image_version(target_version):
     """
@@ -72,7 +75,8 @@ def update_image_stream(target_version):
     Update the imagestream file, it will update the tag name, version and image tag.
     :param target_version: version used to update the imagestream file;
     """
-    print("Updating ImageStream images version from file {0} to version {1}".format(IMAGE_STREAM_FILENAME, target_version))
+    print("Updating ImageStream images version from file {0} to version {1}".format(IMAGE_STREAM_FILENAME,
+                                                                                    target_version))
     try:
         with open(IMAGE_STREAM_FILENAME) as imagestream:
             data = yaml_loader().load(imagestream)
@@ -80,16 +84,17 @@ def update_image_stream(target_version):
                 for tag_index, tag in enumerate(item['spec']['tags'], start=0):
                     data['items'][item_index]['spec']['tags'][tag_index]['name'] = target_version
                     data['items'][item_index]['spec']['tags'][tag_index]['annotations']['version'] = target_version
-                    imageDict = str.split(data['items'][item_index]['spec']['tags'][tag_index]['from']['name'], ':')
+                    image_dict = str.split(data['items'][item_index]['spec']['tags'][tag_index]['from']['name'], ':')
                     # image name + new version
-                    updatedImageName = imageDict[0] + ':' + target_version
-                    data['items'][item_index]['spec']['tags'][tag_index]['from']['name'] = updatedImageName
+                    updated_image_name = image_dict[0] + ':' + target_version
+                    data['items'][item_index]['spec']['tags'][tag_index]['from']['name'] = updated_image_name
 
         with open(IMAGE_STREAM_FILENAME, 'w') as imagestream:
             yaml_loader().dump(data, imagestream)
 
     except TypeError:
         raise
+
 
 def get_all_module_dirs():
     """
@@ -104,6 +109,7 @@ def get_all_module_dirs():
                 modules.append(os.path.dirname(os.path.join(r, item)))
 
     return modules
+
 
 def get_kogito_module_dirs():
     """
@@ -141,20 +147,21 @@ def update_modules_version(target_version):
         update_module_version(module_dir, target_version)
 
 
-def update_module_version(moduleDir, target_version):
+def update_module_version(module_dir, target_version):
     """
     Set Kogito module.yaml to given version.
+    :param module_dir: directory where cekit modules are hold
     :param target_version: version to set into the module
     """
     try:
-        moduleFile = os.path.join(moduleDir, "module.yaml")
-        with open(moduleFile) as module:
+        module_file = os.path.join(module_dir, "module.yaml")
+        with open(module_file) as module:
             data = yaml_loader().load(module)
             print(
                 "Updating module {0} version from {1} to {2}".format(data['name'], data['version'], target_version))
             data['version'] = target_version
 
-        with open(moduleFile, 'w') as module:
+        with open(module_file, 'w') as module:
             yaml_loader().dump(data, module)
 
     except TypeError:
@@ -179,14 +186,15 @@ def retrieve_artifacts_version():
 def update_artifacts_version_env_in_image(artifacts_version):
     """
     Update `KOGITO_VERSION` env var in image.yaml.
-    :param target_version: kogito version used to update image.yaml which contains the `KOGITO_VERSION` env var
+    :param artifacts_version: kogito version used to update image.yaml which contains the `KOGITO_VERSION` env var
     """
     try:
         with open(IMAGE_FILENAME) as imageFile:
             data = yaml_loader().load(imageFile)
             for index, env in enumerate(data['envs'], start=0):
                 if env['name'] == ARTIFACTS_VERSION_ENV_KEY:
-                    print("Updating image.yaml env var {0} with value {1}".format(ARTIFACTS_VERSION_ENV_KEY, artifacts_version))
+                    print("Updating image.yaml env var {0} with value {1}".format(ARTIFACTS_VERSION_ENV_KEY,
+                                                                                  artifacts_version))
                     data['envs'][index]['value'] = artifacts_version
 
         with open(IMAGE_FILENAME, 'w') as imageFile:
@@ -240,10 +248,11 @@ def update_maven_repo_in_behave_tests(repo_url, replaceJbossRepository):
     """
     print("Set maven repo {} in behave tests".format(repo_url))
     pattern = re.compile('\|\s*variable[\s]*\|[\s]*value[\s]*\|')
-    envVarKey = "MAVEN_REPO_URL"
+    env_var_key = "MAVEN_REPO_URL"
     if replaceJbossRepository:
-        envVarKey = "JBOSS_MAVEN_REPO_URL"
-    replacement = "| variable | value |\n      | {} | {} |\n      | MAVEN_DOWNLOAD_OUTPUT | true |".format(envVarKey, repo_url)
+        env_var_key = "JBOSS_MAVEN_REPO_URL"
+    replacement = "| variable | value |\n      | {} | {} |\n      | MAVEN_DOWNLOAD_OUTPUT | true |".format(env_var_key,
+                                                                                                           repo_url)
     update_in_behave_tests(pattern, replacement)
 
 
@@ -291,22 +300,23 @@ def update_examples_uri_in_clone_repo(examples_uri):
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
 
-def update_maven_repo_in_clone_repo(repo_url, replaceJbossRepository):
+def update_maven_repo_in_clone_repo(repo_url, replace_jboss_repository):
     """
     Update maven repository into clone-repo.sh script
     :param repo_url: Maven repository url
-    :param replaceJbossRepository: Set to true if default Jboss repository needs to be overriden
+    :param replace_jboss_repository: Set to true if default Jboss repository needs to be overridden
     """
     print("Set maven repo {} in clone-repo script".format(repo_url))
     pattern = ""
     replacement = ""
-    if replaceJbossRepository:
+    if replace_jboss_repository:
         pattern = re.compile(r'(export JBOSS_MAVEN_REPO_URL=.*)')
         replacement = 'export JBOSS_MAVEN_REPO_URL="{}"'.format(repo_url)
-    else :
+    else:
         pattern = re.compile(r'(# export MAVEN_REPO_URL=.*)')
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
+
 
 def ignore_maven_self_signed_certificate_in_clone_repo():
     """

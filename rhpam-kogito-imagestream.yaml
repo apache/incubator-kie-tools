@@ -1,0 +1,50 @@
+kind: ImageStreamList
+apiVersion: v1
+metadata:
+  name: rhpam-kogito-image-streams
+  annotations:
+    description: ImageStream definitions for Red Hat build of Kogito images
+    openshift.io/provider-display-name: Kie Group.
+items:
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: rhpam-kogito-runtime-jvm-rhel8
+      annotations:
+        openshift.io/display-name: Runtime image for Kogito based on Quarkus or SpringBoot JVM image
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '7.11.0'
+          annotations:
+            description: Runtime image for Kogito based on Quarkus or SpringBoot JVM image
+            iconClass: icon-jbpm
+            tags: rhpam-kogito,runtime,kogito,quarkus,springboot,jvm
+            supports: quarkus
+            version: '7.11.0'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/rhpam-7/rhpam-kogito-runtime-jvm-rhel8:7.11.0
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: rhpam-kogito-builder-rhel8
+      annotations:
+        openshift.io/display-name: Platform for building Kogito based on Quarkus or SpringBoot
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '7.11.0'
+          annotations:
+            description: Platform for building Kogito based on Quarkus or SpringBoot
+            iconClass: icon-jbpm
+            tags: rhpam-kogito,builder,kogito,quarkus,springboot
+            supports: quarkus
+            version: '7.11.0'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/rhpam-7/rhpam-kogito-builder-rhel8:7.11.0

@@ -1,0 +1,25 @@
+schema_version: 1
+
+name: "rhpam-7/rhpam-kogito-builder-rhel8"
+version: "7.11.0"
+from: "registry.redhat.io/ubi8/ubi-minimal:latest"
+description: "RHPAM Platform for building Kogito based on Quarkus or SpringBoot"
+
+labels:
+  - name: "com.redhat.component"
+    value: "rhpam-7-kogito-runtime-jvm-rhel8-container"
+  - name: "io.k8s.display-name"
+    value: "Red Hat build of Kogito based on Quarkus or SpringBoot"
+  - name: "io.openshift.tags"
+    value: "rhpam-kogito,builder,kogito,quarkus,springboot"
+
+packages:
+  content_sets_file: content_sets.yaml
+
+osbs:
+  configuration:
+    container_file: container.yaml
+  extra_dir: osbs-extra/rhpam-kogito-builder-rhel8
+  repository:
+    name: containers/rhpam-7-kogito-builder
+    branch: rhba-7-rhel-8
