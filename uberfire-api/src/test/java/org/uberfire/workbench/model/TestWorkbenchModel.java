@@ -38,7 +38,7 @@ public class TestWorkbenchModel {
         PanelDefinition westPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
         PartDefinition part1 = new PartDefinitionImpl(new DefaultPlaceRequest("one"));
 
-        westPanel.addPart(part1);
+        westPanel.setPlace(part1);
 
         assertTrue(part1.getParentPanel() == westPanel);
         westPanel.getParent(); // does blow up

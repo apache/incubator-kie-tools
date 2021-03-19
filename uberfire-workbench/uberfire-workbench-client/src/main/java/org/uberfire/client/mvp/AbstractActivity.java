@@ -21,31 +21,18 @@ import org.uberfire.workbench.model.Position;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-/**
- * Implementation of behaviour common to all activity types.
- * <p>
- * AbstractActivity is not typically subclassed directly, even by generated code. See the more purpose-based subclasses.
- */
 public abstract class AbstractActivity implements Activity {
 
     protected PlaceRequest place;
 
     protected boolean open = false;
 
-    /**
-     * Tracks start/shutdown lifecycle. Subclasses should always call <tt>super.onStartup()</tt> in methods that
-     * override this one.
-     */
     @Override
     public void onStartup(PlaceRequest place) {
         this.place = checkNotNull("place",
                                   place);
     }
 
-    /**
-     * Tracks open/closed lifecycle. Subclasses should always call <tt>super.onOpen()</tt> in methods that override this
-     * one.
-     */
     @Override
     public void onOpen() {
         if (this.place == null) {
@@ -57,10 +44,6 @@ public abstract class AbstractActivity implements Activity {
         open = true;
     }
 
-    /**
-     * Tracks open/closed lifecycle. Subclasses should always call <tt>super.onClose()</tt> in methods that override
-     * this one.
-     */
     @Override
     public void onClose() {
         if (this.place == null) {

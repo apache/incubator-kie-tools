@@ -20,25 +20,19 @@ import javax.enterprise.inject.Alternative;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
 @Alternative
 public class MockPlaceManager implements PlaceManager {
 
     @Override
-    public void bootstrapRootPanel() {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goToDock(PlaceRequest place,
+    public void openDock(PlaceRequest place,
                          HasWidgets addTo) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void closePlace(PlaceRequest placeToClose, Command onAfterClose) {
+    public void closePlace(PlaceRequest placeToClose) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 }

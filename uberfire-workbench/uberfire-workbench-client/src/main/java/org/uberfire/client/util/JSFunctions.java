@@ -1,33 +1,15 @@
-/*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.uberfire.client.util;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.EditorActivity;
 
-/**
- *  Call native Javascript to register GWT Editors
- */
-@ApplicationScoped
-public class GWTEditorNativeRegister {
-    
-    public native void nativeRegisterGwtEditorProvider() /*-{
+public class JSFunctions {
+
+    private JSFunctions() {
+        // Empty
+    }
+
+    public static native void nativeRegisterGwtEditorProvider() /*-{
 
         console.log("registerGWTEditorProvider");
 
@@ -51,10 +33,10 @@ public class GWTEditorNativeRegister {
         $wnd.GWTEditor.prototype.getContent = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getContent()();
         };
-        
+
         $wnd.GWTEditor.prototype.getPreview = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getPreview()();
-        };        
+        };
 
         $wnd.GWTEditor.prototype.getView = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getWidgetElement()();
@@ -73,9 +55,14 @@ public class GWTEditorNativeRegister {
         }
 
     }-*/;
-    
-    public native void nativeRegisterGwtClientBean(final String id, final SyncBeanDef<Activity> activityBean) /*-{
-        $wnd.gwtEditorBeans.set(id, new $wnd.GWTEditorSupplier(activityBean));
+
+    public static native void nativeRegisterGwtClientBean(final String id, final SyncBeanDef<EditorActivity> bean) /*-{
+        $wnd.gwtEditorBeans.set(id, new $wnd.GWTEditorSupplier(bean));
     }-*/;
 
+    public static native void notifyJSReady() /*-{
+        if ($wnd.appFormerGwtFinishedLoading) {
+            $wnd.appFormerGwtFinishedLoading();
+        }
+    }-*/;
 }

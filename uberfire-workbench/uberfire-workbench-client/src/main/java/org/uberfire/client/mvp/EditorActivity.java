@@ -22,32 +22,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.uberfire.workbench.model.bridge.Notification;
 
-/**
- * An Editor is an activity that is associated with a VFS path. It is expected that the editor will provide the end user
- * some means of editing and saving the resource represented by the VFS path.
- */
 public interface EditorActivity extends Activity {
 
-    /**
-     * Set the editor content
-     *
-     * @param path  Content Relative Path
-     * @param value The editor content
-     */
     Promise<Void> setContent(String path, String value);
 
-    /**
-     * Get the editor content
-     *
-     * @return
-     */
     Promise<String> getContent();
 
-    /**
-     * Get the editor content preview in SVG format
-     *
-     * @return
-     */
     Promise<String> getPreview();
 
     Promise<List<Notification>> validate();

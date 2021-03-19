@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-.uf-lock-hint {
-    width: 180px;
-    height: 90px;
-    background-color: #FFFFFF;
-    color: #848484;
-    border: 1px solid;
-    border-color: #848484;
-    text-align: center;
-    font-size: 13px;
-    -webkit-transition: top 0.5s ease-in;
-    -moz-transition: top 0.5s ease-in;
-    -ms-transition: top 0.5s ease-in;
-    -o-transition: top 0.5s ease-in;
-    transition: top 0.5s ease-in;
-}
-
 .uf-scroll-panel {
     height: 100%;
     width: 100%;
@@ -43,12 +27,6 @@
 
 /* Styles prefixed with uf- are not obfuscated and can be overridden in application stylesheets. */
 @external .uf-*, .js-*;
-
-/* Maximized panels must have an opaque background. The application can override the default (white) in its own stylesheet.
-   Size and position are handled programmatically in the WorkbenchLayout implementation. */
-.uf-maximized-panel {
-    background-color: #fff;
-}
 
 .uf-no-select {
     -webkit-user-select: none;
@@ -113,10 +91,6 @@
     height: 100%;
 }
 
-.uf-perspective-component {
-    height: 100%;
-}
-
 .uf-perspective-rendered-col {
     padding-left: 0;
     padding-right: 0;
@@ -132,10 +106,6 @@
     max-width: none;
     padding: 0;
 }
-.uf-le-overflow{
+.uf-le-overflow {
     overflow: auto;
-}
-
-.js-screen-container {
-    display: inline;
 }

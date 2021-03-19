@@ -65,7 +65,7 @@ public class DocksBars_OpenDockTest {
         docksBars.openDock(getTargetDock(myPlace),
                            getDocksBar());
 
-        verify(placeManager).goToDock(placeRequestArgumentCaptor.capture(),
+        verify(placeManager).openDock(placeRequestArgumentCaptor.capture(),
                                       Mockito.<HasWidgets>any());
 
         final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();

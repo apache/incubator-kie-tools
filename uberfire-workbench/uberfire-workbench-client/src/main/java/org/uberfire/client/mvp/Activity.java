@@ -17,63 +17,20 @@ package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.workbench.model.Position;
 
-/**
- * Common top-level interface for all Workbench Activity classes. No concrete class implements this interface directly;
- * see the subinterfaces for specific activity types that do get implemented.
- * Developers of UberFire applications will not typically come into direct contact with things that implement Activity
- * or its subinterfaces; instead, they will work with a {@link PlaceManager} to manipulate activities at arm's length.
- * <p>
- * If you do need to get your hands on a particular {@code Activity} instance, do so using an {@link ActivityManager}.
- * <p>
- * <h3>Activity Lifecycle</h3>
- * Activities have the following lifecycle, which is normally driven by an {@link ActivityManager}:
- * <ol>
- * <li>The activity starts off in the <i>uninitialized</i> state.
- * <li>{@link #onStartup(PlaceRequest)} is called with the the PlaceRequest that caused it to be created.
- * The activity is "associated" with this PlaceRequest. This puts the activity in the <i>started</i> state.
- * <li>{@link #onOpen()} is called to notify the Activity that its view has been added to the UI, and its associated
- * place is considered "open." This puts the activity in the <i>open</i> state.
- * <li>{@link #onClose()} is called to notify the Activity that its view has been removed from the UI, and its associated
- * place is considered "closed." This puts the activity back in the <i>started</i> state.
- * </ol>
- * An activity will never receive a call to {@link #onOpen()} when it is uninitialized or open, but it may be reopened after a call
- * to {@link #onClose()}.
- * @see PlaceManager
- * @see ActivityManager
- */
 @JsType
 public interface Activity extends Resource {
 
-    /**
-     * Called by the framework to notify this activity that it is now associated with the given PlaceRequest.
-     * When this lifecycle method is invoked, the activity's widget has not yet been added to the GUI.
-     * @param place The place that resolved to this activity
-     */
-    @JsMethod(name = "onStartupPlace")
     void onStartup(final PlaceRequest place);
 
-    /**
-     * Called by the framework to notify this activity that its Widget has been added to the live GUI.
-     */
     void onOpen();
 
-    /**
-     * Called by the framework to notify this activity that its Widget has been removed from the live GUI.
-     */
     void onClose();
 
-    /**
-     * Returns the PlaceRequest that this Activity is currently tied to.
-     *
-     * @return the PlaceRequest that this activity was started for, or null if this activity is not in the started
-     * state.
-     */
     PlaceRequest getPlace();
 
     Position getDefaultPosition();

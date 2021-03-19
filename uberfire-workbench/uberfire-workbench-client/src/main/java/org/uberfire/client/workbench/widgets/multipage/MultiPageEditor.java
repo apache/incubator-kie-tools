@@ -26,8 +26,6 @@ public interface MultiPageEditor extends IsWidget {
 
     int selectedPage();
 
-    MultiPageEditorView getView();
-
     void clear();
 
     void addTabBarWidget(final IsWidget customWidget);

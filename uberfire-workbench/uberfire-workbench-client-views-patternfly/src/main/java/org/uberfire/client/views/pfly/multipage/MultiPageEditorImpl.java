@@ -63,11 +63,6 @@ public class MultiPageEditorImpl implements MultiPageEditor {
     }
 
     @Override
-    public MultiPageEditorView getView() {
-        return view;
-    }
-
-    @Override
     public Widget asWidget() {
         return view;
     }

@@ -27,7 +27,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
-import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.WorkbenchEntryPoint;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
@@ -38,19 +38,18 @@ import org.uberfire.mvp.PlaceRequest;
 @Dependent
 public class DocksBars {
 
-    private PlaceManager placeManager;
-
     private Event<UberfireDocksInteractionEvent> dockInteractionEvent;
     private UberfireDocksContainer uberfireDocksContainer;
+    private WorkbenchEntryPoint workbenchLayout;
     private List<DocksBar> docks = new ArrayList<>();
 
     @Inject
-    public DocksBars(PlaceManager placeManager,
-                     Event<UberfireDocksInteractionEvent> dockInteractionEvent,
-                     UberfireDocksContainer uberfireDocksContainer) {
-        this.placeManager = placeManager;
+    public DocksBars(Event<UberfireDocksInteractionEvent> dockInteractionEvent,
+                     UberfireDocksContainer uberfireDocksContainer,
+                     WorkbenchEntryPoint workbenchLayout) {
         this.dockInteractionEvent = dockInteractionEvent;
         this.uberfireDocksContainer = uberfireDocksContainer;
+        this.workbenchLayout = workbenchLayout;
     }
 
     public void setup() {
@@ -227,8 +226,8 @@ public class DocksBars {
     private void goToPlace(DocksExpandedBar expandedBar,
                            PlaceRequest placeRequest) {
         placeRequest.setUpdateLocationBar(false);
-        placeManager.goToDock(placeRequest,
-                              expandedBar.targetPanel());
+        workbenchLayout.openDock(placeRequest,
+                                 expandedBar.targetPanel());
     }
 
     private void setupCollapsedBar(UberfireDock targetDock,
