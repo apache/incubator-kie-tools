@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAct
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

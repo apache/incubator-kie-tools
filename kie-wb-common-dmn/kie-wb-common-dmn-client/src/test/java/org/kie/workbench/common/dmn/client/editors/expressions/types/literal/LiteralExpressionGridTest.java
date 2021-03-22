@@ -45,8 +45,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandle
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid.LITERAL_EXPRESSION_DEFAULT_WIDTH;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;

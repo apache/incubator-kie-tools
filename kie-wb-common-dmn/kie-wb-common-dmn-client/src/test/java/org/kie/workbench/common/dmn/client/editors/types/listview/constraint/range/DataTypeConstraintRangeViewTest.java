@@ -27,10 +27,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -90,8 +90,8 @@ public class DataTypeConstraintRangeViewTest {
                                                    startValueComponentSelector,
                                                    endValueComponentSelector));
 
-        when(startValueComponentSelector.makeSelectorForType(Matchers.any())).thenReturn(startValueComponent);
-        when(endValueComponentSelector.makeSelectorForType(Matchers.any())).thenReturn(endValueComponent);
+        when(startValueComponentSelector.makeSelectorForType(any())).thenReturn(startValueComponent);
+        when(endValueComponentSelector.makeSelectorForType(any())).thenReturn(endValueComponent);
         when(startValueComponent.getElement()).thenReturn(startValueElement);
         when(endValueComponent.getElement()).thenReturn(endValueElement);
 

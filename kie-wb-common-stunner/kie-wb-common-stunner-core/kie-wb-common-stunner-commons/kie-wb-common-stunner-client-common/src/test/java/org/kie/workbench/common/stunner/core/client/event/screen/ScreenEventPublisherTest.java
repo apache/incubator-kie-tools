@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;

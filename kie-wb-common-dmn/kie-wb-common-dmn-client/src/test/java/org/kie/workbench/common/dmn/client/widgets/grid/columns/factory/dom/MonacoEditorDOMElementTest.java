@@ -45,7 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static com.google.gwt.dom.client.Style.Unit.PCT;
 import static com.google.gwt.dom.client.Style.Unit.PX;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

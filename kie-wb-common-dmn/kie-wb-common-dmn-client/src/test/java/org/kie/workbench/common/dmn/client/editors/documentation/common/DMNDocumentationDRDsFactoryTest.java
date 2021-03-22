@@ -61,7 +61,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.UNDEFINED;
 import static org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationDRDsFactory.NONE;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

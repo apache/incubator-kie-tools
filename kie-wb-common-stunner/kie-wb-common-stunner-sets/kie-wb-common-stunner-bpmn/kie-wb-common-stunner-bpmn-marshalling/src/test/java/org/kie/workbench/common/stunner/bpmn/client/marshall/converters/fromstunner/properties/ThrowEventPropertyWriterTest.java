@@ -22,7 +22,7 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.mockito.Mockito.spy;

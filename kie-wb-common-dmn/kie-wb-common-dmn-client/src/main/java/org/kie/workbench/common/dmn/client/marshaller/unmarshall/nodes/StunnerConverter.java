@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsS
 import org.kie.workbench.common.dmn.api.property.dimensions.Width;
 import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.marshaller.converters.BusinessKnowledgeModelConverter;
 import org.kie.workbench.common.dmn.client.marshaller.converters.DecisionConverter;
 import org.kie.workbench.common.dmn.client.marshaller.converters.DecisionServiceConverter;
@@ -90,10 +91,11 @@ public class StunnerConverter {
     private TextAnnotationConverter textAnnotationConverter;
 
     @Inject
-    public StunnerConverter(final FactoryManager factoryManager) {
+    public StunnerConverter(final FactoryManager factoryManager,
+                            final DMNDiagramsSession diagramsSession) {
         this.bkmConverter = new BusinessKnowledgeModelConverter(factoryManager);
         this.decisionConverter = new DecisionConverter(factoryManager);
-        this.decisionServiceConverter = new DecisionServiceConverter(factoryManager);
+        this.decisionServiceConverter = new DecisionServiceConverter(factoryManager, diagramsSession);
         this.inputDataConverter = new InputDataConverter(factoryManager);
         this.knowledgeSourceConverter = new KnowledgeSourceConverter(factoryManager);
         this.textAnnotationConverter = new TextAnnotationConverter(factoryManager);

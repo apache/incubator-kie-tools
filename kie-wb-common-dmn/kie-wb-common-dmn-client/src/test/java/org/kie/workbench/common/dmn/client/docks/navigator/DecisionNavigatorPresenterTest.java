@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.docks.navigator;
 import java.util.ArrayList;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DomGlobal.SetTimeoutCallbackFn;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +29,20 @@ import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisio
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
-import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter.DEFER_DELAY;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -171,10 +178,6 @@ public class DecisionNavigatorPresenterTest {
         final ArrayList<DecisionNavigatorItem> items = new ArrayList<>();
         doReturn(items).when(presenter).getItems();
 
-        presenter.disableRefreshHandlers();
-        presenter.refreshTreeView();
-
-        presenter.enableRefreshHandlers();
         presenter.refreshTreeView();
 
         verify(treePresenter).setupItems(items);
@@ -182,9 +185,17 @@ public class DecisionNavigatorPresenterTest {
 
     @Test
     public void testRefresh() {
+
+        final ArgumentCaptor<Command> cmdCaptor = ArgumentCaptor.forClass(Command.class);
+
         doReturn(true).when(dmnDiagramsSession).isSessionStatePresent();
+        doNothing().when(presenter).defer(any());
 
         presenter.refresh();
+
+        verify(presenter).defer(cmdCaptor.capture());
+
+        cmdCaptor.getValue().execute();
 
         verify(presenter).refreshTreeView();
         verify(presenter).refreshComponentsView();
@@ -192,10 +203,15 @@ public class DecisionNavigatorPresenterTest {
 
     @Test
     public void testRefreshWhenSessionStateIsNotPresent() {
+
+        final ArgumentCaptor<Command> cmdCaptor = ArgumentCaptor.forClass(Command.class);
+
         doReturn(false).when(dmnDiagramsSession).isSessionStatePresent();
+        doNothing().when(presenter).defer(any());
 
         presenter.refresh();
 
+        verify(presenter, never()).defer(any());
         verify(presenter, never()).refreshTreeView();
         verify(presenter, never()).refreshComponentsView();
     }
@@ -218,11 +234,6 @@ public class DecisionNavigatorPresenterTest {
     @Test
     public void testOnRefreshDecisionComponents() {
 
-        presenter.disableRefreshHandlers();
-        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
-        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
-
-        presenter.enableRefreshHandlers();
         presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
         presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
 
@@ -230,16 +241,20 @@ public class DecisionNavigatorPresenterTest {
     }
 
     @Test
-    public void testOnElementAdded() {
+    public void testDefer() {
 
-        presenter.disableRefreshHandlers();
-        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
-        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
+        final Command cmd = mock(Command.class);
+        final ArgumentCaptor<SetTimeoutCallbackFn> timeoutCaptor = ArgumentCaptor.forClass(SetTimeoutCallbackFn.class);
 
-        presenter.enableRefreshHandlers();
-        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
-        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
+        doNothing().when(presenter).clearTimeout(anyInt());
+        doReturn(0d).when(presenter).setTimeout(any(), anyInt());
 
-        verify(decisionComponents, times(2)).refresh();
+        presenter.defer(cmd);
+
+        verify(presenter).clearTimeout(0d);
+        verify(presenter).setTimeout(timeoutCaptor.capture(), eq(DEFER_DELAY));
+
+        timeoutCaptor.getValue().onInvoke();
+        verify(cmd).execute();
     }
 }

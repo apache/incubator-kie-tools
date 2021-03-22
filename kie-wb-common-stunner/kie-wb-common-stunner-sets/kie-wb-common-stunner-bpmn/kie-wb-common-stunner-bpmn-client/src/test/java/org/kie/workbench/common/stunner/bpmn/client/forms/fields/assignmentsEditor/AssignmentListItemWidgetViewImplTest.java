@@ -50,7 +50,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType.INPUT;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType.OUTPUT;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anySet;

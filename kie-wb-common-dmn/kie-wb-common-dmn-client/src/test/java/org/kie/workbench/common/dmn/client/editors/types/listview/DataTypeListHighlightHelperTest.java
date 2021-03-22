@@ -42,7 +42,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListHighlightHelper.LEVEL_BACKGROUND_LINE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListHighlightHelper.LEVEL_HIGHLIGHT;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

@@ -44,8 +44,8 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.A
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

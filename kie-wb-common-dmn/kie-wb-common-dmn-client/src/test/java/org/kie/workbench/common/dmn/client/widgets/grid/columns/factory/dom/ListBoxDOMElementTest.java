@@ -27,7 +27,7 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueComma
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

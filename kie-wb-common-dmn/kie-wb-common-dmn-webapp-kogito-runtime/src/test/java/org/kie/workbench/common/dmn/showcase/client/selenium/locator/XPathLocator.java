@@ -16,10 +16,17 @@
 
 package org.kie.workbench.common.dmn.showcase.client.selenium.locator;
 
-public interface XPathLocator {
+import org.openqa.selenium.By;
+
+public interface XPathLocator extends DMNDesignerLocator {
 
     /**
      * @return xPath locator of an html element
      */
     String getXPathLocator();
+
+    @Override
+    default By locator() {
+        return By.xpath(getXPathLocator());
+    }
 }

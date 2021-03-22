@@ -21,7 +21,7 @@ import java.util.function.Function;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.HIGHLIGHT;

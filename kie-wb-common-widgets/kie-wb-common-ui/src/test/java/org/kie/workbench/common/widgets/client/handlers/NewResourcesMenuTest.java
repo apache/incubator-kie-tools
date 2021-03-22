@@ -35,7 +35,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)

@@ -49,8 +49,39 @@ public class PropertiesPanelXPathLocator implements XPathLocator {
                                                              propertyName));
     }
 
+    /**
+     * Locator of items under the specified group of Decision Service Details in the properties panel.
+     *
+     * @param detailsGroup group of decision service details
+     * @return xPath Locator of all items belonging the group
+     */
+    public static PropertiesPanelXPathLocator decisionServiceDetails(final DecisionServiceDetails detailsGroup) {
+        return new PropertiesPanelXPathLocator(String.format(".//div[@data-i18n-prefix='ParameterGroup.']/div[text()='%s']/../ul[@id='parameters']/li/div/span[@data-field='parameter-name']",
+                                                             detailsGroup.getLabel()));
+    }
+    public static PropertiesPanelXPathLocator propertiesPanelButton() {
+        return new PropertiesPanelXPathLocator(".//div[@data-ouia-component-id='docks-item-DiagramEditorPropertiesScreen']");
+    }
+
     @Override
     public String getXPathLocator() {
         return xPathLocator;
+    }
+
+    public enum DecisionServiceDetails {
+        INPUT_DATA("Input Data"),
+        ENCAPSULATED_DECISIONS("Encapsulated Decisions"),
+        OUTPUT_DECISIONS("Output Decisions");
+
+        private final String label;
+
+        DecisionServiceDetails(final String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
     }
 }

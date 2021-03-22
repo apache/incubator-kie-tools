@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TestDefi
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;

@@ -68,7 +68,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEdi
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor.TimerSettingsFieldEditorView.TimeDateTimePicker_Placeholder;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor.TimerSettingsFieldEditorView.TimeDate_Placeholder;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor.TimerSettingsFieldEditorView.TimeDuration_Placeholder;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

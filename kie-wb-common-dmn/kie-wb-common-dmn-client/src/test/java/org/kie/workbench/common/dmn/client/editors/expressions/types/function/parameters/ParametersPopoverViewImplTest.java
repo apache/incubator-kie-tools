@@ -39,7 +39,7 @@ import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;

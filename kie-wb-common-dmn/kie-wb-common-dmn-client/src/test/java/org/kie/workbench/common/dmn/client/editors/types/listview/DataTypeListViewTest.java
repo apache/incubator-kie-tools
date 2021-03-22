@@ -57,7 +57,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSuccessfullyImportedMessage_StrongMessage;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

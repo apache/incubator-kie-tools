@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.mockito.ArgumentCaptor;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,6 +42,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class EventPropertyWriterTest {
 
+    private static final String EMPTY_STRING = "";
+    private static final String NON_EMPTY_STRING = "nomEmpty";
     private static final String SAMPLE_STRUCTURE_REF = "my.var.ref";
     protected final static String elementId = "MY_ID";
     private final static String ERROR_CODE = "ERROR_CODE";
@@ -51,28 +53,25 @@ public abstract class EventPropertyWriterTest {
 
     @Test
     public void testMessageStructureRef() {
-        MessageRef messageRef = new MessageRef("someVar", "");
         List<ItemDefinition> itemDefinitions = new ArrayList<>();
         ItemDefinition itemDefinition = mock(ItemDefinition.class);
         itemDefinitions.add(itemDefinition);
 
         when(itemDefinition.getStructureRef()).thenReturn(SAMPLE_STRUCTURE_REF);
         when(propertyWriter.getItemDefinitions()).thenReturn(itemDefinitions);
-        propertyWriter.addMessage(messageRef);
-        assertEquals(messageRef.getStructure(), SAMPLE_STRUCTURE_REF);
 
-        messageRef.setStructure("nonEmpty");
-        propertyWriter.addMessage(messageRef);
-        assertEquals(messageRef.getStructure(), "nonEmpty");
+        MessageRef messageRef1 = new MessageRef("someVar", EMPTY_STRING);
+        propertyWriter.addMessage(messageRef1);
+        assertEquals(messageRef1.getStructure(), SAMPLE_STRUCTURE_REF);
+
+        MessageRef messageRef2 = new MessageRef("someVar", NON_EMPTY_STRING);
+        propertyWriter.addMessage(messageRef2);
+        assertEquals(messageRef2.getStructure(), SAMPLE_STRUCTURE_REF);
 
         itemDefinitions.clear();
-        messageRef.setStructure("");
-        propertyWriter.addMessage(messageRef);
-        assertEquals(messageRef.getStructure(), "");
-
-        messageRef.setStructure("nonEmpty");
-        propertyWriter.addMessage(messageRef);
-        assertEquals(messageRef.getStructure(), "nonEmpty");
+        MessageRef messageRef3 = new MessageRef("someVar", NON_EMPTY_STRING);
+        propertyWriter.addMessage(messageRef3);
+        assertEquals(messageRef3.getStructure(), EMPTY_STRING);
     }
 
     @Test

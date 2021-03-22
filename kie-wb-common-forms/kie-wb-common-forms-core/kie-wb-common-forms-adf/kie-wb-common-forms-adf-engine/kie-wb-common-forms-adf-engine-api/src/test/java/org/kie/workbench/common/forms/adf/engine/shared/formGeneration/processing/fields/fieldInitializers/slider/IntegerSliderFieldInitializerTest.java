@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processi
 
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.IntegerSliderDefinition;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IntegerSliderFieldInitializerTest extends AbstractSliderFieldInitializerTest<IntegerSliderFieldInitializer, IntegerSliderDefinition, Integer> {

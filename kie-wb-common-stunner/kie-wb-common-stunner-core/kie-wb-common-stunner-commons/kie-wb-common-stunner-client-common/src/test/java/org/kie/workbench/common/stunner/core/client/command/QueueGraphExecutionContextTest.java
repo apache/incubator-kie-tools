@@ -30,10 +30,10 @@ import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.context.impl.StatefulGraphEvaluationState;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionComma
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;

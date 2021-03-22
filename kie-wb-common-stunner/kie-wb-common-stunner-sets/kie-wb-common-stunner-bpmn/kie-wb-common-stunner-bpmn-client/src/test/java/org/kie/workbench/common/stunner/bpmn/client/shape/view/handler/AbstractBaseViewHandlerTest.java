@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

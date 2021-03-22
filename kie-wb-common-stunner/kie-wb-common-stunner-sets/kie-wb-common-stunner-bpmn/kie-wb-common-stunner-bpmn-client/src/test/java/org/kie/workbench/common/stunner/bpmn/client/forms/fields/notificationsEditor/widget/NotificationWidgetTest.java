@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ReflectionUtilsTest;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;

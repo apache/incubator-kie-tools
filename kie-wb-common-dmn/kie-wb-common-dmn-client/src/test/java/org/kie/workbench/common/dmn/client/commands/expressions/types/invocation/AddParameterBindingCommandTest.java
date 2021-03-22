@@ -55,7 +55,7 @@ import static org.junit.Assert.assertNull;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper.ROW_NUMBER_COLUMN_INDEX;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;

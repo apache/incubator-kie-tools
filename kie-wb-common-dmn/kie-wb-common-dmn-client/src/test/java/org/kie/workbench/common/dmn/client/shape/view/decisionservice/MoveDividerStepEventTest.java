@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)

@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
@@ -38,7 +38,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditio
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionParamPresenter.LONG_NUMERIC_VALUE_EXPECTED_ERROR;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionParamPresenter.PARAM_MUST_BE_COMPLETED_ERROR;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.ConditionParamPresenter.SHORT_NUMERIC_VALUE_EXPECTED_ERROR;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

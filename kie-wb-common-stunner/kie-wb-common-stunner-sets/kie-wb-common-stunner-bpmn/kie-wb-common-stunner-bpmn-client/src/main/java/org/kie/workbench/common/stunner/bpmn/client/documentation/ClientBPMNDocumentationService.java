@@ -128,7 +128,7 @@ import org.uberfire.ext.editor.commons.client.template.mustache.ClientMustacheTe
 @Dependent
 public class ClientBPMNDocumentationService implements BPMNDocumentationService {
 
-    private static Logger LOGGER = Logger.getLogger(ClientBPMNDocumentationService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClientBPMNDocumentationService.class.getName());
 
     private static final Map<String, Boolean> ignoredPropertiesIds = buildIgnoredPropertiesIds();
     public static final int ICON_HEIGHT = 20;
@@ -144,7 +144,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
     private final DOMGlyphRenderers glyphRenderer;
     private final ClientTranslationService translationService;
     private final ManagedInstance<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
-    private final DefinitionHelper definitionHelper;
+    protected final DefinitionHelper definitionHelper;
     private final PropertyDecorators propertyDecorators;
 
     @Inject
@@ -474,7 +474,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                 .collect(Collectors.toMap(id -> id, id -> Boolean.TRUE));
     }
 
-    private class DefinitionHelper {
+    protected class DefinitionHelper {
 
         final Map<Class, Function<Object, Optional<String>>> iconFactory;
         final Map<Class, Function<Object, Optional<String>>> categoryFactory;
@@ -508,8 +508,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                     .filter(glyphImg -> glyphImg instanceof ImageStripGlyph)
                     .map(glyphImg -> (ImageStripGlyph) glyphImg)
                     .map(glyphImg -> glyphRenderer.render(glyphImg, ICON_WIDTH, ICON_HEIGHT))
-                    .map(element -> element.getElement())
-                    .map(element -> element.getInnerHTML());
+                    .map(IsElement::getElement)
+                    .map(HTMLElement::getInnerHTML);
         }
 
         private Optional<String> getServiceTaskIcon(Object definition) {
@@ -568,11 +568,13 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                             .filter(Objects::nonNull)
                             .map(WorkItemDefinition::getIconDefinition)
                             .map(IconDefinition::getIconData)
-                            .map(data -> createImageTag(data)).orElse(""));
+                            .map(this::createImageTag).orElse(""));
         }
 
-        private String createImageTag(String data) {
-            return "<img src=\"" + data + "\">";
+        protected String createImageTag(String data) {
+            return "<div style=\"width:" + ICON_WIDTH + "px; height: " + ICON_HEIGHT + "px\">" +
+                    "<img src=\"" + data + "\" style=\"max-width: 100%; max-height: 100%\">" +
+                    "</div>";
         }
     }
 }

@@ -55,8 +55,8 @@ import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataType
 import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.MANAGE_BUTTON_SELECTOR;
 import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.TAB_KEY;
 import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.TYPE_SELECTOR_BUTTON_SELECTOR;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;

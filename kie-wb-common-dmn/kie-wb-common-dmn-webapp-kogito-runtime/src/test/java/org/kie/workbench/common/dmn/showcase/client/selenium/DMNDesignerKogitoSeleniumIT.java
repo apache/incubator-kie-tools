@@ -35,10 +35,8 @@ import org.kie.workbench.common.dmn.showcase.client.selenium.locator.ContextMenu
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.DecisionNavigatorXPathLocator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.EditorXPathLocator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.PropertiesPanelXPathLocator;
-import org.kie.workbench.common.dmn.showcase.client.selenium.locator.XPathLocator;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -57,20 +55,13 @@ import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrume
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMNDI;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.FEEL;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
-import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.xpath;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 /**
  * Selenium test for DMN Designer - client site marshalling version
  * The Designer is represented by single webpage - index.html
  */
 public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
-
-    private static final String DECISION_NAVIGATOR_EXPANDED = "expanded-docks-bar-W";
-
-    private static final String NOT_PRESENT_IN_NAVIGATOR = "'%s' was not present in the decision navigator";
 
     private static final Map<String, String> NAMESPACES = new Maps.Builder<String, String>()
             .put(DMN.getPrefix(), DMN.getUri())
@@ -102,9 +93,9 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     public void testAceEditorForInvalidContent() {
         setContent("<!!!invalid!!!>");
 
-        waitOperation()
-                .withMessage("If invalid dmn is loaded, ace editor needs to be shown")
-                .until(element(EditorXPathLocator.aceEditor()));
+        waitUtils.waitUntilElementIsVisible(
+                EditorXPathLocator.aceEditor(),
+                "If invalid dmn is loaded, ace editor needs to be shown");
     }
 
     @Test
@@ -112,8 +103,8 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         final String expected = loadResource("basic-model.xml");
         setContent(expected);
 
-        assertDiagramNodeIsPresentInDecisionNavigator("CurrentIndex");
-        assertDiagramNodeIsPresentInDecisionNavigator("NextIndex");
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("CurrentIndex"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("NextIndex"));
 
         final String actual = getContent();
         assertThat(actual).isNotBlank();
@@ -450,33 +441,11 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
                 .withNamespaceContext(NAMESPACES)
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
-                                  "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
-                                  "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']" +
-                                  "/dmn:input[@id='_FCDB0235-3C5C-442D-B268-C6B34FC9967F']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
-                                  "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']" +
-                                  "/dmn:output[@id='_3C2E81E3-A8F7-4600-8FC1-7FACB5F85CB9']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
-                                  "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']" +
-                                  "/dmn:rule[@id='_2D2D5ABD-3C71-40E9-B493-73CDA49B3F53']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
-                                  "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']" +
-                                  "/dmn:output" +
-                                  "/dmn:defaultOutputEntry" +
-                                  "/dmn:text[text()='" + defaultDecisionTableOutput + "']");
+                                  "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']")
+                .containsAnyNodeHavingXPath("//dmn:input[@id='_FCDB0235-3C5C-442D-B268-C6B34FC9967F']")
+                .containsAnyNodeHavingXPath("//dmn:output[@id='_3C2E81E3-A8F7-4600-8FC1-7FACB5F85CB9']")
+                .containsAnyNodeHavingXPath("//dmn:rule[@id='_2D2D5ABD-3C71-40E9-B493-73CDA49B3F53']")
+                .containsAnyNodeHavingXPath("//dmn:output/dmn:defaultOutputEntry/dmn:text[text()='" + defaultDecisionTableOutput + "']");
     }
 
     @Test
@@ -622,6 +591,7 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     @Test
     public void testDecisionExpressionInvocation() throws Exception {
         final String expected = loadResource("decision-expression-invocation.xml");
+        setContent(expected);
         setContent(expected);
 
         final String actual = getContent();
@@ -2349,23 +2319,55 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
                                   "/dmn:text[text()='the description']");
     }
 
-    private void assertDiagramNodeIsPresentInDecisionNavigator(final String nodeName) {
-        expandDecisionNavigatorDock();
-        waitOperation()
-                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, nodeName))
-                .until(element(DecisionNavigatorXPathLocator.node(nodeName)));
-        collapseDecisionNavigatorDock();
+    /**
+     * This test increases KOGITO-4265 coverage
+     * Input parameters order should be the same as in the Properties panel so in the DMN file
+     */
+    @Test
+    public void testDecisionServiceParametersOrder() throws Exception {
+        final String decisionService = "DecisionService-1";
+        final String expected = loadResource("decision-service-three-inputs.xml");
+
+        final String xInputHref = "#_51D20318-4883-49DC-AE68-42131A20F8B3";
+        final String yInputHref = "#_4D49912C-2D15-4C30-A445-E0431AB5AB9C";
+        final String zInputHref = "#_65560FB5-7AF0-4FCC-A8E8-8AEA2E307ABB";
+
+        // assert original order
+        assertDecisionServiceParametersOrder(expected, zInputHref, xInputHref, yInputHref);
+
+        setContent(expected);
+
+        decisionNavigator.selectItem(DecisionNavigatorXPathLocator.node(decisionService));
+
+        expandPropertiesPanelDock();
+
+        List<WebElement> inputs = waitUtils.waitUntilAllElementsAreVisible(
+                PropertiesPanelXPathLocator.decisionServiceDetails(PropertiesPanelXPathLocator.DecisionServiceDetails.INPUT_DATA),
+                "Input Data decision service details not found in properties panel");
+
+        // assert order in UI is same as in the source
+        assertThat(inputs)
+                .extracting(in -> in.getText())
+                .containsExactly("Z", "X", "Y");
+
+        // assert order doesn't change when saving
+        final String actual = getContent();
+        assertDecisionServiceParametersOrder(actual, zInputHref, xInputHref, yInputHref);
+    }
+
+    private void assertDecisionServiceParametersOrder(final String dmnModelXml, final String... inputHrefs) {
+        XmlAssert.assertThat(dmnModelXml)
+                .withNamespaceContext(NAMESPACES)
+                .nodesByXPath("/dmn:definitions/dmn:decisionService/dmn:inputData")
+                .extracting(n -> n.getAttributes().getNamedItem("href").getNodeValue())
+                .containsExactly(inputHrefs);
     }
 
     /**
      * This method serves as a reproducer for KOGITO-1181
      */
     private void setDecisionTableDefaultOutput(final DecisionTableSeleniumModel decisionTable) {
-        expandDecisionNavigatorDock();
-        waitOperation()
-                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, decisionTable.getName()))
-                .until(element(DecisionNavigatorXPathLocator.decisionTable(decisionTable.getName())))
-                .click();
+        decisionNavigator.selectItem(DecisionNavigatorXPathLocator.decisionTable(decisionTable.getName()));
 
         expandPropertiesPanelDock();
 
@@ -2378,19 +2380,13 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
 
         expandPropertiesPanelGroup("Default output");
         fillInProperty("Default output value", decisionTable.getDefaultOutput());
-
-        collapseDecisionNavigatorDock();
     }
 
     /**
      * This method extends coverage of DROOLS-5131
      */
     private void appendBoxedListExpressionItem(final ListSeleniumModel list, final String item) {
-        expandDecisionNavigatorDock();
-        waitOperation()
-                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, list.getName()))
-                .until(element(DecisionNavigatorXPathLocator.list(list.getName())))
-                .click();
+        decisionNavigator.selectItem(DecisionNavigatorXPathLocator.list(list.getName()));
 
         final WebElement editor = getEditor();
         for (int i = 0; i < list.getItems().size() - 1; i++) {
@@ -2400,9 +2396,8 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         // invoke context menu for adding an item
         editor.sendKeys(Keys.CONTROL, Keys.SPACE);
 
-        waitOperation()
-                .withMessage(format("Insert below entry in context menu not available"))
-                .until(element(ContextMenuXPathLocator.insertBelow()))
+        waitUtils.waitUntilElementIsVisible(ContextMenuXPathLocator.insertBelow(),
+                                            "Insert below entry in context menu not available")
                 .click();
 
         // move to the new cell and start edit mode
@@ -2410,25 +2405,16 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
 
         // put in new value and finish edit mode
         getAutocompleteEditor().sendKeys(item, Keys.TAB);
-
-        collapseDecisionNavigatorDock();
     }
 
     private void assertBKMFunctionCanBeOpened(final String nodeName) {
-        expandDecisionNavigatorDock();
-        waitOperation()
-                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, nodeName))
-                .until(element(DecisionNavigatorXPathLocator.function(nodeName)))
-                .click();
+        decisionNavigator.selectItem(DecisionNavigatorXPathLocator.function(nodeName));
 
-        assertThat(waitOperation()
-                           .withMessage("Expression editor can not be opened")
-                           .until(element(EditorXPathLocator.expressionEditorTitle()))
+        assertThat(waitUtils.waitUntilElementIsVisible(EditorXPathLocator.expressionEditorTitle(),
+                                                       "Expression editor can not be opened")
                            .getText())
                 .as("Expression editor was not opened successfully")
                 .isEqualTo(nodeName);
-
-        collapseDecisionNavigatorDock();
     }
 
     private <T> T twice(final Supplier<T> supplier) {
@@ -2436,50 +2422,33 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         return supplier.get();
     }
 
-    private void expandDecisionNavigatorDock() {
-        decisionNavigatorExpandButton.click();
-    }
-
     private void expandPropertiesPanelDock() {
         propertiesPanel.findElement(xpath(".//button")).click();
     }
 
     private void expandPropertiesPanelGroup(final String groupName) {
-        waitOperation()
-                .until(element(PropertiesPanelXPathLocator.group(groupName)))
+        waitUtils.waitUntilElementIsVisible(PropertiesPanelXPathLocator.group(groupName),
+                                            format("Group '%s' not found in Properties panel", groupName))
                 .click();
     }
 
     private void fillInProperty(final String propertyName, final String value) {
-        waitOperation()
-                .until(element(PropertiesPanelXPathLocator.property(propertyName)))
-                .sendKeys(value);
-    }
-
-    private void collapseDecisionNavigatorDock() {
-        final WebElement expandedDecisionNavigator = waitOperation()
-                .withMessage("Unable to locate expanded decision navigator dock")
-                .until(visibilityOfElementLocated(className(DECISION_NAVIGATOR_EXPANDED)));
-
-        expandedDecisionNavigator.findElement(className("fa-chevron-left")).click();
+        waitUtils.waitUntilElementIsVisible(PropertiesPanelXPathLocator.property(propertyName),
+                                            format("Property '%s' not found in Properties panel", propertyName))
+                .sendKeys(value + Keys.TAB); // TAB is used to flush the changes
     }
 
     private WebElement getEditor() {
-        final WebElement editor = waitOperation()
-                .until(presenceOfElementLocated(xpath("//div[@class='kie-dmn-expression-editor']/div/div/input")));
+        final WebElement editor = waitUtils.waitUntilElementIsPresent(EditorXPathLocator.expressionEditor(),
+                                                                      "Expression editor probably not activated");
 
         return editor;
     }
 
     private WebElement getAutocompleteEditor() {
-        final WebElement editor = waitOperation()
-                .until(presenceOfElementLocated(
-                        xpath("//div[contains(@class,'monaco-editor')]//textarea")));
+        final WebElement editor = waitUtils.waitUntilElementIsPresent(EditorXPathLocator.expressionAutocompleteEditor(),
+                                                                      "Autocompletion not shown");
 
         return editor;
-    }
-
-    private ExpectedCondition<WebElement> element(final XPathLocator xpathLocator) {
-        return visibilityOfElementLocated(xpath(xpathLocator.getXPathLocator()));
     }
 }

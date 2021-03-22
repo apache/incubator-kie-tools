@@ -133,17 +133,17 @@ public class DMNMarshaller {
     private DMNDiagramsSession dmnDiagramsSession;
 
     protected DMNMarshaller() {
-        this(null);
+        this(null, null);
     }
 
     @Inject
-    public DMNMarshaller(final FactoryManager factoryManager) {
+    public DMNMarshaller(final FactoryManager factoryManager, final DMNDiagramsSession dmnDiagramsSession) {
         this.inputDataConverter = new InputDataConverter(factoryManager);
         this.decisionConverter = new DecisionConverter(factoryManager);
         this.bkmConverter = new BusinessKnowledgeModelConverter(factoryManager);
         this.knowledgeSourceConverter = new KnowledgeSourceConverter(factoryManager);
         this.textAnnotationConverter = new TextAnnotationConverter(factoryManager);
-        this.decisionServiceConverter = new DecisionServiceConverter(factoryManager);
+        this.decisionServiceConverter = new DecisionServiceConverter(factoryManager, dmnDiagramsSession);
     }
 
     @PostConstruct

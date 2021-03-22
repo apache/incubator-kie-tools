@@ -32,7 +32,7 @@ import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

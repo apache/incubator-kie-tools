@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.workitem;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
@@ -30,50 +34,30 @@ import static org.junit.Assert.assertTrue;
 @RunWith(GwtMockitoTestRunner.class)
 public class WorkItemDefinitionClientParserTest {
 
-    final static String WID = "  [\n" +
-            "    [\n" +
-            "      \"name\" : \"Email\",\n" +
-            "      \"parameters\" : [\n" +
-            "        \"From\" : new StringDataType(),\n" +
-            "        \"To\" : new StringDataType(),\n" +
-            "        \"Subject\" : new StringDataType(),\n" +
-            "        \"Body\" : new StringDataType()\n" +
-            "      ],\n" +
-            "      \"displayName\" : \"Email\",\n" +
-            "      \"icon\" : \"defaultemailicon.gif\"\n" +
-            "    ],\n" +
-            "    [\n" +
-            "      \"name\" : \"Rest\",\n" +
-            "      \"parameters\" : [\n" +
-            "          \"ContentData\" : new StringDataType(),\n" +
-            "          \"Url\" : new StringDataType(),\n" +
-            "          \"Method\" : new StringDataType(),\n" +
-            "          \"ConnectTimeout\" : new StringDataType(),\n" +
-            "          \"ReadTimeout\" : new StringDataType(),\n" +
-            "          \"Username\" : new StringDataType(),\n" +
-            "          \"Password\" : new StringDataType()\n" +
-            "      ],\n" +
-            "      \"results\" : [\n" +
-            "          \"Result\" : new ObjectDataType(),\n" +
-            "      ],\n" +
-            "      \"displayName\" : \"REST\",\n" +
-            "      \"icon\" : \"defaultservicenodeicon.png\"\n" +
-            "    ],\n" +
-            "     [\n" +
-            "      \"name\" : \"Milestone\",\n" +
-            "      \"parameters\" : [\n" +
-            "          \"Condition\" : new StringDataType()\n" +
-            "      ],\n" +
-            "      \"displayName\" : \"Milestone\",\n" +
-            "      \"icon\" : \"defaultmilestoneicon.png\",\n" +
-            "      \"category\" : \"Milestone\"\n" +
-            "      ]\n" +
-            "  ]";
+    private static final String MAIN_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/maintest.wid";
+    private static final String MISSING_COLON_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/missingColon.wid";
+    private static final String MISSING_NAME_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/missingName.wid";
+    private static final String MISSING_DISPLAY_NAME_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/missingDisplayName.wid";
+    private static final String MISSING_ICON_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/missingIcon.wid";
+    private static final String MISSING_PARAMETERS_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/missingParameters.wid";
+    private static final String ALL_PARAMETERS_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/allparametersPresent.wid";
+    private static final String QUOTAS_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/quotas.wid";
+    private static final String INVALID_START_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/invalidWidStart.wid";
+    private static final String SECOND_WID_IS_INCORRECT_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/secondWidIsIncorrect.wid";
 
     final static String EMAIL_WID_EXTRACTED_PARAMETERS = "|Body:String,From:String,Subject:String,To:String|";
+    final static String EMAIL_WID_RETURN_EXTRACTED_PARAMETERS = "|Result:java.lang.Object|";
+
+    final static String INCIDENT_WID_EXTRACTED_PARAMETERS = "|Incident:java.lang.Object|";
+
+    final static String INCIDENT_WID_EXTRACTED_RETURN_PARAMETERS = "|IncidentPriority:java.lang.Object|";
 
     final static String REST_WID_EXTRACTED_PARAMETERS = "|ConnectTimeout:String,ContentData:String,Method:String," +
             "Password:String,ReadTimeout:String,Url:String,Username:String|";
+
+    final static String REST_WID_RETURN_EXTRACTED_PARAMETERS = "|Result:java.lang.Object|";
+
+    final static private String ICON_64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAYK0lEQVR4nO3de9z1+Vzv8dcMcxCjDMMwjHMOUw5D52ypFMmmaJuaKFTa6YBSm+hgt4lIOmt33nJKg8gWiYrHVDpK2zk1coxhNDOYw93+Y/VoYua+5z5c1/VZa/2ez8fj9b+xfuv9Xfd1rev3KwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA23rWrU6qTqxOr42f/5wAAR+rY6ubV3apvrn6o+uXqFdWbqwuqf7uCLqk+VL21em31gurp1fdUX13dojp67/4zAIBPdUx1p+ph1dOq367+rHpvta8rPuB3oo9Vf1E9s/qW6jbVUbv83woAi3WL6huqn6rObnUQ79Yhf6h9oHpuq582XHeX/vsBYOud1OpH7k+oXt7qx/LTh/zBdmn1J9V35cMAABzQcdW9Wv2e/p3NH+I71cXVi//9v813BwCgukb1gFY";
 
     @Test
     public void emptyWidsTest() {
@@ -83,51 +67,198 @@ public class WorkItemDefinitionClientParserTest {
         assertTrue(defs.isEmpty());
         defs = WorkItemDefinitionClientParser.parse("[\n]");
         assertTrue(defs.isEmpty());
+        defs = WorkItemDefinitionClientParser.parse("[\n[\n]\n]");
+        assertTrue(defs.isEmpty());
         defs = WorkItemDefinitionClientParser.parse(null);
+        assertTrue(defs.isEmpty());
+        defs = WorkItemDefinitionClientParser.parse("");
         assertTrue(defs.isEmpty());
     }
 
     @Test
     public void testWidParseLineFeed() {
-        testWidParse(WID);
+        String widFile = loadTestFile(MAIN_WID_FILE);
+        testWidParse(widFile);
     }
 
     @Test
     public void testWidParseCarriageReturn() {
-        testWidParse(WID.replace("\n", "\r"));
+        String widFile = loadTestFile(MAIN_WID_FILE);
+        testWidParse(widFile.replace("\n", "\r"));
     }
 
     @Test
     public void testWidParseCarriageReturnAndLineFeed() {
-        testWidParse(WID.replace("\n", "\r\n"));
+        String widFile = loadTestFile(MAIN_WID_FILE);
+        testWidParse(widFile.replace("\n", "\r\n"));
+    }
+
+    @Test
+    public void testMissingName() {
+        String widFile = loadTestFile(MISSING_NAME_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(1, defs.size());
+        WorkItemDefinition wid = defs.get(0);
+        assertEquals("", wid.getName());
+        assertEquals("Display Email", wid.getDisplayName());
+        assertEquals("defaultemailicon.gif", wid.getIconDefinition().getUri());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid.getCategory());
+        assertEquals("Some documentation", wid.getDocumentation());
+        assertTrue(wid.getResults().isEmpty());
+        assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid.getParameters());
+    }
+
+    @Test
+    public void testMissingDisplayName() {
+        String widFile = loadTestFile(MISSING_DISPLAY_NAME_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(1, defs.size());
+        WorkItemDefinition wid = defs.get(0);
+        assertEquals("Email", wid.getName());
+        assertEquals("", wid.getDisplayName());
+        assertEquals("defaultemailicon.gif", wid.getIconDefinition().getUri());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid.getCategory());
+        assertEquals("Some documentation", wid.getDocumentation());
+        assertTrue(wid.getResults().isEmpty());
+        assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid.getParameters());
+    }
+
+    @Test
+    public void testAllParametersPresent() {
+        String widFile = loadTestFile(ALL_PARAMETERS_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(1, defs.size());
+        WorkItemDefinition wid = defs.get(0);
+        assertEquals("Email", wid.getName());
+        assertEquals("Display Email", wid.getDisplayName());
+        assertEquals("defaultemailicon.gif", wid.getIconDefinition().getUri());
+        assertEquals("new org.package.DefaultHandler()", wid.getDefaultHandler());
+        assertEquals("Some description", wid.getDescription());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid.getCategory());
+        assertEquals("Some documentation", wid.getDocumentation());
+        assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid.getParameters());
+        assertEquals(EMAIL_WID_RETURN_EXTRACTED_PARAMETERS, wid.getResults());
+    }
+
+    @Test
+    public void testQuotas() {
+        String widFile = loadTestFile(QUOTAS_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(1, defs.size());
+        WorkItemDefinition wid = defs.get(0);
+        assertEquals("Email", wid.getName());
+        assertEquals("Display Email", wid.getDisplayName());
+        assertEquals("defaultemailicon.gif", wid.getIconDefinition().getUri());
+        assertEquals("new org.package.DefaultHandler()", wid.getDefaultHandler());
+        assertEquals("Some \"description\"", wid.getDescription());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid.getCategory());
+        assertEquals("Some \'documentation\'", wid.getDocumentation());
+        assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid.getParameters());
+        assertEquals(EMAIL_WID_RETURN_EXTRACTED_PARAMETERS, wid.getResults());
+    }
+
+    @Test
+    public void testMissingParameters() {
+        String widFile = loadTestFile(MISSING_PARAMETERS_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(1, defs.size());
+        WorkItemDefinition wid1 = defs.get(0);
+        assertEquals("Email", wid1.getName());
+        assertEquals("Display Email", wid1.getDisplayName());
+        assertEquals("defaultemailicon.gif", wid1.getIconDefinition().getUri());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid1.getCategory());
+        assertEquals("Some documentation", wid1.getDocumentation());
+        assertTrue(wid1.getResults().isEmpty());
+        assertTrue(wid1.getParameters().isEmpty());
+    }
+
+    @Test
+    public void testMissingIcon() {
+        String widFile = loadTestFile(MISSING_ICON_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(1, defs.size());
+        WorkItemDefinition wid1 = defs.get(0);
+        assertEquals("Email", wid1.getName());
+        assertEquals("Display Email", wid1.getDisplayName());
+        assertEquals("", wid1.getIconDefinition().getUri());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid1.getCategory());
+        assertEquals("Some documentation", wid1.getDocumentation());
+        assertTrue(wid1.getResults().isEmpty());
+        assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid1.getParameters());
+    }
+
+    @Test
+    public void testInvalidWidMissingColon() {
+        String widFile = loadTestFile(MISSING_COLON_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(0, defs.size());
+        // We can add some logging invocation test when KOGITO-3846 will be done
+    }
+
+    @Test
+    public void testInvalidWidStart() {
+        String widFile = loadTestFile(INVALID_START_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(0, defs.size());
+        // We can add some logging invocation test when KOGITO-3846 will be done
+    }
+
+    @Test
+    public void testSecondWidIsIncorrect() {
+        String widFile = loadTestFile(SECOND_WID_IS_INCORRECT_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        // Despite of third WID is correct, parser failed on the second one so can't proceed and only returns first one
+        assertEquals(1, defs.size());
+        WorkItemDefinition wid1 = defs.get(0);
+        assertEquals("Email", wid1.getName());
+        assertEquals("Display Email", wid1.getDisplayName());
+        assertEquals("Some documentation", wid1.getDocumentation());
     }
 
     private void testWidParse(final String wid) {
         List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(wid);
-        assertEquals(3, defs.size());
+        assertEquals(4, defs.size());
         WorkItemDefinition wid1 = defs.get(0);
         assertEquals("Email", wid1.getName());
-        assertEquals("Email", wid1.getDisplayName());
+        assertEquals("Display Email", wid1.getDisplayName());
         assertEquals("defaultemailicon.gif", wid1.getIconDefinition().getUri());
         assertEquals(BPMNCategories.CUSTOM_TASKS, wid1.getCategory());
+        assertEquals("Some documentation", wid1.getDocumentation());
         assertTrue(wid1.getResults().isEmpty());
         assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid1.getParameters());
 
         WorkItemDefinition wid2 = defs.get(1);
-        assertEquals("Rest", wid2.getName());
-        assertEquals("REST", wid2.getDisplayName());
-        assertEquals("defaultservicenodeicon.png", wid2.getIconDefinition().getUri());
-        assertTrue(wid1.getResults().isEmpty());
-
-        assertEquals(REST_WID_EXTRACTED_PARAMETERS, wid2.getParameters());
-        assertEquals("|Result:java.lang.Object|", wid2.getResults());
+        assertEquals("IncidentPriorityService", wid2.getName());
+        assertEquals("Incident Priority Service", wid2.getDisplayName());
+        assertEquals("incidentpriorityicon.png", wid2.getIconDefinition().getUri());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid2.getCategory());
+        assertEquals(INCIDENT_WID_EXTRACTED_RETURN_PARAMETERS, wid2.getResults());
+        assertEquals(INCIDENT_WID_EXTRACTED_PARAMETERS, wid2.getParameters());
 
         WorkItemDefinition wid3 = defs.get(2);
+        assertEquals("Rest", wid3.getName());
+        assertEquals("REST", wid3.getDisplayName());
+        assertEquals("defaultservicenodeicon.png", wid3.getIconDefinition().getUri());
+        assertEquals(REST_WID_RETURN_EXTRACTED_PARAMETERS, wid3.getResults());
+        assertEquals(REST_WID_EXTRACTED_PARAMETERS, wid3.getParameters());
 
-        assertEquals("Milestone", wid3.getName());
-        assertEquals("Milestone", wid3.getDisplayName());
-        assertEquals("defaultmilestoneicon.png", wid3.getIconDefinition().getUri());
-        assertEquals("|Condition:String|", wid3.getParameters());
-        assertEquals("Milestone", wid3.getCategory());
+        WorkItemDefinition wid4 = defs.get(3);
+
+        assertEquals("Milestone", wid4.getName());
+        assertEquals("Milestone", wid4.getDisplayName());
+        assertEquals(ICON_64, wid4.getIconDefinition().getUri());
+        assertEquals(ICON_64, wid4.getIconDefinition().getIconData());
+        assertEquals("|Condition:String|", wid4.getParameters());
+        assertEquals("Milestone", wid4.getCategory());
+    }
+
+    public static String loadTestFile(String path) {
+        return new BufferedReader(
+                new InputStreamReader(
+                        Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(path))
+                )
+        )
+                .lines()
+                .collect(Collectors.joining("\n"));
     }
 }

@@ -54,7 +54,7 @@ import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyCard
 import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnection;
 import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnectorCardinality;
 import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyContainment;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
