@@ -19,18 +19,24 @@ import { Envelope } from "@kogito-tooling/envelope";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { PingPongChannelApi, PingPongEnvelopeApi } from "../api";
-import { PingPongFactory } from "./PingPongFactory";
-import { PingPongEnvelopeContext } from "./PingPongEnvelopeContext";
-import { PingPongEnvelopeView, PingPongEnvelopeViewApi } from "./PingPongEnvelopeView";
-import { PingPongEnvelopeApiImpl } from "./PingPongEnvelopeApiImpl";
+import { PingPongFactory } from "../envelope/PingPongFactory";
+import { PingPongEnvelopeContext } from "../envelope/PingPongEnvelopeContext";
+import { PingPongEnvelopeView, PingPongEnvelopeViewApi } from "../envelope/PingPongEnvelopeView";
+import { PingPongEnvelopeApiImpl } from "../envelope/PingPongEnvelopeApiImpl";
+import { EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kogito-tooling/envelope";
 
-export function init(args: { container: HTMLElement; bus: EnvelopeBus; pingPongViewFactory: PingPongFactory }) {
+export function init(args: {
+  config: EnvelopeDivConfig | EnvelopeIFrameConfig;
+  container: HTMLElement;
+  bus: EnvelopeBus;
+  pingPongViewFactory: PingPongFactory;
+}) {
   const envelope = new Envelope<
     PingPongEnvelopeApi,
     PingPongChannelApi,
     PingPongEnvelopeViewApi,
     PingPongEnvelopeContext
-  >(args.bus);
+  >(args.bus, args.config);
 
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<PingPongEnvelopeViewApi>();

@@ -166,6 +166,7 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
       undo: () => Promise.resolve(undo()),
       redo: () => Promise.resolve(redo()),
       getElementPosition: (selector: string) => Promise.resolve(DEFAULT_RECT),
+      validate: () => Promise.resolve([])
     };
   });
 

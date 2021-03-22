@@ -25,7 +25,8 @@ import { Base64PngPage } from "./Pages/Base64Png/Base64PngPage";
 import { BpmnPage } from "./Pages/KogitoEditors/BpmnPage";
 import { DmnPage } from "./Pages/KogitoEditors/DmnPage";
 import { TodoListViewPage } from "./Pages/TodoList/TodoListViewPage";
-import { PingPongViewsPage } from "./Pages/PingPong/PingPongViewsPage";
+import { PingPongIFrameViewsPage } from "./Pages/PingPong/PingPongIFrameViewsPage";
+import { PingPongDivViewsPage } from "./Pages/PingPong/PingPongDivViewsPage";
 import { Home } from "./Home";
 import "../static/resources/styles.css";
 import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandaloneEditorPage";
@@ -35,7 +36,8 @@ enum Location {
   DMN = "/editor/dmn",
   BASE46PNG = "/editor/base64png",
   TODO_LIST = "/page/todo-list",
-  PING_PONG_PAGES = "/page/my-custom-page-impls",
+  PING_PONG_IFRAME_PAGES = "/page/ping-pong-iframe-pages",
+  PING_PONG_DIV_PAGES = "/page/ping-pong-div-pages",
   STANDALONE_EDITORS = "/page/standalone-editors",
   HOME = "/",
 }
@@ -77,8 +79,11 @@ export function App() {
                   <NavItem itemId={Location.TODO_LIST} isActive={location === Location.TODO_LIST}>
                     <Link to={Location.TODO_LIST}>'To do' list View</Link>
                   </NavItem>
-                  <NavItem itemId={Location.PING_PONG_PAGES} isActive={location === Location.PING_PONG_PAGES}>
-                    <Link to={Location.PING_PONG_PAGES}>Ping-Pong Views</Link>
+                  <NavItem itemId={Location.PING_PONG_IFRAME_PAGES} isActive={location === Location.PING_PONG_IFRAME_PAGES}>
+                    <Link to={Location.PING_PONG_IFRAME_PAGES}>Ping-Pong IFrame Views</Link>
+                  </NavItem>
+                  <NavItem itemId={Location.PING_PONG_DIV_PAGES} isActive={location === Location.PING_PONG_DIV_PAGES}>
+                    <Link to={Location.PING_PONG_DIV_PAGES}>Ping-Pong Div Views</Link>
                   </NavItem>
                   <NavItem itemId={Location.STANDALONE_EDITORS} isActive={location === Location.STANDALONE_EDITORS}>
                     <Link to={Location.STANDALONE_EDITORS}>DMN Standalone Editor</Link>
@@ -105,8 +110,11 @@ export function App() {
           <Route path={Location.TODO_LIST}>
             <TodoListViewPage />
           </Route>
-          <Route path={Location.PING_PONG_PAGES}>
-            <PingPongViewsPage />
+          <Route path={Location.PING_PONG_IFRAME_PAGES}>
+            <PingPongIFrameViewsPage />
+          </Route>
+          <Route path={Location.PING_PONG_DIV_PAGES}>
+            <PingPongDivViewsPage />
           </Route>
           <Route path={Location.STANDALONE_EDITORS}>
             <DmnStandaloneEditorPage />

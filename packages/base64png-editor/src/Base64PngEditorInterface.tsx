@@ -17,6 +17,7 @@
 import * as React from "react";
 import { Editor, EditorApi, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { Rect } from "@kogito-tooling/guided-tour/dist/api";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { Base64PngEditor } from "./Base64PngEditor";
 
 /**
@@ -100,6 +101,13 @@ export class Base64PngEditorInterface implements Editor {
    */
   public redo(): Promise<void> {
     return this.editorRef.current?.redo()!;
+  }
+
+  /**
+   * Calls the Editor validate method.
+   */
+  public validate(): Promise<Notification[]> {
+    return this.editorRef.current?.validate()!;
   }
 
   /**

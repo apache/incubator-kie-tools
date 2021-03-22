@@ -19,6 +19,7 @@ import { useCallback, useMemo } from "react";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { TodoListApi, TodoListChannelApi, TodoListEnvelopeApi } from "../api";
 import { EmbeddedEnvelopeFactory } from "@kogito-tooling/envelope/dist/embedded";
+import { ContainerType } from "@kogito-tooling/envelope/dist/api";
 
 export type Props = TodoListChannelApi & {
   targetOrigin: string;
@@ -34,7 +35,7 @@ export const EmbeddedTodoList = React.forwardRef<TodoListApi, Props>((props, for
   /*
    * This is the pollInit parameter. Used to connect the Envelope with this instance of EnvelopeServer.
    */
-  const pollInit = useCallback((envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>) => {
+  const pollInit = useCallback((envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>, container: () => HTMLDivElement | HTMLIFrameElement) => {
     return envelopeServer.envelopeApi.requests.todoList__init(
       {
         origin: envelopeServer.origin,
@@ -64,10 +65,10 @@ export const EmbeddedTodoList = React.forwardRef<TodoListApi, Props>((props, for
   const EmbeddedEnvelope = useMemo(() => {
     return EmbeddedEnvelopeFactory({
       api: props,
-      envelopePath: props.envelopePath,
       origin: props.targetOrigin,
       refDelegate,
       pollInit,
+      config: { containerType: ContainerType.IFRAME, envelopePath: props.envelopePath }
     });
   }, []);
 
