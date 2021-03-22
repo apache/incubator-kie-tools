@@ -23,7 +23,7 @@ import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.emf.common.util.ECollections;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.when;
 

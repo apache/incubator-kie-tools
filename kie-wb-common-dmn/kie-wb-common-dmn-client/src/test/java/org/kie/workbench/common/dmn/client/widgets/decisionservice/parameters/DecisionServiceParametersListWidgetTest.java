@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.decisionservice.parameters;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.model.DMNElementReference;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
@@ -49,15 +51,16 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionServiceParameters_EncapsulatedDecisions;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionServiceParameters_Inputs;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionServiceParameters_Outputs;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -159,6 +162,7 @@ public class DecisionServiceParametersListWidgetTest {
         final Optional<DRGElement> targetDrg1 = Optional.of(drgElement1);
         final Optional<DRGElement> targetDrg2 = Optional.of(drgElement2);
         final Optional<DRGElement> targetDrg3 = Optional.of(drgElement3);
+        final List<InputData> sortedList = new ArrayList<>();
 
         when(decisionService.getContentDefinitionId()).thenReturn(contentDefinitionId);
         when(value.getDecisionService()).thenReturn(decisionService);
@@ -174,14 +178,16 @@ public class DecisionServiceParametersListWidgetTest {
         doNothing().when(widget).clear();
         doNothing().when(widget).loadGroupsElements();
         doNothing().when(widget).loadInputsParameters(anyList());
-        doNothing().when(widget).loadDecisionsFromNode(anyObject(), anyObject());
-        doNothing().when(widget).loadInputsFromNode(anyObject(), anyObject());
+        doNothing().when(widget).loadDecisionsFromNode(any(), any());
+        doNothing().when(widget).loadInputsFromNode(any(), any());
+        doNothing().when(widget).loadInputsFromOthersDiagrams(anyList(), any(Node.class));
         doReturn(value).when(widget).getValue();
         doReturn(node).when(widget).getNode(contentDefinitionId);
         doReturn(targetDrg1).when(widget).getTargetDRGElement(edge1);
         doReturn(targetDrg2).when(widget).getTargetDRGElement(edge2);
         doReturn(targetDrg3).when(widget).getTargetDRGElement(edge3);
         doReturn(Optional.empty()).when(widget).getTargetDRGElement(edgeNotChild);
+        doReturn(sortedList).when(widget).getSortedInputs(anyList());
 
         widget.refresh();
 
@@ -191,8 +197,130 @@ public class DecisionServiceParametersListWidgetTest {
         verify(widget).loadInputsFromNode(anyList(), eq(targetNode1));
         verify(widget).loadInputsFromNode(anyList(), eq(targetNode2));
         verify(widget).loadInputsFromNode(anyList(), eq(targetNode3));
-        verify(widget).loadInputsParameters(anyList());
+        verify(widget).loadInputsFromOthersDiagrams(anyList(), eq(targetNode1));
+        verify(widget).loadInputsFromOthersDiagrams(anyList(), eq(targetNode2));
+        verify(widget).loadInputsFromOthersDiagrams(anyList(), eq(targetNode3));
+        verify(widget).getSortedInputs(anyList());
+        verify(widget).loadInputsParameters(sortedList);
         verify(widget).loadGroupsElements();
+    }
+
+    @Test
+    public void testGetSortedInputs() {
+
+        final DecisionServiceParametersList value = mock(DecisionServiceParametersList.class);
+        final DecisionService decisionService = mock(DecisionService.class);
+        final String id1 = "id1";
+        final String id2 = "id2";
+        final String id3 = "id3";
+        final String newId1 = "newId1";
+        final String newId2 = "newId2";
+
+        final List<DMNElementReference> list = createListOfDMNElementReferenceWithIds(
+                id1,
+                id2,
+                id3);
+        final List<InputData> unsortedInputs = Arrays.asList(createInputDataWithId(id2),
+                                                             createInputDataWithId(id3),
+                                                             createInputDataWithId(newId2),
+                                                             createInputDataWithId(id1),
+                                                             createInputDataWithId(newId1));
+
+        doReturn(value).when(widget).getValue();
+
+        when(value.getDecisionService()).thenReturn(decisionService);
+        when(decisionService.getInputData()).thenReturn(list);
+
+        final List<InputData> sorted = widget.getSortedInputs(unsortedInputs);
+
+        assertThat(sorted)
+                .extracting(inputData -> inputData.getId().getValue())
+                .containsExactly(id1, id2, id3, newId1, newId2);
+    }
+
+    @Test
+    public void testGetCurrentItems() {
+
+        final DecisionServiceParametersList value = mock(DecisionServiceParametersList.class);
+        final DecisionService decisionService = mock(DecisionService.class);
+        final String id1 = "id1";
+        final String id2 = "id2";
+        final String id3 = "id3";
+
+        final List<DMNElementReference> list = createListOfDMNElementReferenceWithIds(
+                id1,
+                id2,
+                id3);
+        final List<InputData> unsortedInputs = Arrays.asList(createInputDataWithId(id2),
+                                                             createInputDataWithId(id3),
+                                                             createInputDataWithId(id1));
+
+        doReturn(value).when(widget).getValue();
+
+        when(value.getDecisionService()).thenReturn(decisionService);
+        when(decisionService.getInputData()).thenReturn(list);
+
+        final List<InputData> sorted = widget.getCurrentItems(unsortedInputs);
+
+        assertThat(sorted)
+                .extracting(inputData -> inputData.getId().getValue())
+                .containsExactly(id1, id2, id3);
+    }
+
+    @Test
+    public void testGetNewItems() {
+
+        final DecisionServiceParametersList value = mock(DecisionServiceParametersList.class);
+        final DecisionService decisionService = mock(DecisionService.class);
+        final String id1 = "id1";
+        final String id2 = "id2";
+        final String id3 = "id3";
+        final String newItem1 = "aaa";
+        final String newItem2 = "bbb";
+        final String newItem3 = "ccc";
+        final String newItem4 = "ddd";
+
+        final List<DMNElementReference> list = createListOfDMNElementReferenceWithIds(
+                id1,
+                id2,
+                id3);
+        final List<InputData> currentItems = Arrays.asList(createInputDataWithId(id2),
+                                                           createInputDataWithId(id3),
+                                                           createInputDataWithId(id1));
+
+        final List<InputData> inputs = Arrays.asList(createInputDataWithId(newItem3),
+                                                     createInputDataWithId(newItem2),
+                                                     createInputDataWithId(newItem4),
+                                                     createInputDataWithId(newItem1));
+
+        doReturn(value).when(widget).getValue();
+
+        when(value.getDecisionService()).thenReturn(decisionService);
+        when(decisionService.getInputData()).thenReturn(list);
+
+        final List<InputData> result = widget.getNewItems(inputs, currentItems);
+
+        assertThat(result)
+                .extracting(inputData -> inputData.getId().getValue())
+                .containsExactly(newItem1, newItem2, newItem3, newItem4);
+    }
+
+    private InputData createInputDataWithId(final String id) {
+        final InputData inputData = new InputData();
+        inputData.getId().setValue(id);
+        inputData.getName().setValue(id);
+        return inputData;
+    }
+
+    private List<DMNElementReference> createListOfDMNElementReferenceWithIds(final String... ids) {
+        final List<DMNElementReference> list = new ArrayList<>();
+        for (final String id : ids) {
+            final DMNElementReference reference = new DMNElementReference();
+            reference.setHref("#" + id);
+            list.add(reference);
+        }
+
+        return list;
     }
 
     @Test
@@ -464,6 +592,28 @@ public class DecisionServiceParametersListWidgetTest {
         final Node actual = widget.getElementWithContentId(id1, stream);
 
         assertEquals(node1, actual);
+    }
+
+    @Test
+    public void testLoadInputsFromOtherDiagrams() {
+
+        final String id = "theId";
+        final Node node1 = createNodeWithContentDefinitionId(id);
+        final Node node2 = createNodeWithContentDefinitionId(id);
+        final Node node3 = createNodeWithContentDefinitionId(id);
+        final List<Node> list = Arrays.asList(node1, node2, node3);
+        final List<InputData> inputs = new ArrayList<>();
+        final Node targetNode = createNodeWithContentDefinitionId(id);
+
+        doNothing().when(widget).loadInputsFromNode(eq(inputs), any(Node.class));
+
+        when(dmnDiagramsSession.getNodesFromAllDiagramsWithContentId(id)).thenReturn(list);
+
+        widget.loadInputsFromOthersDiagrams(inputs, targetNode);
+
+        verify(widget).loadInputsFromNode(inputs, node1);
+        verify(widget).loadInputsFromNode(inputs, node2);
+        verify(widget).loadInputsFromNode(inputs, node3);
     }
 
     private Node createNodeWithContentDefinitionId(final String contentDefinitionId) {

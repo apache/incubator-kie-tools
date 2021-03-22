@@ -70,7 +70,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.FunctionSearchServiceTest.verifyContains;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.FunctionSearchServiceTest.verifyNotContains;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.VariableSearchService.unboxDefaultType;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

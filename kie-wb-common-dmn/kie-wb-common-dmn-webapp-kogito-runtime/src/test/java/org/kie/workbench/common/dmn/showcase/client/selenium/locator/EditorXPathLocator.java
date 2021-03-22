@@ -35,12 +35,30 @@ public class EditorXPathLocator implements XPathLocator {
         return new EditorXPathLocator("//div[@class='ace_content']");
     }
 
+    public static EditorXPathLocator expressionEditor() {
+        return new EditorXPathLocator("//div[@class='kie-dmn-expression-editor']/div/div/input");
+    }
+
+    public static EditorXPathLocator expressionAutocompleteEditor() {
+        return new EditorXPathLocator("//div[contains(@class,'monaco-editor')]//textarea");
+    }
+
     /**
      * Such element exists just if expression is being edited
      * @return XPath Locator for currently opened expression title
      */
     public static EditorXPathLocator expressionEditorTitle() {
         return new EditorXPathLocator("//div[@class='kie-dmn-expression-type']/span[@data-field='expressionName']");
+    }
+
+    /**
+     * Such element exists when a diagram without layout information is opened.
+     * User is informed a layout was auto generated. However have an option to close this pop-up.
+     *
+     * @return XPath Locator for pop-up close button
+     */
+    public static EditorXPathLocator missingLayoutPopUpCloseButton() {
+        return new EditorXPathLocator("//div[contains(text(), 'The diagram had no layout information')]//button");
     }
 
     @Override

@@ -26,11 +26,11 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefTestSt
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefTestStubs.TestShapeDefType2;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

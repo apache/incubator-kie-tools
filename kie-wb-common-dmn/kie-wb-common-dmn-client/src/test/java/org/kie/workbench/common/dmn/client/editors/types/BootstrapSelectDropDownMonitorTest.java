@@ -37,7 +37,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor.OPEN_CLASS;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;

@@ -40,6 +40,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils.getDefaultIconData;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class WorkItemDefinitionStandaloneClientServiceTest {
@@ -52,10 +54,10 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
     public void setUp() {
         promises = new SyncPromises();
         registry = new WorkItemDefinitionCacheRegistry();
-        tested = new WorkItemDefinitionStandaloneClientService(promises,
-                                                               registry,
-                                                               new BPMNStaticResourceContentService(promises),
-                                                               new WorkItemIconCacheImpl(new BPMNStaticResourceContentService(promises)));
+        tested = spy(new WorkItemDefinitionStandaloneClientService(promises,
+                                                                   registry,
+                                                                   new BPMNStaticResourceContentService(promises),
+                                                                   new WorkItemIconCacheImpl(new BPMNStaticResourceContentService(promises))));
     }
 
     @Test
@@ -66,9 +68,24 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
 
     @Test
     public void testLoadAllWorkItems() {
+        when(tested.getPresetAsText()).thenReturn(
+                "[\n" +
+                        "   [\n" +
+                        "    \"name\" : \"Milestone\",\n" +
+                        "    \"parameters\" : [\n" +
+                        "        \"Condition\" : new StringDataType()\n" +
+                        "    ],\n" +
+                        "    \"displayName\" : \"Milestone\",\n" +
+                        "    \"icon\" : \"defaultmilestoneicon.png\",\n" +
+                        "    \"category\" : \"Milestone\"\n" +
+                        "    ]\n" +
+                        "]"
+        );
+        when(tested.getMilestoneIconAsBase64()).thenReturn(BPMNStaticResourceContentService.MILESTONE_SERVICE_TASK_DATA_URI);
         call();
 
         List<WorkItemDefinition> items = new ArrayList<>(registry.items());
+        System.out.println(items.size());
         assertEquals(6, items.size());
 
         WorkItemDefinition email = items.get(0);
@@ -81,16 +98,18 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
         assertEquals("Log", log.getName());
         assertEquals(BPMNStaticResourceContentService.LOG_SERVICE_TASK_DATA_URI, log.getIconDefinition().getIconData());
 
-        WorkItemDefinition decisionTask = items.get(2);
+        WorkItemDefinition milestone = items.get(2);
+        assertNotNull(milestone);
+        assertEquals("Milestone", milestone.getName());
+        assertEquals(BPMNStaticResourceContentService.MILESTONE_SERVICE_TASK_DATA_URI,
+                     milestone.getIconDefinition().getIconData());
+        assertEquals("defaultmilestoneicon.png",
+                     milestone.getIconDefinition().getUri());
+
+        WorkItemDefinition decisionTask = items.get(3);
         assertNotNull(decisionTask);
         assertEquals("DecisionTask", decisionTask.getName());
         assertEquals(getDefaultIconData(), decisionTask.getIconDefinition().getIconData());
-
-        WorkItemDefinition milestone = items.get(3);
-        assertNotNull(milestone);
-        assertEquals("Milestone", milestone.getName());
-        assertEquals(WorkItemDefinitionStandaloneClientService.getPresetIcon("defaultmilestoneicon.png"),
-                     milestone.getIconDefinition().getIconData());
 
         WorkItemDefinition brTask = items.get(4);
         assertNotNull(brTask);
@@ -132,7 +151,7 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
                                                                },
                                                                new WorkItemIconCacheImpl(new BPMNStaticResourceContentService(promises)));
         call();
-        assertEquals(1, registry.items().size());
+        assertEquals(0, registry.items().size());
     }
 
     @Test
@@ -164,7 +183,7 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
                                                                },
                                                                new WorkItemIconCacheImpl(new BPMNStaticResourceContentService(promises)));
         call();
-        assertEquals(1, registry.items().size());
+        assertEquals(0, registry.items().size());
     }
 
     @Test
@@ -186,16 +205,20 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
 
     @Test
     public void testGetPresetIcon() {
+        WorkItemDefinitionStandaloneClientService service = new WorkItemDefinitionStandaloneClientService(promises,
+                                                                                                          registry,
+                                                                                                          new BPMNStaticResourceContentService(promises),
+                                                                                                          new WorkItemIconCacheImpl(new BPMNStaticResourceContentService(promises)));
         assertEquals("getMillestoneImage",
-                     WorkItemDefinitionStandaloneClientService.getPresetIcon("defaultmilestoneicon.png"));
+                     service.getPresetIcon("defaultmilestoneicon.png"));
         assertEquals("",
-                     WorkItemDefinitionStandaloneClientService.getPresetIcon("someicon.png"));
+                     service.getPresetIcon("someicon.png"));
     }
 
     @Test
     public void testDestroy() {
         call();
-        assertEquals(6, registry.items().size());
+        assertEquals(5, registry.items().size());
         tested.destroy();
         assertEquals(registry, tested.getRegistry());
         assertTrue(registry.items().isEmpty());

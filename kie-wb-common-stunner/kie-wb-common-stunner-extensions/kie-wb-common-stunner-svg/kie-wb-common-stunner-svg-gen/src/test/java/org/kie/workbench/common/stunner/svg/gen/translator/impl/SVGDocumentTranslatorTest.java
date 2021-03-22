@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.svg.gen.model.impl.MultiPathDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.RectDefinition;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Document;
 
 import static org.junit.Assert.assertEquals;

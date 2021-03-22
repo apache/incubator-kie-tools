@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.kie.workbench.common.stunner.bpmn.client.forms.filters.BaseReusableSubProcessFilterProvider.ABORT_PARENT;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.filters.BaseReusableSubProcessFilterProvider.INDEPENDENT;

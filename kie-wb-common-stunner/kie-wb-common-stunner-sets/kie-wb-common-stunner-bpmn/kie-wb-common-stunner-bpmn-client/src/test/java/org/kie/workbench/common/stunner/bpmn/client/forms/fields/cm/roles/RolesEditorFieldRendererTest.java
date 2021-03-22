@@ -34,11 +34,11 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.cm.RolesEditorFieldDefi
 import org.kie.workbench.common.stunner.bpmn.forms.serializer.cm.CaseRoleSerializer;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 

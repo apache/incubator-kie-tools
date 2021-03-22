@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class TestingSimpleDomainObject implements DomainObject {

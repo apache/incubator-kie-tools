@@ -31,9 +31,9 @@ public class IdUtils {
 
     private static String COMBINER_DELIMITER = "-";
 
-    public static final String AUTO_SOURCE_CONNECTION = "#AUTO-SOURCE";
+    public static final String AUTO_SOURCE_CONNECTION = "-AUTO-SOURCE";
 
-    public static final String AUTO_TARGET_CONNECTION = "#AUTO-TARGET";
+    public static final String AUTO_TARGET_CONNECTION = "-AUTO-TARGET";
 
     public static final String getPrefixedId(final String prefixId,
                                              final String rawId) {

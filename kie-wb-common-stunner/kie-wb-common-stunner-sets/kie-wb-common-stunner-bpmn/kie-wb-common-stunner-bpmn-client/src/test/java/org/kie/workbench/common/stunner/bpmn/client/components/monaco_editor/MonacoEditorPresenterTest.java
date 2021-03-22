@@ -27,8 +27,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -96,6 +96,35 @@ public class MonacoEditorPresenterTest {
         tested.setValue(MonacoEditorLanguage.LANG_JAVA, "someJavaCode");
         assertEquals(MonacoEditorLanguage.LANG_JAVA, tested.current);
         verify(view, never()).dispose();
+        ArgumentCaptor<MonacoEditorOptions> optionsCaptor = ArgumentCaptor.forClass(MonacoEditorOptions.class);
+        ArgumentCaptor<Runnable> callbackCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(view, times(1)).loadingStarts();
+        verify(view, times(1)).setLanguage(eq(MonacoEditorLanguage.LANG_JAVA));
+        verify(view, times(1)).load(optionsCaptor.capture(),
+                                    callbackCaptor.capture());
+        MonacoEditorOptions options = optionsCaptor.getValue();
+        assertEquals(300, options.getWidthPx());
+        assertEquals(100, options.getHeightPx());
+        assertEquals(MonacoEditorLanguage.LANG_JAVA, options.getLanguage());
+        assertEquals("someJavaCode", options.getValue());
+        assertTrue(options.isReadOnly());
+        assertFalse(options.isAutomaticLayout());
+        callbackCaptor.getValue().run();
+        verify(view, times(1)).loadingEnds();
+        verify(view, times(1)).setLanguageReadOnly(eq(true));
+        verify(view, times(1)).attachListenerToPanelTitle();
+    }
+
+    @Test
+    public void testSetValueWithRefresh() {
+        tested.setWidthPx(300);
+        tested.setHeightPx(100);
+        tested.setReadOnly(true);
+        tested.addLanguage(MonacoEditorLanguage.JAVA);
+        tested.requestRefresh();
+        tested.setValue(MonacoEditorLanguage.LANG_JAVA, "someJavaCode");
+        assertEquals(MonacoEditorLanguage.LANG_JAVA, tested.current);
+        verify(view, times(1)).dispose();
         ArgumentCaptor<MonacoEditorOptions> optionsCaptor = ArgumentCaptor.forClass(MonacoEditorOptions.class);
         ArgumentCaptor<Runnable> callbackCaptor = ArgumentCaptor.forClass(Runnable.class);
         verify(view, times(1)).loadingStarts();

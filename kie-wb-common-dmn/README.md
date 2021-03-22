@@ -43,9 +43,11 @@ Webapp targeting _kogito_ integration with VSCode etc. No decorations.
 
 Please refer to the [Kogito's DMN Editor README](./kie-wb-common-dmn-webapp-kogito-runtime/README.md) for building and usage.
 
-This module contains also selenium integration tests activated by `-Dintegration-tests` property. They use `headless` 
+This module contains also selenium integration tests. They use `headless` 
 browser mode by default thus are not visible. To see the actual progress of tests include `-Dorg.kie.dmn.kogito.browser.headless=false` property into your
  `mvn` command.
+
+There is small set of performance test checking loading of large models. These set of tests is not started by default. You can activate these tests by `-Dperformance-tests` property.
 
 10) `kie-wb-common-dmn-webapp-kogito-testing`
 

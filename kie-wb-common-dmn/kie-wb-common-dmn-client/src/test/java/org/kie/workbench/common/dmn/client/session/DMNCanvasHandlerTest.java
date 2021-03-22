@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

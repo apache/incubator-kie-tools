@@ -68,6 +68,8 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
 
     MonacoStandaloneCodeEditor editor;
     private MonacoEditorPresenter presenter;
+    protected Integer lastWidth = 0;
+    protected ResizeObserver resizeObserver = null;
 
     @Override
     public void init(final MonacoEditorPresenter presenter) {
@@ -125,7 +127,35 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
                                       event -> presenter.onLanguageChanged(languageSelector.getValue()),
                                       false);
         }
+
+        if (resizeObserver == null) {
+            resizeObserver = new ResizeObserver(event -> onResize());
+
+            if (observeCommand == null) {
+                observeCommand = () -> resizeObserver.observe((elemental2.dom.Element) monacoEditor.getParentElement().getParentNode());
+            }
+            observeCommand.execute();
+        }
     }
+
+    protected void onResize() {
+        if (lastWidth == monacoEditor.getBoundingClientRect().getWidth().intValue() + 2) { // no point in resizing
+            return;
+        }
+
+        if (presenter == null) {
+            resizeObserver.unobserve((elemental2.dom.Element) monacoEditor.getParentElement().getParentNode());
+            resizeObserver = null;
+            observeCommand = null;
+            return;
+        }
+        lastWidth = monacoEditor.getBoundingClientRect().getWidth().intValue();
+        presenter.setWidthPx(lastWidth - 2);
+        presenter.requestRefresh();
+        presenter.onLanguageChanged(languageSelector.getValue());
+    }
+
+    protected com.google.gwt.user.client.Command observeCommand = null;
 
     static Element getParentInDepth(final Element element, int depth) {
         if (null != element && depth > 0) {

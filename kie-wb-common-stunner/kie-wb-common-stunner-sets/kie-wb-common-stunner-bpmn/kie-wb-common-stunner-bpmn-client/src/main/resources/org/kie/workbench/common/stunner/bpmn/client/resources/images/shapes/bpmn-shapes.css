@@ -662,6 +662,11 @@
     stroke-width: 1.5px; /*this affects the adhoc and embedded subprocesses but not the collapsed one*/
 }
 
+.subProcess_reusable_border {
+    stroke: #393f44;
+    stroke-width: 5px;
+}
+
 .subProcess_background {
     fill: #FFFFFF; /*this affects only the reusable subprocess*/
 }
@@ -676,12 +681,6 @@
 
 .subProcess_reusable_icon {
     fill: #393f44;
-}
-
-.subProcess_reusable_boundingbox {
-    fill:none;
-    stroke: #393f44;     /* this is the little box around the icon. */
-    stroke-width: 1.5px;
 }
 
 .subProcess_event_background {
@@ -713,7 +712,6 @@
     fill: #000000;
 }
 
-
 .subProcess_group_multipleInstanceSubProcess_group {
     opacity: 0;
 }
@@ -723,6 +721,12 @@
     fill: #000000;
 }
 
+/* this is the little box around the icon. */
+.subProcess_reusable_boundingbox {
+    fill:none;
+    stroke: #393f44;
+    stroke-width: 1.5px;
+}
 
 #reusableSubProcess .subProcess {
     stroke-width: 3px; /* this is the whole outline */

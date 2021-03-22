@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.CircleDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.StyleDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.TransformDefinitionImpl;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
