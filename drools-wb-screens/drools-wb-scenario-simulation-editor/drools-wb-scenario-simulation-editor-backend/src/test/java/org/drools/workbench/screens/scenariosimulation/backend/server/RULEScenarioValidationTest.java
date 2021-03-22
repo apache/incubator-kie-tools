@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
@@ -27,20 +27,19 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationI18nServerMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RULEScenarioValidationTest {
+public class RULEScenarioValidationTest extends AbstractScenarioValidationTest {
 
     @Mock
     private KieContainer kieContainerMock;
@@ -86,7 +85,7 @@ public class RULEScenarioValidationTest {
         mySimpleType.addExpressionElement("notValidClass", "notValidClass");
 
         errorsTest1 = validation.validate(test1, settingsLocal, kieContainerMock);
-        checkResult(errorsTest1, "Impossible to load class notValidClass");
+        checkResult(errorsTest1, new ExpectedError("Impossible to load class notValidClass"));
 
         // Test 2 - nested field
         Simulation test2 = new Simulation();
@@ -111,7 +110,7 @@ public class RULEScenarioValidationTest {
         // parentFM is not valid anymore
         parentFM.addExpressionElement("notExisting", String.class.getCanonicalName());
         errorsTest2 = validation.validate(test2, settingsLocal, kieContainerMock);
-        checkResult(errorsTest2, "Impossible to find field with name 'notExisting' in class org.drools.workbench.screens.scenariosimulation.backend.server.SampleBean");
+        checkResult(errorsTest2, new ExpectedError("Impossible to find field with name 'notExisting' in class org.drools.workbench.screens.scenariosimulation.backend.server.SampleBean"));
 
         // nameWrongTypeFM has a wrong type
         FactMapping nameWrongTypeFM = test2.getScesimModelDescriptor().addFactMapping(
@@ -121,8 +120,8 @@ public class RULEScenarioValidationTest {
         nameWrongTypeFM.addExpressionElement("name", Integer.class.getCanonicalName());
         errorsTest2 = validation.validate(test2, settingsLocal, kieContainerMock);
         checkResult(errorsTest2,
-                    "Impossible to find field with name 'notExisting' in class org.drools.workbench.screens.scenariosimulation.backend.server.SampleBean",
-                    "Field type has changed: old 'java.lang.Integer', current 'java.lang.String'");
+                    new ExpectedError("Impossible to find field with name 'notExisting' in class org.drools.workbench.screens.scenariosimulation.backend.server.SampleBean"),
+                    new ExpectedError(ScenarioSimulationI18nServerMessage.SCENARIO_VALIDATION_FIELD_CHANGED_ERROR, Arrays.asList("java.lang.Integer", "java.lang.String")));
 
         // Test 3 - list
         Simulation test3 = new Simulation();
@@ -145,15 +144,4 @@ public class RULEScenarioValidationTest {
         checkResult(errorsTest3);
     }
 
-    private void checkResult(List<FactMappingValidationError> validationErrors, String... expectedErrors) {
-        if (expectedErrors.length == 0) {
-            assertEquals(0, validationErrors.size());
-        }
-
-        for (String expectedError : expectedErrors) {
-            assertTrue("Expected error: '" + expectedError + "' not found",
-                       validationErrors.stream().anyMatch(
-                               validationError -> Objects.equals(expectedError, validationError.getErrorMessage())));
-        }
-    }
 }

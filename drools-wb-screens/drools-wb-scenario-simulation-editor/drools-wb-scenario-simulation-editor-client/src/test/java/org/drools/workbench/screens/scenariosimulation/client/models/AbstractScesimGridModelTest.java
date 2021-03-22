@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.models;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -66,15 +68,16 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.VALUE_CLASS_NAME;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -468,11 +471,6 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     }
 
     @Test
-    public void commonAddRow() {
-        abstractScesimGridModelSpy.commonAddRow(ROW_INDEX);
-    }
-
-    @Test
     public void updateIndexColumn() {
         abstractScesimGridModelSpy.updateIndexColumn();
         verify(abstractScesimGridModelSpy, never()).setCellValue(anyInt(), anyInt(), isA(ScenarioGridCellValue.class));
@@ -739,5 +737,14 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
         verify(scenarioCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
         verify(scenarioExpressionCellTextAreaSingletonDOMElementFactorySpy, times(1)).destroyResources();
         verify(scenarioHeaderTextBoxSingletonDOMElementFactorySpy, times(1)).destroyResources();
+    }
+
+    @Test
+    public void isSameSelectedColumnProperty() {
+        List<ExpressionElement> expressionList = Arrays.asList(new ExpressionElement("Fact"), new ExpressionElement("property"));
+        when(factMappingMock.getExpressionElements()).thenReturn(expressionList);
+        assertTrue(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property")));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property2")));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("property2")));
     }
 }

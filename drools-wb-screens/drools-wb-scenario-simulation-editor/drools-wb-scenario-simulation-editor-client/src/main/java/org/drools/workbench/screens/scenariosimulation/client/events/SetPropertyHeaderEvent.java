@@ -34,7 +34,7 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
     private final String factType;
     private final List<String> propertyNameElements;
     private final String valueClassName;
-    private FactMappingValueType factMappingValueType;
+    private final FactMappingValueType factMappingValueType;
 
     /**
      * Use this constructor to modify the <i>property</i> level header
@@ -81,10 +81,6 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
 
     public FactMappingValueType getFactMappingValueType() {
         return factMappingValueType;
-    }
-
-    public void setFactMappingValueType(FactMappingValueType factMappingValueType) {
-        this.factMappingValueType = factMappingValueType;
     }
 
     @Override

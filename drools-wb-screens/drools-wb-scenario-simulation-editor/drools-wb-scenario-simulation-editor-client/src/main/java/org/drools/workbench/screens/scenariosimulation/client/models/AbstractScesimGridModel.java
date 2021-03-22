@@ -698,7 +698,8 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
         String propertyName = String.join(".", propertyNameElements);
         ScesimModelDescriptor simulationDescriptor = abstractScesimModel.getScesimModelDescriptor();
         final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
-        return factMappingByIndex.getExpressionAlias().equals(propertyName);
+        String expressionElement = factMappingByIndex.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.joining("."));
+        return Objects.equals(expressionElement, propertyName);
     }
 
     /**

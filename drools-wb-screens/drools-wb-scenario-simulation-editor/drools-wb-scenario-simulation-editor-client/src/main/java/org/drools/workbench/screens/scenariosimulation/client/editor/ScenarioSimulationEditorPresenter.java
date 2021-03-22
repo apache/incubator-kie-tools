@@ -56,6 +56,7 @@ import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopup
 import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
 import org.drools.workbench.screens.scenariosimulation.client.producers.AbstractScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorI18nServerManager;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsView;
@@ -538,10 +539,12 @@ public class ScenarioSimulationEditorPresenter {
                 StringBuilder errorMessage = new StringBuilder(ScenarioSimulationEditorConstants.INSTANCE.validationErrorMessage());
                 errorMessage.append(":<br/>");
                 for (FactMappingValidationError validationError : result) {
+                    String message = validationError.getErrorMessage() != null ? validationError.getErrorMessage() :
+                            ScenarioSimulationEditorI18nServerManager.retrieveMessage(validationError);
                     errorMessage.append("<b>");
                     errorMessage.append(validationError.getErrorId());
                     errorMessage.append("</b> - ");
-                    errorMessage.append(validationError.getErrorMessage());
+                    errorMessage.append(message);
                     errorMessage.append("<br/>");
                 }
 

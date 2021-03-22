@@ -29,6 +29,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import static org.drools.scenariosimulation.backend.util.DMNSimulationUtils.extractDMNModel;
 import static org.drools.scenariosimulation.backend.util.DMNSimulationUtils.extractDMNRuntime;
@@ -69,9 +70,9 @@ public class DMNScenarioValidation extends AbstractScenarioValidation {
 
             String nodeName = factMapping.getFactIdentifier().getName();
 
-            DMNType rootDMNType;
+            DMNType factDMNType;
             try {
-                rootDMNType = dmnModel.getDecisionByName(nodeName) != null ?
+                factDMNType = dmnModel.getDecisionByName(nodeName) != null ?
                         dmnModel.getDecisionByName(nodeName).getResultType() :
                         dmnModel.getInputByName(nodeName).getType();
             } catch (NullPointerException e) {
@@ -82,10 +83,9 @@ public class DMNScenarioValidation extends AbstractScenarioValidation {
             List<String> steps = expressionElementToString(factMapping);
 
             try {
-                DMNType fieldType = navigateDMNType(rootDMNType, steps);
-
-                if (!isDMNFactMappingValid(factMapping.getClassName(), factMapping, fieldType)) {
-                    errors.add(createFieldChangedError(factMapping, fieldType.getName()));
+                DMNType fieldType = navigateDMNType(factDMNType, steps);
+                if (!isDMNFactMappingValid(factMapping, fieldType)) {
+                    errors.add(defineFieldChangedError(factMapping, factDMNType, fieldType));
                 }
             } catch (IllegalStateException e) {
                 errors.add(createGenericError(factMapping, e.getMessage()));
@@ -94,9 +94,21 @@ public class DMNScenarioValidation extends AbstractScenarioValidation {
         return errors;
     }
 
-    private boolean isDMNFactMappingValid(String typeName, FactMapping factMapping, DMNType dmnType) {
+    private FactMappingValidationError defineFieldChangedError(FactMapping factMapping, DMNType factType, DMNType fieldType) {
+        String typeName = factMapping.getClassName();
+        if (isConstraintAdded(typeName, fieldType)) {
+            return FactMappingValidationError.createFieldAddedConstraintError(factMapping);
+        }
+        if (isConstraintRemoved(typeName, factType, fieldType)) {
+            return FactMappingValidationError.createFieldRemovedConstraintError(factMapping);
+        }
+        return createFieldChangedError(factMapping, fieldType.getName());
+    }
+
+    private boolean isDMNFactMappingValid(FactMapping factMapping, DMNType dmnType) {
         // NOTE: Any/Undefined is a special case where collection is true
         Type rootType = getRootType((BaseDMNTypeImpl) dmnType);
+        String typeName = factMapping.getClassName();
         boolean isCoherent = UNKNOWN.equals(rootType) || ScenarioSimulationSharedUtils.isList(typeName) ==
                 dmnType.isCollection();
         if (!isCoherent) {
@@ -107,6 +119,49 @@ public class DMNScenarioValidation extends AbstractScenarioValidation {
                 typeName;
 
         return Objects.equals(factMappingType, dmnType.getName());
+    }
+
+    /**
+     * To define if a constraint (allowed values) were added in a DMNType fieldType given a typeName, the following conditions
+     * are requires:
+     * - typeName MUST BE a BuiltInType (eg. STRING, NUMERIC ..)
+     * - DMNType fieldType MUST have at least one defined Allowed Values
+     * - DMNType fieldType MUST have a Base Type. It's name MUST be equals to given typeName.
+     * @param typeName TypeName present in the scesim file
+     * @param fieldType DMNType of field under analysis
+     * @return
+     */
+    private boolean isConstraintAdded(String typeName, DMNType fieldType) {
+        boolean isTypeNameBuiltInType = !Objects.equals(UNKNOWN, BuiltInType.determineTypeFromName(typeName));
+        boolean hasFieldTypeAllowedValues = fieldType.getAllowedValues() != null && !fieldType.getAllowedValues().isEmpty();
+        boolean hasFieldTypeBaseType = Objects.nonNull(fieldType.getBaseType());
+        if (isTypeNameBuiltInType && hasFieldTypeBaseType && hasFieldTypeAllowedValues) {
+            Type baseType = getRootType((BaseDMNTypeImpl) fieldType.getBaseType());
+            return Objects.equals(typeName, baseType.getName());
+        }
+        return false;
+    }
+
+    /**
+     * To define if a constraint (allowed values) were removed in a DMNType fieldType given a typeName, the following conditions
+     * are requires:
+     * - DMNType fieldType MUST DON'T have Allowed Values defined
+     * - DMNType fieldType MUST DON'T have a Base Type.
+     * - typeName MUST BE a DMNType factType's field. The field's DMNType MUST BE the same of given fieldType DMNType
+     * @param typeName
+     * @param factType Fact DMNType
+     * @param fieldType Field DMNType
+     * @return
+     */
+    private boolean isConstraintRemoved(String typeName, DMNType factType, DMNType fieldType) {
+        boolean hasFieldTypeAllowedValues = fieldType.getAllowedValues() != null && !fieldType.getAllowedValues().isEmpty();
+        boolean hasFieldTypeBaseType = Objects.nonNull(fieldType.getBaseType());
+        boolean isTypeNameFactTypeField = factType.getFields().containsKey(typeName);
+        if (!hasFieldTypeBaseType && !hasFieldTypeAllowedValues && isTypeNameFactTypeField) {
+            DMNType typeNameDMNType = factType.getFields().get(typeName);
+            return Objects.equals(fieldType.getNamespace(), typeNameDMNType.getNamespace());
+        }
+        return false;
     }
 
     protected DMNModel getDMNModel(KieContainer kieContainer, String dmnPath) {

@@ -48,6 +48,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractS
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.producers.AbstractScenarioSimulationProducer;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
@@ -55,6 +56,7 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToo
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationI18nServerMessage;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -698,10 +700,14 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
         String errorMessage = "errorMessage";
         String errorId = "errorId";
+        String errorId2 = "errorId2";
         validationErrors.add(new FactMappingValidationError(errorId, errorMessage));
+        validationErrors.add(new FactMappingValidationError("errorId2", ScenarioSimulationI18nServerMessage.SCENARIO_VALIDATION_NODE_CHANGED_ERROR, "p1", "p2"));
         presenterSpy.getValidationCallback().callback(validationErrors);
         verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorId));
         verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorMessage));
+        verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorId2));
+        verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(ScenarioSimulationEditorConstants.INSTANCE.scenarioValidationNodeChangedError("p1", "p2")));
     }
 
     @Test

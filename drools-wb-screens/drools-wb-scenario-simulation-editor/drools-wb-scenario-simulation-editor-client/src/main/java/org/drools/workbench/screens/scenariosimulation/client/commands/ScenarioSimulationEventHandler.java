@@ -405,42 +405,68 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         context.getStatus().setClassName(event.getFactType());
         context.getStatus().setPropertyNameElements(event.getPropertyNameElements());
         context.getStatus().setValueClassName(event.getValueClassName());
-        if (context.getAbstractScesimGridModelByGridWidget(event.getGridWidget()).isSelectedColumnEmpty()) {
-            commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
-        } else if (context.getAbstractScesimGridModelByGridWidget(event.getGridWidget()).isSameSelectedColumnProperty(event.getPropertyNameElements())) {
+        if (isSameFactProperty(event.getGridWidget(), event.getPropertyNameElements()) &&
+                isSameSelectedColumnType(event.getGridWidget(), event.getValueClassName())) {
             return;
-        } else if (context.getAbstractScesimGridModelByGridWidget(event.getGridWidget()).isSameSelectedColumnType(event.getValueClassName())) {
-            org.uberfire.mvp.Command okDeleteCommand = () -> {
-                context.getStatus().setKeepData(false);
+        } else {
+            if (isSelectedColumnEmpty(event.getGridWidget())) {
                 commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
-            };
-            org.uberfire.mvp.Command okPreserveCommand = () -> {
-                context.getStatus().setKeepData(true);
-                commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
-            };
-            preserveDeletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainTitle(),
-                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainQuestion(),
-                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioText1(),
-                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextQuestion(),
-                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption1(),
-                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption2(),
-                                              ScenarioSimulationEditorConstants.INSTANCE.preserveValues(),
-                                              ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
-                                              okPreserveCommand,
-                                              okDeleteCommand);
-        } else if (!context.getAbstractScesimGridModelByGridWidget(event.getGridWidget()).isSameSelectedColumnType(event.getValueClassName())) {
-            org.uberfire.mvp.Command okPreserveCommand = () -> {
-                context.getStatus().setKeepData(false);
-                commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
-            };
-            deletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainTitle(),
-                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainQuestion(),
-                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioText1(),
-                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextQuestion(),
-                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextDanger(),
-                                      ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
-                                      okPreserveCommand);
+            } else {
+                if (!isSameFactProperty(event.getGridWidget(), event.getPropertyNameElements()) &&
+                        !isSameSelectedColumnType(event.getGridWidget(), event.getValueClassName())) {
+                    showDeletePopup(event);
+                } else {
+                    showPreserveDeletePopup(event);
+                }
+            }
         }
+    }
+
+    private boolean isSelectedColumnEmpty(GridWidget gridWidget) {
+        return context.getAbstractScesimGridModelByGridWidget(gridWidget).isSelectedColumnEmpty();
+    }
+
+    private boolean isSameFactProperty(GridWidget gridWidget, List<String> propertyNameElements) {
+        return context.getAbstractScesimGridModelByGridWidget(gridWidget).isSameSelectedColumnProperty(propertyNameElements);
+    }
+
+    private boolean isSameSelectedColumnType(GridWidget gridWidget, String valueTypeName) {
+        return context.getAbstractScesimGridModelByGridWidget(gridWidget).isSameSelectedColumnType(valueTypeName);
+    }
+
+    private void showDeletePopup(SetPropertyHeaderEvent event) {
+        org.uberfire.mvp.Command okPreserveCommand = () -> {
+            context.getStatus().setKeepData(false);
+            commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
+        };
+        deletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainTitle(),
+                                  ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainQuestion(),
+                                  ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioText1(),
+                                  ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextQuestion(),
+                                  null,
+                                  ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
+                                  okPreserveCommand);
+    }
+
+    private void showPreserveDeletePopup(SetPropertyHeaderEvent event) {
+        org.uberfire.mvp.Command okDeleteCommand = () -> {
+            context.getStatus().setKeepData(false);
+            commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
+        };
+        org.uberfire.mvp.Command okPreserveCommand = () -> {
+            context.getStatus().setKeepData(true);
+            commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
+        };
+        preserveDeletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainTitle(),
+                                          ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainQuestion(),
+                                          ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioText1(),
+                                          ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextQuestion(),
+                                          ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption1(),
+                                          ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption2(),
+                                          ScenarioSimulationEditorConstants.INSTANCE.preserveValues(),
+                                          ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
+                                          okPreserveCommand,
+                                          okDeleteCommand);
     }
 
     @Override

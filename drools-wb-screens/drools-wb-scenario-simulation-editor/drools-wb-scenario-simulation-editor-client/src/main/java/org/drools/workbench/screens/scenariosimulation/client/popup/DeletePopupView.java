@@ -39,7 +39,7 @@ public class DeletePopupView extends AbstractScenarioConfirmationPopupView imple
                      final String textDangerText,
                      final String okDeleteButtonText,
                      final Command okDeleteCommand) {
-        textDanger.setInnerText(textDangerText);
+        conditionalShow(textDanger, textDangerText);
         super.show(mainTitleText, mainQuestionText, text1Text, textQuestionText,
                    okDeleteButtonText,
                    okDeleteCommand);
