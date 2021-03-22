@@ -308,12 +308,12 @@
 
 .kogito--editor__dmn-runner-drawer-content-body-output {
   padding-top: 0;
-  padding-left: 0;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .kogito--editor__dmn-runner-drawer-content-body-output-card {
   border: 0 !important;
-  background: transparent;
 }
 
 .kogito--editor__dmn-runner-drawer-content-body-output-card-body {
@@ -323,10 +323,6 @@
 .kogito--editor__dmn-runner-drawer-content-body-output-card-body-leaf {
   padding-bottom: 0;
   padding-top: 0;
-}
-
-.kogito--editor__dmn-runner-drawer-output-leaf {
-  background-color: transparent;
 }
 
 .kogito--editor__dmn-runner-drawer-output-leaf-updated {
@@ -353,7 +349,7 @@
     color: var(--pf-global--palette--black-800);
   }
   100% {
-    background-color: transparent;
+    background-color: var(--pf-global--BackgroundColor--100);
     color: var(--pf-global--palette--black-1000);
   }
 }

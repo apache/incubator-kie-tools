@@ -432,7 +432,7 @@ export function EditorPage(props: Props) {
               >
                 <DmnRunnerDrawer
                   jsonSchemaBridge={dmnRunnerJsonSchemaBridge}
-                  editorContent={editor?.getContent}
+                  getEditorContent={editor?.getContent}
                   onStopRunDmn={requestCloseDmnRunnerDrawer}
                   flexDirection={dmnRunnerFlexDirection}
                 />

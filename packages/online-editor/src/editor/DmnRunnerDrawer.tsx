@@ -17,9 +17,8 @@
 import * as React from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useCallback } from "react";
-import { DmnRunner } from "../common/DmnRunner";
+import { DecisionResult, DmnResult, DmnRunner, EvaluationStatus } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
-import Form from "@rjsf/bootstrap-4";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
@@ -39,11 +38,20 @@ import {
   EmptyStateBody,
   TextVariants,
   Switch,
-  DrawerCloseButton
+  DrawerCloseButton,
+  CardFooter
 } from "@patternfly/react-core";
-import { CubesIcon, InfoCircleIcon } from "@patternfly/react-icons";
+import {
+  CubesIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  ExclamationTriangleIcon,
+  InfoCircleIcon
+} from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
 import { flatten } from "../common/utils";
+import { ErrorBoundary } from "../common/ErrorBoundry";
+import { Decision } from "@kogito-tooling/pmml-editor-marshaller";
 
 enum ButtonPosition {
   INPUT,
@@ -51,7 +59,7 @@ enum ButtonPosition {
 }
 
 interface Props {
-  editorContent: (() => Promise<string>) | undefined;
+  getEditorContent: (() => Promise<string>) | undefined;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
   onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
   flexDirection: "column" | "row";
@@ -60,10 +68,10 @@ interface Props {
 const PF_BREAKPOINT_XL = 1200;
 
 export function DmnRunnerDrawer(props: Props) {
-  const [dmnRunnerResponse, setDmnRunnerResponse] = useState();
+  const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
   const [isAutoSubmit, setIsAutoSubmit] = useState(true);
   const autoFormRef = useRef<HTMLFormElement>();
-  const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<string[]>();
+  const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() =>
     window.innerWidth <= PF_BREAKPOINT_XL ? ButtonPosition.INPUT : ButtonPosition.OUTPUT
   );
@@ -76,29 +84,27 @@ export function DmnRunnerDrawer(props: Props) {
   const onSubmit = useCallback(
     async data => {
       setFormContext(data);
-      if (props.editorContent) {
+      if (props.getEditorContent) {
         try {
-          const model = await props.editorContent();
-          const dmnRunnerRes = await DmnRunner.send({ context: data, model });
-          const dmnRunnerJson = await dmnRunnerRes.json();
-          if (
-            Object.hasOwnProperty.call(dmnRunnerJson, "details") &&
-            Object.hasOwnProperty.call(dmnRunnerJson, "stack")
-          ) {
+          const content = await props.getEditorContent();
+          const result = await DmnRunner.result({ context: data, model: content });
+          if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
             // DMN Runner Error
             return;
           }
-          const differences = diff(dmnRunnerResponse ?? {}, dmnRunnerJson);
-          if (Object.keys(differences).length !== 0) {
-            setDmnRunnerResponseDiffs([...Object.keys(flatten(diff(dmnRunnerResponse ?? {}, dmnRunnerJson)))]);
+          const differences = result?.decisionResults?.map((decisionResult, index) =>
+            diff(dmnRunnerResults?.[index] ?? {}, decisionResult ?? {})
+          );
+          if (differences?.length !== 0) {
+            setDmnRunnerResponseDiffs(differences);
           }
-          setDmnRunnerResponse(dmnRunnerJson);
+          setDmnRunnerResults(result?.decisionResults);
         } catch (err) {
-          setDmnRunnerResponse(undefined);
+          setDmnRunnerResults(undefined);
         }
       }
     },
-    [props, dmnRunnerResponse]
+    [props.getEditorContent, dmnRunnerResults]
   );
 
   useEffect(() => {
@@ -152,18 +158,17 @@ export function DmnRunnerDrawer(props: Props) {
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                 {props.jsonSchemaBridge ? (
-                  <ErrorBoundary ref={errorBoundaryRef}>
+                  <ErrorBoundary ref={errorBoundaryRef} error={<h1>Something went wrong.</h1>}>
                     <AutoForm
                       id={"form"}
                       ref={autoFormRef}
                       showInlineError={true}
-                      autosave={false}
+                      autosave={isAutoSubmit}
                       autosaveDelay={500}
                       schema={props.jsonSchemaBridge}
                       onSubmit={onSubmit}
                       errorsField={() => <></>}
                       submitField={isAutoSubmit ? () => <></> : undefined}
-                      placeholder={true}
                     />
                   </ErrorBoundary>
                 ) : (
@@ -198,8 +203,8 @@ export function DmnRunnerDrawer(props: Props) {
 
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                {dmnRunnerResponse ? (
-                  <DmnRunnerResponse diffs={dmnRunnerResponseDiffs} responseObject={dmnRunnerResponse!} depth={0} />
+                {dmnRunnerResults ? (
+                  <DmnRunnerResult dmnRunnerResults={dmnRunnerResults!} differences={dmnRunnerResponseDiffs} />
                 ) : (
                   <EmptyState>
                     <EmptyStateIcon icon={InfoCircleIcon} />
@@ -222,126 +227,98 @@ export function DmnRunnerDrawer(props: Props) {
   );
 }
 
+type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};
+
 interface DmnRunnerResponseProps {
-  responseObject: object;
-  depth: number;
-  diffs?: string[];
+  dmnRunnerResults: DecisionResult[];
+  differences?: Array<DeepPartial<DecisionResult>>;
 }
 
-function DmnRunnerResponse(props: DmnRunnerResponseProps) {
-  return (
-    <div>
-      {[...Object.entries(props.responseObject)].reverse().map(([key, value]: any[], index) => (
-        <div key={`${key}-${index}-dmn-runner-response`}>
-          {typeof value === "object" && value !== null ? (
-            <Card isFlat={true} className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}>
-              <CardTitle>{key}</CardTitle>
-              <CardBody
-                isFilled={true}
-                className={props.depth > 0 ? "kogito--editor__dmn-runner-drawer-content-body-output-card-body" : ""}
-              >
-                <DmnRunnerResponse diffs={props.diffs} responseObject={value} depth={props.depth + 1} />
-              </CardBody>
-            </Card>
-          ) : (
-            <>
-              {props.depth === 0 ? (
-                <Card isFlat={true} className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}>
-                  <CardBody
-                    isFilled={true}
-                    className={"kogito--editor__dmn-runner-drawer-content-body-output-card-body-leaf"}
-                  >
-                    <ResultCardLeaf diffs={props.diffs} label={key} value={value} />
-                  </CardBody>
-                </Card>
-              ) : (
-                <ResultCardLeaf diffs={props.diffs} label={key} value={value} />
-              )}
-            </>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-interface ResultCardLeafProps {
-  label: string;
-  value: string;
-  diffs?: string[];
-}
-
-function ResultCardLeaf(props: ResultCardLeafProps) {
-  const [ariaLabel, setAriaLabel] = useState<string>(props.label);
-  const [className, setClassName] = useState<string>("kogito--editor__dmn-runner-drawer-output-leaf");
-
+function DmnRunnerResult(props: DmnRunnerResponseProps) {
   useEffect(() => {
-    const hasKey = props.diffs?.find(key => key === props.label);
-    if (hasKey) {
-      setAriaLabel(`${props.label} field updated`);
-      setClassName("kogito--editor__dmn-runner-drawer-output-leaf-updated");
-    } else {
-      setAriaLabel(`${props.label}`);
-      setClassName("kogito--editor__dmn-runner-drawer-output-leaf");
-    }
-  }, [props.diffs, props.label]);
+    props.differences?.forEach((difference, index) => {
+      if (Object.keys(difference).length === 0) {
+        return;
+      }
 
-  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLDListElement>) => {
+      const updatedResult = document.getElementById(`${index}-dmn-runner-result`);
+      updatedResult?.classList.add("kogito--editor__dmn-runner-drawer-output-leaf-updated");
+    });
+  }, [props.differences]);
+
+  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
     e.preventDefault();
     e.stopPropagation();
-    setClassName("kogito--editor__dmn-runner-drawer-output-leaf");
+
+    const updatedResult = document.getElementById(`${index}-dmn-runner-result`);
+    updatedResult?.classList.remove("kogito--editor__dmn-runner-drawer-output-leaf-updated");
+  }, []);
+
+  const dmnRunnerResultStatus = useCallback((evaluationStatus: EvaluationStatus) => {
+    switch (evaluationStatus) {
+      case EvaluationStatus.SUCCEEDED:
+        return (
+          <>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <CheckCircleIcon />
+              <p style={{ paddingLeft: "5px" }}>Evaluated with success</p>
+            </div>
+          </>
+        );
+      case EvaluationStatus.SKIPPED:
+        return (
+          <>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <InfoCircleIcon />
+              <p style={{ paddingLeft: "5px" }}>Evaluation skipped</p>
+            </div>
+          </>
+        );
+      case EvaluationStatus.FAILED:
+        return (
+          <>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <ExclamationCircleIcon />
+              <p style={{ paddingLeft: "5px" }}>Evaluation failed</p>
+            </div>
+          </>
+        );
+    }
   }, []);
 
   return (
     <div>
-      <DescriptionList
-        id={props.label}
-        aria-label={ariaLabel}
-        className={className}
-        onAnimationEnd={onAnimationEnd}
-        isHorizontal={true}
-      >
-        <DescriptionListGroup>
-          <DescriptionListTerm>{props.label}</DescriptionListTerm>
-          {props.value ? (
-            <DescriptionListDescription>{props.value}</DescriptionListDescription>
-          ) : (
-            <DescriptionListDescription>
-              <i>(null)</i>
-            </DescriptionListDescription>
-          )}
-        </DescriptionListGroup>
-      </DescriptionList>
+      {props.dmnRunnerResults.map((dmnRunnerResult, index) => (
+        <div key={`${index}-dmn-runner-result`} style={{ padding: "10px" }}>
+          <Card
+            id={`${index}-dmn-runner-result`}
+            isFlat={true}
+            className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}
+            onAnimationEnd={e => onAnimationEnd(e, index)}
+          >
+            <CardTitle>{dmnRunnerResult.decisionName}</CardTitle>
+            <CardBody isFilled={true}>
+              {typeof dmnRunnerResult.result === "object" && dmnRunnerResult.result !== null ? (
+                <DescriptionList>
+                  {Object.entries(dmnRunnerResult.result).map(([key, value]) => (
+                    <DescriptionListGroup>
+                      <DescriptionListTerm>{key}</DescriptionListTerm>
+                      <DescriptionListDescription>{value}</DescriptionListDescription>
+                    </DescriptionListGroup>
+                  ))}
+                </DescriptionList>
+              ) : dmnRunnerResult.result === null ? (
+                <i>(null)</i>
+              ) : (
+                dmnRunnerResult.result
+              )}
+            </CardBody>
+            <CardFooter>{dmnRunnerResultStatus(dmnRunnerResult.evaluationStatus)}</CardFooter>
+          </Card>
+        </div>
+      ))}
     </div>
   );
-}
-
-class ErrorBoundary extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  public reset() {
-    this.setState({ hasError: false });
-  }
-
-  public componentDidCatch(error: any, errorInfo: any) {
-    // You can also log the error to an error reporting service
-    console.error("Error", error, errorInfo);
-  }
-
-  public render() {
-    if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
-    }
-
-    return this.props.children;
-  }
-
-  public static getDerivedStateFromError(error: any) {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true };
-  }
 }

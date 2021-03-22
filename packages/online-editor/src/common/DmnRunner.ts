@@ -23,9 +23,38 @@ export interface DmnRunnerPayload {
   context: Map<string, object>;
 }
 
+export enum EvaluationStatus {
+  SUCCEEDED = "SUCCEEDED",
+  SKIPPED = "SKIPPED",
+  FAILED = "FAILED"
+}
+
+interface DecisionResultMessage {
+  severity: string;
+  message: string;
+  messageType: string;
+  sourceId: string;
+  level: string;
+}
+
+export interface DecisionResult {
+  decisionId: string;
+  decisionName: string;
+  result: object | string | null;
+  messages: DecisionResultMessage[];
+  evaluationStatus: EvaluationStatus;
+}
+
+export interface DmnResult {
+  details?: string;
+  stack?: string;
+  decisionResults?: DecisionResult[];
+}
+
 const DMN_RUNNER_SERVER = "http://localhost:8080/";
 const DMN_RUNNER_URL = "http://localhost:8080/jitdmn";
-const DMN_RUNNER_SCHEMA_URL = "http://localhost:8080/jitdmn/schema";
+const DMN_RUNNER_VALIDATE_URL = "http://localhost:8080/jitdmn/validate";
+const DMN_RUNNER_DMNRESULT_URL = "http://localhost:8080/jitdmn/dmnresult";
 const DMN_RUNNER_FORM_URL = "http://localhost:8080/jitdmn/schema/form";
 const DMN_RUNNER_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
 
@@ -82,7 +111,8 @@ export const schema = {
       properties: {
         Income: {
           type: "number",
-          "x-dmn-type": "FEEL:number"
+          "x-dmn-type": "FEEL:number",
+          help: "mi ajuda"
         },
         Repayments: {
           type: "number",
@@ -258,28 +288,32 @@ export class DmnRunner {
     }
   }
 
-  public static send(payload: DmnRunnerPayload) {
-    return fetch(DMN_RUNNER_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json, text/plain, */*"
-      },
-      body: JSON.stringify(payload)
-    });
+  public static async result(payload: DmnRunnerPayload): Promise<DmnResult | undefined> {
+    try {
+      const response = await fetch(DMN_RUNNER_DMNRESULT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json, text/plain, */*"
+        },
+        body: JSON.stringify(payload)
+      });
+      return await response.json();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  private static async getSchema(model: string) {
+  public static async validate(model: string) {
     try {
-      const response = await fetch(DMN_RUNNER_SCHEMA_URL, {
+      const response = await fetch(DMN_RUNNER_VALIDATE_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/xml;"
         },
         body: model
       });
-      const jitDmnSchema = await response.json();
-      return new JSONSchemaBridge(jitDmnSchema, createValidator(jitDmnSchema));
+      return await response.json();
     } catch (err) {
       console.error(err);
     }
