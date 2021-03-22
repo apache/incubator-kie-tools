@@ -29,7 +29,7 @@ import org.uberfire.client.workbench.ouia.OuiaAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

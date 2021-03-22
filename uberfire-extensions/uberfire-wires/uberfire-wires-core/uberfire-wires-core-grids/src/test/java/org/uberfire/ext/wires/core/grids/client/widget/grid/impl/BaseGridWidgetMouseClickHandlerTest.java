@@ -37,7 +37,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
-import static org.mockito.Matchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
