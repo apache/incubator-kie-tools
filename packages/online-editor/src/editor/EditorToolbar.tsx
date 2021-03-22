@@ -15,20 +15,20 @@
  */
 
 import {
+  Brand,
   Button,
   Dropdown,
   DropdownGroup,
   DropdownItem,
   DropdownPosition,
+  DropdownToggle,
+  PageHeader,
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem,
   TextInput,
   Title,
-  PageHeaderTools,
-  PageHeaderToolsItem,
-  PageHeaderToolsGroup,
-  PageHeader,
-  Brand,
-  Tooltip,
-  DropdownToggle
+  Tooltip
 } from "@patternfly/react-core";
 import { EllipsisVIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -128,14 +128,19 @@ export function EditorToolbar(props: Props) {
       >
         {i18n.editorToolbar.copySource}
       </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
-        {i18n.editorToolbar.downloadSVG}
-      </DropdownItem>,
+      <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
+        {(fileExtension.toLowerCase() === i18n.names.bpmn.toLowerCase() ||
+          fileExtension.toLowerCase() === i18n.names.dmn.toLowerCase()) && (
+          <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
+            {i18n.editorToolbar.downloadSVG}
+          </DropdownItem>
+        )}
+      </React.Fragment>,
       <DropdownItem key={`dropdown-${dropdownId}-embed`} component="button" onClick={props.onEmbed}>
         {i18n.editorToolbar.embed}
       </DropdownItem>,
       <DropdownGroup key={"github-group"} label={i18n.names.github}>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
+        <React.Fragment key={`dropdown-${dropdownId}-fragment-export-gist`}>
           <Tooltip
             data-testid={"gist-it-tooltip"}
             key={`dropdown-${dropdownId}-export-gist`}

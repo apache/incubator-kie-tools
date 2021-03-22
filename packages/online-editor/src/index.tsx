@@ -42,7 +42,8 @@ const editorEnvelopeLocator: EditorEnvelopeLocator = {
   mapping: new Map([
     ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
     ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-    ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }]
+    ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }],
+    ["pmml", { resourcesPathPrefix: "../editors/pmml", envelopePath: "envelope/pmml-envelope.html" }]
   ])
 };
 
