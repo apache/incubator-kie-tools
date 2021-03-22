@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly.scss";
 
 export * from "./PMMLEditor";
 export * from "./PMMLEditorFactory";
