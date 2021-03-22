@@ -465,6 +465,85 @@ Feature: Deploy Kogito Runtime
 
 #####
 
+  @failover
+  @events
+  @infinispan
+  @kafka
+  Scenario Outline: Test Kogito Runtime <example-service> failover with Kafka
+    Given Kogito Operator is deployed
+    And Infinispan Operator is deployed
+    And Kafka Operator is deployed
+    And Infinispan instance "kogito-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
+    And Install Kogito Data Index with 1 replicas with configuration:
+      | config | infra | infinispan |
+      | config | infra | kafka      |
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | persistence,events |
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | infinispan |
+      | config | infra | kafka      |
+    And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
+    And Start "orders" process on service "<example-service>" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john",
+        "order" : {
+          "orderNumber" : "12345",
+          "shipped" : false
+        }
+      }
+      """
+
+    Then Service "<example-service>" contains 1 instances of process with name "orders"
+    And GraphQL request on Data Index service returns 1 instance of process with name "orders" within 2 minutes
+
+    When Scale Kafka instance "kogito-kafka" down
+    And Start "orders" process on service "<example-service>" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john",
+        "order" : {
+          "orderNumber" : "12345",
+          "shipped" : false
+        }
+      }
+      """
+    Then Service "<example-service>" contains 2 instances of process with name "orders"
+    And Kafka instance "kogito-kafka" has 1 kafka pod running within 2 minutes
+    And GraphQL request on Data Index service returns 2 instances of process with name "orders" within 2 minutes
+
+    When Start "orders" process on service "<example-service>" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john",
+        "order" : {
+          "orderNumber" : "12345",
+          "shipped" : false
+        }
+      }
+      """
+    Then Service "<example-service>" contains 3 instances of process with name "orders"
+    And GraphQL request on Data Index service returns 3 instances of process with name "orders" within 2 minutes
+
+    @springboot
+    Examples:
+      | runtime    | example-service            |
+      | springboot | process-springboot-example |
+
+    @quarkus
+    Examples:
+      | runtime | example-service         |
+      | quarkus | process-quarkus-example |
+
+#####
+
   @knative
   Scenario: Deploy process-knative-quickstart-quarkus using Kogito Runtime
     Given Kogito Operator is deployed

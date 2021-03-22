@@ -56,3 +56,19 @@ func DeployKafkaTopic(namespace, kafkaTopicName, kafkaInstanceName string) error
 
 	return nil
 }
+
+// ScaleKafkaInstanceDown scales a Kafka instance down by killing its pod temporarily
+func ScaleKafkaInstanceDown(namespace, kafkaInstanceName string) error {
+	GetLogger(namespace).Info("Scaling Kafka Instance down", "instance name", kafkaInstanceName)
+	pods, err := GetPodsWithLabels(namespace, map[string]string{"strimzi.io/name": kafkaInstanceName + "-kafka"})
+	if err != nil {
+		return err
+	} else if len(pods.Items) != 1 {
+		return fmt.Errorf("Kafka instance should have just one kafka pod running")
+	}
+	if err = DeleteObject(&pods.Items[0]); err != nil {
+		return fmt.Errorf("Error scaling Kafka instance down by deleting a kafka pod. The nested error is: %v", err)
+	}
+
+	return nil
+}

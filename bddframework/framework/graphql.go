@@ -42,9 +42,13 @@ func WaitForSuccessfulGraphQLRequest(namespace, uri, path, query string, timeout
 func WaitForSuccessfulGraphQLRequestUsingPagination(namespace, uri, path, query string, timeoutInMin, pageSize, totalSize int, response interface{}, afterEachResponse func(response interface{}) (bool, error), afterFullRequest func() (bool, error)) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("GraphQL query %s on path '%s' using '%s' access token to be successful", query, path, graphQLNoAuthToken), timeoutInMin,
 		func() (bool, error) {
+			totalPages := totalSize / pageSize
+			if totalSize%pageSize != 0 {
+				totalPages++
+			}
 			for queried := 0; queried < totalSize; {
 				query := strings.ReplaceAll(query, "$offset", strconv.Itoa(queried))
-				GetLogger(namespace).Info("Querying", "page no.", queried/pageSize+1, "of", totalSize/pageSize, "query", query)
+				GetLogger(namespace).Info("Querying", "page no.", queried/pageSize+1, "of", totalPages, "query", query)
 				err := ExecuteGraphQLRequestWithLoggingOption(namespace, uri, path, query, graphQLNoAuthToken, response, false)
 				if err != nil {
 					return false, err

@@ -26,7 +26,9 @@ import (
 func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Kafka Operator is deployed$`, data.kafkaOperatorIsDeployed)
 	ctx.Step(`^Kafka instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.kafkaInstanceHasPodsRunningWithinMinutes)
+	ctx.Step(`^Kafka instance "([^"]*)" has (\d+) kafka (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.kafkaInstanceHasKafkaPodsRunningWithinMinutes)
 	ctx.Step(`^Kafka instance "([^"]*)" is deployed$`, data.kafkaInstanceIsDeployed)
+	ctx.Step(`^Scale Kafka instance "([^"]*)" down`, data.scaleKafkaInstanceDown)
 	ctx.Step(`^Kafka topic "([^"]*)" is deployed$`, data.kafkaTopicIsDeployed)
 }
 
@@ -38,6 +40,10 @@ func (data *Data) kafkaInstanceHasPodsRunningWithinMinutes(name string, numberOf
 	return framework.WaitForPodsWithLabel(data.Namespace, "strimzi.io/name", name+"-entity-operator", numberOfPods, timeOutInMin)
 }
 
+func (data *Data) kafkaInstanceHasKafkaPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {
+	return framework.WaitForPodsWithLabel(data.Namespace, "strimzi.io/name", name+"-kafka", numberOfPods, timeOutInMin)
+}
+
 func (data *Data) kafkaInstanceIsDeployed(name string) error {
 	kafka := getKafkaDefaultResource(name, data.Namespace)
 
@@ -46,6 +52,10 @@ func (data *Data) kafkaInstanceIsDeployed(name string) error {
 	}
 
 	return framework.WaitForPodsWithLabel(data.Namespace, "strimzi.io/name", name+"-entity-operator", 1, 5)
+}
+
+func (data *Data) scaleKafkaInstanceDown(name string) error {
+	return framework.ScaleKafkaInstanceDown(data.Namespace, name)
 }
 
 func (data *Data) kafkaTopicIsDeployed(name string) error {
