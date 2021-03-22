@@ -21,7 +21,7 @@ import { ContainerType } from "@kogito-tooling/envelope/dist/api";
 
 init({
   container: document.getElementById("envelope-app")!,
-  envelopeConfig: { containerType: ContainerType.IFRAME },
+  config: { containerType: ContainerType.IFRAME },
   bus: {
     postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
       window.parent.postMessage(message, "*", transfer);

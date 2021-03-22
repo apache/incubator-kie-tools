@@ -41,7 +41,7 @@ export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef:
       container: () => HTMLDivElement | HTMLIFrameElement
     ) => {
       init({
-        envelopeConfig: { containerType: ContainerType.DIV, envelopeId: envelopeServer.id },
+        config: { containerType: ContainerType.DIV, envelopeId: envelopeServer.id },
         container: container(),
         bus: {
           postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
