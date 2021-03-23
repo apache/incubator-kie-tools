@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 
@@ -33,7 +34,7 @@ import (
 
 // DeployKogitoBuild deploy a KogitoBuild
 func DeployKogitoBuild(namespace string, installerType InstallerType, buildHolder *bddtypes.KogitoBuildHolder) error {
-	GetLogger(namespace).Info(fmt.Sprintf("%s deploy %s example %s with name %s and native %v", installerType, buildHolder.KogitoBuild.Spec.Runtime, buildHolder.KogitoBuild.Spec.GitSource.ContextDir, buildHolder.KogitoBuild.Name, buildHolder.KogitoBuild.Spec.Native))
+	GetLogger(namespace).Info(fmt.Sprintf("%s deploy %s example %s with name %s and native %v", installerType, buildHolder.KogitoBuild.GetSpec().GetRuntime(), buildHolder.KogitoBuild.GetSpec().GetGitSource().GetContextDir(), buildHolder.KogitoBuild.GetName(), buildHolder.KogitoBuild.GetSpec().IsNative()))
 
 	switch installerType {
 	case CLIInstallerType:
@@ -47,7 +48,7 @@ func DeployKogitoBuild(namespace string, installerType InstallerType, buildHolde
 
 func crDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
 	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoBuild); err != nil {
-		return fmt.Errorf("Error creating example build %s: %v", buildHolder.KogitoBuild.Name, err)
+		return fmt.Errorf("Error creating example build %s: %v", buildHolder.KogitoBuild.GetName(), err)
 	}
 	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoService); err != nil {
 		return fmt.Errorf("Error creating example service %s: %v", buildHolder.KogitoService.GetName(), err)
@@ -59,7 +60,7 @@ func cliDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
 	cmd := []string{"deploy", buildHolder.KogitoBuild.GetName()}
 
 	// If GIT URI is defined then it needs to be appended as second parameter
-	if gitURI := buildHolder.KogitoBuild.Spec.GitSource.URI; len(gitURI) > 0 {
+	if gitURI := buildHolder.KogitoBuild.GetSpec().GetGitSource().GetURI(); len(gitURI) > 0 {
 		cmd = append(cmd, gitURI)
 	} else if len(buildHolder.BuiltBinaryFolder) > 0 {
 		cmd = append(cmd, buildHolder.BuiltBinaryFolder)

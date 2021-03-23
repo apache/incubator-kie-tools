@@ -88,5 +88,5 @@ func (data *Data) buildConfigHasWebhooksWithinMinutes(buildConfigName string, ti
 		return err
 	}
 
-	return framework.WaitForBuildConfigCreatedWithWebhooks(data.Namespace, buildConfigName, kogitoBuild.Spec.WebHooks, timeoutInMin)
+	return framework.WaitForBuildConfigCreatedWithWebhooks(data.Namespace, buildConfigName, kogitoBuild.Spec.GetWebHooks(), timeoutInMin)
 }

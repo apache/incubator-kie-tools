@@ -16,6 +16,7 @@ package mappers
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-operator/api"
 
 	"github.com/cucumber/godog"
@@ -42,10 +43,10 @@ const (
 func MapKogitoBuildTable(table *godog.Table, buildHolder *types.KogitoBuildHolder) error {
 	for _, row := range table.Rows {
 		// Try to map configuration row to KogitoServiceHolder
-		mappingFound, serviceMapErr := mapKogitoServiceTableRow(row, buildHolder.KogitoServiceHolder)
+		mappingFound, serviceMapErr := MapKogitoServiceTableRow(row, buildHolder.KogitoServiceHolder)
 		if !mappingFound {
 			// Try to map configuration row to KogitoBuild
-			mappingFound, buildMapErr := mapKogitoBuildTableRow(row, buildHolder.KogitoBuild)
+			mappingFound, buildMapErr := mapKogitoBuildTableRow(row, buildHolder.KogitoBuild.(*v1beta1.KogitoBuild))
 			if !mappingFound {
 				return fmt.Errorf("Row mapping not found, Kogito service mapping error: %v , Kogito build mapping error: %v", serviceMapErr, buildMapErr)
 			}
@@ -61,7 +62,7 @@ func mapKogitoBuildTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (ma
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
 
-	firstColumn := getFirstColumn(row)
+	firstColumn := GetFirstColumn(row)
 
 	switch firstColumn {
 	case kogitoBuildConfigKey:
@@ -71,11 +72,11 @@ func mapKogitoBuildTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (ma
 		return mapKogitoBuildWebhookTableRow(row, kogitoBuild)
 
 	case kogitoBuildBuildRequestKey:
-		kogitoBuild.Spec.AddResourceRequest(getSecondColumn(row), getThirdColumn(row))
+		kogitoBuild.Spec.AddResourceRequest(GetSecondColumn(row), GetThirdColumn(row))
 		return true, nil
 
 	case kogitoBuildBuildLimitKey:
-		kogitoBuild.Spec.AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
+		kogitoBuild.Spec.AddResourceLimit(GetSecondColumn(row), GetThirdColumn(row))
 		return true, nil
 
 	default:
@@ -84,11 +85,11 @@ func mapKogitoBuildTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (ma
 }
 
 func mapKogitoBuildConfigTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (mappingFound bool, err error) {
-	secondColumn := getSecondColumn(row)
+	secondColumn := GetSecondColumn(row)
 
 	switch secondColumn {
 	case kogitoBuildNativeKey:
-		kogitoBuild.Spec.Native = MustParseEnabledDisabled(getThirdColumn(row))
+		kogitoBuild.Spec.Native = MustParseEnabledDisabled(GetThirdColumn(row))
 
 	default:
 		return false, fmt.Errorf("Unrecognized config configuration option: %s", secondColumn)
@@ -98,7 +99,7 @@ func mapKogitoBuildConfigTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuil
 }
 
 func mapKogitoBuildWebhookTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (mappingFound bool, err error) {
-	secondColumn := getSecondColumn(row)
+	secondColumn := GetSecondColumn(row)
 
 	if len(kogitoBuild.Spec.WebHooks) == 0 {
 		kogitoBuild.Spec.WebHooks = []v1beta1.WebHookSecret{{}}
@@ -106,9 +107,9 @@ func mapKogitoBuildWebhookTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBui
 
 	switch secondColumn {
 	case kogitoBuildTypeKey:
-		kogitoBuild.Spec.WebHooks[0].Type = api.WebHookType(getThirdColumn(row))
+		kogitoBuild.Spec.WebHooks[0].Type = api.WebHookType(GetThirdColumn(row))
 	case kogitoBuildSecretKey:
-		kogitoBuild.Spec.WebHooks[0].Secret = getThirdColumn(row)
+		kogitoBuild.Spec.WebHooks[0].Secret = GetThirdColumn(row)
 
 	default:
 		return false, fmt.Errorf("Unrecognized webhook configuration option: %s", secondColumn)

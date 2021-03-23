@@ -28,15 +28,18 @@ const (
 	disabledKey = "disabled"
 )
 
-func getFirstColumn(row *TableRow) string {
+// GetFirstColumn returns first table row column
+func GetFirstColumn(row *TableRow) string {
 	return row.Cells[0].Value
 }
 
-func getSecondColumn(row *TableRow) string {
+// GetSecondColumn returns second table row column
+func GetSecondColumn(row *TableRow) string {
 	return row.Cells[1].Value
 }
 
-func getThirdColumn(row *TableRow) string {
+// GetThirdColumn returns third table row column
+func GetThirdColumn(row *TableRow) string {
 	return row.Cells[2].Value
 }
 

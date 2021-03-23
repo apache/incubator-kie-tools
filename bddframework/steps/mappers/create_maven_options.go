@@ -47,14 +47,14 @@ func MapMavenCommandConfigTable(table *godog.Table, config *MavenCommandConfig) 
 	}
 
 	for _, row := range table.Rows {
-		firstColumn := getFirstColumn(row)
+		firstColumn := GetFirstColumn(row)
 		switch firstColumn {
 		case mavenProfileKey:
-			config.Profiles = append(config.Profiles, strings.Split(getSecondColumn(row), ",")...)
+			config.Profiles = append(config.Profiles, strings.Split(GetSecondColumn(row), ",")...)
 		case mavenOptionKey:
-			config.Options = append(config.Options, getSecondColumn(row))
+			config.Options = append(config.Options, GetSecondColumn(row))
 		case mavenNativeKey:
-			if MustParseEnabledDisabled(getSecondColumn(row)) {
+			if MustParseEnabledDisabled(GetSecondColumn(row)) {
 				config.Profiles = append(config.Profiles, nativeProfile)
 			}
 		default:

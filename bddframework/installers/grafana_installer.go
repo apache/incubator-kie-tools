@@ -24,11 +24,11 @@ import (
 var (
 	// grafanaOlmNamespacedInstaller installs Grafana in the namespace using OLM
 	grafanaOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
-		subscriptionName:                  grafanaOperatorSubscriptionName,
-		channel:                           grafanaOperatorSubscriptionChannel,
-		catalog:                           framework.CommunityCatalog,
-		installationTimeoutInMinutes:      3,
-		getAllNamespacedOlmCrsInNamespace: getGrafanaCrsInNamespace,
+		SubscriptionName:                  grafanaOperatorSubscriptionName,
+		Channel:                           grafanaOperatorSubscriptionChannel,
+		Catalog:                           framework.CommunityCatalog,
+		InstallationTimeoutInMinutes:      3,
+		GetAllNamespacedOlmCrsInNamespace: getGrafanaCrsInNamespace,
 	}
 
 	grafanaOperatorSubscriptionName    = "grafana-operator"

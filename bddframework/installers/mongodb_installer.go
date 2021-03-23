@@ -29,11 +29,11 @@ import (
 var (
 	// mongoDbYamlNamespacedInstaller installs MongoDB namespaced using YAMLs
 	mongoDbYamlNamespacedInstaller = YamlNamespacedServiceInstaller{
-		installNamespacedYaml:           installMongoDbUsingYaml,
-		waitForNamespacedServiceRunning: waitForMongoDbUsingYamlRunning,
-		getAllNamespaceYamlCrs:          getMongoDbCrsInNamespace,
-		uninstallNamespaceYaml:          uninstallMongoDbUsingYaml,
-		namespacedYamlServiceName:       mongoDBOperatorServiceName,
+		InstallNamespacedYaml:           installMongoDbUsingYaml,
+		WaitForNamespacedServiceRunning: waitForMongoDbUsingYamlRunning,
+		GetAllNamespaceYamlCrs:          getMongoDbCrsInNamespace,
+		UninstallNamespaceYaml:          uninstallMongoDbUsingYaml,
+		NamespacedYamlServiceName:       mongoDBOperatorServiceName,
 	}
 
 	mongoDBOperatorServiceName    = "Mongo DB"

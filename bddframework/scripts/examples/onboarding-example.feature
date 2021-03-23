@@ -8,13 +8,15 @@ Feature: Build onboarding-example images
     Then Local example service "onboarding-example/<example-name>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
 
+    @rhpam
     @quarkus
     Examples:
       | example-name       | native   |
       | hr                 | disabled |
       | payroll            | disabled |
       | onboarding-quarkus | disabled |
-    
+
+    @rhpam
     @springboot
     Examples:
       | example-name          | native   |

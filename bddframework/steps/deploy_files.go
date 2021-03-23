@@ -16,6 +16,7 @@ package steps
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-operator/api"
 
 	"github.com/cucumber/godog"
@@ -50,8 +51,8 @@ func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string)
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = api.LocalSourceBuildType
-	buildHolder.KogitoBuild.Spec.GitSource.URI = path
+	buildHolder.KogitoBuild.GetSpec().SetType(api.LocalSourceBuildType)
+	buildHolder.KogitoBuild.GetSpec().GetGitSource().SetURI(path)
 
 	return framework.DeployKogitoBuild(namespace, framework.CLIInstallerType, buildHolder)
 }

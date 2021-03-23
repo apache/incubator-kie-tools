@@ -21,7 +21,6 @@ import (
 	"time"
 
 	"github.com/kiegroup/kogito-operator/api"
-	"github.com/kiegroup/kogito-operator/meta"
 
 	"github.com/kiegroup/kogito-operator/core/client"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -46,11 +45,11 @@ var (
 var podErrorReasons = [1]string{"ErrImagePull"}
 
 // InitKubeClient initializes the Kubernetes Client
-func InitKubeClient() error {
+func InitKubeClient(scheme *runtime.Scheme) error {
 	mux.Lock()
 	defer mux.Unlock()
 	if kubeClient == nil {
-		newClient, err := client.NewClientBuilder(meta.GetRegisteredSchema()).UseControllerDynamicMapper().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
+		newClient, err := client.NewClientBuilder(scheme).UseControllerDynamicMapper().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
 		if err != nil {
 			return fmt.Errorf("Error initializing kube client: %v", err)
 		}
@@ -304,6 +303,16 @@ func CreateObject(o kubernetes.ResourceObject) error {
 // GetObjectsInNamespace returns list of objects in specific namespace based on type
 func GetObjectsInNamespace(namespace string, list runtime.Object) error {
 	return kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, list)
+}
+
+// GetObjectWithKey returns object matching provided key
+func GetObjectWithKey(key types.NamespacedName, o kubernetes.ResourceObject) (exists bool, err error) {
+	return kubernetes.ResourceC(kubeClient).FetchWithKey(key, o)
+}
+
+// UpdateObject updates object
+func UpdateObject(o kubernetes.ResourceObject) error {
+	return kubernetes.ResourceC(kubeClient).Update(o)
 }
 
 // DeleteObject deletes object

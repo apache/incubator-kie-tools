@@ -14,12 +14,14 @@ Feature: Deploy Kogito Runtime
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
 
+    @rhpam
     @smoke
     @springboot
     Examples:
       | runtime    | example-service            | native   |
       | springboot | process-springboot-example | disabled |
 
+    @rhpam
     @smoke
     @quarkus
     Examples:
@@ -342,6 +344,7 @@ Feature: Deploy Kogito Runtime
       }
       """
 
+    @rhpam
     @quarkus
     Examples:
       | runtime    | example-service             | native   |
@@ -386,11 +389,13 @@ Feature: Deploy Kogito Runtime
     Then Service "<example-service>" contains 0 instances of process with name "orders"
     And Service "<example-service>" contains 0 instances of process with name "orderItems"
 
+    @rhpam
     @springboot
     Examples:
       | runtime    | example-service            | native   |
       | springboot | process-springboot-example | disabled |
 
+    @rhpam
     @quarkus
     Examples:
       | runtime | example-service         | native   |

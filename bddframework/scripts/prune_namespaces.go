@@ -15,12 +15,13 @@
 package main
 
 import (
+	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/kiegroup/kogito-operator/test/framework"
 )
 
 func main() {
 	// Create kube client
-	if err := framework.InitKubeClient(); err != nil {
+	if err := framework.InitKubeClient(meta.GetRegisteredSchema()); err != nil {
 		panic(err)
 	}
 

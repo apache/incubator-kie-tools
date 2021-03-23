@@ -455,7 +455,8 @@ func LogKubernetesObjects(namespace string, runtimeObjects ...runtime.Object) er
 		// Fetch list
 		err := kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, runtimeObject)
 		if err != nil {
-			return fmt.Errorf("Error retrieving %s from namespace %s: %v", objectName, namespace, err)
+			GetLogger(namespace).Warn("Error logging Kubernetes objects", "namespace", namespace, "error message", err.Error())
+			continue
 		}
 
 		// Format JSON to readable format

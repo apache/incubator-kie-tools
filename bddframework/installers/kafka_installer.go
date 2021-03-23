@@ -23,11 +23,11 @@ import (
 var (
 	// kafkaOlmClusterWideInstaller installs Kafka cluster wide using OLM
 	kafkaOlmClusterWideInstaller = OlmClusterWideServiceInstaller{
-		subscriptionName:                   kafkaOperatorSubscriptionName,
-		channel:                            kafkaOperatorSubscriptionChannel,
-		catalog:                            framework.CommunityCatalog,
-		installationTimeoutInMinutes:       kafkaOperatorTimeoutInMin,
-		getAllClusterWideOlmCrsInNamespace: getKafkaCrsInNamespace,
+		SubscriptionName:                   kafkaOperatorSubscriptionName,
+		Channel:                            kafkaOperatorSubscriptionChannel,
+		Catalog:                            framework.CommunityCatalog,
+		InstallationTimeoutInMinutes:       kafkaOperatorTimeoutInMin,
+		GetAllClusterWideOlmCrsInNamespace: getKafkaCrsInNamespace,
 	}
 
 	kafkaOperatorSubscriptionName    = "strimzi-kafka-operator"

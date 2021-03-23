@@ -25,12 +25,12 @@ import (
 var (
 	// knativeEventingYamlClusterInstaller installs Knative eventing cluster wide using YAMLs
 	knativeEventingYamlClusterInstaller = YamlClusterWideServiceInstaller{
-		installClusterYaml:               installKnativeEventingUsingYaml,
-		installationNamespace:            knativeEventingNamespace,
-		waitForClusterYamlServiceRunning: waitForKnativeEventingUsingYamlRunning,
-		getAllClusterYamlCrsInNamespace:  getKnativeEventingCrsInNamespace,
-		uninstallClusterYaml:             uninstallKnativeEventingUsingYaml,
-		clusterYamlServiceName:           knativeEventingServiceName,
+		InstallClusterYaml:               installKnativeEventingUsingYaml,
+		InstallationNamespace:            knativeEventingNamespace,
+		WaitForClusterYamlServiceRunning: waitForKnativeEventingUsingYamlRunning,
+		GetAllClusterYamlCrsInNamespace:  getKnativeEventingCrsInNamespace,
+		UninstallClusterYaml:             uninstallKnativeEventingUsingYaml,
+		ClusterYamlServiceName:           knativeEventingServiceName,
 	}
 
 	knativeEventingNamespace    = "knative-eventing"

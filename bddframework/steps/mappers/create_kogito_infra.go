@@ -48,12 +48,12 @@ func mapKogitoInfraTableRow(row *TableRow, kogitoInfra *v1beta1.KogitoInfra) (ma
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
 
-	firstColumn := getFirstColumn(row)
+	firstColumn := GetFirstColumn(row)
 
 	switch firstColumn {
 	case kogitoInfraConfigKey:
-		framework.GetLogger(kogitoInfra.Namespace).Debug("Got config", "config", getSecondColumn(row))
-		appendConfig(kogitoInfra, getSecondColumn(row), getThirdColumn(row))
+		framework.GetLogger(kogitoInfra.Namespace).Debug("Got config", "config", GetSecondColumn(row))
+		appendConfig(kogitoInfra, GetSecondColumn(row), GetThirdColumn(row))
 
 	default:
 		return false, fmt.Errorf("Unrecognized configuration option: %s", firstColumn)

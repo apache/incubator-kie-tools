@@ -1,5 +1,6 @@
 @resources
 @quarkus
+@rhpam
 Feature: Deploy the service by configuring the resource requests and limits
 
   Background:

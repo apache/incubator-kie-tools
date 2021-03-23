@@ -16,9 +16,9 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/api"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"time"
+
+	"github.com/kiegroup/kogito-operator/api"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -69,7 +69,7 @@ func WaitForBuildConfigCreated(namespace, buildConfigName string, timeoutInMin i
 }
 
 // WaitForBuildConfigCreatedWithWebhooks waits for a build config to be created with webhooks
-func WaitForBuildConfigCreatedWithWebhooks(namespace, buildConfigName string, expectedWebhooks []v1beta1.WebHookSecret, timeoutInMin int) error {
+func WaitForBuildConfigCreatedWithWebhooks(namespace, buildConfigName string, expectedWebhooks []api.WebHookSecretInterface, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("BuildConfig %s created with webhooks", buildConfigName), timeoutInMin,
 		func() (bool, error) {
 			if bc, err := getBuildConfig(namespace, buildConfigName); err != nil {
@@ -81,18 +81,18 @@ func WaitForBuildConfigCreatedWithWebhooks(namespace, buildConfigName string, ex
 		})
 }
 
-func checkWebhooksInBuildConfig(namespace string, actual []buildv1.BuildTriggerPolicy, expected []v1beta1.WebHookSecret) bool {
+func checkWebhooksInBuildConfig(namespace string, actual []buildv1.BuildTriggerPolicy, expected []api.WebHookSecretInterface) bool {
 	for _, expectedWebhook := range expected {
 		for _, actualTrigger := range actual {
 			var typedTrigger *buildv1.WebHookTrigger
-			switch expectedWebhook.Type {
+			switch expectedWebhook.GetType() {
 			case api.GitHubWebHook:
 				typedTrigger = actualTrigger.GitHubWebHook
 			case api.GenericWebHook:
 				typedTrigger = actualTrigger.GenericWebHook
 			}
 
-			if typedTrigger == nil || typedTrigger.SecretReference.Name != expectedWebhook.Secret {
+			if typedTrigger == nil || typedTrigger.SecretReference.Name != expectedWebhook.GetSecret() {
 				return false
 			}
 		}

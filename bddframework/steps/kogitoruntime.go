@@ -55,7 +55,7 @@ func registerKogitoRuntimeSteps(ctx *godog.ScenarioContext, data *Data) {
 
 // Deploy service steps
 func (data *Data) deployExampleServiceFromRuntimeRegistry(runtimeType, kogitoApplicationName string) error {
-	imageTag := data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
+	imageTag := data.ScenarioContext[GetBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
 	kogitoRuntime := &bddtypes.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoRuntimeStub(data.Namespace, runtimeType, kogitoApplicationName, imageTag),
 	}
@@ -66,7 +66,7 @@ func (data *Data) deployExampleServiceFromRuntimeRegistry(runtimeType, kogitoApp
 }
 
 func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runtimeType, kogitoApplicationName string, table *godog.Table) error {
-	imageTag := data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
+	imageTag := data.ScenarioContext[GetBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
 	kogitoRuntime, err := getKogitoRuntimeExamplesStub(data.Namespace, runtimeType, kogitoApplicationName, imageTag, table)
 	if err != nil {
 		return err

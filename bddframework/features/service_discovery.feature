@@ -48,6 +48,7 @@ Feature: Discovery with onboarding
       }
       """
 
+    @rhpam
     Examples:
       | native   |
       | disabled |
@@ -59,6 +60,7 @@ Feature: Discovery with onboarding
 
 #####
 
+  @rhpam
   @springboot
   Scenario: Deploy Spring Boot onboarding example
     Given Kogito Operator is deployed

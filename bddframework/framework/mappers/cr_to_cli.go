@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	bddtypes "github.com/kiegroup/kogito-operator/test/types"
 )
@@ -65,52 +66,52 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 }
 
 //GetBuildCLIFlags returns CLI flags based on KogitoBuild passed in parameter
-func GetBuildCLIFlags(kogitoBuild *v1beta1.KogitoBuild) []string {
+func GetBuildCLIFlags(kogitoBuild api.KogitoBuildInterface) []string {
 	var cmd []string
 
 	// Flags ordered alphabetically
 
-	if reference := kogitoBuild.Spec.GitSource.Reference; len(reference) > 0 {
+	if reference := kogitoBuild.GetSpec().GetGitSource().GetReference(); len(reference) > 0 {
 		cmd = append(cmd, "--branch", reference)
 	}
 
-	for _, envVar := range kogitoBuild.Spec.Env {
+	for _, envVar := range kogitoBuild.GetSpec().GetEnv() {
 		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
 	}
 
-	for resourceName, quantity := range kogitoBuild.Spec.Resources.Limits {
+	for resourceName, quantity := range kogitoBuild.GetSpec().GetResources().Limits {
 		cmd = append(cmd, "--build-limits", fmt.Sprintf("%s=%s", resourceName, quantity.String()))
 	}
 
-	for resourceName, quantity := range kogitoBuild.Spec.Resources.Requests {
+	for resourceName, quantity := range kogitoBuild.GetSpec().GetResources().Requests {
 		cmd = append(cmd, "--build-requests", fmt.Sprintf("%s=%s", resourceName, quantity.String()))
 	}
-	if contextDir := kogitoBuild.Spec.GitSource.ContextDir; len(contextDir) > 0 {
+	if contextDir := kogitoBuild.GetSpec().GetGitSource().GetContextDir(); len(contextDir) > 0 {
 		cmd = append(cmd, "--context-dir", contextDir)
 	}
 
-	image := kogitoBuild.Spec.RuntimeImage
+	image := kogitoBuild.GetSpec().GetRuntimeImage()
 	if len(image) > 0 {
 		cmd = append(cmd, "--image-runtime", image)
 	}
 
-	image = kogitoBuild.Spec.BuildImage
+	image = kogitoBuild.GetSpec().GetBuildImage()
 	if len(image) > 0 {
 		cmd = append(cmd, "--image-s2i", image)
 	}
 
-	if mavenMirrorURL := kogitoBuild.Spec.MavenMirrorURL; len(mavenMirrorURL) > 0 {
+	if mavenMirrorURL := kogitoBuild.GetSpec().GetMavenMirrorURL(); len(mavenMirrorURL) > 0 {
 		cmd = append(cmd, "--maven-mirror-url", mavenMirrorURL)
 	}
 
-	if kogitoBuild.Spec.Native {
+	if kogitoBuild.GetSpec().IsNative() {
 		cmd = append(cmd, "--native")
 	}
 
 	// webhooks
-	if len(kogitoBuild.Spec.WebHooks) > 0 {
-		for _, webhook := range kogitoBuild.Spec.WebHooks {
-			cmd = append(cmd, "--web-hook", fmt.Sprintf("%s=%s", webhook.Type, webhook.Secret))
+	if len(kogitoBuild.GetSpec().GetWebHooks()) > 0 {
+		for _, webhook := range kogitoBuild.GetSpec().GetWebHooks() {
+			cmd = append(cmd, "--web-hook", fmt.Sprintf("%s=%s", webhook.GetType(), webhook.GetSecret()))
 		}
 	}
 

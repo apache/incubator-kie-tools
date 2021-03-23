@@ -107,7 +107,7 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 
 	// Store image tag into scenario context
 	kogitoApplicationName := filepath.Base(projectLocation)
-	data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)] = runtimeApplicationImageTag
+	data.ScenarioContext[GetBuiltRuntimeImageTagContextKey(kogitoApplicationName)] = runtimeApplicationImageTag
 
 	return nil
 }
@@ -199,8 +199,8 @@ func getProjectImageName(projectLocation string, mavenProfiles, mavenOptions []s
 	return strings.Join(projectImageNameParts, "-")
 }
 
-// Returns context tag used to store built runtime image tag
-func getBuiltRuntimeImageTagContextKey(kogitoApplicationName string) string {
+// GetBuiltRuntimeImageTagContextKey Returns context tag used to store built runtime image tag
+func GetBuiltRuntimeImageTagContextKey(kogitoApplicationName string) string {
 	return fmt.Sprintf("built-image-%s", kogitoApplicationName)
 }
 

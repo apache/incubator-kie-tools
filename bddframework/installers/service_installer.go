@@ -142,17 +142,17 @@ var _ NamespacedServiceInstaller = &YamlNamespacedServiceInstaller{}
 // YamlNamespacedServiceInstaller installs service using YAML files applied to specific namespace
 type YamlNamespacedServiceInstaller struct {
 	// Install service for specific namespaces
-	installNamespacedYaml func(namespace string) error
+	InstallNamespacedYaml func(namespace string) error
 	// Wait until the service is up and running
-	waitForNamespacedServiceRunning func(namespace string) error
+	WaitForNamespacedServiceRunning func(namespace string) error
 	// Return all CRs of this service which exists in this namespace
-	getAllNamespaceYamlCrs func(string) ([]kubernetes.ResourceObject, error)
+	GetAllNamespaceYamlCrs func(string) ([]kubernetes.ResourceObject, error)
 	// Uninstall service from namespace
-	uninstallNamespaceYaml func(namespace string) error
+	UninstallNamespaceYaml func(namespace string) error
 	// Service name
-	namespacedYamlServiceName string
+	NamespacedYamlServiceName string
 	// Cleanup functionality, will delete CRs without owner if not defined
-	cleanupNamespaceYamlCrs func(namespace string) bool
+	CleanupNamespaceYamlCrs func(namespace string) bool
 }
 
 // Install the namespaced service using YAML files into cloud
@@ -162,30 +162,30 @@ func (installer *YamlNamespacedServiceInstaller) Install(namespace string) error
 		installedNamespacedServices.Store(namespace, append(sis.([]NamespacedServiceInstaller), installer))
 	}
 
-	if err := installer.installNamespacedYaml(namespace); err != nil {
+	if err := installer.InstallNamespacedYaml(namespace); err != nil {
 		return err
 	}
 
-	return installer.waitForNamespacedServiceRunning(namespace)
+	return installer.WaitForNamespacedServiceRunning(namespace)
 }
 
 func (installer *YamlNamespacedServiceInstaller) getAllCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	return installer.getAllNamespaceYamlCrs(namespace)
+	return installer.GetAllNamespaceYamlCrs(namespace)
 }
 
 func (installer *YamlNamespacedServiceInstaller) uninstallFromNamespace(namespace string) error {
-	return installer.uninstallNamespaceYaml(namespace)
+	return installer.UninstallNamespaceYaml(namespace)
 }
 
 func (installer *YamlNamespacedServiceInstaller) getServiceName() string {
-	return installer.namespacedYamlServiceName
+	return installer.NamespacedYamlServiceName
 }
 
 func (installer *YamlNamespacedServiceInstaller) cleanupCrsInNamespace(namespace string) bool {
-	if installer.cleanupNamespaceYamlCrs == nil {
+	if installer.CleanupNamespaceYamlCrs == nil {
 		return deleteCrsWithoutOwner(installer, namespace)
 	}
-	return installer.cleanupNamespaceYamlCrs(namespace)
+	return installer.CleanupNamespaceYamlCrs(namespace)
 }
 
 // YAML cluster wide service specification
@@ -196,19 +196,19 @@ var _ ClusterWideServiceInstaller = &YamlClusterWideServiceInstaller{}
 // YamlClusterWideServiceInstaller installs service using YAML files applied to specific namespace
 type YamlClusterWideServiceInstaller struct {
 	// Install service for all namespaces
-	installClusterYaml func() error
+	InstallClusterYaml func() error
 	// Namespace used for cluster wide service installation.
-	installationNamespace string
+	InstallationNamespace string
 	// Wait until the service is up and running
-	waitForClusterYamlServiceRunning func() error
+	WaitForClusterYamlServiceRunning func() error
 	// Return all CRs of this service which exists in this namespace
-	getAllClusterYamlCrsInNamespace func(string) ([]kubernetes.ResourceObject, error)
+	GetAllClusterYamlCrsInNamespace func(string) ([]kubernetes.ResourceObject, error)
 	// Uninstall service from whole cluster
-	uninstallClusterYaml func() error
+	UninstallClusterYaml func() error
 	// Service name
-	clusterYamlServiceName string
+	ClusterYamlServiceName string
 	// Cleanup functionality, will delete CRs without owner if not defined
-	cleanupClusterYamlCrsInNamespace func(namespace string) bool
+	CleanupClusterYamlCrsInNamespace func(namespace string) bool
 }
 
 // Install the cluster wide service using YAML files into cloud
@@ -216,36 +216,36 @@ func (installer *YamlClusterWideServiceInstaller) Install(namespace string) erro
 	// Store cluster wide service installer to use for uninstalling purposes
 	if _, loaded := installedClusterWideServices.LoadOrStore(installer, true); loaded {
 		// Should be running already, wait until it is up
-		return installer.waitForClusterYamlServiceRunning()
+		return installer.WaitForClusterYamlServiceRunning()
 	}
 
-	monitorNamespace(installer.installationNamespace)
+	monitorNamespace(installer.InstallationNamespace)
 
-	if err := installer.installClusterYaml(); err != nil {
+	if err := installer.InstallClusterYaml(); err != nil {
 		return err
 	}
 
-	return installer.waitForClusterYamlServiceRunning()
+	return installer.WaitForClusterYamlServiceRunning()
 }
 
 func (installer *YamlClusterWideServiceInstaller) getAllCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	return installer.getAllClusterYamlCrsInNamespace(namespace)
+	return installer.GetAllClusterYamlCrsInNamespace(namespace)
 }
 
 func (installer *YamlClusterWideServiceInstaller) uninstallFromCluster() error {
-	stopNamespaceMonitoring(installer.installationNamespace)
-	return installer.uninstallClusterYaml()
+	stopNamespaceMonitoring(installer.InstallationNamespace)
+	return installer.UninstallClusterYaml()
 }
 
 func (installer *YamlClusterWideServiceInstaller) getServiceName() string {
-	return installer.clusterYamlServiceName
+	return installer.ClusterYamlServiceName
 }
 
 func (installer *YamlClusterWideServiceInstaller) cleanupCrsInNamespace(namespace string) bool {
-	if installer.cleanupClusterYamlCrsInNamespace == nil {
+	if installer.CleanupClusterYamlCrsInNamespace == nil {
 		return deleteCrsWithoutOwner(installer, namespace)
 	}
-	return installer.cleanupClusterYamlCrsInNamespace(namespace)
+	return installer.CleanupClusterYamlCrsInNamespace(namespace)
 }
 
 // OLM namespaced service specification
@@ -255,14 +255,14 @@ var _ NamespacedServiceInstaller = &OlmNamespacedServiceInstaller{}
 
 // OlmNamespacedServiceInstaller installs service using OLM, installed to specific namespace
 type OlmNamespacedServiceInstaller struct {
-	subscriptionName             string
-	channel                      string
-	catalog                      framework.OperatorCatalog
-	installationTimeoutInMinutes int
+	SubscriptionName             string
+	Channel                      string
+	Catalog                      framework.OperatorCatalog
+	InstallationTimeoutInMinutes int
 	// Return all CRs of this service which exists in this namespace
-	getAllNamespacedOlmCrsInNamespace func(string) ([]kubernetes.ResourceObject, error)
+	GetAllNamespacedOlmCrsInNamespace func(string) ([]kubernetes.ResourceObject, error)
 	// Cleanup functionality, will delete CRs without owner if not defined
-	cleanupNamespacedOlmCrsInNamespace func(namespace string) bool
+	CleanupNamespacedOlmCrsInNamespace func(namespace string) bool
 }
 
 // Install the namespaced service using OLM into cloud
@@ -272,19 +272,19 @@ func (installer *OlmNamespacedServiceInstaller) Install(namespace string) error 
 		installedNamespacedServices.Store(namespace, append(sis.([]NamespacedServiceInstaller), installer))
 	}
 
-	if err := framework.InstallOperator(namespace, installer.subscriptionName, installer.channel, installer.catalog); err != nil {
+	if err := framework.InstallOperator(namespace, installer.SubscriptionName, installer.Channel, installer.Catalog); err != nil {
 		return err
 	}
 
-	return framework.WaitForOperatorRunning(namespace, installer.subscriptionName, installer.catalog, installer.installationTimeoutInMinutes)
+	return framework.WaitForOperatorRunning(namespace, installer.SubscriptionName, installer.Catalog, installer.InstallationTimeoutInMinutes)
 }
 
 func (installer *OlmNamespacedServiceInstaller) getAllCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	return installer.getAllNamespacedOlmCrsInNamespace(namespace)
+	return installer.GetAllNamespacedOlmCrsInNamespace(namespace)
 }
 
 func (installer *OlmNamespacedServiceInstaller) uninstallFromNamespace(namespace string) error {
-	subscription, err := framework.GetSubscription(namespace, installer.subscriptionName, installer.catalog)
+	subscription, err := framework.GetSubscription(namespace, installer.SubscriptionName, installer.Catalog)
 	if err != nil {
 		return err
 	}
@@ -293,14 +293,14 @@ func (installer *OlmNamespacedServiceInstaller) uninstallFromNamespace(namespace
 }
 
 func (installer *OlmNamespacedServiceInstaller) getServiceName() string {
-	return installer.subscriptionName
+	return installer.SubscriptionName
 }
 
 func (installer *OlmNamespacedServiceInstaller) cleanupCrsInNamespace(namespace string) bool {
-	if installer.cleanupNamespacedOlmCrsInNamespace == nil {
+	if installer.CleanupNamespacedOlmCrsInNamespace == nil {
 		return deleteCrsWithoutOwner(installer, namespace)
 	}
-	return installer.cleanupNamespacedOlmCrsInNamespace(namespace)
+	return installer.CleanupNamespacedOlmCrsInNamespace(namespace)
 }
 
 // OLM cluster wide service specification
@@ -310,14 +310,14 @@ var _ ClusterWideServiceInstaller = &OlmClusterWideServiceInstaller{}
 
 // OlmClusterWideServiceInstaller installs service using OLM, installed cluster wide
 type OlmClusterWideServiceInstaller struct {
-	subscriptionName             string
-	channel                      string
-	catalog                      framework.OperatorCatalog
-	installationTimeoutInMinutes int
+	SubscriptionName             string
+	Channel                      string
+	Catalog                      framework.OperatorCatalog
+	InstallationTimeoutInMinutes int
 	// Return all CRs of this service which exists in this namespace
-	getAllClusterWideOlmCrsInNamespace func(string) ([]kubernetes.ResourceObject, error)
+	GetAllClusterWideOlmCrsInNamespace func(string) ([]kubernetes.ResourceObject, error)
 	// Cleanup functionality, will delete CRs without owner if not defined
-	cleanupClusterWideOlmCrsInNamespace func(namespace string) bool
+	CleanupClusterWideOlmCrsInNamespace func(namespace string) bool
 }
 
 // Install the cluster wide service using OLM into cloud
@@ -325,22 +325,22 @@ func (installer *OlmClusterWideServiceInstaller) Install(namespace string) error
 	// Store cluster wide service installer to use for uninstalling purposes
 	if _, loaded := installedClusterWideServices.LoadOrStore(installer, true); loaded {
 		// Should be running already, wait until it is up
-		return framework.WaitForClusterWideOperatorRunning(installer.subscriptionName, installer.catalog, installer.installationTimeoutInMinutes)
+		return framework.WaitForClusterWideOperatorRunning(installer.SubscriptionName, installer.Catalog, installer.InstallationTimeoutInMinutes)
 	}
 
-	if err := framework.InstallClusterWideOperator(installer.subscriptionName, installer.channel, installer.catalog); err != nil {
+	if err := framework.InstallClusterWideOperator(installer.SubscriptionName, installer.Channel, installer.Catalog); err != nil {
 		return err
 	}
 
-	return framework.WaitForClusterWideOperatorRunning(installer.subscriptionName, installer.catalog, installer.installationTimeoutInMinutes)
+	return framework.WaitForClusterWideOperatorRunning(installer.SubscriptionName, installer.Catalog, installer.InstallationTimeoutInMinutes)
 }
 
 func (installer *OlmClusterWideServiceInstaller) getAllCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	return installer.getAllClusterWideOlmCrsInNamespace(namespace)
+	return installer.GetAllClusterWideOlmCrsInNamespace(namespace)
 }
 
 func (installer *OlmClusterWideServiceInstaller) uninstallFromCluster() error {
-	subscription, err := framework.GetClusterWideSubscription(installer.subscriptionName, installer.catalog)
+	subscription, err := framework.GetClusterWideSubscription(installer.SubscriptionName, installer.Catalog)
 	if err != nil {
 		return err
 	}
@@ -349,14 +349,14 @@ func (installer *OlmClusterWideServiceInstaller) uninstallFromCluster() error {
 }
 
 func (installer *OlmClusterWideServiceInstaller) getServiceName() string {
-	return installer.subscriptionName
+	return installer.SubscriptionName
 }
 
 func (installer *OlmClusterWideServiceInstaller) cleanupCrsInNamespace(namespace string) bool {
-	if installer.cleanupClusterWideOlmCrsInNamespace == nil {
+	if installer.CleanupClusterWideOlmCrsInNamespace == nil {
 		return deleteCrsWithoutOwner(installer, namespace)
 	}
-	return installer.cleanupClusterWideOlmCrsInNamespace(namespace)
+	return installer.CleanupClusterWideOlmCrsInNamespace(namespace)
 }
 
 // Helper methods

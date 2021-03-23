@@ -1,3 +1,4 @@
+@rhpam
 @quarkus
 Feature: Build dmn-drools-quarkus-metrics images
 

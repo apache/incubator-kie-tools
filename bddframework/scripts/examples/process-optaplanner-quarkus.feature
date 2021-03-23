@@ -8,6 +8,7 @@ Feature: Build process-optaplanner-quarkus images
     Then Local example service "process-optaplanner-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
 
+    @rhpam
     Examples:
       | native  |
       | disabled |

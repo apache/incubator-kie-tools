@@ -29,33 +29,33 @@ import (
 var (
 	// kogitoYamlClusterInstaller installs Kogito operator cluster wide using YAMLs
 	kogitoYamlClusterInstaller = YamlClusterWideServiceInstaller{
-		installClusterYaml:               installKogitoUsingYaml,
-		installationNamespace:            kogitoNamespace,
-		waitForClusterYamlServiceRunning: waitForKogitoOperatorUsingYamlRunning,
-		getAllClusterYamlCrsInNamespace:  getKogitoCrsInNamespace,
-		uninstallClusterYaml:             uninstallKogitoUsingYaml,
-		clusterYamlServiceName:           kogitoServiceName,
-		cleanupClusterYamlCrsInNamespace: cleanupKogitoCrsInNamespace,
+		InstallClusterYaml:               installKogitoUsingYaml,
+		InstallationNamespace:            kogitoNamespace,
+		WaitForClusterYamlServiceRunning: waitForKogitoOperatorUsingYamlRunning,
+		GetAllClusterYamlCrsInNamespace:  getKogitoCrsInNamespace,
+		UninstallClusterYaml:             uninstallKogitoUsingYaml,
+		ClusterYamlServiceName:           kogitoServiceName,
+		CleanupClusterYamlCrsInNamespace: cleanupKogitoCrsInNamespace,
 	}
 
 	// kogitoOlmNamespacedInstaller installs Kogito in the namespace using OLM
 	kogitoOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
-		subscriptionName:                   kogitoOperatorSubscriptionName,
-		channel:                            kogitoOperatorSubscriptionChannel,
-		catalog:                            framework.CustomKogitoOperatorCatalog,
-		installationTimeoutInMinutes:       5,
-		getAllNamespacedOlmCrsInNamespace:  getKogitoCrsInNamespace,
-		cleanupNamespacedOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
+		SubscriptionName:                   kogitoOperatorSubscriptionName,
+		Channel:                            kogitoOperatorSubscriptionChannel,
+		Catalog:                            framework.CustomKogitoOperatorCatalog,
+		InstallationTimeoutInMinutes:       5,
+		GetAllNamespacedOlmCrsInNamespace:  getKogitoCrsInNamespace,
+		CleanupNamespacedOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
 	}
 
 	// kogitoOlmClusterWideInstaller installs Kogito cluster wide using OLM
 	kogitoOlmClusterWideInstaller = OlmClusterWideServiceInstaller{
-		subscriptionName:                    kogitoOperatorSubscriptionName,
-		channel:                             kogitoOperatorSubscriptionChannel,
-		catalog:                             framework.CustomKogitoOperatorCatalog,
-		installationTimeoutInMinutes:        5,
-		getAllClusterWideOlmCrsInNamespace:  getKogitoCrsInNamespace,
-		cleanupClusterWideOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
+		SubscriptionName:                    kogitoOperatorSubscriptionName,
+		Channel:                             kogitoOperatorSubscriptionChannel,
+		Catalog:                             framework.CustomKogitoOperatorCatalog,
+		InstallationTimeoutInMinutes:        5,
+		GetAllClusterWideOlmCrsInNamespace:  getKogitoCrsInNamespace,
+		CleanupClusterWideOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
 	}
 
 	kogitoNamespace   = "kogito-operator-system"

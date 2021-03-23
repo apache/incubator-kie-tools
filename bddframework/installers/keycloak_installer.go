@@ -23,11 +23,11 @@ import (
 var (
 	// keycloakOlmNamespacedInstaller installs Keycloak in the namespace using OLM
 	keycloakOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
-		subscriptionName:                  "keycloak-operator",
-		channel:                           "alpha",
-		catalog:                           framework.CommunityCatalog,
-		installationTimeoutInMinutes:      10,
-		getAllNamespacedOlmCrsInNamespace: getKeycloakCrsInNamespace,
+		SubscriptionName:                  "keycloak-operator",
+		Channel:                           "alpha",
+		Catalog:                           framework.CommunityCatalog,
+		InstallationTimeoutInMinutes:      10,
+		GetAllNamespacedOlmCrsInNamespace: getKeycloakCrsInNamespace,
 	}
 )
 

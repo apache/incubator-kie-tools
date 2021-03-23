@@ -43,7 +43,7 @@ const (
 func MapKogitoServiceTable(table *godog.Table, serviceHolder *types.KogitoServiceHolder) error {
 	for _, row := range table.Rows {
 		// Try to map configuration row to KogitoServiceHolder
-		_, err := mapKogitoServiceTableRow(row, serviceHolder)
+		_, err := MapKogitoServiceTableRow(row, serviceHolder)
 		if err != nil {
 			return err
 		}
@@ -52,29 +52,29 @@ func MapKogitoServiceTable(table *godog.Table, serviceHolder *types.KogitoServic
 	return nil
 }
 
-// mapKogitoServiceTableRow maps Cucumber table row to KogitoServiceHolder
-func mapKogitoServiceTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
+// MapKogitoServiceTableRow maps Cucumber table row to KogitoServiceHolder
+func MapKogitoServiceTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
 	if len(row.Cells) != 3 {
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
 
-	firstColumn := getFirstColumn(row)
+	firstColumn := GetFirstColumn(row)
 
 	switch firstColumn {
 	case kogitoServiceServiceLabelKey:
-		kogitoService.KogitoService.GetSpec().AddServiceLabel(getSecondColumn(row), getThirdColumn(row))
+		kogitoService.KogitoService.GetSpec().AddServiceLabel(GetSecondColumn(row), GetThirdColumn(row))
 
 	case kogitoServiceDeploymentLabelKey:
-		kogitoService.KogitoService.GetSpec().AddDeploymentLabel(getSecondColumn(row), getThirdColumn(row))
+		kogitoService.KogitoService.GetSpec().AddDeploymentLabel(GetSecondColumn(row), GetThirdColumn(row))
 
 	case kogitoServiceRuntimeEnvKey:
-		kogitoService.KogitoService.GetSpec().AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
+		kogitoService.KogitoService.GetSpec().AddEnvironmentVariable(GetSecondColumn(row), GetThirdColumn(row))
 
 	case kogitoServiceRuntimeRequestKey:
-		kogitoService.KogitoService.GetSpec().AddResourceRequest(getSecondColumn(row), getThirdColumn(row))
+		kogitoService.KogitoService.GetSpec().AddResourceRequest(GetSecondColumn(row), GetThirdColumn(row))
 
 	case kogitoServiceRuntimeLimitKey:
-		kogitoService.KogitoService.GetSpec().AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
+		kogitoService.KogitoService.GetSpec().AddResourceLimit(GetSecondColumn(row), GetThirdColumn(row))
 
 	case kogitoServiceConfigKey:
 		return mapKogitoServiceConfigTableRow(row, kogitoService)
@@ -87,17 +87,17 @@ func mapKogitoServiceTableRow(row *TableRow, kogitoService *bddtypes.KogitoServi
 }
 
 func mapKogitoServiceConfigTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
-	secondColumn := getSecondColumn(row)
+	secondColumn := GetSecondColumn(row)
 
 	switch secondColumn {
 	case kogitoServiceInfraKey:
-		kogitoService.KogitoService.GetSpec().AddInfra(getThirdColumn(row))
+		kogitoService.KogitoService.GetSpec().AddInfra(GetThirdColumn(row))
 
 	case kogitoServiceDabaseTypeKey:
-		kogitoService.DatabaseType = getThirdColumn(row)
+		kogitoService.DatabaseType = GetThirdColumn(row)
 
 	case kogitoServiceNameTypeKey:
-		kogitoService.KogitoService.SetName(getThirdColumn(row))
+		kogitoService.KogitoService.SetName(GetThirdColumn(row))
 
 	default:
 		return false, fmt.Errorf("Unrecognized config configuration option: %s", secondColumn)

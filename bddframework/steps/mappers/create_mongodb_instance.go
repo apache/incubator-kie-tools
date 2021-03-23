@@ -49,16 +49,16 @@ func MapMongoDBCredentialsFromTable(table *godog.Table, creds *MongoDBCredential
 	}
 
 	for _, row := range table.Rows {
-		firstColumn := getFirstColumn(row)
+		firstColumn := GetFirstColumn(row)
 		switch firstColumn {
 		case mongodbUsernameKey:
-			creds.Username = getSecondColumn(row)
+			creds.Username = GetSecondColumn(row)
 		case mongodbPasswordKey:
-			creds.Password = getSecondColumn(row)
+			creds.Password = GetSecondColumn(row)
 		case mongodbDatabaseKey:
-			creds.Database = getSecondColumn(row)
+			creds.Database = GetSecondColumn(row)
 		case mongodbAuthDatabaseKey:
-			creds.AuthDatabase = getSecondColumn(row)
+			creds.AuthDatabase = GetSecondColumn(row)
 
 		default:
 			return fmt.Errorf("Unrecognized configuration option: %s", firstColumn)

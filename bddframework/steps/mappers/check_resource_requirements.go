@@ -50,13 +50,13 @@ func mapBuildResourceRequirementsTableRow(row *TableRow, build *v1.ResourceRequi
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
 
-	firstColumn := getFirstColumn(row)
+	firstColumn := GetFirstColumn(row)
 	switch firstColumn {
 	case buildRequestKey:
-		build.Requests[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
+		build.Requests[v1.ResourceName(GetSecondColumn(row))] = resource.MustParse(GetThirdColumn(row))
 
 	case buildLimitKey:
-		build.Limits[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
+		build.Limits[v1.ResourceName(GetSecondColumn(row))] = resource.MustParse(GetThirdColumn(row))
 
 	default:
 		return false, fmt.Errorf("Unrecognized build configuration option: %s", firstColumn)
@@ -83,13 +83,13 @@ func mapRuntimeResourceRequirementsTableRow(row *TableRow, runtime *v1.ResourceR
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
 
-	firstColumn := getFirstColumn(row)
+	firstColumn := GetFirstColumn(row)
 	switch firstColumn {
 	case runtimeRequestKey:
-		runtime.Requests[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
+		runtime.Requests[v1.ResourceName(GetSecondColumn(row))] = resource.MustParse(GetThirdColumn(row))
 
 	case runtimeLimitKey:
-		runtime.Limits[v1.ResourceName(getSecondColumn(row))] = resource.MustParse(getThirdColumn(row))
+		runtime.Limits[v1.ResourceName(GetSecondColumn(row))] = resource.MustParse(GetThirdColumn(row))
 
 	default:
 		return false, fmt.Errorf("Unrecognized runtime configuration option: %s", firstColumn)

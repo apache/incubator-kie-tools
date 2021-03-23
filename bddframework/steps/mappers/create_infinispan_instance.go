@@ -39,12 +39,12 @@ func MapInfinispanCredentialsFromTable(table *godog.Table) (username, password s
 	}
 
 	for _, row := range table.Rows {
-		firstColumn := getFirstColumn(row)
+		firstColumn := GetFirstColumn(row)
 		switch firstColumn {
 		case infinispanUsernameKey:
-			username = getSecondColumn(row)
+			username = GetSecondColumn(row)
 		case infinispanPasswordKey:
-			password = getSecondColumn(row)
+			password = GetSecondColumn(row)
 
 		default:
 			return "", "", fmt.Errorf("Unrecognized configuration option: %s", firstColumn)

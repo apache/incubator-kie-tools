@@ -16,8 +16,9 @@ package steps
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/api"
 	"path/filepath"
+
+	"github.com/kiegroup/kogito-operator/api"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/test/config"
@@ -49,11 +50,11 @@ func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir s
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = api.RemoteSourceBuildType
-	buildHolder.KogitoBuild.Spec.GitSource.URI = config.GetExamplesRepositoryURI()
-	buildHolder.KogitoBuild.Spec.GitSource.ContextDir = contextDir
+	buildHolder.KogitoBuild.GetSpec().SetType(api.RemoteSourceBuildType)
+	buildHolder.KogitoBuild.GetSpec().GetGitSource().SetURI(config.GetExamplesRepositoryURI())
+	buildHolder.KogitoBuild.GetSpec().GetGitSource().SetContextDir(contextDir)
 	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
-		buildHolder.KogitoBuild.Spec.GitSource.Reference = ref
+		buildHolder.KogitoBuild.GetSpec().GetGitSource().SetReference(ref)
 	}
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
@@ -65,7 +66,7 @@ func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName s
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = api.BinaryBuildType
+	buildHolder.KogitoBuild.GetSpec().SetType(api.BinaryBuildType)
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
 }
@@ -76,7 +77,7 @@ func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguratio
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = api.BinaryBuildType
+	buildHolder.KogitoBuild.GetSpec().SetType(api.BinaryBuildType)
 	buildHolder.BuiltBinaryFolder = fmt.Sprintf(`%s/%s/target`, data.KogitoExamplesLocation, serviceName)
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.CLIInstallerType, buildHolder)

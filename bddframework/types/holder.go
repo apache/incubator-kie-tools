@@ -16,7 +16,6 @@ package types
 
 import (
 	"github.com/kiegroup/kogito-operator/api"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
 )
 
 // KogitoServiceHolder Helper structure holding informations which are not available in KogitoService
@@ -29,7 +28,7 @@ type KogitoServiceHolder struct {
 // KogitoBuildHolder Helper structure holding informations for Kogito build
 type KogitoBuildHolder struct {
 	*KogitoServiceHolder
-	*v1beta1.KogitoBuild
+	KogitoBuild api.KogitoBuildInterface
 
 	// Specifies folder with prebuilt Kogito binaries to be uploaded to KogitoBuild
 	BuiltBinaryFolder string

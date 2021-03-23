@@ -1,3 +1,4 @@
+@rhpam
 @quarkus
 Feature: Build ruleunit-quarkus-example images
 

@@ -1,9 +1,10 @@
-@quarkus
+@springboot
 Feature: Build process-springboot-example images
 
   Background:
     Given Clone Kogito examples into local directory
 
+  @rhpam
   Scenario Outline: Build process-springboot-example image
     Then Local example service "process-springboot-example" is built by Maven and deployed to runtime registry
 

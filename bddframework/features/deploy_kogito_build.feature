@@ -13,11 +13,13 @@ Feature: Deploy Kogito Build
     And Kogito Runtime "<example-service>" has 1 pods running within 5 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
 
+    @rhpam
     @springboot
     Examples:
       | runtime    | example-service            | native   | minutes |
       | springboot | process-springboot-example | disabled | 10      |
 
+    @rhpam
     @smoke
     @quarkus
     Examples:
@@ -46,11 +48,13 @@ Feature: Deploy Kogito Build
     And Kogito Runtime "<example-service>" has 1 pods running within 5 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
 
+    @rhpam
     @springboot
     Examples:
       | runtime    | example-service            | native   |
       | springboot | process-springboot-example | disabled |
 
+    @rhpam
     @quarkus
     Examples:
       | runtime    | example-service         | native   |
@@ -97,6 +101,7 @@ Feature: Deploy Kogito Build
 
 #####
 
+  @rhpam
   Scenario Outline: Configure <type> webhook trigger in remote S2I using KogitoBuild
     When Build quarkus example service "process-quarkus-example" with configuration:
       | webhook | type   | <type>    |

@@ -23,11 +23,11 @@ import (
 var (
 	// infinispanOlmNamespacedInstaller installs Infinispan in the namespace using OLM
 	infinispanOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
-		subscriptionName:                  infinispanOperatorSubscriptionName,
-		channel:                           infinispanOperatorSubscriptionChannel,
-		catalog:                           framework.CommunityCatalog,
-		installationTimeoutInMinutes:      10,
-		getAllNamespacedOlmCrsInNamespace: getInfinispanCrsInNamespace,
+		SubscriptionName:                  infinispanOperatorSubscriptionName,
+		Channel:                           infinispanOperatorSubscriptionChannel,
+		Catalog:                           framework.CommunityCatalog,
+		InstallationTimeoutInMinutes:      10,
+		GetAllNamespacedOlmCrsInNamespace: getInfinispanCrsInNamespace,
 	}
 
 	infinispanOperatorSubscriptionName    = "infinispan"
