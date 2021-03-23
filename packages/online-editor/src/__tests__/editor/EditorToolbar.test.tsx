@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
-import { StateControl } from "@kogito-tooling/editor/dist/channel";
+import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, StateControl } from "@kogito-tooling/editor/dist/channel";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";
@@ -40,6 +40,7 @@ function mockFunctions() {
     useFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something")
   };
 }
+
 jest.mock("../../common/Hooks", () => mockFunctions());
 
 afterAll(() => {
@@ -158,6 +159,53 @@ describe("EditorToolbar", () => {
       fireEvent.click(getByTestId("set-github-token"));
       expect(getByTestId("github-token-modal")).toBeVisible();
       expect(getByTestId("github-token-modal")).toMatchSnapshot();
+    });
+  });
+
+  describe("share dropdown items", () => {
+    const toolbar = (
+      <EditorToolbar
+        onFullScreen={enterFullscreen}
+        onSave={requestSave}
+        onDownload={requestDownload}
+        onClose={close}
+        onFileNameChanged={onFileNameChanged}
+        onCopyContentToClipboard={requestCopyContentToClipboard}
+        isPageFullscreen={fullscreen}
+        onPreview={requestPreview}
+        onSetGitHubToken={requestSetGitHubToken}
+        onGistIt={requestGistIt}
+        onEmbed={requestEmbed}
+        isEdited={false}
+      />
+    );
+    const context = usingTestingGlobalContext(toolbar);
+
+    test("should include Download SVG when dmn", () => {
+      context.ctx.file = EMPTY_FILE_DMN;
+      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+
+      expect(getByTestId("share-menu")).toBeVisible();
+      fireEvent.click(getByTestId("share-menu"));
+      expect(getByTestId("dropdown-download-svg")).toBeVisible();
+    });
+
+    test("should include Download SVG when bpmn", () => {
+      context.ctx.file = EMPTY_FILE_BPMN;
+      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+
+      expect(getByTestId("share-menu")).toBeVisible();
+      fireEvent.click(getByTestId("share-menu"));
+      expect(getByTestId("dropdown-download-svg")).toBeVisible();
+    });
+
+    test("should exclude Download SVG when pmml", () => {
+      context.ctx.file = EMPTY_FILE_PMML;
+      const { queryByTestId, getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+
+      expect(getByTestId("share-menu")).toBeVisible();
+      fireEvent.click(getByTestId("share-menu"));
+      expect(queryByTestId("dropdown-download-svg")).toBeNull();
     });
   });
 });

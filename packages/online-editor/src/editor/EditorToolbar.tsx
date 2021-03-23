@@ -111,6 +111,10 @@ export function EditorToolbar(props: Props) {
     [i18n, context, props.onClose, props.onFullScreen]
   );
 
+  const includeDownloadSVGDropdownItem = useMemo(() => {
+    return fileExtension.toLowerCase() !== "pmml";
+  }, [fileExtension]);
+
   const shareItems = useCallback(
     (dropdownId: string) => [
       <DropdownItem
@@ -129,9 +133,13 @@ export function EditorToolbar(props: Props) {
         {i18n.editorToolbar.copySource}
       </DropdownItem>,
       <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
-        {(fileExtension.toLowerCase() === i18n.names.bpmn.toLowerCase() ||
-          fileExtension.toLowerCase() === i18n.names.dmn.toLowerCase()) && (
-          <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
+        {includeDownloadSVGDropdownItem && (
+          <DropdownItem
+            key={`dropdown-${dropdownId}-download-svg`}
+            data-testid="dropdown-download-svg"
+            component="button"
+            onClick={props.onPreview}
+          >
             {i18n.editorToolbar.downloadSVG}
           </DropdownItem>
         )}
