@@ -143,40 +143,38 @@ describe("Try sample test", () => {
         expect($dataTypes.eq(2)).text("incomeScore");
       });
 
-      cy.getEditor().within(() => {
-        // Open and close PMML DataDictionary modal
-        cy.get("[data-title='DataDictionary']").click();
-        cy.get(".data-type-item__name").then($dataTypes => {
-          expect($dataTypes).length(4);
-          expect($dataTypes.eq(0)).text("department");
-          expect($dataTypes.eq(1)).text("age");
-          expect($dataTypes.eq(2)).text("income");
-          expect($dataTypes.eq(3)).text("overallScore");
-        });
-        cy.get("[data-title='DataDictionaryModalClose']").click();
-
-        // Open and close PMML MiningSchema modal
-        cy.get("[data-title='MiningSchema']").click();
-        cy.get(".mining-schema-list__item__name").then($miningSchema => {
-          expect($miningSchema).length(4);
-          expect($miningSchema.eq(0)).text("department");
-          expect($miningSchema.eq(1)).text("age");
-          expect($miningSchema.eq(2)).text("income");
-          expect($miningSchema.eq(3)).text("overallScore");
-        });
-        cy.get("[data-title='MiningSchemaModalClose']").click();
-
-        // Open and close PMML Outputs modal
-        cy.get("[data-title='Outputs']").click();
-        cy.get(".outputs-container div > strong").then($outputs => {
-          expect($outputs).length(4);
-          expect($outputs.eq(0)).text("Final Score");
-          expect($outputs.eq(1)).text("Reason Code 1");
-          expect($outputs.eq(2)).text("Reason Code 2");
-          expect($outputs.eq(3)).text("Reason Code 3");
-        });
-        cy.get("[data-title='OutputsModalClose']").click();
+      // Open and close PMML DataDictionary modal
+      cy.get("[data-title='DataDictionary']").click();
+      cy.get(".data-type-item__name").then($dataTypes => {
+        expect($dataTypes).length(4);
+        expect($dataTypes.eq(0)).text("department");
+        expect($dataTypes.eq(1)).text("age");
+        expect($dataTypes.eq(2)).text("income");
+        expect($dataTypes.eq(3)).text("overallScore");
       });
+      cy.get("[data-title='DataDictionaryModalClose']").click();
+
+      // Open and close PMML MiningSchema modal
+      cy.get("[data-title='MiningSchema']").click();
+      cy.get(".mining-schema-list__item__name").then($miningSchema => {
+        expect($miningSchema).length(4);
+        expect($miningSchema.eq(0)).text("department");
+        expect($miningSchema.eq(1)).text("age");
+        expect($miningSchema.eq(2)).text("income");
+        expect($miningSchema.eq(3)).text("overallScore");
+      });
+      cy.get("[data-title='MiningSchemaModalClose']").click();
+
+      // Open and close PMML Outputs modal
+      cy.get("[data-title='Outputs']").click();
+      cy.get(".outputs-container div > strong").then($outputs => {
+        expect($outputs).length(4);
+        expect($outputs.eq(0)).text("Final Score");
+        expect($outputs.eq(1)).text("Reason Code 1");
+        expect($outputs.eq(2)).text("Reason Code 2");
+        expect($outputs.eq(3)).text("Reason Code 3");
+      });
+      cy.get("[data-title='OutputsModalClose']").click();
     });
   });
 });
