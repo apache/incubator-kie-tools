@@ -74,7 +74,8 @@ module.exports = async (env, argv) => {
         { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: "./static/envelope", to: "./envelope/" }
+        { from: "./static/envelope", to: "./envelope/" },
+        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./envelope/images" }
       ]),
       new MonacoWebpackPlugin()
     ],
