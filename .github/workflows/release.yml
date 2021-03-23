@@ -176,6 +176,7 @@ jobs:
         uses: ./kogito-tooling/.github/actions/setup-env
         with:
           path: kogito-tooling
+          os: ubuntu-latest
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kogito-tooling
@@ -197,9 +198,9 @@ jobs:
       ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip"
       ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
       ONLINE_EDITOR__buildInfo: ""
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_linux_${{ needs.prepare.outputs.version }}.tar.gz"
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_macos_${{ needs.prepare.outputs.version }}.dmg"
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_windows_${{ needs.prepare.outputs.version }}.exe"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_linux_${{ needs.prepare.outputs.version }}.tar.gz"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_macos_${{ needs.prepare.outputs.version }}.dmg"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_windows_${{ needs.prepare.outputs.version }}.exe"
       ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ needs.prepare.outputs.version }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
@@ -318,6 +319,7 @@ jobs:
         uses: ./kogito-tooling/.github/actions/setup-env
         with:
           path: kogito-tooling
+          os: ubuntu-latest
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kogito-tooling
@@ -607,6 +609,7 @@ jobs:
         uses: ./kogito-tooling/.github/actions/setup-env
         with:
           path: kogito-tooling
+          os: ubuntu-latest
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kogito-tooling
