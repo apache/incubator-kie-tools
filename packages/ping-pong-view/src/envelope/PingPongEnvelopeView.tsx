@@ -34,7 +34,10 @@ export const PingPongEnvelopeView = React.forwardRef((props, forwardedRef) => {
         <>
           <h2>This is an implementation of Ping-Pong View</h2>
 
-          <p className={"ping-pong-view--p-iframe"}> The {"<iframe>"} border is green </p>
+          <p className={"ping-pong-view--p-iframe"}>
+            {" "}
+            The envelope boundary border is green. It can be an iframe or a div.
+          </p>
           <p className={"ping-pong-view--p-ping-pong"}> The Ping-Pong View implementation border is red </p>
 
           <div id={"ping-pong-view-container"} className={"ping-pong-view--container"}>

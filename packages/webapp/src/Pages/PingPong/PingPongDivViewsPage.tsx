@@ -20,6 +20,7 @@ import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong } from "ping-pong-view/dist/embedded/div";
 import { PingPongChannelApi } from "ping-pong-view/dist/api";
 import { StatsSidebar } from "./StatsSidebar";
+import { PingPongReactImplFactory } from "ping-pong-view-react";
 
 let pings = 0;
 let pongs = 0;
@@ -41,6 +42,8 @@ export function PingPongDivViewsPage() {
     };
   }, [pings, pongs]);
 
+  const pingPongViewFactory = useMemo(() => new PingPongReactImplFactory(), []);
+
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
@@ -52,6 +55,7 @@ export function PingPongDivViewsPage() {
               name={"React 1"}
               targetOrigin={window.location.origin}
               mapping={{ title: "Ping-Pong Page in React" }}
+              pingPongViewFactory={pingPongViewFactory}
             />
           </PageSection>
 
@@ -61,6 +65,7 @@ export function PingPongDivViewsPage() {
               name={"React 2"}
               targetOrigin={window.location.origin}
               mapping={{ title: "Ping-Pong Page in React" }}
+              pingPongViewFactory={pingPongViewFactory}
             />
           </PageSection>
 
@@ -70,6 +75,7 @@ export function PingPongDivViewsPage() {
               name={"React 3"}
               targetOrigin={window.location.origin}
               mapping={{ title: "Ping-Pong Page in React" }}
+              pingPongViewFactory={pingPongViewFactory}
             />
           </PageSection>
         </div>

@@ -20,9 +20,8 @@ import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../../api"
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeFactory } from "@kogito-tooling/envelope/dist/embedded";
 import { ContainerType } from "@kogito-tooling/envelope/dist/api";
-import { init } from "../../envelope";
+import { init, PingPongFactory } from "../../envelope";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { PingPongReactImplFactory } from "ping-pong-view-react";
 
 export type Props = PingPongChannelApi & {
   mapping: {
@@ -30,6 +29,7 @@ export type Props = PingPongChannelApi & {
   };
   targetOrigin: string;
   name: string;
+  pingPongViewFactory: PingPongFactory;
 };
 
 export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef: React.Ref<PingPongApi>) => {
@@ -48,7 +48,7 @@ export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef:
             window.postMessage(message, "*", transfer);
           },
         },
-        pingPongViewFactory: new PingPongReactImplFactory(),
+        pingPongViewFactory: props.pingPongViewFactory,
       });
 
       return envelopeServer.envelopeApi.requests.pingPongView__init(
