@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
-import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.WorkbenchEntryPoint;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.mvp.PlaceRequest;
@@ -46,7 +46,7 @@ public class DocksBars_OpenDockTest {
     private UberfireDocksContainer uberfireDocksContainer;
 
     @Mock
-    private PlaceManager placeManager;
+    private WorkbenchEntryPoint workbenchEntryPoint;
 
     @InjectMocks
     private DocksBars docksBars;
@@ -55,7 +55,7 @@ public class DocksBars_OpenDockTest {
     private ArgumentCaptor<PlaceRequest> placeRequestArgumentCaptor;
 
     @Test
-    public void testOpenDockParametersArePreserved() throws Exception {
+    public void testOpenDockParametersArePreserved() {
 
         final DefaultPlaceRequest myPlace = new DefaultPlaceRequest("myPlace");
 
@@ -65,8 +65,8 @@ public class DocksBars_OpenDockTest {
         docksBars.openDock(getTargetDock(myPlace),
                            getDocksBar());
 
-        verify(placeManager).openDock(placeRequestArgumentCaptor.capture(),
-                                      Mockito.<HasWidgets>any());
+        verify(workbenchEntryPoint).openDock(placeRequestArgumentCaptor.capture(),
+                                             Mockito.<HasWidgets>any());
 
         final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();
         assertEquals("myPlace",

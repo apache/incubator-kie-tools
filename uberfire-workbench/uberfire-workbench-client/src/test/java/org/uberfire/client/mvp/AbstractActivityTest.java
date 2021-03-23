@@ -16,103 +16,77 @@
 
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.junit.Assert;
 import org.junit.Test;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.mockito.Mockito.verify;
+public class AbstractActivityTest {
 
-/**
- * Base class for testing Activity implementations. All Activity unit tests should extend this one; it tests the Activity contract.
- */
-public abstract class AbstractActivityTest {
+    private final AbstractActivity activity = new AbstractActivity() {
+        @Override
+        public IsWidget getWidget() {
+            return null;
+        }
 
-    /**
-     * Subclasses should implement this method to return the object they are unit testing.
-     */
-    public abstract Activity getActivityUnderTest();
-
-    /**
-     * Subclasses should implement this method to return the PlaceManager they are using for checking purposes.
-     */
-    public abstract PlaceManager getPlaceManager();
+        @Override
+        public String getIdentifier() {
+            return "TestID";
+        }
+    };
 
     @Test(expected = IllegalStateException.class)
     public void onOpenShouldFailWhenActivityNotStarted() {
-        getActivityUnderTest().onOpen();
+        activity.onOpen();
     }
 
     @Test
-    public void onOpenShouldSucceedWhenActivityStarted() throws Exception {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onOpen();
-        verify(getPlaceManager()).executeOnOpenCallbacks(a.getPlace());
+    public void onOpenShouldSucceedWhenActivityStarted() {
+        activity.onStartup(new DefaultPlaceRequest("TestID"));
+        activity.onOpen();
+        Assert.assertNotNull(activity.place);
+        Assert.assertTrue(activity.open);
     }
 
     @Test(expected = IllegalStateException.class)
     public void onOpenShouldFailWhenActivityAlreadyOpen() {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onOpen();
-        a.onOpen();
+        activity.onStartup(new DefaultPlaceRequest("TestID"));
+        activity.onOpen();
+        activity.onOpen();
     }
 
     @Test
-    public void onShutdownShouldSucceedWhenActivityNeverOpened() throws Exception {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onShutdown();
-    }
-
-    @Test
-    public void onCloseShouldSucceedWhenActivityOpened() throws Exception {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onOpen();
-        a.onClose();
-        verify(getPlaceManager()).executeOnCloseCallbacks(a.getPlace());
+    public void onCloseShouldSucceedWhenActivityOpened() {
+        activity.onStartup(new DefaultPlaceRequest("TestID"));
+        activity.onOpen();
+        activity.onClose();
+        Assert.assertNull(activity.place);
+        Assert.assertFalse(activity.open);
     }
 
     @Test(expected = IllegalStateException.class)
     public void onCloseShouldFailWhenActivityNotStarted() {
-        getActivityUnderTest().onClose();
+        activity.onClose();
     }
 
     @Test(expected = IllegalStateException.class)
     public void onCloseShouldFailWhenActivityNotOpen() {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onClose();
+        activity.onStartup(new DefaultPlaceRequest("TestID"));
+        activity.onClose();
     }
 
     @Test(expected = IllegalStateException.class)
     public void onCloseShouldFailWhenActivityAlreadyClosed() {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onOpen();
-        a.onClose();
-        a.onClose();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void onShutdownShouldFailWhenActivityNotStarted() {
-        getActivityUnderTest().onShutdown();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void onShutdownShouldFailWhenActivityOpen() {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onOpen();
-        a.onShutdown();
+        activity.onStartup(new DefaultPlaceRequest("TestID"));
+        activity.onOpen();
+        activity.onClose();
+        activity.onClose();
     }
 
     @Test
-    public void fullLifecycleShouldSucceed() throws Exception {
-        Activity a = getActivityUnderTest();
-        a.onStartup(new DefaultPlaceRequest("testplace"));
-        a.onOpen();
-        a.onClose();
-        a.onShutdown();
+    public void fullLifecycleShouldSucceed() {
+        activity.onStartup(new DefaultPlaceRequest("TestID"));
+        activity.onOpen();
+        activity.onClose();
     }
 }

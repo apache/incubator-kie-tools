@@ -35,7 +35,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.Activity;
@@ -77,6 +76,52 @@ public class WorkbenchEntryPoint {
         JSFunctions.nativeRegisterGwtEditorProvider();
     }
 
+    public void openDock(final PlaceRequest place,
+                         final HasWidgets container) {
+        final Activity dockActivity = openActivity(place.getIdentifier());
+        if (!dockActivity.isType(ActivityResourceType.DOCK.name())) {
+            throw new RuntimeException("The place should be associated with a dock activity. " + place);
+        }
+
+        final SimpleLayoutPanel panel = createPanel(dockActivity.getWidget());
+        panel.addAttachHandler(attachEvent -> {
+            if (attachEvent.isAttached()) {
+                return;
+            }
+            Scheduler.get().scheduleFinally(() -> closeDock(dockActivity, container, panel));
+        });
+
+        container.add(panel);
+        resize();
+    }
+
+    protected void closeDock(final Activity dockActivity,
+                             final HasWidgets container,
+                             final SimpleLayoutPanel panel) {
+        final Activity activity = idActivityMap.remove(dockActivity.getIdentifier());
+        if (activity != null) {
+            activity.onClose();
+            final SyncBeanDef<Activity> bean = getBean(Activity.class, dockActivity.getIdentifier());
+            if (bean.getScope() == Dependent.class) {
+                iocManager.destroyBean(activity);
+            }
+        }
+        container.remove(panel);
+    }
+
+    protected SimpleLayoutPanel createPanel(final IsWidget widget) {
+        final SimpleLayoutPanel panel = new SimpleLayoutPanel();
+        panel.getElement().addClassName(CSSLocatorsUtils.buildLocator("qe", "static-workbench-panel-view"));
+
+        final ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.setWidget(widget);
+        scrollPanel.getElement().getFirstChildElement().setClassName("uf-scroll-panel");
+
+        panel.setWidget(scrollPanel);
+        Layouts.setToFillParent(panel);
+        return panel;
+    }
+
     private void setupRootContainer() {
         uberfireDocksContainer.setup(rootContainer,
                                      () -> Scheduler.get().scheduleDeferred(this::resize));
@@ -95,8 +140,7 @@ public class WorkbenchEntryPoint {
     private <T extends Activity> SyncBeanDef<T> getBean(Class<T> type, final String name) {
         final Optional<SyncBeanDef<T>> optionalActivity = iocManager.lookupBeans(type)
                 .stream()
-                .filter(IOCBeanDef::isActivated)
-                .filter(bean -> name == null || bean.getName().equals(name))
+                .filter(bean -> bean.isActivated() && (name == null || bean.getName().equals(name)))
                 .findFirst();
 
         if (!optionalActivity.isPresent()) {
@@ -115,7 +159,7 @@ public class WorkbenchEntryPoint {
         return activity;
     }
 
-    public void resize() {
+    private void resize() {
         resizeTo(Window.getClientWidth(),
                  Window.getClientHeight());
     }
@@ -125,47 +169,5 @@ public class WorkbenchEntryPoint {
         rootContainer.setPixelSize(width,
                                    height);
         rootContainer.onResize();
-    }
-
-    public void openDock(final PlaceRequest place,
-                         final HasWidgets container) {
-        final Activity dockActivity = openActivity(place.getIdentifier());
-        if (!dockActivity.isType(ActivityResourceType.DOCK.name())) {
-            throw new RuntimeException("The place should be associated with a dock activity. " + place);
-        }
-
-        final SimpleLayoutPanel panel = createPanel(dockActivity.getWidget());
-        panel.addAttachHandler(attachEvent -> {
-            if (attachEvent.isAttached()) {
-                return;
-            }
-            Scheduler.get().scheduleFinally(() -> {
-                final Activity activity = idActivityMap.remove(dockActivity.getIdentifier());
-                if (activity != null) {
-                    activity.onClose();
-                    final SyncBeanDef<Activity> bean = getBean(Activity.class, dockActivity.getIdentifier());
-                    if (bean.getScope() == Dependent.class) {
-                        iocManager.destroyBean(activity);
-                    }
-                }
-                container.remove(panel);
-            });
-        });
-
-        container.add(panel);
-        resize();
-    }
-
-    private SimpleLayoutPanel createPanel(final IsWidget widget) {
-        final SimpleLayoutPanel panel = new SimpleLayoutPanel();
-        panel.getElement().addClassName(CSSLocatorsUtils.buildLocator("qe", "static-workbench-panel-view"));
-
-        final ScrollPanel scrollPanel = new ScrollPanel();
-        scrollPanel.setWidget(widget);
-        scrollPanel.getElement().getFirstChildElement().setClassName("uf-scroll-panel");
-
-        panel.setWidget(scrollPanel);
-        Layouts.setToFillParent(panel);
-        return panel;
     }
 }
