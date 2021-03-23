@@ -19,7 +19,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { DecisionResult, DmnResult, DmnRunner, EvaluationStatus } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
-import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
   DescriptionList,
@@ -39,7 +38,8 @@ import {
   TextVariants,
   Switch,
   DrawerCloseButton,
-  CardFooter
+  CardFooter,
+  Title
 } from "@patternfly/react-core";
 import {
   CubesIcon,
@@ -69,7 +69,6 @@ const PF_BREAKPOINT_XL = 1200;
 
 export function DmnRunnerDrawer(props: Props) {
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
-  const [isAutoSubmit, setIsAutoSubmit] = useState(true);
   const autoFormRef = useRef<HTMLFormElement>();
   const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() =>
@@ -108,12 +107,6 @@ export function DmnRunnerDrawer(props: Props) {
   );
 
   useEffect(() => {
-    if (isAutoSubmit) {
-      autoFormRef.current?.submit();
-    }
-  }, [isAutoSubmit]);
-
-  useEffect(() => {
     switch (props.flexDirection) {
       case "row":
         setButtonPosition(ButtonPosition.OUTPUT);
@@ -131,11 +124,6 @@ export function DmnRunnerDrawer(props: Props) {
     autoFormRef.current?.change("context", formContext);
   }, []);
 
-  const tweakAutoSubmit = useCallback(value => {
-    autoFormRef.current?.submit();
-    setIsAutoSubmit(value);
-  }, []);
-
   useEffect(() => {
     errorBoundaryRef.current?.reset();
   }, [props.jsonSchemaBridge]);
@@ -149,7 +137,6 @@ export function DmnRunnerDrawer(props: Props) {
               <TextContent>
                 <Text component={"h2"}>Inputs</Text>
               </TextContent>
-              <Switch label={"Auto-submit"} onChange={tweakAutoSubmit} isChecked={isAutoSubmit} />
               {buttonPosition === ButtonPosition.INPUT && (
                 <DrawerCloseButton onClick={(e: any) => props.onStopRunDmn(e)} />
               )}
@@ -163,12 +150,12 @@ export function DmnRunnerDrawer(props: Props) {
                       id={"form"}
                       ref={autoFormRef}
                       showInlineError={true}
-                      autosave={isAutoSubmit}
+                      autosave={true}
                       autosaveDelay={500}
                       schema={props.jsonSchemaBridge}
                       onSubmit={onSubmit}
                       errorsField={() => <></>}
-                      submitField={isAutoSubmit ? () => <></> : undefined}
+                      submitField={() => <></>}
                     />
                   </ErrorBoundary>
                 ) : (
@@ -298,7 +285,9 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}
             onAnimationEnd={e => onAnimationEnd(e, index)}
           >
-            <CardTitle>{dmnRunnerResult.decisionName}</CardTitle>
+            <CardTitle>
+              <Title headingLevel={"h2"}>{dmnRunnerResult.decisionName}</Title>
+            </CardTitle>
             <CardBody isFilled={true}>
               {typeof dmnRunnerResult.result === "object" && dmnRunnerResult.result !== null ? (
                 <DescriptionList>

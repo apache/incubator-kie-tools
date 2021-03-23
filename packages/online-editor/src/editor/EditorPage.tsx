@@ -275,6 +275,9 @@ export function EditorPage(props: Props) {
         polling2 = window.setInterval(() => {
           DmnRunner.checkServer().then(() => {
             setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
+            if (modal === OpenedModal.DMN_RUNNER_HELPER) {
+              setDmnRunnerDrawerOpen(true);
+            }
             window.clearInterval(polling2);
           });
         }, 500);
@@ -393,6 +396,13 @@ export function EditorPage(props: Props) {
       setDmnRunnerFlexDirection("column");
     }
   }, []);
+
+  const closeDmnRunnerModal = useCallback(() => {
+    if (dmnRunnerStatus === DmnRunnerStatus.STOPPED) {
+      setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
+    }
+    closeModal();
+  }, [dmnRunnerStatus, closeModal]);
 
   return (
     <Page
@@ -546,7 +556,7 @@ export function EditorPage(props: Props) {
                   stopped={dmnRunnerStatus === DmnRunnerStatus.STOPPED}
                   isDmnRunning={dmnRunnerStatus === DmnRunnerStatus.RUNNING}
                   isOpen={modal === OpenedModal.DMN_RUNNER_HELPER}
-                  onClose={closeModal}
+                  onClose={closeDmnRunnerModal}
                 />
               )}
               {!fullscreen && <GithubTokenModal isOpen={modal === OpenedModal.GITHUB_TOKEN} onClose={closeModal} />}

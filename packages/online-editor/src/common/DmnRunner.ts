@@ -15,8 +15,8 @@
  */
 
 import Ajv from "ajv";
-import { Schema } from "ajv";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
+import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 
 export interface DmnRunnerPayload {
   model: string;
@@ -58,9 +58,11 @@ const DMN_RUNNER_DMNRESULT_URL = "http://localhost:8080/jitdmn/dmnresult";
 const DMN_RUNNER_FORM_URL = "http://localhost:8080/jitdmn/schema/form";
 const DMN_RUNNER_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
 
-export const ajv = new Ajv({ allErrors: true, useDefaults: true });
+export const ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
+ajv.addMetaSchema(metaSchemaDraft04);
 
 export const schema = {
+  $schema: "http://json-schema.org/draft-04/schema#",
   definitions: {
     Applicant_Data: {
       type: "object",
@@ -111,8 +113,7 @@ export const schema = {
       properties: {
         Income: {
           type: "number",
-          "x-dmn-type": "FEEL:number",
-          help: "mi ajuda"
+          "x-dmn-type": "FEEL:number"
         },
         Repayments: {
           type: "number",
@@ -145,6 +146,7 @@ export const schema = {
       "x-dmn-allowed-values": '"Insufficient", "Sufficient"'
     },
     Credit_Score: {
+      required: ["FICO"],
       type: "object",
       properties: {
         FICO: {
@@ -177,7 +179,9 @@ export const schema = {
     },
     Credit_Score_FICO: {
       maximum: 850,
+      exclusiveMaximum: false,
       minimum: 300,
+      exclusiveMinimum: false,
       type: "number",
       "x-dmn-type": "FEEL:number",
       "x-dmn-allowed-values": "[300..850]"
@@ -250,7 +254,7 @@ export const schema = {
   $ref: "#/definitions/InputSet"
 };
 
-function createValidator(jsonSchema: Schema) {
+function createValidator(jsonSchema: any) {
   const validator = ajv.compile(jsonSchema);
 
   return (model: any) => {
@@ -259,6 +263,7 @@ function createValidator(jsonSchema: Schema) {
     return validator.errors?.length
       ? {
           details: validator.errors?.map(error => {
+            console.log(error)
             if (error.keyword === "required") {
               return { ...error, message: "Required" };
             }

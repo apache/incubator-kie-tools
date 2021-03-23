@@ -333,24 +333,10 @@
 
 @keyframes highlight {
   0% {
-    background-color: var(--pf-global--palette--red-300);
-    color: var(--pf-global--palette--black-200);
-  }
-  20% {
-    background-color: var(--pf-global--palette--red-200);
-    color: var(--pf-global--palette--black-400);
-  }
-  40% {
-    background-color: var(--pf-global--palette--red-100);
-    color: var(--pf-global--palette--black-600);
-  }
-  90% {
-    background-color: var(--pf-global--palette--red-50);
-    color: var(--pf-global--palette--black-800);
+    background-color: var(--pf-global--palette--black-600);
   }
   100% {
-    background-color: var(--pf-global--BackgroundColor--100);
-    color: var(--pf-global--palette--black-1000);
+    background-color: var(--pf-global--palette--black-100);
   }
 }
 
