@@ -42,6 +42,8 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
+import { useWorkspace } from "../workspace/WorkspaceContext";
+import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -65,15 +67,13 @@ export enum ModalType {
   DMN_RUNNER_HELPER,
 }
 
-interface Props {
-  onFileNameChanged: (fileName: string, fileExtension: string) => void;
-}
-
-export function EditorPage(props: Props) {
+export function EditorPage() {
   const context = useContext(GlobalContext);
+  const workspaceContext = useWorkspace();
   const location = useLocation();
   const { editor, editorRef } = useEditorRef();
   const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadAllRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
@@ -85,7 +85,7 @@ export function EditorPage(props: Props) {
   const { locale, i18n } = useOnlineI18n();
   const textEditorContainerRef = useRef<HTMLDivElement>(null);
 
-  const close = useCallback(() => {
+  const close = useCallback(async () => {
     if (!isDirty) {
       window.location.href = window.location.href.split("?")[0].split("#")[0];
     } else {
@@ -103,26 +103,55 @@ export function EditorPage(props: Props) {
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
-            fileName: `${context.file.fileName}.${context.file.fileExtension}`,
+            fileName: `${workspaceContext.file!.fileName}.${workspaceContext.file!.fileExtension}`,
             fileContent: content,
             senderTabId: context.senderTabId!,
           },
         })
       );
     });
-  }, [context.file.fileName, editor]);
+  }, [context.senderTabId, editor, workspaceContext.file]);
 
-  const requestDownload = useCallback(() => {
-    editor?.getStateControl().setSavedCommand();
+  const autoSaveFileContent = useCallback(async () => {
+    if (!editor || !workspaceContext.active) {
+      return;
+    }
+
+    editor.getStateControl().setSavedCommand();
     setOpenAlert(AlertTypes.NONE);
-    editor?.getContent().then((content) => {
-      if (downloadRef.current) {
-        const fileBlob = new Blob([content], { type: "text/plain" });
-        downloadRef.current.href = URL.createObjectURL(fileBlob);
-        downloadRef.current.click();
-      }
-    });
-  }, [editor]);
+
+    await workspaceContext.updateCurrentFile(() => editor.getContent());
+  }, [editor, workspaceContext]);
+
+  const requestDownload = useCallback(async () => {
+    if (!editor) {
+      return;
+    }
+
+    if (isDirty) {
+      editor.getStateControl().setSavedCommand();
+      workspaceContext.updateCurrentFile(() => editor.getContent());
+    }
+    setOpenAlert(AlertTypes.NONE);
+
+    if (downloadRef.current) {
+      const fileBlob = new Blob([await editor.getContent()], { type: "text/plain" });
+      downloadRef.current.href = URL.createObjectURL(fileBlob);
+      downloadRef.current.click();
+    }
+  }, [editor, isDirty, workspaceContext]);
+
+  const requestDownloadAll = useCallback(async () => {
+    if (!editor) {
+      return;
+    }
+
+    const zipBlob = await workspaceContext.prepareZip();
+    if (downloadAllRef.current) {
+      downloadAllRef.current.href = URL.createObjectURL(zipBlob);
+      downloadAllRef.current.click();
+    }
+  }, [editor, workspaceContext]);
 
   const requestPreview = useCallback(() => {
     editor?.getPreview().then((previewSvg) => {
@@ -145,7 +174,7 @@ export function EditorPage(props: Props) {
         const userLogin = context.githubService.extractUserLoginFromFileUrl(fileUrl);
         if (userLogin === context.githubService.getLogin()) {
           try {
-            const filename = `${context.file.fileName}.${context.file.fileExtension}`;
+            const filename = `${workspaceContext.file!.fileName}.${workspaceContext.file!.fileExtension}`;
             const updateResponse = await context.githubService.updateGist({ filename, content });
 
             if (updateResponse === UpdateGistErrors.INVALID_CURRENT_GIST) {
@@ -180,10 +209,11 @@ export function EditorPage(props: Props) {
 
       // create gist
       try {
+        const filename = `${workspaceContext.file!.fileName}.${workspaceContext.file!.fileExtension}`;
         const newGistUrl = await context.githubService.createGist({
-          filename: `${context.file.fileName}.${context.file.fileExtension}`,
+          filename: filename,
           content: content,
-          description: `${context.file.fileName}.${context.file.fileExtension}`,
+          description: filename,
           isPublic: true,
         });
 
@@ -201,7 +231,7 @@ export function EditorPage(props: Props) {
 
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
-  }, [location.pathname]);
+  }, [context.routes.editor, location.pathname]);
 
   const requestSetGitHubToken = useCallback(() => {
     setOpenModalType(ModalType.GITHUB_TOKEN);
@@ -245,13 +275,16 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     if (downloadRef.current) {
-      downloadRef.current.download = `${context.file.fileName}.${context.file.fileExtension}`;
+      downloadRef.current.download = `${workspaceContext.file!.fileName}.${workspaceContext.file!.fileExtension}`;
+    }
+    if (downloadAllRef.current && workspaceContext.active) {
+      downloadAllRef.current.download = `${workspaceContext.active.descriptor.name}.zip`;
     }
     if (downloadPreviewRef.current) {
-      const fileName = context.file.fileName;
+      const fileName = workspaceContext.file!.fileName;
       downloadPreviewRef.current.download = `${fileName}-svg.svg`;
     }
-  }, [context.file.fileName]);
+  }, [workspaceContext.active, workspaceContext.file]);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
@@ -275,13 +308,36 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  const closeDmnTour = useDmnTour(!context.readonly && isEditorReady && openAlert === AlertTypes.NONE, context.file);
+  useEffect(() => {
+    if (isDirty) {
+      autoSaveFileContent();
+    }
+  }, [isDirty, autoSaveFileContent, workspaceContext.active]);
+
+  const closeDmnTour = useDmnTour(
+    !context.readonly && isEditorReady && openAlert === AlertTypes.NONE,
+    workspaceContext.file!
+  );
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
   const onSetContentError = useCallback(() => {
     setOpenAlert(AlertTypes.SET_CONTENT_ERROR);
   }, []);
+
+  const onResourceContentRequest = useCallback(
+    async (request: ResourceContentRequest) => {
+      return workspaceContext.resourceContentGet(request.path, request.opts);
+    },
+    [workspaceContext]
+  );
+
+  const onResourceListRequest = useCallback(
+    async (request: ResourceListRequest) => {
+      return workspaceContext.resourceContentList(request.pattern, request.opts);
+    },
+    [workspaceContext]
+  );
 
   const openFileAsText = useCallback(() => {
     setOpenModalType(ModalType.TEXT_EDITOR);
@@ -295,10 +351,10 @@ export function EditorPage(props: Props) {
   const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    context.file.getFileContents().then((content) => {
+    workspaceContext.file?.getFileContents().then((content) => {
       setTextEditorContext(content);
     });
-  }, [context.file]);
+  }, [workspaceContext.file]);
 
   useEffect(() => {
     if (openModalType !== ModalType.TEXT_EDITOR) {
@@ -324,15 +380,17 @@ export function EditorPage(props: Props) {
       monacoInstance.dispose();
 
       editor
-        ?.setContent(context.file.fileName, contentAfterFix)
+        ?.setContent(workspaceContext.file!.fileName, contentAfterFix)
         .then(() => {
           editor?.getStateControl().updateCommandStack({
             id: "fix-from-text-editor",
             undo: () => {
-              editor?.setContent(context.file.fileName, textEditorContent!);
+              editor?.setContent(workspaceContext.file!.fileName, textEditorContent!);
             },
             redo: () => {
-              editor?.setContent(context.file.fileName, contentAfterFix).then(() => setOpenAlert(AlertTypes.NONE));
+              editor
+                ?.setContent(workspaceContext.file!.fileName, contentAfterFix)
+                .then(() => setOpenAlert(AlertTypes.NONE));
             },
           });
         })
@@ -340,18 +398,22 @@ export function EditorPage(props: Props) {
           setTextEditorContext(contentAfterFix);
         });
     };
-  }, [openModalType, editor, context.file, textEditorContent]);
+  }, [openModalType, editor, workspaceContext.file, textEditorContent]);
 
   const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
 
   const notificationPanelTabNames = useCallback(
     (dmnRunnerStatus: DmnRunnerStatus) => {
-      if (context.file.fileExtension === "dmn" && context.isChrome && dmnRunnerStatus === DmnRunnerStatus.AVAILABLE) {
+      if (
+        workspaceContext.file!.fileExtension === "dmn" &&
+        context.isChrome &&
+        dmnRunnerStatus === DmnRunnerStatus.AVAILABLE
+      ) {
         return [i18n.terms.validation, i18n.terms.execution];
       }
       return [i18n.terms.validation];
     },
-    [context.file.fileExtension, context.isChrome, i18n]
+    [context.isChrome, i18n.terms.execution, i18n.terms.validation, workspaceContext.file]
   );
 
   useEffect(() => {
@@ -380,7 +442,7 @@ export function EditorPage(props: Props) {
     return () => editor.getStateControl().unsubscribe(subscription);
   }, [editor, isEditorReady]);
 
-  return (
+  return !workspaceContext.file ? null : (
     <KieToolingExtendedServicesContextProvider
       editor={editor}
       isEditorReady={isEditorReady}
@@ -397,8 +459,8 @@ export function EditorPage(props: Props) {
                       onFullScreen={enterFullscreen}
                       onSave={requestSave}
                       onDownload={requestDownload}
+                      onDownloadAll={requestDownloadAll}
                       onClose={close}
-                      onFileNameChanged={props.onFileNameChanged}
                       onCopyContentToClipboard={requestCopyContentToClipboard}
                       isPageFullscreen={fullscreen}
                       onPreview={requestPreview}
@@ -546,18 +608,22 @@ export function EditorPage(props: Props) {
                           {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
                           <EmbeddedEditor
                             ref={editorRef}
-                            file={context.file}
+                            file={workspaceContext.file!}
                             kogitoEditor_ready={onReady}
                             kogitoEditor_setContentError={onSetContentError}
+                            kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
+                            kogitoWorkspace_resourceListRequest={onResourceListRequest}
                             editorEnvelopeLocator={context.editorEnvelopeLocator}
-                            channelType={ChannelType.ONLINE}
+                            channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
                             locale={locale}
                           />
                           <Modal
                             showClose={false}
                             width={"100%"}
                             height={"100%"}
-                            title={i18n.editorPage.textEditorModal.title(context.file.fileName.split("/").pop()!)}
+                            title={i18n.editorPage.textEditorModal.title(
+                              workspaceContext.file!.fileName.split("/").pop()!
+                            )}
                             isOpen={openModalType === ModalType.TEXT_EDITOR}
                             actions={[
                               <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
@@ -577,6 +643,7 @@ export function EditorPage(props: Props) {
                   </PageSection>
                   <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
                   <a ref={downloadRef} />
+                  <a ref={downloadAllRef} />
                   <a ref={downloadPreviewRef} />
                 </Page>
               </DmnDevSandboxContextProvider>

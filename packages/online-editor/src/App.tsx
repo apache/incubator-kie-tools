@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
+import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { File } from "@kie-tooling-core/editor/dist/channel";
+import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { GithubService } from "./common/GithubService";
 import { GlobalContext } from "./common/GlobalContext";
+import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import { Routes } from "./common/Routes";
 import { EditorPage } from "./editor/EditorPage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
-import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import { WorkspaceContext } from "./workspace/WorkspaceContext";
+import { WorkspaceContextProvider } from "./workspace/WorkspaceContextProvider";
 
 interface Props {
-  file: File;
+  file?: File;
   readonly: boolean;
   external: boolean;
   senderTabId?: string;
@@ -40,24 +42,7 @@ interface Props {
 }
 
 export function App(props: Props) {
-  const [file, setFile] = useState(props.file);
   const routes = useMemo(() => new Routes(), []);
-
-  const onFileOpened = useCallback((fileOpened) => {
-    setFile(fileOpened);
-  }, []);
-
-  const onFileNameChanged = useCallback(
-    (fileName: string, fileExtension: string) => {
-      setFile({
-        isReadOnly: false,
-        fileExtension,
-        fileName,
-        getFileContents: file.getFileContents,
-      });
-    },
-    [file]
-  );
 
   return (
     <I18nDictionariesProvider
@@ -68,7 +53,6 @@ export function App(props: Props) {
     >
       <GlobalContext.Provider
         value={{
-          file,
           routes,
           editorEnvelopeLocator: props.editorEnvelopeLocator,
           readonly: props.readonly,
@@ -78,21 +62,23 @@ export function App(props: Props) {
           isChrome: !!window.chrome,
         }}
       >
-        <HashRouter>
-          <Switch>
-            <Route path={routes.editor.url({ type: ":type" })}>
-              <EditorPage onFileNameChanged={onFileNameChanged} />
-            </Route>
-            <Route exact={true} path={routes.home.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-            </Route>
-            <Route exact={true} path={routes.downloadHub.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-              <DownloadHubModal />
-            </Route>
-            <Route component={NoMatchPage} />
-          </Switch>
-        </HashRouter>
+        <WorkspaceContextProvider file={props.file} githubService={props.githubService}>
+          <HashRouter>
+            <Switch>
+              <Route path={routes.editor.url({ type: ":type" })}>
+                <EditorPage />
+              </Route>
+              <Route exact={true} path={routes.home.url({})}>
+                <HomePage />
+              </Route>
+              <Route exact={true} path={routes.downloadHub.url({})}>
+                <HomePage />
+                <DownloadHubModal />
+              </Route>
+              <Route component={NoMatchPage} />
+            </Switch>
+          </HashRouter>
+        </WorkspaceContextProvider>
       </GlobalContext.Provider>
     </I18nDictionariesProvider>
   );

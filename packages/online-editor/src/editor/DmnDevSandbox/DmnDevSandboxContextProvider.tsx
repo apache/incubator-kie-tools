@@ -17,9 +17,9 @@
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { GlobalContext } from "../../common/GlobalContext";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
+import { useWorkspace } from "../../workspace/WorkspaceContext";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesModal } from "../KieToolingExtendedServices/KieToolingExtendedServicesModal";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
@@ -56,7 +56,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
   const { i18n } = useOnlineI18n();
-  const globalContext = useContext(GlobalContext);
+  const workspaceContext = useWorkspace();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const [instanceStatus, setInstanceStatus] = useState(
     kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE
@@ -112,12 +112,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const onDeploy = useCallback(
     async (config: DmnDevSandboxConnectionConfig) => {
-      if (!(await onCheckConfig(config, false))) {
+      if (!workspaceContext.file || !(await onCheckConfig(config, false))) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
         return;
       }
 
-      const filename = `${globalContext.file.fileName}.${globalContext.file.fileExtension}`;
+      const filename = `${workspaceContext.file.fileName}.${workspaceContext.file.fileExtension}`;
       const editorContent = ((await props.editor?.getContent()) ?? "")
         .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
         .replace(/"/g, '\\"'); // Escape quotes
@@ -129,7 +129,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
       }
     },
-    [onCheckConfig, globalContext.file.fileName, globalContext.file.fileExtension, props.editor, service]
+    [onCheckConfig, props.editor, service, workspaceContext.file]
   );
 
   useEffect(() => {

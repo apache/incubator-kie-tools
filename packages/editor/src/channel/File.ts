@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { parse } from "path";
+
 /**
  * Definition of a File supported by the embedded-editor.
  */
@@ -22,6 +24,7 @@ export interface File {
   fileExtension: string;
   getFileContents: () => Promise<string | undefined>;
   isReadOnly: boolean;
+  path?: string;
 }
 
 /**
@@ -32,6 +35,7 @@ export const EMPTY_FILE_DMN = {
   fileExtension: "dmn",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
+  path: "/new-file.dmn",
 };
 
 /**
@@ -42,6 +46,7 @@ export const EMPTY_FILE_BPMN = {
   fileExtension: "bpmn",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
+  path: "/new-file.bpmn",
 };
 
 /**
@@ -52,6 +57,7 @@ export const EMPTY_FILE_SCESIM = {
   fileExtension: "scesim",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
+  path: "/new-file.scesim",
 };
 
 /**
@@ -62,17 +68,36 @@ export const EMPTY_FILE_PMML = {
   fileExtension: "pmml",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
+  path: "/new-file.pmml",
 };
 
 /**
  * Helper method to create new, empty files, for different file extensions.
  * @param fileExtension The extension of the file.
+ * @param contextPath Path associated with the context.
  */
-export function newFile(fileExtension: string): File {
+export function newFile(fileExtension: string, contextPath: string = ""): File {
   return {
     fileName: "new-file",
     fileExtension: fileExtension,
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    path: `${contextPath}/new-file.${fileExtension}`,
+  };
+}
+
+/**
+ * Helper function to create a new file from a given file path and its get content function.
+ * @param path The path of the file.
+ * @param getFileContents The function to get the file contents.
+ */
+export function buildFile(path: string, getFileContents: () => Promise<string | undefined>): File {
+  const parsedPath = parse(path);
+  return {
+    fileName: parsedPath.name,
+    fileExtension: parsedPath.ext.replace(".", ""),
+    getFileContents: getFileContents,
+    isReadOnly: false,
+    path: path,
   };
 }

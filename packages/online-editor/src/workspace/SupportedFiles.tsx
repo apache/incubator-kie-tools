@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { GithubService } from "./GithubService";
-import { Routes } from "./Routes";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+export const SUPPORTED_FILES_TECHNICAL = ["wid", "scesim", "java", "xml", "md"];
+export const SUPPORTED_FILES_EDITABLE = ["dmn", "bpmn", "bpmn2", "pmml"];
+export const SUPPORTED_FILES = SUPPORTED_FILES_EDITABLE.concat(SUPPORTED_FILES_TECHNICAL);
 
-export interface GlobalContextType {
-  routes: Routes;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
-  readonly: boolean;
-  external: boolean;
-  senderTabId?: string;
-  githubService: GithubService;
-  isChrome: boolean;
-}
-
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
+export const SUPPORTED_FILES_TECHNICAL_PATTERN = `*.{${SUPPORTED_FILES_TECHNICAL.join(",")}}`;
+export const SUPPORTED_FILES_EDITABLE_PATTERN = `*.{${SUPPORTED_FILES_EDITABLE.join(",")}}`;
+export const SUPPORTED_FILES_PATTERN = `*.{${SUPPORTED_FILES.join(",")}}`;

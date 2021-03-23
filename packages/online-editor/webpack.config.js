@@ -24,6 +24,7 @@ const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kogito-tooling/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+const { ProvidePlugin } = require("webpack");
 
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
@@ -106,6 +107,9 @@ module.exports = async (env, argv) => {
             to: "./images",
           },
         ],
+      }),
+      new ProvidePlugin({
+        Buffer: ["buffer", "Buffer"],
       }),
     ],
     resolve: {

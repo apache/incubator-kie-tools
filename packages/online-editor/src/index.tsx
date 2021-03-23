@@ -63,6 +63,8 @@ if (urlParams.has("ext")) {
   waitForEventWithFileData();
 } else if (urlParams.has("file")) {
   openFileByUrl();
+} else if (urlParams.has("path")) {
+  openFileByPath();
 } else {
   openDefaultOnlineEditor();
 }
@@ -82,11 +84,14 @@ function openDefaultOnlineEditor() {
 
 function waitForEventWithFileData() {
   window.addEventListener("loadOnlineEditor", (e: CustomEvent) => {
+    const fileExtension = extractFileExtension(e.detail.fileName)!;
+    const fileName = removeFileExtension(e.detail.fileName);
     const file = {
       isReadOnly: false,
-      fileExtension: extractFileExtension(e.detail.fileName)!,
-      fileName: removeFileExtension(e.detail.fileName),
+      fileExtension: fileExtension,
+      fileName: fileName,
       getFileContents: () => Promise.resolve(e.detail.fileContent),
+      path: `/${fileName}.${fileExtension}`,
     };
     ReactDOM.render(
       <App
@@ -152,12 +157,27 @@ function openFileByUrl() {
   }
 }
 
+function openFileByPath() {
+  ReactDOM.render(
+    <App
+      readonly={false}
+      external={false}
+      githubService={githubService}
+      editorEnvelopeLocator={editorEnvelopeLocator}
+    />,
+    document.getElementById("app")!
+  );
+}
+
 function openFile(args: OpenFileArgs) {
+  const fileExtension = extractFileExtension(removeDirectories(args.filePath) ?? "")!;
+  const fileName = removeFileExtension(removeDirectories(args.filePath) ?? "");
   const file = {
     isReadOnly: args.readonly,
-    fileExtension: extractFileExtension(removeDirectories(args.filePath) ?? "")!,
-    fileName: removeFileExtension(removeDirectories(args.filePath) ?? ""),
+    fileExtension: fileExtension,
+    fileName: fileName,
     getFileContents: () => args.getFileContent,
+    path: `/${fileName}.${fileExtension}`,
   };
   ReactDOM.render(
     <App

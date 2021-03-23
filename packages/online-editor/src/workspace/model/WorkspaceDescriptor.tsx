@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,5 +14,10 @@
  * limitations under the License.
  */
 
-export { buildFile, EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, EMPTY_FILE_SCESIM, File, newFile } from "./File";
-export { StateControl } from "./StateControl";
+import { WorkspaceOrigin } from "./WorkspaceOrigin";
+
+export interface WorkspaceDescriptor {
+  context: string;
+  name: string;
+  origin: WorkspaceOrigin;
+}

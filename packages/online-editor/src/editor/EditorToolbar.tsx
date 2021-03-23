@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { File } from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -33,21 +34,25 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
+import { dirname } from "path";
 import * as React from "react";
-import { useCallback, useContext, useMemo, useState } from "react";
-import { useLocation } from "react-router";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useOnlineI18n } from "../common/i18n";
+import { GitHubRepositoryOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { useWorkspace } from "../workspace/WorkspaceContext";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 interface Props {
-  onFileNameChanged: (fileName: string, fileExtension: string) => void;
   onFullScreen: () => void;
   onSave: () => void;
   onDownload: () => void;
+  onDownloadAll: () => void;
   onPreview: () => void;
   onSetGitHubToken: () => void;
   onGistIt: () => void;
@@ -60,10 +65,11 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
+  const workspaceContext = useWorkspace();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const location = useLocation();
-  const [fileName, setFileName] = useState(context.file.fileName);
+  const [fileName, setFileName] = useState(workspaceContext.file!.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
+  const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
@@ -73,16 +79,16 @@ export function EditorToolbar(props: Props) {
   }, [props.onClose]);
 
   const fileExtension = useMemo(() => {
-    return context.file.fileExtension;
-  }, [location]);
+    return workspaceContext.file!.fileExtension;
+  }, [workspaceContext.file]);
 
   const saveNewName = useCallback(() => {
-    props.onFileNameChanged(fileName, fileExtension);
-  }, [props.onFileNameChanged, fileName, fileExtension]);
+    workspaceContext.onFileNameChanged(fileName).catch(() => {});
+  }, [workspaceContext, fileName]);
 
   const cancelNewName = useCallback(() => {
-    setFileName(context.file.fileName);
-  }, [context.file.fileName]);
+    setFileName(workspaceContext.file!.fileName);
+  }, [workspaceContext.file]);
 
   const onNameInputKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -210,6 +216,114 @@ export function EditorToolbar(props: Props) {
     [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
 
+  const fileItems = useCallback(() => {
+    if (!workspaceContext.active || workspaceContext.active.files.length === 0) {
+      return [
+        <DropdownItem key="disabled link" isDisabled>
+          <i>Loading files ...</i>
+        </DropdownItem>,
+      ];
+    }
+
+    return [
+      workspaceContext.active?.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
+        <DropdownGroup key={"github-group"} label="GitHub">
+          <DropdownItem
+            onClick={workspaceContext.syncWorkspace}
+            key={"push-changes-item"}
+            description={`Push all changes to ${
+              (workspaceContext.active.descriptor.origin as GitHubRepositoryOrigin).url
+            }`}
+          >
+            Push
+          </DropdownItem>
+        </DropdownGroup>
+      ) : (
+        []
+      ),
+      <DropdownGroup key={"download-group"} label="Download">
+        <DropdownItem
+          onClick={props.onDownload}
+          key={"donwload-file-item"}
+          description={`${workspaceContext.file!.fileName}.${workspaceContext.file!.fileExtension} will be downloaded`}
+        >
+          Current file
+        </DropdownItem>
+        <DropdownItem
+          onClick={props.onDownloadAll}
+          key={"download-zip-item"}
+          description={`A zip file including all files will be downloaded`}
+        >
+          All files
+        </DropdownItem>
+      </DropdownGroup>,
+      <DropdownGroup key={"new-file-group"} label="New file">
+        <DropdownItem
+          onClick={async () => await workspaceContext.addEmptyFile("bpmn")}
+          key={"new-bpmn-item"}
+          description="BPMN files are used to generate business processes"
+        >
+          Workflow (.BPMN)
+        </DropdownItem>
+        <DropdownItem
+          onClick={async () => await workspaceContext.addEmptyFile("dmn")}
+          key={"new-dmn-item"}
+          description="DMN files are used to generate decision models"
+        >
+          Decision model (.DMN)
+        </DropdownItem>
+        <DropdownItem
+          onClick={async () => await workspaceContext.addEmptyFile("pmml")}
+          key={"new-pmml-item"}
+          description="PMML files are used to generate scorecards"
+        >
+          Scorecard model (.PMML)
+        </DropdownItem>
+      </DropdownGroup>,
+      <DropdownGroup key={"workspace-group"} label="Workspace">
+        {workspaceContext.active.files
+          .sort((a: File, b: File) => a.path!.localeCompare(b.path!))
+          .map((file: File, idx: number) => (
+            <DropdownItem
+              onClick={() => workspaceContext.onFileChanged(file)}
+              description={
+                "/ " +
+                dirname(file.path!)
+                  .replace(`/${workspaceContext.active!.descriptor.context}`, "")
+                  .substring(1)
+                  .replace(/\//g, " > ")
+              }
+              key={`file-item-${idx}`}
+              icon={
+                <ExternalLinkAltIcon
+                  className="kogito--editor__workspace-files-dropdown-open"
+                  onClick={(e) => {
+                    window.open(`?path=${file.path}#/editor/${file.fileExtension}`, "_blank");
+                    e.stopPropagation();
+                  }}
+                />
+              }
+            >
+              <span style={{ fontWeight: workspaceContext.file!.path === file.path ? "bold" : "normal" }}>
+                {`${file.fileName}.${file.fileExtension}`}
+              </span>
+              <EyeIcon
+                style={{
+                  height: "0.8em",
+                  marginLeft: "10px",
+                  visibility: workspaceContext.file!.path === file.path ? "visible" : "hidden",
+                }}
+              />
+            </DropdownItem>
+          ))}
+      </DropdownGroup>,
+    ];
+  }, [props, workspaceContext]);
+
+  useEffect(() => {
+    setFileName(workspaceContext.file!.fileName);
+  }, [workspaceContext.file]);
+
   return !props.isPageFullscreen ? (
     <PageHeader
       logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
@@ -232,29 +346,31 @@ export function EditorToolbar(props: Props) {
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
           )}
-          <PageHeaderToolsGroup>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden",
-              }}
-            >
-              <Button
-                data-testid="save-button"
-                variant={"primary"}
-                onClick={props.onDownload}
-                aria-label={"Save and Download button"}
-                className={"kogito--editor__toolbar button"}
-                ouiaId="save-and-download-button"
+          {!workspaceContext.active && (
+            <PageHeaderToolsGroup>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
               >
-                {i18n.terms.save}
-              </Button>
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
+                <Button
+                  data-testid="save-button"
+                  variant={"primary"}
+                  onClick={props.onDownload}
+                  aria-label={"Save button"}
+                  className={"kogito--editor__toolbar button"}
+                  ouiaId="save-version-button"
+                >
+                  {i18n.terms.save}
+                </Button>
+              </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+          )}
           <PageHeaderToolsGroup>
             <PageHeaderToolsItem
               visibility={{
@@ -283,6 +399,27 @@ export function EditorToolbar(props: Props) {
                 dropdownItems={shareItems("lg")}
                 position={DropdownPosition.right}
               />
+              {workspaceContext.active && workspaceContext.active.files.length > 0 && (
+                <Dropdown
+                  onSelect={() => setWorkspaceFilesMenuOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      id={"files-id-lg"}
+                      data-testid={"files-menu"}
+                      onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
+                    >
+                      {`${workspaceContext.active.files.length} File${
+                        workspaceContext.active.files.length > 1 ? "s" : ""
+                      }`}
+                    </DropdownToggle>
+                  }
+                  isPlain={true}
+                  className={"kogito--editor__toolbar dropdown pf-u-ml-sm"}
+                  isOpen={isWorkspaceFilesMenuOpen}
+                  dropdownItems={fileItems()}
+                  position={DropdownPosition.right}
+                />
+              )}
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>
           <PageHeaderToolsGroup>
@@ -373,7 +510,7 @@ export function EditorToolbar(props: Props) {
                   onBlur={saveNewName}
                 />
               </div>
-              {props.isEdited && (
+              {props.isEdited && !workspaceContext.active && (
                 <span
                   aria-label={"File was edited"}
                   className={"kogito--editor__toolbar-edited"}

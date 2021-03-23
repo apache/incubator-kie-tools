@@ -193,6 +193,11 @@
   padding-bottom: 1px;
 }
 
+.kogito--editor__toolbar.dropdown > ul {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .kogito--editor__toolbar.dropdown:hover {
   border-bottom: solid var(--pf-global--palette--blue-300) 1px;
 }
@@ -616,4 +621,17 @@
   -ms-animation: rotating 2s linear infinite;
   -o-animation: rotating 2s linear infinite;
   animation: rotating 2s linear infinite;
+}
+
+.kogito--editor__workspace-files-dropdown-open {
+  pointer-events: auto;
+  color: var(--pf-global--primary-color--100);
+}
+
+.kogito--editor__workspace-files-dropdown-open:focus {
+  outline: none;
+}
+
+.kogito--editor__workspace-files-dropdown-open:hover {
+  color: var(--pf-global--primary-color--200);
 }

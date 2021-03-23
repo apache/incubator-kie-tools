@@ -16,9 +16,9 @@
 
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { GlobalContext } from "../../common/GlobalContext";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../../common/utils";
+import { useWorkspace } from "../../workspace/WorkspaceContext";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
@@ -35,10 +35,10 @@ const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tooling-extended-ser
 export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 export function KieToolingExtendedServicesContextProvider(props: Props) {
-  const globalContext = useContext(GlobalContext);
+  const workspaceContext = useWorkspace();
 
   const [status, setStatus] = useState(() =>
-    globalContext.file.fileExtension === "dmn"
+    workspaceContext.file?.fileExtension === "dmn"
       ? KieToolingExtendedServicesStatus.AVAILABLE
       : KieToolingExtendedServicesStatus.UNAVAILABLE
   );
@@ -63,8 +63,13 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   }, []);
 
   useEffect(() => {
-    if (status === KieToolingExtendedServicesStatus.UNAVAILABLE) {
+    if (!workspaceContext.file || workspaceContext.file.fileExtension !== "dmn") {
+      setStatus(KieToolingExtendedServicesStatus.UNAVAILABLE);
       return;
+    }
+
+    if (status === KieToolingExtendedServicesStatus.UNAVAILABLE) {
+      setStatus(KieToolingExtendedServicesStatus.AVAILABLE);
     }
 
     // Pooling to detect either if KieToolingExtendedServices is running or has stopped
@@ -103,7 +108,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
     }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
 
     return () => window.clearInterval(detectKieToolingExtendedServices);
-  }, [props.editor, props.isEditorReady, status, bridge, version]);
+  }, [props.editor, props.isEditorReady, status, bridge, version, workspaceContext.file]);
 
   return (
     <KieToolingExtendedServicesContext.Provider

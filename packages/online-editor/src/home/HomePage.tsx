@@ -43,10 +43,7 @@ import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
-
-interface Props {
-  onFileOpened: (file: UploadFile) => void;
-}
+import { useWorkspace } from "../workspace/WorkspaceContext";
 
 enum InputFileUrlState {
   INITIAL,
@@ -65,8 +62,9 @@ interface InputFileUrlStateType {
   urlToOpen: string | undefined;
 }
 
-export function HomePage(props: Props) {
+export function HomePage() {
   const context = useContext(GlobalContext);
+  const workspaceContext = useWorkspace();
   const history = useHistory();
   const { i18n } = useOnlineI18n();
 
@@ -78,6 +76,10 @@ export function HomePage(props: Props) {
     urlValidation: InputFileUrlState.INITIAL,
     urlToOpen: undefined,
   });
+
+  const [githubRepositoryUrl, setGithubRepositoryUrl] = useState("");
+  const [isOpenProjectLoading, setOpenProjectLoading] = useState(false);
+  const [filesToUpload, setFilesToUpload] = useState<UploadFile[]>([]);
 
   const onFileUpload = useCallback(
     (
@@ -99,7 +101,7 @@ export function HomePage(props: Props) {
         return;
       }
 
-      props.onFileOpened({
+      workspaceContext.onFileChanged({
         isReadOnly: false,
         fileExtension,
         fileName: removeFileExtension(fileName),
@@ -109,20 +111,21 @@ export function HomePage(props: Props) {
             reader.onload = (event: any) => resolve(event.target.result as string);
             reader.readAsText(file);
           }),
+        path: `/${fileName}`,
       });
       history.replace(context.routes.editor.url({ type: fileExtension }));
     },
-    [context, history]
+    [context.editorEnvelopeLocator.mapping, context.routes.editor, history, workspaceContext]
   );
 
   const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
   const createEmptyFile = useCallback(
     (fileExtension: string) => {
-      props.onFileOpened(newFile(fileExtension));
+      workspaceContext.onFileChanged(newFile(fileExtension));
       history.replace(context.routes.editor.url({ type: fileExtension }));
     },
-    [context, history]
+    [context.routes.editor, history, workspaceContext]
   );
 
   const createEmptyBpmnFile = useCallback(() => {
@@ -141,15 +144,16 @@ export function HomePage(props: Props) {
     (fileExtension: string) => {
       const fileName = "sample";
       const filePath = `samples/${fileName}.${fileExtension}`;
-      props.onFileOpened({
+      workspaceContext.onFileChanged({
         isReadOnly: false,
         fileExtension: fileExtension,
         fileName: fileName,
         getFileContents: () => fetch(filePath).then((response) => response.text()),
+        path: `/${fileName}.${fileExtension}`,
       });
       history.replace(context.routes.editor.url({ type: fileExtension }));
     },
-    [context, history]
+    [context.routes.editor, history, workspaceContext]
   );
 
   const tryBpmnSample = useCallback(() => {
@@ -284,6 +288,32 @@ export function HomePage(props: Props) {
     setInputFileUrl(fileUrl);
   }, []);
 
+  const githubRepositoryUrlChanged = useCallback((repositoryUrl: string) => {
+    setGithubRepositoryUrl(repositoryUrl);
+  }, []);
+
+  const onFolderUpload = useCallback((e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const filesToUpload: UploadFile[] = Array.from(e.target.files).map((file: File) => {
+      return {
+        isReadOnly: false,
+        fileExtension: extractFileExtension(file.name),
+        fileName: removeFileExtension(file.name),
+        getFileContents: () =>
+          new Promise<string | undefined>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (event: any) => resolve(event.target.result as string);
+            reader.readAsText(file);
+          }),
+        path: (file as any).webkitRelativePath,
+      } as UploadFile;
+    });
+
+    setFilesToUpload(filesToUpload);
+  }, []);
+
   const isUrlInputTextValid = useMemo(
     () =>
       inputFileUrlState.urlValidation === InputFileUrlState.VALID ||
@@ -310,6 +340,22 @@ export function HomePage(props: Props) {
       window.location.href = `?file=${inputFileUrlState.urlToOpen}#/editor/${fileExtension}`;
     }
   }, [inputFileUrl, inputFileUrlState, urlCanBeOpen, inputFileUrlState]);
+
+  const createWorkspace = useCallback(async () => {
+    if ((filesToUpload.length === 0 && githubRepositoryUrl.trim() === "") || isOpenProjectLoading) {
+      return;
+    }
+    setOpenProjectLoading(true);
+    if (githubRepositoryUrl.trim() !== "") {
+      // TODO CAPONETTO: URL might be invalid; fix UX stuff when it is better defined
+      await workspaceContext.createWorkspaceFromGitHubRepository(new URL(githubRepositoryUrl), "main");
+    } else if (filesToUpload.length > 0) {
+      await workspaceContext.createWorkspaceFromLocal(filesToUpload);
+    } else {
+      throw new Error("No project to open here");
+    }
+    setOpenProjectLoading(false);
+  }, [filesToUpload, githubRepositoryUrl, isOpenProjectLoading, workspaceContext]);
 
   const helperMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState.urlValidation) {
@@ -346,6 +392,15 @@ export function HomePage(props: Props) {
       openFileFromUrl();
     },
     [inputFileUrl]
+  );
+
+  const githubRepositoryFormSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await createWorkspace();
+    },
+    [createWorkspace]
   );
 
   const logoProps = {
@@ -567,6 +622,55 @@ export function HomePage(props: Props) {
                 ouiaId="open-from-source-button"
               >
                 {i18n.homePage.openUrl.openFromSource}
+              </Button>
+            </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Title headingLevel="h2" size="2xl">
+                Open workspace
+              </Title>
+            </CardHeader>
+            <CardBody isFilled={true}>
+              <Form onSubmit={githubRepositoryFormSubmit} spellCheck={false}>
+                <FormGroup label="GitHub URL" fieldId="github-url-text-input" data-testid="github-url-form-input">
+                  <TextInput
+                    isRequired={true}
+                    autoComplete={"off"}
+                    value={githubRepositoryUrl}
+                    onChange={githubRepositoryUrlChanged}
+                    type="url"
+                    data-testid="github-url-text-input"
+                    id="github-url-text-input"
+                    name="githubUrlText"
+                    aria-describedby="github-url-text-input-helper"
+                    data-ouia-component-id="github-url-input"
+                  />
+                </FormGroup>
+                <span>or</span>
+                <FormGroup label="Upload Folder" fieldId="upload-folder-input" data-testid="upload-folder-input">
+                  <input
+                    type="file"
+                    /* @ts-expect-error directory and webkitdirectory are not available but works*/
+                    webkitdirectory=""
+                    onChange={onFolderUpload}
+                  />
+                </FormGroup>
+                <span>
+                  <b>Note</b>: only supported files will be uploaded.
+                </span>
+              </Form>
+            </CardBody>
+            <CardFooter>
+              <Button
+                variant="secondary"
+                onClick={createWorkspace}
+                data-testid="open-project-button"
+                ouiaId="open-project-button"
+                isLoading={isOpenProjectLoading}
+                spinnerAriaValueText={isOpenProjectLoading ? "Loading" : undefined}
+              >
+                {isOpenProjectLoading ? "Opening ..." : "Open workspace"}
               </Button>
             </CardFooter>
           </Card>
