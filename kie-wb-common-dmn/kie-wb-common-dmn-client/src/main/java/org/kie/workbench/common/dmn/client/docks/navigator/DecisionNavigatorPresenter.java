@@ -40,8 +40,6 @@ import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
 @Named(DecisionNavigatorPresenter.IDENTIFIER)
@@ -105,11 +103,6 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
 
     public View getView() {
         return view;
-    }
-
-    @Override
-    public Position getDefaultPosition() {
-        return CompassPosition.WEST;
     }
 
     @PostConstruct
