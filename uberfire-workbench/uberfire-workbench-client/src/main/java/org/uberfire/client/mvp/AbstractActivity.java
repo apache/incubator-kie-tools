@@ -16,8 +16,6 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.Position;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -53,16 +51,7 @@ public abstract class AbstractActivity implements Activity {
             throw new IllegalStateException("Activity " + this + " not open");
         }
         open = false;
-    }
-
-    @Override
-    public PlaceRequest getPlace() {
-        return place;
-    }
-
-    @Override
-    public Position getDefaultPosition() {
-        return CompassPosition.ROOT;
+        place = null;
     }
 
     @Override

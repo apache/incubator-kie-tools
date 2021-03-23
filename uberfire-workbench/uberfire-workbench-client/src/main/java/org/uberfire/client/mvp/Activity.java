@@ -31,10 +31,6 @@ public interface Activity extends Resource {
 
     void onClose();
 
-    PlaceRequest getPlace();
-
-    Position getDefaultPosition();
-
     @JsIgnore
     IsWidget getWidget();
 }
