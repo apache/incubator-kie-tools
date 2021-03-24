@@ -15,11 +15,10 @@
  */
 
 import * as React from "react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
-import { DecisionResult, DmnResult, DmnRunner, EvaluationStatus } from "../common/DmnRunner";
+import { DecisionResult, DmnResult, DmnRunner, EvaluationStatus, Result } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
-import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import {
   DescriptionList,
   DescriptionListTerm,
@@ -36,22 +35,15 @@ import {
   EmptyStateIcon,
   EmptyStateBody,
   TextVariants,
-  Switch,
   DrawerCloseButton,
   CardFooter,
   Title
 } from "@patternfly/react-core";
-import {
-  CubesIcon,
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  InfoCircleIcon
-} from "@patternfly/react-icons";
+import { CubesIcon, CheckCircleIcon, ExclamationCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
-import { flatten } from "../common/utils";
 import { ErrorBoundary } from "../common/ErrorBoundry";
-import { Decision } from "@kogito-tooling/pmml-editor-marshaller";
+import JSONSchemaBridge from "../common/Bridge";
+import { GlobalContext } from "../common/GlobalContext";
 
 enum ButtonPosition {
   INPUT,
@@ -59,7 +51,7 @@ enum ButtonPosition {
 }
 
 interface Props {
-  getEditorContent: (() => Promise<string>) | undefined;
+  editor: any;
   jsonSchemaBridge: JSONSchemaBridge | undefined;
   onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
   flexDirection: "column" | "row";
@@ -80,12 +72,26 @@ export function DmnRunnerDrawer(props: Props) {
   const [formContext, setFormContext] = useState();
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
+  useEffect(() => {
+    const iframe = document.getElementById("kogito-iframe");
+    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
+
+    if (iframe && drawerResizableSplitter) {
+      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
+      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
+
+      return () => {
+        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
+      };
+    }
+  }, []);
+
   const onSubmit = useCallback(
     async data => {
       setFormContext(data);
-      if (props.getEditorContent) {
+      if (props.editor) {
         try {
-          const content = await props.getEditorContent();
+          const content = await props.editor.getContent();
           const result = await DmnRunner.result({ context: data, model: content });
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
             // DMN Runner Error
@@ -97,13 +103,14 @@ export function DmnRunnerDrawer(props: Props) {
           if (differences?.length !== 0) {
             setDmnRunnerResponseDiffs(differences);
           }
+
           setDmnRunnerResults(result?.decisionResults);
         } catch (err) {
           setDmnRunnerResults(undefined);
         }
       }
     },
-    [props.getEditorContent, dmnRunnerResults]
+    [props.editor, dmnRunnerResults]
   );
 
   useEffect(() => {
@@ -125,6 +132,32 @@ export function DmnRunnerDrawer(props: Props) {
   }, []);
 
   useEffect(() => {
+    if (props.editor) {
+      let timeout: any;
+      const subscription = props.editor.getStateControl().subscribe(() => {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+
+        timeout = setTimeout(() => {
+          autoFormRef.current?.submit();
+        }, 200);
+      });
+
+      return () => {
+        props.editor.getStateControl().unsubscribe(subscription);
+      };
+    }
+  }, [props.editor]);
+
+  const renderForm = useMemo(() => {
+    return props.jsonSchemaBridge && Object.keys(props.jsonSchemaBridge?.schema.properties ?? {}).length !== 0;
+  }, [props.jsonSchemaBridge]);
+
+  useEffect(() => {
+    if (props.jsonSchemaBridge) {
+      console.log(props.jsonSchemaBridge?.schema.properties);
+    }
     errorBoundaryRef.current?.reset();
   }, [props.jsonSchemaBridge]);
 
@@ -144,8 +177,20 @@ export function DmnRunnerDrawer(props: Props) {
 
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                {props.jsonSchemaBridge ? (
-                  <ErrorBoundary ref={errorBoundaryRef} error={<h1>Something went wrong.</h1>}>
+                {renderForm ? (
+                  <ErrorBoundary
+                    ref={errorBoundaryRef}
+                    error={
+                      <div>
+                        <EmptyState>
+                          <EmptyStateIcon icon={ExclamationCircleIcon} />
+                          <EmptyStateBody>
+                            <TextContent>Form cannot be rendered because of an Error.</TextContent>
+                          </EmptyStateBody>
+                        </EmptyState>
+                      </div>
+                    }
+                  >
                     <AutoForm
                       id={"form"}
                       ref={autoFormRef}
@@ -190,21 +235,7 @@ export function DmnRunnerDrawer(props: Props) {
 
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                {dmnRunnerResults ? (
-                  <DmnRunnerResult dmnRunnerResults={dmnRunnerResults!} differences={dmnRunnerResponseDiffs} />
-                ) : (
-                  <EmptyState>
-                    <EmptyStateIcon icon={InfoCircleIcon} />
-                    <TextContent>
-                      <Text component={"h2"}>No Response</Text>
-                    </TextContent>
-                    <EmptyStateBody>
-                      <TextContent>
-                        <Text>Response appears after the Form is filled and valid</Text>
-                      </TextContent>
-                    </EmptyStateBody>
-                  </EmptyState>
-                )}
+                <DmnRunnerResult results={dmnRunnerResults!} differences={dmnRunnerResponseDiffs} />
               </PageSection>
             </div>
           </Page>
@@ -219,7 +250,7 @@ type DeepPartial<T> = {
 };
 
 interface DmnRunnerResponseProps {
-  dmnRunnerResults: DecisionResult[];
+  results?: DecisionResult[];
   differences?: Array<DeepPartial<DecisionResult>>;
 }
 
@@ -243,7 +274,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
     updatedResult?.classList.remove("kogito--editor__dmn-runner-drawer-output-leaf-updated");
   }, []);
 
-  const dmnRunnerResultStatus = useCallback((evaluationStatus: EvaluationStatus) => {
+  const resultStatus = useCallback((evaluationStatus: EvaluationStatus) => {
     switch (evaluationStatus) {
       case EvaluationStatus.SUCCEEDED:
         return (
@@ -275,9 +306,36 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
     }
   }, []);
 
-  return (
-    <div>
-      {props.dmnRunnerResults.map((dmnRunnerResult, index) => (
+  const result = useCallback((dmnRunnerResult: Result) => {
+    switch (dmnRunnerResult) {
+      case dmnRunnerResult === null:
+        return <i>(null)</i>;
+      case dmnRunnerResult === true:
+        return <i>true</i>;
+      case dmnRunnerResult === false:
+        return <i>false</i>;
+      case typeof dmnRunnerResult === "number":
+      case typeof dmnRunnerResult === "string":
+        return dmnRunnerResult;
+      case typeof dmnRunnerResult === "object":
+        return (
+          <DescriptionList>
+            {Object.entries(dmnRunnerResult).map(([key, value]) => (
+              <DescriptionListGroup>
+                <DescriptionListTerm>{key}</DescriptionListTerm>
+                <DescriptionListDescription>{value}</DescriptionListDescription>
+              </DescriptionListGroup>
+            ))}
+          </DescriptionList>
+        );
+      default:
+        return <i>(null)</i>;
+    }
+  }, []);
+
+  const resultsToRender = useMemo(
+    () =>
+      props.results?.map((dmnRunnerResult, index) => (
         <div key={`${index}-dmn-runner-result`} style={{ padding: "10px" }}>
           <Card
             id={`${index}-dmn-runner-result`}
@@ -288,26 +346,31 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             <CardTitle>
               <Title headingLevel={"h2"}>{dmnRunnerResult.decisionName}</Title>
             </CardTitle>
-            <CardBody isFilled={true}>
-              {typeof dmnRunnerResult.result === "object" && dmnRunnerResult.result !== null ? (
-                <DescriptionList>
-                  {Object.entries(dmnRunnerResult.result).map(([key, value]) => (
-                    <DescriptionListGroup>
-                      <DescriptionListTerm>{key}</DescriptionListTerm>
-                      <DescriptionListDescription>{value}</DescriptionListDescription>
-                    </DescriptionListGroup>
-                  ))}
-                </DescriptionList>
-              ) : dmnRunnerResult.result === null ? (
-                <i>(null)</i>
-              ) : (
-                dmnRunnerResult.result
-              )}
-            </CardBody>
-            <CardFooter>{dmnRunnerResultStatus(dmnRunnerResult.evaluationStatus)}</CardFooter>
+            <CardBody isFilled={true}>{result}</CardBody>
+            <CardFooter>{resultStatus(dmnRunnerResult.evaluationStatus)}</CardFooter>
           </Card>
         </div>
-      ))}
+      )),
+    [props.results]
+  );
+
+  return (
+    <div>
+      {resultsToRender && resultsToRender.length > 0 ? (
+        resultsToRender
+      ) : (
+        <EmptyState>
+          <EmptyStateIcon icon={InfoCircleIcon} />
+          <TextContent>
+            <Text component={"h2"}>No Response</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <TextContent>
+              <Text>Response appears after the Form is filled and valid</Text>
+            </TextContent>
+          </EmptyStateBody>
+        </EmptyState>
+      )}
     </div>
   );
 }

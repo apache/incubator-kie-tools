@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
@@ -41,8 +41,8 @@ import {
 } from "@patternfly/react-core";
 import { DmnRunner } from "../common/DmnRunner";
 import { DmnRunnerDrawer } from "./DmnRunnerDrawer";
-import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { DmnRunnerModal } from "./DmnRunnerModal";
+import JSONSchemaBridge from "../common/Bridge";
 
 export enum Alerts {
   NONE,
@@ -264,7 +264,6 @@ export function EditorPage(props: Props) {
 
   // This state saves the current status of the Dmn Runner server on the user machine.
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
-
   const DMN_RUNNER_POLLING_TIME = 500;
 
   useEffect(() => {
@@ -280,7 +279,7 @@ export function EditorPage(props: Props) {
             }
             window.clearInterval(polling2);
           });
-        }, 500);
+        }, DMN_RUNNER_POLLING_TIME);
 
         return () => window.clearInterval(polling2);
       }
@@ -358,20 +357,6 @@ export function EditorPage(props: Props) {
 
   const closeAlert = useCallback(() => setAlert(Alerts.NONE), []);
 
-  useEffect(() => {
-    const iframe = document.getElementById("kogito-iframe");
-    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
-
-    if (iframe && drawerResizableSplitter) {
-      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
-      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
-
-      return () => {
-        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
-      };
-    }
-  }, [isDmnRunnerDrawerOpen]);
-
   const [dmnRunnerFlexDirection, setDmnRunnerFlexDirection] = useState<"row" | "column">("row");
   const handlePanelContentResize = useCallback((width: number) => {
     const iframe = document.getElementById("kogito-iframe");
@@ -379,7 +364,7 @@ export function EditorPage(props: Props) {
       iframe.style.pointerEvents = "visible";
     }
 
-    // FIXME: Patternfly bug. The first interaction with the splitter without resizing will result in 0.
+    // FIXME: Patternfly bug. The first interaction without resizing the splitter will result in width === 0.
     if (width === 0) {
       return;
     }
@@ -441,8 +426,8 @@ export function EditorPage(props: Props) {
                 isResizable={true}
               >
                 <DmnRunnerDrawer
+                  editor={editor}
                   jsonSchemaBridge={dmnRunnerJsonSchemaBridge}
-                  getEditorContent={editor?.getContent}
                   onStopRunDmn={requestCloseDmnRunnerDrawer}
                   flexDirection={dmnRunnerFlexDirection}
                 />
