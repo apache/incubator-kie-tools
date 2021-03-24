@@ -26,6 +26,7 @@ import java.util.Map;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.databinding.client.AbstractOneWayConverter;
+import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.ConverterRegistrationKey;
 import org.jboss.errai.databinding.client.OneWayConverter;
 import org.jboss.errai.databinding.client.TwoWayConverter;
@@ -345,6 +346,9 @@ public class Convert {
     else if (widget instanceof TakesValue) {
       Object value = ((TakesValue) widget).getValue();
       if (value != null) {
+        if (value instanceof BindableProxy) {
+          value = ((BindableProxy) value).unwrap();
+        }
         widgetValueType = value.getClass();
       }
       else if (widget instanceof TextBoxBase) {
