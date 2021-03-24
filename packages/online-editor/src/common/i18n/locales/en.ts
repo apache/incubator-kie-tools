@@ -474,7 +474,7 @@ export const en: OnlineI18n = {
       tooltip: {
         connected: (port: string) => `${en_common.names.kieToolingExtendedServices} is connected to port ${port}.`,
         install: `Setup ${en_common.names.kieToolingExtendedServices} to use this feature. Click to install.`,
-        outdated: `${en_common.names.kieToolingExtendedServices} is outdated.`,
+        outdated: `${en_common.names.kieToolingExtendedServices} is outdated. Click to update.`,
         disconnected: `${en_common.names.kieToolingExtendedServices} is disconnected.`,
       },
     },

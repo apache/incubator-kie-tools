@@ -520,6 +520,14 @@
   }
 }
 
+.kogito--editor__kie-tooling-extended-services-dropdown-icon-outdated {
+  color: var(--pf-global--warning-color--100);
+}
+
+.kogito--editor__kie-tooling-extended-services-dropdown-icon-outdated:focus {
+  outline: none;
+}
+
 .kogito--editor__kie-tooling-extended-services-dropdown-icon-connected {
   color: var(--pf-global--palette--green-300);
 }

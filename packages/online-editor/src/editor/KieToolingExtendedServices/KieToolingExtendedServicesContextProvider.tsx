@@ -86,12 +86,12 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
       bridge
         .check()
         .then(() => {
-          // Check the running version of the KieToolingExtendedServices, if outdated cancel polling and change status.
+          // Check the running version of the KieToolingExtendedServices, cancel polling if up-to-date.
           bridge.version().then((kieToolingExtendedServicesVersion) => {
-            window.clearInterval(detectKieToolingExtendedServices);
             if (kieToolingExtendedServicesVersion !== version) {
               setOutdated(true);
             } else {
+              window.clearInterval(detectKieToolingExtendedServices);
               setOutdated(false);
               setStatus(KieToolingExtendedServicesStatus.RUNNING);
             }
