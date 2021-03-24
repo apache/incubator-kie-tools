@@ -16,7 +16,7 @@
     "@kogito-tooling/i18n-common-dictionary": "0.8.6",
     "@kogito-tooling/kie-bc-editors": "0.8.6",
     "@kogito-tooling/patternfly-base": "0.8.6",
-    "electron": "7.2.4",
+    "electron": "^9.4.0",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1"
   },
