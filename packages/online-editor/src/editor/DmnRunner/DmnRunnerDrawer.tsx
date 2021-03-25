@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,34 @@
  */
 
 import * as React from "react";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useCallback } from "react";
-import { DecisionResult, DmnRunner, EvaluationStatus, Result } from "../common/DmnRunner";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { DecisionResult, DmnRunner, EvaluationStatus, Result } from "../../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
 import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardTitle,
   DescriptionList,
-  DescriptionListTerm,
-  DescriptionListGroup,
   DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+  DrawerCloseButton,
+  DrawerPanelContent,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
   Page,
   PageSection,
-  TextContent,
   Text,
-  Card,
-  CardTitle,
-  CardBody,
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateBody,
+  TextContent,
   TextVariants,
-  DrawerCloseButton,
-  CardFooter,
   Title
 } from "@patternfly/react-core";
-import { CubesIcon, CheckCircleIcon, ExclamationCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
+import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
-import { ErrorBoundary } from "../common/ErrorBoundry";
-import JSONSchemaBridge from "../common/Bridge";
+import { ErrorBoundary } from "../../common/ErrorBoundry";
+import { useDmnRunner } from "./DmnRunnerContext";
 
 enum ButtonPosition {
   INPUT,
@@ -51,37 +51,57 @@ enum ButtonPosition {
 
 interface Props {
   editor: any;
-  jsonSchemaBridge: JSONSchemaBridge | undefined;
   onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  flexDirection: "column" | "row";
 }
 
-const PF_BREAKPOINT_XL = 1200;
+const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
+const WINDOW_MIN_WIDTH_TO_COLUMN_DIRECTION = 1200;
 
 export function DmnRunnerDrawer(props: Props) {
+  const dmnRunner = useDmnRunner();
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
   const autoFormRef = useRef<HTMLFormElement>();
   const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() =>
-    window.innerWidth <= PF_BREAKPOINT_XL ? ButtonPosition.INPUT : ButtonPosition.OUTPUT
+    window.innerWidth <= WINDOW_MIN_WIDTH_TO_COLUMN_DIRECTION ? ButtonPosition.INPUT : ButtonPosition.OUTPUT
   );
-  const [dmnRunnerContentStyles, setDmnRunnerContentStyles] = useState<{ width: string; height: string }>(() =>
-    props.flexDirection === "row" ? { width: "50%", height: "100%" } : { width: "100%", height: "50%" }
-  );
+  const [dmnRunnerContentStyles, setDmnRunnerContentStyles] = useState<{ width: string; height: string }>({
+    width: "50%",
+    height: "100%"
+  });
+  const [dmnRunnerFlexDirection, setDmnRunnerFlexDirection] = useState<{ flexDirection: "row" | "column" }>({
+    flexDirection: "row"
+  });
   const [formContext, setFormContext] = useState();
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
-  useEffect(() => {
+  const onResize = useCallback((width: number) => {
     const iframe = document.getElementById("kogito-iframe");
-    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
+    if (iframe) {
+      iframe.style.pointerEvents = "visible";
+    }
 
-    if (iframe && drawerResizableSplitter) {
-      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
-      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
+    // FIXME: Patternfly bug. The first interaction without resizing the splitter will result in width === 0.
+    if (width === 0) {
+      return;
+    }
 
-      return () => {
-        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
-      };
+    if (width > DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION) {
+      setButtonPosition(ButtonPosition.OUTPUT);
+      setDmnRunnerFlexDirection({ flexDirection: "row" });
+      setDmnRunnerContentStyles({ width: "50%", height: "100%" });
+    } else {
+      setButtonPosition(ButtonPosition.INPUT);
+      setDmnRunnerFlexDirection({ flexDirection: "column" });
+      setDmnRunnerContentStyles({ width: "100%", height: "50%" });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (window.innerWidth < WINDOW_MIN_WIDTH_TO_COLUMN_DIRECTION) {
+      setButtonPosition(ButtonPosition.INPUT);
+      setDmnRunnerFlexDirection({ flexDirection: "column" });
+      setDmnRunnerContentStyles({ width: "100%", height: "50%" });
     }
   }, []);
 
@@ -112,22 +132,26 @@ export function DmnRunnerDrawer(props: Props) {
     [props.editor, dmnRunnerResults]
   );
 
-  useEffect(() => {
-    switch (props.flexDirection) {
-      case "row":
-        setButtonPosition(ButtonPosition.OUTPUT);
-        setDmnRunnerContentStyles({ width: "50%", height: "100%" });
-        return;
-      case "column":
-        setButtonPosition(ButtonPosition.INPUT);
-        setDmnRunnerContentStyles({ width: "100%", height: "50%" });
-
-        return;
-    }
-  }, [props.flexDirection]);
-
   useLayoutEffect(() => {
     autoFormRef.current?.change("context", formContext);
+  }, []);
+
+  useEffect(() => {
+    errorBoundaryRef.current?.reset();
+  }, [dmnRunner.jsonSchemaBridge]);
+
+  useEffect(() => {
+    const iframe = document.getElementById("kogito-iframe");
+    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
+
+    if (iframe && drawerResizableSplitter) {
+      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
+      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
+
+      return () => {
+        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -150,16 +174,21 @@ export function DmnRunnerDrawer(props: Props) {
   }, [props.editor]);
 
   const renderForm = useMemo(() => {
-    return props.jsonSchemaBridge && Object.keys(props.jsonSchemaBridge?.schema.properties ?? {}).length !== 0;
-  }, [props.jsonSchemaBridge]);
-
-  useEffect(() => {
-    errorBoundaryRef.current?.reset();
-  }, [props.jsonSchemaBridge]);
+    return (
+      dmnRunner.jsonSchemaBridge &&
+      Object.keys(dmnRunner.jsonSchemaBridge?.schema.properties ?? {}).length !== 0
+    );
+  }, [dmnRunner.jsonSchemaBridge]);
 
   return (
-    <>
-      <div className={"kogito--editor__dmn-runner"} style={{ flexDirection: props.flexDirection }}>
+    <DrawerPanelContent
+      id={"kogito-panel-content"}
+      className={"kogito--editor__drawer-content-panel"}
+      defaultSize={"711px"}
+      onResize={onResize}
+      isResizable={true}
+    >
+      <div className={"kogito--editor__dmn-runner"} style={dmnRunnerFlexDirection}>
         <div className={"kogito--editor__dmn-runner-content"} style={dmnRunnerContentStyles}>
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
@@ -193,7 +222,7 @@ export function DmnRunnerDrawer(props: Props) {
                       showInlineError={true}
                       autosave={true}
                       autosaveDelay={500}
-                      schema={props.jsonSchemaBridge}
+                      schema={dmnRunner.jsonSchemaBridge}
                       onSubmit={onSubmit}
                       errorsField={() => <></>}
                       submitField={() => <></>}
@@ -228,7 +257,6 @@ export function DmnRunnerDrawer(props: Props) {
                 <DrawerCloseButton onClick={(e: any) => props.onStopRunDmn(e)} />
               )}
             </PageSection>
-
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
                 <DmnRunnerResult results={dmnRunnerResults!} differences={dmnRunnerResponseDiffs} />
@@ -237,7 +265,7 @@ export function DmnRunnerDrawer(props: Props) {
           </Page>
         </div>
       </div>
-    </>
+    </DrawerPanelContent>
   );
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,41 +15,43 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   Alert,
+  AlertVariant,
   Form,
   FormGroup,
+  List,
+  ListItem,
   Modal,
   ModalVariant,
   SelectDirection,
+  Text,
   TextContent,
   TextVariants,
-  Text,
   Wizard,
-  WizardFooter,
   WizardContext,
   WizardContextConsumer,
-  AlertVariant,
-  List,
-  ListItem,
-  Button
+  WizardFooter
 } from "@patternfly/react-core";
-import { getOperatingSystem, OperatingSystem } from "../common/utils";
-import { SelectOs } from "../common/SelectOs";
-import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
+import { getOperatingSystem, OperatingSystem } from "../../common/utils";
+import { SelectOs } from "../../common/SelectOs";
+import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
+import { DmnRunnerStatus } from "./DmnRunnerContextProvider";
+import { useModals } from "../../common/ModalContext";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  isDmnRunning: boolean;
-  stopped: boolean;
-}
-
-// const DMN_RUNNER_LINK = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
 const DMN_RUNNER_LINK = `files/dmn-runner.zip`;
 
-export function DmnRunnerModal(props: Props) {
+export function DmnRunnerModal({
+  dmnRunnerStatus,
+  setDmnRunnerStatus,
+  setDmnRunnerModalOpen
+}: {
+  dmnRunnerStatus: DmnRunnerStatus;
+  setDmnRunnerStatus: React.Dispatch<DmnRunnerStatus>;
+  setDmnRunnerModalOpen: React.Dispatch<boolean>;
+}) {
+  const modals = useModals();
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
 
   const downloadDmnRunner = useMemo(() => {
@@ -93,7 +95,7 @@ export function DmnRunnerModal(props: Props) {
         name: "Start",
         component: (
           <>
-            {props.stopped && (
+            {dmnRunnerStatus === DmnRunnerStatus.STOPPED && (
               <div>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
                   It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
@@ -148,13 +150,21 @@ export function DmnRunnerModal(props: Props) {
         )
       }
     ],
-    [props.stopped]
+    [dmnRunnerStatus]
   );
+
+  const onClose = useCallback(() => {
+    setDmnRunnerModalOpen(false);
+    if (dmnRunnerStatus === DmnRunnerStatus.STOPPED) {
+      setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
+    }
+    modals.closeModal();
+  }, [dmnRunnerStatus, setDmnRunnerStatus, setDmnRunnerModalOpen, modals.closeModal]);
 
   return (
     <Modal
-      isOpen={props.isOpen}
-      onClose={props.onClose}
+      isOpen={true}
+      onClose={onClose}
       variant={ModalVariant.large}
       aria-label={"Steps to enable the DMN Runner"}
       title={"DMN Runner setup"}
@@ -167,7 +177,7 @@ export function DmnRunnerModal(props: Props) {
       }
       footer={
         <>
-          {props.isDmnRunning ? (
+          {dmnRunnerStatus === DmnRunnerStatus.RUNNING ? (
             <>
               <div className={"kogito--editor__dmn-runner-modal-footer"}>
                 <Alert
@@ -177,12 +187,7 @@ export function DmnRunnerModal(props: Props) {
                   title={
                     <div className={"kogito--editor__dmn-runner-modal-footer-alert-success"}>
                       <p>Connected to DMN Runner</p>
-                      <a
-                        key="back-to-editor"
-                        onClick={() => {
-                          props.onClose();
-                        }}
-                      >
+                      <a key="back-to-editor" onClick={onClose}>
                         Back to Editor
                       </a>
                     </div>
@@ -210,7 +215,13 @@ export function DmnRunnerModal(props: Props) {
       <Wizard
         steps={steps}
         height={400}
-        footer={<DmnRunnerWizardFooter shouldGoToStep={props.isDmnRunning} hasStopped={props.stopped} steps={steps} />}
+        footer={
+          <DmnRunnerWizardFooter
+            shouldGoToStep={dmnRunnerStatus === DmnRunnerStatus.RUNNING}
+            hasStopped={dmnRunnerStatus === DmnRunnerStatus.STOPPED}
+            steps={steps}
+          />
+        }
       />
     </Modal>
   );

@@ -29,6 +29,7 @@ import { NoMatchPage } from "./NoMatchPage";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import { ModalContext } from "./common/ModalContext";
 
 interface Props {
   file: File;
@@ -77,22 +78,43 @@ export function App(props: Props) {
           githubService: props.githubService
         }}
       >
-        <HashRouter>
-          <Switch>
-            <Route path={routes.editor.url({ type: ":type" })}>
-              <EditorPage onFileNameChanged={onFileNameChanged} />
-            </Route>
-            <Route exact={true} path={routes.home.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-            </Route>
-            <Route exact={true} path={routes.downloadHub.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-              <DownloadHubModal />
-            </Route>
-            <Route component={NoMatchPage} />
-          </Switch>
-        </HashRouter>
+        <ModalContextProvider>
+          <HashRouter>
+            <Switch>
+              <Route path={routes.editor.url({ type: ":type" })}>
+                <EditorPage onFileNameChanged={onFileNameChanged} />
+              </Route>
+              <Route exact={true} path={routes.home.url({})}>
+                <HomePage onFileOpened={onFileOpened} />
+              </Route>
+              <Route exact={true} path={routes.downloadHub.url({})}>
+                <HomePage onFileOpened={onFileOpened} />
+                <DownloadHubModal />
+              </Route>
+              <Route component={NoMatchPage} />
+            </Switch>
+          </HashRouter>
+        </ModalContextProvider>
       </GlobalContext.Provider>
     </I18nDictionariesProvider>
+  );
+}
+
+function ModalContextProvider({ children }: { children: React.ReactNode }) {
+  const [modal, setModal] = useState<React.Component>();
+
+  const openModal = useCallback((modalToOpen: React.Component) => {
+    setModal(modalToOpen);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModal(undefined);
+  }, []);
+
+  return (
+    <ModalContext.Provider value={{ openModal, closeModal }}>
+      {modal}
+      {children}
+    </ModalContext.Provider>
   );
 }

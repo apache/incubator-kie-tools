@@ -15,27 +15,30 @@
  */
 
 import {
+  Brand,
   Button,
   Dropdown,
   DropdownGroup,
   DropdownItem,
   DropdownPosition,
+  DropdownToggle,
+  PageHeader,
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem,
   TextInput,
   Title,
-  PageHeaderTools,
-  PageHeaderToolsItem,
-  PageHeaderToolsGroup,
-  PageHeader,
-  Brand,
-  Tooltip,
-  DropdownToggle
+  Tooltip
 } from "@patternfly/react-core";
-import { ConnectedIcon, DisconnectedIcon, EllipsisVIcon, PlayIcon } from "@patternfly/react-icons";
+import { EllipsisVIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
 import { useOnlineI18n } from "../common/i18n";
+import { DmnRunnerButton } from "./DmnRunner/DmnRunnerButton";
+import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
+import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerContextProvider";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -50,21 +53,17 @@ interface Props {
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
   isEdited: boolean;
-  isDmnRunning: boolean;
-  setDmnRunnerDrawerOpen: React.Dispatch<boolean>;
-  onSetupDmnRunner: () => void;
 }
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
+  const dmnRunner = useDmnRunner();
   const location = useLocation();
   const [fileName, setFileName] = useState(context.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
-  const [isDmnRunnerMenuOpen, setDmnRunnerMenuOpen] = useState(false);
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
-  const runLabel = useMemo(() => (props.isDmnRunning ? "Running" : "Run"), [props.isDmnRunning]);
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };
@@ -113,7 +112,7 @@ export function EditorToolbar(props: Props) {
         {i18n.editorToolbar.enterFullScreenView}
       </DropdownItem>
     ],
-    [i18n, context, props, runLabel]
+    [i18n, context, props]
   );
 
   const shareItems = useCallback(
@@ -179,28 +178,21 @@ export function EditorToolbar(props: Props) {
     [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
 
+  // Verify if DMN Runner is already running, if not, open the modal to configure it
   const dmnRunnerItems = useMemo(() => {
     return (
       <>
-        {props.isDmnRunning ? (
-          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => props.setDmnRunnerDrawerOpen(true)}>
+        {dmnRunner.status === DmnRunnerStatus.RUNNING ? (
+          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerOpen(true)}>
             Open DMN Runner
           </DropdownItem>
         ) : (
-          <DropdownItem key={"setup-dmn-runner"} component={"button"} onClick={props.onSetupDmnRunner}>
+          <DropdownItem key={"setup-dmn-runner"} component={"button"} onClick={() => dmnRunner.setModalOpen(true)}>
             Setup DMN Runner
           </DropdownItem>
         )}
       </>
     );
-  }, [props]);
-
-  const onDmnRunner = useCallback(() => {
-    if (!props.isDmnRunning) {
-      props.onSetupDmnRunner();
-    } else {
-      props.setDmnRunnerDrawerOpen(true);
-    }
   }, [props]);
 
   return !props.isPageFullscreen ? (
@@ -221,32 +213,7 @@ export function EditorToolbar(props: Props) {
                   sm: "hidden"
                 }}
               >
-                <Button
-                  data-testid="run-button"
-                  variant={"tertiary"}
-                  onClick={onDmnRunner}
-                  aria-label={"Run"}
-                  className={"kogito--editor__toolbar"}
-                  icon={
-                    props.isDmnRunning ? (
-                      <Tooltip
-                        key={"connected"}
-                        content={"The DMN Runner is connected"}
-                        flipBehavior={["bottom"]}
-                        children={<ConnectedIcon />}
-                      />
-                    ) : (
-                      <Tooltip
-                        key={"disconnected"}
-                        content={"The DMN Runner is not connected"}
-                        flipBehavior={["bottom"]}
-                        children={<DisconnectedIcon />}
-                      />
-                    )
-                  }
-                >
-                  DMN Runner
-                </Button>
+                <DmnRunnerButton />
               </PageHeaderToolsItem>
             )}
           </PageHeaderToolsGroup>
