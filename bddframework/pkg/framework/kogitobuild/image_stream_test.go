@@ -54,12 +54,12 @@ func Test_resolveSourceStrategyImageNameForBuilds(t *testing.T) {
 		args args
 		want string
 	}{
-		{"Quarkus Non Native Builder", args{buildQuarkusNonNative, true}, infrastructure.KogitoBuilderImage + tag},
-		{"Quarkus Non Native Base", args{buildQuarkusNonNative, false}, infrastructure.KogitoRuntimeJVM + tag},
-		{"Quarkus Native Builder", args{buildQuarkusNative, true}, infrastructure.KogitoBuilderImage + tag},
-		{"Quarkus Native Base", args{buildQuarkusNative, false}, infrastructure.KogitoRuntimeNative + tag},
-		{"SpringBoot Builder", args{buildSpringBoot, true}, infrastructure.KogitoBuilderImage + tag},
-		{"SpringBoot Base", args{buildSpringBoot, false}, infrastructure.KogitoRuntimeJVM + tag},
+		{"Quarkus Non Native Builder", args{buildQuarkusNonNative, true}, GetDefaultBuilderImage() + tag},
+		{"Quarkus Non Native Base", args{buildQuarkusNonNative, false}, GetDefaultRuntimeJVMImage() + tag},
+		{"Quarkus Native Builder", args{buildQuarkusNative, true}, GetDefaultBuilderImage() + tag},
+		{"Quarkus Native Base", args{buildQuarkusNative, false}, GetDefaultRuntimeNativeImage() + tag},
+		{"SpringBoot Builder", args{buildSpringBoot, true}, GetDefaultBuilderImage() + tag},
+		{"SpringBoot Base", args{buildSpringBoot, false}, GetDefaultRuntimeJVMImage() + tag},
 		{"SpringBoot Custom Builder", args{buildSpringBootCustom, true}, "my-image:1.0"},
 		{"Quarkus Custom Base", args{buildQuarkusCustom, false}, "my-image:1.0"},
 	}
@@ -102,12 +102,12 @@ func Test_resolveKogitoImageStreamName(t *testing.T) {
 		args args
 		want string
 	}{
-		{"Quarkus Non Native Builder", args{buildQuarkusNonNative, true}, infrastructure.KogitoBuilderImage},
-		{"Quarkus Non Native Base", args{buildQuarkusNonNative, false}, infrastructure.KogitoRuntimeJVM},
-		{"Quarkus Native Builder", args{buildQuarkusNative, true}, infrastructure.KogitoBuilderImage},
-		{"Quarkus Native Base", args{buildQuarkusNative, false}, infrastructure.KogitoRuntimeNative},
-		{"SpringBoot Builder", args{buildSpringBoot, true}, infrastructure.KogitoBuilderImage},
-		{"SpringBoot Base", args{buildSpringBoot, false}, infrastructure.KogitoRuntimeJVM},
+		{"Quarkus Non Native Builder", args{buildQuarkusNonNative, true}, GetDefaultBuilderImage()},
+		{"Quarkus Non Native Base", args{buildQuarkusNonNative, false}, GetDefaultRuntimeJVMImage()},
+		{"Quarkus Native Builder", args{buildQuarkusNative, true}, GetDefaultBuilderImage()},
+		{"Quarkus Native Base", args{buildQuarkusNative, false}, GetDefaultRuntimeNativeImage()},
+		{"SpringBoot Builder", args{buildSpringBoot, true}, GetDefaultBuilderImage()},
+		{"SpringBoot Base", args{buildSpringBoot, false}, GetDefaultRuntimeJVMImage()},
 		{"SpringBoot Custom Builder", args{buildSpringBootCustom, true}, "custom-my-image"},
 		{"Quarkus Custom Base", args{buildQuarkusCustom, false}, "custom-my-image"},
 	}

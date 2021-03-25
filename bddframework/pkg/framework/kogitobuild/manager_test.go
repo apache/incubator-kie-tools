@@ -58,14 +58,14 @@ func TestNewWhenBuildingFromRemoteSource(t *testing.T) {
 
 	bcBuilder := resources[reflect.TypeOf(buildv1.BuildConfig{})][0].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcBuilder)
-	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.KogitoBuilderImage)
+	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, GetDefaultBuilderImage())
 	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion())
 	assert.Equal(t, buildv1.BuildSourceGit, bcBuilder.Spec.Source.Type)
 	assert.Contains(t, bcBuilder.Name, builderSuffix)
 
 	bcRuntime := resources[reflect.TypeOf(buildv1.BuildConfig{})][1].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcRuntime)
-	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.KogitoRuntimeJVM)
+	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, GetDefaultRuntimeJVMImage())
 	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion())
 	assert.Contains(t, bcRuntime.Spec.Triggers[0].ImageChange.From.Name, bcBuilder.Name)
 	assert.Equal(t, bcRuntime.Name, build.Name)
@@ -107,14 +107,14 @@ func TestNewWhenBuildingFromLocalSource(t *testing.T) {
 
 	bcBuilder := resources[reflect.TypeOf(buildv1.BuildConfig{})][0].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcBuilder)
-	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.KogitoBuilderImage)
+	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, GetDefaultBuilderImage())
 	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion())
 	assert.Equal(t, buildv1.BuildSourceBinary, bcBuilder.Spec.Source.Type)
 	assert.Contains(t, bcBuilder.Name, builderSuffix)
 
 	bcRuntime := resources[reflect.TypeOf(buildv1.BuildConfig{})][1].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcRuntime)
-	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.KogitoRuntimeJVM)
+	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, GetDefaultRuntimeJVMImage())
 	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion())
 	assert.Contains(t, bcRuntime.Spec.Triggers[0].ImageChange.From.Name, bcBuilder.Name)
 	assert.Equal(t, bcRuntime.Name, build.Name)
@@ -158,7 +158,7 @@ func TestNewWhenBuildingFromBinary(t *testing.T) {
 	bcRuntime := resources[reflect.TypeOf(buildv1.BuildConfig{})][0].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcRuntime)
 	assert.Equal(t, buildv1.BuildSourceBinary, bcRuntime.Spec.Source.Type)
-	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.KogitoRuntimeJVM)
+	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, GetDefaultRuntimeJVMImage())
 	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion())
 	assert.Equal(t, bcRuntime.Name, build.Name)
 

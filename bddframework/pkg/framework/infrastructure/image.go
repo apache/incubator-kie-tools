@@ -22,6 +22,7 @@ import (
 	"github.com/kiegroup/kogito-operator/version"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"os"
 	"strings"
 )
 
@@ -32,17 +33,14 @@ const (
 	versionSeparator = "."
 	// LatestTag the default name for latest image tag
 	LatestTag = "latest"
-	// DefaultImageRegistry the default services image repository
-	DefaultImageRegistry = "quay.io"
-	// DefaultImageNamespace the default services image namespace
-	DefaultImageNamespace = "kiegroup"
-
-	// KogitoBuilderImage Builder Image for Kogito
-	KogitoBuilderImage = "kogito-builder"
-	// KogitoRuntimeJVM Runtime Image for Kogito with  JRE
-	KogitoRuntimeJVM = "kogito-runtime-jvm"
-	//KogitoRuntimeNative Runtime Image for Kogito for Native Quarkus Application
-	KogitoRuntimeNative = "kogito-runtime-native"
+	// imageRegistryEnvVar ...
+	imageRegistryEnvVar = "IMAGE_REGISTRY"
+	// imageNamespaceEnvVar ...
+	imageNamespaceEnvVar = "IMAGE_NAMESPACE"
+	// defaultImageRegistry the default services image repository
+	defaultImageRegistry = "quay.io"
+	// defaultImageNamespace the default services image namespace
+	defaultImageNamespace = "kiegroup"
 	//RuntimeTypeKey Env key to switch between the runtime
 	RuntimeTypeKey = "RUNTIME_TYPE"
 )
@@ -118,11 +116,11 @@ func (i *imageHandler) ResolveImage() (string, error) {
 func (i *imageHandler) resolveRegistryImage() string {
 	domain := i.image.Domain
 	if len(domain) == 0 {
-		domain = DefaultImageRegistry
+		domain = GetDefaultImageRegistry()
 	}
 	ns := i.image.Namespace
 	if len(ns) == 0 {
-		ns = DefaultImageNamespace
+		ns = GetDefaultImageNamespace()
 	}
 	return fmt.Sprintf("%s/%s/%s", domain, ns, i.ResolveImageNameTag())
 }
@@ -179,4 +177,22 @@ func getKogitoImageVersion(v string) string {
 		return strings.Join(versionPrefix[:lastIndex], versionSeparator)
 	}
 	return LatestTag
+}
+
+// GetDefaultImageRegistry ...
+func GetDefaultImageRegistry() string {
+	registry := os.Getenv(imageRegistryEnvVar)
+	if len(registry) == 0 {
+		registry = defaultImageRegistry
+	}
+	return registry
+}
+
+// GetDefaultImageNamespace ...
+func GetDefaultImageNamespace() string {
+	imageNamespace := os.Getenv(imageNamespaceEnvVar)
+	if len(imageNamespace) == 0 {
+		imageNamespace = defaultImageNamespace
+	}
+	return imageNamespace
 }

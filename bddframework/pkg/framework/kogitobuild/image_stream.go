@@ -20,6 +20,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	buildv1 "github.com/openshift/api/build/v1"
+	"os"
 	"strings"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -31,42 +32,62 @@ import (
 )
 
 const (
-	customKogitoImagePrefix = "custom-"
-	labelKeyVersion         = "version"
+	customKogitoImagePrefix   = "custom-"
+	labelKeyVersion           = "version"
+	kogitoBuilderImageEnvVar  = "BUILDER_IMAGE"
+	kogitoRuntimeJVMEnvVar    = "RUNTIME_IMAGE"
+	kogitoRuntimeNativeEnvVar = "RUNTIME_NATIVE_IMAGE"
+	// defaultBuilderImage Builder Image for Kogito
+	defaultBuilderImage = "kogito-builder"
+	// defaultRuntimeJVM Runtime Image for Kogito with  JRE
+	defaultRuntimeJVM = "kogito-runtime-jvm"
+	//defaultRuntimeNative Runtime Image for Kogito for Native Quarkus Application
+	defaultRuntimeNative = "kogito-runtime-native"
+)
+
+type kogitoImageType int
+
+const (
+	// kogitoBuilderImage Builder Image for Kogito
+	kogitoBuilderImage kogitoImageType = iota
+	// kogitoRuntimeJVMImage Runtime Image for Kogito with  JRE
+	kogitoRuntimeJVMImage
+	//kogitoRuntimeNativeImage Runtime Image for Kogito for Native Quarkus Application
+	kogitoRuntimeNativeImage
 )
 
 var (
 	// imageStreamDefaultAnnotations lists the default annotations for ImageStreams
-	imageStreamDefaultAnnotations = map[string]map[string]string{
-		infrastructure.KogitoRuntimeNative: {
+	imageStreamDefaultAnnotations = map[kogitoImageType]map[string]string{
+		kogitoRuntimeNativeImage: {
 			"openshift.io/provider-display-name": "KIE Group",
 			"openshift.io/display-name":          "Runtime image for Kogito based on Quarkus native image",
 		},
-		infrastructure.KogitoRuntimeJVM: {
+		kogitoRuntimeJVMImage: {
 			"openshift.io/provider-display-name": "KIE Group",
 			"openshift.io/display-name":          "Runtime image for Kogito based on Quarkus or Spring Boot JVM image",
 		},
-		infrastructure.KogitoBuilderImage: {
+		kogitoBuilderImage: {
 			"openshift.io/provider-display-name": "KIE Group",
 			"openshift.io/display-name":          "Platform for building Kogito based on Quarkus or Spring Boot",
 		},
 	}
 
 	//tagDefaultAnnotations lists the default annotations for ImageStreamTags
-	tagDefaultAnnotations = map[string]map[string]string{
-		infrastructure.KogitoRuntimeNative: {
+	tagDefaultAnnotations = map[kogitoImageType]map[string]string{
+		kogitoRuntimeNativeImage: {
 			"iconClass":   "icon-jbpm",
 			"description": "Runtime image for Kogito based on Quarkus native image",
 			"tags":        "runtime,kogito,quarkus",
 			"supports":    "quarkus",
 		},
-		infrastructure.KogitoRuntimeJVM: {
+		kogitoRuntimeJVMImage: {
 			"iconClass":   "icon-jbpm",
 			"description": "Runtime image for Kogito based on Quarkus or Spring Boot JVM image",
 			"tags":        "runtime,kogito,quarkus,springboot,jvm",
 			"supports":    "quarkus,springboot",
 		},
-		infrastructure.KogitoBuilderImage: {
+		kogitoBuilderImage: {
 			"iconClass":   "icon-jbpm",
 			"description": "Platform for building Kogito based on Quarkus or Spring Boot",
 			"tags":        "builder,kogito,quarkus,springboot",
@@ -167,7 +188,8 @@ func newKogitoImageStream(build api.KogitoBuildInterface, isBuilder bool) imgv1.
 	imageStreamName := resolveKogitoImageStreamName(build, isBuilder)
 	imageTag := resolveKogitoImageTag(build, isBuilder)
 	imageRegistry := resolveKogitoImageRegistryNamespace(build, isBuilder)
-	tagAnnotations := tagDefaultAnnotations[imageStreamName]
+	imageType := getKogitoImageType(isBuilder, build.GetSpec().IsNative())
+	tagAnnotations := tagDefaultAnnotations[imageType]
 	if tagAnnotations == nil { //custom image streams won't have a default tag ;)
 		tagAnnotations = map[string]string{}
 	}
@@ -176,7 +198,7 @@ func newKogitoImageStream(build api.KogitoBuildInterface, isBuilder bool) imgv1.
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        imageStreamName,
 			Namespace:   build.GetNamespace(),
-			Annotations: imageStreamDefaultAnnotations[imageStreamName],
+			Annotations: imageStreamDefaultAnnotations[imageType],
 		},
 		Spec: imgv1.ImageStreamSpec{
 			Tags: []imgv1.TagReference{
@@ -195,6 +217,15 @@ func newKogitoImageStream(build api.KogitoBuildInterface, isBuilder bool) imgv1.
 			},
 		},
 	}
+}
+
+func getKogitoImageType(isBuilder bool, isNative bool) kogitoImageType {
+	if isBuilder {
+		return kogitoBuilderImage
+	} else if !isNative {
+		return kogitoRuntimeJVMImage
+	}
+	return kogitoRuntimeNativeImage
 }
 
 // resolveKogitoImageNameTag resolves the ImageStreamTag to be used in the given build, e.g. kogito-quarkus-ubi8-s2i:0.11
@@ -224,17 +255,43 @@ func resolveKogitoImageName(build api.KogitoBuildInterface, isBuilder bool) stri
 		if len(image.Name) > 0 {
 			return image.Name
 		}
-		return infrastructure.KogitoBuilderImage
+		return GetDefaultBuilderImage()
 	}
 	image := framework.ConvertImageTagToImage(build.GetSpec().GetRuntimeImage())
 	if len(image.Name) > 0 {
 		return image.Name
 	}
 	if build.GetSpec().IsNative() {
-		return infrastructure.KogitoRuntimeNative
+		return GetDefaultRuntimeNativeImage()
 	}
-	return infrastructure.KogitoRuntimeJVM
+	return GetDefaultRuntimeJVMImage()
+}
 
+// GetDefaultBuilderImage ...
+func GetDefaultBuilderImage() string {
+	builderImage := os.Getenv(kogitoBuilderImageEnvVar)
+	if len(builderImage) == 0 {
+		builderImage = defaultBuilderImage
+	}
+	return builderImage
+}
+
+// GetDefaultRuntimeJVMImage ...
+func GetDefaultRuntimeJVMImage() string {
+	runtimeImage := os.Getenv(kogitoRuntimeJVMEnvVar)
+	if len(runtimeImage) == 0 {
+		runtimeImage = defaultRuntimeJVM
+	}
+	return runtimeImage
+}
+
+// GetDefaultRuntimeNativeImage ...
+func GetDefaultRuntimeNativeImage() string {
+	runtimeImage := os.Getenv(kogitoRuntimeNativeEnvVar)
+	if len(runtimeImage) == 0 {
+		runtimeImage = defaultRuntimeNative
+	}
+	return runtimeImage
 }
 
 // resolveKogitoImageName resolves the ImageName to be used in the given build, e.g. kogito-quarkus-ubi8-s2i
@@ -259,8 +316,8 @@ func resolveKogitoImageStreamTagName(build api.KogitoBuildInterface, isBuilder b
 
 // resolveImageRegistry resolves the registry/namespace name to be used in the given build, e.g. quay.io/kiegroup
 func resolveKogitoImageRegistryNamespace(build api.KogitoBuildInterface, isBuilder bool) string {
-	namespace := infrastructure.DefaultImageNamespace
-	registry := infrastructure.DefaultImageRegistry
+	namespace := infrastructure.GetDefaultImageNamespace()
+	registry := infrastructure.GetDefaultImageRegistry()
 	image := framework.ConvertImageTagToImage(build.GetSpec().GetRuntimeImage())
 	if isBuilder {
 		image = framework.ConvertImageTagToImage(build.GetSpec().GetBuildImage())
