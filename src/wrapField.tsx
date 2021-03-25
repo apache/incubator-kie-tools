@@ -9,10 +9,12 @@ declare module 'uniforms' {
     autoValue: never;
     isDisabled: never;
     checkboxes: never;
+    exclusiveMaximum: never;
+    exclusiveMinimum: never;
   }
 }
 
-filterDOMProps.register('decimal', 'minCount', 'autoValue', 'isDisabled');
+filterDOMProps.register('decimal', 'minCount', 'autoValue', 'isDisabled', 'exclusiveMaximum', 'exclusiveMinimum');
 
 type WrapperProps = {
   id: string;
