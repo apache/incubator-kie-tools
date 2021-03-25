@@ -15,7 +15,7 @@
  */
 
 import { assert } from "chai";
-import { ActivityBar, By, EditorView, InputBox, SideBarView, WebView, Workbench, Notification } from "vscode-extension-tester";
+import { ActivityBar, By, EditorView, InputBox, SideBarView, WebView, Workbench, Notification, ViewControl } from "vscode-extension-tester";
 import { DefaultWait } from "vscode-uitests-tooling";
 
 /**
@@ -46,7 +46,7 @@ export default class VSCodeTestHelper {
     /**
      * Opens folder using commmand suplied by vscode-extension-tester
      * and open the dedicated SideBarView with the folder.
-     * 
+     *
      * @param absolutePath absolute path to the folder that needs to be openned
      * @returns a promise that resolves to a SideBarView of the openned folder
      */
@@ -56,7 +56,7 @@ export default class VSCodeTestHelper {
         await inputBox.setText(absolutePath);
         await inputBox.confirm();
 
-        const control = new ActivityBar().getViewControl('Explorer');
+        const control = await new ActivityBar().getViewControl('Explorer') as ViewControl;
         this.sidebarView = await control.openView();
         assert.isTrue(await this.sidebarView.isDisplayed(), 'Explorer side bar view was not opened');
 
@@ -66,7 +66,7 @@ export default class VSCodeTestHelper {
     /**
      * Opens file from a sidebarview. Expects that the sidebarview will be defined and open.
      * Once the file is openned, it wait for the WebView to load and the returns it.
-     * 
+     *
      * @param fileName name of the file to open
      * @returns promise that resolves to WebView of the openned file.
      */
@@ -75,9 +75,9 @@ export default class VSCodeTestHelper {
         assert.isTrue(await workspace.isExpanded(), 'Workspace section was not expanded');
 
         await workspace.openItem('resources', fileName);
-        
+
         // In cases where you have multiple KIE editors installed in VSCode
-        // uncomment this to run locally without issues. 
+        // uncomment this to run locally without issues.
         // const input = await InputBox.create();
         // await input.selectQuickPick('KIE Kogito Editors');
         const webview = new WebView(new EditorView(), By.linkText(fileName));
@@ -94,7 +94,7 @@ export default class VSCodeTestHelper {
 
     /**
      * Gets all currently displayed notifications.
-     * 
+     *
      * @returns a promise that resolves to array of notifications.
      */
     public getNotifications = async (): Promise<Notification[]> => {
