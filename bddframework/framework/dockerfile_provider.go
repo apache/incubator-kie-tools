@@ -16,11 +16,10 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/core/kogitobuild"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
-
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 )
 
 const (
@@ -49,13 +48,13 @@ type kogitoApplicationDockerfileProviderStruct struct {
 }
 
 var quarkusNonNativeLegacyJarKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               infrastructure.KogitoRuntimeJVM,
+	imageName:               kogitobuild.GetDefaultRuntimeJVMImage(),
 	applicationBinarySuffix: quarkusJVMLegacyApplicationBinarySuffix,
 	folderDependencies:      []string{"lib"},
 }
 
 var quarkusNonNativeFastJarKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               infrastructure.KogitoRuntimeJVM,
+	imageName:               kogitobuild.GetDefaultRuntimeJVMImage(),
 	jarSubDirectory:         quarkusFastJarFolder,
 	executableFileName:      quarkusFastJarName,
 	applicationBinarySuffix: quarkusJVMFastApplicationBinarySuffix,
@@ -63,12 +62,12 @@ var quarkusNonNativeFastJarKogitoApplicationDockerfileProvider = kogitoApplicati
 }
 
 var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               infrastructure.KogitoRuntimeNative,
+	imageName:               kogitobuild.GetDefaultRuntimeNativeImage(),
 	applicationBinarySuffix: quarkusNativeApplicationBinarySuffix,
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               infrastructure.KogitoRuntimeJVM,
+	imageName:               kogitobuild.GetDefaultRuntimeJVMImage(),
 	applicationBinarySuffix: springBootApplicationBinarySuffix,
 }
 

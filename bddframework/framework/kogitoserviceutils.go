@@ -122,11 +122,11 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 		image.Tag = config.GetServicesImageVersion()
 
 		if len(image.Domain) == 0 {
-			image.Domain = infrastructure.DefaultImageRegistry
+			image.Domain = infrastructure.GetDefaultImageRegistry()
 		}
 
 		if len(image.Namespace) == 0 {
-			image.Namespace = infrastructure.DefaultImageNamespace
+			image.Namespace = infrastructure.GetDefaultImageNamespace()
 		}
 
 		if len(image.Tag) == 0 {
