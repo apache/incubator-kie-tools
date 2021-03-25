@@ -24,8 +24,10 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.project.client.toolbox.OpenSubprocessToolboxAction;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
@@ -60,9 +62,13 @@ public class BPMNProjectActionsToolboxFactoryTest {
     private ToolboxAction<AbstractCanvasHandler> action1;
 
     private ManagedInstance<FormGenerationToolboxAction> generateFormsActions;
+    private ManagedInstance<OpenSubprocessToolboxAction> openSubprocessActions;
 
     @Mock
     private FormGenerationToolboxAction formGenerationToolboxAction;
+
+    @Mock
+    private OpenSubprocessToolboxAction openSubprocessToolboxAction;
 
     private ManagedInstance<ActionsToolboxView> views;
 
@@ -78,9 +84,11 @@ public class BPMNProjectActionsToolboxFactoryTest {
         when(commonActionToolbox.getActions(eq(canvasHandler),
                                             eq(element))).thenReturn(Collections.singletonList(action1));
         generateFormsActions = spy(new ManagedInstanceStub<>(formGenerationToolboxAction));
+        openSubprocessActions = spy(new ManagedInstanceStub<>(openSubprocessToolboxAction));
         views = spy(new ManagedInstanceStub<>(view));
         tested = new BPMNProjectActionsToolboxFactory(commonActionToolbox,
                                                       generateFormsActions,
+                                                      openSubprocessActions,
                                                       views);
     }
 
@@ -91,7 +99,7 @@ public class BPMNProjectActionsToolboxFactoryTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testGetActionsForSupportedNode() {
+    public void testGetActionsForSupportedUserTaskNode() {
         element.setContent(new ViewImpl<>(new UserTask(),
                                           Bounds.create()));
         final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler,
@@ -99,6 +107,18 @@ public class BPMNProjectActionsToolboxFactoryTest {
         assertEquals(2, actions.size());
         assertTrue(actions.contains(action1));
         assertTrue(actions.contains(formGenerationToolboxAction));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetActionsForSupportedSubprocessNode() {
+        element.setContent(new ViewImpl<>(new ReusableSubprocess(),
+                                          Bounds.create()));
+        final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler,
+                                                                                           element);
+        assertEquals(2, actions.size());
+        assertTrue(actions.contains(action1));
+        assertTrue(actions.contains(openSubprocessToolboxAction));
     }
 
     @Test

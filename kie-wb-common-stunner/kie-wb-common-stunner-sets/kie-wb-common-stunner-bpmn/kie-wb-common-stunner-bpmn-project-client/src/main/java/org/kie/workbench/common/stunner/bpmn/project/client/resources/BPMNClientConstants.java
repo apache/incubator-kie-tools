@@ -60,6 +60,15 @@ public interface BPMNClientConstants {
     @TranslationKey(defaultValue = "An error was produced during migration")
     String EditorMigrateErrorGeneric = "editor.actions.migrateErrorGeneric";
 
-    @TranslationKey(defaultValue =  "An error was produced during diagram svg file generation")
+    @TranslationKey(defaultValue = "An error was produced during diagram svg file generation")
     String EditorGenerateSvgFileError = "editor.error.generateSvgFileError";
+
+    @TranslationKey(defaultValue = "Subprocess {0} not found.")
+    String SubprocessNotFound = "editor.error.subprocessNotFound";
+
+    @TranslationKey(defaultValue = "Subprocess ID is not specified.")
+    String SubprocessIdNotSpecified = "editor.error.subprocessNotSpecified";
+
+    @TranslationKey(defaultValue = "Open Sub-process")
+    String OpenSubprocessToolBoxAction = "editor.toolbox.openSubprocessToolboxAction";
 }

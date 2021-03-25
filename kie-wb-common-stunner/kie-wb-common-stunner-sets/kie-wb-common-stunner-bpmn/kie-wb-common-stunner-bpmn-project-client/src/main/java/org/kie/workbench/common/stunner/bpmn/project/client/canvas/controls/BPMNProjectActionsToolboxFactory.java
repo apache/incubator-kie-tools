@@ -27,6 +27,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.BPMNFormsContextUtils;
+import org.kie.workbench.common.stunner.bpmn.client.util.GraphUtils;
+import org.kie.workbench.common.stunner.bpmn.project.client.toolbox.OpenSubprocessToolboxAction;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.AbstractActionsToolboxFactory;
@@ -47,14 +49,17 @@ public class BPMNProjectActionsToolboxFactory extends AbstractActionsToolboxFact
 
     private final ActionsToolboxFactory commonActionToolbox;
     private final ManagedInstance<FormGenerationToolboxAction> generateFormsActions;
+    private final ManagedInstance<OpenSubprocessToolboxAction> openSubprocessActions;
     private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
     public BPMNProjectActionsToolboxFactory(final @CommonActionsToolbox ActionsToolboxFactory commonActionToolbox,
                                             final @Any ManagedInstance<FormGenerationToolboxAction> generateFormsActions,
+                                            final @Any ManagedInstance<OpenSubprocessToolboxAction> openSubprocessActions,
                                             final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this.commonActionToolbox = commonActionToolbox;
         this.generateFormsActions = generateFormsActions;
+        this.openSubprocessActions = openSubprocessActions;
         this.views = views;
     }
 
@@ -71,12 +76,16 @@ public class BPMNProjectActionsToolboxFactory extends AbstractActionsToolboxFact
         if (BPMNFormsContextUtils.isFormGenerationSupported(e)) {
             actions.add(generateFormsActions.get());
         }
+        if (GraphUtils.isReusableSubProcess(e)) {
+            actions.add(openSubprocessActions.get());
+        }
         return actions;
     }
 
     @PreDestroy
     public void destroy() {
         generateFormsActions.destroyAll();
+        openSubprocessActions.destroyAll();
         views.destroyAll();
     }
 }
