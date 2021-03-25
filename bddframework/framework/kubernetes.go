@@ -42,7 +42,7 @@ var (
 )
 
 // podErrorReasons contains all the reasons to state a pod in error.
-var podErrorReasons = [1]string{"ErrImagePull"}
+var podErrorReasons = []string{"InvalidImageName"}
 
 // InitKubeClient initializes the Kubernetes Client
 func InitKubeClient(scheme *runtime.Scheme) error {
