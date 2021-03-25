@@ -82,6 +82,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
             key={index}
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}
+            characteristic={characteristic}
             attributeIndex={index}
             attribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}
