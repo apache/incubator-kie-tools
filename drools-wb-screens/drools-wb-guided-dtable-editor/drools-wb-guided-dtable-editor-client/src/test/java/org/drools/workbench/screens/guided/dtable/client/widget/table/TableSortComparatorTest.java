@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxIntegerSingletonDOMElementFactory;
@@ -36,7 +37,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -106,17 +106,10 @@ public class TableSortComparatorTest {
         final List<Integer> sort = comparator.sort(rows,
                                                    integerUiColumn);
 
-        assertEquals(rows.size(),
-                     sort.size());
-        assertEquals(Integer.valueOf(2), sort.get(0));
-        assertEquals(Integer.valueOf(0), sort.get(1));
-        assertEquals(Integer.valueOf(1), sort.get(2));
-        assertEquals(Integer.valueOf(3), sort.get(3));
-
-        assertEquals(1, rows.get(0).getCells().get(1).getValue().getValue());
-        assertEquals(3, rows.get(1).getCells().get(1).getValue().getValue());
-        assertEquals(100, rows.get(2).getCells().get(1).getValue().getValue());
-        assertEquals(100, rows.get(3).getCells().get(1).getValue().getValue());
+        Assertions.assertThat(sort).containsExactly(2, 0, 1, 3);
+        Assertions.assertThat(rows)
+                .extracting(row -> (int) row.getCells().get(1).getValue().getValue())
+                .containsExactly(1, 3, 100, 100);
     }
 
     @Test
@@ -125,17 +118,10 @@ public class TableSortComparatorTest {
         final List<Integer> sort = comparator.sort(rows,
                                                    stringUiColumn);
 
-        assertEquals(rows.size(),
-                     sort.size());
-        assertEquals(Integer.valueOf(0), sort.get(0));
-        assertEquals(Integer.valueOf(2), sort.get(1));
-        assertEquals(Integer.valueOf(1), sort.get(2));
-        assertEquals(Integer.valueOf(3), sort.get(3));
-
-        assertEquals("a", rows.get(0).getCells().get(2).getValue().getValue());
-        assertEquals("b", rows.get(1).getCells().get(2).getValue().getValue());
-        assertEquals("c", rows.get(2).getCells().get(2).getValue().getValue());
-        assertEquals("x", rows.get(3).getCells().get(2).getValue().getValue());
+        Assertions.assertThat(sort).containsExactly(0, 2, 1, 3);
+        Assertions.assertThat(rows)
+                .extracting(row -> (String) row.getCells().get(2).getValue().getValue())
+                .containsExactly("a", "b", "c", "x");
     }
 
     @Test
@@ -147,15 +133,10 @@ public class TableSortComparatorTest {
         final List<Integer> sort = comparator.sort(rows,
                                                    stringUiColumn);
 
-        assertEquals(Integer.valueOf(3), sort.get(0));
-        assertEquals(Integer.valueOf(1), sort.get(1));
-        assertEquals(Integer.valueOf(2), sort.get(2));
-        assertEquals(Integer.valueOf(0), sort.get(3));
-
-        assertEquals("x", rows.get(0).getCells().get(2).getValue().getValue());
-        assertEquals("c", rows.get(1).getCells().get(2).getValue().getValue());
-        assertEquals("b", rows.get(2).getCells().get(2).getValue().getValue());
-        assertEquals("a", rows.get(3).getCells().get(2).getValue().getValue());
+        Assertions.assertThat(sort).containsExactly(3, 1, 2, 0);
+        Assertions.assertThat(rows)
+                .extracting(row -> (String) row.getCells().get(2).getValue().getValue())
+                .containsExactly("x", "c", "b", "a");
     }
 
     @Test
@@ -170,15 +151,10 @@ public class TableSortComparatorTest {
         final List<Integer> sort = comparator.sort(rows,
                                                    integerUiColumn);
 
-        assertEquals(Integer.valueOf(2), sort.get(0));
-        assertEquals(Integer.valueOf(0), sort.get(1));
-        assertEquals(Integer.valueOf(3), sort.get(2));
-        assertEquals(Integer.valueOf(1), sort.get(3));
-
-        assertEquals(1, rows.get(0).getCells().get(1).getValue().getValue());
-        assertEquals(3, rows.get(1).getCells().get(1).getValue().getValue());
-        assertEquals(100, rows.get(2).getCells().get(1).getValue().getValue());
-        assertEquals(100, rows.get(3).getCells().get(1).getValue().getValue());
+        Assertions.assertThat(sort).containsExactly(2, 0, 3, 1);
+        Assertions.assertThat(rows)
+                .extracting(row -> (int) row.getCells().get(1).getValue().getValue())
+                .containsExactly(1, 3, 100, 100);
     }
 
     @Test
@@ -189,17 +165,10 @@ public class TableSortComparatorTest {
         final List<Integer> sort = comparator.sort(rows,
                                                    stringUiColumn);
 
-        assertEquals(rows.size(),
-                     sort.size());
-        assertEquals(Integer.valueOf(0), sort.get(0));
-        assertEquals(Integer.valueOf(2), sort.get(1));
-        assertEquals(Integer.valueOf(1), sort.get(2));
-        assertEquals(Integer.valueOf(3), sort.get(3));
-
-        assertEquals("a", rows.get(0).getCells().get(2).getValue().getValue());
-        assertEquals("b", rows.get(1).getCells().get(2).getValue().getValue());
-        assertEquals("c", rows.get(2).getCells().get(2).getValue().getValue());
-        assertEquals("x", rows.get(3).getCells().get(2).getValue().getValue());
+        Assertions.assertThat(sort).containsExactly(0, 2, 1, 3);
+        Assertions.assertThat(rows)
+                .extracting(row -> (String) row.getCells().get(2).getValue().getValue())
+                .containsExactly("a", "b", "c", "x");
     }
 
     class BaseGridRowMock extends BaseGridRow {
