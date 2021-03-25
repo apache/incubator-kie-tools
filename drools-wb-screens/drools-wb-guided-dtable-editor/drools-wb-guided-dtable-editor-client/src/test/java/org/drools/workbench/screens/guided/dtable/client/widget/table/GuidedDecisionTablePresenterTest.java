@@ -32,6 +32,7 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -1809,11 +1810,28 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(gridLayer).draw();
         verify(analyzerController).sort(listArgumentCaptor.capture());
 
-        final List value = listArgumentCaptor.getValue();
-        assertEquals(3, value.size());
-        assertEquals(0, value.get(0));
-        assertEquals(1, value.get(1));
-        assertEquals(2, value.get(2));
+        final List<Integer> value = listArgumentCaptor.getValue();
+        Assertions.assertThat(value).containsExactly(0, 1, 2);
+    }
+
+    @Test
+    public void testSortReversely() throws VetoException {
+        reset(gridLayer);
+
+        // asc
+        dtPresenter.onSort(uiModel2MockColumn);
+        reset(uiModel);
+        reset(gridLayer);
+        reset(analyzerController);
+        // desc
+        dtPresenter.onSort(uiModel2MockColumn);
+
+        verify(uiModel).sort(uiModel2MockColumn);
+        verify(gridLayer).draw();
+        verify(analyzerController).sort(listArgumentCaptor.capture());
+
+        final List<Integer> value = listArgumentCaptor.getValue();
+        Assertions.assertThat(value).containsExactly(2, 1, 0);
     }
 
     /*
