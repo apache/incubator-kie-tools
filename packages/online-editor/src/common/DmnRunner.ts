@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,8 @@ const DMN_RUNNER_VALIDATE_URL = "http://localhost:8080/jitdmn/validate";
 const DMN_RUNNER_DMN_RESULT_URL = "http://localhost:8080/jitdmn/dmnresult";
 const DMN_RUNNER_FORM_URL = "http://localhost:8080/jitdmn/schema/form";
 const DMN_RUNNER_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
+
+const SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
 export const ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
 ajv.addMetaSchema(metaSchemaDraft04);
@@ -141,7 +143,7 @@ export class DmnRunner {
         body: model
       });
       const form = await response.json();
-      const formDraft4 = { ...form, $schema: "http://json-schema.org/draft-04/schema#" };
+      const formDraft4 = { ...form, $schema: SCHEMA_DRAFT4 };
       return new JSONSchemaBridge(formDraft4, createValidator(formDraft4));
     } catch (err) {
       console.error(err);

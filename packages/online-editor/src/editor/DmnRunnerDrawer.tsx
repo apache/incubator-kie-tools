@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
-import { DecisionResult, DmnResult, DmnRunner, EvaluationStatus, Result } from "../common/DmnRunner";
+import { DecisionResult, DmnRunner, EvaluationStatus, Result } from "../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
 import {
   DescriptionList,
@@ -43,7 +43,6 @@ import { CubesIcon, CheckCircleIcon, ExclamationCircleIcon, InfoCircleIcon } fro
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../common/ErrorBoundry";
 import JSONSchemaBridge from "../common/Bridge";
-import { GlobalContext } from "../common/GlobalContext";
 
 enum ButtonPosition {
   INPUT,
@@ -155,9 +154,6 @@ export function DmnRunnerDrawer(props: Props) {
   }, [props.jsonSchemaBridge]);
 
   useEffect(() => {
-    if (props.jsonSchemaBridge) {
-      console.log(props.jsonSchemaBridge?.schema.properties);
-    }
     errorBoundaryRef.current?.reset();
   }, [props.jsonSchemaBridge]);
 
@@ -307,26 +303,24 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
   }, []);
 
   const result = useCallback((dmnRunnerResult: Result) => {
-    switch (dmnRunnerResult) {
-      case dmnRunnerResult === null:
-        return <i>(null)</i>;
-      case dmnRunnerResult === true:
-        return <i>true</i>;
-      case dmnRunnerResult === false:
-        return <i>false</i>;
-      case typeof dmnRunnerResult === "number":
-      case typeof dmnRunnerResult === "string":
+    switch (typeof dmnRunnerResult) {
+      case "boolean":
+        return dmnRunnerResult ? <i>true</i> : <i>false</i>;
+      case "number":
+      case "string":
         return dmnRunnerResult;
-      case typeof dmnRunnerResult === "object":
+      case "object":
         return (
-          <DescriptionList>
-            {Object.entries(dmnRunnerResult).map(([key, value]) => (
-              <DescriptionListGroup>
-                <DescriptionListTerm>{key}</DescriptionListTerm>
-                <DescriptionListDescription>{value}</DescriptionListDescription>
-              </DescriptionListGroup>
-            ))}
-          </DescriptionList>
+          dmnRunnerResult !== null && (
+            <DescriptionList>
+              {Object.entries(dmnRunnerResult).map(([key, value]) => (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>{key}</DescriptionListTerm>
+                  <DescriptionListDescription>{value}</DescriptionListDescription>
+                </DescriptionListGroup>
+              ))}
+            </DescriptionList>
+          )
         );
       default:
         return <i>(null)</i>;
@@ -346,7 +340,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             <CardTitle>
               <Title headingLevel={"h2"}>{dmnRunnerResult.decisionName}</Title>
             </CardTitle>
-            <CardBody isFilled={true}>{result}</CardBody>
+            <CardBody isFilled={true}>{result(dmnRunnerResult.result)}</CardBody>
             <CardFooter>{resultStatus(dmnRunnerResult.evaluationStatus)}</CardFooter>
           </Card>
         </div>

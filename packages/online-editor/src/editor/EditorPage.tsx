@@ -36,6 +36,7 @@ import {
   DrawerContent,
   DrawerContentBody,
   DrawerPanelContent,
+  DrawerPanelBody,
   Page,
   PageSection
 } from "@patternfly/react-core";
@@ -266,6 +267,15 @@ export function EditorPage(props: Props) {
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
   const DMN_RUNNER_POLLING_TIME = 500;
 
+  const setJsonSchemaBridge = useCallback(
+    () =>
+      editor
+        ?.getContent()
+        .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
+        .then(jsonSchemaBridge => setDmnRunnerJsonSchemaBridge(jsonSchemaBridge)),
+    [editor]
+  );
+
   useEffect(() => {
     if (context.file.fileExtension === "dmn") {
       // detect dmn runner
@@ -295,11 +305,7 @@ export function EditorPage(props: Props) {
           });
         }, DMN_RUNNER_POLLING_TIME);
 
-        // TODO: do it on changes
-        editor
-          ?.getContent()
-          .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
-          .then(jsonSchemaBridge => setDmnRunnerJsonSchemaBridge(jsonSchemaBridge));
+        setJsonSchemaBridge();
 
         return () => window.clearInterval(polling1);
       }
@@ -311,17 +317,12 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    const subscription = editor.getStateControl().subscribe(() => {
-      editor
-        ?.getContent()
-        .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
-        .then(jsonSchemaBridge => setDmnRunnerJsonSchemaBridge(jsonSchemaBridge));
-    });
+    const subscription = editor.getStateControl().subscribe(() => setJsonSchemaBridge());
 
     return () => {
       editor.getStateControl().unsubscribe(subscription);
     };
-  }, [editor, context.file.fileExtension]);
+  }, [editor, context.file.fileExtension, setJsonSchemaBridge]);
 
   const requestSetupDmnRunner = useCallback(() => {
     setModal(OpenedModal.DMN_RUNNER_HELPER);
@@ -369,7 +370,7 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    if (width > 700) {
+    if (width > 711) {
       setDmnRunnerFlexDirection("row");
     } else {
       setDmnRunnerFlexDirection("column");
@@ -421,7 +422,7 @@ export function EditorPage(props: Props) {
               <DrawerPanelContent
                 id={"kogito-panel-content"}
                 className={"kogito--editor__drawer-content-panel"}
-                defaultSize={"700px"}
+                defaultSize={"711px"}
                 onResize={handlePanelContentResize}
                 isResizable={true}
               >
