@@ -17,10 +17,8 @@
 package org.kie.workbench.common.stunner.kogito.client;
 
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @EntryPoint
-@Bundle("resources/i18n/KogitoClientConstants.properties")
 public class KogitoClientEntryPoint {
 
 }

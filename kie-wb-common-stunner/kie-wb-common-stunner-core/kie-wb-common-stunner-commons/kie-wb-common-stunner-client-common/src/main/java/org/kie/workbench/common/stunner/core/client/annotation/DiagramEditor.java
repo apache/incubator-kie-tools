@@ -31,6 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * observes events.
  * See {@link ScreenEventPublisher}.
  */
+
 @Qualifier
 @Retention(RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})

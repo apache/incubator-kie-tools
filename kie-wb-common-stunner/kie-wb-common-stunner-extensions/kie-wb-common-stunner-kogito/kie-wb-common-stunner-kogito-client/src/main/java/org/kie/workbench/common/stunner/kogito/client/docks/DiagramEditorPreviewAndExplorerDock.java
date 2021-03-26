@@ -20,14 +20,14 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.stunner.kogito.client.resources.i18n.KogitoClientMessages;
-import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorExplorerScreen;
+import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
+import org.kie.workbench.common.stunner.client.widgets.screens.DiagramEditorExplorerScreen;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 
 @ApplicationScoped
 public class DiagramEditorPreviewAndExplorerDock extends BaseDiagramEditorDock {
 
-    public DiagramEditorPreviewAndExplorerDock() {
+    protected DiagramEditorPreviewAndExplorerDock() {
         // CDI proxy
         this(null, null);
     }
@@ -50,6 +50,6 @@ public class DiagramEditorPreviewAndExplorerDock extends BaseDiagramEditorDock {
 
     @Override
     protected final String getLabelKey() {
-        return KogitoClientMessages.EXPLORER_DOCK_TITLE;
+        return StunnerWidgetsConstants.ScreenExplorerTitle;
     }
 }

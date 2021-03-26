@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.dmn.showcase.client.editor;
 
-import java.util.Collections;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
@@ -25,43 +23,22 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditorTest;
 import org.uberfire.promise.SyncPromises;
-import org.uberfire.workbench.model.menu.impl.DefaultMenus;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
     @Override
-    public void setup() {
-        super.setup();
-
-        when(fileMenuBuilder.build()).thenReturn(new DefaultMenus(Collections.emptyList(), 0));
-    }
-
-    @Override
     protected AbstractDMNDiagramEditor getEditor() {
         return new DMNDiagramEditor(view,
-                                    fileMenuBuilder,
                                     placeManager,
                                     multiPageEditorContainerView,
-                                    changeTitleWidgetEventSourceMock,
-                                    notificationEventSourceMock,
-                                    onDiagramFocusEventSourceMock,
-                                    xmlEditorView,
-                                    sessionEditorPresenters,
-                                    sessionViewerPresenters,
-                                    dmnEditorMenuSessionItems,
-                                    errorPopupPresenter,
-                                    diagramClientErrorHandler,
-                                    clientTranslationService,
-                                    documentationView,
+                                    stunnerEditor,
                                     editorSearchIndex,
                                     searchBarComponent,
                                     sessionManager,
                                     sessionCommandManager,
+                                    documentationView,
+                                    clientTranslationService,
                                     refreshFormPropertiesEventSourceMock,
                                     decisionNavigatorDock,
                                     diagramPropertiesDock,
@@ -72,13 +49,13 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     clientDiagramService,
                                     feelInitializer,
                                     canvasFileExport,
-                                    new SyncPromises(),
-                                    includedModelsPage,
+                                    new SyncPromises(), includedModelsPage,
                                     includedModelContext,
                                     guidedTourBridgeInitializer,
-                                    readonlyProvider,
                                     drdNameChanger,
-                                    lazyCanvasFocusUtils) {
+                                    readonlyProvider,
+                                    lazyCanvasFocusUtils,
+                                    sessionCommands) {
             @Override
             protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {
                 return searchBarComponentWidget;
@@ -90,23 +67,5 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                 getOnDataTypeEditModeToggleCallback(event).onInvoke(event);
             }
         };
-    }
-
-    @Override
-    public void testOnClose() {
-        openDiagram();
-
-        editor.onClose();
-
-        verify(dmnEditorMenuSessionItems, times(1)).destroy();
-        verify(editorPresenter).destroy();
-
-        verify(decisionNavigatorDock).destroy();
-        verify(decisionNavigatorDock).resetContent();
-
-        verify(diagramPropertiesDock).destroy();
-        verify(diagramPreviewDock).destroy();
-
-        verify(dataTypesPage).disableShortcuts();
     }
 }

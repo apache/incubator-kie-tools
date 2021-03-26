@@ -20,8 +20,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
+import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
-import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 
 @Dependent
 @BPMN

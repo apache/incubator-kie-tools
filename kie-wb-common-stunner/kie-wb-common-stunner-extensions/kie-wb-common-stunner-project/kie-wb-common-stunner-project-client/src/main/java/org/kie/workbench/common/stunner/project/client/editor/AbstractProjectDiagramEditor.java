@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.project.client.editor;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -27,44 +28,36 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.logging.client.LogConfiguration;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
+import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
-import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorCore;
-import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
-import org.kie.workbench.common.stunner.kogito.client.editor.DiagramEditorCore;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
+import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
-import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
-import org.kie.workbench.common.stunner.project.diagram.editor.impl.ProjectDiagramResourceImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -74,29 +67,29 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
-import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants.DIAGRAM_PARSING_ERROR;
+public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
+        extends KieEditor<ProjectDiagram> {
 
-public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor<ProjectDiagramResource> implements DiagramEditorCore<ProjectMetadata, ProjectDiagram> {
-
-    private static final Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
-
+    private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
     private static final String TITLE_FORMAT_TEMPLATE = "#title.#suffix - #type";
 
-    public interface View extends AbstractDiagramEditorCore.View,
+    public interface View extends BaseEditorView,
+                                  RequiresResize,
+                                  ProvidesResize,
+                                  IsWidget,
                                   KieEditorView {
 
+        void setWidget(IsWidget widget);
     }
 
     private final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems;
@@ -108,169 +101,23 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ProjectMessagesListener projectMessagesListener;
     private final ClientProjectDiagramService projectDiagramServices;
     private final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
+    private final StunnerEditor stunnerEditor;
 
-    private String title = "Project Diagram Editor";
-
-    private boolean menuBarInitialzed = false;
-
-    public class ProjectDiagramEditorCore extends AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> {
-
-        public ProjectDiagramEditorCore(final AbstractProjectDiagramEditor.View baseEditorView,
-                                        final TextEditorView xmlEditorView,
-                                        final Event<NotificationEvent> notificationEvent,
-                                        final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                                        final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                        final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
-                                        final ErrorPopupPresenter errorPopupPresenter,
-                                        final DiagramClientErrorHandler diagramClientErrorHandler,
-                                        final ClientTranslationService translationService) {
-            super(baseEditorView,
-                  xmlEditorView,
-                  notificationEvent,
-                  editorSessionPresenterInstances,
-                  viewerSessionPresenterInstances,
-                  menuSessionItems,
-                  errorPopupPresenter,
-                  diagramClientErrorHandler,
-                  translationService);
-        }
-
-        @Override
-        protected boolean isReadOnly() {
-            return AbstractProjectDiagramEditor.this.isReadOnly();
-        }
-
-        @Override
-        protected ProjectDiagramResourceImpl makeDiagramResourceImpl(final ProjectDiagram diagram) {
-            return new ProjectDiagramResourceImpl(diagram);
-        }
-
-        @Override
-        protected ProjectDiagramResourceImpl makeDiagramResourceImpl(final String xml) {
-            return new ProjectDiagramResourceImpl(xml);
-        }
-
-        @Override
-        protected ProjectDiagramEditorProxy<ProjectDiagramResource> makeEditorProxy() {
-            return new ProjectDiagramEditorProxy<>();
-        }
-
-        @Override
-        public Annotation[] getDockQualifiers() {
-            return AbstractProjectDiagramEditor.this.getDockQualifiers();
-        }
-
-        @Override
-        public void initialiseKieEditorForSession(final ProjectDiagram diagram) {
-            AbstractProjectDiagramEditor.this.initialiseKieEditorForSession(diagram);
-        }
-
-        @Override
-        protected void saveOrUpdate(final String commitMessage) {
-            final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
-            projectDiagramServices.saveOrUpdate(diagramPath,
-                                                getDiagram(),
-                                                metadata,
-                                                commitMessage,
-                                                new ServiceCallback<ProjectDiagram>() {
-                                                    @Override
-                                                    public void onSuccess(final ProjectDiagram item) {
-                                                        getSaveSuccessCallback(item.hashCode()).callback(diagramPath);
-                                                        onSaveSuccess();
-                                                        hideLoadingViews();
-                                                    }
-
-                                                    @Override
-                                                    public void onError(final ClientRuntimeError error) {
-                                                        onSaveError(error);
-                                                    }
-                                                });
-        }
-
-        @Override
-        protected void saveAsXML(final String commitMessage) {
-            final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
-            projectDiagramServices.saveAsXml(diagramPath,
-                                             getXMLEditorView().getContent(),
-                                             metadata,
-                                             commitMessage,
-                                             new ServiceCallback<String>() {
-                                                 @Override
-                                                 public void onSuccess(final String xml) {
-                                                     getSaveSuccessCallback(xml.hashCode()).callback(diagramPath);
-                                                     notification.fire(new NotificationEvent(org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully()));
-                                                     hideLoadingViews();
-                                                 }
-
-                                                 @Override
-                                                 public void onError(final ClientRuntimeError error) {
-                                                     onSaveError(error);
-                                                 }
-                                             });
-        }
-
-        @Override
-        public String getEditorIdentifier() {
-            return AbstractProjectDiagramEditor.this.getEditorIdentifier();
-        }
-
-        @Override
-        public void onLoadError(final ClientRuntimeError error) {
-            final Throwable e = error.getThrowable();
-            if (e instanceof DiagramParsingException) {
-                final DiagramParsingException dpe = (DiagramParsingException) e;
-                final Metadata metadata = dpe.getMetadata();
-                final String xml = dpe.getXml();
-
-                setOriginalHash(xml.hashCode());
-                updateTitle(metadata.getTitle());
-                resetEditorPagesOnLoadError(((ProjectMetadata) metadata).getOverview());
-                menuSessionItems.setEnabled(false);
-
-                getXMLEditorView().setReadOnly(isReadOnly);
-                getXMLEditorView().setContent(xml, AceEditorMode.XML);
-                getView().setWidget(getXMLEditorView().asWidget());
-                setEditorProxy(makeXmlEditorProxy());
-                hideLoadingViews();
-                notification.fire(new NotificationEvent(getDiagramParsingErrorMessage(dpe),
-                                                        NotificationEvent.NotificationType.ERROR));
-
-                Scheduler.get().scheduleDeferred(getXMLEditorView()::onResize);
-            } else {
-                setEditorProxy(makeEditorProxy());
-                showError(error);
-
-                //close editor in case of error when opening the editor
-                placeManager.forceClosePlace(new PathPlaceRequest(versionRecordManager.getCurrentPath(),
-                                                                  getEditorIdentifier()));
-            }
-        }
-    }
-
-    protected String getDiagramParsingErrorMessage(final DiagramParsingException e) {
-        return translationService.getValue(DIAGRAM_PARSING_ERROR, Objects.toString(e.getMessage(), ""));
-    }
-
-    private final AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> editor;
+    private String title = null;
+    private boolean menuBarInitialized = false;
 
     public AbstractProjectDiagramEditor(final AbstractProjectDiagramEditor.View view,
-                                        final TextEditorView xmlEditorView,
-                                        final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                                        final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                                         final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                         final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
-                                        final Event<NotificationEvent> notificationEvent,
-                                        final ErrorPopupPresenter errorPopupPresenter,
-                                        final DiagramClientErrorHandler diagramClientErrorHandler,
                                         final DocumentationView documentationView,
                                         final R resourceType,
                                         final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
                                         final ProjectMessagesListener projectMessagesListener,
                                         final ClientTranslationService translationService,
                                         final ClientProjectDiagramService projectDiagramServices,
-                                        final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
+                                        final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
+                                        final StunnerEditor stunnerEditor) {
         super(view);
-
         this.menuSessionItems = menuSessionItems;
         this.onDiagramFocusEvent = onDiagramFocusEvent;
         this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
@@ -280,36 +127,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.projectMessagesListener = projectMessagesListener;
         this.projectDiagramServices = projectDiagramServices;
         this.projectDiagramResourceServiceCaller = projectDiagramResourceServiceCaller;
-
-        this.editor = makeCore(view,
-                               xmlEditorView,
-                               notificationEvent,
-                               editorSessionPresenterInstances,
-                               viewerSessionPresenterInstances,
-                               menuSessionItems,
-                               errorPopupPresenter,
-                               diagramClientErrorHandler,
-                               translationService);
-    }
-
-    protected AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> makeCore(final AbstractProjectDiagramEditor.View view,
-                                                                                                                                                                    final TextEditorView xmlEditorView,
-                                                                                                                                                                    final Event<NotificationEvent> notificationEvent,
-                                                                                                                                                                    final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                                                                                                                                                                    final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                                                                                                                                                    final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
-                                                                                                                                                                    final ErrorPopupPresenter errorPopupPresenter,
-                                                                                                                                                                    final DiagramClientErrorHandler diagramClientErrorHandler,
-                                                                                                                                                                    final ClientTranslationService translationService) {
-        return new ProjectDiagramEditorCore(view,
-                                            xmlEditorView,
-                                            notificationEvent,
-                                            editorSessionPresenterInstances,
-                                            viewerSessionPresenterInstances,
-                                            menuSessionItems,
-                                            errorPopupPresenter,
-                                            diagramClientErrorHandler,
-                                            translationService);
+        this.stunnerEditor = stunnerEditor;
     }
 
     @PostConstruct
@@ -320,7 +138,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         menuSessionItems
                 .setLoadingStarts(this::showLoadingViews)
                 .setLoadingCompleted(this::hideLoadingViews)
-                .setErrorConsumer(editor::showError);
+                .setErrorConsumer(this::logMenuItemError);
+        getView().setWidget(stunnerEditor.getView());
     }
 
     protected void doStartUp(final ObservablePath path,
@@ -328,6 +147,25 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         init(path,
              place,
              resourceType);
+        initializeStunnerEditor();
+    }
+
+    void initializeStunnerEditor() {
+        stunnerEditor.setOnResetContentHashProcessor(h -> this.originalHash = h);
+        stunnerEditor.setParsingExceptionProcessor(e -> {
+            ProjectMetadata pm = (ProjectMetadata) e.getMetadata();
+            updateTitle(pm.getTitle());
+            resetEditorPagesOnLoadError(pm.getOverview());
+            menuSessionItems.setEnabled(false);
+            notification.fire(new NotificationEvent(translationService.getValue(StunnerWidgetsConstants.DiagramParsingError,
+                                                                                Objects.toString(e.getMessage(), "")),
+                                                    NotificationEvent.NotificationType.ERROR));
+        });
+        stunnerEditor.setExceptionProcessor(e -> {
+            //close editor in case of error when opening the editor
+            placeManager.forceClosePlace(new PathPlaceRequest(versionRecordManager.getCurrentPath(),
+                                                              getEditorIdentifier()));
+        });
     }
 
     @Override
@@ -337,67 +175,162 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                          new ServiceCallback<ProjectDiagram>() {
                                              @Override
                                              public void onSuccess(final ProjectDiagram item) {
-                                                 AbstractProjectDiagramEditor.this.open(item,
-                                                                                        AbstractProjectDiagramEditor.this.editor::onLoadError);
+                                                 open(item);
                                              }
 
                                              @Override
                                              public void onError(final ClientRuntimeError error) {
-                                                 AbstractProjectDiagramEditor.this.editor.onLoadError(error);
+                                                 AbstractProjectDiagramEditor.this.onError(error);
                                              }
                                          });
     }
 
-    protected boolean isReadOnly() {
-        return isReadOnly;
+    public void open(final ProjectDiagram diagram) {
+        open(diagram,
+             new SessionPresenter.SessionPresenterCallback() {
+                 @Override
+                 public void onSuccess() {
+                 }
+
+                 @Override
+                 public void onError(ClientRuntimeError error) {
+                 }
+             });
+    }
+
+    public void open(final ProjectDiagram diagram,
+                     final SessionPresenter.SessionPresenterCallback callback) {
+        showLoadingViews();
+        beforeOpen(diagram);
+        stunnerEditor.open(diagram,
+                           new SessionPresenter.SessionPresenterCallback() {
+                               @Override
+                               public void onSuccess() {
+                                   initialiseKieEditorForSession(diagram);
+                                   callback.onSuccess();
+                               }
+
+                               @Override
+                               public void onError(ClientRuntimeError error) {
+                                   hideLoadingViews();
+                                   callback.onError(error);
+                               }
+                           });
+    }
+
+    protected void beforeOpen(final ProjectDiagram diagram) {
+        stunnerEditor.setReadOnly(this.isReadOnly);
+    }
+
+    public void initialiseKieEditorForSession(final ProjectDiagram diagram) {
+        resetEditorPages(diagram.getMetadata().getOverview());
+        updateTitle(diagram.getName());
+        addDocumentationPage(diagram);
+        hideLoadingViews();
+        menuSessionItems.bind(getSession());
+        SaveAndRenameCommandBuilder saveAndRenameCommandBuilder = getSaveAndRenameCommandBuilder();
+        saveAndRenameCommandBuilder.addContentSupplier(getContentSupplier());
     }
 
     @Override
     protected void onValidate(final Command finished) {
-        log(Level.INFO, "Validation SUCCESS.");
         hideLoadingViews();
         finished.execute();
     }
 
-    /**
-     * This method is called just once clicking on save.
-     * Before starting the save process, let's perform a diagram validation
-     * to check all it's valid.
-     * It's allowed to continue with the save process event if warnings found,
-     * but cannot save if any error is present in order to
-     * guarantee the diagram's consistency.
-     */
-    @Override
-    protected void save() {
-        final Command continueSaveOnceValid = () -> {
-            if (saveWithComments) {
-                super.save();
-            } else {
-                save("");
-            }
-        };
-        doSave(continueSaveOnceValid);
+    void ifValidDiagram(final Command command) {
+        getMenuSessionItems()
+                .getCommands()
+                .getValidateSessionCommand()
+                .execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
+                    @Override
+                    public void onSuccess() {
+                        onValidate(command);
+                    }
+
+                    @Override
+                    public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+                        final Violation.Type maxSeverity = ValidationUtils.getMaxSeverity(violations);
+                        if (isSaveAllowedAfterValidationFailed(maxSeverity)) {
+                            onValidate(command);
+                        } else {
+                            onValidate(() -> {
+                            });
+                        }
+                    }
+                });
     }
 
-    protected void doSave(final Command continueSaveOnceValid) {
-        editor.getEditorProxy().saveAfterValidation(continueSaveOnceValid);
+    public boolean isSaveAllowedAfterValidationFailed(final Violation.Type maxSeverity) {
+        return !maxSeverity.equals(Violation.Type.ERROR);
     }
 
-    /**
-     * Considering the diagram valid at this point ,
-     * it delegates the save operation to the diagram services bean.
-     *
-     * @param commitMessage The commit's message.
-     */
     @Override
-    @SuppressWarnings("unchecked")
     protected void save(final String commitMessage) {
-        super.save(commitMessage);
-        doSave(commitMessage);
+        if (!stunnerEditor.isXmlEditorEnabled()) {
+            ifValidDiagram(() -> saveOrUpdate(commitMessage));
+        } else {
+            saveAsXML(commitMessage);
+        }
     }
 
-    protected void doSave(final String commitMessage) {
-        editor.getEditorProxy().saveAfterUserConfirmation(commitMessage);
+    @Override
+    protected void onSave() {
+        if (hasUnsavedChanges()) {
+            super.onSave();
+        } else if (!versionRecordManager.isCurrentLatest()) {
+            //If VersionRecordManager is not showing the latest the save represents a "Restore" operation.
+            super.onSave();
+        } else {
+            showMessage(CommonConstants.INSTANCE.NoChangesSinceLastSave());
+        }
+    }
+
+    private void saveOrUpdate(final String commitMessage) {
+        final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
+        projectDiagramServices.saveOrUpdate(diagramPath,
+                                            (ProjectDiagram) stunnerEditor.getDiagram(),
+                                            metadata,
+                                            commitMessage,
+                                            new ServiceCallback<ProjectDiagram>() {
+                                                @Override
+                                                public void onSuccess(final ProjectDiagram item) {
+                                                    getSaveSuccessCallback(item.hashCode()).callback(diagramPath);
+                                                    onSaveSuccess();
+                                                }
+
+                                                @Override
+                                                public void onError(final ClientRuntimeError error) {
+                                                    AbstractProjectDiagramEditor.this.onError(error);
+                                                }
+                                            });
+    }
+
+    private void saveAsXML(final String commitMessage) {
+        final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
+        projectDiagramServices.saveAsXml(diagramPath,
+                                         stunnerEditor.getXmlEditorView().getContent(),
+                                         metadata,
+                                         commitMessage,
+                                         new ServiceCallback<String>() {
+                                             @Override
+                                             public void onSuccess(final String xml) {
+                                                 getSaveSuccessCallback(xml.hashCode()).callback(diagramPath);
+                                                 showMessage(org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully());
+                                                 onSaveSuccess();
+                                             }
+
+                                             @Override
+                                             public void onError(final ClientRuntimeError error) {
+                                                 AbstractProjectDiagramEditor.this.onError(error);
+                                             }
+                                         });
+    }
+
+    protected void onSaveSuccess() {
+        showMessage(translationService.getValue(StunnerProjectClientConstants.DIAGRAM_SAVE_SUCCESSFUL));
+        stunnerEditor.resetContentHash();
+        hideLoadingViews();
     }
 
     @Override
@@ -422,13 +355,17 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         super.showDocks();
     }
 
+    protected Annotation[] getDockQualifiers() {
+        return new Annotation[]{DefinitionManager.DEFAULT_QUALIFIER};
+    }
+
     @Override
     //Override visibility from KieEditor to allow inner class ProjectDiagramEditorCore access
     public abstract String getEditorIdentifier();
 
     @Override
     protected Promise<Void> makeMenuBar() {
-        if (!menuBarInitialzed) {
+        if (!menuBarInitialized) {
             menuSessionItems.populateMenu(fileMenuBuilder);
             makeAdditionalStunnerMenus(fileMenuBuilder);
             if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
@@ -453,7 +390,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                     fileMenuBuilder
                             .addNewTopLevelMenu(versionRecordManager.buildMenu())
                             .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
-                    menuBarInitialzed = true;
+                    menuBarInitialized = true;
 
                     return promises.resolve();
                 });
@@ -468,21 +405,27 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     @Override
-    protected Caller<? extends SupportsSaveAndRename<ProjectDiagramResource, org.guvnor.common.services.shared.metadata.model.Metadata>> getSaveAndRenameServiceCaller() {
+    protected ParameterizedCommand<Path> onSuccess() {
+        return (path) -> {
+            if (!stunnerEditor.isClosed()) {
+                super.onSuccess().execute(path);
+            }
+        };
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<ProjectDiagram, org.guvnor.common.services.shared.metadata.model.Metadata>> getSaveAndRenameServiceCaller() {
         return projectDiagramResourceServiceCaller;
     }
 
     @Override
-    protected Supplier<ProjectDiagramResource> getContentSupplier() {
-        return editor.getEditorProxy().getContentSupplier();
+    protected Supplier<ProjectDiagram> getContentSupplier() {
+        return () -> (ProjectDiagram) stunnerEditor.getCanvasHandler().getDiagram();
     }
 
     @Override
     protected Integer getCurrentContentHash() {
-        return editor.getCurrentDiagramHash();
-    }
-
-    protected void doOpen() {
+        return stunnerEditor.getCurrentContentHash();
     }
 
     protected void doClose() {
@@ -521,20 +464,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return title;
     }
 
-    @Override
-    protected void onSave() {
-        if (hasUnsavedChanges()) {
-            super.onSave();
-        } else if (!versionRecordManager.isCurrentLatest()) {
-            //If VersionRecordManager is not showing the latest the save represents a "Restore" operation.
-            super.onSave();
-        } else {
-            final String message = CommonConstants.INSTANCE.NoChangesSinceLastSave();
-            log(Level.INFO, message);
-            editor.doShowNoChangesSinceLastSaveMessage(message);
-        }
-    }
-
     protected void updateTitle(final String title) {
         // Change editor's title.
         this.title = formatTitle(title);
@@ -563,7 +492,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     private ClientSession getSession() {
-        return null != editor.getSessionPresenter() ? editor.getSessionPresenter().getInstance() : null;
+        return stunnerEditor.getSession();
     }
 
     private void executeWithConfirm(final String message,
@@ -584,43 +513,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return (AbstractProjectDiagramEditor.View) baseView;
     }
 
-    protected void onSaveSuccess() {
-        final String message = translationService.getValue(StunnerProjectClientConstants.DIAGRAM_SAVE_SUCCESSFUL);
-        log(Level.INFO,
-            message);
-        editor.getSessionPresenter().getView().showMessage(message);
-        setOriginalHash(editor.getCurrentDiagramHash());
-    }
-
-    @Override
-    public void open(final ProjectDiagram diagram,
-                     final Viewer.Callback callback) {
-        editor.open(diagram, callback);
-        SaveAndRenameCommandBuilder saveAndRenameCommandBuilder = getSaveAndRenameCommandBuilder();
-        saveAndRenameCommandBuilder.addContentSupplier(editor.getEditorProxy().getContentSupplier());
-    }
-
-    @Override
-    public Annotation[] getDockQualifiers() {
-        return new Annotation[]{DefinitionManager.DEFAULT_QUALIFIER};
-    }
-
-    @Override
-    public void initialiseKieEditorForSession(final ProjectDiagram diagram) {
-        resetEditorPages(diagram.getMetadata().getOverview());
-        updateTitle(diagram.getName());
-        addDocumentationPage(diagram);
-        updateOriginalHash();
-        hideLoadingViews();
-        onDiagramLoad();
-    }
-
-    protected void updateOriginalHash() {
-        setOriginalHash(getCurrentDiagramHash());
-    }
-
     protected void destroySession() {
-        editor.destroySession();
+        stunnerEditor.close();
     }
 
     @SuppressWarnings("unchecked")
@@ -628,7 +522,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         Optional.ofNullable(documentationView.isEnabled())
                 .filter(Boolean.TRUE::equals)
                 .ifPresent(enabled -> {
-                    final String label = translationService.getValue(StunnerProjectClientConstants.DOCUMENTATION);
+                    final String label = translationService.getValue(StunnerWidgetsConstants.Documentation);
                     addPage(new DocumentationPage(documentationView.initialize(diagram),
                                                   label,
                                                   //firing the OnDiagramFocusEvent will force the docks to be minimized
@@ -638,59 +532,32 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 });
     }
 
-    protected void onDiagramLoad() {
-        /* Override this method to trigger some action after a Diagram is loaded. */
+    public void onError(final ClientRuntimeError error) {
+        stunnerEditor.handleError(error);
+        hideLoadingViews();
     }
 
-    @Override
-    public SessionEditorPresenter<EditorSession> newSessionEditorPresenter() {
-        return editor.newSessionEditorPresenter();
+    private void logMenuItemError(final String message) {
+        LOGGER.log(Level.WARNING, message);
+        hideLoadingViews();
     }
 
-    @Override
-    public SessionViewerPresenter<ViewerSession> newSessionViewerPresenter() {
-        return editor.newSessionViewerPresenter();
-    }
-
-    @Override
-    public int getCurrentDiagramHash() {
-        return editor.getCurrentDiagramHash();
-    }
-
-    @Override
-    public CanvasHandler getCanvasHandler() {
-        return editor.getCanvasHandler();
-    }
-
-    @Override
-    public void onSaveError(final ClientRuntimeError error) {
-        editor.onSaveError(error);
-    }
-
-    @Override
-    public SessionPresenter<? extends ClientSession, ?, Diagram> getSessionPresenter() {
-        return editor.getSessionPresenter();
-    }
-
-    @Override
-    public void doFocus() {
-        editor.doFocus();
-    }
-
-    @Override
-    public void doLostFocus() {
-        editor.doLostFocus();
-    }
-
-    protected void log(final Level level,
-                       final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level, message);
+    private void showMessage(String message) {
+        if (stunnerEditor.isXmlEditorEnabled()) {
+            notification.fire(new NotificationEvent(message));
+        } else {
+            stunnerEditor.showMessage(message);
         }
     }
 
+    @Override
+    public void setOriginalHash(Integer originalHash) {
+        super.setOriginalHash(originalHash);
+        stunnerEditor.resetContentHash();
+    }
+
     protected boolean hasUnsavedChanges() {
-        return editor.getCurrentDiagramHash() != originalHash;
+        return super.isDirty(getCurrentContentHash());
     }
 
     protected ClientTranslationService getTranslationService() {
@@ -703,5 +570,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     public AbstractDiagramEditorMenuSessionItems getMenuSessionItems() {
         return menuSessionItems;
+    }
+
+    public StunnerEditor getStunnerEditor() {
+        return stunnerEditor;
     }
 }

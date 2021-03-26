@@ -20,8 +20,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
-import org.kie.workbench.common.stunner.project.diagram.editor.impl.ProjectDiagramResourceImpl;
+import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.mockito.Mock;
@@ -45,7 +44,7 @@ public class ProjectDiagramResourceServiceImplTest {
     private RenameService renameService;
 
     @Mock
-    private SaveAndRenameServiceImpl<ProjectDiagramResource, Metadata> saveAndRenameService;
+    private SaveAndRenameServiceImpl<ProjectDiagram, Metadata> saveAndRenameService;
 
     private ProjectDiagramResourceServiceImpl service;
 
@@ -67,31 +66,13 @@ public class ProjectDiagramResourceServiceImplTest {
 
         final Path path = mock(Path.class);
         final Metadata metadata = mock(Metadata.class);
-        final ProjectDiagramImpl projectDiagram = mock(ProjectDiagramImpl.class);
+        final ProjectDiagramImpl diagram = mock(ProjectDiagramImpl.class);
         final Path expectedPath = mock(Path.class);
-        final ProjectDiagramResourceImpl resource = new ProjectDiagramResourceImpl(projectDiagram);
         final String comment = "comment";
 
-        when(projectDiagramService.save(path, projectDiagram, metadata, comment)).thenReturn(expectedPath);
+        when(projectDiagramService.save(path, diagram, metadata, comment)).thenReturn(expectedPath);
 
-        final Path actualPath = service.save(path, resource, metadata, comment);
-
-        assertSame(expectedPath, actualPath);
-    }
-
-    @Test
-    public void testSaveWhenResourceIsXML() {
-
-        final Path path = mock(Path.class);
-        final Metadata metadata = mock(Metadata.class);
-        final Path expectedPath = mock(Path.class);
-        final String diagramXml = "<xml>";
-        final ProjectDiagramResourceImpl resource = new ProjectDiagramResourceImpl(diagramXml);
-        final String comment = "comment";
-
-        when(projectDiagramService.saveAsXml(path, diagramXml, metadata, comment)).thenReturn(expectedPath);
-
-        final Path actualPath = service.save(path, resource, metadata, comment);
+        final Path actualPath = service.save(path, diagram, metadata, comment);
 
         assertSame(expectedPath, actualPath);
     }
@@ -113,12 +94,12 @@ public class ProjectDiagramResourceServiceImplTest {
 
         final Path path = mock(Path.class);
         final Metadata metadata = mock(Metadata.class);
-        final ProjectDiagramResourceImpl resource = mock(ProjectDiagramResourceImpl.class);
+        final ProjectDiagramImpl diagram = mock(ProjectDiagramImpl.class);
         final String newName = "newName";
         final String comment = "comment";
 
-        service.saveAndRename(path, newName, metadata, resource, comment);
+        service.saveAndRename(path, newName, metadata, diagram, comment);
 
-        verify(saveAndRenameService).saveAndRename(path, newName, metadata, resource, comment);
+        verify(saveAndRenameService).saveAndRename(path, newName, metadata, diagram, comment);
     }
 }

@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.project.client.editor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -57,15 +55,6 @@ public class ProjectDiagramEditorViewTest {
         when(tested.getElement()).thenReturn(element);
         when(element.getParentElement()).thenReturn(parentElement);
         when(parentElement.getStyle()).thenReturn(parentElementStyle);
-    }
-
-    @Test
-    public void testSetWidget() {
-        final IsWidget editor = mock(IsWidget.class);
-        tested.setWidget(editor);
-
-        verify(editorPanel).clear();
-        verify(editorPanel).add(eq(editor));
     }
 
     @Test

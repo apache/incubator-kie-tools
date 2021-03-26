@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuItemsBuilder;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractDiagramEditorMenuItemsBuilder;
 
 @Dependent
 @Typed(DMNEditorMenuItemsBuilder.class)

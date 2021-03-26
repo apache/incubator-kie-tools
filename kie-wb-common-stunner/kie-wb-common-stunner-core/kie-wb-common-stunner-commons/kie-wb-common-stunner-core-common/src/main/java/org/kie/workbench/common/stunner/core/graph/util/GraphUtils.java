@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -42,15 +41,21 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.stunner.core.util.HashUtil.combineHashCodes;
 
 public class GraphUtils {
 
@@ -386,32 +391,6 @@ public class GraphUtils {
         return null != item && item.getClass().equals(clazz);
     }
 
-    public static class ParentPredicate {
-
-        private final Function<Node, Element> parentSupplier;
-
-        public ParentPredicate(final Function<Node, Element> parentSupplier) {
-            this.parentSupplier = parentSupplier;
-        }
-
-        public BiPredicate<Node<?, ? extends Edge>, Element<?>> isChildOf() {
-            return (candidate, parent) -> {
-                if (null != candidate) {
-                    Element<?> p = parentSupplier.apply(candidate);
-                    while (null != p) {
-                        if (Objects.equals(p, parent)) {
-                            return true;
-                        }
-                        if (p instanceof Node) {
-                            p = parentSupplier.apply((Node) p);
-                        }
-                    }
-                }
-                return false;
-            };
-        }
-    }
-
     public static OptionalInt getChildIndex(final Element element,
                                             final String uuid) {
         if (!(element instanceof Node)) {
@@ -423,5 +402,46 @@ public class GraphUtils {
                 IntStream.range(0, node.getOutEdges().size())
                         .filter(i -> uuid.equals(node.getOutEdges().get(i).getTargetNode().getUUID())).findFirst() :
                 OptionalInt.empty();
+    }
+
+    @SuppressWarnings("all")
+    public static int computeGraphHashCode(GraphImpl graph) {
+        final int[] result = {0};
+        new TreeWalkTraverseProcessorImpl()
+                .traverse(graph,
+                          new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
+
+                              @Override
+                              public boolean startEdgeTraversal(final Edge edge) {
+                                  super.startEdgeTraversal(edge);
+                                  final Object content = edge.getContent();
+                                  result[0] = combineHashCodes(result[0], content.hashCode());
+                                  if (edge.getContent() instanceof ViewConnector) {
+                                      Optional<Connection> sourceConnection = ((ViewConnector) edge.getContent()).getSourceConnection();
+                                      sourceConnection.ifPresent(c -> result[0] = combineHashCodes(result[0], c.hashCode()));
+                                      Optional<Connection> targetConnection = ((ViewConnector) edge.getContent()).getTargetConnection();
+                                      targetConnection.ifPresent(c -> result[0] = combineHashCodes(result[0], c.hashCode()));
+                                  }
+                                  return true;
+                              }
+
+                              @Override
+                              public boolean startNodeTraversal(final Node node) {
+                                  super.startNodeTraversal(node);
+                                  result[0] = combineHashCodes(result[0],
+                                                               node.hashCode());
+                                  if (!(node.getContent() instanceof DefinitionSet) &&
+                                          node.getContent() instanceof Definition) {
+                                      Object def = ((Definition) (node.getContent())).getDefinition();
+                                      result[0] = combineHashCodes(result[0], def.hashCode());
+                                  }
+                                  if (node.getContent() instanceof HasBounds) {
+                                      Bounds bounds = ((HasBounds) node.getContent()).getBounds();
+                                      result[0] = combineHashCodes(result[0], bounds.hashCode());
+                                  }
+                                  return true;
+                              }
+                          });
+        return result[0];
     }
 }

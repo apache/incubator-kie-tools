@@ -18,12 +18,14 @@ package org.kie.workbench.common.stunner.bpmn.client.workitem;
 
 import java.util.Collection;
 
+import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientService;
 
-public interface WorkItemDefinitionClientService extends KogitoClientService<Metadata, Collection<WorkItemDefinition>> {
+public interface WorkItemDefinitionClientService {
+
+    Promise<Collection<WorkItemDefinition>> call(Metadata input);
 
     WorkItemDefinitionRegistry getRegistry();
 }

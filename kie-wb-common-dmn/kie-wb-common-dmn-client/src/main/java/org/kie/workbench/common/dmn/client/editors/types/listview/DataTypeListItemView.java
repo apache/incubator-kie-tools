@@ -32,7 +32,6 @@ import elemental2.dom.NodeList;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
@@ -86,7 +85,7 @@ public class DataTypeListItemView implements DataTypeListItem.View,
     @Inject
     public DataTypeListItemView(final HTMLDivElement view,
                                 final TranslationService translationService,
-                                final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                final ReadOnlyProvider readOnlyProvider) {
         this.view = view;
         this.translationService = translationService;
         this.readOnlyProvider = readOnlyProvider;

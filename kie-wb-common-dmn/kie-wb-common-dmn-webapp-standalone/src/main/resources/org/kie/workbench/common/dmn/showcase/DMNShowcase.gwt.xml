@@ -40,7 +40,6 @@
 
   <!-- Stunner -->
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
-  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
 
   <!-- Form modeler -->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>

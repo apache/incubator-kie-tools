@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
@@ -61,8 +60,6 @@ import static org.kie.workbench.common.stunner.core.client.event.keyboard.Keyboa
 @Dependent
 @Default
 public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSessionCommand<EditorSession> {
-
-    private static Logger LOGGER = Logger.getLogger(DeleteSelectionSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;

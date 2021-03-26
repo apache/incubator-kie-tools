@@ -16,7 +16,7 @@
 package org.kie.workbench.common.stunner.kogito.client.docks;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
+import org.kie.workbench.common.stunner.client.widgets.editor.DiagramEditorDock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocks;
@@ -32,7 +32,7 @@ public abstract class BaseDiagramEditorDock implements DiagramEditorDock {
     protected String owningPerspectiveId;
     protected final TranslationService translationService;
 
-    public BaseDiagramEditorDock(UberfireDocks uberfireDocks, TranslationService translationService) {
+    protected BaseDiagramEditorDock(UberfireDocks uberfireDocks, TranslationService translationService) {
         this.uberfireDocks = uberfireDocks;
         this.translationService = translationService;
     }

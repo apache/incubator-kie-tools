@@ -15,9 +15,6 @@
   <!-- Uberfire Extensions -->
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
   <inherits name="org.uberfire.UberfireDocksClient"/>
-  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
-  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
-  <inherits name="org.uberfire.ext.widgets.core.client.UberfireWidgetsEditors"/>
   <inherits name="org.uberfire.preferences.UberfirePreferencesAPI"/>
   <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
   <inherits name="org.uberfire.UberfireBackend"/>
@@ -53,7 +50,6 @@
 
   <!-- Stunner. -->
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
-  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectClient"/>
 
@@ -66,14 +62,9 @@
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
 
-  <!-- Drools models (e.g. for Drools Workbench Screens and others, don't remove -->
+  <!-- Drools models -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
-  <inherits name="org.drools.workbench.models.guided.dtable.DroolsWorkbenchModelsGuidedDTable"/>
-  <inherits name="org.drools.workbench.models.guided.dtree.DroolsWorkbenchModelsGuidedDTree"/>
-  <inherits name="org.drools.workbench.models.guided.scorecard.DroolsWorkbenchModelsGuidedScoreCard" />
-  <inherits name="org.drools.workbench.models.guided.template.DroolsWorkbenchModelsGuidedTemplate"/>
-  <inherits name="org.drools.workbench.models.testscenarios.DroolsWorkbenchModelsTestScenarios" />
 
   <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>

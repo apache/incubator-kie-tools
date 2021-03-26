@@ -732,7 +732,6 @@
                 <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-widgets</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
 
                 <!-- DMN Editor -->

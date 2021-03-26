@@ -17,12 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.BPMNFormsContextUtils;
+import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateDiagramFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateProcessFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateSelectedFormsSessionCommand;
-import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 
 public abstract class AbstractProcessEditorSessionCommands extends EditorSessionCommands {
 

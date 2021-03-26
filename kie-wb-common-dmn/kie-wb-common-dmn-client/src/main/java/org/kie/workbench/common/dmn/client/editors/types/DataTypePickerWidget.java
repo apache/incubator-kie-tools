@@ -53,7 +53,6 @@ import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -123,7 +122,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
                                 final DMNGraphUtils dmnGraphUtils,
                                 final Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent,
                                 final ItemDefinitionUtils itemDefinitionUtils,
-                                final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                final ReadOnlyProvider readOnlyProvider) {
         this.typeButton = typeButton;
         this.manageContainer = manageContainer;
         this.manageLabel = manageLabel;

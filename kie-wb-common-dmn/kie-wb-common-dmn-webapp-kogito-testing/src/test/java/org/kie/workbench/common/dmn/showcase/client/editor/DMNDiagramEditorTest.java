@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.showcase.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
-import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,31 +24,23 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditorTest;
+import org.kie.workbench.common.stunner.core.client.PromiseMock;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.kogito.client.PromiseMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.promise.Promises;
-import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
-import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
-import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.mvp.Command;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.util.URIUtil;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -62,38 +53,13 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
     private final String CONTENT = "xml-content-of-dmn-file";
 
     @Mock
-    private MenuItem saveMenuItem;
-
-    @Mock
-    private DeletePopUpPresenter deletePopUpPresenter;
-
-    @Mock
-    private CopyPopUpPresenter copyPopUpPresenter;
-
-    @Mock
-    private RenamePopUpPresenter renamePopUpPresenter;
-
-    @Mock
-    private BusyIndicatorView busyIndicatorView;
-
-    @Mock
-    private RestoreVersionCommandProvider restoreVersionCommandProvider;
-
-    private BasicFileMenuBuilderImpl basicFileMenuBuilder;
-
-    @Mock
     private DMNVFSService vfsService;
 
     @Mock
-    private CanvasFileExport canvasFileExport;
+    private EventSourceMock<NotificationEvent> notificationEventSourceMock;
 
     @Mock
-    private EditorContextProvider contextProvider;
-
-    private Promises promises = new SyncPromises();
-
-    @Captor
-    private ArgumentCaptor<Command> commandArgumentCaptor;
+    private CanvasFileExport canvasFileExport;
 
     @Captor
     private ArgumentCaptor<ServiceCallback<String>> serviceCallbackArgumentCaptor;
@@ -102,45 +68,17 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
     private ArgumentCaptor<Path> pathArgumentCaptor;
 
     @Override
-    public void setup() {
-        super.setup();
-
-        //Mock interaction of FileMenuBuilderImpl and BasicFileMenuBuilderImpl
-        this.basicFileMenuBuilder = new BasicFileMenuBuilderImpl(deletePopUpPresenter,
-                                                                 copyPopUpPresenter,
-                                                                 renamePopUpPresenter,
-                                                                 busyIndicatorView,
-                                                                 notificationEventSourceMock,
-                                                                 restoreVersionCommandProvider);
-        doAnswer(i -> {
-            DMNDiagramEditorTest.this.basicFileMenuBuilder.addSave(saveMenuItem);
-            return fileMenuBuilder;
-        }).when(fileMenuBuilder).addSave(any(Command.class));
-
-        doAnswer(i -> basicFileMenuBuilder.build()).when(fileMenuBuilder).build();
-    }
-
-    @Override
     protected AbstractDMNDiagramEditor getEditor() {
         return new DMNDiagramEditor(view,
-                                    fileMenuBuilder,
                                     placeManager,
                                     multiPageEditorContainerView,
-                                    changeTitleWidgetEventSourceMock,
-                                    notificationEventSourceMock,
-                                    onDiagramFocusEventSourceMock,
-                                    xmlEditorView,
-                                    sessionEditorPresenters,
-                                    sessionViewerPresenters,
-                                    dmnEditorMenuSessionItems,
-                                    errorPopupPresenter,
-                                    diagramClientErrorHandler,
-                                    clientTranslationService,
-                                    documentationView,
+                                    stunnerEditor,
                                     editorSearchIndex,
                                     searchBarComponent,
                                     sessionManager,
                                     sessionCommandManager,
+                                    documentationView,
+                                    clientTranslationService,
                                     refreshFormPropertiesEventSourceMock,
                                     decisionNavigatorDock,
                                     diagramPropertiesDock,
@@ -149,15 +87,16 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     layoutExecutor,
                                     dataTypesPage,
                                     clientDiagramService,
-                                    vfsService,
-                                    promises,
                                     feelInitializer,
                                     canvasFileExport,
+                                    new SyncPromises(),
                                     includedModelsPage,
                                     includedModelContext,
                                     guidedTourBridgeInitializer,
-                                    readonlyProvider,
                                     drdNameChanger,
+                                    notificationEventSourceMock,
+                                    vfsService,
+                                    readonlyProvider,
                                     lazyCanvasFocusUtils) {
 
             @Override
@@ -187,22 +126,6 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
     }
 
     @Test
-    @Override
-    public void testOnDataTypeEditModeToggleEnabled() {
-        super.testOnDataTypeEditModeToggleEnabled();
-
-        verify(saveMenuItem).setEnabled(eq(false));
-    }
-
-    @Test
-    @Override
-    public void testOnDataTypeEditModeToggleDisabled() {
-        super.testOnDataTypeEditModeToggleDisabled();
-
-        verify(saveMenuItem).setEnabled(eq(true));
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     public void testDoSave() {
         final PromiseMock promise = new PromiseMock();
@@ -213,12 +136,7 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
         reset(view);
 
-        verify(fileMenuBuilder).addSave(commandArgumentCaptor.capture());
-
-        final Command command = commandArgumentCaptor.getValue();
-        assertThat(command).isNotNull();
-
-        command.execute();
+        ((DMNDiagramEditor) editor).doSave();
 
         verify(vfsService).saveFile(pathArgumentCaptor.capture(),
                                     eq(CONTENT),
@@ -233,7 +151,7 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
 
         serviceCallback.onSuccess(CONTENT);
 
-        verify(editor).resetContentHash();
+        verify(editor, atLeastOnce()).resetContentHash();
         verify(notificationEventSourceMock).fire(any(NotificationEvent.class));
         verify(view).hideBusyIndicator();
     }

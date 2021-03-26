@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
-import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
+import org.kie.workbench.common.stunner.client.widgets.editor.DiagramEditorDock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;

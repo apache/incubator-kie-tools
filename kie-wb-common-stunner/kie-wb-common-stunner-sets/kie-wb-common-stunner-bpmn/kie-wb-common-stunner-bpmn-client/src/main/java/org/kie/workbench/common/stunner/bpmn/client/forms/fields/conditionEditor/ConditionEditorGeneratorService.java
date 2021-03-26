@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor;
 
+import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.Condition;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.GenerateConditionResult;
-import org.kie.workbench.common.stunner.kogito.api.Kogito;
-import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientService;
 
-@Kogito
-public interface ConditionEditorGeneratorService
-        extends KogitoClientService<Condition, GenerateConditionResult> {
+public interface ConditionEditorGeneratorService {
+
+    Promise<GenerateConditionResult> call(Condition input);
 
     default boolean isAvailable() {
         return true;

@@ -42,7 +42,7 @@ public class DMNToolboxControl extends AbstractToolboxControl {
     @Inject
     public DMNToolboxControl(final @Any @DMNFlowActionsToolbox ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories,
                              final @Any @DMNCommonActionsToolbox ManagedInstance<ActionsToolboxFactory> commonActionsToolboxFactories,
-                             final @Any @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                             final ReadOnlyProvider readOnlyProvider) {
         this.flowActionsToolboxFactories = flowActionsToolboxFactories;
         this.commonActionsToolboxFactories = commonActionsToolboxFactories;
         this.readonlyProvider = readOnlyProvider;

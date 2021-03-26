@@ -22,8 +22,8 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
-import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorExplorerScreen;
-import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
+import org.kie.workbench.common.stunner.client.widgets.screens.DiagramEditorExplorerScreen;
+import org.kie.workbench.common.stunner.forms.client.screens.DiagramEditorPropertiesScreen;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;

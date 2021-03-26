@@ -17,18 +17,17 @@ package org.kie.workbench.common.dmn.showcase.client.editor;
 
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
@@ -37,48 +36,36 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEv
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
-import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.session.DMNEditorSessionCommands;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
+import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
+import org.uberfire.lifecycle.OnClose;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 
 @DiagramEditor
 @ApplicationScoped
@@ -89,27 +76,19 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
     private static final PlaceRequest DMN_KOGITO_RUNTIME_SCREEN_DEFAULT_REQUEST = new DefaultPlaceRequest(AbstractDMNDiagramEditor.EDITOR_ID);
     private final ReadOnlyProvider readOnlyProvider;
     private final LazyCanvasFocusUtils lazyCanvasFocusUtils;
+    private final EditorSessionCommands commands;
 
     @Inject
     public DMNDiagramEditor(final View view,
-                            final FileMenuBuilder fileMenuBuilder,
                             final PlaceManager placeManager,
-                            final MultiPageEditorContainerView multiPageEditorContainerView,
-                            final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                            final Event<NotificationEvent> notificationEvent,
-                            final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                            final TextEditorView xmlEditorView,
-                            final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                            final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                            final DMNEditorMenuSessionItems menuSessionItems,
-                            final ErrorPopupPresenter errorPopupPresenter,
-                            final DiagramClientErrorHandler diagramClientErrorHandler,
-                            final ClientTranslationService translationService,
-                            final @DMNEditor DocumentationView<Diagram> documentationView,
+                            final MultiPageEditorContainerView containerView,
+                            final StunnerEditor stunnerEditor,
                             final DMNEditorSearchIndex editorSearchIndex,
                             final SearchBarComponent<DMNSearchableElement> searchBarComponent,
                             final SessionManager sessionManager,
                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                            final @DMNEditor DocumentationView documentationView,
+                            final ClientTranslationService translationService,
                             final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                             final DecisionNavigatorDock decisionNavigatorDock,
                             final DiagramEditorPropertiesDock diagramPropertiesDock,
@@ -124,28 +103,20 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
                             final IncludedModelsPage includedModelsPage,
                             final IncludedModelsContext includedModelContext,
                             final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
-                            final @DMNEditor ReadOnlyProvider readOnlyProvider,
                             final DRDNameChanger drdNameChanger,
-                            final LazyCanvasFocusUtils lazyCanvasFocusUtils) {
+                            final ReadOnlyProvider readOnlyProvider,
+                            final LazyCanvasFocusUtils lazyCanvasFocusUtils,
+                            final @DMNEditor DMNEditorSessionCommands commands) {
         super(view,
-              fileMenuBuilder,
               placeManager,
-              multiPageEditorContainerView,
-              changeTitleNotificationEvent,
-              notificationEvent,
-              onDiagramFocusEvent,
-              xmlEditorView,
-              editorSessionPresenterInstances,
-              viewerSessionPresenterInstances,
-              menuSessionItems,
-              errorPopupPresenter,
-              diagramClientErrorHandler,
-              translationService,
-              documentationView,
+              containerView,
+              stunnerEditor,
               editorSearchIndex,
               searchBarComponent,
               sessionManager,
               sessionCommandManager,
+              documentationView,
+              translationService,
               refreshFormPropertiesEvent,
               decisionNavigatorDock,
               diagramPropertiesDock,
@@ -163,6 +134,12 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
               drdNameChanger);
         this.readOnlyProvider = readOnlyProvider;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
+        this.commands = commands;
+    }
+
+    @PostConstruct
+    public void init() {
+        getView().setWidget(stunnerEditor.getView());
     }
 
     @Override
@@ -172,11 +149,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
 
     @Override
     public void onDiagramLoad() {
-        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
-
-        canvasHandler.ifPresent(c -> {
-            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
-            expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
+        Optional.ofNullable(stunnerEditor.getCanvasHandler()).ifPresent(c -> {
+            commands.bind(stunnerEditor.getSession());
             decisionNavigatorDock.reload();
             dataTypesPage.reload();
             lazyCanvasFocusUtils.releaseFocus();
@@ -184,6 +158,13 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
                 includedModelsPage.reload();
             }
         });
+    }
+
+    @OnClose
+    @Override
+    public void onClose() {
+        commands.clear();
+        super.onClose();
     }
 
     @Override
@@ -214,5 +195,9 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
     @Override
     public boolean isReadOnly() {
         return readOnlyProvider.isReadOnlyDiagram();
+    }
+
+    private DMNDiagramEditor.View getView() {
+        return (DMNDiagramEditor.View) getBaseEditorView();
     }
 }

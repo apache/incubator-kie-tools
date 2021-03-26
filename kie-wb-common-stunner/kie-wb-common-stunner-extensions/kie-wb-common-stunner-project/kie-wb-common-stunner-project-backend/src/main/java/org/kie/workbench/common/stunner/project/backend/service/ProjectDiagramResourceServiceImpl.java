@@ -16,19 +16,13 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.uberfire.backend.vfs.Path;
@@ -43,7 +37,7 @@ public class ProjectDiagramResourceServiceImpl implements ProjectDiagramResource
 
     private final RenameService renameService;
 
-    private final SaveAndRenameServiceImpl<ProjectDiagramResource, Metadata> saveAndRenameService;
+    private final SaveAndRenameServiceImpl<ProjectDiagram, Metadata> saveAndRenameService;
 
     public ProjectDiagramResourceServiceImpl() {
         this(null, null, null);
@@ -52,7 +46,7 @@ public class ProjectDiagramResourceServiceImpl implements ProjectDiagramResource
     @Inject
     public ProjectDiagramResourceServiceImpl(final ProjectDiagramService projectDiagramService,
                                              final RenameService renameService,
-                                             final SaveAndRenameServiceImpl<ProjectDiagramResource, Metadata> saveAndRenameService) {
+                                             final SaveAndRenameServiceImpl<ProjectDiagram, Metadata> saveAndRenameService) {
         this.projectDiagramService = projectDiagramService;
         this.renameService = renameService;
         this.saveAndRenameService = saveAndRenameService;
@@ -65,27 +59,10 @@ public class ProjectDiagramResourceServiceImpl implements ProjectDiagramResource
 
     @Override
     public Path save(final Path path,
-                     final ProjectDiagramResource resource,
+                     final ProjectDiagram diagram,
                      final Metadata metadata,
                      final String comment) {
-
-        final DiagramType type = resource.getType();
-        final Map<DiagramType, Function<ProjectDiagramResource, Path>> saveOperations = new HashMap<>();
-
-        saveOperations.put(DiagramType.PROJECT_DIAGRAM, (r) -> projectDiagramService.save(path, getProjectDiagram(r), metadata, comment));
-        saveOperations.put(DiagramType.XML_DIAGRAM, (r) -> projectDiagramService.saveAsXml(path, getXmlDiagram(r), metadata, comment));
-
-        return saveOperations.get(type).apply(resource);
-    }
-
-    private ProjectDiagram getProjectDiagram(final ProjectDiagramResource resource) {
-        final String message = "A ProjectDiagramResource with type = " + resource.getType() + " must have a valid projectDiagram.";
-        return resource.projectDiagram().orElseThrow(() -> new IllegalStateException(message));
-    }
-
-    private String getXmlDiagram(final ProjectDiagramResource resource) {
-        final String message = "A ProjectDiagramResource with type = " + resource.getType() + " must have a valid xmlDiagram.";
-        return resource.xmlDiagram().orElseThrow(() -> new IllegalStateException(message));
+        return projectDiagramService.save(path, diagram, metadata, comment);
     }
 
     @Override
@@ -99,8 +76,8 @@ public class ProjectDiagramResourceServiceImpl implements ProjectDiagramResource
     public Path saveAndRename(final Path path,
                               final String newFileName,
                               final Metadata metadata,
-                              final ProjectDiagramResource resource,
+                              final ProjectDiagram diagram,
                               final String comment) {
-        return saveAndRenameService.saveAndRename(path, newFileName, metadata, resource, comment);
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, diagram, comment);
     }
 }

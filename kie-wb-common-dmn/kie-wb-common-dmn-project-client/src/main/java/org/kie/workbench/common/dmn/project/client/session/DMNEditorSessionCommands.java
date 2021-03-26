@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLayoutCommand;
 import org.kie.workbench.common.dmn.project.client.session.command.SaveDiagramSessionCommand;
 import org.kie.workbench.common.dmn.project.client.validation.DMNValidateSessionCommand;
+import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
@@ -40,7 +41,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchG
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
-import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 
 @Dependent
 @DMNEditor

@@ -24,7 +24,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.stunner.kogito.client.editor.DiagramEditorCore;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
@@ -37,8 +36,6 @@ public class ProjectDiagramEditorView
     @DataField
     private ResizeFlowPanel editorPanel;
 
-    private DiagramEditorCore presenter;
-
     protected ProjectDiagramEditorView() {
         //CDI proxy
     }
@@ -48,12 +45,6 @@ public class ProjectDiagramEditorView
         this.editorPanel = editorPanel;
     }
 
-    @Override
-    public void init(final DiagramEditorCore presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
     protected void onAttach() {
         super.onAttach();
         if (getElement().getParentElement() != null) {
@@ -64,20 +55,19 @@ public class ProjectDiagramEditorView
     }
 
     @Override
-    public void onResize() {
-        editorPanel.onResize();
+    public void setWidget(IsWidget widget) {
+        editorPanel.clear();
+        editorPanel.add(widget);
     }
 
     @Override
-    public void setWidget(final IsWidget widget) {
-        editorPanel.clear();
-        editorPanel.add(widget);
+    public void onResize() {
+        editorPanel.onResize();
     }
 
     @PreDestroy
     public void destroy() {
         editorPanel.clear();
         editorPanel.removeFromParent();
-        presenter = null;
     }
 }

@@ -159,7 +159,10 @@ public class WorkItemDefinitionProjectClientService implements WorkItemDefinitio
                 break;
             }
         }
-        final String msg = null != root.getMessage() ? root.getMessage() : root.toString();
-        return "Cannot load Work Item definitions. Cause: " + msg;
+        String msg = "Cannot load Work Item definitions.";
+        if (null != root) {
+            msg = "Cause: " + (null != root.getMessage() ? root.getMessage() : root.toString());
+        }
+        return msg;
     }
 }

@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.dmn.project.client.session;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLayoutCommand;
 import org.kie.workbench.common.dmn.project.client.session.command.SaveDiagramSessionCommand;
 import org.kie.workbench.common.dmn.project.client.validation.DMNValidateSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
@@ -35,21 +38,33 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSes
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
-import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
-import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommandsTest;
 import org.mockito.InOrder;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DMNEditorSessionCommandsTest extends EditorSessionCommandsTest {
+public class DMNEditorSessionCommandsTest {
 
-    @Override
-    protected EditorSessionCommands makeEditorSessionCommands() {
-        return new DMNEditorSessionCommands(commands);
+    @Mock
+    private ManagedClientSessionCommands commands;
+
+    @Mock
+    private ClientSession session;
+
+    private DMNEditorSessionCommands editorSessionCommands;
+
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setup() {
+        this.editorSessionCommands = new DMNEditorSessionCommands(commands);
+        when(commands.register(any(Class.class))).thenReturn(commands);
     }
 
     @Test
@@ -78,10 +93,139 @@ public class DMNEditorSessionCommandsTest extends EditorSessionCommandsTest {
     }
 
     @Test
-    @Override
+    public void testBind() {
+        editorSessionCommands.bind(session);
+
+        verify(commands).bind(session);
+    }
+
+    @Test
+    public void testClear() {
+        editorSessionCommands.clear();
+
+        verify(commands).clearCommands();
+    }
+
+    @Test
+    public void testDestory() {
+        editorSessionCommands.destroy();
+
+        verify(commands).destroy();
+    }
+
+    @Test
+    public void testGetCommands() {
+        assertEquals(commands, editorSessionCommands.getCommands());
+    }
+
+    @Test
+    public void testGetVisitGraphSessionCommand() {
+        editorSessionCommands.getVisitGraphSessionCommand();
+
+        verify(commands).get(eq(VisitGraphSessionCommand.class));
+    }
+
+    @Test
+    public void testGetSwitchGridSessionCommand() {
+        editorSessionCommands.getSwitchGridSessionCommand();
+
+        verify(commands).get(eq(SwitchGridSessionCommand.class));
+    }
+
+    @Test
+    public void testGetClearSessionCommand() {
+        editorSessionCommands.getClearSessionCommand();
+
+        verify(commands).get(eq(ClearSessionCommand.class));
+    }
+
+    @Test
+    public void testGetDeleteSelectionSessionCommand() {
+        editorSessionCommands.getDeleteSelectionSessionCommand();
+
+        verify(commands).get(eq(DeleteSelectionSessionCommand.class));
+    }
+
+    @Test
+    public void testGetUndoSessionCommand() {
+        editorSessionCommands.getUndoSessionCommand();
+
+        verify(commands).get(eq(UndoSessionCommand.class));
+    }
+
+    @Test
+    public void testGetRedoSessionCommand() {
+        editorSessionCommands.getRedoSessionCommand();
+
+        verify(commands).get(eq(RedoSessionCommand.class));
+    }
+
+    @Test
+    public void testGetExportToPngSessionCommand() {
+        editorSessionCommands.getExportToPngSessionCommand();
+
+        verify(commands).get(eq(ExportToPngSessionCommand.class));
+    }
+
+    @Test
+    public void testGetExportToJpgSessionCommand() {
+        editorSessionCommands.getExportToJpgSessionCommand();
+
+        verify(commands).get(eq(ExportToJpgSessionCommand.class));
+    }
+
+    @Test
+    public void testGetExportToPdfSessionCommand() {
+        editorSessionCommands.getExportToPdfSessionCommand();
+
+        verify(commands).get(eq(ExportToPdfSessionCommand.class));
+    }
+
+    @Test
+    public void testGetExportToSvgSessionCommand() {
+        editorSessionCommands.getExportToSvgSessionCommand();
+
+        verify(commands).get(eq(ExportToSvgSessionCommand.class));
+    }
+
+    @Test
+    public void testGetExportToRawSessionCommand() {
+        editorSessionCommands.getExportToRawFormatSessionCommand();
+
+        verify(commands).get(eq(ExportToRawFormatSessionCommand.class));
+    }
+
+    @Test
+    public void testGetCopySelectionSessionCommand() {
+        editorSessionCommands.getCopySelectionSessionCommand();
+
+        verify(commands).get(eq(CopySelectionSessionCommand.class));
+    }
+
+    @Test
+    public void testGetPasteSelectionSessionCommand() {
+        editorSessionCommands.getPasteSelectionSessionCommand();
+
+        verify(commands).get(eq(PasteSelectionSessionCommand.class));
+    }
+
+    @Test
+    public void testGetCutSelectionSessionCommand() {
+        editorSessionCommands.getCutSelectionSessionCommand();
+
+        verify(commands).get(eq(CutSelectionSessionCommand.class));
+    }
+
+    @Test
+    public void testGetSaveDiagramSessionCommand() {
+        editorSessionCommands.getSaveDiagramSessionCommand();
+
+        verify(commands).get(eq(org.kie.workbench.common.stunner.core.client.session.command.impl.SaveDiagramSessionCommand.class));
+    }
+
+    @Test
     public void testGetValidateSessionCommand() {
         editorSessionCommands.getValidateSessionCommand();
-
         verify(commands).get(eq(DMNValidateSessionCommand.class));
     }
 }

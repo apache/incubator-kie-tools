@@ -29,8 +29,8 @@ import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLa
 import org.kie.workbench.common.dmn.project.client.session.DMNEditorSessionCommands;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
-import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
-import org.kie.workbench.common.stunner.kogito.client.editor.ValidationAction;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractDiagramEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.project.client.editor.ValidationAction;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.model.menu.MenuItem;

@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.showcase.client.editor;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
@@ -23,12 +22,10 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
@@ -37,40 +34,30 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEv
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
-import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.showcase.client.navigator.DMNVFSService;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -79,9 +66,6 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.util.URIUtil;
@@ -105,24 +89,15 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
 
     @Inject
     public DMNDiagramEditor(final View view,
-                            final FileMenuBuilder fileMenuBuilder,
                             final PlaceManager placeManager,
-                            final MultiPageEditorContainerView multiPageEditorContainerView,
-                            final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                            final Event<NotificationEvent> notificationEvent,
-                            final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                            final TextEditorView xmlEditorView,
-                            final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                            final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                            final DMNEditorMenuSessionItems menuSessionItems,
-                            final ErrorPopupPresenter errorPopupPresenter,
-                            final DiagramClientErrorHandler diagramClientErrorHandler,
-                            final ClientTranslationService translationService,
-                            final @DMNEditor DocumentationView<Diagram> documentationView,
+                            final MultiPageEditorContainerView containerView,
+                            final StunnerEditor stunnerEditor,
                             final DMNEditorSearchIndex editorSearchIndex,
                             final SearchBarComponent<DMNSearchableElement> searchBarComponent,
                             final SessionManager sessionManager,
                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                            final @DMNEditor DocumentationView documentationView,
+                            final ClientTranslationService translationService,
                             final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                             final DecisionNavigatorDock decisionNavigatorDock,
                             final DiagramEditorPropertiesDock diagramPropertiesDock,
@@ -131,35 +106,27 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                             final DataTypesPage dataTypesPage,
                             final KogitoClientDiagramService diagramServices,
-                            final DMNVFSService vfsService,
-                            final Promises promises,
                             final MonacoFEELInitializer feelInitializer,
                             final CanvasFileExport canvasFileExport,
+                            final Promises promises,
                             final IncludedModelsPage includedModelsPage,
-                            final IncludedModelsContext includedModelsContext,
+                            final IncludedModelsContext includedModelContext,
                             final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
-                            final @DMNEditor ReadOnlyProvider readOnlyProvider,
                             final DRDNameChanger drdNameChanger,
+                            final Event<NotificationEvent> notificationEvent,
+                            final DMNVFSService vfsService,
+                            final ReadOnlyProvider readOnlyProvider,
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils) {
         super(view,
-              fileMenuBuilder,
               placeManager,
-              multiPageEditorContainerView,
-              changeTitleNotificationEvent,
-              notificationEvent,
-              onDiagramFocusEvent,
-              xmlEditorView,
-              editorSessionPresenterInstances,
-              viewerSessionPresenterInstances,
-              menuSessionItems,
-              errorPopupPresenter,
-              diagramClientErrorHandler,
-              translationService,
-              documentationView,
+              containerView,
+              stunnerEditor,
               editorSearchIndex,
               searchBarComponent,
               sessionManager,
               sessionCommandManager,
+              documentationView,
+              translationService,
               refreshFormPropertiesEvent,
               decisionNavigatorDock,
               diagramPropertiesDock,
@@ -172,7 +139,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               canvasFileExport,
               promises,
               includedModelsPage,
-              includedModelsContext,
+              includedModelContext,
               guidedTourBridgeInitializer,
               drdNameChanger);
         this.notificationEvent = notificationEvent;
@@ -192,16 +159,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     }
 
     @Override
-    protected void makeMenuBar() {
-        if (!menuBarInitialized) {
-            getFileMenuBuilder().addSave(this::doSave);
-            getMenuSessionItems().populateMenu(getFileMenuBuilder());
-            makeAdditionalStunnerMenus(getFileMenuBuilder());
-            menuBarInitialized = true;
-        }
-    }
-
-    @Override
     @WorkbenchMenu
     //AppFormer does not generate menus when the @WorkbenchMenu annotation is on the super class
     public void getMenus(final Consumer<Menus> menusConsumer) {
@@ -218,19 +175,12 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
 
     @Override
     public void onDiagramLoad() {
-        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
-
-        canvasHandler.ifPresent(c -> {
-            final Metadata metadata = c.getDiagram().getMetadata();
-            metadata.setPath(makeMetadataPath(metadata));
-
-            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
-            expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
-            decisionNavigatorDock.reload();
-            dataTypesPage.reload();
-            includedModelsPage.reload();
-            lazyCanvasFocusUtils.releaseFocus();
-        });
+        final Metadata metadata = stunnerEditor.getCanvasHandler().getDiagram().getMetadata();
+        metadata.setPath(makeMetadataPath(metadata));
+        decisionNavigatorDock.reload();
+        dataTypesPage.reload();
+        includedModelsPage.reload();
+        lazyCanvasFocusUtils.releaseFocus();
     }
 
     private Path makeMetadataPath(final Metadata metadata) {
@@ -241,8 +191,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     }
 
     @SuppressWarnings("unchecked")
-    private void doSave() {
-        final Path path = getCanvasHandler().getDiagram().getMetadata().getPath();
+    void doSave() {
+        final Path path = stunnerEditor.getDiagram().getMetadata().getPath();
 
         getContent().then(xml -> {
             vfsService.saveFile(path,
@@ -252,12 +202,12 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                                     public void onSuccess(final String xml) {
                                         resetContentHash();
                                         notificationEvent.fire(new NotificationEvent(INSTANCE.ItemSavedSuccessfully()));
-                                        hideLoadingViews();
+                                        getBaseEditorView().hideBusyIndicator();
                                     }
 
                                     @Override
                                     public void onError(final ClientRuntimeError error) {
-                                        onSaveError(error);
+                                        stunnerEditor.handleError(error);
                                     }
                                 });
             return promises.resolve();

@@ -37,7 +37,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.editors.types.DataObject;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
@@ -126,7 +125,7 @@ public class DataTypeListView implements DataTypeList.View {
                             final ImportDataObjectModal importDataObjectModal,
                             final Event<FlashMessage> flashMessageEvent,
                             final TranslationService translationService,
-                            final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                            final ReadOnlyProvider readOnlyProvider) {
         this.listItems = listItems;
         this.addButton = addButton;
         this.addButtonPlaceholder = addButtonPlaceholder;

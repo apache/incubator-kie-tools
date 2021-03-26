@@ -20,7 +20,6 @@
 
   <inherits name="org.kie.workbench.common.dmn.DMNClient"/>
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
-  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
 
   <source path="client"/>
 

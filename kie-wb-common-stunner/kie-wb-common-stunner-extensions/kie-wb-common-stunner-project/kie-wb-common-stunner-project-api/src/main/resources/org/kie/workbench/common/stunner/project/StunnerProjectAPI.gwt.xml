@@ -22,7 +22,6 @@
 
   <inherits name="org.kie.workbench.common.stunner.core.StunnerBackendApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
-  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoAPI"/>
 
   <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
   <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>

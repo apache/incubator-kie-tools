@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -22,11 +23,12 @@ import java.util.function.Supplier;
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
@@ -43,10 +45,12 @@ import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
+import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
-import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -54,20 +58,16 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
-import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditor;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -76,10 +76,8 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.GetContent;
 import org.uberfire.lifecycle.GetPreview;
 import org.uberfire.lifecycle.IsDirty;
@@ -91,22 +89,30 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.lifecycle.SetContent;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static elemental2.dom.DomGlobal.setTimeout;
 
-public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
+public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerPresenter<Diagram> {
+
+    public interface View extends BaseEditorView,
+                                  RequiresResize,
+                                  ProvidesResize,
+                                  IsWidget {
+
+        void setWidget(IsWidget widget);
+    }
 
     public static final String PERSPECTIVE_ID = "AuthoringPerspective";
-
     public static final String EDITOR_ID = "DMNDiagramEditor";
-
     //Editor tabs: [0] Main editor, [1] Documentation, [2] Data-Types
     public static final int DATA_TYPES_PAGE_INDEX = 2;
 
+    protected final StunnerEditor stunnerEditor;
     protected final SessionManager sessionManager;
     protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    protected final DocumentationView documentationView;
+    protected final ClientTranslationService translationService;
     protected final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     protected final DecisionNavigatorDock decisionNavigatorDock;
     protected final DiagramEditorPropertiesDock diagramPropertiesDock;
@@ -126,24 +132,15 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final DRDNameChanger drdNameChanger;
 
     public AbstractDMNDiagramEditor(final View view,
-                                    final FileMenuBuilder fileMenuBuilder,
                                     final PlaceManager placeManager,
-                                    final MultiPageEditorContainerView multiPageEditorContainerView,
-                                    final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                                    final Event<NotificationEvent> notificationEvent,
-                                    final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                                    final TextEditorView xmlEditorView,
-                                    final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                                    final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                    final DMNEditorMenuSessionItems menuSessionItems,
-                                    final ErrorPopupPresenter errorPopupPresenter,
-                                    final DiagramClientErrorHandler diagramClientErrorHandler,
-                                    final ClientTranslationService translationService,
-                                    final DocumentationView<Diagram> documentationView,
+                                    final MultiPageEditorContainerView containerView,
+                                    final StunnerEditor stunnerEditor,
                                     final DMNEditorSearchIndex editorSearchIndex,
                                     final SearchBarComponent<DMNSearchableElement> searchBarComponent,
                                     final SessionManager sessionManager,
                                     final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                    final DocumentationView documentationView,
+                                    final ClientTranslationService translationService,
                                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                     final DecisionNavigatorDock decisionNavigatorDock,
                                     final DiagramEditorPropertiesDock diagramPropertiesDock,
@@ -159,23 +156,12 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final IncludedModelsContext includedModelContext,
                                     final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                     final DRDNameChanger drdNameChanger) {
-        super(view,
-              fileMenuBuilder,
-              placeManager,
-              multiPageEditorContainerView,
-              changeTitleNotificationEvent,
-              notificationEvent,
-              onDiagramFocusEvent,
-              xmlEditorView,
-              editorSessionPresenterInstances,
-              viewerSessionPresenterInstances,
-              menuSessionItems,
-              errorPopupPresenter,
-              diagramClientErrorHandler,
-              translationService,
-              documentationView);
+        super(view, placeManager, containerView);
+        this.stunnerEditor = stunnerEditor;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
+        this.documentationView = documentationView;
+        this.translationService = translationService;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.decisionNavigatorDock = decisionNavigatorDock;
         this.diagramPropertiesDock = diagramPropertiesDock;
@@ -198,44 +184,48 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     @OnStartup
     @SuppressWarnings("unused")
     public void onStartup(final PlaceRequest place) {
-        superDoStartUp(place);
-
+        init(place);
+        stunnerEditor.setReadOnly(this.isReadOnly());
         decisionNavigatorDock.init(PERSPECTIVE_ID);
         diagramPropertiesDock.init(PERSPECTIVE_ID);
         diagramPreviewAndExplorerDock.init(PERSPECTIVE_ID);
         guidedTourBridgeInitializer.init();
     }
 
-    void superDoStartUp(final PlaceRequest place) {
-        super.doStartUp(place);
+    @Override
+    protected Supplier<Diagram> getContentSupplier() {
+        return stunnerEditor::getDiagram;
     }
 
     @Override
-    public void initialiseKieEditorForSession(final Diagram diagram) {
-        superInitialiseKieEditorForSession(diagram);
+    protected Integer getCurrentContentHash() {
+        return stunnerEditor.getCurrentContentHash();
+    }
 
-        getWidget().getMultiPage().addPage(dataTypesPage);
-        if (includedModelContext.isIncludedModelChannel()) {
-            getWidget().getMultiPage().addPage(includedModelsPage);
-        }
-        setupEditorSearchIndex();
-        setupSearchComponent();
+    @SuppressWarnings("unchecked")
+    public void addDocumentationPage(final Diagram diagram) {
+        Optional.ofNullable(documentationView.isEnabled())
+                .filter(Boolean.TRUE::equals)
+                .ifPresent(enabled -> {
+                    final String label = translationService.getValue(StunnerWidgetsConstants.Documentation);
+                    addPage(new DocumentationPage(documentationView.initialize(diagram),
+                                                  label,
+                                                  () -> {
+                                                  },
+                                                  //check the DocumentationPage is active, the index is 2
+                                                  () -> Objects.equals(2, getSelectedTabIndex())));
+                });
     }
 
     private void setupSessionHeaderContainer() {
-        Optional.ofNullable(getSessionPresenter()).ifPresent(s -> {
-            drdNameChanger.setSessionPresenterView(s.getView());
-            s.getView().setSessionHeaderContainer(getWidget(drdNameChanger.getElement()));
-        });
+        SessionDiagramPresenter presenter = stunnerEditor.getPresenter();
+        drdNameChanger.setSessionPresenterView(presenter.getView());
+        presenter.getView().setSessionHeaderContainer(getWidget(drdNameChanger.getElement()));
     }
 
     private void setupEditorSearchIndex() {
-        editorSearchIndex.setCurrentAssetHashcodeSupplier(getHashcodeSupplier());
+        editorSearchIndex.setCurrentAssetHashcodeSupplier(stunnerEditor::getCurrentContentHash);
         editorSearchIndex.setIsDataTypesTabActiveSupplier(getIsDataTypesTabActiveSupplier());
-    }
-
-    Supplier<Integer> getHashcodeSupplier() {
-        return this::getCurrentDiagramHash;
     }
 
     Supplier<Boolean> getIsDataTypesTabActiveSupplier() {
@@ -261,18 +251,29 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         getWidget().getMultiPage().selectPage(DATA_TYPES_PAGE_INDEX);
     }
 
-    void superInitialiseKieEditorForSession(final Diagram diagram) {
-        super.initialiseKieEditorForSession(diagram);
-    }
-
-    @Override
     public void open(final Diagram diagram,
-                     final Viewer.Callback callback) {
+                     final SessionPresenter.SessionPresenterCallback callback) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
         feelInitializer.initializeFEELEditor();
-        super.open(diagram, new Viewer.Callback() {
+        stunnerEditor.open(diagram, new SessionPresenter.SessionPresenterCallback() {
+            @Override
+            public void afterCanvasInitialized() {
+                callback.afterCanvasInitialized();
+            }
+
+            @Override
+            public void onOpen(Diagram diagram) {
+                callback.onOpen(diagram);
+            }
+
+            @Override
+            public void afterSessionOpened() {
+                callback.afterSessionOpened();
+            }
+
             @Override
             public void onSuccess() {
+                initialiseKieEditorForSession(diagram);
                 setupSessionHeaderContainer();
                 callback.onSuccess();
             }
@@ -284,16 +285,33 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         });
     }
 
+    public void initialiseKieEditorForSession(final Diagram diagram) {
+        resetEditorPages();
+        onDiagramLoad();
+        resetContentHash();
+        addDocumentationPage(diagram);
+        getBaseEditorView().hideBusyIndicator();
+        getWidget().getMultiPage().addPage(dataTypesPage);
+        if (includedModelContext.isIncludedModelChannel()) {
+            getWidget().getMultiPage().addPage(includedModelsPage);
+        }
+        setupEditorSearchIndex();
+        setupSearchComponent();
+    }
+
+    protected void onDiagramLoad() {
+
+    }
+
     @OnOpen
     @SuppressWarnings("unused")
     public void onOpen() {
-        super.doOpen();
     }
 
     @OnClose
     @SuppressWarnings("unused")
     public void onClose() {
-        superOnClose();
+        stunnerEditor.close();
 
         decisionNavigatorDock.destroy();
         decisionNavigatorDock.resetContent();
@@ -304,27 +322,18 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         dataTypesPage.disableShortcuts();
     }
 
-    void superOnClose() {
-        super.doClose();
-    }
-
     @OnFocus
     @SuppressWarnings("unused")
     public void onFocus() {
-        superDoFocus();
-        onDiagramLoad();
+        stunnerEditor.focus();
         dataTypesPage.onFocus();
         dataTypesPage.enableShortcuts();
-    }
-
-    void superDoFocus() {
-        super.doFocus();
     }
 
     @OnLostFocus
     @SuppressWarnings("unused")
     public void onLostFocus() {
-        super.doLostFocus();
+        stunnerEditor.lostFocus();
         dataTypesPage.onLostFocus();
     }
 
@@ -345,12 +354,11 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     @Override
+    protected void buildMenuBar() {
+    }
+
+    @Override
     protected void makeMenuBar() {
-        if (!menuBarInitialized) {
-            getMenuSessionItems().populateMenu(getFileMenuBuilder());
-            makeAdditionalStunnerMenus(getFileMenuBuilder());
-            menuBarInitialized = true;
-        }
     }
 
     @Override
@@ -363,11 +371,6 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     @SuppressWarnings("unused")
     public boolean onMayClose() {
         return super.mayClose();
-    }
-
-    @Override
-    public String getEditorIdentifier() {
-        return EDITOR_ID;
     }
 
     public void onDataTypeEditModeToggle(final DataTypeEditModeToggleEvent event) {
@@ -400,12 +403,12 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
     protected void onEditExpressionEvent(final EditExpressionEvent event) {
         searchBarComponent.disableSearch();
-        if (isSameSession(event.getSession())) {
+        if (isSameSession(stunnerEditor.getSession(), event.getSession())) {
             final DMNSession session = sessionManager.getCurrentSession();
             final ExpressionEditorView.Presenter expressionEditor = session.getExpressionEditor();
             sessionCommandManager.execute(session.getCanvasHandler(),
                                           new NavigateToExpressionEditorCommand(expressionEditor,
-                                                                                getSessionPresenter(),
+                                                                                stunnerEditor.getPresenter(),
                                                                                 sessionManager,
                                                                                 sessionCommandManager,
                                                                                 refreshFormPropertiesEvent,
@@ -416,10 +419,17 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         }
     }
 
+    private static boolean isSameSession(ClientSession s1, ClientSession s2) {
+        return null != s1 && null != s2 && s1.equals(s2);
+    }
+
     @Override
     @GetContent
     public Promise getContent() {
-        return diagramServices.transform(getEditor().getEditorProxy().getContentSupplier().get());
+        if (stunnerEditor.isXmlEditorEnabled()) {
+            return promises.resolve(stunnerEditor.getXmlEditorView().getContent());
+        }
+        return diagramServices.transform(stunnerEditor.getDiagram());
     }
 
     @Override
@@ -432,33 +442,35 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     @SetContent
     public Promise setContent(final String path,
                               final String value) {
+        // Close current editor, if any.
+        stunnerEditor.close();
         Promise promise =
                 promises.create((success, failure) -> {
-                    superOnClose();
+                    getBaseEditorView().showLoading();
                     diagramServices.transform(path,
                                               value,
                                               new ServiceCallback<Diagram>() {
 
                                                   @Override
                                                   public void onSuccess(final Diagram diagram) {
-                                                      AbstractDMNDiagramEditor.this.open(diagram,
-                                                                                         new Viewer.Callback() {
-                                                                                             @Override
-                                                                                             public void onSuccess() {
-                                                                                                 success.onInvoke((Object) null);
-                                                                                             }
+                                                      open(diagram,
+                                                           new SessionPresenter.SessionPresenterCallback() {
+                                                               @Override
+                                                               public void onSuccess() {
+                                                                   success.onInvoke((Object) null);
+                                                               }
 
-                                                                                             @Override
-                                                                                             public void onError(ClientRuntimeError error) {
-                                                                                                 AbstractDMNDiagramEditor.this.getEditor().onLoadError(error);
-                                                                                                 failure.onInvoke(error);
-                                                                                             }
-                                                                                         });
+                                                               @Override
+                                                               public void onError(ClientRuntimeError error) {
+                                                                   onEditorError(error);
+                                                                   failure.onInvoke(error);
+                                                               }
+                                                           });
                                                   }
 
                                                   @Override
                                                   public void onError(final ClientRuntimeError error) {
-                                                      AbstractDMNDiagramEditor.this.getEditor().onLoadError(error);
+                                                      onEditorError(error);
                                                       failure.onInvoke(error);
                                                   }
                                               });
@@ -467,14 +479,20 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         return promise;
     }
 
+    private void onEditorError(ClientRuntimeError error) {
+        getBaseEditorView().hideBusyIndicator();
+        stunnerEditor.handleError(error);
+        resetEditorPages();
+    }
+
     @Override
     public void resetContentHash() {
-        setOriginalContentHash(getCurrentDiagramHash());
+        setOriginalContentHash(stunnerEditor.getCurrentContentHash());
     }
 
     @GetPreview
     public Promise getPreview() {
-        final CanvasHandler canvasHandler = getCanvasHandler();
+        final CanvasHandler canvasHandler = stunnerEditor.getCanvasHandler();
         if (canvasHandler != null) {
             return Promise.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
         } else {

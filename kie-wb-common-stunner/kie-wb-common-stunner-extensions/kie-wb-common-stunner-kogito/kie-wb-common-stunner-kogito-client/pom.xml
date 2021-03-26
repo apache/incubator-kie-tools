@@ -106,10 +106,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-kogito-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
     <dependency>
@@ -120,6 +116,12 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
+    </dependency>
+
+    <!-- Appformer - Kogito bridge -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
     </dependency>
 
     <!-- Kogito -->

@@ -34,4 +34,7 @@ public interface FormsClientConstants {
 
     @TranslationKey(defaultValue = "Generate forms")
     String FormsGenerateTaskForm = "forms.generateTaskForm";
+
+    @TranslationKey(defaultValue = "Properties")
+    String FormsPropertiesDockTitle = "docks.forms.title";
 }

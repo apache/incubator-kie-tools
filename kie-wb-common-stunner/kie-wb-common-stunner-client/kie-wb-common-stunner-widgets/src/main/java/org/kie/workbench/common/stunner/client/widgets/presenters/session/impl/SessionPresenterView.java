@@ -31,7 +31,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
@@ -65,10 +64,6 @@ public class SessionPresenterView extends Composite
 
     protected static final int DELAY = 3000;
     protected static final int NOTIFICATION_LOCK_TIMEOUT = DELAY + 1000;
-
-    @Inject
-    @DataField
-    private Label loadingPanel;
 
     @Inject
     @DataField
@@ -125,8 +120,6 @@ public class SessionPresenterView extends Composite
             }
         });
 
-        showLoading(false);
-
         //getting initial palette position
         paletteInitialTop = palettePanel.getAbsoluteTop();
         paletteInitialLeft = palettePanel.getAbsoluteLeft();
@@ -172,7 +165,9 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
-    public IsWidget getSessionHeaderContainer() { return sessionHeaderContainer.getWidget(0); }
+    public IsWidget getSessionHeaderContainer() {
+        return sessionHeaderContainer.getWidget(0);
+    }
 
     @Override
     public IsWidget getPaletteWidget() {
@@ -291,12 +286,6 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
-    public SessionPresenterView showLoading(final boolean loading) {
-        loadingPanel.setVisible(loading);
-        return this;
-    }
-
-    @Override
     public void onResize() {
         palettePanel.getElement().getStyle().setTop(paletteInitialTop + sessionContainer.getElement().getScrollTop() + sessionHeaderHeight,
                                                     Style.Unit.PX);
@@ -320,7 +309,6 @@ public class SessionPresenterView extends Composite
     public void destroy() {
         handlerRegistration.removeHandler();
         handlerRegistration = null;
-        loadingPanel.removeFromParent();
         toolbarPanel.clear();
         toolbarPanel.removeFromParent();
         canvasPanel.clear();

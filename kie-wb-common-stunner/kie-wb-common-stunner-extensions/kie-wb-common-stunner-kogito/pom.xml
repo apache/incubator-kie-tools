@@ -28,10 +28,9 @@
   <packaging>pom</packaging>
   <name>Kie Workbench - Common - Stunner - Kogito</name>
   <description>Kie Workbench - Common - Stunner - Kogito</description>
+
   <modules>
-    <module>kie-wb-common-stunner-kogito-api</module>
     <module>kie-wb-common-stunner-kogito-client</module>
-    <module>kie-wb-common-stunner-kogito-runtime-common</module>
   </modules>
 
 </project>

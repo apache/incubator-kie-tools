@@ -16,9 +16,7 @@
 package org.kie.workbench.common.dmn.project.client.editor;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -34,7 +32,6 @@ import elemental2.dom.HTMLElement;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
@@ -52,43 +49,29 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
-import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.services.shared.resources.PerspectiveIds;
-import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
-import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
+import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
-import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
-import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorCore;
-import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorProxy;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
-import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -98,18 +81,14 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnLostFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static elemental2.dom.DomGlobal.setTimeout;
@@ -137,21 +116,14 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     private final DMNEditorSearchIndex editorSearchIndex;
     private final SearchBarComponent<DMNSearchableElement> searchBarComponent;
     private final MonacoFEELInitializer feelInitializer;
-    private final ReadOnlyProvider readOnlyProvider;
     private final DRDNameChanger drdNameChanger;
     private final LazyCanvasFocusUtils lazyCanvasFocusUtils;
-    private final DMNDiagramsSession dmnDiagramsSession;
+    private final DMNDiagramsSession diagramsSession;
 
     @Inject
     public DMNDiagramEditor(final View view,
-                            final TextEditorView xmlEditorView,
-                            final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                            final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                             final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                             final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
-                            final Event<NotificationEvent> notificationEvent,
-                            final ErrorPopupPresenter errorPopupPresenter,
-                            final DiagramClientErrorHandler diagramClientErrorHandler,
                             final @DMNEditor DocumentationView documentationView,
                             final DMNDiagramResourceType resourceType,
                             final DMNEditorMenuSessionItems menuSessionItems,
@@ -159,6 +131,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final ClientTranslationService translationService,
                             final @DMNEditor ClientProjectDiagramService projectDiagramServices,
                             final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
+                            final StunnerEditor stunnerEditor,
                             final SessionManager sessionManager,
                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
@@ -170,26 +143,20 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final DMNEditorSearchIndex editorSearchIndex,
                             final SearchBarComponent<DMNSearchableElement> searchBarComponent,
                             final MonacoFEELInitializer feelInitializer,
-                            final @DMNEditor ReadOnlyProvider readOnlyProvider,
                             final DRDNameChanger drdNameChanger,
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils,
-                            final DMNDiagramsSession dmnDiagramsSession) {
+                            final DMNDiagramsSession diagramsSession) {
         super(view,
-              xmlEditorView,
-              editorSessionPresenterInstances,
-              viewerSessionPresenterInstances,
               onDiagramFocusEvent,
               onDiagramLostFocusEvent,
-              notificationEvent,
-              errorPopupPresenter,
-              diagramClientErrorHandler,
               documentationView,
               resourceType,
               menuSessionItems,
               projectMessagesListener,
               translationService,
               projectDiagramServices,
-              projectDiagramResourceServiceCaller);
+              projectDiagramResourceServiceCaller,
+              stunnerEditor);
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
@@ -201,10 +168,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
         this.feelInitializer = feelInitializer;
-        this.readOnlyProvider = readOnlyProvider;
         this.drdNameChanger = drdNameChanger;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
-        this.dmnDiagramsSession = dmnDiagramsSession;
+        this.diagramsSession = diagramsSession;
     }
 
     @Override
@@ -217,93 +183,22 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     }
 
     private void setupSessionHeaderContainer() {
-        Optional.ofNullable(getSessionPresenter()).ifPresent(s -> {
-            drdNameChanger.setSessionPresenterView(s.getView());
-            s.getView().setSessionHeaderContainer(getWidget(drdNameChanger.getElement()));
-        });
-    }
-
-    @Override
-    protected AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> makeCore(final View view,
-                                                                                                                                                                    final TextEditorView xmlEditorView,
-                                                                                                                                                                    final Event<NotificationEvent> notificationEvent,
-                                                                                                                                                                    final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                                                                                                                                                                    final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                                                                                                                                                    final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
-                                                                                                                                                                    final ErrorPopupPresenter errorPopupPresenter,
-                                                                                                                                                                    final DiagramClientErrorHandler diagramClientErrorHandler,
-                                                                                                                                                                    final ClientTranslationService translationService) {
-        return new ProjectDiagramEditorCore(view,
-                                            xmlEditorView,
-                                            notificationEvent,
-                                            editorSessionPresenterInstances,
-                                            viewerSessionPresenterInstances,
-                                            menuSessionItems,
-                                            errorPopupPresenter,
-                                            diagramClientErrorHandler,
-                                            translationService) {
-
-            /**
-             * Stunner validates diagrams before saving them. If a {@see Violation.Type.ERROR} is reported by the underlying
-             * validation implementation Stunner prevents saving of the diagram. DMN's validation reports errors for states
-             * that can be successfully saved as they represent a partially authored diagram. Therefore override Stunners
-             * behavior and prevent saving of DMN diagrams containing errors.
-             * @param continueSaveOnceValid
-             * @return
-             */
-            @Override
-            protected ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>> getSaveAfterValidationCallback(final Command continueSaveOnceValid) {
-                return new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
-                    @Override
-                    public void onSuccess() {
-                        continueSaveOnceValid.execute();
-                    }
-
-                    @Override
-                    public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
-                        continueSaveOnceValid.execute();
-                    }
-                };
-            }
-
-            @Override
-            protected int getDiagramHashCode() {
-                if (Objects.isNull(dmnDiagramsSession.getDMNDiagrams()) ||
-                        dmnDiagramsSession.getDMNDiagrams().isEmpty()) {
-                    return super.getDiagramHashCode();
-                }
-                int hash = 0;
-                for (final DMNDiagramTuple dmnDiagram : dmnDiagramsSession.getDMNDiagrams()) {
-                    hash = HashUtil.combineHashCodes(hash,
-                                                     dmnDiagram.getStunnerDiagram().hashCode(),
-                                                     dmnDiagram.getDMNDiagram().hashCode());
-                }
-                return hash;
-            }
-        };
+        SessionDiagramPresenter presenter = getStunnerEditor().getPresenter();
+        drdNameChanger.setSessionPresenterView(presenter.getView());
+        presenter.getView().setSessionHeaderContainer(getWidget(drdNameChanger.getElement()));
     }
 
     @OnStartup
     public void onStartup(final ObservablePath path,
                           final PlaceRequest place) {
-        superDoStartUp(path, place);
+        super.doStartUp(path, place);
         decisionNavigatorDock.init(PerspectiveIds.LIBRARY);
-    }
-
-    @Override
-    protected String getDiagramParsingErrorMessage(final DiagramParsingException e) {
-        return getTranslationService().getValue(DMNProjectClientConstants.DMNDiagramParsingErrorMessage);
     }
 
     @Override
     public void initialiseKieEditorForSession(final ProjectDiagram diagram) {
         onDiagramLoad();
 
-        /*
-            Method below is doing a lot of things: title, documentation page, etc.
-            It also sets the original hash (used for detecting Diagram's changes)
-            It is recommended to set the original hash after onDiagramLoad, that may have modified the Diagram
-         */
         superInitialiseKieEditorForSession(diagram);
 
         kieView.getMultiPage().addPage(dataTypesPage);
@@ -315,19 +210,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         setupSearchComponent();
     }
 
-    @Override
-    protected void updateOriginalHash() {
-        if (Objects.isNull(originalHash) || Objects.equals(originalHash, 0)) {
-            setOriginalHash(getCurrentDiagramHash());
-        }
-    }
-
     void superInitialiseKieEditorForSession(final ProjectDiagram diagram) {
         super.initialiseKieEditorForSession(diagram);
-    }
-
-    Integer getOriginalHash() {
-        return originalHash;
     }
 
     @Override
@@ -377,7 +261,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     }
 
     public void onRefreshFormPropertiesEvent(final @Observes RefreshFormPropertiesEvent event) {
-        searchBarComponent.disableSearch();
+        if (isSameSession()) {
+            searchBarComponent.disableSearch();
+        }
     }
 
     Supplier<Boolean> getIsDataTypesTabActiveSupplier() {
@@ -389,6 +275,32 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     Supplier<Integer> getGetCurrentContentHashSupplier() {
         return this::getCurrentContentHash;
+    }
+
+    @Override
+    protected Integer getCurrentContentHash() {
+        if (Objects.isNull(diagramsSession.getDMNDiagrams()) ||
+                diagramsSession.getDMNDiagrams().isEmpty()) {
+            return super.getCurrentContentHash();
+        }
+        int hash = 0;
+        for (final DMNDiagramTuple dmnDiagram : diagramsSession.getDMNDiagrams()) {
+            hash = HashUtil.combineHashCodes(hash,
+                                             dmnDiagram.getStunnerDiagram().hashCode(),
+                                             dmnDiagram.getDMNDiagram().hashCode());
+        }
+        return hash;
+    }
+
+    /**
+     * Stunner validates diagrams before saving them. If a {@see Violation.Type.ERROR} is reported by the underlying
+     * validation implementation Stunner prevents saving of the diagram. DMN's validation reports errors for states
+     * that can be successfully saved as they represent a partially authored diagram. Therefore override Stunners
+     * behavior and prevent saving of DMN diagrams containing errors.
+     */
+    @Override
+    public boolean isSaveAllowedAfterValidationFailed(Violation.Type maxSeverity) {
+        return true;
     }
 
     void setupSearchComponent() {
@@ -404,12 +316,12 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     public void open(final ProjectDiagram diagram,
-                     final Viewer.Callback callback) {
+                     final SessionPresenter.SessionPresenterCallback callback) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
 
         feelInitializer.initializeFEELEditor();
 
-        super.open(diagram, new Viewer.Callback() {
+        super.open(diagram, new SessionPresenter.SessionPresenterCallback() {
             @Override
             public void onSuccess() {
                 setupSessionHeaderContainer();
@@ -425,43 +337,43 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @OnOpen
     public void onOpen() {
-        super.doOpen();
     }
 
     @OnClose
     @Override
     public void onClose() {
-        superDoClose();
+        super.doClose();
         dataTypesPage.disableShortcuts();
         super.onClose();
     }
 
-    @Override
-    public void onDiagramLoad() {
-        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
-
-        canvasHandler.ifPresent(c -> {
-            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
+    void onDiagramLoad() {
+        if (null != getStunnerEditor().getCanvasHandler()) {
+            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) getStunnerEditor().getSession()).getExpressionEditor();
             expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
             decisionNavigatorDock.reload();
             dataTypesPage.reload();
             includedModelsPage.reload();
             lazyCanvasFocusUtils.releaseFocus();
-        });
+        }
     }
 
     @OnFocus
     public void onFocus() {
-        superDoFocus();
-        onDiagramLoad();
-        dataTypesPage.onFocus();
-        dataTypesPage.enableShortcuts();
+        if (!getStunnerEditor().isClosed()) {
+            getStunnerEditor().focus();
+            onDiagramLoad();
+            dataTypesPage.onFocus();
+            dataTypesPage.enableShortcuts();
+        }
     }
 
     @OnLostFocus
     public void onLostFocus() {
-        super.doLostFocus();
-        dataTypesPage.onLostFocus();
+        if (!getStunnerEditor().isClosed()) {
+            getStunnerEditor().lostFocus();
+            dataTypesPage.onLostFocus();
+        }
     }
 
     @Override
@@ -490,17 +402,12 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @OnMayClose
     public boolean onMayClose() {
-        return super.mayClose(getCurrentDiagramHash());
+        return super.mayClose(getStunnerEditor().getCurrentContentHash());
     }
 
     @Override
     public String getEditorIdentifier() {
         return EDITOR_ID;
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return readOnlyProvider.isReadOnlyDiagram();
     }
 
     public void onDataTypeEditModeToggle(final @Observes DataTypeEditModeToggleEvent event) {
@@ -522,11 +429,11 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     void onEditExpressionEvent(final @Observes EditExpressionEvent event) {
         searchBarComponent.disableSearch();
         if (isSameSession(event.getSession())) {
-            final DMNSession session = sessionManager.getCurrentSession();
+            final DMNSession session = (DMNSession) getStunnerEditor().getSession();
             final ExpressionEditorView.Presenter expressionEditor = session.getExpressionEditor();
             sessionCommandManager.execute(session.getCanvasHandler(),
                                           new NavigateToExpressionEditorCommand(expressionEditor,
-                                                                                getSessionPresenter(),
+                                                                                getStunnerEditor().getPresenter(),
                                                                                 sessionManager,
                                                                                 sessionCommandManager,
                                                                                 refreshFormPropertiesEvent,
@@ -535,19 +442,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                                                                                 event.getHasName(),
                                                                                 event.isOnlyVisualChangeAllowed()));
         }
-    }
-
-    void superDoFocus() {
-        super.doFocus();
-    }
-
-    void superDoClose() {
-        super.doClose();
-    }
-
-    void superDoStartUp(final ObservablePath path,
-                        final PlaceRequest place) {
-        super.doStartUp(path, place);
     }
 
     ElementWrapperWidget<?> getWidget(final HTMLElement element) {

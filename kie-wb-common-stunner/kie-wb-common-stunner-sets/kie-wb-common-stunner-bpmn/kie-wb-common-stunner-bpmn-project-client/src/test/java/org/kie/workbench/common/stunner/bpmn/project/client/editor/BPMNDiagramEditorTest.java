@@ -18,51 +18,40 @@ package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
-
-import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
+import org.kie.workbench.common.stunner.client.widgets.screens.DiagramEditorExplorerScreen;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
-import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
-import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorExplorerScreen;
-import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
+import org.kie.workbench.common.stunner.core.validation.Violation;
+import org.kie.workbench.common.stunner.forms.client.screens.DiagramEditorPropertiesScreen;
 import org.kie.workbench.common.stunner.project.client.docks.StunnerDocksHandler;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorCore;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
-import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorProxy;
-import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
-import org.kie.workbench.common.stunner.project.diagram.editor.ProjectDiagramResource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDocks;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -70,9 +59,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
-
-    @Mock
-    private PlaceRequest currentPlace;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -117,100 +103,63 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     public void setUp() {
         super.setUp();
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-    }
-
-    @Override
-    protected AbstractDiagramEditorMenuSessionItems getMenuSessionItems() {
-        return bpmnMenuSessionItems;
-    }
-
-    @Override
-    protected BPMNDiagramResourceType mockResourceType() {
-        final BPMNDiagramResourceType resourceType = mock(BPMNDiagramResourceType.class);
-        when(resourceType.getSuffix()).thenReturn("bpmn");
-        when(resourceType.getShortName()).thenReturn("Business Process");
-        return resourceType;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected AbstractProjectDiagramEditor createDiagramEditor() {
+        BPMNDiagramResourceType bpmnDiagramResourceType = mock(BPMNDiagramResourceType.class);
+        when(bpmnDiagramResourceType.getSuffix()).thenReturn("bpmn");
+        when(bpmnDiagramResourceType.getShortName()).thenReturn("bpmn");
+        when(stunnerEditor.close()).thenReturn(stunnerEditor);
+        doAnswer(invocation -> {
+            diagramEditor.initialiseKieEditorForSession(diagram);
+            ((Viewer.Callback) invocation.getArguments()[1]).onSuccess();
+            return null;
+        }).when(stunnerEditor).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));
         diagramEditor = spy(new BPMNDiagramEditor(view,
-                                                  xmlEditorView,
-                                                  sessionEditorPresenters,
-                                                  sessionViewerPresenters,
                                                   onDiagramFocusEvent,
                                                   onDiagramLostFocusEvent,
-                                                  notificationEvent,
-                                                  errorPopupPresenter,
-                                                  diagramClientErrorHandler,
                                                   documentationView,
-                                                  (BPMNDiagramResourceType) getResourceType(),
-                                                  bpmnMenuSessionItems,
+                                                  bpmnDiagramResourceType,
+                                                  mock(BPMNProjectEditorMenuSessionItems.class),
                                                   projectMessagesListener,
                                                   translationService,
-                                                  clientProjectDiagramService,
+                                                  projectDiagramServices,
                                                   projectDiagramResourceServiceCaller,
+                                                  stunnerEditor,
                                                   uberfireDocks,
                                                   stunnerDocksHandler) {
             {
-                docks = defaultEditorDock;
-                perspectiveManager = perspectiveManagerMock;
                 fileMenuBuilder = BPMNDiagramEditorTest.this.fileMenuBuilder;
-                workbenchContext = BPMNDiagramEditorTest.this.workbenchContext;
                 projectController = BPMNDiagramEditorTest.this.projectController;
+                workbenchContext = BPMNDiagramEditorTest.this.workbenchContext;
                 versionRecordManager = BPMNDiagramEditorTest.this.versionRecordManager;
-                alertsButtonMenuItemBuilder = BPMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
-                place = BPMNDiagramEditorTest.this.currentPlace;
                 kieView = BPMNDiagramEditorTest.this.kieView;
                 overviewWidget = BPMNDiagramEditorTest.this.overviewWidget;
-                notification = BPMNDiagramEditorTest.this.notificationEvent;
-                placeManager = BPMNDiagramEditorTest.this.placeManager;
-                changeTitleNotification = BPMNDiagramEditorTest.this.changeTitleNotificationEvent;
+                saveAndRenameCommandBuilder = BPMNDiagramEditorTest.this.saveAndRenameCommandBuilder;
+                changeTitleNotification = BPMNDiagramEditorTest.this.changeTitleNotification;
+                notification = BPMNDiagramEditorTest.this.notification;
                 savePopUpPresenter = BPMNDiagramEditorTest.this.savePopUpPresenter;
-            }
-
-            @Override
-            protected AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> makeCore(final AbstractProjectDiagramEditor.View view,
-                                                                                                                                                                            final TextEditorView xmlEditorView,
-                                                                                                                                                                            final Event<NotificationEvent> notificationEvent,
-                                                                                                                                                                            final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                                                                                                                                                                            final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                                                                                                                                                            final AbstractDiagramEditorMenuSessionItems<?> menuSessionItems,
-                                                                                                                                                                            final ErrorPopupPresenter errorPopupPresenter,
-                                                                                                                                                                            final DiagramClientErrorHandler diagramClientErrorHandler,
-                                                                                                                                                                            final ClientTranslationService translationService) {
-                presenterCore = spy(super.makeCore(view,
-                                                   xmlEditorView,
-                                                   notificationEvent,
-                                                   editorSessionPresenterInstances,
-                                                   viewerSessionPresenterInstances,
-                                                   menuSessionItems,
-                                                   errorPopupPresenter,
-                                                   diagramClientErrorHandler,
-                                                   translationService));
-                this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilderMock;
-                return presenterCore;
-            }
-
-            @Override
-            protected boolean isReadOnly() {
-                return BPMNDiagramEditorTest.this.isReadOnly;
-            }
-
-            @Override
-            protected void log(Level level,
-                               String message) {
-                //avoid GWT log initialization.
+                docks = BPMNDiagramEditorTest.this.docks;
+                perspectiveManager = BPMNDiagramEditorTest.this.perspectiveManager;
             }
         });
-        return diagramEditor;
     }
 
     @Override
     public void testOpen() {
-        super.testOpen();
-        // TODO (Kogito): verify(presenter).addDocumentationPage(diagram);
+        tested.open(diagram);
+        verify(diagramEditor).addDocumentationPage(eq(diagram));
+    }
+
+    @Test
+    public void testFocus() {
+        diagramEditor.onFocus();
+        verify(stunnerEditor, times(1)).focus();
+        verify(stunnerEditor, never()).lostFocus();
+    }
+
+    @Test
+    public void testLostFocus() {
+        diagramEditor.onLostFocus();
+        verify(stunnerEditor, times(1)).lostFocus();
+        verify(stunnerEditor, never()).focus();
     }
 
     @Test
@@ -221,7 +170,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         String perspectiveIdentifier = "Test Perspective ID";
 
-        when(perspectiveManagerMock.getCurrentPerspective()).thenReturn(currentPerspective);
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(currentPerspective);
         when(currentPerspective.getIdentifier()).thenReturn(perspectiveIdentifier);
 
         when(stunnerDocksHandler.provideDocks(perspectiveIdentifier)).thenReturn(stunnerDocks);
@@ -240,11 +189,11 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     public void testAddDocumentationPage() {
         when(documentationView.isEnabled()).thenReturn(Boolean.TRUE);
-        when(translationService.getValue(StunnerProjectClientConstants.DOCUMENTATION)).thenReturn(DOC_LABEL);
+        when(translationService.getValue(StunnerWidgetsConstants.Documentation)).thenReturn(DOC_LABEL);
         when(documentationView.initialize(diagram)).thenReturn(documentationView);
         ArgumentCaptor<DocumentationPage> documentationPageCaptor = ArgumentCaptor.forClass(DocumentationPage.class);
-        presenter.addDocumentationPage(diagram);
-        verify(translationService).getValue(StunnerProjectClientConstants.DOCUMENTATION);
+        diagramEditor.addDocumentationPage(diagram);
+        verify(translationService).getValue(StunnerWidgetsConstants.Documentation);
         verify(kieView).addPage(documentationPageCaptor.capture());
         DocumentationPage documentationPage = documentationPageCaptor.getValue();
         assertEquals(documentationPage.getDocumentationView(), documentationView);
@@ -259,7 +208,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         String perspectiveIdentifier = "Test Perspective ID";
 
-        when(perspectiveManagerMock.getCurrentPerspective()).thenReturn(currentPerspective);
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(currentPerspective);
         when(currentPerspective.getIdentifier()).thenReturn(perspectiveIdentifier);
 
         when(stunnerDocksHandler.provideDocks(perspectiveIdentifier)).thenReturn(stunnerDocks);
@@ -271,15 +220,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         when(explorerPlace.getIdentifier()).thenReturn(DiagramEditorExplorerScreen.SCREEN_ID);
 
         diagramEditor.onOpen();
-        verify(uberfireDocks, times(1)).open(propertiesDock);
-
-        diagramEditor.closePropertiesDocks();
-        verify(uberfireDocks, times(1)).close(propertiesDock);
-
-        diagramEditor.onScreenMaximizedEvent(maximizedEvent);
-        diagramEditor.onScreenMinimizedEvent(minimizedEvent);
-
-        // properties should not be opened since it was closed before maximized
         verify(uberfireDocks, times(1)).open(propertiesDock);
 
         diagramEditor.openPropertiesDocks();
@@ -295,15 +235,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         diagramEditor.onOpen();
         verify(uberfireDocks, times(4)).open(propertiesDock);
 
-        diagramEditor.closeExplorerDocks();
-        verify(uberfireDocks, times(1)).close(explorerDock);
-
-        diagramEditor.onScreenMaximizedEvent(maximizedEvent);
-        diagramEditor.onScreenMinimizedEvent(minimizedEvent);
-
-        // explore should not be opened since it was closed before maximized
-        verify(uberfireDocks, times(0)).open(explorerDock);
-
         diagramEditor.openExplorerDocks();
         verify(uberfireDocks, times(1)).open(explorerDock);
 
@@ -314,5 +245,12 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         // explore should be opened since it was opened before maximized
         verify(uberfireDocks, times(2)).open(explorerDock);
+    }
+
+    @Test
+    public void testDontSaveIfValidationErrors() {
+        assertTrue(diagramEditor.isSaveAllowedAfterValidationFailed(Violation.Type.INFO));
+        assertTrue(diagramEditor.isSaveAllowedAfterValidationFailed(Violation.Type.WARNING));
+        assertFalse(diagramEditor.isSaveAllowedAfterValidationFailed(Violation.Type.ERROR));
     }
 }
