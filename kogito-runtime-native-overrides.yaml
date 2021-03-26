@@ -31,13 +31,13 @@ modules:
   install:
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.jq
   - name: org.kie.kogito.logging
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.graalvm.installer
     version: "20.2.0-java-11"
   - name: org.kie.kogito.s2i.core
   - name: org.kie.kogito.runtime.native
-
 
 ## s2i build . quay.io/kiegroup/kogito-builder:latest kogitotest:10.0 -e RUNTIME_TYPE=quarkus -e NATIVE=true --runtime-image quay.io/kiegroup/kogito-runtime-native:latest
 ## where "." is the sources dir, ie: /data/dev/sources/kogito-examples/rules-quarkus-helloworld

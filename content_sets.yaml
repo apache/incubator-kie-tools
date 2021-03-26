@@ -14,3 +14,4 @@
 x86_64:
   - rhel-8-for-x86_64-baseos-rpms
   - rhel-8-for-x86_64-appstream-rpms
+  - rhocp-4.7-for-rhel-8-x86_64-rpms

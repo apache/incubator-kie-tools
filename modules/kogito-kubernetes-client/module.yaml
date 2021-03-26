@@ -4,7 +4,3 @@ version: "2.0.0-snapshot"
 
 execute:
   - script: configure
-
-modules:
-  install:
-    - name: org.kie.kogito.jq

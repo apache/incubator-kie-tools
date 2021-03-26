@@ -31,6 +31,7 @@ modules:
   install:
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.jq
   - name: org.kie.kogito.logging
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.openjdk

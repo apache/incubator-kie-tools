@@ -137,7 +137,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/1.0-SNAPSHOT/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
+                        curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/v1.2/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
                         tar -xzvf cekit-image-validator-runner.tgz
                         chmod +x cekit-image-validator-runner
                     '''

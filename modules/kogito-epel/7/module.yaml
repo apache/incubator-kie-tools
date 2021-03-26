@@ -3,4 +3,4 @@ name: org.kie.kogito.epel
 version: "7"
 
 execute:
-  - script: configure
+  - script: configure.sh
