@@ -14892,7 +14892,7 @@ uniforms-patternfly@4.1.2:
     "@patternfly/react-core" "4.84.4"
     "@patternfly/react-icons" "4.7.22"
 
-uniforms-patternfly@4.2.1:
+uniforms-patternfly@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.2.1.tgz#8e0d0fb2c3f973eb0623c601b4d676994d943c36"
   integrity sha512-RsewsUuoh8uKQuc1CsaNRjVtO50AhDS4z6bdhal5WF5bqUFZkDlqk925wKqOOwmOvT3na4aej9U03uIZewQ2iA==

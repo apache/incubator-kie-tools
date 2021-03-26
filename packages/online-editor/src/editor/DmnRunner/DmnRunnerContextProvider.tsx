@@ -21,144 +21,116 @@ import { DmnRunnerContext } from "./DmnRunnerContext";
 import JSONSchemaBridge from "../../common/Bridge";
 import { DmnRunner } from "../../common/DmnRunner";
 import { DmnRunnerModal } from "./DmnRunnerModal";
-import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
-import { StateControl } from "@kogito-tooling/editor/dist/channel";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { useModals } from "../../common/ModalContext";
+import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { diff } from "deep-object-diff";
 
 const DMN_RUNNER_POLLING_TIME = 500;
 export const THROTTLING_TIME = 200;
 
-export enum DmnRunnerStatus {
-  DISABLED,
-  AVAILABLE,
-  RUNNING,
-  NOT_RUNNING,
-  STOPPED
-}
-
-type Editor =
-  | (EditorApi & {
-      getStateControl(): StateControl;
-      getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
-    })
-  | null;
-
 interface Props {
   children: React.ReactNode;
-  editor?: Editor;
+  editor?: EmbeddedEditorRef;
   isEditorReady: boolean;
 }
 
 export function DmnRunnerContextProvider(props: Props) {
-  const [isDmnRunnerDrawerOpen, setDmnRunnerDrawerOpen] = useState(false);
-  const [isDmnRunnerModalOpen, setDmnRunnerModalOpen] = useState(false);
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState();
-  const context = useContext(GlobalContext);
-  const modals = useModals();
+  const globalContext = useContext(GlobalContext);
+  const [status, setStatus] = useState(DmnRunnerStatus.UNAVAILABLE);
+  const [jsonSchemaBridge, setJsonSchemaBridge] = useState<JSONSchemaBridge>();
 
-  // This state saves the current status of the Dmn Runner server on the user machine.
-  const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
-  const [dmnRunnerJsonSchemaBridge, setDmnRunnerJsonSchemaBridge] = useState<JSONSchemaBridge>();
+  const updateJsonSchemaBridge = useCallback(() => {
+    return props.editor
+      ?.getContent()
+      .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
+      .then(newJsonSchemaBridge => {
+        const propertiesDifference = diff(
+          jsonSchemaBridge?.schema.definitions.InputSet.properties ?? {},
+          newJsonSchemaBridge?.schema.definitions.InputSet.properties ?? {}
+        );
+        Object.keys(propertiesDifference).forEach(property => {
+          delete formData?.[property];
+        });
+        setJsonSchemaBridge(newJsonSchemaBridge);
+      })
+  }, [props.editor]);
 
-  const setJsonSchemaBridge = useCallback(
-    () =>
-      props.editor
-        ?.getContent()
-        .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
-        .then(jsonSchemaBridge => {
-          const propertiesDifference = diff(
-            dmnRunnerJsonSchemaBridge?.schema.definitions.InputSet.properties ?? {},
-            jsonSchemaBridge?.schema.definitions.InputSet.properties ?? {}
-          );
-          Object.keys(propertiesDifference).forEach(property => {
-            delete formData?.[property];
-          });
-          setDmnRunnerJsonSchemaBridge(jsonSchemaBridge);
-        }),
-    [props.editor, dmnRunnerJsonSchemaBridge, formData]
-  );
+  useEffect(() => {
+    if (globalContext.file.fileExtension === "dmn") {
+      setStatus(DmnRunnerStatus.AVAILABLE);
+    }
+  }, [globalContext.file.fileExtension]);
 
   // Pooling to detect either if DMN Runner is running or has stopped
   useEffect(() => {
-    if (context.file.fileExtension === "dmn") {
-      let detectDmnRunner: number | undefined;
-      if (dmnRunnerStatus !== DmnRunnerStatus.RUNNING) {
-        detectDmnRunner = window.setInterval(() => {
-          DmnRunner.checkServer().then(() => {
-            setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
-            if (isDmnRunnerModalOpen) {
-              setDmnRunnerDrawerOpen(true);
-            }
-            window.clearInterval(detectDmnRunner);
-          });
-        }, DMN_RUNNER_POLLING_TIME);
-
-        return () => window.clearInterval(detectDmnRunner);
-      }
-
-      let detectCrashesOrStops: number | undefined;
-      if (dmnRunnerStatus === DmnRunnerStatus.RUNNING) {
-        detectCrashesOrStops = window.setInterval(() => {
-          DmnRunner.checkServer().catch(() => {
-            setDmnRunnerStatus(DmnRunnerStatus.STOPPED);
-            setDmnRunnerModalOpen(true);
-            setDmnRunnerDrawerOpen(false);
-            window.clearInterval(detectCrashesOrStops);
-          });
-        }, DMN_RUNNER_POLLING_TIME);
-
-        // After the detection of the DMN Runner, set the schema for the first time
-        if (props.isEditorReady) {
-          setJsonSchemaBridge();
-        }
-
-        return () => window.clearInterval(detectCrashesOrStops);
-      }
-    }
-  }, [props.editor, dmnRunnerStatus, props.isEditorReady, modals.openModal]);
-
-  useEffect(() => {
-    if (isDmnRunnerModalOpen) {
-      modals.openModal(
-        <DmnRunnerModal
-          dmnRunnerStatus={dmnRunnerStatus}
-          setDmnRunnerStatus={setDmnRunnerStatus}
-          setDmnRunnerModalOpen={setDmnRunnerModalOpen}
-        />
-      );
-    }
-  }, [dmnRunnerStatus, setDmnRunnerStatus, isDmnRunnerModalOpen]);
-
-  // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
-  useEffect(() => {
-    if (!props.editor || context.file.fileExtension !== "dmn") {
+    if (status === DmnRunnerStatus.UNAVAILABLE) {
       return;
     }
 
-    const subscription = props.editor.getStateControl().subscribe(() => setJsonSchemaBridge());
+    let detectDmnRunner: number | undefined;
+    if (status !== DmnRunnerStatus.RUNNING) {
+      detectDmnRunner = window.setInterval(() => {
+        DmnRunner.checkServer().then(() => {
+          setStatus(DmnRunnerStatus.RUNNING);
+          if (isModalOpen) {
+            setDrawerOpen(true);
+          }
+          window.clearInterval(detectDmnRunner);
+        });
+      }, DMN_RUNNER_POLLING_TIME);
 
-    return () => {
-      props.editor?.getStateControl().unsubscribe(subscription);
-    };
-  }, [props.editor, context.file.fileExtension, setJsonSchemaBridge]);
+      return () => window.clearInterval(detectDmnRunner);
+    }
+
+    let detectCrashesOrStops: number | undefined;
+    if (status === DmnRunnerStatus.RUNNING) {
+      detectCrashesOrStops = window.setInterval(() => {
+        DmnRunner.checkServer().catch(() => {
+          setStatus(DmnRunnerStatus.STOPPED);
+          setModalOpen(true);
+          setDrawerOpen(false);
+          window.clearInterval(detectCrashesOrStops);
+        });
+      }, DMN_RUNNER_POLLING_TIME);
+
+      // After the detection of the DMN Runner, set the schema for the first time
+      if (props.isEditorReady) {
+        updateJsonSchemaBridge();
+      }
+
+      return () => window.clearInterval(detectCrashesOrStops);
+    }
+  }, [props.editor, status, props.isEditorReady]);
+
+  // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
+  useEffect(() => {
+    if (!props.editor || status === DmnRunnerStatus.UNAVAILABLE) {
+      return;
+    }
+
+    const subscription = props.editor.getStateControl().subscribe(updateJsonSchemaBridge);
+    return () => props.editor?.getStateControl().unsubscribe(subscription);
+  }, [props.editor, status, updateJsonSchemaBridge]);
 
   return (
     <DmnRunnerContext.Provider
       value={{
-        status: dmnRunnerStatus,
-        setStatus: setDmnRunnerStatus,
-        jsonSchemaBridge: dmnRunnerJsonSchemaBridge,
-        isDrawerOpen: isDmnRunnerDrawerOpen,
-        setDrawerOpen: setDmnRunnerDrawerOpen,
-        isModalOpen: isDmnRunnerModalOpen,
-        setModalOpen: setDmnRunnerModalOpen,
+        status,
+        setStatus,
+        jsonSchemaBridge,
+        isDrawerOpen,
+        setDrawerOpen,
+        isModalOpen,
+        setModalOpen,
         formData,
         setFormData
       }}
     >
       {props.children}
+      <DmnRunnerModal />
     </DmnRunnerContext.Provider>
   );
 }

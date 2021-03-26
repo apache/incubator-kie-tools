@@ -17,20 +17,28 @@
 import { Button, Tooltip } from "@patternfly/react-core";
 import { ConnectedIcon, DisconnectedIcon } from "@patternfly/react-icons";
 import * as React from "react";
-import { useCallback } from "react";
-import { DmnRunnerStatus } from "./DmnRunnerContextProvider";
+import { useCallback, useMemo } from "react";
+import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
 
 export function DmnRunnerButton() {
   const dmnRunner = useDmnRunner();
 
   const onDmnRunner = useCallback(() => {
-    if (dmnRunner.status === DmnRunnerStatus.RUNNING) {
-      dmnRunner.setDrawerOpen(true);
-    } else {
+    if (dmnRunner.status !== DmnRunnerStatus.RUNNING) {
       dmnRunner.setModalOpen(true);
+    } else {
+      if (dmnRunner.isDrawerOpen) {
+        dmnRunner.setDrawerOpen(false);
+      } else {
+        dmnRunner.setDrawerOpen(true);
+      }
     }
-  }, [dmnRunner.status, dmnRunner.setDrawerOpen, dmnRunner.setModalOpen]);
+  }, [dmnRunner.status, dmnRunner.isDrawerOpen]);
+
+  const shouldBlinkDmnRunnerConnectedIcon = useMemo(() => {
+    return dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerOpen;
+  }, [dmnRunner.status, dmnRunner.isDrawerOpen]);
 
   return (
     <Button
@@ -44,14 +52,16 @@ export function DmnRunnerButton() {
           <Tooltip
             key={"connected"}
             content={"The DMN Runner is connected"}
-            flipBehavior={["bottom"]}
-            children={<ConnectedIcon />}
+            flipBehavior={["left"]}
+            distance={20}
+            children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
           />
         ) : (
           <Tooltip
             key={"disconnected"}
             content={"The DMN Runner is not connected"}
-            flipBehavior={["bottom"]}
+            flipBehavior={["left"]}
+            distance={20}
             children={<DisconnectedIcon />}
           />
         )

@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
-import { DmnRunnerStatus } from "./DmnRunnerContextProvider";
+import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import JSONSchemaBridge from "../../common/Bridge";
+import { useContext } from "react";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
@@ -31,7 +31,11 @@ export interface DmnRunnerContextType {
   setFormData: React.Dispatch<any>;
 }
 
-export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({} as any);
+export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
+  status: DmnRunnerStatus.UNAVAILABLE,
+  isDrawerOpen: false,
+  isModalOpen: false
+} as any);
 
 export function useDmnRunner() {
   return useContext(DmnRunnerContext);

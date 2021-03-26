@@ -255,7 +255,6 @@
 
 .kogito--editor__dmn-runner {
   display: flex;
-  height: calc(100vh - 108px);
 }
 
 @media screen and (min-width: 1200px) {
@@ -348,4 +347,20 @@
 .kogito--editor__dmn-runner-modal-footer-alert-success {
   display: flex;
   justify-content: space-between;
+}
+
+@keyframes flickerAnimation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.66;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.blink-opacity {
+  animation: flickerAnimation 2s infinite cubic-bezier(0.7, 0, 0.3, 1);
 }

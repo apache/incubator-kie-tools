@@ -50,7 +50,7 @@ function distinctSchema(schema: Record<string, any>) {
   return schema;
 }
 
-function extractValue(...xs: (boolean | null | string | undefined)[]) {
+function extractValue(...xs: Array<(boolean | null | string | undefined)>) {
   return xs.reduce((x, y) =>
     x === false || x === null ? '' : x !== true && x !== undefined ? x : y,
   );
