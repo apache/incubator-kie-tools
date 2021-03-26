@@ -53,6 +53,14 @@ func errorForInfraNotReady(service api.KogitoService, infraName string, conditio
 	}
 }
 
+func errorForImageStreamNotReady(err error) reconciliationError {
+	return reconciliationError{
+		reconciliationInterval: reconciliationAfterOneMinute,
+		reason:                 api.ImageStreamNotReadyReason,
+		innerError:             err,
+	}
+}
+
 func errorForMessaging(err error) reconciliationError {
 	return reconciliationError{
 		reconciliationInterval: reconciliationAfterThirty,

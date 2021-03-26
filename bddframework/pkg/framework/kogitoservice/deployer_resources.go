@@ -186,7 +186,7 @@ func (s *serviceDeployer) setOwner(resources map[reflect.Type][]resource.Kuberne
 func (s *serviceDeployer) getKogitoServiceImage(imageHandler infrastructure.ImageHandler, instance api.KogitoService) (string, error) {
 	image, err := imageHandler.ResolveImage()
 	if err != nil {
-		return "", err
+		return "", errorForImageStreamNotReady(err)
 	}
 	if len(image) > 0 {
 		return image, nil

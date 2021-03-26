@@ -21,6 +21,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/version"
 	imgv1 "github.com/openshift/api/image/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"os"
 	"strings"
@@ -100,6 +101,9 @@ func (i *imageHandler) CreateImageStreamIfNotExists() (*imgv1.ImageStream, error
 // Can be empty if on OpenShift and the ImageStream is not ready.
 func (i *imageHandler) ResolveImage() (string, error) {
 	if i.Client.IsOpenshift() {
+		if err := i.validateImageStreamTagStatus(); err != nil {
+			return "", err
+		}
 		// the image is on an ImageStreamTag object
 		ist, err := openshift.ImageStreamC(i.Client).FetchTag(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag())
 		if err != nil {
@@ -110,6 +114,40 @@ func (i *imageHandler) ResolveImage() (string, error) {
 		return ist.Image.DockerImageReference, nil
 	}
 	return i.resolveRegistryImage(), nil
+}
+
+func (i *imageHandler) validateImageStreamTagStatus() error {
+	imageStreamHandler := NewImageStreamHandler(i.Context)
+	is, err := imageStreamHandler.FetchImageStream(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace})
+	if err != nil {
+		return err
+	}
+	if is == nil {
+		return nil
+	}
+	tagCondition := i.findTagStatusCondition(is)
+	if tagCondition == nil {
+		return nil
+	}
+	if tagCondition.Status == corev1.ConditionFalse {
+		return fmt.Errorf(tagCondition.Message)
+	}
+	return nil
+}
+
+// findTagStatusCondition finds the ImportSuccess conditionType in conditions.
+func (i *imageHandler) findTagStatusCondition(is *imgv1.ImageStream) *imgv1.TagEventCondition {
+	tagEvents := is.Status.Tags
+	for _, tagEvent := range tagEvents {
+		if tagEvent.Tag == i.resolveTag() {
+			for _, condition := range tagEvent.Conditions {
+				if condition.Type == imgv1.ImportSuccess {
+					return &condition
+				}
+			}
+		}
+	}
+	return nil
 }
 
 // resolveRegistryImage resolves images like "quay.io/kiegroup/kogito-jobs-service:latest", as informed by user.
