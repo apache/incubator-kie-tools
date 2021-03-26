@@ -36,6 +36,47 @@ Feature: Deploy Kogito Runtime
 
 #####
 
+  Scenario Outline: Deploy DMN <example-service> with native <native> using Kogito Runtime
+    Given Kogito Operator is deployed
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native | <native> |
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry
+
+    Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
+    And HTTP POST request on service "<example-service>" is successful within 2 minutes with path "Traffic Violation" and body:
+      """json
+      {
+          "Driver":{"Points":2},
+          "Violation":{
+              "Type":"speed",
+              "Actual Speed":120,
+              "Speed Limit":100
+          }
+      }
+      """
+
+    @rhpam
+    @springboot
+    Examples:
+      | runtime    | example-service        | native   |
+      | springboot | dmn-springboot-example | disabled |
+
+    @rhpam
+    @quarkus
+    Examples:
+      | runtime    | example-service     | native   |
+      | quarkus    | dmn-quarkus-example | disabled |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service     | native   |
+      | quarkus    | dmn-quarkus-example | enabled  |
+
+#####
+
   @persistence
   @infinispan
   Scenario Outline: Deploy <example-service> with persistence and native <native> using Kogito Runtime
