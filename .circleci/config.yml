@@ -45,9 +45,6 @@ workflows:
   build-and-test:
     jobs:
       - build
-          filters:
-            tags:
-              only: /.*/
       - npm_publish:
           requires:
             - build
