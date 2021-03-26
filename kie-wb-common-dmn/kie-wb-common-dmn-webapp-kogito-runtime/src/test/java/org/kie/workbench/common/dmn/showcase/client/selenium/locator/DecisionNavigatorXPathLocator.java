@@ -39,6 +39,15 @@ public class DecisionNavigatorXPathLocator implements XPathLocator {
     }
 
     /**
+     * Construct a xPath locator of Literal Expression expression
+     * @param nodeName node name of the Literal Expression parent node
+     * @return xPath Locator of literal expression in decision navigator panel
+     */
+    public static DecisionNavigatorXPathLocator literalExpression(final String nodeName) {
+        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, "Literal expression"));
+    }
+
+    /**
      * Construct a xPath locator of Function expression
      * @param nodeName node name of the Function parent node
      * @return xPath Locator of function in decision navigator panel

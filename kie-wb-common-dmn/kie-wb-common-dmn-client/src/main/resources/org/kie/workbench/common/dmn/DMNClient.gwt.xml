@@ -20,6 +20,9 @@
 <module>
 
   <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.vmware.antlr4c3.Antlr4C3"/>
+  <inherits name="org.kie.dmn.feel.DMNFeelGWT"/>
+  <inherits name="org.kie.dmn.feel.gwt.functions.DMNFeelGWTFunctions"/>
   <inherits name="org.kie.workbench.common.dmn.DMNAPI"/>
   <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
   <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>

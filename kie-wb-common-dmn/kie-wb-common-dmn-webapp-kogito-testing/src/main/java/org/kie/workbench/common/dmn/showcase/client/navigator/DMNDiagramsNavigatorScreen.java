@@ -28,8 +28,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.dmn.showcase.client.alternatives.DMNClientModels;
+import org.kie.workbench.common.dmn.showcase.client.feel.FEELDemoEditor;
 import org.kie.workbench.common.dmn.webapp.common.client.navigator.BaseDMNDiagramsNavigatorScreen;
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
+import org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.diagrams.DiagramsNavigator;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.ShapeSetsMenuItemsBuilder;
@@ -38,8 +40,10 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -51,23 +55,28 @@ public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen i
 
     private static final PlaceRequest DMN_KOGITO_TESTING_SCREEN_DEFAULT_REQUEST = new DefaultPlaceRequest(DMNDiagramsNavigatorScreen.SCREEN_ID);
 
-    private org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService contentService;
+    private final DMNVFSService vfsService;
 
-    private DMNVFSService vfsService;
+    private final org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService contentService;
+
+    private final PlaceManager placeManager;
 
     public DMNDiagramsNavigatorScreen() {
-        //CDI proxy
+        this(null, null, null, null, null);
+        // CDI proxy
     }
 
     @Inject
     public DMNDiagramsNavigatorScreen(final DiagramsNavigator diagramsNavigator,
                                       final ShapeSetsMenuItemsBuilder newDiagramMenuItemsBuilder,
                                       final DMNVFSService vfsService,
-                                      final org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService contentService) {
+                                      final KogitoResourceContentService contentService,
+                                      final PlaceManager placeManager) {
         super(diagramsNavigator,
               newDiagramMenuItemsBuilder);
         this.vfsService = vfsService;
         this.contentService = contentService;
+        this.placeManager = placeManager;
     }
 
     @Override
@@ -97,23 +106,33 @@ public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen i
 
     @Override
     protected MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> createMenuBuilder() {
-        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder = super.createMenuBuilder();
-        builder.newTopLevelMenu("Load diagrams from client")
-                .respondsWith(this::loadFromClient)
+        return superCreateMenuBuilder()
+                .newTopLevelMenu("FEEL Editor")
+                .respondsWith(onFeelEditorClick())
+                .endMenu()
+                .newTopLevelMenu("Load diagrams from client")
+                .respondsWith(onLoadFromClientClick())
                 .order(-1)
                 .endMenu();
-        return builder;
     }
 
-    private void loadFromClient() {
-        contentService.getFilteredItems("**/*.dmn", getItems(), getErrorCallback());
+    Command onFeelEditorClick() {
+        return () -> placeManager.goTo(FEELDemoEditor.EDITOR_ID);
+    }
+
+    Command onLoadFromClientClick() {
+        return () -> contentService.getFilteredItems("**/*.dmn", getItems(), getErrorCallback());
+    }
+
+    MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> superCreateMenuBuilder() {
+        return super.createMenuBuilder();
     }
 
     private ErrorCallback<Object> getErrorCallback() {
         return null;
     }
 
-    private RemoteCallback<List<String>> getItems() {
+    RemoteCallback<List<String>> getItems() {
         return response -> vfsService.openFile("something.dmn", DMNClientModels.MODEL_WITH_IMPORTS);
     }
 

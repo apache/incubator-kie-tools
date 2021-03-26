@@ -483,6 +483,32 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Client side FEEL -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.rikkola.gwt</groupId>
+      <artifactId>antlr4-c3-gwt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4gwt-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -649,6 +675,14 @@
                 <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
+
+                <!-- Client side FEEL -->
+                <compileSourcesArtifact>org.rikkola.gwt:antlr4-c3-gwt</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-model</compileSourcesArtifact>
 
                 <!-- UF-ext -->
                 <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>
