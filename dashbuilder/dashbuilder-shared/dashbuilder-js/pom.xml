@@ -41,7 +41,7 @@
 
   <properties>
     <!-- Comma separated internal components name -->
-    <dashbuilder.internal.components.list>logo-provided,process-heatmap-provided,processes-heatmaps-provided</dashbuilder.internal.components.list>
+    <dashbuilder.internal.components.list>logo-provided,process-heatmap-provided,processes-heatmaps-provided,time-series-provided</dashbuilder.internal.components.list>
     <!-- Components base dir -->
     <dashbuilder.internal.components.root>web/dashbuilder/components</dashbuilder.internal.components.root>
   </properties>
@@ -181,6 +181,25 @@
               <resources>
                 <resource>
                   <directory>packages/processes-heatmaps-component/dist/</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution> 
+          <execution>
+            <id>copy-time-series-component</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+
+              <outputDirectory>
+                ${project.build.outputDirectory}/${dashbuilder.internal.components.root}/time-series-provided
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>packages/time-series-component/dist/</directory>
                   <filtering>false</filtering>
                 </resource>
               </resources>

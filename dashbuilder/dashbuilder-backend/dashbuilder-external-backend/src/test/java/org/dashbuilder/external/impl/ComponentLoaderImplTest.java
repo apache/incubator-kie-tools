@@ -155,7 +155,7 @@ public class ComponentLoaderImplTest {
         externalComponentLoaderImpl.init();
         List<ExternalComponent> internalComponents = externalComponentLoaderImpl.loadProvided();
 
-        assertEquals(3, internalComponents.size());
+        assertEquals(4, internalComponents.size());
 
         ExternalComponent component = internalComponents.get(0);
         assertEquals("logo-provided", component.getId());
