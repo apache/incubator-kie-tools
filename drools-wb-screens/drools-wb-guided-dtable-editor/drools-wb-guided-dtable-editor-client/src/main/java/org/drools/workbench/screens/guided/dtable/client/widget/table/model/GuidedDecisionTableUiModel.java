@@ -97,7 +97,7 @@ public class GuidedDecisionTableUiModel extends BaseGridData {
         }
     }
 
-    public List<Integer> sort(final GridColumn gridColumn) throws VetoException {
+    public List<Integer> sort(final GridColumn gridColumn) {
         try {
 
             final List<Integer> sortOrder = tableSortComparator.sort(super.rows,

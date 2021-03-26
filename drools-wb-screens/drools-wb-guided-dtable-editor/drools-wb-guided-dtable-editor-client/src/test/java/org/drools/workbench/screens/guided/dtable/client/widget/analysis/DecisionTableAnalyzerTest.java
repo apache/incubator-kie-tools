@@ -200,8 +200,8 @@ public class DecisionTableAnalyzerTest {
     }
 
     @Test
-    public void testSort() throws Exception {
-        final ArrayList<Integer> rowOrder = new ArrayList<>();
+    public void testSort() {
+        final List<Integer> rowOrder = Collections.emptyList();
         decisionTableAnalyzer.sort(rowOrder);
         verify(updateManager).sort(rowOrder);
     }

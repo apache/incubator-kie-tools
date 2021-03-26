@@ -15,7 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.drools.workbench.services.verifier.plugin.client.api.SortTable;
 import org.junit.Before;
@@ -26,6 +27,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,7 +40,7 @@ public class DTableUpdateManagerTest {
     private FieldTypeProducer fieldTypeProducer;
 
     @Captor
-    ArgumentCaptor<SortTable> sortTableArgumentCaptor;
+    private ArgumentCaptor<SortTable> sortTableArgumentCaptor;
 
     private DTableUpdateManager dTableUpdateManager;
 
@@ -49,9 +51,10 @@ public class DTableUpdateManagerTest {
     }
 
     @Test
-    public void name() {
-        ArrayList<Integer> rowOrder = new ArrayList<>();
+    public void testSort() {
+        final List<Integer> rowOrder = Collections.emptyList();
         dTableUpdateManager.sort(rowOrder);
         verify(poster).post(sortTableArgumentCaptor.capture());
+        assertEquals(rowOrder, sortTableArgumentCaptor.getValue().getRowOrder());
     }
 }

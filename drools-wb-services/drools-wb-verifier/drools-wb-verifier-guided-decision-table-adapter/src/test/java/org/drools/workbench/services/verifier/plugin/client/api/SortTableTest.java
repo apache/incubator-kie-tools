@@ -17,9 +17,9 @@ package org.drools.workbench.services.verifier.plugin.client.api;
 
 import java.util.ArrayList;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SortTableTest {
@@ -38,8 +38,6 @@ public class SortTableTest {
         rowOrder.add(1);
 
         final SortTable sortTable = new SortTable(rowOrder);
-        assertEquals(2, sortTable.getRowOrder().size());
-        assertEquals(Integer.valueOf(2), sortTable.getRowOrder().get(0));
-        assertEquals(Integer.valueOf(1), sortTable.getRowOrder().get(1));
+        Assertions.assertThat(sortTable.getRowOrder()).containsExactly(2, 1);
     }
 }

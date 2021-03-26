@@ -31,7 +31,6 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -39,7 +38,6 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableTheme;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
@@ -50,9 +48,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManage
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-public class GuidedDecisionTableViewImpl
-        extends BaseGridWidget
-        implements GuidedDecisionTableView{
+public class GuidedDecisionTableViewImpl extends BaseGridWidget implements GuidedDecisionTableView {
 
     public static final int HEADER_CAPTION_WIDTH = 200;
 
@@ -96,17 +92,7 @@ public class GuidedDecisionTableViewImpl
     protected List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
                                                                                final GridPinnedModeManager pinnedModeManager) {
         final List<NodeMouseEventHandler> handlers = new ArrayList<>();
-        handlers.add(new GuidedDecisionTableSortGridWidgetMouseEventHandler(new Callback<GridColumn, Void>() {
-            @Override
-            public void onFailure(final Void unused) {
-                // Not implemented
-            }
-
-            @Override
-            public void onSuccess(final GridColumn column) {
-                presenter.onSort(column);
-            }
-        }));
+        handlers.add(new GuidedDecisionTableSortGridWidgetMouseEventHandler(column -> presenter.onSort(column)));
         return handlers;
     }
 

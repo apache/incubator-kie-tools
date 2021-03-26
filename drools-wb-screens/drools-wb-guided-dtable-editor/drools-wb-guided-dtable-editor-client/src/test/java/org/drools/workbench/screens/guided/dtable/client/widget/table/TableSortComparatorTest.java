@@ -108,7 +108,7 @@ public class TableSortComparatorTest {
 
         Assertions.assertThat(sort).containsExactly(2, 0, 1, 3);
         Assertions.assertThat(rows)
-                .extracting(row -> (int) row.getCells().get(1).getValue().getValue())
+                .extracting(row -> (Integer) row.getCells().get(1).getValue().getValue())
                 .containsExactly(1, 3, 100, 100);
     }
 
@@ -153,7 +153,7 @@ public class TableSortComparatorTest {
 
         Assertions.assertThat(sort).containsExactly(2, 0, 3, 1);
         Assertions.assertThat(rows)
-                .extracting(row -> (int) row.getCells().get(1).getValue().getValue())
+                .extracting(row -> (Integer) row.getCells().get(1).getValue().getValue())
                 .containsExactly(1, 3, 100, 100);
     }
 

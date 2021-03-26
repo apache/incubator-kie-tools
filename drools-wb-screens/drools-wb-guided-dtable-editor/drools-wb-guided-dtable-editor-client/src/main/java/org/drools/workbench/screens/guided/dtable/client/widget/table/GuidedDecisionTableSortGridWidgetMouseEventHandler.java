@@ -15,9 +15,10 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.core.client.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetEditCellMouseEventHandler;
@@ -26,10 +27,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 public class GuidedDecisionTableSortGridWidgetMouseEventHandler
         extends DefaultGridWidgetEditCellMouseEventHandler {
 
-    private final Callback<GridColumn, Void> sortCallback;
+    private final Consumer<GridColumn> sortConsumer;
 
-    public GuidedDecisionTableSortGridWidgetMouseEventHandler(final Callback<GridColumn, Void> sortCallback) {
-        this.sortCallback = sortCallback;
+    public GuidedDecisionTableSortGridWidgetMouseEventHandler(final Consumer<GridColumn> sortConsumer) {
+        this.sortConsumer = sortConsumer;
     }
 
     @Override
@@ -42,11 +43,7 @@ public class GuidedDecisionTableSortGridWidgetMouseEventHandler
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(relativeLocation.getX());
         final GridColumn<?> column = ci.getColumn();
-        if (column == null) {
-            sortCallback.onFailure(null);
-            return false;
-        }
-        sortCallback.onSuccess(column);
+        sortConsumer.accept(column);
 
         return true;
     }

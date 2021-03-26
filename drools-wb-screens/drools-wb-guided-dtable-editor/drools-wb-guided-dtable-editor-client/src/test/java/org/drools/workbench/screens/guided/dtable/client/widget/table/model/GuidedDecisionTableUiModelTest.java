@@ -45,7 +45,7 @@ public class GuidedDecisionTableUiModelTest {
     }
 
     @Test
-    public void name() throws ModelSynchronizer.VetoException {
+    public void testSort() throws ModelSynchronizer.VetoException {
         final List<Integer> sort = guidedDecisionTableUiModel.sort(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
                                                                                               mock(GridColumnRenderer.class),
                                                                                               100));

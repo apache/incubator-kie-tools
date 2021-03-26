@@ -29,6 +29,13 @@ public class TableSortComparator {
 
     private Optional<Integer> lastSorted = Optional.empty();
 
+    /**
+     *
+     * @param rows All the rows to sort.
+     * @param gridColumn Column that we sort by.
+     * @return New order of the rows. Each number in the list shows what row should move to that location.
+     * @throws ModelSynchronizer.VetoException
+     */
     public List<Integer> sort(final List<GridRow> rows,
                               final GridColumn gridColumn) throws ModelSynchronizer.VetoException {
 

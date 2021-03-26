@@ -15,10 +15,11 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.core.client.Callback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,12 +31,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -46,7 +44,7 @@ public class GuidedDecisionTableSortGridWidgetMouseEventHandlerTest {
     @Mock
     private GridColumn gridColumn;
     @Mock
-    private Callback callback;
+    private Consumer consumer;
     @Mock
     private GridWidget gridWidget;
     @Mock
@@ -66,26 +64,13 @@ public class GuidedDecisionTableSortGridWidgetMouseEventHandlerTest {
 
     @Test
     public void testHappyPath() {
-        assertTrue(new GuidedDecisionTableSortGridWidgetMouseEventHandler(callback).handleHeaderCell(gridWidget,
+        assertTrue(new GuidedDecisionTableSortGridWidgetMouseEventHandler(consumer).handleHeaderCell(gridWidget,
                                                                                                      new Point2D(0, 0),
                                                                                                      1,
                                                                                                      1,
                                                                                                      mock(AbstractNodeMouseEvent.class)));
 
-        verify(callback).onSuccess(gridColumnCaptor.capture());
-        verify(callback, never()).onFailure(any());
+        verify(consumer).accept(gridColumnCaptor.capture());
         assertEquals(gridColumn, gridColumnCaptor.getValue());
-    }
-
-    @Test
-    public void testTargetIsNotAColumn() {
-        assertFalse(new GuidedDecisionTableSortGridWidgetMouseEventHandler(callback).handleHeaderCell(gridWidget,
-                                                                                                      new Point2D(100, 100),
-                                                                                                      1,
-                                                                                                      1,
-                                                                                                      mock(AbstractNodeMouseEvent.class)));
-
-        verify(callback, never()).onSuccess(any());
-        verify(callback).onFailure(any());
     }
 }

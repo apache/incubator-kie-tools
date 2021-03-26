@@ -497,9 +497,9 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
 
         // Original order
-        assertEquals(1,model.getData().get(0).get(0).getNumericValue().intValue());
-        assertEquals(2,model.getData().get(1).get(0).getNumericValue().intValue());
-        assertEquals(3,model.getData().get(2).get(0).getNumericValue().intValue());
+        assertEquals(1, model.getData().get(0).get(0).getNumericValue().intValue());
+        assertEquals(2, model.getData().get(1).get(0).getNumericValue().intValue());
+        assertEquals(3, model.getData().get(2).get(0).getNumericValue().intValue());
 
         final ArrayList<Integer> sort = new ArrayList<>();
         sort.add(2);
@@ -508,8 +508,8 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.sort(sort);
 
         // reversed
-        assertEquals(3,model.getData().get(0).get(0).getNumericValue().intValue());
-        assertEquals(2,model.getData().get(1).get(0).getNumericValue().intValue());
-        assertEquals(1,model.getData().get(2).get(0).getNumericValue().intValue());
+        assertEquals(3, model.getData().get(0).get(0).getNumericValue().intValue());
+        assertEquals(2, model.getData().get(1).get(0).getNumericValue().intValue());
+        assertEquals(1, model.getData().get(2).get(0).getNumericValue().intValue());
     }
 }

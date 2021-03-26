@@ -1009,13 +1009,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onSort(final GridColumn gridColumn) {
-        try {
-           final List<Integer> sort = uiModel.sort(gridColumn);
-            refreshView();
-            analyzerController.sort(sort);
-        } catch (VetoException veto) {
-            getModellerPresenter().getView().showGenericVetoMessage();
-        }
+        final List<Integer> sort = uiModel.sort(gridColumn);
+        refreshView();
+        analyzerController.sort(sort);
     }
 
     @Override
