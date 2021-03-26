@@ -236,7 +236,7 @@
 }
 
 .kogito--editor__drawer-content-panel {
-  min-width: 350px;
+  min-width: 361px;
   position: relative;
   overflow: hidden;
 }
@@ -256,6 +256,18 @@
 .kogito--editor__dmn-runner {
   display: flex;
   height: calc(100vh - 108px);
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--editor__dmn-runner {
+    height: 100%;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--editor__dmn-runner {
+    height: calc(100vh - 108px);
+  }
 }
 
 .kogito--editor__dmn-runner-content {

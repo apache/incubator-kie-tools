@@ -275,9 +275,9 @@ export function EditorPage(props: Props) {
   const closeAlert = useCallback(() => setAlert(Alerts.NONE), []);
 
   return (
-    <DmnRunnerContextProvider isEditorReady={isEditorReady} editor={editor}>
+    <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
       <DmnRunnerContext.Consumer>
-        {(dmnRunner) => (
+        {dmnRunner => (
           <Page
             header={
               <EditorToolbar
@@ -304,7 +304,7 @@ export function EditorPage(props: Props) {
                       ? "kogito--editor__drawer-content-close"
                       : "kogito--editor__drawer-content-open"
                   }
-                  panelContent={<DmnRunnerDrawer editor={editor} onStopRunDmn={() => dmnRunner.setDrawerOpen(false)} />}
+                  panelContent={<DmnRunnerDrawer editor={editor} />}
                 >
                   <DrawerContentBody className={"kogito--editor__drawer-content-body"}>
                     {!fullscreen && alert === Alerts.COPY && (

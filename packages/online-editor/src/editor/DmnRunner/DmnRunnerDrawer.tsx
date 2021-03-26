@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DecisionResult, DmnRunner, EvaluationStatus, Result } from "../../common/DmnRunner";
 import { AutoForm } from "uniforms-patternfly";
 import {
@@ -43,37 +43,51 @@ import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, InfoCircleIcon } fro
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
+import { THROTTLING_TIME } from "./DmnRunnerContextProvider";
+import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
+import { StateControl } from "@kogito-tooling/editor/dist/channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { usePrevious } from "../../common/Hooks";
 
 enum ButtonPosition {
   INPUT,
   OUTPUT
 }
 
+type Editor =
+  | (EditorApi & {
+      getStateControl(): StateControl;
+      getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
+    })
+  | null;
+
 interface Props {
-  editor: any;
-  onStopRunDmn: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  editor?: Editor;
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
-const WINDOW_MIN_WIDTH_TO_COLUMN_DIRECTION = 1200;
+const AUTO_SAVE_DELAY = 500;
+
+interface DmnRunnerStylesConfig {
+  contentWidth: "50%" | "100%";
+  contentHeight: "50%" | "100%";
+  contentFlexDirection: "row" | "column";
+  buttonPosition: ButtonPosition;
+}
 
 export function DmnRunnerDrawer(props: Props) {
   const dmnRunner = useDmnRunner();
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
   const autoFormRef = useRef<HTMLFormElement>();
   const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
-  const [buttonPosition, setButtonPosition] = useState<ButtonPosition>(() =>
-    window.innerWidth <= WINDOW_MIN_WIDTH_TO_COLUMN_DIRECTION ? ButtonPosition.INPUT : ButtonPosition.OUTPUT
-  );
-  const [dmnRunnerContentStyles, setDmnRunnerContentStyles] = useState<{ width: string; height: string }>({
-    width: "50%",
-    height: "100%"
-  });
-  const [dmnRunnerFlexDirection, setDmnRunnerFlexDirection] = useState<{ flexDirection: "row" | "column" }>({
-    flexDirection: "row"
-  });
-  const [formContext, setFormContext] = useState();
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
+  const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
+    contentWidth: "50%",
+    contentHeight: "100%",
+    contentFlexDirection: "row",
+    buttonPosition: ButtonPosition.OUTPUT
+  });
+  const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerOpen);
 
   const onResize = useCallback((width: number) => {
     const iframe = document.getElementById("kogito-iframe");
@@ -87,27 +101,40 @@ export function DmnRunnerDrawer(props: Props) {
     }
 
     if (width > DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION) {
-      setButtonPosition(ButtonPosition.OUTPUT);
-      setDmnRunnerFlexDirection({ flexDirection: "row" });
-      setDmnRunnerContentStyles({ width: "50%", height: "100%" });
+      setDmnRunnerStylesConfig({
+        buttonPosition: ButtonPosition.OUTPUT,
+        contentWidth: "50%",
+        contentHeight: "100%",
+        contentFlexDirection: "row"
+      });
     } else {
-      setButtonPosition(ButtonPosition.INPUT);
-      setDmnRunnerFlexDirection({ flexDirection: "column" });
-      setDmnRunnerContentStyles({ width: "100%", height: "50%" });
+      setDmnRunnerStylesConfig({
+        buttonPosition: ButtonPosition.INPUT,
+        contentWidth: "100%",
+        contentHeight: "50%",
+        contentFlexDirection: "column"
+      });
     }
   }, []);
 
+  // Remove iframe pointer event to enable resize
   useEffect(() => {
-    if (window.innerWidth < WINDOW_MIN_WIDTH_TO_COLUMN_DIRECTION) {
-      setButtonPosition(ButtonPosition.INPUT);
-      setDmnRunnerFlexDirection({ flexDirection: "column" });
-      setDmnRunnerContentStyles({ width: "100%", height: "50%" });
+    const iframe = document.getElementById("kogito-iframe");
+    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
+
+    if (iframe && drawerResizableSplitter) {
+      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
+      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
+
+      return () => {
+        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
+      };
     }
   }, []);
 
   const onSubmit = useCallback(
     async data => {
-      setFormContext(data);
+      dmnRunner.setFormData(data);
       if (props.editor) {
         try {
           const content = await props.editor.getContent();
@@ -132,28 +159,23 @@ export function DmnRunnerDrawer(props: Props) {
     [props.editor, dmnRunnerResults]
   );
 
-  useLayoutEffect(() => {
-    autoFormRef.current?.change("context", formContext);
-  }, []);
+  // Fill the form with the previous data
+  useEffect(() => {
+    if (dmnRunner.isDrawerOpen && !previousIsDrawerOpen) {
+      setTimeout(() => {
+        Object.keys(dmnRunner.formData ?? {}).forEach(propertyName => {
+          autoFormRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
+        });
+      }, 0);
+    }
+  }, [dmnRunner.isDrawerOpen, previousIsDrawerOpen]);
 
+  // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
   useEffect(() => {
     errorBoundaryRef.current?.reset();
   }, [dmnRunner.jsonSchemaBridge]);
 
-  useEffect(() => {
-    const iframe = document.getElementById("kogito-iframe");
-    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
-
-    if (iframe && drawerResizableSplitter) {
-      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
-      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
-
-      return () => {
-        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
-      };
-    }
-  }, []);
-
+  // Subscribe to any change on the DMN Editor and submit the form
   useEffect(() => {
     if (props.editor) {
       let timeout: any;
@@ -164,45 +186,50 @@ export function DmnRunnerDrawer(props: Props) {
 
         timeout = setTimeout(() => {
           autoFormRef.current?.submit();
-        }, 200);
+        }, THROTTLING_TIME);
       });
 
       return () => {
-        props.editor.getStateControl().unsubscribe(subscription);
+        props.editor?.getStateControl().unsubscribe(subscription);
       };
     }
   }, [props.editor]);
 
-  const renderForm = useMemo(() => {
-    return (
-      dmnRunner.jsonSchemaBridge &&
-      Object.keys(dmnRunner.jsonSchemaBridge?.schema.properties ?? {}).length !== 0
-    );
+  const shouldRenderForm = useMemo(() => {
+    return dmnRunner.jsonSchemaBridge && Object.keys(dmnRunner.jsonSchemaBridge?.schema.properties ?? {}).length !== 0;
   }, [dmnRunner.jsonSchemaBridge]);
 
   return (
     <DrawerPanelContent
       id={"kogito-panel-content"}
       className={"kogito--editor__drawer-content-panel"}
-      defaultSize={"711px"}
+      defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}
       onResize={onResize}
       isResizable={true}
     >
-      <div className={"kogito--editor__dmn-runner"} style={dmnRunnerFlexDirection}>
-        <div className={"kogito--editor__dmn-runner-content"} style={dmnRunnerContentStyles}>
+      <div
+        className={"kogito--editor__dmn-runner"}
+        style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
+      >
+        <div
+          className={"kogito--editor__dmn-runner-content"}
+          style={{
+            width: dmnRunnerStylesConfig.contentWidth,
+            height: dmnRunnerStylesConfig.contentHeight
+          }}
+        >
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
                 <Text component={"h2"}>Inputs</Text>
               </TextContent>
-              {buttonPosition === ButtonPosition.INPUT && (
-                <DrawerCloseButton onClick={(e: any) => props.onStopRunDmn(e)} />
+              {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
+                <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerOpen(false)} />
               )}
             </PageSection>
-
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                {renderForm ? (
+                {shouldRenderForm ? (
                   <ErrorBoundary
                     ref={errorBoundaryRef}
                     error={
@@ -221,7 +248,7 @@ export function DmnRunnerDrawer(props: Props) {
                       ref={autoFormRef}
                       showInlineError={true}
                       autosave={true}
-                      autosaveDelay={500}
+                      autosaveDelay={AUTO_SAVE_DELAY}
                       schema={dmnRunner.jsonSchemaBridge}
                       onSubmit={onSubmit}
                       errorsField={() => <></>}
@@ -247,14 +274,20 @@ export function DmnRunnerDrawer(props: Props) {
             </div>
           </Page>
         </div>
-        <div className={"kogito--editor__dmn-runner-content"} style={dmnRunnerContentStyles}>
+        <div
+          className={"kogito--editor__dmn-runner-content"}
+          style={{
+            width: dmnRunnerStylesConfig.contentWidth,
+            height: dmnRunnerStylesConfig.contentHeight
+          }}
+        >
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
                 <Text component={"h2"}>Outputs</Text>
               </TextContent>
-              {buttonPosition === ButtonPosition.OUTPUT && (
-                <DrawerCloseButton onClick={(e: any) => props.onStopRunDmn(e)} />
+              {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
+                <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerOpen(false)} />
               )}
             </PageSection>
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>

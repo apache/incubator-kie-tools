@@ -27,6 +27,7 @@ import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { useModals } from "../../common/ModalContext";
 
 const DMN_RUNNER_POLLING_TIME = 500;
+export const THROTTLING_TIME = 200;
 
 export enum DmnRunnerStatus {
   DISABLED,
@@ -52,9 +53,10 @@ interface Props {
 export function DmnRunnerContextProvider(props: Props) {
   const [isDmnRunnerDrawerOpen, setDmnRunnerDrawerOpen] = useState(false);
   const [isDmnRunnerModalOpen, setDmnRunnerModalOpen] = useState(false);
-
+  const [formData, setFormData] = useState();
   const context = useContext(GlobalContext);
   const modals = useModals();
+
   // This state saves the current status of the Dmn Runner server on the user machine.
   const [dmnRunnerStatus, setDmnRunnerStatus] = useState(DmnRunnerStatus.DISABLED);
   const [dmnRunnerJsonSchemaBridge, setDmnRunnerJsonSchemaBridge] = useState<JSONSchemaBridge>();
@@ -76,7 +78,9 @@ export function DmnRunnerContextProvider(props: Props) {
         detectDmnRunner = window.setInterval(() => {
           DmnRunner.checkServer().then(() => {
             setDmnRunnerStatus(DmnRunnerStatus.RUNNING);
-            setDmnRunnerDrawerOpen(true);
+            if (isDmnRunnerModalOpen) {
+              setDmnRunnerDrawerOpen(true);
+            }
             window.clearInterval(detectDmnRunner);
           });
         }, DMN_RUNNER_POLLING_TIME);
@@ -96,7 +100,9 @@ export function DmnRunnerContextProvider(props: Props) {
         }, DMN_RUNNER_POLLING_TIME);
 
         // After the detection that is running, set the schema for the first time
-        setJsonSchemaBridge();
+        if (props.isEditorReady) {
+          setJsonSchemaBridge();
+        }
 
         return () => window.clearInterval(detectCrashesOrStops);
       }
@@ -115,7 +121,7 @@ export function DmnRunnerContextProvider(props: Props) {
     }
   }, [dmnRunnerStatus, setDmnRunnerStatus, isDmnRunnerModalOpen]);
 
-  // Subscribe to any change on the DMN Editor
+  // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
   useEffect(() => {
     if (!props.editor || context.file.fileExtension !== "dmn") {
       return;
@@ -137,7 +143,9 @@ export function DmnRunnerContextProvider(props: Props) {
         isDrawerOpen: isDmnRunnerDrawerOpen,
         setDrawerOpen: setDmnRunnerDrawerOpen,
         isModalOpen: isDmnRunnerModalOpen,
-        setModalOpen: setDmnRunnerModalOpen
+        setModalOpen: setDmnRunnerModalOpen,
+        formData,
+        setFormData
       }}
     >
       {props.children}
