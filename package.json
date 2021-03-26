@@ -12,7 +12,7 @@
     "buildProd": "tsc --build",
     "watch": "tsc --watch --incremental",
     "clean": "rimraf dist coverage tsconfig.tsbuildinfo",
-    "coverage": "jest --coverage",
+    "coverage": "jest --runInBand --coverage",
     "lint": "eslint --ext js,ts,tsx src",
     "reset": "rimraf tsconfig.tsbuildinfo dist node_modules",
     "release:prep": "./scripts/prepareRelease.sh",
