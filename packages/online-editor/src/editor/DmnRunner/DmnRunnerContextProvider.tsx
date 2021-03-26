@@ -15,11 +15,11 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
 import { DmnRunnerContext } from "./DmnRunnerContext";
 import JSONSchemaBridge from "../../common/Bridge";
-import { DmnRunner } from "../../common/DmnRunner";
+import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
@@ -29,7 +29,7 @@ import { getCookie, setCookie } from "../../common/utils";
 const DMN_RUNNER_POLLING_TIME = 500;
 export const THROTTLING_TIME = 200;
 const DMN_RUNNER_PORT_COOKIE_NAME = "dmn-runner-port";
-export const DMN_RUNNER_DEFAULT_PORT = "8080"
+export const DMN_RUNNER_DEFAULT_PORT = "8080";
 
 interface Props {
   children: React.ReactNode;
@@ -45,11 +45,12 @@ export function DmnRunnerContextProvider(props: Props) {
   const [status, setStatus] = useState(DmnRunnerStatus.UNAVAILABLE);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<JSONSchemaBridge>();
   const [port, setPort] = useState(DMN_RUNNER_DEFAULT_PORT);
+  const service = useMemo(() => new DmnRunnerService(port), [port]);
 
   const updateJsonSchemaBridge = useCallback(() => {
     return props.editor
       ?.getContent()
-      .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
+      .then(content => service.getJsonSchemaBridge(content ?? ""))
       .then(newJsonSchemaBridge => {
         const propertiesDifference = diff(
           jsonSchemaBridge?.schema.definitions.InputSet.properties ?? {},
@@ -60,7 +61,7 @@ export function DmnRunnerContextProvider(props: Props) {
         });
         setJsonSchemaBridge(newJsonSchemaBridge);
       });
-  }, [props.editor]);
+  }, [props.editor, service]);
 
   useEffect(() => {
     if (globalContext.file.fileExtension === "dmn") {
@@ -77,7 +78,7 @@ export function DmnRunnerContextProvider(props: Props) {
     let detectDmnRunner: number | undefined;
     if (status !== DmnRunnerStatus.RUNNING) {
       detectDmnRunner = window.setInterval(() => {
-        DmnRunner.checkServer().then(() => {
+        service.checkServer().then(() => {
           setStatus(DmnRunnerStatus.RUNNING);
           if (isModalOpen) {
             setDrawerExpanded(true);
@@ -92,7 +93,7 @@ export function DmnRunnerContextProvider(props: Props) {
     let detectCrashesOrStops: number | undefined;
     if (status === DmnRunnerStatus.RUNNING) {
       detectCrashesOrStops = window.setInterval(() => {
-        DmnRunner.checkServer().catch(() => {
+        service.checkServer().catch(() => {
           setStatus(DmnRunnerStatus.STOPPED);
           setModalOpen(true);
           setDrawerExpanded(false);
@@ -107,7 +108,7 @@ export function DmnRunnerContextProvider(props: Props) {
 
       return () => window.clearInterval(detectCrashesOrStops);
     }
-  }, [props.editor, status, props.isEditorReady, isModalOpen]);
+  }, [props.editor, props.isEditorReady, isModalOpen, status, service]);
 
   // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
   useEffect(() => {
@@ -119,13 +120,10 @@ export function DmnRunnerContextProvider(props: Props) {
     return () => props.editor?.getStateControl().unsubscribe(subscription);
   }, [props.editor, status, updateJsonSchemaBridge]);
 
-  const saveNewPort = useCallback(
-    (newPort: string) => {
-      setPort(newPort);
-      setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
-    },
-    []
-  );
+  const saveNewPort = useCallback((newPort: string) => {
+    setPort(newPort);
+    setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
+  }, []);
 
   useEffect(() => {
     const savedPort = getCookie(DMN_RUNNER_PORT_COOKIE_NAME);
@@ -147,7 +145,8 @@ export function DmnRunnerContextProvider(props: Props) {
         formData,
         setFormData,
         port,
-        saveNewPort
+        saveNewPort,
+        service
       }}
     >
       {props.children}

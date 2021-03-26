@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DecisionResult, DmnRunner, EvaluationStatus, Result } from "../../common/DmnRunner";
+import { DecisionResult, EvaluationStatus, Result } from "./DmnRunnerService";
 import { AutoForm } from "uniforms-patternfly";
 import {
   Card,
@@ -39,7 +39,13 @@ import {
   TextVariants,
   Title
 } from "@patternfly/react-core";
-import { CheckCircleIcon, CubesIcon, ExclamationIcon, ExclamationCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
+import {
+  CheckCircleIcon,
+  CubesIcon,
+  ExclamationCircleIcon,
+  ExclamationIcon,
+  InfoCircleIcon
+} from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
@@ -137,7 +143,7 @@ export function DmnRunnerDrawer(props: Props) {
       if (props.editor) {
         try {
           const content = await props.editor.getContent();
-          const result = await DmnRunner.result({ context: data, model: content });
+          const result = await dmnRunner.service.result({ context: data, model: content });
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
             // DMN Runner Error
             return;
@@ -155,7 +161,7 @@ export function DmnRunnerDrawer(props: Props) {
         }
       }
     },
-    [props.editor, dmnRunnerResults]
+    [props.editor, dmnRunnerResults, dmnRunner.service]
   );
 
   // Fill the form with the previous data

@@ -15,9 +15,10 @@
  */
 
 import * as React from "react";
+import { useContext } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import JSONSchemaBridge from "../../common/Bridge";
-import { useContext } from "react";
+import { DmnRunnerService } from "./DmnRunnerService";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
@@ -31,12 +32,13 @@ export interface DmnRunnerContextType {
   setFormData: React.Dispatch<any>;
   port: string;
   saveNewPort: (value: string) => void;
+  service: DmnRunnerService;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
   status: DmnRunnerStatus.UNAVAILABLE,
   isDrawerOpen: false,
-  isModalOpen: false,
+  isModalOpen: false
 } as any);
 
 export function useDmnRunner() {

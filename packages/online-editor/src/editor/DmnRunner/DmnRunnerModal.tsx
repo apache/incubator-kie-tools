@@ -266,7 +266,7 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
     } else if (props.shouldGoToStep) {
       wizardContext.goToStepByName(props.steps[props.steps.length - 1].name);
     }
-  }, [props]);
+  }, [props.shouldGoToStep, props.hasStopped]);
 
   return (
     <WizardFooter>

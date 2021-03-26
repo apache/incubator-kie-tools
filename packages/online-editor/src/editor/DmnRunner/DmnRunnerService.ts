@@ -16,7 +16,7 @@
 
 import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import JSONSchemaBridge from "./Bridge";
+import JSONSchemaBridge from "../../common/Bridge";
 
 export interface DmnRunnerPayload {
   model: string;
@@ -53,45 +53,47 @@ export interface DmnResult {
   decisionResults?: DecisionResult[];
 }
 
-const DMN_RUNNER_SERVER = "http://localhost:8080/";
-const DMN_RUNNER_VALIDATE_URL = "http://localhost:8080/jitdmn/validate";
-const DMN_RUNNER_DMN_RESULT_URL = "http://localhost:8080/jitdmn/dmnresult";
-const DMN_RUNNER_FORM_URL = "http://localhost:8080/jitdmn/schema/form";
-const DMN_RUNNER_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
+export class DmnRunnerService {
+  constructor(
+    private port: string,
+    private ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true }),
+    private readonly DMN_RUNNER_SERVER = `http://localhost:${port}`,
+    private readonly DMN_RUNNER_VALIDATE_URL = `${DMN_RUNNER_SERVER}/jitdmn/validate`,
+    private readonly DMN_RUNNER_DMN_RESULT_URL = `${DMN_RUNNER_SERVER}/jitdmn/dmnresult`,
+    private readonly DMN_RUNNER_FORM_URL = `${DMN_RUNNER_SERVER}/jitdmn/schema/form`,
+    private readonly DMN_RUNNER_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip",
+    private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#"
+  ) {
+    ajv.addMetaSchema(metaSchemaDraft04);
+  }
 
-const SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
+  public createValidator(jsonSchema: any) {
+    const validator = this.ajv.compile(jsonSchema);
 
-export const ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
-ajv.addMetaSchema(metaSchemaDraft04);
+    return (model: any) => {
+      validator(model);
 
-function createValidator(jsonSchema: any) {
-  const validator = ajv.compile(jsonSchema);
+      return validator.errors?.length
+        ? {
+            details: validator.errors?.map(error => {
+              if (error.keyword === "required") {
+                return { ...error, message: "" };
+              }
+              return error;
+            })
+          }
+        : null;
+    };
+  }
 
-  return (model: any) => {
-    validator(model);
-
-    return validator.errors?.length
-      ? {
-          details: validator.errors?.map(error => {
-            if (error.keyword === "required") {
-              return { ...error, message: "" };
-            }
-            return error;
-          })
-        }
-      : null;
-  };
-}
-
-export class DmnRunner {
-  public static async checkServer(): Promise<boolean> {
-    const response = await fetch(DMN_RUNNER_SERVER, { method: "OPTIONS" });
+  public async checkServer(): Promise<boolean> {
+    const response = await fetch(this.DMN_RUNNER_SERVER, { method: "OPTIONS" });
     return response.status < 300;
   }
 
-  public static async download() {
+  public async download() {
     try {
-      const response = await fetch(DMN_RUNNER_DOWNLOAD, { method: "GET" });
+      const response = await fetch(this.DMN_RUNNER_DOWNLOAD, { method: "GET" });
       const blob = await response.blob();
 
       const objectUrl = URL.createObjectURL(blob);
@@ -102,9 +104,9 @@ export class DmnRunner {
     }
   }
 
-  public static async result(payload: DmnRunnerPayload): Promise<DmnResult | undefined> {
+  public async result(payload: DmnRunnerPayload): Promise<DmnResult | undefined> {
     try {
-      const response = await fetch(DMN_RUNNER_DMN_RESULT_URL, {
+      const response = await fetch(this.DMN_RUNNER_DMN_RESULT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,9 +120,9 @@ export class DmnRunner {
     }
   }
 
-  public static async validate(model: string) {
+  public async validate(model: string) {
     try {
-      const response = await fetch(DMN_RUNNER_VALIDATE_URL, {
+      const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/xml;"
@@ -133,9 +135,9 @@ export class DmnRunner {
     }
   }
 
-  public static async getJsonSchemaBridge(model: string) {
+  public async getJsonSchemaBridge(model: string) {
     try {
-      const response = await fetch(DMN_RUNNER_FORM_URL, {
+      const response = await fetch(this.DMN_RUNNER_FORM_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/xml;"
@@ -143,8 +145,8 @@ export class DmnRunner {
         body: model
       });
       const form = await response.json();
-      const formDraft4 = { ...form, $schema: SCHEMA_DRAFT4 };
-      return new JSONSchemaBridge(formDraft4, createValidator(formDraft4));
+      const formDraft4 = { ...form, $schema: this.SCHEMA_DRAFT4 };
+      return new JSONSchemaBridge(formDraft4, this.createValidator(formDraft4));
     } catch (err) {
       console.error(err);
     }
