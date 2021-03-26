@@ -9,7 +9,7 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: 
+      - run:
           name: Install dependencies
           command: yarn
       - run:
@@ -22,12 +22,12 @@ jobs:
       - run:
           name: Lint code
           command: yarn lint
-      - run: 
+      - run:
           name: Run tests
           command: yarn coverage
       - store_artifacts:
-            path: coverage
-            prefix: coverage
+          path: coverage
+          prefix: coverage
   npm_publish:
     working_directory: ~/uniforms-patternfly
     docker:
@@ -44,7 +44,10 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
+      - build:
+        filters:
+          tags:
+            only: /.*/
       - npm_publish:
           requires:
             - build
