@@ -50,7 +50,7 @@ export function LearnMorePage() {
   return (
     <PageSection>
       <Grid sm={12} lg={6} hasGutter={true}>
-        <Card>
+        <Card ouiaId="why-bpmn-card">
           <CardHeader>
             <Title size={"lg"} headingLevel={"h2"}>
               {i18n.learnMorePage.bpmn.title}
@@ -65,6 +65,7 @@ export function LearnMorePage() {
                   type={"button"}
                   variant={"link"}
                   onClick={event => externalLink(event, "https://www.omg.org/bpmn/")}
+                  ouiaId="bpmn-read-more-button"
                 >
                   {i18n.learnMorePage.readMore} <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
@@ -72,12 +73,12 @@ export function LearnMorePage() {
             </TextContent>
           </CardBody>
           <CardFooter component={"div"}>
-            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}>
+            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })} ouiaId="create-bpmn-button">
               {i18n.learnMorePage.bpmn.create}
             </Button>
           </CardFooter>
         </Card>
-        <Card>
+        <Card ouiaId="why-dmn-card">
           <CardHeader>
             <Title size={"lg"} headingLevel={"h2"}>
               {i18n.learnMorePage.dmn.title}
@@ -92,6 +93,7 @@ export function LearnMorePage() {
                   type={"button"}
                   variant={"link"}
                   onClick={event => externalLink(event, "https://www.omg.org/dmn/")}
+                  ouiaId="dmn-read-more-button"
                 >
                   {i18n.learnMorePage.readMore}
                   <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -103,6 +105,7 @@ export function LearnMorePage() {
                   type={"button"}
                   variant={"link"}
                   onClick={event => externalLink(event, "http://learn-dmn-in-15-minutes.com/")}
+                  ouiaId="learn-dmn-button"
                 >
                   {i18n.learnMorePage.dmn.learn} <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
@@ -110,12 +113,12 @@ export function LearnMorePage() {
             </TextContent>
           </CardBody>
           <CardFooter component={"div"}>
-            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}>
+            <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })} ouiaId="create-dmn-button">
               {i18n.learnMorePage.dmn.create}
             </Button>
           </CardFooter>
         </Card>
-        <Card span={12} style={{ gridColumn: "span 12" }}>
+        <Card span={12} style={{ gridColumn: "span 12" }} ouiaId="about-card">
           <CardHeader>
             <Title size={"lg"} headingLevel={"h2"}>
               {i18n.learnMorePage.about}
@@ -130,6 +133,7 @@ export function LearnMorePage() {
                   variant={"link"}
                   isInline={true}
                   onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
+                  ouiaId="forum-button"
                 >
                   {i18n.terms.forum.toLowerCase()}
                 </Button>
@@ -142,6 +146,7 @@ export function LearnMorePage() {
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
+                      ouiaId="chrome-ext-button"
                     >
                       {i18n.learnMorePage.getChromeExtension}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -152,6 +157,7 @@ export function LearnMorePage() {
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
+                      ouiaId="vs-code-button"
                     >
                       {i18n.learnMorePage.getVsCodeExtension}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -162,6 +168,7 @@ export function LearnMorePage() {
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://www.redhat.com/en/about/open-source")}
+                      ouiaId="open-source-button"
                     >
                       {i18n.learnMorePage.redHatOpenSource}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />
@@ -172,6 +179,7 @@ export function LearnMorePage() {
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "http://kogito.kie.org")}
+                      ouiaId="kogito-website-button"
                     >
                       {i18n.learnMorePage.kogitoWebsite}
                       <ExternalLinkAltIcon className="pf-u-ml-xs" />
