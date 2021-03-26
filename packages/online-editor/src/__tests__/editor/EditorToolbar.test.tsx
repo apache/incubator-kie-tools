@@ -207,5 +207,32 @@ describe("EditorToolbar", () => {
       fireEvent.click(getByTestId("share-menu"));
       expect(queryByTestId("dropdown-download-svg")).toBeNull();
     });
+
+    test("should include Embed when dmn", () => {
+      context.ctx.file = EMPTY_FILE_DMN;
+      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+
+      expect(getByTestId("share-menu")).toBeVisible();
+      fireEvent.click(getByTestId("share-menu"));
+      expect(getByTestId("dropdown-embed")).toBeVisible();
+    });
+
+    test("should include Embed when bpmn", () => {
+      context.ctx.file = EMPTY_FILE_BPMN;
+      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+
+      expect(getByTestId("share-menu")).toBeVisible();
+      fireEvent.click(getByTestId("share-menu"));
+      expect(getByTestId("dropdown-embed")).toBeVisible();
+    });
+
+    test("should exclude Embed when pmml", () => {
+      context.ctx.file = EMPTY_FILE_PMML;
+      const { queryByTestId, getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+
+      expect(getByTestId("share-menu")).toBeVisible();
+      fireEvent.click(getByTestId("share-menu"));
+      expect(queryByTestId("dropdown-embed")).toBeNull();
+    });
   });
 });

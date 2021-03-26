@@ -115,6 +115,10 @@ export function EditorToolbar(props: Props) {
     return fileExtension.toLowerCase() !== "pmml";
   }, [fileExtension]);
 
+  const includeEmbedDropdownItem = useMemo(() => {
+    return includeDownloadSVGDropdownItem;
+  }, [includeDownloadSVGDropdownItem]);
+
   const shareItems = useCallback(
     (dropdownId: string) => [
       <DropdownItem
@@ -144,9 +148,18 @@ export function EditorToolbar(props: Props) {
           </DropdownItem>
         )}
       </React.Fragment>,
-      <DropdownItem key={`dropdown-${dropdownId}-embed`} component="button" onClick={props.onEmbed}>
-        {i18n.editorToolbar.embed}
-      </DropdownItem>,
+      <React.Fragment key={`dropdown-${dropdownId}-fragment-embed`}>
+        {includeEmbedDropdownItem && (
+          <DropdownItem
+            key={`dropdown-${dropdownId}-embed`}
+            data-testid="dropdown-embed"
+            component="button"
+            onClick={props.onEmbed}
+          >
+            {i18n.editorToolbar.embed}
+          </DropdownItem>
+        )}
+      </React.Fragment>,
       <DropdownGroup key={"github-group"} label={i18n.names.github}>
         <React.Fragment key={`dropdown-${dropdownId}-fragment-export-gist`}>
           <Tooltip
