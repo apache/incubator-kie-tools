@@ -49,6 +49,7 @@ modules:
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.dataindex.infinispan
   - name: org.kie.kogito.dataindex.common
+  - name: org.kie.kogito.security.custom.truststores
 
 run:
   workdir: "/home/kogito"

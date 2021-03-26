@@ -15,13 +15,17 @@ fi
 # Configuration scripts
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(
-
+    "${KOGITO_HOME}"/launch/configure-custom-truststore.sh
 )
 source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
+
+if [ -z "${CUSTOM_TRUSTSTORE_ARGS}" ]; then
+    CUSTOM_TRUSTSTORE_ARGS="-Djavax.net.ssl.trustStore=${KOGITO_HOME}/cacerts"
+fi
 
 # shellcheck disable=SC2086
 exec "${KOGITO_HOME}"/bin/*-runner ${JAVA_OPTIONS} ${KOGITO_QUARKUS_NATIVE_PROPS} \
     -Dquarkus.http.host=0.0.0.0 -Djava.library.path="${KOGITO_HOME}"/ssl-libs \
     -Dquarkus.http.port=8080 \
-    -Djavax.net.ssl.trustStore="${KOGITO_HOME}"/cacerts
+    ${CUSTOM_TRUSTSTORE_ARGS} 

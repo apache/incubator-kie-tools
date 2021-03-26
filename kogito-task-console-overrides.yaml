@@ -33,6 +33,7 @@ modules:
     version: "11-headless"
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.task.console
+  - name: org.kie.kogito.security.custom.truststores
 
 run:
   workdir: "/home/kogito"

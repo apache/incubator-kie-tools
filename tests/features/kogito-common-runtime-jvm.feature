@@ -78,4 +78,3 @@ Feature: kogito-runtime-jvm feature.
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
-

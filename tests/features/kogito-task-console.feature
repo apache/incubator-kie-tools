@@ -33,4 +33,3 @@ Feature: kogito-task-console feature
     And container log should not contain Data index url not set, default will be used: http://localhost:8180
     And container log should contain started in
     And container log should not contain Application failed to start
-

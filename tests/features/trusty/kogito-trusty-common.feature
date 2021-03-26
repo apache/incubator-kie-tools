@@ -5,3 +5,11 @@ Feature: Kogito-trusty common feature.
       | variable               | value   |
       | SCRIPT_DEBUG           | true    |
     Then container log should contain + exec java -XshowSettings:properties -Dtrusty.explainability.enabled=true -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080
+
+  Scenario: Verify if a custom certificate is correctly handled
+    When container is started with command /home/kogito/kogito-app-launch.sh
+      | variable            | value              |
+      | CUSTOM_TRUSTSTORE   | my-truststore.jks  |
+      | RUNTIME_TYPE        | quarkus            |
+    Then container log should contain INFO ---> Configuring custom Java Truststore
+    Then container log should contain ERROR ---> A custom truststore was specified

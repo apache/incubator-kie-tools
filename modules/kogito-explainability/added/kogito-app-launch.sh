@@ -16,12 +16,13 @@ fi
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(
   "${KOGITO_HOME}"/launch/kogito-explainability.sh
+  "${KOGITO_HOME}"/launch/configure-custom-truststore.sh
 )
 source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
 
 # shellcheck disable=SC2086
-exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_EXPLAINABILITY_PROPS} \
+exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_EXPLAINABILITY_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
         -Djava.library.path="${KOGITO_HOME}"/lib \
         -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 \

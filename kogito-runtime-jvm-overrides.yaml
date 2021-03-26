@@ -37,6 +37,7 @@ modules:
     version: "11-headless"
   - name: org.kie.kogito.s2i.core
   - name: org.kie.kogito.runtime.jvm
+  - name: org.kie.kogito.security.custom.truststores
 
 ## s2i build . quay.io/kiegroup/kogito-builder:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
 ## where "." is the sources dir, ie: /data/dev/sources/kogito-examples/rules-quarkus-helloworld

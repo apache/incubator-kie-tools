@@ -15,12 +15,13 @@ fi
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(
   "${KOGITO_HOME}"/launch/kogito-task-console.sh
+  "${KOGITO_HOME}"/launch/configure-custom-truststore.sh
 )
 source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
 
 # shellcheck disable=SC2086
-exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_TASK_CONSOLE_PROPS} \
+exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_TASK_CONSOLE_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
         -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 \
         -jar "${KOGITO_HOME}"/bin/kogito-task-console-runner.jar

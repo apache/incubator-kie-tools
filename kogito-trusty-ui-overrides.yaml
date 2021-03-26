@@ -25,7 +25,7 @@ ports:
 - value: 8080
 
 modules:
-  install:
+  install: 
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
   - name: org.kie.kogito.logging
@@ -33,6 +33,7 @@ modules:
     version: "11-headless"
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.trusty.ui
+  - name: org.kie.kogito.security.custom.truststores
 
 run:
   workdir: "/home/kogito"

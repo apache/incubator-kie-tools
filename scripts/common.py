@@ -19,7 +19,7 @@ MODULES = {"kogito-data-index-common", "kogito-data-index-mongodb",
            "kogito-persistence", "kogito-runtime-native",
            "kogito-runtime-jvm", "kogito-builder",
            "kogito-s2i-core", "kogito-system-user",
-           "kogito-jit-runner"}
+           "kogito-jit-runner", "kogito-custom-truststore"}
 MODULE_FILENAME = "module.yaml"
 MODULES_DIR = "modules"
 
