@@ -55,10 +55,12 @@
   <servlet>
     <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
     <servlet-class>org.dashbuilder.external.ExternalComponentServlet</servlet-class>
+    <!--  Enable this parameter to cache components and have a better performance
     <init-param>
       <param-name>cache-control</param-name>
       <param-value>max-age=2592000</param-value>
     </init-param>
+    -->
   </servlet>
   <servlet-mapping>
     <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>

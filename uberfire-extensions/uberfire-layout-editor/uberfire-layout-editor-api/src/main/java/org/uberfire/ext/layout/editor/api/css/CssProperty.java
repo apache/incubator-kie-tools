@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import static org.uberfire.ext.layout.editor.api.css.CssValueType.*;
 import static org.uberfire.ext.layout.editor.api.css.CssAlignment.*;
+import static org.uberfire.ext.layout.editor.api.css.CssFloat.INHERIT;
+import static org.uberfire.ext.layout.editor.api.css.CssFloat.INITIAL;
 import static org.uberfire.ext.layout.editor.api.css.CssTextDecoration.*;
 import static org.uberfire.ext.layout.editor.api.css.CssFontWeight.*;
 import static org.uberfire.ext.layout.editor.api.css.CssFontSize.*;
@@ -55,6 +57,7 @@ public enum CssProperty {
     PADDING_LEFT(LENGTH),
     PADDING_RIGHT(LENGTH),
 
+    FLOAT(NONE, LEFT, RIGHT, INITIAL, INHERIT),
     TEXT_ALIGN(LEFT, CENTER, RIGHT),
     TEXT_DECORATION(NONE, UNDERLINE, OVERLINE, LINE_THROUGH),
     COLOR(CssValueType.COLOR),
@@ -66,8 +69,8 @@ public enum CssProperty {
     private List<CssValueType> supportedValueTypes = new ArrayList<>();
 
     private static List<String> ALL_NAMES = Arrays.stream(CssProperty.values())
-            .map(CssProperty::getName)
-            .collect(Collectors.toList());
+                                                  .map(CssProperty::getName)
+                                                  .collect(Collectors.toList());
 
     CssProperty(CssValueType... supportedTypes) {
         for (CssValueType supportedValueType : supportedTypes) {

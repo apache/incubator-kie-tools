@@ -127,6 +127,7 @@ public class RuntimeEntryPoint {
     public void generalErrorHandling(final Throwable t) {
         defaultRuntimeErrorCallback.error(t);
     }
+    
 
     private void hideLoading() {
         workbench.removeStartupBlocker(RuntimeEntryPoint.class);

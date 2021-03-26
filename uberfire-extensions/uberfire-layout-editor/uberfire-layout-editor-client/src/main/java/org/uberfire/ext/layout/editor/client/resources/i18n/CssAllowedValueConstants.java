@@ -57,5 +57,15 @@ public interface CssAllowedValueConstants extends ConstantsWithLookup {
     String TEXT_DECORATION__OVERLINE();
 
     String TEXT_DECORATION__LINE_THROUGH();
-
+    
+    String FLOAT__NONE();
+    
+    String FLOAT__LEFT();
+    
+    String FLOAT__RIGHT();
+    
+    String FLOAT__INITIAL();
+    
+    String FLOAT__INHERIT();
+    
 }

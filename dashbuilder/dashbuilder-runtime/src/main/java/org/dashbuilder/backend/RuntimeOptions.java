@@ -87,12 +87,24 @@ public class RuntimeOptions {
      */
     private static final String MODEL_FILE_REMOVAL_PROP = "dashbuilder.removeModelFile";
 
+    /**
+     * Boolean property when true will make Dashbuilder Runtime run on dev mode.
+     */
+    private static final String DEV_MODE_PROP = "dashbuilder.dev";
+    
+    /**
+     * Boolean property when true will make dashbuilder watch the models dir to dynamically import models
+     */
+    private static final String WATCH_MODELS_PROP = "dashbuilder.models.watch";
+
     private boolean multipleImport;
     private boolean datasetPartition;
     private boolean componentPartition;
     private boolean allowExternal;
     private boolean modelUpdate;
     private boolean removeModelFile;
+    private boolean devMode;
+    boolean watchModels;
     private String importFileLocation;
     private String importsBaseDir;
     private int uploadSize;
@@ -109,7 +121,8 @@ public class RuntimeOptions {
         componentPartition = booleanProp(COMPONENT_PARTITION_PROP, Boolean.TRUE);
         modelUpdate = booleanProp(MODEL_UPDATE_PROP, Boolean.TRUE);
         removeModelFile = booleanProp(MODEL_FILE_REMOVAL_PROP, Boolean.FALSE);
-
+        devMode = booleanProp(DEV_MODE_PROP, Boolean.FALSE);
+        watchModels = booleanProp(WATCH_MODELS_PROP, Boolean.FALSE);
         uploadSize = DEFAULT_UPLOAD_SIZE_KB;
 
         String uploadSizeStr = System.getProperty(UPLOAD_SIZE_PROP);
@@ -185,11 +198,21 @@ public class RuntimeOptions {
     }
 
     public boolean isModelUpdate() {
-        return modelUpdate;
+        // dev mode forces model update
+        return modelUpdate || devMode;
     }
 
     public boolean isRemoveModelFile() {
         return removeModelFile;
+    }
+
+    public boolean isDevMode() {
+        return devMode;
+    }
+    
+    public boolean isWatchModels() {
+        // dev mode requires to watch models
+        return watchModels || devMode;
     }
 
     public String buildFilePath(String fileId) {

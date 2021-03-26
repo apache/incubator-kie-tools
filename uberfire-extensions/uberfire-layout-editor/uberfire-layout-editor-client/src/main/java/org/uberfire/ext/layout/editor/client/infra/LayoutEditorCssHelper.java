@@ -57,6 +57,7 @@ public class LayoutEditorCssHelper {
 
         propertyNameMapI18n.put(CssProperty.WIDTH, PropertiesConstants.INSTANCE.width());
         propertyNameMapI18n.put(CssProperty.HEIGHT, PropertiesConstants.INSTANCE.height());
+        propertyNameMapI18n.put(CssProperty.FLOAT, PropertiesConstants.INSTANCE.float_property());
         propertyNameMapI18n.put(CssProperty.BACKGROUND_COLOR, PropertiesConstants.INSTANCE.background_color());
         propertyNameMapI18n.put(CssProperty.MARGIN_TOP, PropertiesConstants.INSTANCE.margin_top());
         propertyNameMapI18n.put(CssProperty.MARGIN_BOTTOM, PropertiesConstants.INSTANCE.margin_bottom());
@@ -196,6 +197,7 @@ public class LayoutEditorCssHelper {
         PropertyEditorCategory category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
         category.withField(createField(container, CssProperty.WIDTH));
         category.withField(createField(container, CssProperty.HEIGHT));
+        category.withField(createField(container, CssProperty.FLOAT));
         category.withField(createField(container, CssProperty.BACKGROUND_COLOR));
         result.add(category);
 
@@ -222,6 +224,7 @@ public class LayoutEditorCssHelper {
         PropertyEditorCategory category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
         category.withField(createField(row, CssProperty.WIDTH));
         category.withField(createField(row, CssProperty.HEIGHT));
+        category.withField(createField(row, CssProperty.FLOAT));
         category.withField(createField(row, CssProperty.BACKGROUND_COLOR));
         result.add(category);
 
@@ -232,7 +235,7 @@ public class LayoutEditorCssHelper {
         category.withField(createField(row, CssProperty.MARGIN_RIGHT));
         result.add(category);
 
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PADDING);
+        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
         category.withField(createField(row, CssProperty.PADDING_TOP));
         category.withField(createField(row, CssProperty.PADDING_BOTTOM));
         category.withField(createField(row, CssProperty.PADDING_LEFT));
@@ -276,6 +279,7 @@ public class LayoutEditorCssHelper {
         category.withField(createField(propertyMap, CssProperty.WIDTH));
         category.withField(createField(propertyMap, CssProperty.HEIGHT));
         category.withField(createField(propertyMap, CssProperty.BACKGROUND_COLOR));
+        category.withField(createField(propertyMap, CssProperty.FLOAT));
         result.add(category);
 
         category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_MARGIN);

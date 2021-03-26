@@ -23,11 +23,11 @@ import org.dashbuilder.displayer.PieChartSettingsBuilder;
 public class PieChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuilder<PieChartSettingsBuilderImpl> implements PieChartSettingsBuilder<PieChartSettingsBuilderImpl> {
 
     protected DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings( DisplayerType.PIECHART );
+        return new DisplayerSettings(DisplayerType.PIECHART, DisplayerSubType.PIE);
     }
 
-    public PieChartSettingsBuilderImpl set3d( boolean b ) {
-        displayerSettings.setChart3D( b );
+    public PieChartSettingsBuilderImpl set3d(boolean b) {
+        displayerSettings.setChart3D(b);
         return this;
     }
 

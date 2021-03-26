@@ -85,4 +85,6 @@ public interface PropertiesConstants
 
     String length_help();
 
+    String float_property();
+
 }

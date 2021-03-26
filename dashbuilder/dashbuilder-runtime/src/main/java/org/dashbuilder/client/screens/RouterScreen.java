@@ -19,6 +19,7 @@ package org.dashbuilder.client.screens;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -30,6 +31,7 @@ import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.perspective.EmptyPerspective;
 import org.dashbuilder.client.perspective.RuntimePerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
@@ -42,7 +44,7 @@ import org.uberfire.lifecycle.OnOpen;
 
 /**
  * 
- * Responsible for handling screens transition and communication. No view for this screen is required.
+ * Responsible for handling screens transition and communication. 
  * 
  */
 @ApplicationScoped
@@ -150,5 +152,14 @@ public class RouterScreen {
                                               GWT.getHostPageBaseURL());
         doRoute();
     }
-
+    
+    public void onUpdatedRuntimeModelEvent(@Observes UpdatedRuntimeModelEvent updatedRuntimeModelEvent) {
+        String updatedModel = updatedRuntimeModelEvent.getRuntimeModelId();
+        
+        if (updatedModel.equals(clientLoader.getImportId())) {
+            doRoute();
+            runtimeScreen.setKeepHistory(true);
+        }
+    }
+    
 }

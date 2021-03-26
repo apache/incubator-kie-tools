@@ -137,7 +137,7 @@ public class DisplayerSettingsJSONMarshaller {
             json.put(DATASET_LOOKUP_PREFIX, dataSetLookupJsonMarshaller.toJson(dataSetLookup));
         }
         else {
-            throw new RuntimeException("Displayer settings dataset lookup not specified");
+            throw new RuntimeException("Displayer settings data set lookup not specified or data set is empty.");
         }
 
         // Column settings

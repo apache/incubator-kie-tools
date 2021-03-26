@@ -269,6 +269,9 @@ public class RuntimeModelRegistryImplTest {
         keys.add(importId1);
         keys.add(importId2);
         when(runtimeModels.keySet()).thenReturn(keys);
+        
+        when(runtimeModels.remove(importId1)).thenReturn(mock(RuntimeModel.class));
+        when(runtimeModels.remove(importId2)).thenReturn(mock(RuntimeModel.class));
 
         registry.clear();
 

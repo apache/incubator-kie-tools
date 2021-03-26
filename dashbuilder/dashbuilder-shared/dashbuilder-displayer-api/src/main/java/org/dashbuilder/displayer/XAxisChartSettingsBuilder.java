@@ -37,4 +37,17 @@ public interface XAxisChartSettingsBuilder<T extends XAxisChartSettingsBuilder> 
      * @return The DisplayerSettingsBuilder instance that is being used to configure a DisplayerSettings.
      */
     T yAxisTitle(String title);
+    
+    /**
+     * Set if the Y axis labels should be displayed
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a DisplayerSettings.
+     */
+    T yAxisShowLabels(boolean axisShowLabels);
+    
+    /**
+     * Set if the X axis labels should be displayed
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a DisplayerSettings.
+     */
+    T xAxisShowLabels(boolean axisShowLabels);
+
 }

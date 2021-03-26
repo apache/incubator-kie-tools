@@ -124,7 +124,7 @@ public class RuntimeClientLoader {
         navigationManager.setDefaultNavTree(runtimeModel.getNavTree());
     }
 
-    private String getImportId() {
+    public String getImportId() {
         return Window.Location.getParameter(IMPORT_ID_PARAM);
     }
 

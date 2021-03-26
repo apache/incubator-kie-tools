@@ -83,6 +83,13 @@ public interface RuntimeModelRegistry {
      * The id of the runtime model to be removed.
      */
     void remove(String runtimeModelid);
+    
+    /**
+     * Unregister a model from memory
+     * @param runtimeModelid
+     * The id of the runtime model to be unregistered.
+     */
+    void unregister(String runtimeModelid);
 
     /**
      * List all models that are currently available.

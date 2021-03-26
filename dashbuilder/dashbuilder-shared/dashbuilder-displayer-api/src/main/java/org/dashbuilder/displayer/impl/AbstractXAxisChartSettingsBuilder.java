@@ -18,5 +18,4 @@ package org.dashbuilder.displayer.impl;
 import org.dashbuilder.displayer.XAxisChartSettingsBuilder;
 
 public abstract class AbstractXAxisChartSettingsBuilder<T extends XAxisChartSettingsBuilder> extends AbstractChartSettingsBuilder<T> {
-
 }

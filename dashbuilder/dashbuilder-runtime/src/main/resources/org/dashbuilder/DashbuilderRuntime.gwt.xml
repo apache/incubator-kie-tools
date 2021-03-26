@@ -33,8 +33,8 @@
 	<inherits name="org.dashbuilder.renderer.C3Renderer" />
   <inherits name="org.dashbuilder.DashbuilderKieServerAPI"/>
 
-	<source path='client' />
-	<source path='shared' />
+	<source path="client" />
+	<source path="shared" />
 
 	<!-- We don't need to support IE10 or older -->
 	<!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->

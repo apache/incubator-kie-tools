@@ -17,12 +17,16 @@ package org.dashbuilder.client.screens;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.client.perspective.EmptyPerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.UberElemental;
 
 /**
@@ -39,6 +43,12 @@ public class EmptyScreen {
 
     @Inject
     View view;
+    
+    @Inject
+    RouterScreen router;
+
+    @Inject
+    PerspectiveManager perspectiveManager;
     
     public interface View extends UberElemental<EmptyScreen> {
         
@@ -57,6 +67,17 @@ public class EmptyScreen {
     @WorkbenchPartView
     protected View getPart() {
         return view;
+    }
+    
+    public void onModelUpdated(@Observes UpdatedRuntimeModelEvent event) {
+        reload();
+    }
+
+    private void reload() {
+        String currentPlace = perspectiveManager.getCurrentPerspective().getIdentifier();
+        if (EmptyPerspective.ID.equals(currentPlace)) {
+            router.listDashboards();
+        }
     }
 
 }

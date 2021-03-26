@@ -21,6 +21,8 @@ import java.util.List;
 import org.dashbuilder.external.model.ExternalComponent;
 
 public interface ComponentLoader {
+    
+    public static final String DESCRIPTOR_FILE = "manifest.json";
 
     /**
      * Load the list of components externally created by users .

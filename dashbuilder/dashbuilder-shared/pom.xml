@@ -21,6 +21,7 @@
     <module>dashbuilder-services-api</module>
     <module>dashbuilder-kie-server-api</module>
     <module>dashbuilder-js</module>
+    <module>dashbuilder-dsl</module>
   </modules>
 
 </project>

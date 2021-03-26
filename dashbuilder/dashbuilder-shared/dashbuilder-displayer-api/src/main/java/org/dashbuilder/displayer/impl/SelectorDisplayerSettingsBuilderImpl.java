@@ -17,11 +17,30 @@ package org.dashbuilder.displayer.impl;
 
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.SelectorDisplayerSettingsBuilder;
 
 public class SelectorDisplayerSettingsBuilderImpl extends AbstractSelectorSettingsBuilder<SelectorDisplayerSettingsBuilderImpl> implements SelectorDisplayerSettingsBuilder<SelectorDisplayerSettingsBuilderImpl> {
 
     protected DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings( DisplayerType.SELECTOR );
+        return new DisplayerSettings(DisplayerType.SELECTOR, DisplayerSubType.SELECTOR_DROPDOWN);
+    }
+
+    @Override
+    public SelectorDisplayerSettingsBuilderImpl subType_Dropdown() {
+        displayerSettings.setSubtype(DisplayerSubType.SELECTOR_DROPDOWN);
+        return this;
+    }
+
+    @Override
+    public SelectorDisplayerSettingsBuilderImpl subType_Slider() {
+        displayerSettings.setSubtype(DisplayerSubType.SELECTOR_SLIDER);
+        return this;
+    }
+
+    @Override
+    public SelectorDisplayerSettingsBuilderImpl subType_Labels() {
+        displayerSettings.setSubtype(DisplayerSubType.SELECTOR_LABELS);
+        return this;
     }
 }

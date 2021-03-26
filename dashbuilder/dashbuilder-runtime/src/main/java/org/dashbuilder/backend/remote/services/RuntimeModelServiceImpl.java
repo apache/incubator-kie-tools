@@ -108,7 +108,7 @@ public class RuntimeModelServiceImpl implements RuntimeModelService {
             String modelFilePath = modelPath.get();
             if (lastModified(modelFilePath) > runtimeModel.getLastModified()) {
                 logger.info("Replacing model {}", id);
-                registry.remove(id);
+                registry.unregister(id);
                 return registry.registerFile(modelFilePath);
             }
         }

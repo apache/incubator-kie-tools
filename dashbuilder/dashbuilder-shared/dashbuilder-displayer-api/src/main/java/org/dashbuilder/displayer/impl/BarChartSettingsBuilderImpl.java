@@ -23,10 +23,10 @@ import org.dashbuilder.displayer.DisplayerType;
 public class BarChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuilder<BarChartSettingsBuilderImpl> implements BarChartSettingsBuilder<BarChartSettingsBuilderImpl> {
 
     protected DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings( DisplayerType.BARCHART );
+        return new DisplayerSettings(DisplayerType.BARCHART, DisplayerSubType.BAR);
     }
 
-    public BarChartSettingsBuilderImpl set3d( boolean b ) {
+    public BarChartSettingsBuilderImpl set3d(boolean b) {
         displayerSettings.setChart3D(b);
         return this;
     }

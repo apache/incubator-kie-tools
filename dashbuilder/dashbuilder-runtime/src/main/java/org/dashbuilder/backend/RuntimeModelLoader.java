@@ -17,6 +17,7 @@
 package org.dashbuilder.backend;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
@@ -49,8 +50,8 @@ public class RuntimeModelLoader {
     RuntimeOptions runtimeOptions;
 
     @PostConstruct
-    private void doInitialImport() {
-        createBaseDir();
+    private void runtimeModelSetup() {
+        setupBaseDir();
         runtimeOptions.importFileLocation().ifPresent(importFile -> {
             logger.info("Importing file {}", importFile);
             runtimeModelRegistry.registerFile(importFile);
@@ -66,14 +67,13 @@ public class RuntimeModelLoader {
     /**
      * Create, if do not exist, the base directory for runtime models
      */
-    protected void createBaseDir() {
-        java.nio.file.Path baseDirPath = Paths.get(runtimeOptions.getImportsBaseDir());
-        baseDirPath.toFile().mkdirs();
+    protected void setupBaseDir() {
+        Paths.get(runtimeOptions.getImportsBaseDir()).toFile().mkdirs();
     }
 
     protected void loadAvailableModels() {
         logger.info("Registering existing models");
-        try (Stream<java.nio.file.Path> walk = Files.walk(Paths.get(runtimeOptions.getImportsBaseDir()), 1)) {
+        try (Stream<Path> walk = Files.walk(Paths.get(runtimeOptions.getImportsBaseDir()), 1)) {
             walk.filter(p -> p.toFile().isFile() && p.toString().toLowerCase().endsWith(DASHBOARD_EXTENSION))
                 .map(Object::toString)
                 .forEach(p -> {

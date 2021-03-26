@@ -20,26 +20,44 @@ import java.text.ParseException;
 
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.ExpenseReportsData;
+import org.dashbuilder.displayer.ColumnSettings;
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.AbstractDisplayerTest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ExternalComponentDisplayerTest extends AbstractDisplayerTest {
-    
+
     @Test
     public void testBuildData() throws ParseException {
         DataSet dataSet = ExpenseReportsData.INSTANCE.toDataSet();
+        DisplayerSettings settings = mock(DisplayerSettings.class);
+        ColumnSettings clSettings = mock(ColumnSettings.class);
         ExternalComponentDisplayer displayer = new ExternalComponentDisplayer();
+
+        when(settings.getColumnSettings(anyString())).thenReturn(clSettings);
+
+        displayer.setDisplayerSettings(settings);
+        displayer.setEvaluator(new AbstractDisplayer.ExpressionEval() {
+
+            @Override
+            public String evalExpression(String value, String expression) {
+                return value;
+            }
+        });
         String[][] buildData = displayer.buildData(dataSet);
-        
+
         for (int i = 0; i < buildData.length; i++) {
             for (int j = 0; j < buildData[i].length; j++) {
                 assertEquals(buildData[i][j], dataSet.getValueAt(i, j).toString());
             }
         }
-        
+
     }
-    
 
 }

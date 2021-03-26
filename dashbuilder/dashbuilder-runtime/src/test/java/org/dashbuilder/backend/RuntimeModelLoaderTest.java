@@ -68,7 +68,7 @@ public class RuntimeModelLoaderTest {
         String tempPath = Paths.get(baseTempDir.toString(), "tmp").toString();
         when(runtimeOptions.getImportsBaseDir()).thenReturn(tempPath);
         assertFalse(Paths.get(tempPath).toFile().exists());
-        runtimeModelLoader.createBaseDir();
+        runtimeModelLoader.setupBaseDir();
         assertTrue(Paths.get(tempPath).toFile().exists());
     }
 

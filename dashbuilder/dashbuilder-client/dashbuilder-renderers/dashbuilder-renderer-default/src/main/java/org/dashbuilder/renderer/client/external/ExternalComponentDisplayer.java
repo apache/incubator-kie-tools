@@ -24,6 +24,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
+import org.dashbuilder.common.client.StringUtils;
 import org.dashbuilder.common.client.widgets.FilterLabel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.DataColumn;
@@ -125,6 +127,7 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
         externalComponentPresenter.sendMessage(message);
 
         view.setSize(displayerSettings.getChartWidth(), displayerSettings.getChartHeight());
+        
         view.setMargin(displayerSettings.getChartMarginTop(),
                        displayerSettings.getChartMarginRight(),
                        displayerSettings.getChartMarginBottom(),
@@ -163,7 +166,7 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
         for (int i = 0; i < rows; i++) {
             String[] line = new String[cols];
             for (int j = 0; j < cols; j++) {
-                line[j] = columnValueToString(ds.getValueAt(i, j));
+                line[j] = getEvaluatedValue(ds, i, j);
             }
             result[i] = line;
         }
@@ -234,6 +237,21 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
             }
             updateFilterStatus();
         }
+    }
+
+    private String getEvaluatedValue(DataSet ds, int i, int j) {
+        String value = columnValueToString(ds.getValueAt(i, j));
+        try {
+            String columnId = ds.getColumnByIndex(j).getId();
+            ColumnSettings settings = displayerSettings.getColumnSettings(columnId);
+            String expression = settings.getValueExpression();
+            if (!StringUtils.isBlank(expression)) {
+                return getEvaluator().evalExpression(value, expression);
+            }
+        } catch (Exception e) {
+            DomGlobal.console.log("Error evaluating value at " + i + "," + j);
+        }
+        return value;
     }
 
 }

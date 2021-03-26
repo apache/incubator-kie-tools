@@ -69,5 +69,36 @@ public class RuntimeScreenTest {
         runtimeScreen.goToIndex(templates);
         verify(placeManager, times(0)).goTo(anyString());
     }
+    
+    @Test
+    public void testGoToIndexWithHistoryAndKeepIndex() {
+        List<LayoutTemplate> templates = Arrays.asList(new LayoutTemplate("page1"),
+                                                       new LayoutTemplate("page2"));
+        runtimeScreen.keepHistory = true;
+        runtimeScreen.lastVisited = "page1";
+        runtimeScreen.goToIndex(templates);
+        verify(placeManager).goTo("page1");
+    }
+    
+    @Test
+    public void testGoToIndexWithoutHistory() {
+        List<LayoutTemplate> templates = Arrays.asList(new LayoutTemplate("page1"),
+                                                       new LayoutTemplate("page2"));
+        runtimeScreen.keepHistory = false;
+        runtimeScreen.lastVisited = "page1";
+        runtimeScreen.goToIndex(templates);
+        verify(placeManager, times(0)).goTo(anyString());
+    }
+    
+    @Test
+    public void testGoToIndexWithDeletedPage() {
+        List<LayoutTemplate> templates = Arrays.asList(new LayoutTemplate("page1"),
+                                                       new LayoutTemplate("page2"));
+        runtimeScreen.keepHistory = true;
+        runtimeScreen.lastVisited = "deleted";
+        runtimeScreen.goToIndex(templates);
+        verify(placeManager, times(0)).goTo(anyString());
+    }
+    
 
 }

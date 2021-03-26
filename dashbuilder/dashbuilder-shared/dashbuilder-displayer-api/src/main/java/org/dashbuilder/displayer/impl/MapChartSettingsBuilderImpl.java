@@ -24,7 +24,7 @@ import org.dashbuilder.displayer.MapColorScheme;
 public class MapChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuilder<MapChartSettingsBuilderImpl> implements MapChartSettingsBuilder<MapChartSettingsBuilderImpl> {
 
     protected DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings(DisplayerType.MAP);
+        return new DisplayerSettings(DisplayerType.MAP, DisplayerSubType.MAP_REGIONS);
     }
 
     @Override

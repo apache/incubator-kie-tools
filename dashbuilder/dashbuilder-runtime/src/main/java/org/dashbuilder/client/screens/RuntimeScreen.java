@@ -64,11 +64,15 @@ public class RuntimeScreen {
 
     @Inject
     PlaceManager placeManager;
-    
+
     @Inject
     AppNavBar appNavBar;
 
     private RuntimeModel currentRuntimeModel;
+
+    String lastVisited;
+
+    boolean keepHistory;
 
     @WorkbenchPartTitle
     public String getScreenTitle() {
@@ -85,14 +89,15 @@ public class RuntimeScreen {
         refreshMenus();
     }
 
-    private void refreshMenus() {
-        NavTree navTree = currentRuntimeModel.getNavTree();
-        Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
-        view.addMenus(menus);
-    }
-
     public void goToIndex(List<LayoutTemplate> templates) {
-        if (templates.size() == 1) {
+        if (keepHistory &&
+            lastVisited != null &&
+            templates.stream().anyMatch(t -> t.getName().equals(lastVisited))) {
+            keepHistory = false;
+            placeManager.goTo(lastVisited);
+        }
+
+        else if (templates.size() == 1) {
             placeManager.goTo(templates.get(0).getName());
         } else {
             templates.stream()
@@ -103,17 +108,30 @@ public class RuntimeScreen {
         }
     }
 
+    public void setKeepHistory(boolean keepHistory) {
+        this.keepHistory = keepHistory;
+    }
+
     void onPerspectiveChange(@Observes PerspectiveChange perspectiveChange) {
         if (currentRuntimeModel != null) {
             String perspective = perspectiveChange.getIdentifier();
-            boolean externalMenuEnabled = currentRuntimeModel.getLayoutTemplates()
-                                                             .stream()
-                                                             .anyMatch(lt -> lt.getName().equals(perspective));
-            appNavBar.setExternalMenuEnabled(externalMenuEnabled);
+            boolean isLayoutTemplate = currentRuntimeModel.getLayoutTemplates()
+                                                                   .stream()
+                                                                   .anyMatch(lt -> lt.getName().equals(perspective));
+            appNavBar.setExternalMenuEnabled(isLayoutTemplate);
             refreshMenus();
+            if (isLayoutTemplate) {
+                lastVisited = perspective;
+            }
         } else {
             appNavBar.setupMenus();
         }
+    }
+
+    private void refreshMenus() {
+        NavTree navTree = currentRuntimeModel.getNavTree();
+        Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
+        view.addMenus(menus);
     }
 
 }

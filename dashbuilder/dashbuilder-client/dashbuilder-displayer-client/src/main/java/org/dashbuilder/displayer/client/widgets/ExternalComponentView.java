@@ -105,7 +105,7 @@ public class ExternalComponentView extends Composite implements ExternalComponen
     public void configurationOk() {
         showComponent();
     }
-
+    
     private void showConfigurationIssue() {
         configurationIssueRoot.style.display = "block";
         externalComponentIFrame.style.display = "none";
@@ -129,4 +129,5 @@ public class ExternalComponentView extends Composite implements ExternalComponen
         }
         return null;
     }
+
 }

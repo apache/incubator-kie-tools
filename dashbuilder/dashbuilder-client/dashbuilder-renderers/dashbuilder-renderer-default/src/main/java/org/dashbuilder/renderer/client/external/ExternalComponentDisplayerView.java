@@ -71,7 +71,7 @@ public class ExternalComponentDisplayerView extends AbstractErraiDisplayerView<E
                                                                                      asPixel(bottom),
                                                                                      asPixel(left)));
     }
-
+    
     private String asPixel(int value) {
         return value + "px";
     }

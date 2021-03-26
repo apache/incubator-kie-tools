@@ -53,4 +53,25 @@ public interface SelectorDisplayerSettingsBuilder<T extends SelectorDisplayerSet
      * @return The DisplayerSettingsBuilder instance that is being used to configure a selector.
      */
     T multiple(boolean multiple);
+    
+    
+    /**
+     * Set this selector chart's subtype to a selector Drop Down 
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a selector.
+     */
+    T subType_Dropdown();
+    
+    
+    /**
+     * Set this selector chart's subtype to a selector Slider. Used with dates and numeric values.
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a selector.
+     */
+    T subType_Slider();
+    
+    /**
+     * Set this selector chart's subtype to a selector Labels. where labels will allow users to select a value
+     * @return The DisplayerSettingsBuilder instance that is being used to configure a selector.
+     */
+    T subType_Labels();
+
 }

@@ -19,11 +19,22 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.ExternalDisplayerSettingsBuilder;
 
-public class ExternalDisplayerSettingsBuilderImpl extends AbstractDisplayerSettingsBuilder<ExternalDisplayerSettingsBuilderImpl> implements ExternalDisplayerSettingsBuilder<ExternalDisplayerSettingsBuilderImpl> {
+public class ExternalDisplayerSettingsBuilderImpl extends AbstractChartSettingsBuilder<ExternalDisplayerSettingsBuilderImpl> implements ExternalDisplayerSettingsBuilder<ExternalDisplayerSettingsBuilderImpl> {
+
+    protected DisplayerSettings createDisplayerSettings() {
+        return new DisplayerSettings(DisplayerType.EXTERNAL_COMPONENT);
+    }
 
     @Override
-    public DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings(DisplayerType.EXTERNAL_COMPONENT);
+    public ExternalDisplayerSettingsBuilderImpl componentId(String id) {
+        this.displayerSettings.setComponentId(id);
+        return this;
+    }
+
+    @Override
+    public ExternalDisplayerSettingsBuilderImpl componentProperty(String key, String value) {
+        this.displayerSettings.setComponentProperty(key, value);
+        return this;
     }
 
 }

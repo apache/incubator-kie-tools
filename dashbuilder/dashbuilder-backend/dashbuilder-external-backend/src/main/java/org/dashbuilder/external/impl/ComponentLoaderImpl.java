@@ -49,7 +49,6 @@ public class ComponentLoaderImpl implements ComponentLoader {
 
     public static final String EXTERNAL_COMP_DIR_PROP = "dashbuilder.components.dir";
     public static final String EXTERNAL_COMP_ENABLE_PROP = "dashbuilder.components.enable";
-    public static final String DESCRIPTOR_FILE = "manifest.json";
 
     private static final String DEFAULT_COMPONENTS_PATH = "/tmp/dashbuilder/components/";
 
@@ -112,7 +111,7 @@ public class ComponentLoaderImpl implements ComponentLoader {
     public String getProvidedComponentsPath() {
         return providedComponentsInfo.getInternalComponentsRootPath();
     }
-    
+
     private ExternalComponent readInternalComponent(String componentId) {
         String internalComponentDescriptor = "/" + providedComponentsInfo.getInternalComponentsRootPath() + "/" + componentId + "/" + DESCRIPTOR_FILE;
         InputStream is = this.getClass().getResourceAsStream(internalComponentDescriptor);

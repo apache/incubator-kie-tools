@@ -36,6 +36,7 @@ import org.apache.commons.io.FileUtils;
 import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.event.RemovedRuntimeModelEvent;
+import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.service.ImportValidationService;
@@ -62,6 +63,9 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
 
     @Inject
     ImportValidationService importValidationService;
+
+    @Inject
+    Event<UpdatedRuntimeModelEvent> runtimeModelUpdatedEvent;
 
     @Inject
     Event<RemovedRuntimeModelEvent> removedRuntimeModelEvent;
@@ -132,9 +136,7 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
 
     @Override
     public void remove(String modelId) {
-        if (runtimeModels.remove(modelId) != null) {
-            removeModelReferences(modelId);
-        }
+        internalRemove(modelId, true);
     }
 
     public Optional<RuntimeModel> register(String id, InputStream fileStream) {
@@ -147,6 +149,11 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
             }
             RuntimeModel runtimeModel = parser.parse(id, fileStream);
             runtimeModels.put(id, runtimeModel);
+
+            if (options.isDevMode()) {
+                runtimeModelUpdatedEvent.fire(new UpdatedRuntimeModelEvent(id));
+            }
+
             return Optional.of(runtimeModel);
         } catch (Exception e) {
             throw new IllegalArgumentException("Error parsing import model.", e);
@@ -160,14 +167,21 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
 
     @Override
     public void clear() {
-        availableModels().forEach(this::removeModelReferences);
+        availableModels().forEach(this::remove);
         runtimeModels.clear();
     }
 
-    private void removeModelReferences(String modelId) {
-        removedRuntimeModelEvent.fire(new RemovedRuntimeModelEvent(modelId));
-        if (options.isRemoveModelFile()) {
-            removeModelFile(modelId);
+    @Override
+    public void unregister(String id) {
+        internalRemove(id, false);
+    }
+
+    public void internalRemove(String modelId, boolean deleteFile) {
+        if (runtimeModels.remove(modelId) != null) {
+            removedRuntimeModelEvent.fire(new RemovedRuntimeModelEvent(modelId));
+            if (options.isRemoveModelFile() && deleteFile) {
+                removeModelFile(modelId);
+            }
         }
     }
 

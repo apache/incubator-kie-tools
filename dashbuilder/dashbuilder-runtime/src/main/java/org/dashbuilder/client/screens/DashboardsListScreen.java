@@ -20,14 +20,19 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.widgets.DashboardCard;
+import org.dashbuilder.shared.event.RemovedRuntimeModelEvent;
+import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.lifecycle.OnClose;
 
@@ -42,6 +47,12 @@ public class DashboardsListScreen {
     public static final String ID = "ListDashboardsScreen";
 
     private static AppConstants i18n = AppConstants.INSTANCE;
+
+    @Inject
+    RouterScreen router;
+
+    @Inject
+    PerspectiveManager perspectiveManager;
 
     public interface View extends UberElemental<DashboardsListScreen> {
 
@@ -88,6 +99,21 @@ public class DashboardsListScreen {
     public void clear() {
         dashboardCardInstance.destroyAll();
         view.clear();
+    }
+
+    public void onModelUpdated(@Observes UpdatedRuntimeModelEvent event) {
+        reload();
+    }
+
+    public void onModelRemoved(@Observes RemovedRuntimeModelEvent event) {
+        reload();
+    }
+
+    private void reload() {
+        String currentPlace = perspectiveManager.getCurrentPerspective().getIdentifier();
+        if (DashboardsListPerspective.ID.equals(currentPlace)) {
+            router.listDashboards();
+        }
     }
 
 }

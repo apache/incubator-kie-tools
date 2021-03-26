@@ -23,7 +23,7 @@ import org.dashbuilder.displayer.DisplayerType;
 public class AreaChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuilder<AreaChartSettingsBuilderImpl> implements AreaChartSettingsBuilder<AreaChartSettingsBuilderImpl> {
 
     protected DisplayerSettings createDisplayerSettings() {
-        return new DisplayerSettings( DisplayerType.AREACHART );
+        return new DisplayerSettings(DisplayerType.AREACHART, DisplayerSubType.AREA);
     }
 
     @Override

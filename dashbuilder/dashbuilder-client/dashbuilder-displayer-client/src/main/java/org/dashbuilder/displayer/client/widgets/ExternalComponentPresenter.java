@@ -57,6 +57,7 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
         void configurationIssue(String message);
 
         void configurationOk();
+
     }
 
     @Inject
@@ -95,12 +96,12 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
     public void prepare() {
         view.makeReady();
     }
-    
+
     @Override
     public void onConfigurationIssue(String message) {
         view.configurationIssue(message);
     }
-    
+
     @Override
     public void configurationOk() {
         view.configurationOk();

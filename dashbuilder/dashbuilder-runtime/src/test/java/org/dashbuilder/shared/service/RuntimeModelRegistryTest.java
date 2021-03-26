@@ -107,6 +107,11 @@ public class RuntimeModelRegistryTest {
         public void clear() {
 
         }
+
+        @Override
+        public void unregister(String runtimeModelid) {
+                        
+        }
     }
 
 }
