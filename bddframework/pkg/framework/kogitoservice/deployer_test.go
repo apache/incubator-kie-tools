@@ -71,7 +71,7 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 			Message: "Headaches",
 			Status:  v1.ConditionFalse,
 			Reason:  string(api.ResourceNotReady),
-			Type:    string(api.KogitoInfraFailure),
+			Type:    string(api.KogitoInfraConfigured),
 		},
 	}
 	infraInfinispan.GetStatus().SetConditions(infraCondition)

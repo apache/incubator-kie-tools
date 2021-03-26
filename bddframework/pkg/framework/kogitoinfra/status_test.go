@@ -47,13 +47,29 @@ func TestUpdateBaseStatus(t *testing.T) {
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	statusHandler := NewStatusHandler(context)
-	err := errors.New("error")
-	statusHandler.UpdateBaseStatus(instance, &err)
+	err1 := errors.New("error1")
+	statusHandler.UpdateBaseStatus(instance, &err1)
 	test.AssertFetchMustExist(t, cli, instance)
 	conditions := *instance.Status.Conditions
-	assert.Equal(t, 2, len(conditions))
-	assert.Equal(t, string(api.KogitoInfraFailure), conditions[0].Type)
+	assert.Equal(t, 1, len(conditions))
+	assert.Equal(t, string(api.KogitoInfraConfigured), conditions[0].Type)
+	assert.Equal(t, v1.ConditionFalse, conditions[0].Status)
+	assert.Equal(t, "error1", conditions[0].Message)
+
+	err2 := errors.New("error2")
+	statusHandler.UpdateBaseStatus(instance, &err2)
+	test.AssertFetchMustExist(t, cli, instance)
+	conditions = *instance.Status.Conditions
+	assert.Equal(t, 1, len(conditions))
+	assert.Equal(t, string(api.KogitoInfraConfigured), conditions[0].Type)
+	assert.Equal(t, v1.ConditionFalse, conditions[0].Status)
+	assert.Equal(t, "error2", conditions[0].Message)
+
+	var err3 error
+	statusHandler.UpdateBaseStatus(instance, &err3)
+	test.AssertFetchMustExist(t, cli, instance)
+	conditions = *instance.Status.Conditions
+	assert.Equal(t, 1, len(conditions))
+	assert.Equal(t, string(api.KogitoInfraConfigured), conditions[0].Type)
 	assert.Equal(t, v1.ConditionTrue, conditions[0].Status)
-	assert.Equal(t, string(api.KogitoInfraSuccess), conditions[1].Type)
-	assert.Equal(t, v1.ConditionFalse, conditions[1].Status)
 }

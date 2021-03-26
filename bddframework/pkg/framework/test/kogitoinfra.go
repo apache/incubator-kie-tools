@@ -50,7 +50,7 @@ func CreateFakeKogitoKafka(namespace string) api.KogitoInfraInterface {
 			},
 			Conditions: &[]v1.Condition{
 				{
-					Type:   string(api.KogitoInfraSuccess),
+					Type:   string(api.KogitoInfraConfigured),
 					Status: v1.ConditionTrue,
 				},
 			},
@@ -111,7 +111,7 @@ func CreateFakeKogitoInfinispan(namespace string) api.KogitoInfraInterface {
 			},
 			Conditions: &[]v1.Condition{
 				{
-					Type:   string(api.KogitoInfraSuccess),
+					Type:   string(api.KogitoInfraConfigured),
 					Status: v1.ConditionTrue,
 				},
 			},
@@ -135,7 +135,7 @@ func CreateFakeKogitoKnative(namespace string) api.KogitoInfraInterface {
 		Status: v1beta1.KogitoInfraStatus{
 			Conditions: &[]v1.Condition{
 				{
-					Type:   string(api.KogitoInfraSuccess),
+					Type:   string(api.KogitoInfraConfigured),
 					Status: v1.ConditionTrue,
 				},
 			},

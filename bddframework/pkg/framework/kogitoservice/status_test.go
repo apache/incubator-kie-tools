@@ -88,6 +88,59 @@ func TestReconciliation_RecoverableErrorOccur(t *testing.T) {
 	assert.Equal(t, metav1.ConditionFalse, deployedCondition.Status)
 }
 
+func TestReconciliation_RecoveredAfterError(t *testing.T) {
+	instance := test.CreateFakeDataIndex(t.Name())
+	existingConditions := &[]metav1.Condition{
+		{
+			Type:    string(api.FailedConditionType),
+			Status:  metav1.ConditionTrue,
+			Reason:  "Error",
+			Message: "error",
+		},
+		{
+			Type:    string(api.ProvisioningConditionType),
+			Status:  metav1.ConditionTrue,
+			Reason:  "Provisioning",
+			Message: "Provisioning",
+		},
+		{
+			Type:    string(api.DeployedConditionType),
+			Status:  metav1.ConditionFalse,
+			Reason:  "Error",
+			Message: "error",
+		},
+	}
+	instance.GetStatus().SetConditions(existingConditions)
+	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
+	context := &operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	statusHandler := NewStatusHandler(context)
+	var noError error
+	statusHandler.HandleStatusUpdate(instance, &noError)
+	assert.NotNil(t, instance)
+
+	_, err := kubernetes.ResourceC(cli).Fetch(instance)
+	assert.NoError(t, err)
+	assert.NotNil(t, instance.Status)
+	conditions := *instance.Status.Conditions
+	assert.Len(t, conditions, 3)
+
+	failedCondition := getSpecificCondition(conditions, api.FailedConditionType)
+	assert.NotNil(t, failedCondition)
+	assert.Equal(t, metav1.ConditionFalse, failedCondition.Status)
+
+	provisionedCondition := getSpecificCondition(conditions, api.ProvisioningConditionType)
+	assert.NotNil(t, provisionedCondition)
+	assert.Equal(t, metav1.ConditionTrue, provisionedCondition.Status)
+
+	deployedCondition := getSpecificCondition(conditions, api.DeployedConditionType)
+	assert.NotNil(t, deployedCondition)
+	assert.Equal(t, metav1.ConditionFalse, deployedCondition.Status)
+}
+
 func TestReconciliation(t *testing.T) {
 	instance := test.CreateFakeDataIndex(t.Name())
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()

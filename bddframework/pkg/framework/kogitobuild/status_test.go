@@ -63,9 +63,13 @@ func TestStatusChangeWhenConsecutiveErrorsOccur(t *testing.T) {
 	// start queueing
 	test.AssertFetchMustExist(t, cli, instance)
 	conditions = *instance.Status.Conditions
-	assert.Equal(t, 2, len(conditions))
-	assert.Equal(t, string(api.KogitoBuildRunning), conditions[0].Type)
-	assert.Equal(t, string(api.KogitoBuildSuccessful), conditions[1].Type)
+	assert.Equal(t, 3, len(conditions))
+	assert.Equal(t, string(api.KogitoBuildFailure), conditions[0].Type)
+	assert.Equal(t, metav1.ConditionTrue, conditions[0].Status)
+	assert.Equal(t, string(api.KogitoBuildRunning), conditions[1].Type)
+	assert.Equal(t, metav1.ConditionTrue, conditions[1].Status)
+	assert.Equal(t, string(api.KogitoBuildSuccessful), conditions[2].Type)
+	assert.Equal(t, metav1.ConditionFalse, conditions[2].Status)
 }
 
 func TestStatusChangeWhenBuildsAreRunning(t *testing.T) {

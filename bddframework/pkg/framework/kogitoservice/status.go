@@ -51,7 +51,9 @@ func (s *statusHandler) HandleStatusUpdate(instance api.KogitoService, err *erro
 }
 
 func (s *statusHandler) ensureResourcesStatusChanges(instance api.KogitoService, errCondition error) (err error) {
-	instance.GetStatus().SetConditions(&[]metav1.Condition{})
+	if instance.GetStatus().GetConditions() == nil {
+		instance.GetStatus().SetConditions(&[]metav1.Condition{})
+	}
 	if errCondition != nil {
 		if err = s.setFailedConditions(instance, reasonForError(errCondition), errCondition); err != nil {
 			return err
@@ -78,7 +80,7 @@ func (s *statusHandler) ensureResourcesStatusChanges(instance api.KogitoService,
 }
 
 func (s *statusHandler) setFailedConditions(instance api.KogitoService, reason api.KogitoServiceConditionReason, errCondition error) error {
-	s.setFailed(instance.GetStatus().GetConditions(), reason, errCondition)
+	s.setFailed(instance.GetStatus().GetConditions(), metav1.ConditionTrue, reason, errCondition.Error())
 	if isReconciliationError(errCondition) {
 		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionTrue, api.ProvisioningInProgressReason)
 	} else {
@@ -98,6 +100,7 @@ func (s *statusHandler) setFailedConditions(instance api.KogitoService, reason a
 }
 
 func (s *statusHandler) handleConditionTransition(instance api.KogitoService) error {
+	s.InvalidateFailedCondition(instance.GetStatus().GetConditions())
 	availableReplicas, err := s.fetchReadyReplicas(instance)
 	if err != nil {
 		return err
@@ -170,31 +173,28 @@ func (s *statusHandler) newDeployedCondition(status metav1.ConditionStatus) meta
 		reason = api.FailedDeployedReason
 	}
 	return metav1.Condition{
-		Type:               string(api.DeployedConditionType),
-		Status:             status,
-		LastTransitionTime: metav1.Now(),
-		Reason:             string(reason),
+		Type:   string(api.DeployedConditionType),
+		Status: status,
+		Reason: string(reason),
 	}
 }
 
 // NewProvisioningCondition ...
 func (s *statusHandler) newProvisioningCondition(status metav1.ConditionStatus, reason api.KogitoServiceConditionReason) metav1.Condition {
 	return metav1.Condition{
-		Type:               string(api.ProvisioningConditionType),
-		Status:             status,
-		LastTransitionTime: metav1.Now(),
-		Reason:             string(reason),
+		Type:   string(api.ProvisioningConditionType),
+		Status: status,
+		Reason: string(reason),
 	}
 }
 
 // NewFailedCondition ...
-func (s *statusHandler) newFailedCondition(reason api.KogitoServiceConditionReason, err error) metav1.Condition {
+func (s *statusHandler) newFailedCondition(status metav1.ConditionStatus, reason api.KogitoServiceConditionReason, message string) metav1.Condition {
 	return metav1.Condition{
-		Type:               string(api.FailedConditionType),
-		Status:             metav1.ConditionTrue,
-		LastTransitionTime: metav1.Now(),
-		Reason:             string(reason),
-		Message:            err.Error(),
+		Type:    string(api.FailedConditionType),
+		Status:  status,
+		Reason:  string(reason),
+		Message: message,
 	}
 }
 
@@ -211,9 +211,16 @@ func (s *statusHandler) setDeployed(conditions *[]metav1.Condition, status metav
 }
 
 // SetProvisioning Sets the condition type to Provisioning and status True if not yet set.
-func (s *statusHandler) setFailed(conditions *[]metav1.Condition, reason api.KogitoServiceConditionReason, err error) {
-	failedCondition := s.newFailedCondition(reason, err)
+func (s *statusHandler) setFailed(conditions *[]metav1.Condition, status metav1.ConditionStatus, reason api.KogitoServiceConditionReason, message string) {
+	failedCondition := s.newFailedCondition(status, reason, message)
 	meta.SetStatusCondition(conditions, failedCondition)
+}
+
+func (s *statusHandler) InvalidateFailedCondition(conditions *[]metav1.Condition) {
+	failedCondition := meta.FindStatusCondition(*conditions, string(api.FailedConditionType))
+	if failedCondition != nil {
+		s.setFailed(conditions, metav1.ConditionFalse, api.KogitoServiceConditionReason(failedCondition.Reason), failedCondition.Message)
+	}
 }
 
 func (s *statusHandler) fetchReadyReplicas(instance api.KogitoService) (int32, error) {
