@@ -1,4 +1,4 @@
-// Copyright 2019 Red Hat, Inc. and/or its affiliates
+// Copyright 2021 Red Hat, Inc. and/or its affiliates
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,16 +15,12 @@
 package framework
 
 import (
-	utilsres "github.com/RHsyseng/operator-utils/pkg/resource"
-	"reflect"
+	appsv1 "k8s.io/api/apps/v1"
+	v1 "k8s.io/api/core/v1"
 )
 
-// GetResource walks on KubernetesResource map and returns the object for the given name and type
-func GetResource(resourceType reflect.Type, name string, resources map[reflect.Type][]utilsres.KubernetesResource) utilsres.KubernetesResource {
-	for _, res := range resources[resourceType] {
-		if res.GetName() == name {
-			return res
-		}
-	}
-	return nil
+// AddVolumeToDeployment adds the Volume and VolumeMount to the given first container of v1.Deployment.
+func AddVolumeToDeployment(deployment *appsv1.Deployment, mount v1.VolumeMount, volume v1.Volume) {
+	deployment.Spec.Template.Spec.Volumes = append(deployment.Spec.Template.Spec.Volumes, volume)
+	deployment.Spec.Template.Spec.Containers[0].VolumeMounts = append(deployment.Spec.Template.Spec.Containers[0].VolumeMounts, mount)
 }

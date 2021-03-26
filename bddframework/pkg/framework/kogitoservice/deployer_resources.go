@@ -70,6 +70,8 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 		return resources, err
 	}
 
+	// TODO: refactor this entire file
+
 	// we only create the rest of the resources once we have a resolvable image
 	// or if the deployment is already there, we don't want to delete it :)
 	if image, err := s.getKogitoServiceImage(imageHandler, s.instance); err != nil {
@@ -113,7 +115,11 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 
 		s.applyApplicationPropertiesAnnotations(contentHash, deployment)
 
-		s.mountVolumes(infraVolumes, deployment)
+		s.mountKogitoInfraVolumes(infraVolumes, deployment)
+
+		if err = NewTrustStoreHandler(s.Context).MountTrustStore(deployment, s.instance); err != nil {
+			return resources, err
+		}
 
 		resources[reflect.TypeOf(appsv1.Deployment{})] = []resource.KubernetesResource{deployment}
 		resources[reflect.TypeOf(corev1.Service{})] = []resource.KubernetesResource{service}
@@ -301,13 +307,11 @@ func (s *serviceDeployer) fetchKogitoInfraProperties() (map[string]string, []cor
 	return consolidateAppProperties, consolidateEnvProperties, volumes, nil
 }
 
-func (s *serviceDeployer) mountVolumes(kogitoInfraVolumes []api.KogitoInfraVolumeInterface, deployment *appsv1.Deployment) {
+func (s *serviceDeployer) mountKogitoInfraVolumes(kogitoInfraVolumes []api.KogitoInfraVolumeInterface, deployment *appsv1.Deployment) {
 	appPropsVolumeHandler := NewAppPropsVolumeHandler()
-	deployment.Spec.Template.Spec.Volumes = append(deployment.Spec.Template.Spec.Volumes, appPropsVolumeHandler.CreateAppPropVolume(s.instance))
-	deployment.Spec.Template.Spec.Containers[0].VolumeMounts = append(deployment.Spec.Template.Spec.Containers[0].VolumeMounts, appPropsVolumeHandler.CreateAppPropVolumeMount())
+	framework.AddVolumeToDeployment(deployment, appPropsVolumeHandler.CreateAppPropVolumeMount(), appPropsVolumeHandler.CreateAppPropVolume(s.instance))
 	for _, infraVolume := range kogitoInfraVolumes {
-		deployment.Spec.Template.Spec.Volumes = append(deployment.Spec.Template.Spec.Volumes, infraVolume.GetNamedVolume().ToKubeVolume())
-		deployment.Spec.Template.Spec.Containers[0].VolumeMounts = append(deployment.Spec.Template.Spec.Containers[0].VolumeMounts, infraVolume.GetMount())
+		framework.AddVolumeToDeployment(deployment, infraVolume.GetMount(), infraVolume.GetNamedVolume().ToKubeVolume())
 	}
 }
 

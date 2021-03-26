@@ -81,7 +81,7 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 
 	reconcileAfter, err = deployer.Deploy()
 	assert.NoError(t, err)
-	assert.Equal(t, reconcileAfter, reconciliationIntervalAfterInfraError)
+	assert.Equal(t, reconcileAfter, reconciliationAfterOneMinute)
 	test.AssertFetchMustExist(t, cli, dataIndex)
 	assert.NotNil(t, dataIndex.GetStatus())
 	assert.Len(t, *dataIndex.GetStatus().GetConditions(), 3)

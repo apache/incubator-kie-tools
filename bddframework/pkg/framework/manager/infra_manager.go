@@ -47,6 +47,9 @@ type kogitoInfraManager struct {
 
 // NewKogitoInfraManager ...
 func NewKogitoInfraManager(context *operator.Context, infraHandler KogitoInfraHandler) KogitoInfraManager {
+	if infraHandler == nil {
+		panic("InfraHandler can't be nil when creating a new KogitoInfraManager")
+	}
 	return &kogitoInfraManager{
 		Context:      context,
 		infraHandler: infraHandler,

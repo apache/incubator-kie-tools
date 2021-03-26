@@ -18,6 +18,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
 	imagev1 "github.com/openshift/api/image/v1"
 	"github.com/stretchr/testify/assert"
@@ -36,8 +37,9 @@ func TestReconcileKogitoSupportingServiceTaskConsole_Reconcile(t *testing.T) {
 	}
 	r := &taskConsoleSupportingServiceResource{
 		supportingServiceContext: supportingServiceContext{
-			Context:  context,
-			instance: instance,
+			Context:      context,
+			instance:     instance,
+			infraHandler: internal.NewKogitoInfraHandler(context),
 		},
 	}
 	// first reconciliation
@@ -67,8 +69,9 @@ func TestReconcileKogitoSupportingServiceTaskConsole_CustomImage(t *testing.T) {
 	}
 	r := &taskConsoleSupportingServiceResource{
 		supportingServiceContext: supportingServiceContext{
-			instance: instance,
-			Context:  context,
+			instance:     instance,
+			Context:      context,
+			infraHandler: internal.NewKogitoInfraHandler(context),
 		},
 	}
 	requeueAfter, err := r.Reconcile()

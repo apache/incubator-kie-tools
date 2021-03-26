@@ -19,6 +19,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/internal"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
 	"time"
@@ -88,6 +89,10 @@ type serviceDeployer struct {
 func NewServiceDeployer(context *operator.Context, definition ServiceDefinition, serviceType api.KogitoService, infraHandler manager.KogitoInfraHandler) ServiceDeployer {
 	if len(definition.Request.NamespacedName.Namespace) == 0 && len(definition.Request.NamespacedName.Name) == 0 {
 		panic("No Request provided for the Service Deployer")
+	}
+	if infraHandler == nil {
+		context.Log.Debug("InfraHandler not defined. KogitoInfra features will be disabled.")
+		infraHandler = internal.NewNoOpKogitoInfraHandler(context)
 	}
 	return &serviceDeployer{
 		Context:      context,
@@ -167,7 +172,6 @@ func (s *serviceDeployer) Deploy() (time.Duration, error) {
 		if _, err = kubernetes.ResourceC(s.Client).UpdateResources(deployedResources[resourceType], delta.Updated); err != nil {
 			return s.getReconcileResultFor(err)
 		}
-		s.generateEventForDeltaResources("Updated", resourceType, delta.Updated)
 
 		if _, err = kubernetes.ResourceC(s.Client).DeleteResources(delta.Removed); err != nil {
 			return s.getReconcileResultFor(err)
