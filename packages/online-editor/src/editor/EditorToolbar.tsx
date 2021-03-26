@@ -38,7 +38,8 @@ import { useLocation } from "react-router";
 import { useOnlineI18n } from "../common/i18n";
 import { DmnRunnerButton } from "./DmnRunner/DmnRunnerButton";
 import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
-import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerContextProvider";
+import { DmnRunnerDropdownGroup } from "./DmnRunner/DmnRunnerDropdownGroup";
+import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -178,23 +179,6 @@ export function EditorToolbar(props: Props) {
     [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
 
-  // Verify if DMN Runner is already running, if not, open the modal to configure it
-  const dmnRunnerItems = useMemo(() => {
-    return (
-      <>
-        {dmnRunner.status === DmnRunnerStatus.RUNNING ? (
-          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerOpen(true)}>
-            Open DMN Runner
-          </DropdownItem>
-        ) : (
-          <DropdownItem key={"setup-dmn-runner"} component={"button"} onClick={() => dmnRunner.setModalOpen(true)}>
-            Setup DMN Runner
-          </DropdownItem>
-        )}
-      </>
-    );
-  }, [props]);
-
   return !props.isPageFullscreen ? (
     <PageHeader
       logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
@@ -202,7 +186,7 @@ export function EditorToolbar(props: Props) {
       headerTools={
         <PageHeaderTools>
           <PageHeaderToolsGroup>
-            {fileExtension === "dmn" && (
+            {dmnRunner.status !== DmnRunnerStatus.UNAVAILABLE && (
               <PageHeaderToolsItem
                 visibility={{
                   default: "hidden",
@@ -329,9 +313,11 @@ export function EditorToolbar(props: Props) {
                   <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                     {...shareItems("sm")}
                   </DropdownGroup>,
-                  <DropdownGroup key={"dmn-runner-group"} label={"DMN Runner"}>
-                    {dmnRunnerItems}
-                  </DropdownGroup>
+                  <React.Fragment key={"dmn-runner-group"}>
+                    {dmnRunner.status !== DmnRunnerStatus.UNAVAILABLE && (
+                      <DmnRunnerDropdownGroup />
+                    )}
+                  </React.Fragment>
                 ]}
                 position={DropdownPosition.right}
               />

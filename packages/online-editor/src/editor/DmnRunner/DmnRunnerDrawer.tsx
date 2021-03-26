@@ -39,7 +39,7 @@ import {
   TextVariants,
   Title
 } from "@patternfly/react-core";
-import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
+import { CheckCircleIcon, CubesIcon, ExclamationIcon, ExclamationCircleIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
@@ -208,9 +208,12 @@ export function DmnRunnerDrawer(props: Props) {
                     error={
                       <div>
                         <EmptyState>
-                          <EmptyStateIcon icon={ExclamationCircleIcon} />
+                          <EmptyStateIcon icon={ExclamationIcon} />
+                          <TextContent>
+                            <Text component={"h2"}>Oops!</Text>
+                          </TextContent>
                           <EmptyStateBody>
-                            <TextContent>Form cannot be rendered because of an Error.</TextContent>
+                            <TextContent>Form cannot be rendered because of an error.</TextContent>
                           </EmptyStateBody>
                         </EmptyState>
                       </div>
@@ -237,7 +240,7 @@ export function DmnRunnerDrawer(props: Props) {
                       </TextContent>
                       <EmptyStateBody>
                         <TextContent>
-                          <Text component={TextVariants.p}>Associated DMN Model doesn't have a Form to render</Text>
+                          <Text component={TextVariants.p}>Associated DMN doesn't have any inputs.</Text>
                         </TextContent>
                       </EmptyStateBody>
                     </EmptyState>
@@ -384,11 +387,11 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
         <EmptyState>
           <EmptyStateIcon icon={InfoCircleIcon} />
           <TextContent>
-            <Text component={"h2"}>No Response</Text>
+            <Text component={"h2"}>No response</Text>
           </TextContent>
           <EmptyStateBody>
             <TextContent>
-              <Text>Response appears after the Form is filled and valid</Text>
+              <Text>Response appears after decisions are evaluated.</Text>
             </TextContent>
           </EmptyStateBody>
         </EmptyState>
