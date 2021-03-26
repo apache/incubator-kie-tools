@@ -37,22 +37,14 @@ import {
 import { getOperatingSystem, OperatingSystem } from "../../common/utils";
 import { SelectOs } from "../../common/SelectOs";
 import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
-import { DmnRunnerStatus } from "./DmnRunnerContextProvider";
-import { useModals } from "../../common/ModalContext";
+import { DmnRunnerStatus } from "./DmnRunnerStatus";
+import { useDmnRunner } from "./DmnRunnerContext";
 
 const DMN_RUNNER_LINK = `files/dmn-runner.zip`;
 
-export function DmnRunnerModal({
-  dmnRunnerStatus,
-  setDmnRunnerStatus,
-  setDmnRunnerModalOpen
-}: {
-  dmnRunnerStatus: DmnRunnerStatus;
-  setDmnRunnerStatus: React.Dispatch<DmnRunnerStatus>;
-  setDmnRunnerModalOpen: React.Dispatch<boolean>;
-}) {
-  const modals = useModals();
+export function DmnRunnerModal() {
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
+  const dmnRunner = useDmnRunner();
 
   const downloadDmnRunner = useMemo(() => {
     switch (operationalSystem) {
@@ -95,7 +87,7 @@ export function DmnRunnerModal({
         name: "Start",
         component: (
           <>
-            {dmnRunnerStatus === DmnRunnerStatus.STOPPED && (
+            {dmnRunner.status === DmnRunnerStatus.STOPPED && (
               <div>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
                   It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
@@ -150,20 +142,19 @@ export function DmnRunnerModal({
         )
       }
     ],
-    [dmnRunnerStatus]
+    [dmnRunner.status]
   );
 
   const onClose = useCallback(() => {
-    setDmnRunnerModalOpen(false);
-    if (dmnRunnerStatus === DmnRunnerStatus.STOPPED) {
-      setDmnRunnerStatus(DmnRunnerStatus.NOT_RUNNING);
+    dmnRunner.setModalOpen(false);
+    if (dmnRunner.status === DmnRunnerStatus.STOPPED) {
+      dmnRunner.setStatus(DmnRunnerStatus.NOT_RUNNING);
     }
-    modals.closeModal();
-  }, [dmnRunnerStatus, setDmnRunnerStatus, setDmnRunnerModalOpen, modals.closeModal]);
+  }, [dmnRunner.status]);
 
   return (
     <Modal
-      isOpen={true}
+      isOpen={dmnRunner.isModalOpen}
       onClose={onClose}
       variant={ModalVariant.large}
       aria-label={"Steps to enable the DMN Runner"}
@@ -177,7 +168,7 @@ export function DmnRunnerModal({
       }
       footer={
         <>
-          {dmnRunnerStatus === DmnRunnerStatus.RUNNING ? (
+          {dmnRunner.status === DmnRunnerStatus.RUNNING ? (
             <>
               <div className={"kogito--editor__dmn-runner-modal-footer"}>
                 <Alert
@@ -186,7 +177,7 @@ export function DmnRunnerModal({
                   className={"kogito--editor__dmn-runner-modal-footer-alert"}
                   title={
                     <div className={"kogito--editor__dmn-runner-modal-footer-alert-success"}>
-                      <p>Connected to DMN Runner</p>
+                      <span>Connected to DMN Runner</span>
                       <a key="back-to-editor" onClick={onClose}>
                         Back to Editor
                       </a>
@@ -217,8 +208,8 @@ export function DmnRunnerModal({
         height={400}
         footer={
           <DmnRunnerWizardFooter
-            shouldGoToStep={dmnRunnerStatus === DmnRunnerStatus.RUNNING}
-            hasStopped={dmnRunnerStatus === DmnRunnerStatus.STOPPED}
+            shouldGoToStep={dmnRunner.status === DmnRunnerStatus.RUNNING}
+            hasStopped={dmnRunner.status === DmnRunnerStatus.STOPPED}
             steps={steps}
           />
         }
