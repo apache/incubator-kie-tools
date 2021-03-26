@@ -19,6 +19,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   AlertVariant,
+  ExpandableSection,
   Form,
   FormGroup,
   List,
@@ -28,6 +29,7 @@ import {
   SelectDirection,
   Text,
   TextContent,
+  TextInput,
   TextVariants,
   Wizard,
   WizardContext,
@@ -39,6 +41,7 @@ import { SelectOs } from "../../common/SelectOs";
 import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
+import { DMN_RUNNER_DEFAULT_PORT } from "./DmnRunnerContextProvider";
 
 const DMN_RUNNER_LINK = `files/dmn-runner.zip`;
 
@@ -80,6 +83,30 @@ export function DmnRunnerModal() {
                 <Text component={TextVariants.p}>Open the folder containing the dmn-runner.zip file and unzip it.</Text>
               </TextContent>
             </ListItem>
+            <br />
+            <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  The default DMN Runner port is 8080. If you are already using this port you can change it.
+                  <Form isHorizontal={true}>
+                    <FormGroup
+                      fieldId={"dmn-runner-port"}
+                      label={"Port"}
+                      validated={
+                        parseInt(dmnRunner.port, 10) < 0 || parseInt(dmnRunner.port, 10) > 65353 ? "error" : "success"
+                      }
+                      helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}
+                    >
+                      <TextInput
+                        value={dmnRunner.port}
+                        type={"number"}
+                        onChange={value => dmnRunner.saveNewPort(value)}
+                      />
+                    </FormGroup>
+                  </Form>
+                </Text>
+              </TextContent>
+            </ExpandableSection>
           </List>
         )
       },
@@ -102,9 +129,15 @@ export function DmnRunnerModal() {
                   <Text component={TextVariants.p}>
                     Open the dmn-runner folder on a terminal and execute the following command to start the DMN Runner:
                   </Text>
-                  <Text component={TextVariants.p} className={"kogito--code"}>
-                    ./init.sh
-                  </Text>
+                  {dmnRunner.port === DMN_RUNNER_DEFAULT_PORT ? (
+                    <Text component={TextVariants.p} className={"kogito--code"}>
+                      ./init.sh
+                    </Text>
+                  ) : (
+                    <Text component={TextVariants.p} className={"kogito--code"}>
+                      ./init.sh --port={dmnRunner.port}
+                    </Text>
+                  )}
                 </TextContent>
               </ListItem>
               <br />
@@ -142,7 +175,7 @@ export function DmnRunnerModal() {
         )
       }
     ],
-    [dmnRunner.status]
+    [dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort]
   );
 
   const onClose = useCallback(() => {

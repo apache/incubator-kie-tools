@@ -24,9 +24,12 @@ import { DmnRunnerModal } from "./DmnRunnerModal";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { diff } from "deep-object-diff";
+import { getCookie, setCookie } from "../../common/utils";
 
 const DMN_RUNNER_POLLING_TIME = 500;
 export const THROTTLING_TIME = 200;
+const DMN_RUNNER_PORT_COOKIE_NAME = "dmn-runner-port";
+export const DMN_RUNNER_DEFAULT_PORT = "8080"
 
 interface Props {
   children: React.ReactNode;
@@ -35,12 +38,13 @@ interface Props {
 }
 
 export function DmnRunnerContextProvider(props: Props) {
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState();
   const globalContext = useContext(GlobalContext);
   const [status, setStatus] = useState(DmnRunnerStatus.UNAVAILABLE);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<JSONSchemaBridge>();
+  const [port, setPort] = useState(DMN_RUNNER_DEFAULT_PORT);
 
   const updateJsonSchemaBridge = useCallback(() => {
     return props.editor
@@ -55,7 +59,7 @@ export function DmnRunnerContextProvider(props: Props) {
           delete formData?.[property];
         });
         setJsonSchemaBridge(newJsonSchemaBridge);
-      })
+      });
   }, [props.editor]);
 
   useEffect(() => {
@@ -76,7 +80,7 @@ export function DmnRunnerContextProvider(props: Props) {
         DmnRunner.checkServer().then(() => {
           setStatus(DmnRunnerStatus.RUNNING);
           if (isModalOpen) {
-            setDrawerOpen(true);
+            setDrawerExpanded(true);
           }
           window.clearInterval(detectDmnRunner);
         });
@@ -91,7 +95,7 @@ export function DmnRunnerContextProvider(props: Props) {
         DmnRunner.checkServer().catch(() => {
           setStatus(DmnRunnerStatus.STOPPED);
           setModalOpen(true);
-          setDrawerOpen(false);
+          setDrawerExpanded(false);
           window.clearInterval(detectCrashesOrStops);
         });
       }, DMN_RUNNER_POLLING_TIME);
@@ -103,7 +107,7 @@ export function DmnRunnerContextProvider(props: Props) {
 
       return () => window.clearInterval(detectCrashesOrStops);
     }
-  }, [props.editor, status, props.isEditorReady]);
+  }, [props.editor, status, props.isEditorReady, isModalOpen]);
 
   // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
   useEffect(() => {
@@ -115,18 +119,35 @@ export function DmnRunnerContextProvider(props: Props) {
     return () => props.editor?.getStateControl().unsubscribe(subscription);
   }, [props.editor, status, updateJsonSchemaBridge]);
 
+  const saveNewPort = useCallback(
+    (newPort: string) => {
+      setPort(newPort);
+      setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
+    },
+    []
+  );
+
+  useEffect(() => {
+    const savedPort = getCookie(DMN_RUNNER_PORT_COOKIE_NAME);
+    if (savedPort) {
+      setPort(savedPort);
+    }
+  }, []);
+
   return (
     <DmnRunnerContext.Provider
       value={{
         status,
         setStatus,
         jsonSchemaBridge,
-        isDrawerOpen,
-        setDrawerOpen,
+        isDrawerExpanded,
+        setDrawerExpanded,
         isModalOpen,
         setModalOpen,
         formData,
-        setFormData
+        setFormData,
+        port,
+        saveNewPort
       }}
     >
       {props.children}

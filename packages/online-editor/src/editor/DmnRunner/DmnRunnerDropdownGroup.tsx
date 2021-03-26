@@ -15,13 +15,13 @@ export function DmnRunnerDropdownGroup() {
             Setup DMN Runner
           </DropdownItem>
         )}
-        {dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerOpen && (
-          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerOpen(true)}>
+        {dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerExpanded && (
+          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerExpanded(true)}>
             Open DMN Runner panel
           </DropdownItem>
         )}
-        {dmnRunner.status === DmnRunnerStatus.RUNNING && dmnRunner.isDrawerOpen && (
-          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerOpen(false)}>
+        {dmnRunner.status === DmnRunnerStatus.RUNNING && dmnRunner.isDrawerExpanded && (
+          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerExpanded(false)}>
             Close DMN Runner panel
           </DropdownItem>
         )}

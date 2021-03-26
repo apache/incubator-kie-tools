@@ -74,7 +74,7 @@ function createValidator(jsonSchema: any) {
       ? {
           details: validator.errors?.map(error => {
             if (error.keyword === "required") {
-              return { ...error, message: "Required" };
+              return { ...error, message: "" };
             }
             return error;
           })

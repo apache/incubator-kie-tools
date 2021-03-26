@@ -23,18 +23,20 @@ export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
   setStatus: React.Dispatch<DmnRunnerStatus>;
   jsonSchemaBridge?: JSONSchemaBridge;
-  isDrawerOpen: boolean;
-  setDrawerOpen: React.Dispatch<boolean>;
+  isDrawerExpanded: boolean;
+  setDrawerExpanded: React.Dispatch<boolean>;
   isModalOpen: boolean;
   setModalOpen: React.Dispatch<boolean>;
   formData: any;
   setFormData: React.Dispatch<any>;
+  port: string;
+  saveNewPort: (value: string) => void;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
   status: DmnRunnerStatus.UNAVAILABLE,
   isDrawerOpen: false,
-  isModalOpen: false
+  isModalOpen: false,
 } as any);
 
 export function useDmnRunner() {

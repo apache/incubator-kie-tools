@@ -28,17 +28,17 @@ export function DmnRunnerButton() {
     if (dmnRunner.status !== DmnRunnerStatus.RUNNING) {
       dmnRunner.setModalOpen(true);
     } else {
-      if (dmnRunner.isDrawerOpen) {
-        dmnRunner.setDrawerOpen(false);
+      if (dmnRunner.isDrawerExpanded) {
+        dmnRunner.setDrawerExpanded(false);
       } else {
-        dmnRunner.setDrawerOpen(true);
+        dmnRunner.setDrawerExpanded(true);
       }
     }
-  }, [dmnRunner.status, dmnRunner.isDrawerOpen]);
+  }, [dmnRunner.status, dmnRunner.isDrawerExpanded]);
 
   const shouldBlinkDmnRunnerConnectedIcon = useMemo(() => {
-    return dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerOpen;
-  }, [dmnRunner.status, dmnRunner.isDrawerOpen]);
+    return dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerExpanded;
+  }, [dmnRunner.status, dmnRunner.isDrawerExpanded]);
 
   return (
     <Button

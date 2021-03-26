@@ -297,10 +297,10 @@ export function EditorPage(props: Props) {
             }
           >
             <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
-              <Drawer isInline={true} isExpanded={dmnRunner.isDrawerOpen}>
+              <Drawer isInline={true} isExpanded={dmnRunner.isDrawerExpanded}>
                 <DrawerContent
                   className={
-                    !dmnRunner.isDrawerOpen
+                    !dmnRunner.isDrawerExpanded
                       ? "kogito--editor__drawer-content-close"
                       : "kogito--editor__drawer-content-open"
                   }

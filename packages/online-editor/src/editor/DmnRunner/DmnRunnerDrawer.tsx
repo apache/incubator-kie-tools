@@ -159,16 +159,17 @@ export function DmnRunnerDrawer(props: Props) {
   );
 
   // Fill the form with the previous data
-  const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerOpen);
+  const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerExpanded);
   useEffect(() => {
-    if (dmnRunner.isDrawerOpen && !previousIsDrawerOpen) {
+    if (dmnRunner.isDrawerExpanded && !previousIsDrawerOpen) {
       setTimeout(() => {
+        autoFormRef.current?.submit();
         Object.keys(dmnRunner.formData ?? {}).forEach(propertyName => {
           autoFormRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
         });
       }, 0);
     }
-  }, [dmnRunner.isDrawerOpen, previousIsDrawerOpen]);
+  }, [dmnRunner.isDrawerExpanded, previousIsDrawerOpen]);
 
   // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
   useEffect(() => {
@@ -224,7 +225,7 @@ export function DmnRunnerDrawer(props: Props) {
                 <Text component={"h2"}>Inputs</Text>
               </TextContent>
               {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerOpen(false)} />
+                <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
               )}
             </PageSection>
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
@@ -290,7 +291,7 @@ export function DmnRunnerDrawer(props: Props) {
                 <Text component={"h2"}>Outputs</Text>
               </TextContent>
               {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerOpen(false)} />
+                <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
               )}
             </PageSection>
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
