@@ -25,6 +25,7 @@ import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kog
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { useModals } from "../../common/ModalContext";
+import { diff } from "deep-object-diff";
 
 const DMN_RUNNER_POLLING_TIME = 500;
 export const THROTTLING_TIME = 200;
@@ -66,8 +67,17 @@ export function DmnRunnerContextProvider(props: Props) {
       props.editor
         ?.getContent()
         .then(content => DmnRunner.getJsonSchemaBridge(content ?? ""))
-        .then(jsonSchemaBridge => setDmnRunnerJsonSchemaBridge(jsonSchemaBridge)),
-    [props.editor]
+        .then(jsonSchemaBridge => {
+          const propertiesDifference = diff(
+            dmnRunnerJsonSchemaBridge?.schema.definitions.InputSet.properties ?? {},
+            jsonSchemaBridge?.schema.definitions.InputSet.properties ?? {}
+          );
+          Object.keys(propertiesDifference).forEach(property => {
+            delete formData?.[property];
+          });
+          setDmnRunnerJsonSchemaBridge(jsonSchemaBridge);
+        }),
+    [props.editor, dmnRunnerJsonSchemaBridge, formData]
   );
 
   // Pooling to detect either if DMN Runner is running or has stopped
@@ -99,7 +109,7 @@ export function DmnRunnerContextProvider(props: Props) {
           });
         }, DMN_RUNNER_POLLING_TIME);
 
-        // After the detection that is running, set the schema for the first time
+        // After the detection of the DMN Runner, set the schema for the first time
         if (props.isEditorReady) {
           setJsonSchemaBridge();
         }

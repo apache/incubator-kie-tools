@@ -87,7 +87,6 @@ export function DmnRunnerDrawer(props: Props) {
     contentFlexDirection: "row",
     buttonPosition: ButtonPosition.OUTPUT
   });
-  const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerOpen);
 
   const onResize = useCallback((width: number) => {
     const iframe = document.getElementById("kogito-iframe");
@@ -160,6 +159,7 @@ export function DmnRunnerDrawer(props: Props) {
   );
 
   // Fill the form with the previous data
+  const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerOpen);
   useEffect(() => {
     if (dmnRunner.isDrawerOpen && !previousIsDrawerOpen) {
       setTimeout(() => {
