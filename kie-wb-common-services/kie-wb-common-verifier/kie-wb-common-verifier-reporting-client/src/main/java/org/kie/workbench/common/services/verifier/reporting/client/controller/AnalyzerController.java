@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.services.verifier.reporting.client.controller;
 
+import java.util.List;
+
 public interface AnalyzerController {
 
     void initialiseAnalysis();
 
     void terminateAnalysis();
 
+    void sort(final List<Integer> rowOrder);
 }

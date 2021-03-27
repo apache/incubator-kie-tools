@@ -199,4 +199,11 @@ public class AnalyzerControllerImplTest {
                                                                 columnData));
         verify(analyzer).updateColumns(1);
     }
+
+    @Test
+    public void sort() throws Exception {
+        final ArrayList<Integer> rowOrder = new ArrayList<>();
+        controller.sort(rowOrder);
+        verify(analyzer).sort(rowOrder);
+    }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.verifier.reporting.client.controller;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.gwt.event.shared.EventBus;
@@ -67,6 +68,11 @@ public class AnalyzerControllerImpl
         events.teardown();
 
         decisionTableAnalyzer.terminate();
+    }
+
+    @Override
+    public void sort(final List<Integer> rowOrder) {
+        decisionTableAnalyzer.sort(rowOrder);
     }
 
     @Override

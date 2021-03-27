@@ -40,4 +40,6 @@ public interface DecisionTableAnalyzer<T> {
     void insertRow(final int index);
 
     void updateColumns(final int size);
+
+    void sort(final List<Integer> rowOrder);
 }
