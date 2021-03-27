@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerContext } from "./DmnRunnerContext";
-import { DmnRunnerService } from "./DmnRunnerService";
+import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useOnlineI18n } from "../../common/i18n";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
@@ -31,7 +31,7 @@ import { usePrevious } from "../../common/Hooks";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { jsonParseWithDate } from "../../common/utils";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {
   children: React.ReactNode;
@@ -45,6 +45,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const history = useHistory();
   const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const workspaces = useWorkspaces();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [formData, setFormData] = useState<object>({});
   const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
@@ -59,20 +60,43 @@ export function DmnRunnerContextProvider(props: Props) {
     [kieToolingExtendedServices.baseUrl]
   );
 
-  const updateFormSchema = useCallback(() => {
+  const preparePayload = useCallback(
+    async (formData?: any) => {
+      // TODO: Get only the included files, not all dmn files
+      const files = (
+        await workspaces.getFiles({
+          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+          workspaceId: props.workspaceFile.workspaceId,
+        })
+      ).filter((f) => f.extension === "dmn");
+
+      const resourcePromises = files.map(async (f) => ({
+        URI: f.relativePath,
+        content: decoder.decode(await f.getFileContents()),
+      }));
+
+      return {
+        mainURI: props.workspaceFile.relativePath,
+        resources: await Promise.all(resourcePromises),
+        context: formData,
+      } as DmnRunnerModelPayload;
+    },
+    [props.workspaceFile, workspaces]
+  );
+
+  const updateFormSchema = useCallback(async () => {
     if (props.workspaceFile.extension !== "dmn") {
       return;
     }
 
-    props.workspaceFile
-      .getFileContentsAsString()
-      .then((content) => service.formSchema(content))
-      .then((newSchema) => setFormSchema(newSchema))
-      .catch((err) => {
-        console.error(err);
-        setFormError(true);
-      });
-  }, [props.workspaceFile, service]);
+    try {
+      const payload = await preparePayload();
+      setFormSchema(await service.formSchema(payload));
+    } catch (err) {
+      console.error(err);
+      setFormError(true);
+    }
+  }, [preparePayload, props.workspaceFile, service]);
 
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
@@ -83,7 +107,7 @@ export function DmnRunnerContextProvider(props: Props) {
     updateFormSchema();
   }, [props.workspaceFile, updateFormSchema]);
 
-  const validate = useCallback(() => {
+  const validate = useCallback(async () => {
     if (props.workspaceFile.extension !== "dmn") {
       return;
     }
@@ -93,24 +117,24 @@ export function DmnRunnerContextProvider(props: Props) {
       return;
     }
 
-    props.workspaceFile
-      .getFileContentsAsString()
-      .then((content) => service.validate(content))
-      .then((validationResults) => {
-        const notifications: Notification[] = validationResults.map((validationResult: any) => ({
-          type: "PROBLEM",
-          path: "",
-          severity: validationResult.severity,
-          message: `${validationResult.messageType}: ${validationResult.message}`,
-        }));
-        props.notificationsPanel
-          ?.getTab(i18n.terms.validation)
-          ?.kogitoNotifications_setNotifications("", notifications);
-      });
-  }, [props.workspaceFile, props.notificationsPanel, kieToolingExtendedServices.status, i18n, service]);
+    const payload = await preparePayload(props.workspaceFile);
+    const validationResults = await service.validate(payload);
+    const notifications: Notification[] = validationResults.map((validationResult: any) => ({
+      type: "PROBLEM",
+      path: "",
+      severity: validationResult.severity,
+      message: `${validationResult.messageType}: ${validationResult.message}`,
+    }));
+    props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
+  }, [props.workspaceFile, props.notificationsPanel, kieToolingExtendedServices.status, i18n, preparePayload, service]);
 
-  useEffect(validate, [validate]);
-  useEffect(updateFormSchema, [updateFormSchema]);
+  useEffect(() => {
+    validate();
+  }, [validate]);
+
+  useEffect(() => {
+    updateFormSchema();
+  }, [updateFormSchema]);
 
   useEffect(() => {
     if (!formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
@@ -165,6 +189,7 @@ export function DmnRunnerContextProvider(props: Props) {
         service,
         formError,
         setFormError,
+        preparePayload,
       }}
     >
       {props.children}

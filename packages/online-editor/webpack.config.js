@@ -125,6 +125,7 @@ module.exports = async (env, argv) => {
       rules: [...patternflyBase.webpackModuleRules],
     },
     devServer: {
+      https: true,
       historyApiFallback: false,
       disableHostCheck: true,
       watchContentBase: true,

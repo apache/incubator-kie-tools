@@ -133,39 +133,37 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   const updateDmnRunnerResults = useCallback(
-    (formData: object) => {
+    async (formData: object) => {
       if (dmnRunner.status !== DmnRunnerStatus.AVAILABLE) {
         return;
       }
 
-      return props.workspaceFile
-        .getFileContentsAsString()
-        .then((content) => {
-          dmnRunner.service.result({ context: formData, model: content })?.then((result) => {
-            if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-              dmnRunner.setFormError(true);
-              return;
-            }
+      try {
+        const payload = await dmnRunner.preparePayload(formData);
+        const result = await dmnRunner.service.result(payload);
 
-            setExecutionNotifications(result);
+        if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+          dmnRunner.setFormError(true);
+          return;
+        }
 
-            setDmnRunnerResults((previousDmnRunnerResult: DecisionResult[]) => {
-              if (!result || !result.decisionResults) {
-                return;
-              }
-              const differences = extractDifferences(result.decisionResults, previousDmnRunnerResult);
-              if (differences?.length !== 0) {
-                setDmnRunnerResponseDiffs(differences);
-              }
-              return result.decisionResults;
-            });
-          });
-        })
-        .catch(() => {
-          setDmnRunnerResults(undefined);
+        setExecutionNotifications(result);
+
+        setDmnRunnerResults((previousDmnRunnerResult: DecisionResult[]) => {
+          if (!result || !result.decisionResults) {
+            return;
+          }
+          const differences = extractDifferences(result.decisionResults, previousDmnRunnerResult);
+          if (differences?.length !== 0) {
+            setDmnRunnerResponseDiffs(differences);
+          }
+          return result.decisionResults;
         });
+      } catch (e) {
+        setDmnRunnerResults(undefined);
+      }
     },
-    [props.workspaceFile, dmnRunner.status, dmnRunner.service, setExecutionNotifications]
+    [dmnRunner, setExecutionNotifications]
   );
 
   // Update outputs column on form change

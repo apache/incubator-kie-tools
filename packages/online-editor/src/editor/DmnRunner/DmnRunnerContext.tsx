@@ -17,7 +17,7 @@
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { DmnRunnerService } from "./DmnRunnerService";
+import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
@@ -30,6 +30,7 @@ export interface DmnRunnerContextType {
   service: DmnRunnerService;
   formError: boolean;
   setFormError: React.Dispatch<React.SetStateAction<boolean>>;
+  preparePayload: (formData?: any) => Promise<DmnRunnerModelPayload>;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({} as any);

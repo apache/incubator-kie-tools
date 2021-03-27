@@ -18,7 +18,7 @@ export class KieToolingExtendedServicesBridge {
   private readonly KIE_TOOLING_EXTENDED_SERVICES_SERVER_URL: string;
   private readonly KIE_TOOLING_EXTENDED_SERVICES_PING: string;
 
-  public constructor(private readonly port: string) {
+  public constructor(port: string) {
     this.KIE_TOOLING_EXTENDED_SERVICES_SERVER_URL = `http://localhost:${port}`;
     this.KIE_TOOLING_EXTENDED_SERVICES_PING = `${this.KIE_TOOLING_EXTENDED_SERVICES_SERVER_URL}/ping`;
   }
