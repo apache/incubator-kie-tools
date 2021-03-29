@@ -164,10 +164,20 @@ export function DmnRunnerDrawer(props: Props) {
     [props.editor, dmnRunnerResults, dmnRunner.service]
   );
 
+  const onValidate = useCallback(async (model, error: any) => {
+    // if the form has an error, the response should be empty;
+    if (error) {
+      setDmnRunnerResults(undefined);
+    }
+    return error;
+  }, []);
+
   // Fill the form with the previous data
   const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerExpanded);
   useEffect(() => {
     if (dmnRunner.isDrawerExpanded && !previousIsDrawerOpen) {
+      // The autoFormRef is not available on the useEffect render cycle.
+      // Adding this setTimout will make the ref available.
       setTimeout(() => {
         autoFormRef.current?.submit();
         Object.keys(dmnRunner.formData ?? {}).forEach(propertyName => {
@@ -185,13 +195,13 @@ export function DmnRunnerDrawer(props: Props) {
   // Subscribe to any change on the DMN Editor and submit the form
   useEffect(() => {
     if (props.editor) {
-      let timeout: any;
+      let timeout: number | undefined;
       const subscription = props.editor.getStateControl().subscribe(() => {
         if (timeout) {
           clearTimeout(timeout);
         }
 
-        timeout = setTimeout(() => {
+        timeout = window.setTimeout(() => {
           autoFormRef.current?.submit();
         }, THROTTLING_TIME);
       });
@@ -263,6 +273,7 @@ export function DmnRunnerDrawer(props: Props) {
                       onSubmit={onSubmit}
                       errorsField={() => <></>}
                       submitField={() => <></>}
+                      onValidate={onValidate}
                     />
                   </ErrorBoundary>
                 ) : (
@@ -381,17 +392,17 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
       case "string":
         return dmnRunnerResult;
       case "object":
-        return (
-          dmnRunnerResult !== null && (
-            <DescriptionList>
-              {Object.entries(dmnRunnerResult).map(([key, value]) => (
-                <DescriptionListGroup>
-                  <DescriptionListTerm>{key}</DescriptionListTerm>
-                  <DescriptionListDescription>{value}</DescriptionListDescription>
-                </DescriptionListGroup>
-              ))}
-            </DescriptionList>
-          )
+        return dmnRunnerResult !== null ? (
+          <DescriptionList>
+            {Object.entries(dmnRunnerResult).map(([key, value]) => (
+              <DescriptionListGroup>
+                <DescriptionListTerm>{key}</DescriptionListTerm>
+                <DescriptionListDescription>{value}</DescriptionListDescription>
+              </DescriptionListGroup>
+            ))}
+          </DescriptionList>
+        ) : (
+          <i>(null)</i>
         );
       default:
         return <i>(null)</i>;
@@ -416,7 +427,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
           </Card>
         </div>
       )),
-    [props.results]
+    [props.results, resultStatus]
   );
 
   return (

@@ -54,17 +54,20 @@ export interface DmnResult {
 }
 
 export class DmnRunnerService {
-  constructor(
-    private port: string,
-    private ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true }),
-    private readonly DMN_RUNNER_SERVER = `http://localhost:${port}`,
-    private readonly DMN_RUNNER_VALIDATE_URL = `${DMN_RUNNER_SERVER}/jitdmn/validate`,
-    private readonly DMN_RUNNER_DMN_RESULT_URL = `${DMN_RUNNER_SERVER}/jitdmn/dmnresult`,
-    private readonly DMN_RUNNER_FORM_URL = `${DMN_RUNNER_SERVER}/jitdmn/schema/form`,
-    private readonly DMN_RUNNER_DOWNLOAD = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip",
-    private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#"
-  ) {
-    ajv.addMetaSchema(metaSchemaDraft04);
+  private readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
+  private readonly DMN_RUNNER_SERVER_URL: string;
+  private readonly DMN_RUNNER_VALIDATE_URL: string;
+  private readonly DMN_RUNNER_DMN_RESULT_URL: string;
+  private readonly DMN_RUNNER_FORM_URL: string;
+  private readonly DMN_RUNNER_DOWNLOAD_URL = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
+  private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
+
+  constructor(private port: string) {
+    this.ajv.addMetaSchema(metaSchemaDraft04);
+    this.DMN_RUNNER_SERVER_URL = `http://localhost:${port}`;
+    this.DMN_RUNNER_VALIDATE_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/validate`;
+    this.DMN_RUNNER_DMN_RESULT_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/dmnresult`;
+    this.DMN_RUNNER_FORM_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/schema/form`;
   }
 
   public createValidator(jsonSchema: any) {
@@ -87,13 +90,13 @@ export class DmnRunnerService {
   }
 
   public async checkServer(): Promise<boolean> {
-    const response = await fetch(this.DMN_RUNNER_SERVER, { method: "OPTIONS" });
+    const response = await fetch(this.DMN_RUNNER_SERVER_URL, { method: "OPTIONS" });
     return response.status < 300;
   }
 
   public async download() {
     try {
-      const response = await fetch(this.DMN_RUNNER_DOWNLOAD, { method: "GET" });
+      const response = await fetch(this.DMN_RUNNER_DOWNLOAD_URL, { method: "GET" });
       const blob = await response.blob();
 
       const objectUrl = URL.createObjectURL(blob);

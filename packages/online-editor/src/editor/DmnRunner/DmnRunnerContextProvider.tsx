@@ -26,7 +26,7 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { diff } from "deep-object-diff";
 import { getCookie, setCookie } from "../../common/utils";
 
-const DMN_RUNNER_POLLING_TIME = 500;
+const DMN_RUNNER_POLLING_TIME = 1000;
 export const THROTTLING_TIME = 200;
 const DMN_RUNNER_PORT_COOKIE_NAME = "dmn-runner-port";
 export const DMN_RUNNER_DEFAULT_PORT = "8080";
@@ -44,7 +44,13 @@ export function DmnRunnerContextProvider(props: Props) {
   const globalContext = useContext(GlobalContext);
   const [status, setStatus] = useState(DmnRunnerStatus.UNAVAILABLE);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<JSONSchemaBridge>();
-  const [port, setPort] = useState(DMN_RUNNER_DEFAULT_PORT);
+  const [port, setPort] = useState(() => {
+    const savedPort = getCookie(DMN_RUNNER_PORT_COOKIE_NAME);
+    if (savedPort) {
+      return savedPort;
+    }
+    return DMN_RUNNER_DEFAULT_PORT;
+  });
   const service = useMemo(() => new DmnRunnerService(port), [port]);
 
   const updateJsonSchemaBridge = useCallback(() => {
@@ -57,11 +63,12 @@ export function DmnRunnerContextProvider(props: Props) {
           newJsonSchemaBridge?.schema.definitions.InputSet.properties ?? {}
         );
         Object.keys(propertiesDifference).forEach(property => {
+          // Remove an formData property that has been changed;
           delete formData?.[property];
         });
         setJsonSchemaBridge(newJsonSchemaBridge);
       });
-  }, [props.editor, service]);
+  }, [props.editor, service, formData]);
 
   useEffect(() => {
     if (globalContext.file.fileExtension === "dmn") {
@@ -116,20 +123,21 @@ export function DmnRunnerContextProvider(props: Props) {
       return;
     }
 
-    const subscription = props.editor.getStateControl().subscribe(updateJsonSchemaBridge);
+    let timeout: number | undefined;
+    const subscription = props.editor.getStateControl().subscribe(() => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = window.setTimeout(() => {
+        updateJsonSchemaBridge();
+      }, 200);
+    });
     return () => props.editor?.getStateControl().unsubscribe(subscription);
   }, [props.editor, status, updateJsonSchemaBridge]);
 
   const saveNewPort = useCallback((newPort: string) => {
     setPort(newPort);
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
-  }, []);
-
-  useEffect(() => {
-    const savedPort = getCookie(DMN_RUNNER_PORT_COOKIE_NAME);
-    if (savedPort) {
-      setPort(savedPort);
-    }
   }, []);
 
   return (
