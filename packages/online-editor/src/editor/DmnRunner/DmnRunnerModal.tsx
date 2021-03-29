@@ -19,7 +19,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   AlertVariant,
-  ExpandableSection,
+  Button,
+  Chip,
   Form,
   FormGroup,
   List,
@@ -29,7 +30,6 @@ import {
   SelectDirection,
   Text,
   TextContent,
-  TextInput,
   TextVariants,
   Wizard,
   WizardContext,
@@ -76,35 +76,14 @@ export function DmnRunnerModal() {
                 </Text>
               </TextContent>
             </ListItem>
+            <br />
             <ListItem>
               <TextContent>
-                <Text component={TextVariants.p}>Open the folder containing the dmn-runner.zip file and unzip it.</Text>
-              </TextContent>
-            </ListItem>
-            <br />
-            <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
-              <TextContent>
                 <Text component={TextVariants.p}>
-                  The default DMN Runner port is 8080. If you are already using this port you can change it.
-                  <Form isHorizontal={true}>
-                    <FormGroup
-                      fieldId={"dmn-runner-port"}
-                      label={"Port"}
-                      validated={
-                        parseInt(dmnRunner.port, 10) < 0 || parseInt(dmnRunner.port, 10) > 65353 ? "error" : "success"
-                      }
-                      helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}
-                    >
-                      <TextInput
-                        value={dmnRunner.port}
-                        type={"number"}
-                        onChange={value => dmnRunner.saveNewPort(value)}
-                      />
-                    </FormGroup>
-                  </Form>
+                  Open your Downloads folder and unzip the <Chip isReadOnly={true}>dmn-runner.zip</Chip> file.
                 </Text>
               </TextContent>
-            </ExpandableSection>
+            </ListItem>
           </List>
         )
       },
@@ -125,11 +104,20 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Open the dmn-runner folder on a terminal and execute the following command to start the DMN Runner:
+                    You will need Maven 3.6.3 and Java 11 installed to be able to run the DMN Runner.
+                  </Text>
+                </TextContent>
+              </ListItem>
+              <br />
+              <ListItem>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    Open the <Chip isReadOnly={true}>dmn-runner</Chip> folder on a terminal and execute the following
+                    command:
                   </Text>
                   {dmnRunner.port === DMN_RUNNER_DEFAULT_PORT ? (
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      ./init.sh
+                      java -jar jitexecutor-runner-2.0.0-SNAPSHOT-runner.jar
                     </Text>
                   ) : (
                     <Text component={TextVariants.p} className={"kogito--code"}>
@@ -144,7 +132,7 @@ export function DmnRunnerModal() {
                   <Text component={TextVariants.p}>
                     To stop the DMN Runner you can press{" "}
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      CTRL + C
+                      CTRL+C
                     </Text>{" "}
                     on the terminal.
                   </Text>
@@ -161,14 +149,20 @@ export function DmnRunnerModal() {
             <List>
               <ListItem>
                 <TextContent>
+                  <Text component={TextVariants.p}>All set! 🎉</Text>
+                </TextContent>
+              </ListItem>
+            </List>
+            <br />
+            <List>
+              <ListItem>
+                <TextContent>
                   <Text component={TextVariants.p}>
                     Fill the Form on the Inputs column and see the results on the Outputs column.
                   </Text>
                 </TextContent>
               </ListItem>
             </List>
-            <br />
-            <img src="images/dmn-runner.gif" alt="DMN Runner running" width={"450px"} />
           </div>
         )
       }
@@ -209,9 +203,6 @@ export function DmnRunnerModal() {
                   title={
                     <div className={"kogito--editor__dmn-runner-modal-footer-alert-success"}>
                       <span>Connected to DMN Runner</span>
-                      <a key="back-to-editor" onClick={onClose}>
-                        Back to Editor
-                      </a>
                     </div>
                   }
                 />
@@ -239,6 +230,7 @@ export function DmnRunnerModal() {
         height={400}
         footer={
           <DmnRunnerWizardFooter
+            onClose={onClose}
             shouldGoToStep={dmnRunner.status === DmnRunnerStatus.RUNNING}
             hasStopped={dmnRunner.status === DmnRunnerStatus.STOPPED}
             steps={steps}
@@ -250,6 +242,7 @@ export function DmnRunnerModal() {
 }
 
 interface WizardImperativeControlProps {
+  onClose: () => void;
   shouldGoToStep: boolean;
   hasStopped: boolean;
   steps: Array<{ component: JSX.Element; name: string }>;
@@ -257,6 +250,7 @@ interface WizardImperativeControlProps {
 
 function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
   const wizardContext = useContext(WizardContext);
+  const { status } = useDmnRunner();
 
   useEffect(() => {
     if (props.hasStopped) {
@@ -268,7 +262,32 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
 
   return (
     <WizardFooter>
-      <WizardContextConsumer>{() => <></>}</WizardContextConsumer>
+      <WizardContextConsumer>
+        {({ activeStep, goToStepByName, goToStepById, onNext, onBack }) => {
+          if (activeStep.name !== "Use") {
+            return (
+              <>
+                <Button variant="primary" type="submit" onClick={onNext}>
+                  Next
+                </Button>
+              </>
+            );
+          } else {
+            return (
+              <>
+                <Button
+                  isDisabled={status !== DmnRunnerStatus.RUNNING}
+                  variant="primary"
+                  type="submit"
+                  onClick={props.onClose}
+                >
+                  Back to Editor
+                </Button>
+              </>
+            );
+          }
+        }}
+      </WizardContextConsumer>
     </WizardFooter>
   );
 }
