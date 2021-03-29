@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import {
-  Button,
-  ButtonVariant,
-  InputGroup,
-  Split,
-  SplitItem,
-  TextContent,
-  TextInput,
-  Title,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem
-} from "@patternfly/react-core";
-import { SearchIcon } from "@patternfly/react-icons";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 import "./CharacteristicsToolbar.scss";
 
 interface CharacteristicsToolbarProps {

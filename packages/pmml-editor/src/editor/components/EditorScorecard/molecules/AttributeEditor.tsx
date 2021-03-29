@@ -15,7 +15,11 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Stack, StackItem, TextInput, Tooltip } from "@patternfly/react-core";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import {
   Attribute,
   Characteristic,
@@ -25,7 +29,7 @@ import {
   Predicate,
   Scorecard
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { HelpIcon } from "@patternfly/react-icons";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { PredicateEditor } from "./PredicateEditor";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";

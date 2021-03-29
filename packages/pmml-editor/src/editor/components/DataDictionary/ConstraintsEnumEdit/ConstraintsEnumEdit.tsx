@@ -1,19 +1,13 @@
 import * as React from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import {
-  Button,
-  ButtonVariant,
-  Flex,
-  FlexItem,
-  Stack,
-  StackItem,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants
-} from "@patternfly/react-core";
-import { GripVerticalIcon, TrashIcon } from "@patternfly/react-icons";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { GripVerticalIcon } from "@patternfly/react-icons/dist/js/icons/grip-vertical-icon";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import "./ConstraintsEnumEdit.scss";

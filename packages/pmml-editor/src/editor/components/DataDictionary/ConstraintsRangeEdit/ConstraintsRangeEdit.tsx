@@ -16,22 +16,15 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Button,
-  Checkbox,
-  Flex,
-  FlexItem,
-  FormGroup,
-  Split,
-  SplitItem,
-  Stack,
-  StackItem,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants
-} from "@patternfly/react-core";
-import { TrashIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./ConstraintsRangeEdit.scss";
 import { useValidationRegistry } from "../../../validation";

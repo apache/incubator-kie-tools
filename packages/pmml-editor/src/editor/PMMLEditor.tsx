@@ -31,7 +31,7 @@ import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HistoryContext, HistoryService } from "./history";
 import { LandingPage } from "./components/LandingPage/templates";
-import { Page } from "@patternfly/react-core";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { HashRouter } from "react-router-dom";
 import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";

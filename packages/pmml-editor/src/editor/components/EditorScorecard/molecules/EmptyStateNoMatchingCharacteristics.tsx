@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import { CalculatorIcon } from "@patternfly/react-icons";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { CalculatorIcon } from "@patternfly/react-icons/dist/js/icons/calculator-icon";
 
 export const EmptyStateNoMatchingCharacteristics = () => (
   <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.small}>

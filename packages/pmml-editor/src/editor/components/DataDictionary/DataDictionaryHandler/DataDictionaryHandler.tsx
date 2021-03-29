@@ -1,17 +1,12 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalVariant,
-  Split,
-  SplitItem,
-  Title,
-  TitleSizes
-} from "@patternfly/react-core";
-import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
+import { CloseIcon } from "@patternfly/react-icons/dist/js/icons/close-icon";
+import { WarningTriangleIcon } from "@patternfly/react-icons/dist/js/icons/warning-triangle-icon";
 import { DataDictionary, FieldName, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import DataDictionaryContainer, { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";

@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import {
-  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
   CardHeaderMain,
-  CardTitle,
-  Tooltip
-} from "@patternfly/react-core";
+  CardTitle
+} from "@patternfly/react-core/dist/js/components/Card";
 import { ModelType } from "../../..";
 import * as React from "react";
 import { useCallback, useMemo } from "react";

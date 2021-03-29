@@ -1,8 +1,13 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Alert, Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
-import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { SortIcon } from "@patternfly/react-icons/dist/js/icons/sort-icon";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { BoltIcon} from "@patternfly/react-icons/dist/js/icons/bolt-icon";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";

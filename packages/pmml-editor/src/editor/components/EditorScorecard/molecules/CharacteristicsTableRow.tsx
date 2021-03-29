@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useCallback } from "react";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import {
   AttributeLabels,
   CharacteristicLabels,

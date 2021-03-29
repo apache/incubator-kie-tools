@@ -16,8 +16,11 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Card, CardBody, FormGroup, Select, SelectOption, SelectVariant, Tooltip } from "@patternfly/react-core";
-import { HelpIcon } from "@patternfly/react-icons";
+import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { ConstraintType, DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";

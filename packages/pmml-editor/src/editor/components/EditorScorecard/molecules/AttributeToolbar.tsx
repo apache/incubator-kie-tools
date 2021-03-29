@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, Split, SplitItem, Title } from "@patternfly/react-core";
-import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-left-icon";
 
 interface AttributeToolbarProps {
   viewOverview: () => void;

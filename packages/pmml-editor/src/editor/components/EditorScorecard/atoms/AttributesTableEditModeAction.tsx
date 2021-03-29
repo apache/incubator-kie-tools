@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { CheckIcon, TimesIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 
 interface AttributesTableEditModeActionProps {
   onCommit: () => void;
