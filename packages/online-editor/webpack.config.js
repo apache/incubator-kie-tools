@@ -20,6 +20,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
@@ -60,7 +61,8 @@ module.exports = async (env, argv) => {
 
   return merge(common, {
     entry: {
-      index: "./src/index.tsx"
+      index: "./src/index.tsx",
+      "envelope/pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts"
     },
     plugins: [
       new CopyPlugin([
@@ -71,8 +73,11 @@ module.exports = async (env, argv) => {
         { from: "./static/favicon.ico", to: "./favicon.ico" },
         { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
-      ])
+        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
+        { from: "./static/envelope", to: "./envelope/" },
+        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./envelope/images" }
+      ]),
+      new MonacoWebpackPlugin()
     ],
     module: {
       rules: [
@@ -95,6 +100,10 @@ module.exports = async (env, argv) => {
               }
             ]
           }
+        },
+        {
+          test: /\.ttf$/,
+          use: ["file-loader"]
         },
         ...pfWebpackOptions.patternflyRules
       ]

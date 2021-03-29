@@ -28,6 +28,7 @@ export const names = {
   chromeStore: "Chrome Store",
   desktop: "Desktop",
   dmn: "DMN",
+  pmml: "PMML",
   dropbox: "Dropbox",
   github: "GitHub",
   kogito: "Kogito",

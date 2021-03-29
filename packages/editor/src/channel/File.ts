@@ -55,6 +55,16 @@ export const EMPTY_FILE_SCESIM = {
 };
 
 /**
+ * Default implementation of an empty PMML file; used when creating _new_ PMML files.
+ */
+export const EMPTY_FILE_PMML = {
+  fileName: "new-file",
+  fileExtension: "pmml",
+  getFileContents: () => Promise.resolve(""),
+  isReadOnly: false
+};
+
+/**
  * Helper method to create new, empty files, for different file extensions.
  * @param fileExtension The extension of the file.
  */

@@ -18,58 +18,58 @@
 // Therefore the default PF Split Gutter spacing is too large so reduce. Total remains 16px.
 .pf-l-split__item.modelTitle__icon {
   margin-right: 8px !important;
-  display: flex;
+  display: flex !important;
 }
 
 .modelTitle {
 
   &--full-width {
-    width: 100%;
+    width: 100% !important;
   }
 
   &--hide-overflow {
-    overflow: hidden;
+    overflow: hidden !important;
   }
 
-  --sizeEasing: cubic-bezier(0.25, 1, 0.5, 1);
+  --sizeEasing: cubic-bezier(0.25, 1, 0.5, 1) !important;
 
-  display: flex;
-  flex-direction: row;
+  display: flex !important;
+  flex-direction: row !important;
 
-  cursor: text;
-  white-space: nowrap;
+  cursor: text !important;
+  white-space: nowrap !important;
 
   // Ensure the text appears in the same place as the Textbox when editing
-  margin-top: 1px;
-  padding-top: 0;
-  padding-left: 8px;
-  padding-right: 8px;
+  margin-top: 1px !important;
+  padding-top: 0 !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
 
   // Ensure the border transition does not flicker with default black borders
-  border: 1px solid #ffffff;
-  transition: margin-bottom 0.15s var(--sizeEasing), border-left 0.12s ease-in, border-right 0.12s ease-in, border-top 0.12s ease-in, border-bottom 0.12s ease-in;
+  border: 1px solid #ffffff !important;
+  transition: margin-bottom 0.15s var(--sizeEasing), border-left 0.12s ease-in, border-right 0.12s ease-in, border-top 0.12s ease-in, border-bottom 0.12s ease-in !important;
 
   &:not(.modelTitle--editing):hover {
-    border: 1px solid var(--pf-global--BorderColor--100);
+    border: 1px solid var(--pf-global--BorderColor--100) !important;
   }
 
   // Ensure the Textbox when editing does not affect content positioning below.
   &--editing {
-    padding-top: 2px;
+    padding-top: 2px !important;
   }
 
   // Overrides for pf-c-form__group-label-help
   &__icon {
-    padding: 0 0 2px 0;
-    margin: 0;
+    padding: 0 0 2px 0 !important;
+    margin: 0 !important;
   }
 
   &__truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 
     &--disabled {
-      color: var(--pf-global--Color--200);
+      color: var(--pf-global--Color--200) !important;
     }
 
   }
