@@ -81,6 +81,23 @@ export function DmnRunnerModal() {
               <TextContent>
                 <Text component={TextVariants.p}>
                   Open your Downloads folder and unzip the <Chip isReadOnly={true}>dmn-runner.zip</Chip> file.
+                  {/*The default DMN Runner port is 8080. If you are already using this port you can change it.*/}
+                  {/*<Form isHorizontal={true}>*/}
+                  {/*  <FormGroup*/}
+                  {/*    fieldId={"dmn-runner-port"}*/}
+                  {/*    label={"Port"}*/}
+                  {/*    validated={*/}
+                  {/*      parseInt(dmnRunner.port, 10) < 0 || parseInt(dmnRunner.port, 10) > 65353 ? "error" : "success"*/}
+                  {/*    }*/}
+                  {/*    helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}*/}
+                  {/*  >*/}
+                  {/*    <TextInput*/}
+                  {/*      value={dmnRunner.port}*/}
+                  {/*      type={"number"}*/}
+                  {/*      onChange={value => dmnRunner.saveNewPort(value)}*/}
+                  {/*    />*/}
+                  {/*  </FormGroup>*/}
+                  {/*</Form>*/}
                 </Text>
               </TextContent>
             </ListItem>
