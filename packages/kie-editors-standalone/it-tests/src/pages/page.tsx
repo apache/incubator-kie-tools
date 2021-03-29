@@ -36,6 +36,9 @@ export const EditorPage: React.FC<{}> = () => {
             <Link to="/bpmn-editable">BPMN Editable</Link>
           </li>
           <li>
+            <Link to="/bpmn-read-only">BPMN Read Only</Link>
+          </li>
+          <li>
             <Link to="/bpmn-workitem">BPMN Workitem</Link>
           </li>
           <li>
@@ -75,6 +78,18 @@ export const EditorPage: React.FC<{}> = () => {
                 key="bpmn-editable"
                 id="bpmn-editable"
                 readOnly={false}
+                initialContent={Promise.resolve("")}
+              />
+            )}
+          />
+          <Route
+            exact={true}
+            path="/bpmn-read-only"
+            render={() => (
+              <BpmnEditorComponent
+                key="bpmn-read-only"
+                id="bpmn-read-only"
+                readOnly={true}
                 initialContent={Promise.resolve("")}
               />
             )}
