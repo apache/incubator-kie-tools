@@ -297,21 +297,24 @@ export function EditorPage(props: Props) {
                     <AlertActionCloseButton
                       data-testid="unsaved-alert-close-button"
                       onClose={() => setShowUnsavedAlert(false)}
+                      ouiaId="unsaved-changes-close-alert-button"
                     />
                   }
                   actionLinks={
                     <React.Fragment>
-                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={onSave}>
+                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={onSave} ouiaId="unsaved-alert-save-button">
                         {i18n.terms.save}
                       </AlertActionLink>
                       <AlertActionLink
                         data-testid="unsaved-alert-close-without-save-button"
                         onClick={onCloseWithoutSave}
+                        ouiaId="unsaved-changes-close-without-saving-button"
                       >
                         {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
                       </AlertActionLink>
                     </React.Fragment>
                   }
+                  ouiaId="unsaved-changes-warning-alert"
                 >
                   <p>{i18n.editorPage.alerts.unsaved.message}</p>
                 </Alert>

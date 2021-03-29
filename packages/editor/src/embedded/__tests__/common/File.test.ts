@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EMPTY_FILE_DMN, EMPTY_FILE_BPMN, EMPTY_FILE_SCESIM, File, newFile } from "../../../channel/File";
+import {
+  EMPTY_FILE_BPMN,
+  EMPTY_FILE_DMN,
+  EMPTY_FILE_PMML,
+  EMPTY_FILE_SCESIM,
+  File,
+  newFile
+} from "../../../channel/File";
 
 describe("File::Empty defaults", () => {
   test("dmn", async () => {
@@ -38,6 +45,14 @@ describe("File::Empty defaults", () => {
     expect(EMPTY_FILE_SCESIM.isReadOnly).toBeFalsy();
 
     await EMPTY_FILE_SCESIM.getFileContents().then(data => expect(data).toBe(""));
+  });
+
+  test("pmml", async () => {
+    expect(EMPTY_FILE_PMML.fileName).toEqual("new-file");
+    expect(EMPTY_FILE_PMML.fileExtension).toEqual("pmml");
+    expect(EMPTY_FILE_PMML.isReadOnly).toBeFalsy();
+
+    await EMPTY_FILE_PMML.getFileContents().then(data => expect(data).toBe(""));
   });
 });
 

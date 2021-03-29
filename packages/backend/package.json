@@ -16,7 +16,7 @@
     "@kogito-tooling/notifications": "0.8.6",
     "@kogito-tooling/workspace": "0.8.6",
     "@types/semver": "^7.3.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "fast-xml-parser": "^3.17.4",
     "portfinder": "^1.0.27"
   },

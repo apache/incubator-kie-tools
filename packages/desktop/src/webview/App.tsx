@@ -183,7 +183,8 @@ export function App() {
                 <Alert
                   variant={AlertVariant.danger}
                   title={i18n.app.title}
-                  actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} ouiaId="close-danger-alert-button" />}
+                  ouiaId="danger-alert"
                 />
               </div>
             )}

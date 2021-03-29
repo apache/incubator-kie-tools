@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,5 +14,13 @@
  * limitations under the License.
  */
 
-export { File, EMPTY_FILE_DMN, EMPTY_FILE_BPMN, EMPTY_FILE_PMML, newFile } from "./File";
-export { StateControl } from "./StateControl";
+import { Application } from "spectron";
+import { join } from "path";
+import { platform } from "os";
+
+export async function initApp(): Promise<Application> {
+  return await new Application({
+    path: join(__dirname, "..", "node_modules", ".bin", "electron" + (platform() === "win32" ? ".cmd" : "")),
+    args: [join(__dirname, "..")]
+  }).start();
+}

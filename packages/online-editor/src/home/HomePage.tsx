@@ -126,6 +126,10 @@ export function HomePage(props: Props) {
     createEmptyFile("dmn");
   }, [createEmptyFile]);
 
+  const createEmptyPmmlFile = useCallback(() => {
+    createEmptyFile("pmml");
+  }, [createEmptyFile]);
+
   const trySample = useCallback(
     (fileExtension: string) => {
       const fileName = "sample";
@@ -147,6 +151,10 @@ export function HomePage(props: Props) {
 
   const tryDmnSample = useCallback(() => {
     trySample("dmn");
+  }, [trySample]);
+
+  const tryPmmlSample = useCallback(() => {
+    trySample("pmml");
   }, [trySample]);
 
   const validateUrl = useCallback(async () => {
@@ -458,6 +466,24 @@ export function HomePage(props: Props) {
             <CardFooter>
               <Button variant="secondary" onClick={createEmptyDmnFile}>
                 {i18n.homePage.dmnCard.createNew}
+              </Button>
+            </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Title headingLevel="h2" size="2xl">
+                {i18n.homePage.pmmlCard.title}
+              </Title>
+            </CardHeader>
+            <CardBody isFilled={false}>{i18n.homePage.pmmlCard.explanation}</CardBody>
+            <CardBody isFilled={true}>
+              <Button variant="link" isInline={true} onClick={tryPmmlSample} ouiaId="try-pmml-sample-button">
+                {i18n.homePage.trySample}
+              </Button>
+            </CardBody>
+            <CardFooter>
+              <Button variant="secondary" onClick={createEmptyPmmlFile}>
+                {i18n.homePage.pmmlCard.createNew}
               </Button>
             </CardFooter>
           </Card>

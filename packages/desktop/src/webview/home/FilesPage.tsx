@@ -315,13 +315,14 @@ export function FilesPage(props: Props) {
             <Title headingLevel={"h1"}>{i18n.filesPage.files.title}</Title>
           </TextContent>
         </div>
-        <Gallery hasGutter={true} className="kogito--desktop__actions-gallery">
+        <Gallery hasGutter={true} className="kogito--desktop__actions-gallery" data-ouia-component-id="new-file-gallery">
           <Card
             className={"kogito--desktop__actions-card"}
             component={"article"}
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}
+            ouiaId="new-blank-bpmn-file-card"
           >
             <CardHeader>
               {
@@ -340,6 +341,7 @@ export function FilesPage(props: Props) {
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}
+            ouiaId="new-blank-dmn-file-card"
           >
             <CardHeader>
               {
@@ -358,6 +360,7 @@ export function FilesPage(props: Props) {
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("openSample", { type: "bpmn" })}
+            ouiaId="new-sample-bpmn-file-card"
           >
             <CardHeader>
               {
@@ -382,6 +385,7 @@ export function FilesPage(props: Props) {
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("openSample", { type: "dmn" })}
+            ouiaId="new-sample-dmn-file-card"
           >
             <CardHeader>
               {
@@ -400,7 +404,7 @@ export function FilesPage(props: Props) {
               }
             </CardBody>
           </Card>
-          <Card className="kogito--desktop__actions-card--wide">
+          <Card className="kogito--desktop__actions-card--wide" ouiaId="open-from-source-card">
             <CardHeader>
               <Title size={"xl"} headingLevel={"h3"}>
                 {i18n.filesPage.openUrl.openFromSource}
@@ -434,15 +438,15 @@ export function FilesPage(props: Props) {
               </TextContent>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={importFileByUrl}>
+              <Button variant="secondary" onClick={importFileByUrl} ouiaId="open-from-source-button">
                 {i18n.filesPage.openUrl.openFromSource}
               </Button>
             </CardFooter>
           </Card>
         </Gallery>
       </PageSection>
-      <PageSection variant="light">
-        <Title size={"2xl"} headingLevel={"h3"}>
+      <PageSection variant="light" >
+        <Title size={"2xl"} headingLevel={"h3"} data-ouia-component-id="recent-files-section-title">
           {i18n.filesPage.recent.title}
         </Title>
         <Toolbar>
@@ -455,6 +459,7 @@ export function FilesPage(props: Props) {
                   isOpen={typeFilterSelect.isExpanded}
                   selections={typeFilterSelect.value}
                   width={"7em"}
+                  ouiaId="file-filter-select"
                 >
                   {typeFilterOptions.map((option, index) => (
                     <SelectOption key={index} value={option.value} />
@@ -481,6 +486,7 @@ export function FilesPage(props: Props) {
                 aria-label="sort file view"
                 className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
                 onClick={() => setSortAlphaFilter(!sortAlphaFilter)}
+                ouiaId="order-alpha-button"
               >
                 <SortAlphaDownIcon />
               </Button>
@@ -512,6 +518,7 @@ export function FilesPage(props: Props) {
                   isCompact={true}
                   onClick={() => props.openFileByPath(file.filePath)}
                   className={"kogito--desktop__files-card"}
+                  ouiaId={removeDirectories(file.filePath) + "-recent-file-card"}
                 >
                   <CardBody>
                     <Bullseye>
