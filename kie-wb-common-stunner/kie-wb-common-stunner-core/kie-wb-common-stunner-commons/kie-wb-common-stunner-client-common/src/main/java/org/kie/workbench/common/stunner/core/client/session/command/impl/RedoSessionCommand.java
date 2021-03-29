@@ -114,7 +114,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
         checkNotNull("commandExecutedEvent",
                      commandExecutedEvent);
-        if (getSession().getCanvasHandler().equals(commandExecutedEvent.getCanvasHandler())) {
+        if (null != getSession() && getSession().getCanvasHandler().equals(commandExecutedEvent.getCanvasHandler())) {
             if (null != commandExecutedEvent.getCommand()) {
                 redoCommandHandler.onCommandExecuted(commandExecutedEvent.getCommand());
             }
@@ -127,7 +127,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
         checkNotNull("commandUndoExecutedEvent",
                      commandUndoExecutedEvent);
         CanvasHandler canvasHandler = commandUndoExecutedEvent.getCanvasHandler();
-        if (getSession().getCanvasHandler().equals(canvasHandler)) {
+        if (null != getSession() && getSession().getCanvasHandler().equals(canvasHandler)) {
             if (null != commandUndoExecutedEvent.getCommand()) {
                 redoCommandHandler.onUndoCommandExecuted(commandUndoExecutedEvent.getCommand());
             }

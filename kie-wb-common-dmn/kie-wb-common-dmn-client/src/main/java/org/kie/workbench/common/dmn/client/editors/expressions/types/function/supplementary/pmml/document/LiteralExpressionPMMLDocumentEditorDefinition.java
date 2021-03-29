@@ -84,7 +84,7 @@ public class LiteralExpressionPMMLDocumentEditorDefinition extends BaseEditorDef
                                                          final TranslationService translationService,
                                                          final ValueAndDataTypePopoverView.Presenter headerEditor,
                                                          final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
-                                                         final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                                         final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

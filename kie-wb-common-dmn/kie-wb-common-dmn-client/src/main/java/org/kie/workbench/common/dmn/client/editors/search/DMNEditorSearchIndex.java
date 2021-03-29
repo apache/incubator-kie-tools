@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.widgets.client.search.common.BaseEditorSearchIndex;
 import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.uberfire.mvp.Command;
@@ -133,15 +134,17 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
     }
 
     private boolean isExpressionEditorActive() {
-        final DMNSession session = getCurrentSession();
+        final DMNSession session = getCurrentDMNSession();
         if (Objects.isNull(session)) {
             return false;
         }
         return session.getExpressionEditor().isActive();
     }
 
-    private DMNSession getCurrentSession() {
-        return sessionManager.getCurrentSession();
+    @SuppressWarnings("all")
+    private DMNSession getCurrentDMNSession() {
+        ClientSession s = sessionManager.getCurrentSession();
+        return s instanceof DMNSession ? (DMNSession) s : null;
     }
 
     enum SearchContext {

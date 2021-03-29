@@ -22,14 +22,9 @@ import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStore;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @Portable
 public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
@@ -84,38 +79,7 @@ public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
 
     @Override
     public int hashCode() {
-        int[] hashArr = {0};//dirty trick to allow inner class to modify variable
-        final TreeWalkTraverseProcessor treeWalkTraverseProcessor = new TreeWalkTraverseProcessorImpl();
-
-        treeWalkTraverseProcessor
-                .traverse(this,
-                          new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
-                              int[] myHashArr = hashArr;
-
-                              @Override
-                              public boolean startEdgeTraversal(final Edge edge) {
-                                  super.startEdgeTraversal(edge);
-                                  final Object content = edge.getContent();
-                                  myHashArr[0] = HashUtil.combineHashCodes(myHashArr[0],
-                                                                           content.hashCode());
-                                  return true;
-                              }
-
-                              @Override
-                              public boolean startNodeTraversal(final Node node) {
-                                  super.startNodeTraversal(node);
-                                  myHashArr[0] = HashUtil.combineHashCodes(myHashArr[0],
-                                                                           node.hashCode());
-                                  if (!(node.getContent() instanceof DefinitionSet) &&
-                                          node.getContent() instanceof Definition) {
-                                      Object def = ((Definition) (node.getContent())).getDefinition();
-                                      myHashArr[0] = HashUtil.combineHashCodes(myHashArr[0],
-                                                                               def.hashCode());
-                                  }
-                                  return true;
-                              }
-                          });
-        return hashArr[0];//Get the hash from the graph traversal
+        return GraphUtils.computeGraphHashCode(this);
     }
 
     @Override

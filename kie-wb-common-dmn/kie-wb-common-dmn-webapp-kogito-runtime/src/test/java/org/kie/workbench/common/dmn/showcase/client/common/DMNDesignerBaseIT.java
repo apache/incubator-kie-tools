@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -31,9 +32,11 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.showcase.client.common.wait.WaitUtils;
 import org.kie.workbench.common.dmn.showcase.client.selenium.component.DecisionNavigator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.CommonCSSLocator;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.EditorXPathLocator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.PropertiesPanelXPathLocator;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
@@ -49,8 +52,19 @@ import org.xmlunit.assertj.XmlAssert;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DC;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMN;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMNDI;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
 
 public class DMNDesignerBaseIT {
+
+    protected static final Map<String, String> NAMESPACES = new Maps.Builder<String, String>()
+            .put(DMN.getPrefix(), DMN.getUri())
+            .put(DMNDI.getPrefix(), DMNDI.getUri())
+            .put(DC.getPrefix(), DC.getUri())
+            .put(KIE.getPrefix(), KIE.getUri())
+            .build();
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNDesignerBaseIT.class);
 
@@ -175,6 +189,35 @@ public class DMNDesignerBaseIT {
                 .ignoreWhitespace()
                 .withAttributeFilter(attr -> !ignoredAttributes.contains(attr.getName()))
                 .areSimilar();
+    }
+
+    /**
+     * Returned element is a handle for navigating and invoking edit mode of expression cells
+     *
+     * getEditor().sendKeys(Keys.ENTER) - start edit mode of the cell
+     * getEditor().sendKeys(Keys.ARROW_DOWN) - move cell selection down by one
+     */
+    protected WebElement getEditor() {
+        final WebElement editor = waitUtils.waitUntilElementIsPresent(EditorXPathLocator.expressionEditor(),
+                                                                      "Expression editor probably not activated");
+
+        return editor;
+    }
+
+    /**
+     * Returned element is a handle for typing text into expression
+     *
+     * Prerequisite:
+     * getEditor().sendKeys(Keys.ENTER) - start edit mode of the cell
+     *
+     * getAutocompleteEditor().sendKeys(Keys.CONTROL, Keys.SPACE) - display autocomplete suggestions
+     * getAutocompleteEditor().sendKeys(Keys.TAB) - finish edit mode
+     */
+    protected WebElement getAutocompleteEditor() {
+        final WebElement editor = waitUtils.waitUntilElementIsPresent(EditorXPathLocator.expressionAutocompleteEditor(),
+                                                                      "Autocompletion not shown");
+
+        return editor;
     }
 
     protected void saveScreenShot(final String... prefixes) {

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
-import java.util.Optional;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,14 +30,12 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
-import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.stunner.kogito.api.editor.DiagramType.PROJECT_DIAGRAM;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -149,13 +145,9 @@ public class DMNClientDiagramServiceImplTest {
     @Test
     public void testMarshall() {
 
-        final KogitoDiagramResourceImpl resource = mock(KogitoDiagramResourceImpl.class);
         final Diagram diagram = mock(Diagram.class);
 
-        when(resource.getType()).thenReturn(PROJECT_DIAGRAM);
-        when(resource.projectDiagram()).thenReturn(Optional.of(diagram));
-
-        service.transform(resource);
+        service.transform(diagram);
 
         verify(marshallerService).marshall(eq(diagram), any());
     }

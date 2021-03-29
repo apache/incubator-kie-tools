@@ -62,11 +62,11 @@ public abstract class BaseKogitoEditor<CONTENT> {
      * @param value
      * Editor's content
      */
-    public abstract Promise setContent(final String path, final String value);
+    public abstract Promise<Void> setContent(final String path, final String value);
 
     /**
      * Used by Kogito to get the XML content of the editor. This should return a {@link String}
      * representation of the editors content to persist to an underlying persistent store.
      */
-    public abstract Promise getContent();
+    public abstract Promise<String> getContent();
 }

@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.Naviga
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItemView;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorView;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -58,8 +57,6 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private final NavigatorView<?> view;
 
-    private final DiagramClientErrorHandler diagramClientErrorHandler;
-
     private final List<NavigatorItem<DiagramRepresentation>> items;
 
     private int width;
@@ -70,13 +67,11 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     public DiagramsNavigatorImpl(final ClientDiagramService clientDiagramServices,
                                  final @Any ManagedInstance<DiagramNavigatorItem> navigatorItemInstances,
                                  final Event<LoadDiagramEvent> loadDiagramEventEvent,
-                                 final NavigatorView<?> view,
-                                 final DiagramClientErrorHandler diagramClientErrorHandler) {
+                                 final NavigatorView<?> view) {
         this.clientDiagramServices = clientDiagramServices;
         this.navigatorItemInstances = navigatorItemInstances;
         this.loadDiagramEventEvent = loadDiagramEventEvent;
         this.view = view;
-        this.diagramClientErrorHandler = diagramClientErrorHandler;
 
         this.width = 140;
         this.height = 140;
@@ -185,7 +180,6 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     }
 
     private void showError(final ClientRuntimeError error) {
-        diagramClientErrorHandler.handleError(error, message -> showError(message));
         log(Level.SEVERE, StunnerClientLogger.getErrorMessage(error));
         fireProcessingCompleted();
     }

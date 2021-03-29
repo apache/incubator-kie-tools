@@ -86,7 +86,7 @@ public class DMNDiagramEditorActivity extends AbstractActivity implements Editor
 
     @Override
     public String getIdentifier() {
-        return realPresenter.getEditorIdentifier();
+        return AbstractDMNDiagramEditor.EDITOR_ID;
     }
 
     @Override

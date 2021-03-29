@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -36,8 +35,6 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
-import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
-import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
@@ -137,31 +134,20 @@ public class DMNClientDiagramServiceImpl extends AbstractKogitoClientDiagramServ
     }
 
     @Override
-    public Promise<String> transform(final KogitoDiagramResourceImpl resource) {
-
-        if (resource.getType() != DiagramType.PROJECT_DIAGRAM) {
-            return promises.resolve(resource.xmlDiagram().orElse("Diagram type cannot be " + resource.getType()));
-        }
-
+    public Promise<String> transform(final Diagram diagram) {
         return promises.create((resolveOnchangeFn, rejectOnchangeFn) -> {
-            final Optional<Diagram> projectDiagram = resource.projectDiagram();
+            marshallerService.marshall(diagram, new ServiceCallback<String>() {
 
-            if (projectDiagram.isPresent()) {
-                marshallerService.marshall(projectDiagram.get(), new ServiceCallback<String>() {
+                @Override
+                public void onSuccess(final String xml) {
+                    resolveOnchangeFn.onInvoke(xml);
+                }
 
-                    @Override
-                    public void onSuccess(final String xml) {
-                        resolveOnchangeFn.onInvoke(xml);
-                    }
-
-                    @Override
-                    public void onError(final ClientRuntimeError e) {
-                        rejectOnchangeFn.onInvoke(e);
-                    }
-                });
-            } else {
-                rejectOnchangeFn.onInvoke(new IllegalStateException("Diagram instance is not present"));
-            }
+                @Override
+                public void onError(final ClientRuntimeError e) {
+                    rejectOnchangeFn.onInvoke(e);
+                }
+            });
         });
     }
 }

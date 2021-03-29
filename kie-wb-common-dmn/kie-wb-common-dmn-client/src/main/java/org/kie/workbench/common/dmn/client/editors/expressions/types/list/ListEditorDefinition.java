@@ -72,7 +72,7 @@ public class ListEditorDefinition extends BaseEditorDefinition<List, ListGridDat
                                 final TranslationService translationService,
                                 final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                 final ValueAndDataTypePopoverView.Presenter headerEditor,
-                                final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor;
 
+import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadataQuery;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadataQueryResult;
-import org.kie.workbench.common.stunner.kogito.api.Kogito;
-import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientService;
 
-@Kogito
-public interface ConditionEditorMetadataService
-        extends KogitoClientService<TypeMetadataQuery, TypeMetadataQueryResult> {
+public interface ConditionEditorMetadataService {
 
+    Promise<TypeMetadataQueryResult> call(TypeMetadataQuery input);
 }

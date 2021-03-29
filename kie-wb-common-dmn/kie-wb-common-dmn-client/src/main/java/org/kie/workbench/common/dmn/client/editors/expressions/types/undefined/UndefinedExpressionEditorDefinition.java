@@ -72,7 +72,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                final TranslationService translationService,
                                                final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
                                                final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                               final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                               final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

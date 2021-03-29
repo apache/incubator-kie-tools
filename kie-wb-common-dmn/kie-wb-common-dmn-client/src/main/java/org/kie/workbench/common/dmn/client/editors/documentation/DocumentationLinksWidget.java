@@ -42,7 +42,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.documentation.links.NameAndUrlPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
@@ -97,7 +96,7 @@ public class DocumentationLinksWidget extends Composite implements HasValue<Docu
                                     @Named("span") final HTMLElement addLink,
                                     @Named("span") final HTMLElement noLink,
                                     final Event<LockRequiredEvent> locker,
-                                    final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                    final ReadOnlyProvider readOnlyProvider) {
 
         this.listItems = listItems;
         this.linksContainer = linksContainer;

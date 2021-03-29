@@ -32,12 +32,12 @@
   <!-- Stunner -->
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
-  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoAPI"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
 
   <!-- Kogito -->
   <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>
+  <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge"/>
 
   <source path="client"/>
 

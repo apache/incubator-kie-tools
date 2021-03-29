@@ -45,8 +45,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.kogito.api.editor.DiagramType;
-import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
@@ -102,14 +100,6 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
         doTransform(createDiagramTitleFromFilePath(fileName), xml, callback);
     }
 
-    @Override
-    public Promise<String> transform(final KogitoDiagramResourceImpl resource) {
-        if (resource.getType() == DiagramType.PROJECT_DIAGRAM) {
-            return promises.resolve(transform(resource.projectDiagram().orElseThrow(() -> new IllegalStateException("DiagramType is PROJECT_DIAGRAM however no instance present"))));
-        }
-        return promises.resolve(resource.xmlDiagram().orElse("DiagramType is XML_DIAGRAM however no instance present"));
-    }
-
     private void doTransform(final String fileName,
                              final String xml,
                              final ServiceCallback<Diagram> callback) {
@@ -136,8 +126,9 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
         return parse(fileName, xml);
     }
 
-    public String transform(final Diagram diagram) {
-        return marshalling.marshall(convert(diagram));
+    public Promise<String> transform(final Diagram diagram) {
+        String raw = marshalling.marshall(convert(diagram));
+        return promises.resolve(raw);
     }
 
     private void updateDiagramSet(Node<Definition<BPMNDiagram>, ?> diagramNode, String name) {

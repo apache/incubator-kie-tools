@@ -62,7 +62,7 @@ public class DMNCommonActionsToolboxFactory
                                           final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                                           final @DMNEditor DefaultCanvasCommandFactory commandFactory,
                                           final @DMNEditor ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions,
-                                          final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                          final ReadOnlyProvider readOnlyProvider) {
         super(commandManager, commandFactory, deleteNodeActions, views);
 
         this.editDecisionToolboxActions = editDecisionToolboxActions;

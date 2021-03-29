@@ -69,7 +69,7 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                              final ListSelectorView.Presenter listSelector,
                                              final TranslationService translationService,
                                              final ValueAndDataTypePopoverView.Presenter headerEditor,
-                                             final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                             final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

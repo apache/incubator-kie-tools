@@ -82,7 +82,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final ValueAndDataTypePopoverView.Presenter headerEditor,
                                     final ParametersPopoverView.Presenter parametersEditor,
                                     final KindPopoverView.Presenter kindEditor,
-                                    final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                    final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

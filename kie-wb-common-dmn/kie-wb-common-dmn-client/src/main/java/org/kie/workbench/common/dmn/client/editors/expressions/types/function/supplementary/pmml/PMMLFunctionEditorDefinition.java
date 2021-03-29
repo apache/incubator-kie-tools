@@ -67,7 +67,7 @@ public class PMMLFunctionEditorDefinition extends BaseSupplementaryFunctionEdito
                                         final ListSelectorView.Presenter listSelector,
                                         final TranslationService translationService,
                                         final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                        final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                        final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

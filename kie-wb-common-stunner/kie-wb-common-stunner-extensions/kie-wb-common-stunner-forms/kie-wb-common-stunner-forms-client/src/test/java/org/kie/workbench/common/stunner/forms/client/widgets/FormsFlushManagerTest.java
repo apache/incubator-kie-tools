@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -73,13 +74,18 @@ public class FormsFlushManagerTest {
     }
 
     @Test
+    public void testOnFormsOpenedEvent() {
+        tested.onFormsOpenedEvent(new FormPropertiesOpened(clientSession, ELEMENT_UUID, ""));
+        assertEquals(ELEMENT_UUID, tested.formElementUUID);
+    }
+
+    @Test
     public void flush() {
+        tested.onFormsOpenedEvent(new FormPropertiesOpened(clientSession, ELEMENT_UUID, ""));
         tested.container = null;
-        tested.flush(clientSession, ELEMENT_UUID);
-
+        tested.flush(clientSession);
         tested.container = formsContainer;
-        tested.flush(clientSession, ELEMENT_UUID);
-
+        tested.flush(clientSession);
         verify(formsContainer, times(1)).flush(GRAPH_UUID, ELEMENT_UUID);
     }
 

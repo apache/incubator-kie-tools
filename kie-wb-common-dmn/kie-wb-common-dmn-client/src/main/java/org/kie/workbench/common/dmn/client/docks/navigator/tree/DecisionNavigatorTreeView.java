@@ -41,7 +41,6 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
@@ -204,7 +203,7 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
                         final @Named("i") HTMLElement edit,
                         final @Named("i") HTMLElement remove,
                         final Event<LockRequiredEvent> locker,
-                        final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                        final ReadOnlyProvider readOnlyProvider) {
             this.textContent = textContent;
             this.inputText = inputText;
             this.icon = icon;

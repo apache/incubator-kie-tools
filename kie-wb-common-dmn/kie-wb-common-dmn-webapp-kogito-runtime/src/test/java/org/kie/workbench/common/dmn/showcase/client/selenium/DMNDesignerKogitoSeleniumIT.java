@@ -18,15 +18,12 @@ package org.kie.workbench.common.dmn.showcase.client.selenium;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import javax.xml.XMLConstants;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.showcase.client.common.DMNDesignerBaseIT;
 import org.kie.workbench.common.dmn.showcase.client.model.DecisionTableSeleniumModel;
@@ -50,9 +47,7 @@ import org.xmlunit.util.Predicate;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DC;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMN;
-import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMNDI;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.FEEL;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
 import static org.openqa.selenium.By.xpath;
@@ -62,13 +57,6 @@ import static org.openqa.selenium.By.xpath;
  * The Designer is represented by single webpage - index.html
  */
 public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
-
-    private static final Map<String, String> NAMESPACES = new Maps.Builder<String, String>()
-            .put(DMN.getPrefix(), DMN.getUri())
-            .put(DMNDI.getPrefix(), DMNDI.getUri())
-            .put(DC.getPrefix(), DC.getUri())
-            .put(KIE.getPrefix(), KIE.getUri())
-            .build();
 
     @Test
     public void testNewDiagram() throws Exception {
@@ -1868,7 +1856,6 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     }
 
     @Test
-    @Ignore("KOGITO-1581")
     public void testListExpression_DROOLS5131() throws Exception {
         final String expected = loadResource("DROOLS-5131 (List expression).xml");
         setContent(expected);
@@ -1883,30 +1870,12 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
 
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
+                .nodesByXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
-                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
-                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']" +
-                                  "/dmn:literalExpression[@id='_3C536533-8EDF-42BC-9ECA-CC01CC86D719']" +
-                                  "/dmn:text[text()='1']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
-                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']" +
-                                  "/dmn:literalExpression[@id='_7CAB8067-1481-41F7-8EA2-68D33679A518']" +
-                                  "/dmn:text[text()='2']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
-                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']" +
-                                  "/dmn:literalExpression[3]" +
-                                  "/dmn:text[text()='3']");
+                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']")
+                .containsAnyNodeHavingXPath("//dmn:literalExpression[1]/dmn:text[text()='1']")
+                .containsAnyNodeHavingXPath("//dmn:literalExpression[2]/dmn:text[text()='2']")
+                .containsAnyNodeHavingXPath("//dmn:literalExpression[3]/dmn:text[contains(text(),'3')]");
     }
 
     /**
@@ -2436,19 +2405,5 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         waitUtils.waitUntilElementIsVisible(PropertiesPanelXPathLocator.property(propertyName),
                                             format("Property '%s' not found in Properties panel", propertyName))
                 .sendKeys(value + Keys.TAB); // TAB is used to flush the changes
-    }
-
-    private WebElement getEditor() {
-        final WebElement editor = waitUtils.waitUntilElementIsPresent(EditorXPathLocator.expressionEditor(),
-                                                                      "Expression editor probably not activated");
-
-        return editor;
-    }
-
-    private WebElement getAutocompleteEditor() {
-        final WebElement editor = waitUtils.waitUntilElementIsPresent(EditorXPathLocator.expressionAutocompleteEditor(),
-                                                                      "Autocompletion not shown");
-
-        return editor;
     }
 }

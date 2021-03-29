@@ -18,11 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.client.forms;
 
 import java.util.List;
 
-import org.kie.workbench.common.stunner.kogito.api.Kogito;
-import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientService;
+import elemental2.promise.Promise;
 import org.uberfire.backend.vfs.Path;
 
-@Kogito
-public interface DataTypeNamesService extends KogitoClientService<Path, List<String>> {
+public interface DataTypeNamesService {
 
+    Promise<List<String>> call(Path input);
 }
