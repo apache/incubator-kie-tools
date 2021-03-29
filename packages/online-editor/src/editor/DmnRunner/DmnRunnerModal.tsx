@@ -43,8 +43,6 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { DMN_RUNNER_DEFAULT_PORT } from "./DmnRunnerContextProvider";
 
-const DMN_RUNNER_LINK = `files/dmn-runner.zip`;
-
 export function DmnRunnerModal() {
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const dmnRunner = useDmnRunner();
@@ -52,12 +50,12 @@ export function DmnRunnerModal() {
   const downloadDmnRunner = useMemo(() => {
     switch (operationalSystem) {
       case OperatingSystem.MACOS:
-        return DMN_RUNNER_LINK;
+        return "$_{WEBPACK_REPLACE__dmnRunnerMacOsUrl}";
       case OperatingSystem.WINDOWS:
-        return DMN_RUNNER_LINK;
+        return "$_{WEBPACK_REPLACE__dmnRunnerWindowsUrl}";
       case OperatingSystem.LINUX:
       default:
-        return DMN_RUNNER_LINK;
+        return "$_{WEBPACK_REPLACE__dmnRunnerLinuxUrl}";
     }
   }, [operationalSystem]);
 

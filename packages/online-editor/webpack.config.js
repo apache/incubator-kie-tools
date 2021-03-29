@@ -55,8 +55,29 @@ function getDownloadHubArgs(argv) {
   return [linuxUrl, macOsUrl, windowsUrl];
 }
 
+function getDownloadDmnRunnerArgs(argv) {
+  let linuxUrl = argv["DOWNLOAD_DMN_RUNNER_linuxUrl" || process.env["DOWNLOAD_DMN_RUNNER_linuxUrl"]];
+  let macOsUrl = argv["DOWNLOAD_DMN_RUNNER_macOsUrl" || process.env["DOWNLOAD_DMN_RUNNER_macOsUrl"]];
+  let windowsUrl = argv["DOWNLOAD_DMN_RUNNER_windowsUrl" || process.env["DOWNLOAD_DMN_RUNNER_windowsUrl"]];
+
+  linuxUrl = linuxUrl || `files/dmn-runner.zip`;
+  macOsUrl = macOsUrl || `files/dmn-runner.zip`;
+  windowsUrl = windowsUrl || `files/dmn-runner.zip`;
+
+  console.info("Download DMN Runner :: Linux URL: " + linuxUrl);
+  console.info("Download DMN Runner :: macOs URL: " + macOsUrl);
+  console.info("Download DMN Runner :: Windows URL: " + windowsUrl);
+
+  return [linuxUrl, macOsUrl, windowsUrl];
+}
+
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
+  const [
+    downloadDmnRunner_linuxUrl,
+    downloadDmnRunner_macOsUrl,
+    downloadDmnRunner_windowsUrl
+  ] = getDownloadDmnRunnerArgs(argv);
 
   return merge(common, {
     entry: {
@@ -93,6 +114,26 @@ module.exports = async (env, argv) => {
               {
                 search: "$_{WEBPACK_REPLACE__hubWindowsUrl}",
                 replace: downloadHub_windowsUrl
+              }
+            ]
+          }
+        },
+        {
+          test: /DmnRunnerModal\.tsx$/,
+          loader: "string-replace-loader",
+          options: {
+            multiple: [
+              {
+                search: "$_{WEBPACK_REPLACE__dmnRunnerLinuxUrl}",
+                replace: downloadDmnRunner_linuxUrl
+              },
+              {
+                search: "$_{WEBPACK_REPLACE__dmnRunnerMacOsUrl}",
+                replace: downloadDmnRunner_macOsUrl
+              },
+              {
+                search: "$_{WEBPACK_REPLACE__dmnRunnerWindowsUrl}",
+                replace: downloadDmnRunner_windowsUrl
               }
             ]
           }

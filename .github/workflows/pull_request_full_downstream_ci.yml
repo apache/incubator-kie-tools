@@ -288,6 +288,9 @@ jobs:
           DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
           DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
           DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
+          DOWNLOAD_DMN_RUNNER_linuxUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
+          DOWNLOAD_DMN_RUNNER_macOsUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
+          DOWNLOAD_DMN_RUNNER_windowsUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
           DISPLAY: ":99.0"
         run: |
           cd ${{ github.workspace }}/kogito-tooling

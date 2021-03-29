@@ -17,6 +17,7 @@
 import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import JSONSchemaBridge from "../../common/Bridge";
+import { OperatingSystem } from "../../common/utils";
 
 export interface DmnRunnerPayload {
   model: string;
@@ -59,7 +60,6 @@ export class DmnRunnerService {
   private readonly DMN_RUNNER_VALIDATE_URL: string;
   private readonly DMN_RUNNER_DMN_RESULT_URL: string;
   private readonly DMN_RUNNER_FORM_URL: string;
-  private readonly DMN_RUNNER_DOWNLOAD_URL = "https://kiegroup.github.io/kogito-online-ci/temp/runner.zip";
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
   constructor(private port: string) {
@@ -92,19 +92,6 @@ export class DmnRunnerService {
   public async checkServer(): Promise<boolean> {
     const response = await fetch(this.DMN_RUNNER_SERVER_URL, { method: "OPTIONS" });
     return response.status < 300;
-  }
-
-  public async download() {
-    try {
-      const response = await fetch(this.DMN_RUNNER_DOWNLOAD_URL, { method: "GET" });
-      const blob = await response.blob();
-
-      const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, "_blank");
-      URL.revokeObjectURL(objectUrl);
-    } catch (err) {
-      console.error("Automatic JIT download failed.");
-    }
   }
 
   public async result(payload: DmnRunnerPayload): Promise<DmnResult | undefined> {
