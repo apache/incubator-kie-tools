@@ -192,6 +192,13 @@ export function DmnRunnerDrawer(props: Props) {
     errorBoundaryRef.current?.reset();
   }, [dmnRunner.jsonSchemaBridge]);
 
+  const [hasError, setHasError] = useState<boolean>(false);
+  useEffect(() => {
+    if (hasError) {
+      setDmnRunnerResults(undefined);
+    }
+  }, [hasError]);
+
   // Subscribe to any change on the DMN Editor and submit the form
   useEffect(() => {
     if (props.editor) {
@@ -249,6 +256,7 @@ export function DmnRunnerDrawer(props: Props) {
                 {shouldRenderForm ? (
                   <ErrorBoundary
                     ref={errorBoundaryRef}
+                    setHasError={setHasError}
                     error={
                       <div>
                         <EmptyState>
