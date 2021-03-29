@@ -122,9 +122,14 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public setContent(path: string, content: string): Promise<void> {
-    return Promise.resolve(this.doSetContent(path, content)).then(() =>
-      this.props.setNotifications(this.state.path, this.validate())
-    );
+    try {
+      this.doSetContent(path, content);
+      this.props.setNotifications(this.state.path, this.validate());
+      return Promise.resolve();
+    } catch(e) {
+      console.error(e);
+      return Promise.reject();
+    }
   }
 
   private doSetContent(path: string, content: string): void {
