@@ -298,6 +298,7 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.mortbay.jasper</groupId>
@@ -308,7 +309,6 @@
           <artifactId>xml-apis</artifactId>
         </exclusion>
       </exclusions>
-      <scope>provided</scope>
     </dependency>
 
     <!-- kogito -->
@@ -336,6 +336,7 @@
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -400,15 +401,18 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
       <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.rikkola.gwt</groupId>
