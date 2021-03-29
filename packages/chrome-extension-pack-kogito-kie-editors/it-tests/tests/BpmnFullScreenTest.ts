@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import BpmnEditor from "../framework/editor/bpmn/BpmnEditor";
-import Explorer from "../framework/editor/Explorer";
-import FullScreenPage from "../framework/fullscreen-editor/FullScreenPage";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import SideBar from "../framework/editor/SideBar";
+import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
 
 const TEST_NAME = "BpmnFullScreenTest";
@@ -26,34 +22,62 @@ const TEST_NAME = "BpmnFullScreenTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
-});
-
-test(TEST_NAME, async () => {
-    const processUrl: string = "https://github.com/kiegroup/kogito-tooling/" +
-        "blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
-    let bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, processUrl);
-    const fullScreenPage: FullScreenPage = await bpmnPage.fullScreen();
-    const fullScreenEditor: BpmnEditor = await fullScreenPage.getBpmnEditor();
-    await fullScreenEditor.enter();
-    const fullScreenSideBar: SideBar = await fullScreenEditor.getSideBar();
-    const fullScreenExplorer: Explorer = await fullScreenSideBar.openExplorer();
-    expect((await fullScreenExplorer.getNodeNames()).sort())
-        .toEqual([
-            "MyStart",
-            "MyTask",
-            "MyEnd"
-        ].sort());
-    await fullScreenEditor.leave();
-
-    expect(await fullScreenPage.getExitFullScreenUrl()).toBe(processUrl + "#");
-
-    await fullScreenPage.scrollToTop();
-    bpmnPage = await fullScreenPage.exitFullScreen();
-    expect(await bpmnPage.isEditorVisible()).toBe(true);
-    expect(await bpmnPage.isSourceVisible()).toBe(false);
+  tools = await Tools.init(TEST_NAME);
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
+});
+
+test(TEST_NAME, async () => {
+  // open sample bpmn
+  await tools.open(
+    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn"
+  );
+
+  // click full screen button
+  const fullScreenButton = await tools.find(By.css("[data-testid='go-fullscreen-button']")).getElement();
+  await fullScreenButton.click();
+
+  // check full screen editor is visible
+  expect(
+    await tools
+      .find(By.css(".kogito-iframe.not-fullscreen > #kogito-iframe"))
+      .wait(2000)
+      .isPresent()
+  ).toEqual(false);
+  expect(
+    await tools
+      .find(By.css(".kogito-iframe.fullscreen > #kogito-iframe"))
+      .wait(2000)
+      .isVisible()
+  ).toEqual(true);
+
+  // wait and get kogito iframe
+  await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+
+  // test basic bpmn editor functions
+  await tools.command().testSampleBpmnInEditor();
+
+  // exit full screen
+  await tools.window().leaveFrame();
+  const exitButton = await tools.find(By.css("[data-testid='exit-fullscreen-button']")).getElement();
+  await exitButton.click();
+
+  // check normal editor is visible
+  expect(
+    await tools
+      .find(By.css(".kogito-iframe.not-fullscreen > #kogito-iframe"))
+      .wait(2000)
+      .isVisible()
+  ).toEqual(true);
+  expect(
+    await tools
+      .find(By.css(".kogito-iframe.fullscreen > #kogito-iframe"))
+      .wait(2000)
+      .isPresent()
+  ).toEqual(false);
 });

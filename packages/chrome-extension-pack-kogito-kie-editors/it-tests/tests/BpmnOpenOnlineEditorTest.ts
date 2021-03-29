@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import BpmnEditor from "../framework/editor/bpmn/BpmnEditor";
-import Explorer from "../framework/editor/Explorer";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import OnlineEditorPage from "../framework/online-editor/OnlineEditorPage";
-import SideBar from "../framework/editor/SideBar";
+import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
 
 const TEST_NAME = "BpmnOpenOnlineEditorTest";
@@ -26,26 +22,35 @@ const TEST_NAME = "BpmnOpenOnlineEditorTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
-});
-
-test(TEST_NAME, async () => {
-    const bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, "https://github.com/kiegroup/" +
-        "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn");
-    const onlineEditorPage: OnlineEditorPage = await bpmnPage.openOnlineEditor();
-    expect(await onlineEditorPage.getFileName()).toEqual("test");
-    const onlineEditor: BpmnEditor = await onlineEditorPage.getBpmnEditor();
-    await onlineEditor.enter();
-    const onlineEditorSideBar: SideBar = await onlineEditor.getSideBar();
-    const onlineEditorExplorer: Explorer = await onlineEditorSideBar.openExplorer();
-    expect((await onlineEditorExplorer.getNodeNames()).sort())
-        .toEqual([
-            "MyStart",
-            "MyTask",
-            "MyEnd"
-        ].sort());
+  tools = await Tools.init(TEST_NAME);
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
+});
+
+test(TEST_NAME, async () => {
+  // open sample bpmn
+  await tools.open(
+    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn"
+  );
+
+  // click open online editor button
+  const openOnlineEditorButton = await tools.find(By.css("[data-testid='open-ext-editor-button']")).getElement();
+  await openOnlineEditorButton.click();
+  await tools.window().switchToSecondWindow();
+
+  // wait and get kogito iframe
+  await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+
+  // test basic bpmn editor functions
+  await tools.command().testSampleBpmnInEditor();
+
+  // check process name on the top
+  await tools.window().leaveFrame();
+  const titleName = await tools.find(By.css("[data-testid='toolbar-title'] > input")).getElement();
+  expect(await titleName.getAttribute("value")).toEqual("test");
 });

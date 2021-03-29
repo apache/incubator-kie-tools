@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
-import DmnEditor from "../framework/editor/dmn/DmnEditor";
-import DmnSideBar from "../framework/editor/dmn/DmnSideBar";
-import GitHubPrPage from "../framework/github-pr/GitHubPrPage";
+import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
 
 const TEST_NAME = "DmnPrTest";
@@ -25,48 +22,103 @@ const TEST_NAME = "DmnPrTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
-});
-
-test(TEST_NAME, async () => {
-    // TODO create PR in kiegroup
-    const PR_WEB_PAGE = "https://github.com/tomasdavidorg/chrome-extension-pr-test/pull/3/files";
-
-    // open PR and check that source is opened
-    const gitHubPrPage: GitHubPrPage = await tools.openPage(GitHubPrPage, PR_WEB_PAGE);
-    expect(await gitHubPrPage.isSourceOpened()).toBe(true);
-    expect(await gitHubPrPage.isDiagramOpened()).toBe(false);
-
-    // open diagram and check
-    await gitHubPrPage.seeAsDiagram();
-    expect(await gitHubPrPage.isSourceOpened()).toBe(false);
-    expect(await gitHubPrPage.isDiagramOpened()).toBe(true);
-
-    // check editor with changes
-    const changesEditor: DmnEditor = await gitHubPrPage.getDmnEditor();
-    await gitHubPrPage.scrollToPrHeader();
-    await changesEditor.enter();
-    const sideBar: DmnSideBar = await changesEditor.getSideBar();
-    const navigator: DecisionNavigator = await sideBar.openDecisionNavigator();
-    expect((await navigator.getNodeNames()).sort()).toEqual(["Annotation", "Decision", "InputData", "Model", "Function"].sort());
-    await changesEditor.leave();
-
-    // check editor with original
-    await gitHubPrPage.original();
-    const originalEditor: DmnEditor = await gitHubPrPage.getDmnEditor();
-    await gitHubPrPage.scrollToPrHeader();
-    await originalEditor.enter();
-    const originalSideBar: DmnSideBar = await originalEditor.getSideBar();
-    const originalNavigator: DecisionNavigator = await originalSideBar.openDecisionNavigator();
-    expect((await originalNavigator.getNodeNames()).sort()).toEqual(["Decision", "InputData", "Model", "Function"].sort());
-    await originalEditor.leave();
-
-    // close diagram and check that source is opened 
-    await gitHubPrPage.closeDiagram();
-    expect(await gitHubPrPage.isSourceOpened()).toBe(true);
-    expect(await gitHubPrPage.isDiagramOpened()).toBe(false);
+  tools = await Tools.init(TEST_NAME);
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
+});
+
+test(TEST_NAME, async () => {
+  // open dmn pr
+  await tools.open("https://github.com/tomasdavidorg/chrome-extension-pr-test/pull/3/files");
+
+  // check page
+  await tools.command().checkSourceVisible(true);
+
+  // open diagram view
+  const seeAsDiagramButton = await tools.find(By.css(".kogito-toolbar-container-pr > button")).getElement();
+  await seeAsDiagramButton.click();
+
+  // check page
+  await tools.command().checkSourceVisible(false);
+
+  // wait and get kogito iframe
+  const iframe = await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+  await tools.window().leaveFrame();
+
+  // scroll to pr header
+  const header = await tools.find(By.className("gh-header-meta")).getElement();
+  await header.scroll();
+
+  // click original button
+  const originalButton = await tools.find(By.xpath("//button[text()='Original']")).getElement();
+  await originalButton.click();
+
+  // wait and get kogito iframe
+  await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+  await tools.window().leaveFrame();
+
+  // scroll to pr header
+  await header.scroll();
+  await iframe.enterFrame();
+
+  // open decision navigator
+  const decisionNavigatorButton = await tools
+    .find(By.css("[data-ouia-component-id='docks-item-org.kie.dmn.decision.navigator']"))
+    .getElement();
+  await decisionNavigatorButton.click();
+
+  // check dmn nodes
+  const originalNodes = await tools
+    .find(By.css("[data-i18n-prefix='DecisionNavigatorTreeView.'] > div > span[data-field='text-content']"))
+    .getElements();
+  expect(await Promise.all(originalNodes.map(async n => n.getText()))).toEqual([
+    "new-file",
+    "Decision",
+    "InputData",
+    "Model",
+    "Function"
+  ]);
+
+  // click changes button
+  await tools.window().leaveFrame();
+  const changesButton = await tools.find(By.xpath("//button[text()='Changes']")).getElement();
+  await changesButton.click();
+
+  // wait and get kogito iframe
+  await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+
+  // check dmn nodes
+  const nodes = await tools
+    .find(By.css("[data-i18n-prefix='DecisionNavigatorTreeView.'] > div > span[data-field='text-content']"))
+    .getElements();
+  expect(await Promise.all(nodes.map(async n => n.getText()))).toEqual([
+    "new-file",
+    "Annotation",
+    "Decision",
+    "InputData",
+    "Model",
+    "Function"
+  ]);
+
+  // scroll to pr header
+  await tools.window().leaveFrame();
+  await header.scroll();
+
+  // click close diagram button
+  const closeDiagramButton = await tools.find(By.xpath("//button[text()='Close diagram']")).getElement();
+  await closeDiagramButton.click();
+
+  // check page
+  await tools.command().checkSourceVisible(true);
 });

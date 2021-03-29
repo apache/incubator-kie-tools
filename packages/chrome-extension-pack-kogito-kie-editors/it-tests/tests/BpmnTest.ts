@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import BpmnEditor from "../framework/editor/bpmn/BpmnEditor";
-import Explorer from "../framework/editor/Explorer";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import GitHubListItem from "../framework/github-file-list/GitHubListItem";
-import GitHubListPage from "../framework/github-file-list/GitHubListPage";
-import Properties from "../framework/editor/Properties";
-import SideBar from "../framework/editor/SideBar";
+import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
 
 const TEST_NAME = "BpmnTest";
@@ -28,64 +22,70 @@ const TEST_NAME = "BpmnTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
-});
-
-test(TEST_NAME, async () => {
-    const WEB_PAGE = "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
-    const EXPECTED_LINK = "kiegroup/kogito-tooling/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
-    const PROCESS_NAME = "myProcess";
-    const FILE_NAME = "test.bpmn";
-    const TASK_NODE_NAME = "MyTask";
-
-    // check link to online editor in the list
-    const gitHubListPage: GitHubListPage = await tools.openPage(GitHubListPage, WEB_PAGE);
-    const gitHubFile: GitHubListItem = await gitHubListPage.getFile(FILE_NAME);
-    const linkText: string = await gitHubFile.getLinkToOnlineEditor();
-    expect(linkText).toContain(EXPECTED_LINK);
-
-    // open BPMN editor
-    const editorPage: GitHubEditorPage = await gitHubFile.open();
-    const bpmnEditor: BpmnEditor = await editorPage.getBpmnEditor();
-
-    // move startEvent to canvas
-    await bpmnEditor.enter();
-    await bpmnEditor.dragAndDropStartEventToCanvas();
-
-    // check process properties
-    const sideBar: SideBar = await bpmnEditor.getSideBar();
-    const processProps: Properties = await sideBar.openProperties();
-    expect(await processProps.getProcessNameFromInput()).toEqual(PROCESS_NAME);
-
-    // check process nodes in explorer
-    const explorer: Explorer = await sideBar.openExplorer();
-    expect((await explorer.getNodeNames()).sort())
-        .toEqual([
-            "Start",
-            "MyStart",
-            "MyTask",
-            "MyEnd"
-        ].sort());
-    expect(await explorer.getProcessName()).toEqual(PROCESS_NAME);
-
-    // check task properties
-    await explorer.selectNode(TASK_NODE_NAME);
-    const nodeProps: Properties = await sideBar.openProperties();
-    expect(await nodeProps.getNameFromTextArea()).toEqual(TASK_NODE_NAME);
-
-    await bpmnEditor.leave();
-
-    // open and check source/editor
-    expect(await editorPage.isSourceVisible()).toBe(false);
-    expect(await editorPage.isEditorVisible()).toBe(true);
-    await editorPage.seeAsSource();
-    expect(await editorPage.isSourceVisible()).toBe(true);
-    expect(await editorPage.isEditorVisible()).toBe(false);
-    await editorPage.seeAsDiagram();
-    expect(await editorPage.isSourceVisible()).toBe(false);
-    expect(await editorPage.isEditorVisible()).toBe(true);
+  tools = await Tools.init(TEST_NAME);
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
+});
+
+test(TEST_NAME, async () => {
+  // open github samples list
+  await tools.open(
+    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples"
+  );
+
+  // open bpmn sample
+  const bpmnSample = await tools.find(By.css("a[title='test.bpmn']")).getElement();
+  await bpmnSample.click();
+
+  // wait and get kogito iframe
+  await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+
+  // test basic bpmn editor functions
+  await tools.command().testSampleBpmnInEditor();
+
+  // open move start event to canvas
+  const startEvents = await tools.find(By.css("[title='Start Events']")).getElement();
+  await startEvents.click();
+  const startItem = await tools.find(By.className("kie-palette-item-anchor-spacer")).getElement();
+  await startItem.dragAndDrop(200, 0);
+
+  // close start events palette
+  const closeButton = await tools.find(By.className("kie-palette-flyout__btn-link--close")).getElement();
+  await closeButton.click();
+
+  // open explorer panel
+  const explorerDiagramButton = await tools
+    .find(By.css("[data-ouia-component-id='docks-item-ProjectDiagramExplorerScreen']"))
+    .getElement();
+  await explorerDiagramButton.click();
+
+  // check node names
+  const nodes = await tools.find(By.css("[data-ouia-component-type='tree-item'] a")).getElements();
+  expect(await Promise.all(nodes.map(async n => await n.getText()))).toEqual([
+    "myProcess",
+    "MyStart",
+    "MyTask",
+    "MyEnd",
+    "Start"
+  ]);
+
+  // open source view
+  await tools.window().leaveFrame();
+  const seeAsSourceButton = await tools.find(By.css("[data-testid='see-as-source-button']")).getElement();
+  await seeAsSourceButton.click();
+
+  // check page
+  await tools.command().checkSourceVisible(true);
+
+  // open diagram view
+  const seeAsDiagramButton = await tools.find(By.css("[data-testid='see-as-diagram-button']")).getElement();
+  await seeAsDiagramButton.click();
+
+  // check page
+  await tools.command().checkSourceVisible(false);
 });

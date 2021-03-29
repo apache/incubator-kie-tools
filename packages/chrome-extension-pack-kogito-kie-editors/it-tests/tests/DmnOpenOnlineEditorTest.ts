@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,45 +14,49 @@
  * limitations under the License.
  */
 
-import DmnEditor from "../framework/editor/dmn/DmnEditor";
-import DmnSideBar from "../framework/editor/dmn/DmnSideBar";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import OnlineEditorPage from "../framework/online-editor/OnlineEditorPage";
-import Properties from "../framework/editor/Properties";
+import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
-import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
 
 const TEST_NAME = "DmnOpenOnlineEditorTest";
 
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
-});
-
-test(TEST_NAME, async () => {
-    const dmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, "https://github.com/kiegroup/" +
-        "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn");
-    const onlineEditorPage: OnlineEditorPage = await dmnPage.openOnlineEditor();
-    expect(await onlineEditorPage.getFileName()).toEqual("test");
-    const onlineEditor: DmnEditor = await onlineEditorPage.getDmnEditor();
-    await onlineEditorPage.closeTour();
-    await onlineEditor.enter();
-    const onlineEditorSideBar: DmnSideBar = await onlineEditor.getSideBar();
-    const onlineProperties: Properties = await onlineEditorSideBar.openProperties();
-    expect((await onlineProperties.getDmnNameFromInput())).toEqual("myDmn");
-
-    const decisionNavigator: DecisionNavigator = await onlineEditor.openLeftSideBar();
-    expect((await decisionNavigator.getNodeNames()).sort())
-        .toEqual([
-            "MyDecision",
-            "MyInputData",
-            "MyModel",
-            "Function"
-        ].sort());
-    expect(await decisionNavigator.getDmnName()).toEqual("myDmn");
+  tools = await Tools.init(TEST_NAME);
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
+});
+
+test(TEST_NAME, async () => {
+  // open sample dmn
+  await tools.open(
+    "https://github.com/kiegroup/kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
+  );
+
+  // click open online editor button
+  const openOnlineEditorButton = await tools.find(By.css("[data-testid='open-ext-editor-button']")).getElement();
+  await openOnlineEditorButton.click();
+  await tools.window().switchToSecondWindow();
+
+  // wait and get kogito iframe
+  const iframe = await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+  await tools.window().leaveFrame();
+
+  // close tour
+  const closeTourButton = await tools.find(By.xpath("//button[@data-kgt-close]")).getElement();
+  await closeTourButton.click();
+  await iframe.enterFrame();
+
+  // test basic dmn editor functions
+  await tools.command().testSampleDmnInEditor();
+
+  // check dmn name on the top
+  await tools.window().leaveFrame();
+  const titleName = await tools.find(By.css("[data-testid='toolbar-title'] > input")).getElement();
+  expect(await titleName.getAttribute("value")).toEqual("test");
 });

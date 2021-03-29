@@ -17,7 +17,7 @@
 import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
 
-const TEST_NAME = "BpmnCopyLinkTest";
+const TEST_NAME = "BpmnLinkTest";
 
 let tools: Tools;
 
@@ -30,17 +30,16 @@ afterEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-  // open sample bpmn
+  // open github samples list
   await tools.open(
-    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn"
+    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples"
   );
 
-  // click copy link to online editor button
-  const copyLinkButton = await tools.find(By.css("[data-testid='copy-link-button']")).getElement();
-  await copyLinkButton.click();
-
-  // open online editor from clipboard content
-  await tools.open(await tools.clipboard().getContent());
+  // open bpmn sample by link to online editor
+  const bpmnSampleLink = await tools.find(By.css("a[title='test.bpmn'] + a")).getElement();
+  expect(await bpmnSampleLink.getAttribute("title")).toEqual("Open in Online Editor");
+  await bpmnSampleLink.click();
+  await tools.window().switchToSecondWindow();
 
   // wait and get kogito iframe
   await tools.command().getEditor();

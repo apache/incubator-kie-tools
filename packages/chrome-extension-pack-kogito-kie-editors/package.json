@@ -34,7 +34,7 @@
       "^.+\\.(ts)$": "ts-jest"
     },
     "testRegex": [
-      "it-tests/tests/.*Test.ts"
+      "it-tests/tests/.*.ts"
     ],
     "testTimeout": 100000
   }

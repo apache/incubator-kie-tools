@@ -17,7 +17,7 @@
 import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
 
-const TEST_NAME = "BpmnCopyLinkTest";
+const TEST_NAME = "DmnLinkTest";
 
 let tools: Tools;
 
@@ -30,28 +30,33 @@ afterEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-  // open sample bpmn
+  // open github samples list
   await tools.open(
-    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn"
+    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples"
   );
 
-  // click copy link to online editor button
-  const copyLinkButton = await tools.find(By.css("[data-testid='copy-link-button']")).getElement();
-  await copyLinkButton.click();
-
-  // open online editor from clipboard content
-  await tools.open(await tools.clipboard().getContent());
+  // open dmn sample by link to online editor
+  const dmnSampleLink = await tools.find(By.css("a[title='test.dmn'] + a")).getElement();
+  expect(await dmnSampleLink.getAttribute("title")).toEqual("Open in Online Editor");
+  await dmnSampleLink.click();
+  await tools.window().switchToSecondWindow();
 
   // wait and get kogito iframe
-  await tools.command().getEditor();
+  const iframe = await tools.command().getEditor();
 
   // wait util loading dialog disappears
   await tools.command().loadEditor();
+  await tools.window().leaveFrame();
 
-  // test basic bpmn editor functions
-  await tools.command().testSampleBpmnInEditor();
+  // close tour
+  const closeTourButton = await tools.find(By.xpath("//button[@data-kgt-close]")).getElement();
+  await closeTourButton.click();
+  await iframe.enterFrame();
 
-  // check process name on the top
+  // test basic dmn editor functions
+  await tools.command().testSampleDmnInEditor();
+
+  // check dmn name on the top
   await tools.window().leaveFrame();
   const titleName = await tools.find(By.css("[data-testid='toolbar-title'] > input")).getElement();
   expect(await titleName.getAttribute("value")).toEqual("test");

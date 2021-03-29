@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
-import DmnEditor from "../framework/editor/dmn/DmnEditor";
-import DmnSideBar from "../framework/editor/dmn/DmnSideBar";
-import Properties from "../framework/editor/Properties";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import OnlineEditorPage from "../framework/online-editor/OnlineEditorPage";
+import { By } from "selenium-webdriver";
 import Tools from "../utils/Tools";
 
 const TEST_NAME = "DmnCopyLinkTest";
@@ -35,30 +30,35 @@ afterEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-  const dmnGitHubEditorPage: GitHubEditorPage = await tools.openPage(
-    GitHubEditorPage,
+  // open sample dmn
+  await tools.open(
     "https://github.com/kiegroup/kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
   );
-  await dmnGitHubEditorPage.copyLinkToOnlineEditor();
-  const clipboardUrl: string = await tools.clipboard().getContent();
 
-  const onlineEditorPage: OnlineEditorPage = await tools.openPage(OnlineEditorPage, clipboardUrl);
-  expect(await onlineEditorPage.getFileName()).toEqual("test");
-  const onlineEditor: DmnEditor = await onlineEditorPage.getDmnEditor();
-  await onlineEditorPage.closeTour();
-  await onlineEditor.enter();
-  const dmnSideBar: DmnSideBar = await onlineEditor.getSideBar();
-  const onlineProperties: Properties = await dmnSideBar.openProperties();
-  expect(await onlineProperties.getDmnNameFromInput()).toEqual("myDmn");
+  // click copy link to online editor button
+  const copyLinkButton = await tools.find(By.css("[data-testid='copy-link-button']")).getElement();
+  await copyLinkButton.click();
 
+  // open online editor from clipboard content
+  await tools.open(await tools.clipboard().getContent());
 
-  const decisionNavigator: DecisionNavigator = await onlineEditor.openLeftSideBar();
-  expect((await decisionNavigator.getNodeNames()).sort())
-    .toEqual([
-      "MyDecision",
-      "MyInputData",
-      "MyModel",
-      "Function"
-    ].sort());
-  expect(await decisionNavigator.getDmnName()).toEqual("myDmn");
+  // wait and get kogito iframe
+  const iframe = await tools.command().getEditor();
+
+  // wait util loading dialog disappears
+  await tools.command().loadEditor();
+  await tools.window().leaveFrame();
+
+  // close tour
+  const closeTourButton = await tools.find(By.xpath("//button[@data-kgt-close]")).getElement();
+  await closeTourButton.click();
+  await iframe.enterFrame();
+
+  // test basic dmn editor functions
+  await tools.command().testSampleDmnInEditor();
+
+  // check dmn name on the top
+  await tools.window().leaveFrame();
+  const titleName = await tools.find(By.css("[data-testid='toolbar-title'] > input")).getElement();
+  expect(await titleName.getAttribute("value")).toEqual("test");
 });

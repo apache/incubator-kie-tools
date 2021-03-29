@@ -21,59 +21,61 @@ import ErrorProcessor from "./ErrorProcessor";
 import { resolve } from "path";
 
 export default class Driver {
+  public static async init(): Promise<WebDriver> {
+    // get path to unzipped extension or set to default 'dist' directory
+    const chromeExtensionPath: string = process.env.UNZIPPED_CHROME_EXTENSION_PATH
+      ? resolve(process.env.UNZIPPED_CHROME_EXTENSION_PATH)
+      : resolve("dist");
 
-    public static async init(): Promise<WebDriver> {
-        // get path to unzipped extension or set to default 'dist' directory
-        const chromeExtensionPath: string = process.env.UNZIPPED_CHROME_EXTENSION_PATH ?
-            resolve(process.env.UNZIPPED_CHROME_EXTENSION_PATH) : resolve("dist");
-
-        // check the path exists
-        if (!existsSync(chromeExtensionPath)) {
-            throw new Error("Please set UNZIPPED_CHROME_EXTENSION_PATH variable to unziped Chrome extension directory. " +
-                "For example: export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/dist. " +
-                "Directory " + chromeExtensionPath + " does not exist.");
-        }
-
-        // init chrome options
-        const chromeOptions: Options = new Options();
-        chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost");
-
-        // init chrome driver log
-        const LOGS_DIR: string = resolve("logs");
-        if (!existsSync(LOGS_DIR)) {
-            mkdirSync(LOGS_DIR);
-        }
-        const chromeServiceBuilder: ServiceBuilder = new ServiceBuilder();
-        chromeServiceBuilder.loggingTo(LOGS_DIR + "/chromedriver.log").enableVerboseLogging();
-
-        // init chrome driver
-        const driver: WebDriver = await new Builder()
-            .withCapabilities(Capabilities.chrome())
-            .setChromeService(chromeServiceBuilder)
-            .forBrowser(Browser.CHROME)
-            .setChromeOptions(chromeOptions)
-            .build();
-
-        // maximize chrome browser window
-        await ErrorProcessor.run(
-            async () => await driver.manage().window().maximize(),
-            "Error while maximizing browser window."
-        );
-
-        return driver;
+    // check the path exists
+    if (!existsSync(chromeExtensionPath)) {
+      throw new Error(
+        "Please set UNZIPPED_CHROME_EXTENSION_PATH variable to unziped Chrome extension directory. " +
+          "For example: export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/dist. " +
+          "Directory " +
+          chromeExtensionPath +
+          " does not exist."
+      );
     }
 
-    public static async openUrl(driver: WebDriver, url: string): Promise<void> {
-        return await ErrorProcessor.run(
-            async () => await driver.get(url),
-            "Error while opening url: " + url
-        );
-    }
+    // init chrome options
+    const chromeOptions: Options = new Options();
+    chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost", "--disable-gpu");
 
-    public static async quit(driver: WebDriver): Promise<void> {
-        return await ErrorProcessor.run(
-            async () => await driver.quit(),
-            "Error while quiting driver."
-        );
+    // init chrome driver log
+    const LOGS_DIR: string = resolve("logs");
+    if (!existsSync(LOGS_DIR)) {
+      mkdirSync(LOGS_DIR);
     }
+    const chromeServiceBuilder: ServiceBuilder = new ServiceBuilder();
+    chromeServiceBuilder.loggingTo(LOGS_DIR + "/chromedriver.log").enableVerboseLogging();
+
+    // init chrome driver
+    const driver: WebDriver = await new Builder()
+      .withCapabilities(Capabilities.chrome())
+      .setChromeService(chromeServiceBuilder)
+      .forBrowser(Browser.CHROME)
+      .setChromeOptions(chromeOptions)
+      .build();
+
+    // maximize chrome browser window
+    await ErrorProcessor.run(
+      async () =>
+        await driver
+          .manage()
+          .window()
+          .maximize(),
+      "Error while maximizing browser window."
+    );
+
+    return driver;
+  }
+
+  public static async openUrl(driver: WebDriver, url: string): Promise<void> {
+    return await ErrorProcessor.run(async () => await driver.get(url), "Error while opening url: " + url);
+  }
+
+  public static async quit(driver: WebDriver): Promise<void> {
+    return await ErrorProcessor.run(async () => await driver.quit(), "Error while quiting driver.");
+  }
 }
