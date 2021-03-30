@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { dirname } from "path";
+import { DeploymentFile } from "../../editor/DmnDevSandbox/DmnDevSandboxContext";
 import { HttpMethod, JAVA_RUNTIME_VERSION, Resource, ResourceArgs, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/build.openshift.io/v1";
@@ -30,10 +32,8 @@ export interface Builds {
 
 export interface CreateBuildArgs {
   buildConfigUid: string;
-  model: {
-    filename: string;
-    content: string;
-  };
+  targetFile: DeploymentFile;
+  relatedFiles: DeploymentFile[];
   urls: {
     index: string;
     swaggerUI: string;
@@ -62,8 +62,28 @@ export class CreateBuild extends ResourceFetch {
     return "POST";
   }
 
-  protected requestBody(): string | undefined {
-    const diagramPath = `${this.PROJECT_METAINF_RESOURCES}/${this.args.model.filename}`;
+  private buildAccessibleFilePath(file: DeploymentFile): string {
+    return `${this.PROJECT_METAINF_RESOURCES}/${file.path}`;
+  }
+
+  protected async requestBody(): Promise<string | undefined> {
+    const targetFilePath = this.buildAccessibleFilePath(this.args.targetFile);
+    const deploymentFileMap = new Map<string, string>();
+
+    deploymentFileMap.set(targetFilePath, await this.args.targetFile.getFileContents());
+
+    for (const file of this.args.relatedFiles) {
+      deploymentFileMap.set(this.buildAccessibleFilePath(file), await file.getFileContents());
+    }
+
+    const mkdirCommands = `mkdir -p ${Array.from(deploymentFileMap.keys())
+      .map((path: string) => dirname(path))
+      .join(" ")}`;
+
+    const echoFilesCommands = [];
+    for (const [path, content] of deploymentFileMap) {
+      echoFilesCommands.push(`&& echo $'${content}' > '${path}'`);
+    }
 
     return `
       kind: Build
@@ -106,8 +126,11 @@ export class CreateBuild extends ResourceFetch {
           dockerfile: |
             FROM ${this.BASE_IMAGE}
             ENV MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"
-            RUN echo $'${this.args.model.content}' > '${diagramPath}' \
-                && java -jar ${this.FORM_SCHEMA_GENERATOR_PATH} '${diagramPath}' '${this.DATA_PATH}' '${this.args.urls.index}' '${this.args.urls.onlineEditor}' '${this.args.urls.swaggerUI}' \
+            RUN ${mkdirCommands} \
+                ${echoFilesCommands.join(" ")} \
+                && java -jar ${this.FORM_SCHEMA_GENERATOR_PATH} '${targetFilePath}' '${this.DATA_PATH}' '${
+      this.args.urls.index
+    }' '${this.args.urls.onlineEditor}' '${this.args.urls.swaggerUI}' \
                 && ${this.MVNW_PATH} clean package -B -ntp -f ${this.POM_PATH} \
                 && cp ${this.QUARKUS_APP_FOLDER}/*.jar ${this.DEPLOYMENTS_FOLDER} \
                 && cp -R ${this.QUARKUS_APP_FOLDER}/lib/ ${this.DEPLOYMENTS_FOLDER} \
@@ -131,7 +154,7 @@ export class ListBuilds extends ResourceFetch {
     return "GET";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return;
   }
 
@@ -149,7 +172,7 @@ export class DeleteBuild extends ResourceFetch {
     return "DELETE";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return;
   }
 

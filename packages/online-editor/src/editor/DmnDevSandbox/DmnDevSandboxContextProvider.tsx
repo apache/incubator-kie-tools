@@ -23,16 +23,19 @@ import { useOnlineI18n } from "../../common/i18n";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
-import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
+import { DeploymentFile, DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
 import { useSettings } from "../../settings/SettingsContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { AlertsController, useAlert } from "../Alerts/Alerts";
+import { SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY_PATTERN } from "../../workspace/SupportedFiles";
+import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {
   currentFile: EmbeddedEditorFile;
+  workspaceFile?: WorkspaceFile;
   children: React.ReactNode;
   editor: EmbeddedEditorRef | undefined;
   alerts: AlertsController | undefined;
@@ -45,6 +48,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
   const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const workspaces = useWorkspaces();
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
@@ -94,26 +98,55 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const onDeploy = useCallback(
     async (config: OpenShiftSettingsConfig) => {
-      if (!((await isConfigValid(config)) && (await settings.openshift.service.isConnectionEstablished(config)))) {
+      if (!(isConfigValid(config) && (await settings.openshift.service.isConnectionEstablished(config)))) {
         deployStartedErrorAlert.show();
         return;
       }
 
-      const filename = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
-      const editorContent = ((await props.editor?.getContent()) ?? "")
-        .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
-        .replace(/"/g, '\\"'); // Escape quotes
+      const prepareFileContents = (getFileContents: () => Promise<string | undefined>) => async () =>
+        ((await getFileContents()) ?? "")
+          .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
+          .replace(/("|')/g, '\\"'); // Escape quotes
+
+      const targetFile: DeploymentFile = {
+        path: props.workspaceFile
+          ? props.workspaceFile.pathRelativeToWorkspaceRoot
+          : `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+        getFileContents: prepareFileContents(props.currentFile.getFileContents),
+      };
+
+      const relatedFiles: DeploymentFile[] = [];
+
+      if (props.workspaceFile) {
+        const descriptor = await workspaces.workspaceService.getByFile(props.workspaceFile);
+        const workspaceFiles = await workspaces.workspaceService.listFiles(
+          descriptor,
+          SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY_PATTERN
+        );
+
+        relatedFiles.push(
+          ...workspaceFiles
+            .filter((f: WorkspaceFile) => f.path !== targetFile.path)
+            .map((f: WorkspaceFile) => ({
+              path: f.pathRelativeToWorkspaceRoot,
+              getFileContents: prepareFileContents(f.getFileContents),
+            }))
+        );
+      }
 
       try {
         await settings.openshift.service.deploy({
-          filename,
-          editorContent,
-          config,
+          targetFile: targetFile,
+          relatedFiles: relatedFiles,
+          config: config,
           onlineEditorUrl: (baseUrl) =>
-            globals.routes.editor.url({
+            globals.routes.sketchWithUrl.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: { extension: "dmn" },
-              queryParams: { url: `${baseUrl}/${filename}`, readonly: `${true}` },
+              queryParams: {
+                url: `${baseUrl}/${targetFile.path}`,
+                readonly: `${true}`,
+              },
             }),
         });
         deployStartedSuccessAlert.show();
@@ -123,11 +156,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
     },
     [
       settings.openshift.service,
+      props.workspaceFile,
       props.currentFile,
-      props.editor,
+      workspaces.workspaceService,
       deployStartedSuccessAlert,
       deployStartedErrorAlert,
-      globals.routes.editor,
+      globals.routes.sketchWithUrl,
     ]
   );
 

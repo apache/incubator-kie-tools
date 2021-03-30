@@ -42,13 +42,13 @@ export abstract class ResourceFetch {
 
   protected abstract method(): HttpMethod;
 
-  protected abstract requestBody(): string | undefined;
+  protected abstract requestBody(): Promise<string | undefined>;
 
   public abstract name(): string;
 
   public abstract url(): string;
 
-  public requestInit(): RequestInit {
+  public async requestInit(): Promise<RequestInit> {
     return {
       method: this.method(),
       headers: {
@@ -57,7 +57,7 @@ export abstract class ResourceFetch {
         "Content-Type": "application/yaml",
         "Target-Url": this.url(),
       },
-      body: this.requestBody(),
+      body: await this.requestBody(),
     };
   }
 }

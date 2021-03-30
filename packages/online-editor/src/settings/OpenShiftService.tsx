@@ -29,8 +29,9 @@ import { GetProject } from "./resources/Project";
 import { KOGITO_CREATED_BY, KOGITO_FILENAME, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
-import { isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { isConfigValid, OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
+import { basename } from "path";
+import { DeploymentFile } from "../editor/DmnDevSandbox/DmnDevSandboxContext";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
@@ -102,8 +103,8 @@ export class OpenShiftService {
   }
 
   public async deploy(args: {
-    filename: string;
-    editorContent: string;
+    targetFile: DeploymentFile;
+    relatedFiles: DeploymentFile[];
     config: OpenShiftSettingsConfig;
     onlineEditorUrl: (baseUrl: string) => string;
   }): Promise<void> {
@@ -133,10 +134,8 @@ export class OpenShiftService {
       new CreateBuild({
         ...commonArgs,
         buildConfigUid: buildConfig.metadata.uid,
-        model: {
-          filename: args.filename,
-          content: args.editorContent,
-        },
+        targetFile: args.targetFile,
+        relatedFiles: args.relatedFiles,
         urls: {
           index: baseUrl,
           swaggerUI: this.composeSwaggerUIUrl(baseUrl),
@@ -147,13 +146,17 @@ export class OpenShiftService {
     );
 
     await this.fetchResource(
-      new CreateDeployment({ ...commonArgs, filename: args.filename, createdBy: DEFAULT_CREATED_BY }),
+      new CreateDeployment({
+        ...commonArgs,
+        filename: basename(args.targetFile.path),
+        createdBy: DEFAULT_CREATED_BY,
+      }),
       rollbacks
     );
   }
 
   public async fetchResource<T = Resource>(target: ResourceFetch, rollbacks?: ResourceFetch[]): Promise<Readonly<T>> {
-    const response = await fetch(this.proxyUrl, target.requestInit());
+    const response = await fetch(this.proxyUrl, await target.requestInit());
 
     if (!response.ok) {
       if (rollbacks && rollbacks.length > 0) {

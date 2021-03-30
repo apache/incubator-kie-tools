@@ -23,7 +23,7 @@ export class CreateImageStream extends ResourceFetch {
     return "POST";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return `
       kind: ImageStream
       apiVersion: image.openshift.io/v1
@@ -58,7 +58,7 @@ export class DeleteImageStream extends ResourceFetch {
     return "DELETE";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return;
   }
 

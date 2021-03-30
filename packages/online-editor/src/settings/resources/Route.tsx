@@ -32,7 +32,7 @@ export class CreateRoute extends ResourceFetch {
     return "POST";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return `
       kind: Route
       apiVersion: route.openshift.io/v1
@@ -73,7 +73,7 @@ export class ListRoutes extends ResourceFetch {
     return "GET";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return;
   }
 
@@ -91,7 +91,7 @@ export class DeleteRoute extends ResourceFetch {
     return "DELETE";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return;
   }
 

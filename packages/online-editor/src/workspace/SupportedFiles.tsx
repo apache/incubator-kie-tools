@@ -16,8 +16,10 @@
 
 export const SUPPORTED_FILES_TECHNICAL = ["wid", "scesim", "java", "xml", "md"];
 export const SUPPORTED_FILES_EDITABLE = ["dmn", "bpmn", "bpmn2", "pmml"];
+export const SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY = ["dmn", "pmml"];
 export const SUPPORTED_FILES = SUPPORTED_FILES_EDITABLE.concat(SUPPORTED_FILES_TECHNICAL);
 
 export const SUPPORTED_FILES_TECHNICAL_PATTERN = `*.{${SUPPORTED_FILES_TECHNICAL.join(",")}}`;
 export const SUPPORTED_FILES_EDITABLE_PATTERN = `*.{${SUPPORTED_FILES_EDITABLE.join(",")}}`;
+export const SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY_PATTERN = `*.{${SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY.join(",")}}`;
 export const SUPPORTED_FILES_PATTERN = `*.{${SUPPORTED_FILES.join(",")}}`;

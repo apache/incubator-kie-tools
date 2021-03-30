@@ -428,7 +428,12 @@ export function EditorPage(props: Props) {
       {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} currentFile={currentFile} />}
       {!fetchFileError && (
         <DmnRunnerContextProvider currentFile={currentFile} editor={editor} notificationsPanel={notificationsPanel}>
-          <DmnDevSandboxContextProvider currentFile={currentFile} editor={editor} alerts={alerts}>
+          <DmnDevSandboxContextProvider
+            currentFile={currentFile}
+            workspaceFile={workspaceFile}
+            editor={editor}
+            alerts={alerts}
+          >
             <Page
               header={
                 <EditorToolbar

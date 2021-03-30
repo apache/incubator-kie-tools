@@ -57,7 +57,7 @@ export class CreateDeployment extends ResourceFetch {
     return "POST";
   }
 
-  public requestBody(): string {
+  public async requestBody(): Promise<string | undefined> {
     return `
       kind: Deployment
       apiVersion: apps/v1
@@ -112,7 +112,7 @@ export class ListDeployments extends ResourceFetch {
     return "GET";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return;
   }
 
@@ -130,7 +130,7 @@ export class DeleteDeployment extends ResourceFetch {
     return "DELETE";
   }
 
-  protected requestBody(): string | undefined {
+  protected async requestBody(): Promise<string | undefined> {
     return;
   }
 

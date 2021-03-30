@@ -19,6 +19,11 @@ import { useContext } from "react";
 import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
 import { OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 
+export interface DeploymentFile {
+  path: string;
+  getFileContents: () => Promise<string>;
+}
+
 export interface DmnDevSandboxContextType {
   deployments: OpenShiftDeployedModel[];
   isDropdownOpen: boolean;
