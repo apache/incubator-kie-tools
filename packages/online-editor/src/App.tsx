@@ -30,6 +30,7 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import { ModalContext } from "./common/ModalContext";
+import { ModalContextProvider } from "./common/ModalContextProvider";
 
 interface Props {
   file: File;
@@ -97,24 +98,5 @@ export function App(props: Props) {
         </ModalContextProvider>
       </GlobalContext.Provider>
     </I18nDictionariesProvider>
-  );
-}
-
-function ModalContextProvider({ children }: { children: React.ReactNode }) {
-  const [modal, setModal] = useState<React.Component>();
-
-  const openModal = useCallback((modalToOpen: React.Component) => {
-    setModal(modalToOpen);
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setModal(undefined);
-  }, []);
-
-  return (
-    <ModalContext.Provider value={{ openModal, closeModal }}>
-      {modal}
-      {children}
-    </ModalContext.Provider>
   );
 }
