@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-import { HttpMethod, JAVA_RUNTIME_VERSION, ResourceFetch } from "./Resource";
+import { HttpMethod, JAVA_RUNTIME_VERSION, Resource, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/route.openshift.io/v1";
+
+export interface Route extends Resource {
+  spec: {
+    host: string;
+  };
+}
+export interface Routes {
+  items: Route[];
+}
 
 export class CreateRoute extends ResourceFetch {
   protected method(): HttpMethod {

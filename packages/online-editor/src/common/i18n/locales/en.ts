@@ -99,10 +99,9 @@ export const en: OnlineI18n = {
       noDeployments: "Your deployments show up here",
       setupFor: (username: string) => `Setup for ${username}`,
       item: {
-        upTooltip: "This deployment is up and running. Click to see more details in your instance.",
-        downTooltip: "This deployment is not running. Click to see more details in your instance.",
-        inProgressTooltip:
-          "This deployment is in progress and it will be available shortly. Click to see more details in your instance.",
+        upTooltip: "This deployment is up and running.",
+        downTooltip: "This deployment is not running.",
+        inProgressTooltip: "This deployment is in progress and it will be available shortly.",
         createdAt: (date: string) => `Created at ${date}`,
       },
     },
