@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-wb-screens</artifactId>
-    <version>7.52.0-SNAPSHOT</version>
+    <version>7.53.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-wb-dtable-xls-editor</artifactId>
