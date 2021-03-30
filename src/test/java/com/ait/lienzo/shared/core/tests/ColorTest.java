@@ -229,4 +229,10 @@ public class ColorTest
     {
         assertEquals("hsl(271.1,75.9%,52.7%)", BLUEVIOLET.getColor().getHSL().toBrowserHSL());
     }
+
+    @Test
+    public void testToBrowserRGBA()
+    {
+        assertEquals("rgba(100,150,200,0.5)", Color.toBrowserRGBA(100, 150, 200, 0.50));
+    }
 }
