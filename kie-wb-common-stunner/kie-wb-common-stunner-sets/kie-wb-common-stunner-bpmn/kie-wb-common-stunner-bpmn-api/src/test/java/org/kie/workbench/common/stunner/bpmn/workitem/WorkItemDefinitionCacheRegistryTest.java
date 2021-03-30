@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.workitem;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +60,14 @@ public class WorkItemDefinitionCacheRegistryTest {
         assertEquals(2, tested.items().size());
         assertEquals(DEF1.getName(), tested.get("def1").getName());
         assertEquals(DEF2.getName(), tested.get("def2").getName());
+    }
+
+    @Test
+    public void testIsErraiCompatibleType() {
+        tested.register(DEF1);
+        tested.register(DEF1);
+        assertEquals("Type of this collection should be ArrayList since Errai CDI support only classes with empty constructors.",
+                     ArrayList.class, tested.items().getClass());
     }
 
     @Test

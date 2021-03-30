@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.workitem;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -36,7 +37,9 @@ public class WorkItemDefinitionCacheRegistry implements WorkItemDefinitionRegist
 
     @Override
     public Collection<WorkItemDefinition> items() {
-        return definitions.values();
+        // It is done for GWT/Errai compatibility since HashMap$Values do not
+        // have empty constructor. Do not simplify!
+        return definitions.values().stream().collect(Collectors.toList());
     }
 
     @Override
