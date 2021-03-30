@@ -16,6 +16,8 @@ package kogitoservice
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/api"
@@ -31,7 +33,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	"reflect"
 )
 
 // createRequiredResources creates the required resources given the KogitoService instance
@@ -252,6 +253,7 @@ func (s *serviceDeployer) getComparator() compare.MapComparator {
 		framework.NewComparatorBuilder().
 			WithType(reflect.TypeOf(corev1.Service{})).
 			UseDefaultComparator().
+			WithCustomComparator(framework.CreateServiceComparator()).
 			Build())
 
 	resourceComparator.SetComparator(

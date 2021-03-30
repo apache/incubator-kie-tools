@@ -15,6 +15,8 @@
 package framework
 
 import (
+	"sort"
+
 	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	monv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
@@ -24,7 +26,6 @@ import (
 	imgv1 "github.com/openshift/api/image/v1"
 	routev1 "github.com/openshift/api/route/v1"
 	apps "k8s.io/api/apps/v1"
-	"sort"
 
 	v1 "k8s.io/api/core/v1"
 
@@ -197,13 +198,18 @@ func CreateBuildConfigComparator() func(deployed resource.KubernetesResource, re
 	}
 }
 
-// CreateServiceComparator creates a new comparator for Service using Label
+// CreateServiceComparator creates a new comparator for Service skipping ClusterIPs
 func CreateServiceComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
 	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
 		svcDeployed := deployed.(*v1.Service)
 		svcRequested := requested.(*v1.Service).DeepCopy()
 
-		return containAllLabels(svcDeployed, svcRequested)
+		if len(svcDeployed.Spec.ClusterIPs) > 0 && len(svcRequested.Spec.ClusterIPs) == 0 {
+			//Cluster IPs are assigned in the cluster, can be ignored for comparing
+			svcDeployed.Spec.ClusterIPs = svcRequested.Spec.ClusterIPs
+		}
+
+		return true
 	}
 }
 

@@ -861,6 +861,32 @@ func Test_CreateServiceComparator(t *testing.T) {
 			reflect.TypeOf(v1.Service{}),
 			false,
 		},
+		{
+			"DifferentClusterIPs",
+			args{
+				deployed: &v1.Service{
+					Spec: v1.ServiceSpec{
+						ClusterIPs: []string{"10.217.5.142"},
+					},
+				},
+				requested: &v1.Service{},
+			},
+			reflect.TypeOf(v1.Service{}),
+			true,
+		},
+		{
+			"DifferentClusterIP",
+			args{
+				deployed: &v1.Service{
+					Spec: v1.ServiceSpec{
+						ClusterIP: "10.217.5.142",
+					},
+				},
+				requested: &v1.Service{},
+			},
+			reflect.TypeOf(v1.Service{}),
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
