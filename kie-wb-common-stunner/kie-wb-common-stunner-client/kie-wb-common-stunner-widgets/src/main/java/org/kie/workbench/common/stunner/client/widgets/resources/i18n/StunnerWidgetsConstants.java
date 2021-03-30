@@ -94,4 +94,16 @@ public interface StunnerWidgetsConstants {
 
     @TranslationKey(defaultValue = "Info")
     String SessionCardinalityStateHandler_EmptyStateMessage = "SessionCardinalityStateHandler.EmptyStateMessage";
+
+    @TranslationKey(defaultValue = "Download")
+    String DownloadDiagram = "DownloadDiagram";
+
+    @TranslationKey(defaultValue = "Error")
+    String DiagramParsingError = "DiagramParsingError";
+
+    @TranslationKey(defaultValue = "Explorer")
+    String ScreenExplorerTitle = "ScreenExplorerTitle";
+
+    @TranslationKey(defaultValue = "Explorer")
+    String Documentation = "Documentation";
 }

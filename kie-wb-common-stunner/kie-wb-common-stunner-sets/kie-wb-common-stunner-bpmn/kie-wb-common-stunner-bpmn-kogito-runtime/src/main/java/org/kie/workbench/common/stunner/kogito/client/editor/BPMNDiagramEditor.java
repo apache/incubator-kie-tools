@@ -20,73 +20,58 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
-import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
+import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
-import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
-import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
-import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
-import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormsFlushManager;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPreviewAndExplorerDock;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
-import org.kie.workbench.common.stunner.kogito.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
-import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.bridge.Notification;
 import org.uberfire.workbench.model.bridge.NotificationSeverity;
 
 @ApplicationScoped
 //@Named(BPMNDiagramEditor.EDITOR_ID) uncomment after removing BPMNDiagramEditorActivity
-public class BPMNDiagramEditor extends AbstractDiagramEditor {
+public class BPMNDiagramEditor {
 
     public static final String EDITOR_ID = "BPMNDiagramEditor";
 
+    private final Promises promises;
+    private final ReadOnlyProvider readOnlyProvider;
+    private final StunnerEditor stunnerEditor;
+    private final ClientTranslationService translationService;
+    private final AbstractKogitoClientDiagramService diagramServices;
+    private final CanvasFileExport canvasFileExport;
     private final DiagramEditorPreviewAndExplorerDock diagramPreviewAndExplorerDock;
     private final DiagramEditorPropertiesDock diagramPropertiesDock;
-    private final LayoutHelper layoutHelper;
-    private final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
-    protected final AbstractKogitoClientDiagramService diagramServices;
-    protected final FormsFlushManager formsFlushManager;
-    private final CanvasFileExport canvasFileExport;
-    private final Promises promises;
+    private final FormsFlushManager formsFlushManager;
+    private final EditorSessionCommands commands;
     private CanvasDiagramValidator<AbstractCanvasHandler> validator;
-
-    protected String formElementUUID;
 
     private static final Map<Violation.Type, String> validationSeverityTable = new HashMap<Violation.Type, String>() {{
         put(Violation.Type.INFO, NotificationSeverity.INFO);
@@ -95,120 +80,71 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     }};
 
     @Inject
-    public BPMNDiagramEditor(final View view,
-                             final MultiPageEditorContainerView multiPageEditorContainerView,
-                             final Event<NotificationEvent> notificationEvent,
-                             final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                             final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
-                             final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                             final DiagramClientErrorHandler diagramClientErrorHandler,
-                             final ClientTranslationService translationService,
-                             final DocumentationView documentationView,
-                             final DiagramEditorPreviewAndExplorerDock diagramPreviewAndExplorerDock,
-                             final DiagramEditorPropertiesDock diagramPropertiesDock,
-                             final LayoutHelper layoutHelper,
-                             final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
-                             final AbstractKogitoClientDiagramService diagramServices,
-                             final FormsFlushManager formsFlushManager,
-                             final CanvasFileExport canvasFileExport,
-                             final Promises promises,
-                             final CanvasDiagramValidator<AbstractCanvasHandler> validator,
-                             final EditorSessionCommands editorSessionCommands) {
-        super(view,
-              multiPageEditorContainerView,
-              notificationEvent,
-              onDiagramFocusEvent,
-              editorSessionPresenterInstances,
-              viewerSessionPresenterInstances,
-              diagramClientErrorHandler,
-              translationService,
-              documentationView,
-              editorSessionCommands);
-        this.diagramPreviewAndExplorerDock = diagramPreviewAndExplorerDock;
-        this.diagramPropertiesDock = diagramPropertiesDock;
-        this.layoutHelper = layoutHelper;
-        this.openDiagramLayoutExecutor = openDiagramLayoutExecutor;
+    public BPMNDiagramEditor(Promises promises,
+                             ReadOnlyProvider readOnlyProvider,
+                             StunnerEditor stunnerEditor,
+                             ClientTranslationService translationService,
+                             AbstractKogitoClientDiagramService diagramServices,
+                             CanvasFileExport canvasFileExport,
+                             DiagramEditorPreviewAndExplorerDock diagramPreviewAndExplorerDock,
+                             DiagramEditorPropertiesDock diagramPropertiesDock,
+                             FormsFlushManager formsFlushManager,
+                             EditorSessionCommands commands,
+                             final CanvasDiagramValidator<AbstractCanvasHandler> validator) {
+        this.promises = promises;
+        this.readOnlyProvider = readOnlyProvider;
+        this.stunnerEditor = stunnerEditor;
+        this.translationService = translationService;
         this.diagramServices = diagramServices;
         this.canvasFileExport = canvasFileExport;
+        this.diagramPreviewAndExplorerDock = diagramPreviewAndExplorerDock;
+        this.diagramPropertiesDock = diagramPropertiesDock;
         this.formsFlushManager = formsFlushManager;
-        this.promises = promises;
+        this.commands = commands;
         this.validator = validator;
     }
 
     public void onStartup(final PlaceRequest place) {
-        superDoStartUp(place);
-        initDocks();
-        getWidget().init(this);
-    }
-
-    void superDoStartUp(final PlaceRequest place) {
-        super.doStartUp(place);
-    }
-
-    @Override
-    public void open(final Diagram diagram,
-                     final Viewer.Callback callback) {
-        this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
-        super.open(diagram, callback);
+        boolean isReadOnly = place.getParameter("readOnly", null) != null;
+        isReadOnly |= readOnlyProvider.isReadOnlyDiagram();
+        stunnerEditor.setReadOnly(isReadOnly);
+        docksInit();
     }
 
     public void onOpen() {
-        super.doOpen();
     }
 
     public void onClose() {
-        superOnClose();
-        closeDocks();
+        close();
     }
 
-    void superOnClose() {
-        super.doClose();
+    private void close() {
+        commands.clear();
+        docksClose();
+        stunnerEditor.close();
     }
 
-    @Override
-    public void onDiagramLoad() {
-        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
-        canvasHandler.ifPresent(c -> {
-            final Metadata metadata = c.getDiagram().getMetadata();
-            metadata.setPath(makeMetadataPath(metadata.getRoot(), metadata.getTitle()));
-            openDocks();
-        });
-    }
-
-    private Path makeMetadataPath(final Path root,
-                                  final String title) {
-        final String uri = root.toURI();
-        return PathFactory.newPath(title, uri + "/" + title + ".bpmn");
-    }
-
-    @Override
     public IsWidget asWidget() {
-        return super.asWidget();
+        return stunnerEditor.getView();
     }
 
-    @Override
-    public String getEditorIdentifier() {
-        return EDITOR_ID;
-    }
-
-    @Override
-    public Promise getContent() {
+    public Promise<String> getContent() {
         flush();
-        return diagramServices.transform(getEditor().getEditorProxy().getContentSupplier().get());
+        return diagramServices.transform(stunnerEditor.getDiagram());
     }
 
-    public Promise getPreview() {
-        CanvasHandler canvasHandler = getCanvasHandler();
+    public Promise<String> getPreview() {
+        CanvasHandler canvasHandler = stunnerEditor.getCanvasHandler();
         if (canvasHandler != null) {
-            return Promise.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
+            return promises.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
         } else {
-            return Promise.resolve("");
+            return promises.resolve("");
         }
     }
 
     public Promise validate() {
-        CanvasHandler canvasHandler = getCanvasHandler();
-        getSessionPresenter().displayNotifications(t -> false);
+        CanvasHandler canvasHandler = stunnerEditor.getCanvasHandler();
+        stunnerEditor.getPresenter().displayNotifications(t -> false);
 
         List<Notification> violationMessages = new ArrayList<>();
 
@@ -226,8 +162,8 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     private Notification createNotification(DomainViolation item) {
-        CanvasHandler canvasHandler = getCanvasHandler();
-        String errorMessage = getTranslationService().getValue(StunnerWidgetsConstants.MarshallingResponsePopup_ErrorMessageLabel);
+        CanvasHandler canvasHandler = stunnerEditor.getCanvasHandler();
+        String errorMessage = translationService.getValue(StunnerWidgetsConstants.MarshallingResponsePopup_ErrorMessageLabel);
         Notification notification = new Notification();
         notification.setMessage(errorMessage + ": " + item.getUUID() + " - " + item.getMessage());
         notification.setSeverity(translateViolationType(item.getViolationType()));
@@ -239,66 +175,66 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
         return this.validationSeverityTable.getOrDefault(violationType, NotificationSeverity.INFO);
     }
 
-    @Override
-    @SuppressWarnings("all")
-    public Promise setContent(final String path, final String value) {
-        Promise<Void> promise =
-                promises.create((success, failure) -> {
-                    superOnClose();
-                    diagramServices.transform(path,
-                                              value,
-                                              new ServiceCallback<Diagram>() {
-
-                                                  @Override
-                                                  public void onSuccess(final Diagram diagram) {
-                                                      getEditor().open(diagram,
-                                                                       new Viewer.Callback() {
-                                                                           @Override
-                                                                           public void onSuccess() {
-                                                                               success.onInvoke((Void) null);
-                                                                           }
-
-                                                                           @Override
-                                                                           public void onError(ClientRuntimeError error) {
-                                                                               BPMNDiagramEditor.this.getEditor().onLoadError(error);
-                                                                               failure.onInvoke(error);
-                                                                           }
-                                                                       });
-                                                  }
-
-                                                  @Override
-                                                  public void onError(final ClientRuntimeError error) {
-                                                      BPMNDiagramEditor.this.getEditor().onLoadError(error);
-                                                      failure.onInvoke(error);
-                                                  }
-                                              });
-                });
-        return promise;
+    private void flush() {
+        formsFlushManager.flush(stunnerEditor.getSession());
     }
 
-    void initDocks() {
+    public Promise<Void> setContent(final String path, final String value) {
+        close();
+        return promises.create((success, failure) -> {
+            diagramServices.transform(path,
+                                      value,
+                                      new ServiceCallback<Diagram>() {
+
+                                          @Override
+                                          public void onSuccess(final Diagram diagram) {
+                                              stunnerEditor
+                                                      .close()
+                                                      .open(diagram, new SessionPresenter.SessionPresenterCallback() {
+                                                          @Override
+                                                          public void onSuccess() {
+                                                              onDiagramOpenSuccess();
+                                                              success.onInvoke((Void) null);
+                                                          }
+
+                                                          @Override
+                                                          public void onError(ClientRuntimeError error) {
+                                                              failure.onInvoke(error);
+                                                          }
+                                                      });
+                                          }
+
+                                          @Override
+                                          public void onError(final ClientRuntimeError error) {
+                                              stunnerEditor.handleError(error);
+                                              failure.onInvoke(error);
+                                          }
+                                      });
+        });
+    }
+
+    private void onDiagramOpenSuccess() {
+        Metadata metadata = stunnerEditor.getCanvasHandler().getDiagram().getMetadata();
+        String title = metadata.getTitle();
+        final String uri = metadata.getRoot().toURI();
+        Path path = PathFactory.newPath(title, uri + "/" + title + ".bpmn");
+        metadata.setPath(path);
+        commands.bind(stunnerEditor.getSession());
+        docksOpen();
+    }
+
+    void docksInit() {
         diagramPropertiesDock.init();
         diagramPreviewAndExplorerDock.init();
     }
 
-    void openDocks() {
+    void docksOpen() {
         diagramPropertiesDock.open();
         diagramPreviewAndExplorerDock.open();
     }
 
-    void closeDocks() {
+    void docksClose() {
         diagramPropertiesDock.close();
         diagramPreviewAndExplorerDock.close();
-    }
-
-    void onFormsOpenedEvent(@Observes FormPropertiesOpened event) {
-        formElementUUID = event.getUuid();
-    }
-
-    void flush() {
-        if (getSessionPresenter() != null) {
-            ClientSession session = getSessionPresenter().getInstance();
-            formsFlushManager.flush(session, formElementUUID);
-        }
     }
 }

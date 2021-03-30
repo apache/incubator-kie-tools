@@ -20,10 +20,8 @@ import java.util.function.Consumer;
 
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.widget.AssigneeLiveSearchEntryCreationEditor;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
-import org.kie.workbench.common.stunner.kogito.api.Kogito;
 import org.uberfire.ext.widgets.common.client.dropdown.EntryCreationLiveSearchService;
 
-@Kogito
 public interface AssigneeLiveSearchService
         extends EntryCreationLiveSearchService<String, AssigneeLiveSearchEntryCreationEditor> {
 

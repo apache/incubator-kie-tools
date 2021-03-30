@@ -75,7 +75,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final HitPolicyPopoverView.Presenter hitPolicyEditor,
                                          final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors,
                                          final DecisionTableEditorDefinitionEnricher enricher,
-                                         final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                         final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

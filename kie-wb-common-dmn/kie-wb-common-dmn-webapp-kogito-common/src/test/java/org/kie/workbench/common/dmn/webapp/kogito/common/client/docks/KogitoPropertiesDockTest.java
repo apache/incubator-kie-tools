@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.docks;
 
-import org.kie.workbench.common.stunner.kogito.client.screens.DiagramEditorPropertiesScreen;
+import org.kie.workbench.common.stunner.forms.client.screens.DiagramEditorPropertiesScreen;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
 public class KogitoPropertiesDockTest extends BaseKogitoDockTest<KogitoPropertiesDock> {

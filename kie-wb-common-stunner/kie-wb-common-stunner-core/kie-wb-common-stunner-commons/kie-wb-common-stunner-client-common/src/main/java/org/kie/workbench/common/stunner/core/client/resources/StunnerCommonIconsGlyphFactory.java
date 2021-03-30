@@ -25,4 +25,6 @@ public interface StunnerCommonIconsGlyphFactory {
     ImageStripGlyph GEARS = ImageStripGlyph.create(StunnerCommonIconsStrip.class, 1);
 
     ImageStripGlyph FORM = ImageStripGlyph.create(StunnerCommonIconsStrip.class, 2);
+
+    ImageStripGlyph SUBPROCESS = ImageStripGlyph.create(StunnerCommonIconsStrip.class, 2);
 }

@@ -83,7 +83,6 @@ public class FormPropertiesWidget implements IsElement,
     @PostConstruct
     @SuppressWarnings("unchecked")
     public void init() {
-        log(Level.INFO, "FormPropertiesWidget instance build.");
         formsFlushManager.setCurrentContainer(formsContainer);
         formSessionHandler.setRenderer(new FormsCanvasSessionHandler.FormRenderer() {
             @Override

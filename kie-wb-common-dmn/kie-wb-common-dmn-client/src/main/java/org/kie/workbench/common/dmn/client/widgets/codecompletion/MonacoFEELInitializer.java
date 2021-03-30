@@ -54,12 +54,12 @@ public class MonacoFEELInitializer {
             "true",
             "false"
     );
-    private final MonacoFEELVariableSuggestions variableSuggestions;
+    private final MonacoSuggestionsPropertyFactory suggestionsPropertyFactory;
     private MonacoFEELInitializationStatus initializationStatus = NOT_INITIALIZED;
 
     @Inject
-    public MonacoFEELInitializer(final MonacoFEELVariableSuggestions variableSuggestions) {
-        this.variableSuggestions = variableSuggestions;
+    public MonacoFEELInitializer(final MonacoSuggestionsPropertyFactory suggestionsPropertyFactory) {
+        this.suggestionsPropertyFactory = suggestionsPropertyFactory;
     }
 
     public void initializeFEELEditor() {
@@ -75,7 +75,7 @@ public class MonacoFEELInitializer {
         MonacoLanguages.get().setMonarchTokensProvider(FEEL_LANGUAGE_ID,
                                                        properties.getLanguageDefinition());
         MonacoLanguages.get().registerCompletionItemProvider(FEEL_LANGUAGE_ID,
-                                                             properties.getCompletionItemProvider(variableSuggestions));
+                                                             properties.getCompletionItemProvider(suggestionsPropertyFactory));
         MonacoEditor.get().defineTheme(FEEL_THEME_ID,
                                        properties.getThemeData());
         setFEELAsInitialized();

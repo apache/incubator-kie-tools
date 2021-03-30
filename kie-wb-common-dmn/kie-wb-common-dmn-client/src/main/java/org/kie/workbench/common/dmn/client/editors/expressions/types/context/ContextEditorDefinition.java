@@ -74,7 +74,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
                                    final TranslationService translationService,
                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                    final ValueAndDataTypePopoverView.Presenter headerEditor,
-                                   final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                   final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

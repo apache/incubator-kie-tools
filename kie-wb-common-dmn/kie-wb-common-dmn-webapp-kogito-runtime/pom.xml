@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.kie.workbench</groupId>
     <artifactId>kie-wb-common-dmn</artifactId>
-    <version>7.52.0-SNAPSHOT</version>
+    <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -157,12 +157,6 @@
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-client</artifactId>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-servlet-security</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
@@ -193,6 +187,16 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-core-grids</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -294,6 +298,7 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.mortbay.jasper</groupId>
@@ -304,7 +309,6 @@
           <artifactId>xml-apis</artifactId>
         </exclusion>
       </exclusions>
-      <scope>provided</scope>
     </dependency>
 
     <!-- kogito -->
@@ -316,11 +320,6 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-kogito-runtime-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -337,6 +336,7 @@
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -391,6 +391,39 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Client side FEEL -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.rikkola.gwt</groupId>
+      <artifactId>antlr4-c3-gwt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4gwt-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -481,29 +514,37 @@
 
               <compileSourcesArtifacts>
 
-                  <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 
-                  <!-- UberFire -->
-                  <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
+                <!-- UberFire -->
+                <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
 
 
-                  <!-- Errai, Drools etc -->
-                  <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
+                <!-- Errai, Drools etc -->
+                <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
 
-                  <!-- UF-ext -->
-                  <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
+                <!-- Client side FEEL -->
+                <compileSourcesArtifact>org.rikkola.gwt:antlr4-c3-gwt</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-model</compileSourcesArtifact>
 
-                  <!-- Forms -->
+                <!-- UF-ext -->
+                <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
+
+                <!-- Forms -->
                 <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-adf-base</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
@@ -530,9 +571,7 @@
                   <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-widgets</compileSourcesArtifact>
                   <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
                   <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-api</compileSourcesArtifact>
                   <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
-                  <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-runtime-common</compileSourcesArtifact>
 
                   <!-- DMN Editor -->
                   <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-api</compileSourcesArtifact>

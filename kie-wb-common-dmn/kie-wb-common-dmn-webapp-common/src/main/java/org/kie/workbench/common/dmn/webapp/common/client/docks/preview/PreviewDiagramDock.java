@@ -22,7 +22,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramScreen;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
-import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
+import org.kie.workbench.common.stunner.client.widgets.editor.DiagramEditorDock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocks;

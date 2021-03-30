@@ -157,9 +157,11 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
     @Override
     public final void destroy() {
         doDestroy();
-        command.destroy();
-        commands.destroy(command);
-        command = null;
+        if (null != command) {
+            command.destroy();
+            commands.destroy(command);
+            command = null;
+        }
         toolbar = null;
     }
 

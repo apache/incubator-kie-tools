@@ -23,7 +23,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -56,7 +55,7 @@ public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanva
     public DMNEditDecisionToolboxAction(final SessionManager sessionManager,
                                         final ClientTranslationService translationService,
                                         final Event<EditExpressionEvent> editExpressionEvent,
-                                        final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                        final ReadOnlyProvider readOnlyProvider) {
         this.sessionManager = sessionManager;
         this.translationService = translationService;
         this.editExpressionEvent = editExpressionEvent;

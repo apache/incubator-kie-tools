@@ -45,12 +45,15 @@ public class SequenceFlowConverter {
 
         seq.setId(edge.getUUID());
 
-        BasePropertyWriter pSrc = process.getChildElement(edge.getSourceNode().getUUID());
-        BasePropertyWriter pTgt = process.getChildElement(edge.getTargetNode().getUUID());
+        BasePropertyWriter pSrc = edge.getSourceNode() != null ? process.getChildElement(edge.getSourceNode().getUUID()) : null;
+        BasePropertyWriter pTgt = edge.getTargetNode() != null ? process.getChildElement(edge.getTargetNode().getUUID()) : null;
 
-        if (pSrc == null || pTgt == null) {
-            String msg = "pSrc = " + pSrc + ", pTgt = " + pTgt;
-            return Result.failure(msg);
+        if (pSrc == null) {
+            return Result.failure("Source connection is not set for sequence flow (edge) id = " + edge.getUUID());
+        }
+
+        if (pTgt == null) {
+            return Result.failure("Target connection is not set for sequence flow (edge) id = " + edge.getUUID());
         }
 
         p.setSource(pSrc);

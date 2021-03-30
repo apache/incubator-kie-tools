@@ -20,7 +20,7 @@
   <parent>
     <artifactId>kie-wb-common-stunner-kogito</artifactId>
     <groupId>org.kie.workbench.stunner</groupId>
-    <version>7.52.0-SNAPSHOT</version>
+    <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -98,10 +98,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-kogito-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
     <dependency>
@@ -112,6 +108,12 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
+    </dependency>
+
+    <!-- Appformer - Kogito bridge -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
     </dependency>
 
     <!-- Kogito -->

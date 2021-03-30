@@ -47,7 +47,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private Optional<Command> exitCommand = Optional.empty();
 
-    private Optional<ToolbarStateHandler> toolbarStateHandler;
+    private Optional<ToolbarStateHandler> toolbarStateHandler = Optional.empty();
 
     private Optional<HasExpression> hasExpression = Optional.empty();
 

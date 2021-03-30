@@ -72,7 +72,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService,
                                     final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors,
-                                    final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                                    final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

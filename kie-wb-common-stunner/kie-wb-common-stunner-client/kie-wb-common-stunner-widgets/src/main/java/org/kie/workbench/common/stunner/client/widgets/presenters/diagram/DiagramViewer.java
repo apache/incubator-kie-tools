@@ -60,7 +60,9 @@ public interface DiagramViewer<D extends Diagram, H extends CanvasHandler>
          * Provide additional callback notification fired once canvas and handler have been
          * initialized by the diagram still not draw/loaded.
          */
-        void afterCanvasInitialized();
+        default void afterCanvasInitialized() {
+
+        }
     }
 
     /**
