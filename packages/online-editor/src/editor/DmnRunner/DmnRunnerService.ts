@@ -17,7 +17,7 @@
 import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import JSONSchemaBridge from "../../common/Bridge";
-import { OperatingSystem } from "../../common/utils";
+import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 
 export interface DmnRunnerPayload {
   model: string;
@@ -30,8 +30,8 @@ export enum EvaluationStatus {
   FAILED = "FAILED"
 }
 
-interface DecisionResultMessage {
-  severity: string;
+export interface DecisionResultMessage {
+  severity: NotificationSeverity;
   message: string;
   messageType: string;
   sourceId: string;
@@ -52,6 +52,7 @@ export interface DmnResult {
   details?: string;
   stack?: string;
   decisionResults?: DecisionResult[];
+  messages: DecisionResultMessage[];
 }
 
 export class DmnRunnerService {

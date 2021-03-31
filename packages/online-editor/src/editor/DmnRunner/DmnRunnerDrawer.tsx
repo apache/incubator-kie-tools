@@ -49,11 +49,12 @@ import {
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { THROTTLING_TIME } from "./DmnRunnerContextProvider";
+import { DmnRunnerNotificationsTab, THROTTLING_TIME } from "./DmnRunnerContextProvider";
 import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { usePrevious } from "../../common/Hooks";
+import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 
 enum ButtonPosition {
   INPUT,
@@ -82,6 +83,7 @@ interface DmnRunnerStylesConfig {
 }
 
 export function DmnRunnerDrawer(props: Props) {
+  const notificationsPanel = useNotificationsPanel();
   const dmnRunner = useDmnRunner();
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
   const autoFormRef = useRef<HTMLFormElement>();
@@ -144,6 +146,16 @@ export function DmnRunnerDrawer(props: Props) {
         try {
           const content = await props.editor.getContent();
           const result = await dmnRunner.service.result({ context: data, model: content });
+          if (result && result.messages.length > 0) {
+            result.messages.forEach(message => {
+              notificationsPanel.getTabRef(DmnRunnerNotificationsTab.EXECUTION)?.createNotification({
+                type: "PROBLEM",
+                path: "somewhere",
+                severity: message.severity,
+                message: message.message
+              });
+            });
+          }
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
             // DMN Runner Error
             return;
@@ -161,10 +173,10 @@ export function DmnRunnerDrawer(props: Props) {
         }
       }
     },
-    [props.editor, dmnRunnerResults, dmnRunner.service]
+    [props.editor, dmnRunnerResults, dmnRunner.service, notificationsPanel.getTabRef]
   );
 
-  const onValidate = useCallback(async (model, error: any) => {
+  const onValidate = useCallback((model, error: any) => {
     // if the form has an error, the response should be empty;
     if (error) {
       setDmnRunnerResults(undefined);

@@ -25,6 +25,7 @@ import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { diff } from "deep-object-diff";
 import { getCookie, setCookie } from "../../common/utils";
+import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 
 const DMN_RUNNER_POLLING_TIME = 1000;
 export const THROTTLING_TIME = 200;
@@ -37,7 +38,13 @@ interface Props {
   isEditorReady: boolean;
 }
 
+export enum DmnRunnerNotificationsTab {
+  VALIDATION = "Validation",
+  EXECUTION = "Execution"
+}
+
 export function DmnRunnerContextProvider(props: Props) {
+  const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState();
@@ -138,6 +145,11 @@ export function DmnRunnerContextProvider(props: Props) {
   const saveNewPort = useCallback((newPort: string) => {
     setPort(newPort);
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
+  }, []);
+
+  // notifications initialization;
+  useEffect(() => {
+    notificationsPanel.createTabs([DmnRunnerNotificationsTab.EXECUTION]);
   }, []);
 
   return (

@@ -232,6 +232,8 @@
 }
 
 .kogito--editor__drawer-content-body {
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
@@ -363,4 +365,21 @@
 
 .blink-opacity {
   animation: flickerAnimation 2s infinite cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.kogito--editor__dmn-runner-notifications-panel-button {
+  user-select: none;
+  z-index: 999;
+  right: 0;
+  bottom: 5px;
+  position: absolute;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  font-size: var(--pf-global--FontSize--md);
+  cursor: pointer;
+  color: var(--pf-global--Color--dark-100) !important;
 }
