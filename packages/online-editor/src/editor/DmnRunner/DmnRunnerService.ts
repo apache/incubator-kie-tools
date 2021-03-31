@@ -38,7 +38,7 @@ export interface DecisionResultMessage {
   level: string;
 }
 
-export type Result = boolean | number | null | object | string;
+export type Result = boolean | number | null | object | object[] | string;
 
 export interface DecisionResult {
   decisionId: string;

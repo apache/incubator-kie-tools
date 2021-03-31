@@ -413,14 +413,38 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
         return dmnRunnerResult;
       case "object":
         return dmnRunnerResult !== null ? (
-          <DescriptionList>
-            {Object.entries(dmnRunnerResult).map(([key, value]) => (
-              <DescriptionListGroup>
-                <DescriptionListTerm>{key}</DescriptionListTerm>
-                <DescriptionListDescription>{value}</DescriptionListDescription>
-              </DescriptionListGroup>
-            ))}
-          </DescriptionList>
+          Array.isArray(dmnRunnerResult) ? (
+            <DescriptionList>
+              {dmnRunnerResult.map((dmnResult, index) => (
+                <DescriptionListGroup key={`array-result-${index}`}>
+                  {Object.entries(dmnResult).map(([key, value]) => (
+                    <>
+                      <DescriptionListTerm>{key}</DescriptionListTerm>
+                      <DescriptionListDescription>{value}</DescriptionListDescription>
+                    </>
+                  ))}
+                </DescriptionListGroup>
+              ))}
+            </DescriptionList>
+          ) : (
+            <DescriptionList>
+              {Object.entries(dmnRunnerResult).map(([key, value]) => (
+                <DescriptionListGroup key={`object-result-${key}-${value}`}>
+                  <DescriptionListTerm>{key}</DescriptionListTerm>
+                  {typeof value === "object" && value !== null ? (
+                    Object.entries(value).map(([key2, value2]: [string, any]) => (
+                      <DescriptionListGroup key={`object2-result-${key2}-${value2}`}>
+                        <DescriptionListTerm>{key2}</DescriptionListTerm>
+                        <DescriptionListDescription>{value2}</DescriptionListDescription>
+                      </DescriptionListGroup>
+                    ))
+                  ) : (
+                    <DescriptionListDescription>{value}</DescriptionListDescription>
+                  )}
+                </DescriptionListGroup>
+              ))}
+            </DescriptionList>
+          )
         ) : (
           <i>(null)</i>
         );
